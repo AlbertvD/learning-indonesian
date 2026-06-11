@@ -6,10 +6,10 @@
 // (skill-mode gaps) · Tijd (week/month comparison) · Grammatica (named topics).
 // Each view animates in on switch.
 import { useState } from 'react'
-import { SegmentedControl } from '@mantine/core'
 import { PageContainer, PageBody, PageHeader } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
+import { PillSegmented } from '@/components/progress/PillSegmented'
 import { MasteryFunnelCard } from '@/components/progress/MasteryFunnelCard'
 import { SkillModeGapsCard } from '@/components/progress/SkillModeGapsCard'
 import { TimeComparisonCard } from '@/components/progress/TimeComparisonCard'
@@ -27,22 +27,23 @@ export function Progress() {
   return (
     <PageContainer size="lg">
       <PageBody>
-        <PageHeader title={T.progress.pageTitle} subtitle={T.progress.pageSubtitle} />
+        <PageHeader title={T.progress.pageTitle} />
 
         {user && (
           <>
-            <SegmentedControl
-              className={classes.tabs}
-              fullWidth
-              value={tab}
-              onChange={(v) => setTab(v as Tab)}
-              data={[
-                { value: 'funnel', label: T.progress.tabFunnel },
-                { value: 'skills', label: T.progress.tabSkills },
-                { value: 'time', label: T.progress.tabTime },
-                { value: 'grammar', label: T.progress.tabGrammar },
-              ]}
-            />
+            <div className={classes.tabs}>
+              <PillSegmented
+                fullWidth
+                value={tab}
+                onChange={(v) => setTab(v as Tab)}
+                data={[
+                  { value: 'funnel', label: T.progress.tabFunnel },
+                  { value: 'skills', label: T.progress.tabSkills },
+                  { value: 'time', label: T.progress.tabTime },
+                  { value: 'grammar', label: T.progress.tabGrammar },
+                ]}
+              />
+            </div>
 
             {/* key re-mounts the active view so it animates in on every switch */}
             <div key={tab} className={classes.view}>

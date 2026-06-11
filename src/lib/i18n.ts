@@ -135,6 +135,7 @@ export const nl = {
     rungStrengthening: 'Versterken',
     rungMastered: 'Beheerst',
     rungAtRisk: 'Aandacht nodig',
+    atRiskExplain: 'Deze heb je vergeten of doe je steeds fout — ze zakken weg uit je geheugen. Oefen ze om ze terug te halen.',
     grammarTopicsTitle: 'Grammatica-onderwerpen',
     weeklyRecapTitle: 'Vooruitgang deze week',
     recapAdvanced: 'Omhoog',
@@ -180,7 +181,7 @@ export const nl = {
     dueToday: 'Vandaag',
     dueThisWeek: 'Deze week',
     // Page header
-    pageTitle: 'Voortgang',
+    pageTitle: 'Jouw leervoortgang',
     pageSubtitle: 'Jouw leervoortgang',
     // Mastery funnel
     funnelTitle: 'Leerpijplijn',
@@ -431,6 +432,7 @@ export const en: typeof nl = {
     rungStrengthening: 'Strengthening',
     rungMastered: 'Mastered',
     rungAtRisk: 'Needs review',
+    atRiskExplain: "You've forgotten these or keep getting them wrong — they're slipping out of memory. Practise them to bring them back.",
     grammarTopicsTitle: 'Grammar topics',
     weeklyRecapTitle: 'This week',
     recapAdvanced: 'Moved up',
@@ -476,7 +478,7 @@ export const en: typeof nl = {
     dueToday: 'Today',
     dueThisWeek: 'This week',
     // Page header
-    pageTitle: 'Memory overview',
+    pageTitle: 'Your progress',
     pageSubtitle: 'Your learning progress and memory health',
     // Mastery funnel
     funnelTitle: 'Learning pipeline',

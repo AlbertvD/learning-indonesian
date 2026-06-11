@@ -1,0 +1,23 @@
+.root {
+  background: var(--surface-2, rgba(128, 128, 128, 0.1));
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.indicator {
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4dabf7, #20c997);
+  box-shadow: 0 3px 10px rgba(32, 201, 151, 0.28);
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary, #868e96);
+  padding: 0.42rem 0.6rem;
+  transition: color 0.25s ease;
+}
+
+.label[data-active] {
+  color: #fff;
+}

@@ -5,12 +5,12 @@
 // getMasteryOverview evidence (data-architect Q-C); the journey re-animates when
 // the filter switches.
 import { useEffect, useState } from 'react'
-import { SegmentedControl } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
 import { getMasteryFunnel, type MasteryFunnels } from '@/lib/analytics/mastery/masteryModel'
 import { logError } from '@/lib/logger'
 import { MasteryJourney } from './MasteryJourney'
+import { PillSegmented } from './PillSegmented'
 import classes from './MasteryFunnelCard.module.css'
 
 export interface MasteryFunnelCardProps {
@@ -43,7 +43,7 @@ export function MasteryFunnelCard({ userId }: MasteryFunnelCardProps) {
 
   return (
     <div className={classes.panel}>
-      <SegmentedControl
+      <PillSegmented
         fullWidth
         value={view}
         onChange={(v) => setView(v as View)}
