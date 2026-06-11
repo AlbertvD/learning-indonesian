@@ -681,6 +681,16 @@ analytics.mastery.overview(userId)                    → MasteryOverview
 
 **Module structure.**
 
+> **Roster reconciliation (analytics redesign #206–#212, 2026-06-11):** the
+> learner-progress redesign retired `leaderboard` (decommissioned) and `memory`
+> (the retention/accuracy/health/latency surfaces were FSRS "decoration" with no
+> learner-facing home); both leave the live barrel. `mastery` grew the funnel /
+> skill-mode / weekly-movement derivers; weekly movement lives IN `mastery`, not a
+> separate `movement/` sub-module. The locked roster below is the original target;
+> the live barrel is now `{ engagement, upcoming, progress, mastery }`. See
+> `docs/plans/2026-06-10-learner-progress-analytics-redesign.md` + CONTEXT.md →
+> Learner Progress Axes.
+
 ```
 src/lib/analytics/
   index.ts              top-level barrel: { engagement, memory, upcoming,
