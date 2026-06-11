@@ -10,6 +10,7 @@ import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
 import { PracticeTimeCard } from '@/components/progress/PracticeTimeCard'
 import { MasteryFunnelCard } from '@/components/progress/MasteryFunnelCard'
+import { GrammarTopicsList } from '@/components/progress/GrammarTopicsList'
 import { MemoryHealthHero } from '@/components/progress/MemoryHealthHero'
 import { VulnerableItemsList } from '@/components/progress/VulnerableItemsList'
 import { ReviewForecastChart } from '@/components/progress/ReviewForecastChart'
@@ -58,6 +59,12 @@ export function Progress() {
         {user && (
           <section className={classes.section}>
             <MasteryFunnelCard userId={user.id} />
+          </section>
+        )}
+
+        {user && (
+          <section className={classes.section}>
+            <GrammarTopicsList userId={user.id} />
           </section>
         )}
 

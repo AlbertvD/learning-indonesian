@@ -404,6 +404,37 @@ export function deriveMasteryFunnel(input: {
   return { vocabulary: tally(vocab), grammar: tally(grammar) }
 }
 
+export interface GrammarTopicLabel {
+  slug: string
+  label: MasteryLabel
+}
+
+export interface GrammarTopic extends GrammarTopicLabel {
+  name: string
+  shortExplanation: string
+}
+
+// Named grammar topics (source_kind 'pattern' only — affixed_form_pairs are not
+// named grammar_patterns), each rolled up weakest-wins to one ladder label.
+// Used by the voortgang grammar-topics drill-down (#209).
+export function deriveGrammarTopics(input: {
+  evidence: CapabilityMasteryEvidence[]
+  now?: Date
+}): GrammarTopicLabel[] {
+  const now = input.now ?? new Date()
+  const bySlug = new Map<string, CapabilityMasteryEvidence[]>()
+  for (const e of input.evidence) {
+    if (e.sourceKind !== 'pattern') continue
+    bySlug.set(e.sourceRef, [...(bySlug.get(e.sourceRef) ?? []), e])
+  }
+  return [...bySlug.entries()]
+    .map(([slug, caps]) => ({
+      slug,
+      label: weakestLabel(caps.map((cap) => labelForCapability(cap, now))),
+    }))
+    .sort((a, b) => a.slug.localeCompare(b.slug))
+}
+
 function toEvidence(input: {
   capabilities: LearningCapabilityRow[]
   states: LearnerCapabilityStateRow[]
@@ -524,6 +555,33 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
       return deriveMasteryFunnel({ evidence })
     },
+
+    async getGrammarTopics(userId: string): Promise<GrammarTopic[]> {
+      const { data: stateRows, error: stateError } = await db()
+        .from('learner_capability_state')
+        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
+        .eq('user_id', userId)
+      if (stateError) throw stateError
+      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
+      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
+      const activatedLessonsSet = await listActivatedLessons(userId, client)
+      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      const topics = deriveGrammarTopics({ evidence })
+      if (topics.length === 0) return []
+      const { data: patternRows, error: patternError } = await db()
+        .from('grammar_patterns')
+        .select('slug, name, short_explanation')
+        .in('slug', topics.map(topic => topic.slug))
+      if (patternError) throw patternError
+      const rows = (patternRows ?? []) as Array<{ slug: string; name: string; short_explanation: string }>
+      const bySlug = new Map(rows.map(p => [p.slug, p] as const))
+      return topics.map(topic => ({
+        slug: topic.slug,
+        name: bySlug.get(topic.slug)?.name ?? topic.slug,
+        shortExplanation: bySlug.get(topic.slug)?.short_explanation ?? '',
+        label: topic.label,
+      }))
+    },
   }
 }
 
@@ -542,6 +600,10 @@ export async function getPatternMastery(patternId: string, userId: string): Prom
 
 export async function getMasteryFunnel(userId: string): Promise<MasteryFunnels> {
   return (await defaultModel()).getMasteryFunnel(userId)
+}
+
+export async function getGrammarTopics(userId: string): Promise<GrammarTopic[]> {
+  return (await defaultModel()).getGrammarTopics(userId)
 }
 
 export async function getMasteryOverview(userId: string): Promise<MasteryOverview> {

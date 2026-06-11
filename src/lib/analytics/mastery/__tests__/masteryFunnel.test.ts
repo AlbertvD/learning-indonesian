@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { deriveMasteryFunnel } from '../masteryModel'
+import { deriveMasteryFunnel, deriveGrammarTopics } from '../masteryModel'
 import type { CapabilityMasteryEvidence } from '../masteryModel'
 
 const NOW = new Date('2026-06-10T12:00:00Z')
@@ -64,5 +64,24 @@ describe('deriveMasteryFunnel', () => {
 
     expect(funnel.vocabulary.at_risk).toBe(1)
     expect(funnel.vocabulary.mastered).toBe(0)
+  })
+})
+
+describe('deriveGrammarTopics', () => {
+  it('rolls each grammar pattern (by slug) up weakest-wins to one ladder label', () => {
+    const evidence = [
+      ev({ sourceKind: 'pattern', sourceRef: 'l3-meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'pattern', sourceRef: 'l3-meN-prefix', reviewCount: 1, stability: 1 }),
+      ev({ sourceKind: 'pattern', sourceRef: 'l4-ber-prefix', reviewCount: 0, lessonActivated: true }),
+      // not a grammar pattern → excluded
+      ev({ sourceKind: 'item', sourceRef: 'makan', reviewCount: 5, stability: 20 }),
+    ]
+
+    const topics = deriveGrammarTopics({ evidence, now: NOW })
+
+    expect(topics).toEqual([
+      { slug: 'l3-meN-prefix', label: 'learning' },
+      { slug: 'l4-ber-prefix', label: 'introduced' },
+    ])
   })
 })

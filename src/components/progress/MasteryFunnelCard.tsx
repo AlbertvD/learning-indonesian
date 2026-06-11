@@ -13,6 +13,7 @@ import {
 } from '@/lib/analytics/mastery/masteryModel'
 import { logError } from '@/lib/logger'
 import { FunnelBars } from './FunnelBars'
+import classes from './MasteryFunnelCard.module.css'
 
 export interface MasteryFunnelCardProps {
   userId: string
@@ -44,6 +45,9 @@ export function MasteryFunnelCard({ userId }: MasteryFunnelCardProps) {
   if (!funnels) return null
 
   return (
-    <FunnelBars title={T.progress.masteryVocabTitle} funnel={funnels.vocabulary} />
+    <div className={classes.grid}>
+      <FunnelBars title={T.progress.masteryVocabTitle} funnel={funnels.vocabulary} />
+      <FunnelBars title={T.progress.masteryGrammarTitle} funnel={funnels.grammar} />
+    </div>
   )
 }
