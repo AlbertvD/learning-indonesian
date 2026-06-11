@@ -170,7 +170,7 @@ export const nl = {
     // Memory health hero
     strengthStrong: 'Sterk',
     strengthDeveloping: 'Ontwikkelen',
-    strengthWeak: 'Zwak',
+    strengthWeak: 'Herhalen',
     directionIdToL1: 'Indonesisch → NL/EN',
     directionL1ToId: 'NL/EN → Indonesisch',
     gapAnalysis: 'KLOOF ANALYSE',
@@ -443,7 +443,7 @@ export const en: typeof nl = {
     // Memory health hero
     strengthStrong: 'Strong',
     strengthDeveloping: 'Developing',
-    strengthWeak: 'Weak',
+    strengthWeak: 'Review',
     directionIdToL1: 'Indonesian → NL/EN',
     directionL1ToId: 'NL/EN → Indonesian',
     gapAnalysis: 'GAP ANALYSIS',

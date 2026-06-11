@@ -22,9 +22,9 @@ describe('SkillModeGapsCard', () => {
     expect(await screen.findByText('Herkennen')).toBeInTheDocument()
     expect(screen.getByText('Produceren')).toBeInTheDocument()
     expect(screen.getByText('Luisteren')).toBeInTheDocument()
-    // recognise = strong, produce = weak, listen = insufficient data
+    // recognise = strong, produce = review, listen = insufficient data
     expect(screen.getByText('Sterk')).toBeInTheDocument()
-    expect(screen.getByText('Zwak')).toBeInTheDocument()
+    expect(screen.getByText('Herhalen')).toBeInTheDocument()
     expect(screen.getByText('Nog te weinig data')).toBeInTheDocument()
     expect(getSkillModeGaps).toHaveBeenCalledWith('user-1')
   })
