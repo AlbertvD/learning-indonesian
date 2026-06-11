@@ -6,6 +6,7 @@
 // the Vocabulary and Grammar funnels (#voortgang redesign).
 import { useT } from '@/hooks/useT'
 import type { MasteryFunnel } from '@/lib/analytics/mastery/masteryModel'
+import { InsightTips } from './InsightTips'
 import classes from './MasteryJourney.module.css'
 
 export interface MasteryJourneyProps {
@@ -56,9 +57,12 @@ export function MasteryJourney({ funnel, unitLabel }: MasteryJourneyProps) {
       </div>
 
       {funnel.at_risk > 0 && (
-        <div className={classes.atRisk}>
-          ⚠ {funnel.at_risk} {unitLabel} {T.progress.rungAtRisk.toLowerCase()}
-        </div>
+        <>
+          <div className={classes.atRisk}>
+            ⚠ {funnel.at_risk} {unitLabel} {T.progress.rungAtRisk.toLowerCase()}
+          </div>
+          <InsightTips area="at_risk" defaultOpen={false} />
+        </>
       )}
     </div>
   )
