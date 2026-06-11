@@ -12,7 +12,7 @@
 //   - Spacing extends L2 vocab retention for years.
 //   - Listening gives cues; production needs you to generate your own.
 
-export type TipArea = 'recognise' | 'produce' | 'listen' | 'at_risk'
+export type TipArea = 'recognise' | 'produce' | 'listen' | 'at_risk' | 'general'
 type Lang = 'nl' | 'en'
 
 interface TipSet {
@@ -78,6 +78,27 @@ export const STUDY_TIPS: Record<TipArea, TipSet> = {
         'Do a quick self-test now: cover, recall, check. One successful retrieval re-strengthens the memory trace.',
         'Space the retrievals across days — spaced recall protects words for years.',
         'Say the slipping words aloud and tie each to an image or a short sentence.',
+      ],
+    },
+  },
+  general: {
+    title: { nl: 'Beter leren in het algemeen', en: 'Getting better at learning itself' },
+    tips: {
+      nl: [
+        'Spreid je oefening over de week in plaats van alles in één keer — gespreid leren beklijft veel langer dan stampen.',
+        'Test jezelf in plaats van te herlezen. Jezelf overhoren is de krachtigste leertechniek die er is.',
+        'Wissel onderwerpen door elkaar (interleaving) — dat leert beter dan lange blokken van hetzelfde.',
+        'Klein en vaak verslaat lang en zelden: een paar minuten per dag werkt beter dan één lange sessie.',
+        'Leg het hardop uit alsof je het iemand leert — dat legt meteen de gaten in je kennis bloot.',
+        'Slaap consolideert wat je leert; een korte sessie voor het slapengaan kan helpen.',
+      ],
+      en: [
+        'Space your practice across the week instead of cramming — spaced learning sticks far longer.',
+        'Test yourself instead of re-reading. Self-quizzing is the single most powerful study technique.',
+        'Interleave topics — mixing them up beats long blocks of the same thing.',
+        'Little and often beats long and rare: a few minutes a day works better than one long session.',
+        'Explain it out loud as if teaching someone — it instantly exposes the gaps in your knowledge.',
+        'Sleep consolidates what you learn; a short session before bed can help.',
       ],
     },
   },

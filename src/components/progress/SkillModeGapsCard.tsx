@@ -87,7 +87,14 @@ export function SkillModeGapsCard({ userId }: SkillModeGapsCardProps) {
         </div>
       ))}
 
+      {/* weakest mode's tips open; every other area available one tap away */}
       {weakest && <InsightTips area={weakest.mode} />}
+      {gaps
+        .filter((g) => g.confidence !== 'none' && g.mode !== weakest?.mode)
+        .map((g) => (
+          <InsightTips key={g.mode} area={g.mode} defaultOpen={false} />
+        ))}
+      <InsightTips area="general" defaultOpen={false} />
     </div>
   )
 }
