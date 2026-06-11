@@ -32,35 +32,25 @@
   color: var(--text-secondary, #868e96);
 }
 
-/* The journey: left → right rung segments, arrow-shaped to signal forward flow */
+/* The journey: four equal-width chevrons flowing left → right. Each segment's
+   left edge bends inward parallel to its right point, so they read as one
+   forward-pointing flow — including the last (mastered = the goal to reach). */
 .journey {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
+  gap: 3px;
 }
 
 .seg {
   position: relative;
-  /* flat left edge, a point on the right → an arrow pointing forward */
-  clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 50%, calc(100% - 11px) 100%, 0 100%);
-  padding: 0.7rem 1rem 0.6rem 0.7rem;
+  /* left notch in + right point out, both on the same slant → a chevron */
+  clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 50%, calc(100% - 11px) 100%, 0 100%, 11px 50%);
+  padding: 0.7rem 1rem 0.6rem 1.2rem;
   color: #fff;
   isolation: isolate;
   opacity: 0;
   transform: translateY(8px);
   animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-/* the last rung (mastered) is the destination — square it off */
-.seg:last-child {
-  clip-path: none;
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-
-.seg:first-child {
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
 }
 
 .seg::before {
