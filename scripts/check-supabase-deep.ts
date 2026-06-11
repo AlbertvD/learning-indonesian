@@ -4,7 +4,9 @@
 // Requires: SUPABASE_SERVICE_KEY env var; VITE_SUPABASE_URL from .env.local
 import { createClient } from '@supabase/supabase-js'
 import { classifyDutchSeparator, classifyIndonesianSeparator } from '@/lib/capabilities'
+import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
+import { funnelBucket } from '@/lib/analytics/mastery/masteryModel'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
@@ -1497,11 +1499,11 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
       .eq('user_id', TEST_USER_ID)
       .gte('created_at', weekStart.toISOString())
     if (evErr) throw new Error(evErr.message)
-    const bucketOf = (kind: string): 'vocab' | 'grammar' | null =>
-      kind === 'item' ? 'vocab' : (kind === 'pattern' || kind === 'affixed_form_pair') ? 'grammar' : null
+    // Reuse the canonical TS bucket classifier (single source of truth) so this
+    // parity check can't drift from the funnel / movement derivers it guards.
     const advVocab = new Set<string>(), advGrammar = new Set<string>(), reached = new Set<string>(), slip = new Set<string>()
     for (const e of (events ?? []) as Array<{ state_before_json: StateJson; state_after_json: StateJson; learning_capabilities: { source_ref: string; source_kind: string } }>) {
-      const bucket = bucketOf(e.learning_capabilities.source_kind)
+      const bucket = funnelBucket(e.learning_capabilities.source_kind as CapabilitySourceKind)
       if (!bucket) continue
       const b = e.state_before_json, a = e.state_after_json
       const ref = e.learning_capabilities.source_ref

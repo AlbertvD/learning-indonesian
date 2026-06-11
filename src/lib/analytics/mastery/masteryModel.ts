@@ -367,6 +367,22 @@ export interface MasteryFunnels {
 
 const GRAMMAR_SOURCE_KINDS = new Set(['pattern', 'affixed_form_pair'])
 
+/**
+ * The single source of truth for the vocab/grammar split shared by EVERY
+ * mastery-progression surface: the funnel (`deriveMasteryFunnel`), the home
+ * weekly-movement pulse (`deriveWeeklyMovement`), and the HC28 parity check.
+ * `null` = a source kind outside the funnel (`dialogue_line`, `podcast`), which
+ * is excluded from both the funnel and movement. The SQL side
+ * (`get_weekly_movement`, `get_lessons_overview`) mirrors this same rule and is
+ * held in lockstep by the parity tests + HC27/HC28 (ADR 0015). Change the split
+ * here and every TS surface follows in one edit.
+ */
+export function funnelBucket(sourceKind: CapabilitySourceKind): 'vocab' | 'grammar' | null {
+  if (sourceKind === 'item') return 'vocab'
+  if (GRAMMAR_SOURCE_KINDS.has(sourceKind)) return 'grammar'
+  return null
+}
+
 function emptyFunnel(): MasteryFunnel {
   return {
     not_assessed: 0,
@@ -386,12 +402,9 @@ export function deriveMasteryFunnel(input: {
   const vocab = new Map<string, CapabilityMasteryEvidence[]>()
   const grammar = new Map<string, CapabilityMasteryEvidence[]>()
   for (const e of input.evidence) {
-    const bucket = e.sourceKind === 'item'
-      ? vocab
-      : GRAMMAR_SOURCE_KINDS.has(e.sourceKind)
-        ? grammar
-        : null
-    if (!bucket) continue
+    const b = funnelBucket(e.sourceKind)
+    if (!b) continue
+    const bucket = b === 'vocab' ? vocab : grammar
     bucket.set(e.sourceRef, [...(bucket.get(e.sourceRef) ?? []), e])
   }
   const tally = (units: Map<string, CapabilityMasteryEvidence[]>): MasteryFunnel => {
@@ -583,13 +596,10 @@ export function deriveWeeklyMovement(input: {
   const reachedMastered = new Set<string>()
   const slipped = new Set<string>()
   for (const event of input.events) {
-    // Same bucketing + scope as deriveMasteryFunnel: vocab vs grammar, others skipped.
-    const bucket = event.sourceKind === 'item'
-      ? advancedVocab
-      : GRAMMAR_SOURCE_KINDS.has(event.sourceKind)
-        ? advancedGrammar
-        : null
-    if (!bucket) continue
+    // Same vocab/grammar split + scope as the funnel — shared via funnelBucket.
+    const b = funnelBucket(event.sourceKind)
+    if (!b) continue
+    const bucket = b === 'vocab' ? advancedVocab : advancedGrammar
     const before = labelFromState(event.before, now)
     const after = labelFromState(event.after, now)
     if (LABEL_RANK[after] > LABEL_RANK[before]) bucket.add(event.sourceRef)
