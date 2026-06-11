@@ -1,10 +1,11 @@
 // src/components/dashboard/StreakBar.tsx
 //
 // The home "streak" hero: a top bar that turns the daily streak into a real
-// visual presence. Left = the flame + streak count; right = the last 5 days as
-// session bars (bar height ∝ sessions that day, the running streak glowing in
-// warm flame tones behind the consecutive active days). The whole bar links to
-// the Tijd sub-page on voortgang.
+// visual presence. Left = the flame + streak count (side by side, centred);
+// right = the last 5 days as session bars (bar height ∝ sessions that day, the
+// running streak glowing in warm flame tones behind the consecutive active
+// days), the per-day session count along the bottom x-axis under each bar. The
+// whole bar links to the Tijd sub-page on voortgang.
 import { Link } from 'react-router-dom'
 import { IconFlame } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
@@ -37,8 +38,10 @@ export function StreakBar({ streakDays, days, to = '/progress?tab=time' }: Strea
   return (
     <Link to={to} className={classes.bar} aria-label={`${streakDays} ${T.dashboard.daysInARow}`}>
       <div className={classes.flame}>
-        <IconFlame size={24} className={classes.flameIcon} />
-        <div className={classes.streakNum}>{streakDays}</div>
+        <div className={classes.flameRow}>
+          <IconFlame size={22} className={classes.flameIcon} />
+          <span className={classes.streakNum}>{streakDays}</span>
+        </div>
         <div className={classes.streakLabel}>{T.dashboard.daysInARow}</div>
       </div>
 
@@ -61,7 +64,9 @@ export function StreakBar({ streakDays, days, to = '/progress?tab=time' }: Strea
                   style={{ height: `${heightPct}%` }}
                   aria-hidden
                 />
-                {d.sessions > 0 && <span className={classes.count}>{d.sessions}</span>}
+                <span className={`${classes.count} ${d.sessions === 0 ? classes.countZero : ''}`}>
+                  {d.sessions}
+                </span>
               </div>
               <div className={`${classes.weekday} ${isToday ? classes.today : ''}`}>{weekday}</div>
             </div>
