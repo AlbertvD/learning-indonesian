@@ -523,12 +523,19 @@ export interface WeeklyReviewEvent {
   // capability_id — so movement stays in the same unit as the funnel (a word has
   // several capabilities; per-cap counts overstate and can exceed words in play).
   sourceRef: string
+  // Buckets movement into the SAME two groups as the funnel: vocab ('item') vs
+  // grammar ('pattern' + 'affixed_form_pair'). Other kinds (dialogue_line,
+  // podcast) are excluded — they aren't in the funnel either.
+  sourceKind: CapabilitySourceKind
   before: MovementState
   after: MovementState
 }
 
 export interface WeeklyMovement {
-  advanced: number
+  /** Distinct vocabulary words (source_kind 'item') that advanced a rung. */
+  advancedVocab: number
+  /** Distinct grammar topics (pattern + affixed_form_pair) that advanced a rung. */
+  advancedGrammar: number
   reachedMastered: number
   slipped: number
 }
@@ -571,18 +578,27 @@ export function deriveWeeklyMovement(input: {
   now?: Date
 }): WeeklyMovement {
   const now = input.now ?? new Date()
-  const advanced = new Set<string>()
+  const advancedVocab = new Set<string>()
+  const advancedGrammar = new Set<string>()
   const reachedMastered = new Set<string>()
   const slipped = new Set<string>()
   for (const event of input.events) {
+    // Same bucketing + scope as deriveMasteryFunnel: vocab vs grammar, others skipped.
+    const bucket = event.sourceKind === 'item'
+      ? advancedVocab
+      : GRAMMAR_SOURCE_KINDS.has(event.sourceKind)
+        ? advancedGrammar
+        : null
+    if (!bucket) continue
     const before = labelFromState(event.before, now)
     const after = labelFromState(event.after, now)
-    if (LABEL_RANK[after] > LABEL_RANK[before]) advanced.add(event.sourceRef)
+    if (LABEL_RANK[after] > LABEL_RANK[before]) bucket.add(event.sourceRef)
     if (after === 'mastered' && before !== 'mastered') reachedMastered.add(event.sourceRef)
     if (after === 'at_risk' && before !== 'at_risk') slipped.add(event.sourceRef)
   }
   return {
-    advanced: advanced.size,
+    advancedVocab: advancedVocab.size,
+    advancedGrammar: advancedGrammar.size,
     reachedMastered: reachedMastered.size,
     slipped: slipped.size,
   }
@@ -788,9 +804,13 @@ export async function getWeeklyMovement(userId: string, timezone: string): Promi
     .schema('indonesian')
     .rpc('get_weekly_movement', { p_user_id: userId, p_timezone: timezone })
   if (error) throw error
-  const row = (data ?? {}) as { advanced?: number; reached_mastered?: number; slipped?: number }
+  const row = (data ?? {}) as {
+    advanced_vocab?: number; advanced_grammar?: number
+    reached_mastered?: number; slipped?: number
+  }
   return {
-    advanced: row.advanced ?? 0,
+    advancedVocab: row.advanced_vocab ?? 0,
+    advancedGrammar: row.advanced_grammar ?? 0,
     reachedMastered: row.reached_mastered ?? 0,
     slipped: row.slipped ?? 0,
   }

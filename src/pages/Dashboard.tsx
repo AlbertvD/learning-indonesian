@@ -7,19 +7,20 @@
 // reading-progress heuristic. Richer comparison analytics live on voortgang.
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Stack, Text, Button, Group } from '@mantine/core'
+import { Stack, Text, Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import {
-  IconFlame,
   IconBook,
   IconTrendingUp,
   IconTrendingDown,
   IconArrowUpRight,
 } from '@tabler/icons-react'
 import { PageContainer, PageBody, ListCard, LoadingState } from '@/components/page/primitives'
+import { StreakBar } from '@/components/dashboard/StreakBar'
 import { getLessonsBasic } from '@/lib/lessons'
 import { listActivatedLessons } from '@/lib/lessons/activation'
 import { engagement } from '@/lib/analytics/engagement'
+import type { DailyActivity } from '@/lib/analytics/engagement'
 import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -39,9 +40,11 @@ export function Dashboard() {
   const [continueUrl, setContinueUrl] = useState('/lessons')
   const [continueLessonNo, setContinueLessonNo] = useState<number | null>(null)
   const [currentStreak, setCurrentStreak] = useState(0)
+  const [dailyActivity, setDailyActivity] = useState<DailyActivity[]>([])
   const [minutesThisWeek, setMinutesThisWeek] = useState(0)
   const [minutesLastWeek, setMinutesLastWeek] = useState(0)
-  const [advancedThisWeek, setAdvancedThisWeek] = useState(0)
+  const [advancedVocab, setAdvancedVocab] = useState(0)
+  const [advancedGrammar, setAdvancedGrammar] = useState(0)
 
   // Welcome line only on the first Dashboard view of the day.
   const [showWelcome] = useState(() => {
@@ -60,10 +63,11 @@ export function Dashboard() {
       if (!user) return
       try {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const [lessons, activated, pt, movement] = await Promise.all([
+        const [lessons, activated, pt, daily, movement] = await Promise.all([
           getLessonsBasic(),
           listActivatedLessons(user.id),
           engagement.practiceTime(user.id, tz),
+          engagement.dailyActivity(user.id, tz, 5),
           getWeeklyMovement(user.id, tz),
         ])
 
@@ -79,9 +83,11 @@ export function Dashboard() {
         }
 
         setCurrentStreak(pt.streakDays)
+        setDailyActivity(daily)
         setMinutesThisWeek(pt.minutesThisWeek)
         setMinutesLastWeek(pt.minutesLastWeek)
-        setAdvancedThisWeek(movement.advanced)
+        setAdvancedVocab(movement.advancedVocab)
+        setAdvancedGrammar(movement.advancedGrammar)
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
@@ -114,39 +120,35 @@ export function Dashboard() {
     weekDelta === 0
       ? T.dashboard.sameAsLastWeek
       : `${weekDelta > 0 ? '+' : ''}${weekDelta} ${T.dashboard.minVsLastWeek}`
+  const movementSubtitle =
+    advancedVocab + advancedGrammar === 0
+      ? T.dashboard.movementNone
+      : `${advancedVocab} ${T.dashboard.movementWords} · ${advancedGrammar} ${T.dashboard.movementGrammar}`
 
   return (
     <PageContainer size="lg">
       <PageBody>
-        <Group justify="space-between" align="center" mb="md">
-          {showWelcome ? (
-            <Text size="sm" c="dimmed">
-              {T.dashboard.welcomeBack}, {name}
-            </Text>
-          ) : (
-            <span />
-          )}
-          <Group gap="xs">
-            <IconFlame size={16} color="orange" />
-            <Text size="sm" fw={600}>
-              {currentStreak} {T.dashboard.daysInARow}
-            </Text>
-          </Group>
-        </Group>
+        {showWelcome && (
+          <Text size="sm" c="dimmed" mb="sm">
+            {T.dashboard.welcomeBack}, {name}
+          </Text>
+        )}
 
-        <Stack gap="md">
+        <StreakBar streakDays={currentStreak} days={dailyActivity} />
+
+        <Stack gap="md" mt="md">
           <ListCard
-            to="/progress"
+            to="/progress?tab=time"
             icon={<TrendIcon size={18} color={trendColor} />}
             title={`${minutesThisWeek} ${T.progress.minutesShort} ${T.dashboard.thisWeekLower}`}
             subtitle={deltaLabel}
           />
 
           <ListCard
-            to="/progress"
+            to="/progress?tab=funnel"
             icon={<IconArrowUpRight size={18} color="var(--accent-primary)" />}
-            title={`${advancedThisWeek} ${T.dashboard.rungsUpThisWeek}`}
-            subtitle={T.dashboard.viewProgress}
+            title={T.dashboard.movementTitle}
+            subtitle={movementSubtitle}
           />
 
           <ListCard

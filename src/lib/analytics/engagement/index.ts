@@ -53,8 +53,18 @@ export interface PracticeTime {
   lastPracticeAgeDays: number | null
 }
 
+/** One calendar day's exercise-session count, for the home streak strip. */
+export interface DailyActivity {
+  /** Timezone-local calendar date, `YYYY-MM-DD`. */
+  date: string
+  /** Number of practice sessions started that day. */
+  sessions: number
+}
+
 export interface Engagement {
   practiceTime(userId: string, timezone: string): Promise<PracticeTime>
+  /** Per-day session counts for the last `days` timezone-local days, chronological. */
+  dailyActivity(userId: string, timezone: string, days: number): Promise<DailyActivity[]>
 }
 
 const EMPTY: PracticeTime = {
@@ -92,6 +102,19 @@ export function createEngagement(client: SchemaClient): Engagement {
         activeDaysThisWeek: row.active_days_this_week ?? 0,
         lastPracticeAgeDays: row.last_practice_age_days ?? null,
       }
+    },
+
+    async dailyActivity(userId, timezone, days) {
+      const { data, error } = await client
+        .schema('indonesian')
+        .rpc('get_daily_activity', {
+          p_user_id: userId,
+          p_timezone: timezone,
+          p_days: days,
+        })
+      if (error) throw new Error(error.message)
+      const rows = (data ?? []) as Array<{ date?: string; sessions?: number }>
+      return rows.map((r) => ({ date: r.date ?? '', sessions: r.sessions ?? 0 }))
     },
   }
 }

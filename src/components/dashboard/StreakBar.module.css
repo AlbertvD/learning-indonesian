@@ -1,0 +1,125 @@
+.bar {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
+  background:
+    radial-gradient(130% 150% at 0% 0%, color-mix(in srgb, #ff922b 16%, transparent), transparent 58%),
+    var(--surface-raised, rgba(255, 255, 255, 0.04));
+  border: 1px solid color-mix(in srgb, #ff922b 22%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px -10px rgba(255, 146, 43, 0.5);
+}
+
+.flame {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 78px;
+  padding-right: 1rem;
+  border-right: 1px solid color-mix(in srgb, var(--text-secondary, #868e96) 20%, transparent);
+}
+
+.flameIcon {
+  color: #ff922b;
+  filter: drop-shadow(0 0 6px rgba(255, 146, 43, 0.55));
+}
+
+.streakNum {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.05;
+  background: linear-gradient(135deg, #ffa94d, #ff6b00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.streakLabel {
+  font-size: 0.64rem;
+  color: var(--text-secondary, #868e96);
+  margin-top: 2px;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.track {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--text-secondary, #868e96) 9%, transparent);
+  overflow: hidden;
+}
+
+.fill {
+  width: 100%;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-primary, #4dabf7) 50%, transparent);
+  animation: grow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fillStreak {
+  background: linear-gradient(180deg, #ffa94d, #ff6b00);
+  box-shadow: 0 0 14px rgba(255, 146, 43, 0.45);
+}
+
+.fillEmpty {
+  background: transparent;
+}
+
+.count {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.weekday {
+  font-size: 0.62rem;
+  color: var(--text-secondary, #868e96);
+  text-transform: lowercase;
+}
+
+.today {
+  color: var(--text-primary, #fff);
+  font-weight: 700;
+}
+
+@keyframes grow {
+  from { transform: scaleY(0); transform-origin: bottom; }
+  to { transform: scaleY(1); transform-origin: bottom; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill { animation: none; }
+  .bar { transition: none; }
+}

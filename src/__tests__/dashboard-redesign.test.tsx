@@ -62,7 +62,8 @@ function renderDashboard() {
 beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(0))
-  vi.mocked(getWeeklyMovement).mockResolvedValue({ advanced: 0, reachedMastered: 0, slipped: 0 })
+  vi.mocked(engagement.dailyActivity).mockResolvedValue([])
+  vi.mocked(getWeeklyMovement).mockResolvedValue({ advancedVocab: 0, advancedGrammar: 0, reachedMastered: 0, slipped: 0 })
   vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([])
   vi.mocked(listActivatedLessons).mockResolvedValue(new Set<string>())
 })
@@ -85,9 +86,9 @@ describe('Dashboard (minimal placeholder)', () => {
   it('renders the streak counter from analytics.engagement', async () => {
     vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(7))
     renderDashboard()
-    // The streak count + label render in a single <Text> node; match the combined
-    // text rather than the bare number.
-    expect(await screen.findByText(/7\s+(dagen achter elkaar|days in a row)/i)).toBeInTheDocument()
+    // The streak now lives in the StreakBar hero; its number + label are separate
+    // nodes, so assert via the bar's accessible name (aria-label "7 …").
+    expect(await screen.findByLabelText(/7\s+(dagen achter elkaar|days in a row)/i)).toBeInTheDocument()
   })
 
   it('renders the Today CTA and navigates to /session on click', async () => {

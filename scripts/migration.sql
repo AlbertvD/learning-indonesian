@@ -2204,14 +2204,22 @@ create or replace function indonesian.get_weekly_movement(
   p_timezone text
 )
 returns json language sql stable security invoker as $$
-  -- Counts are distinct SOURCE_REF (the learnable unit — a word / grammar topic),
-  -- NOT distinct capability_id: one word has several capabilities (recognise /
-  -- recall / produce / listen), so per-cap counts overstate and can EXCEED the
-  -- word count the voortgang funnel shows. A word counts as advanced if any of
-  -- its caps advanced this week. Keeps the home pulse in the funnel's unit.
+  -- Counts distinct SOURCE_REF (the learnable unit — a word / grammar topic) that
+  -- advanced a rung this week, SPLIT into vocab (source_kind 'item') and grammar
+  -- (pattern + affixed_form_pair) — the SAME two buckets and scope as the mastery
+  -- funnel, so the home pulse and the funnel speak one unit ("woorden" /
+  -- "grammatica"). dialogue_line / podcast source kinds are excluded (the funnel
+  -- excludes them too). Distinct source_ref (NOT capability_id): one word has
+  -- several caps, so per-cap counts overstate. A unit counts once if any of its
+  -- caps advanced.
   with ev as (
     select
       c.source_ref,
+      case
+        when c.source_kind = 'item' then 'vocab'
+        when c.source_kind in ('pattern', 'affixed_form_pair') then 'grammar'
+        else null
+      end as bucket,
       indonesian._mastery_label(
         coalesce((state_before_json->>'reviewCount')::int, 0),
         coalesce((state_before_json->>'lapseCount')::int, 0),
@@ -2235,20 +2243,51 @@ returns json language sql stable security invoker as $$
   ),
   ranked as (
     select
-      source_ref, before_label, after_label,
+      source_ref, bucket, before_label, after_label,
       (case before_label when 'not_assessed' then 0 when 'introduced' then 1 when 'learning' then 2 when 'at_risk' then 2 when 'strengthening' then 3 when 'mastered' then 4 end) as rb,
       (case after_label  when 'not_assessed' then 0 when 'introduced' then 1 when 'learning' then 2 when 'at_risk' then 2 when 'strengthening' then 3 when 'mastered' then 4 end) as ra
     from ev
+    where bucket is not null
   )
   select json_build_object(
-    'advanced', count(distinct source_ref) filter (where ra > rb),
+    'advanced_vocab',   count(distinct source_ref) filter (where ra > rb and bucket = 'vocab'),
+    'advanced_grammar', count(distinct source_ref) filter (where ra > rb and bucket = 'grammar'),
     'reached_mastered', count(distinct source_ref) filter (where after_label = 'mastered' and before_label <> 'mastered'),
-    'slipped', count(distinct source_ref) filter (where after_label = 'at_risk' and before_label <> 'at_risk')
+    'slipped',          count(distinct source_ref) filter (where after_label = 'at_risk' and before_label <> 'at_risk')
   ) from ranked;
+$$;
+
+-- Daily activity strip for the home streak bar (#: per-day session counts for the
+-- last p_days timezone-local days, chronological, zero-filled). Mirrors
+-- get_practice_time's tz/day math; counts learning_sessions rows (exercises-only,
+-- per Practice Time). The streak number itself comes from get_practice_time.
+create or replace function indonesian.get_daily_activity(
+  p_user_id uuid,
+  p_timezone text,
+  p_days int
+)
+returns json language sql stable security invoker as $$
+  with days as (
+    select ((now() at time zone p_timezone)::date - g) as d
+    from generate_series(0, p_days - 1) as g
+  ),
+  sess as (
+    select (ls.started_at at time zone p_timezone)::date as d, count(*)::int as n
+    from indonesian.learning_sessions ls
+    where ls.user_id = p_user_id
+      and (ls.started_at at time zone p_timezone)::date > ((now() at time zone p_timezone)::date - p_days)
+    group by 1
+  )
+  select coalesce(json_agg(
+    json_build_object('date', to_char(days.d, 'YYYY-MM-DD'), 'sessions', coalesce(sess.n, 0))
+    order by days.d
+  ), '[]'::json)
+  from days left join sess on sess.d = days.d;
 $$;
 
 grant execute on function indonesian._mastery_label(int, int, int, double precision, timestamptz, timestamptz) to authenticated;
 grant execute on function indonesian.get_weekly_movement(uuid, text) to authenticated;
+grant execute on function indonesian.get_daily_activity(uuid, text, int) to authenticated;
 
 -- (PR 5: the lesson_page_blocks column-drop DO blocks — source_progress_event
 --  and capability_key_refs — were removed; the whole table is dropped below.)

@@ -1486,32 +1486,39 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     const now = new Date()
     const mondayOffset = (now.getUTCDay() + 6) % 7
     const weekStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - mondayOffset))
-    // Dedup on SOURCE_REF (the word / grammar topic), NOT capability_id — one word
-    // has several caps, so per-cap counts overstate vs the voortgang funnel's word
-    // unit. Mirrors get_weekly_movement's `count(distinct source_ref)` (the join).
+    // Dedup on SOURCE_REF (the word / grammar topic), NOT capability_id, and SPLIT
+    // into vocab ('item') vs grammar ('pattern' + 'affixed_form_pair') — the same
+    // two buckets + scope as the funnel. Other source kinds (dialogue_line,
+    // podcast) are excluded. Mirrors get_weekly_movement's distinct-source_ref,
+    // bucketed counts (the join carries source_kind).
     const { data: events, error: evErr } = await supabase.schema('indonesian')
       .from('capability_review_events')
-      .select('state_before_json, state_after_json, learning_capabilities!inner(source_ref)')
+      .select('state_before_json, state_after_json, learning_capabilities!inner(source_ref, source_kind)')
       .eq('user_id', TEST_USER_ID)
       .gte('created_at', weekStart.toISOString())
     if (evErr) throw new Error(evErr.message)
-    const adv = new Set<string>(), reached = new Set<string>(), slip = new Set<string>()
-    for (const e of (events ?? []) as Array<{ state_before_json: StateJson; state_after_json: StateJson; learning_capabilities: { source_ref: string } }>) {
+    const bucketOf = (kind: string): 'vocab' | 'grammar' | null =>
+      kind === 'item' ? 'vocab' : (kind === 'pattern' || kind === 'affixed_form_pair') ? 'grammar' : null
+    const advVocab = new Set<string>(), advGrammar = new Set<string>(), reached = new Set<string>(), slip = new Set<string>()
+    for (const e of (events ?? []) as Array<{ state_before_json: StateJson; state_after_json: StateJson; learning_capabilities: { source_ref: string; source_kind: string } }>) {
+      const bucket = bucketOf(e.learning_capabilities.source_kind)
+      if (!bucket) continue
       const b = e.state_before_json, a = e.state_after_json
       const ref = e.learning_capabilities.source_ref
-      if (rankOf(a, now) > rankOf(b, now)) adv.add(ref)
+      if (rankOf(a, now) > rankOf(b, now)) (bucket === 'vocab' ? advVocab : advGrammar).add(ref)
       if (isMastered(a, now) && !isMastered(b, now)) reached.add(ref)
       if (isAtRisk(a) && !isAtRisk(b)) slip.add(ref)
     }
     const { data: rpc, error: rpcErr } = await supabase.schema('indonesian')
       .rpc('get_weekly_movement', { p_user_id: TEST_USER_ID, p_timezone: 'UTC' })
     if (rpcErr) throw new Error(rpcErr.message)
-    const r = (rpc ?? {}) as { advanced?: number; reached_mastered?: number; slipped?: number }
-    const ok = (r.advanced ?? 0) === adv.size && (r.reached_mastered ?? 0) === reached.size && (r.slipped ?? 0) === slip.size
+    const r = (rpc ?? {}) as { advanced_vocab?: number; advanced_grammar?: number; reached_mastered?: number; slipped?: number }
+    const ok = (r.advanced_vocab ?? 0) === advVocab.size && (r.advanced_grammar ?? 0) === advGrammar.size
+      && (r.reached_mastered ?? 0) === reached.size && (r.slipped ?? 0) === slip.size
     if (ok) {
-      pass(`HC28 weekly movement parity (RPC == TS) — advanced=${adv.size} mastered=${reached.size} slipped=${slip.size} (ADR 0015)`)
+      pass(`HC28 weekly movement parity (RPC == TS) — vocab=${advVocab.size} grammar=${advGrammar.size} mastered=${reached.size} slipped=${slip.size} (ADR 0015)`)
     } else {
-      fail('HC28 weekly movement parity (RPC vs TS)', `RPC {${r.advanced},${r.reached_mastered},${r.slipped}} vs TS {${adv.size},${reached.size},${slip.size}} — _mastery_label diverged`)
+      fail('HC28 weekly movement parity (RPC vs TS)', `RPC {v:${r.advanced_vocab},g:${r.advanced_grammar},m:${r.reached_mastered},s:${r.slipped}} vs TS {v:${advVocab.size},g:${advGrammar.size},m:${reached.size},s:${slip.size}} — _mastery_label / bucketing diverged`)
     }
   } catch (err) {
     fail('HC28 weekly movement parity', err instanceof Error ? err.message : String(err))
