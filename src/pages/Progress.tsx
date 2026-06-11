@@ -5,7 +5,7 @@
 // mobile): Voortgang (the journey funnel, vocab/grammar filter) · Vaardigheden
 // (skill-mode gaps) · Tijd (week/month comparison) · Grammatica (named topics).
 // Each view animates in on switch.
-import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { PageContainer, PageBody, PageHeader } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
@@ -17,11 +17,17 @@ import { GrammarTopicsList } from '@/components/progress/GrammarTopicsList'
 import classes from './Progress.module.css'
 
 type Tab = 'funnel' | 'skills' | 'time' | 'grammar'
+const TABS: Tab[] = ['funnel', 'skills', 'time', 'grammar']
 
 export function Progress() {
   const T = useT()
   const user = useAuthStore((state) => state.user)
-  const [tab, setTab] = useState<Tab>('funnel')
+  // Tab is URL-addressable (`/progress?tab=time`) so the home cells can deep-link
+  // straight to the matching sub-page (e.g. the "min deze week" cell → Tijd).
+  const [searchParams, setSearchParams] = useSearchParams()
+  const param = searchParams.get('tab') as Tab | null
+  const tab: Tab = param && TABS.includes(param) ? param : 'funnel'
+  const setTab = (value: Tab) => setSearchParams({ tab: value }, { replace: true })
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   return (

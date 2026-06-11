@@ -23,6 +23,10 @@ export const nl = {
     minVsLastWeek: 'min vs vorige week',
     sameAsLastWeek: 'Gelijk aan vorige week',
     rungsUpThisWeek: 'omhoog deze week',
+    movementTitle: 'Deze week omhoog',
+    movementWords: 'woorden',
+    movementGrammar: 'grammatica',
+    movementNone: 'Nog niets omhoog deze week',
     viewProgress: 'Bekijk je voortgang',
     startTodaysSessionMinimal: 'Start sessie',
     // Rescue card (lapsing items)
@@ -320,6 +324,10 @@ export const en: typeof nl = {
     minVsLastWeek: 'min vs last week',
     sameAsLastWeek: 'Same as last week',
     rungsUpThisWeek: 'moved up this week',
+    movementTitle: 'Moved up this week',
+    movementWords: 'words',
+    movementGrammar: 'grammar',
+    movementNone: 'Nothing moved up yet this week',
     viewProgress: 'View your progress',
     startTodaysSessionMinimal: 'Start session',
     // Rescue card (lapsing items)

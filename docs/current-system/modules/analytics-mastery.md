@@ -1,7 +1,7 @@
 ---
 module: analytics-mastery
 surface: src/lib/analytics/mastery/
-last_verified_against_code: 2026-06-09
+last_verified_against_code: 2026-06-11
 status: partial
 ---
 
@@ -34,6 +34,18 @@ All in `masteryModel.ts`:
 - **Types**: `MasteryLabel`, `MasteryConfidence`, `MasteryDimension`,
   `CapabilityMasteryEvidence`, `MasteryDimensionSummary`, `ContentUnitMastery`,
   `PatternMastery`, `MasteryOverview`.
+- **Weekly Movement** (the fast pulse on the slow axis): pure deriver
+  `deriveWeeklyMovement({events, now?})` + IO wrapper `getWeeklyMovement(userId,
+  timezone)` → `WeeklyMovement { advancedVocab, advancedGrammar, reachedMastered,
+  slipped }`. Counts **distinct `source_ref`** (word / grammar topic — a unit
+  counts once however many of its caps advanced), **split + scoped to the same
+  two buckets as the funnel**: vocab (`source_kind 'item'`) and grammar
+  (`'pattern'` + `'affixed_form_pair'`); `dialogue_line` / `podcast` excluded.
+  Derived read-side from `capability_review_events` before/after rungs (ADR 0016,
+  not snapshotted). `getWeeklyMovement` reads the `get_weekly_movement` RPC, whose
+  SQL `_mastery_label` mirror is kept in lockstep with `labelForCapability` by
+  **HC28** (ADR 0015). `WeeklyReviewEvent` carries `{sourceRef, sourceKind,
+  before, after}`.
 
 ## 2. The canonical `mastered` predicate (single source of truth)
 
