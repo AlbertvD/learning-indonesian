@@ -2131,7 +2131,10 @@ returns json language sql stable security invoker as $$
   b as (
     select
       (now() at time zone p_timezone)::date as today,
-      date_trunc('week', now() at time zone p_timezone)::date as week_start
+      date_trunc('week', now() at time zone p_timezone)::date as week_start,
+      (date_trunc('week', now() at time zone p_timezone)::date - 7) as prev_week_start,
+      date_trunc('month', now() at time zone p_timezone)::date as month_start,
+      (date_trunc('month', now() at time zone p_timezone) - interval '1 month')::date as prev_month_start
   )
   select json_build_object(
     'streak_days', indonesian.get_current_streak_days(p_user_id, p_timezone),
@@ -2141,6 +2144,15 @@ returns json language sql stable security invoker as $$
     'minutes_this_week', coalesce(round(
       sum(s.dur) filter (where s.dur is not null and s.local_date >= b.week_start) / 60.0
     ), 0)::int,
+    'minutes_last_week', coalesce(round(
+      sum(s.dur) filter (where s.dur is not null and s.local_date >= b.prev_week_start and s.local_date < b.week_start) / 60.0
+    ), 0)::int,
+    'minutes_this_month', coalesce(round(
+      sum(s.dur) filter (where s.dur is not null and s.local_date >= b.month_start) / 60.0
+    ), 0)::int,
+    'minutes_last_month', coalesce(round(
+      sum(s.dur) filter (where s.dur is not null and s.local_date >= b.prev_month_start and s.local_date < b.month_start) / 60.0
+    ), 0)::int,
     'avg_session_minutes', coalesce(round(
       avg(s.dur) filter (where s.dur is not null) / 60.0
     ), 0)::int,
@@ -2149,7 +2161,7 @@ returns json language sql stable security invoker as $$
     'last_practice_age_days', (b.today - max(s.local_date))::int
   )
   from b left join sess s on true
-  group by b.today, b.week_start;
+  group by b.today, b.week_start, b.prev_week_start, b.month_start, b.prev_month_start;
 $$;
 
 grant execute on function indonesian.get_practice_time(uuid, text) to authenticated;

@@ -21,18 +21,16 @@ import { Notifications } from '@mantine/notifications'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 
 // Mock services at the module level
-vi.mock('@/services/learnerStateService')
 vi.mock('@/lib/analytics/engagement')
 vi.mock('@/lib/analytics/mastery/masteryModel')
-vi.mock('@/services/lessonService')
 vi.mock('@/lib/lessons/adapter')
+vi.mock('@/lib/lessons/activation')
 vi.mock('@/lib/supabase')
 
-import { learnerStateService } from '@/services/learnerStateService'
 import { engagement } from '@/lib/analytics/engagement'
 import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
-import { lessonService } from '@/services/lessonService'
 import * as lessonsAdapter from '@/lib/lessons/adapter'
+import { listActivatedLessons } from '@/lib/lessons/activation'
 import { Dashboard } from '@/pages/Dashboard'
 
 const mockNavigate = vi.fn()
@@ -63,11 +61,10 @@ function renderDashboard() {
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(learnerStateService.getLapsingItems).mockResolvedValue({ count: 0 })
   vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(0))
   vi.mocked(getWeeklyMovement).mockResolvedValue({ advanced: 0, reachedMastered: 0, slipped: 0 })
-  vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
   vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([])
+  vi.mocked(listActivatedLessons).mockResolvedValue(new Set<string>())
 })
 
 function practiceWith(streakDays: number) {
@@ -75,6 +72,9 @@ function practiceWith(streakDays: number) {
     streakDays,
     minutesToday: 0,
     minutesThisWeek: 0,
+    minutesLastWeek: 0,
+    minutesThisMonth: 0,
+    minutesLastMonth: 0,
     avgSessionMinutes: 0,
     activeDaysThisWeek: 0,
     lastPracticeAgeDays: null,
@@ -98,29 +98,23 @@ describe('Dashboard (minimal placeholder)', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/session')
   })
 
-  it('renders the lapsing-rescue card when count > 0', async () => {
-    vi.mocked(learnerStateService.getLapsingItems).mockResolvedValue({ count: 3 })
+  it('removes the lapsing-rescue card (moved to voortgang)', async () => {
     renderDashboard()
-    // rescueTitle template: "{count} zwakke woorden" / "{count} weak words"
-    expect(await screen.findByText(/3 zwakke woorden|3 weak words/i)).toBeInTheDocument()
-  })
-
-  it('hides the lapsing-rescue card when count is 0', async () => {
-    vi.mocked(learnerStateService.getLapsingItems).mockResolvedValue({ count: 0 })
-    renderDashboard()
-    // wait for any element so the page has actually rendered
     await screen.findByRole('button', { name: /start sessie|start session/i })
     expect(screen.queryByText(/zwakke woorden|weak words/i)).not.toBeInTheDocument()
   })
 
-  it('renders the continue-lesson card with a /lesson/:id URL', async () => {
+  it('points continue-lesson at the latest ACTIVATED lesson (not reading-progress)', async () => {
     vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([
-      { id: 'lesson-1', order_index: 1, title: 'Lesson 1', level: 'A1', is_published: true } as any,
-    ])
-    vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
+      { id: 'lesson-1', order_index: 1 },
+      { id: 'lesson-3', order_index: 3 },
+      { id: 'lesson-5', order_index: 5 },
+    ] as any)
+    // lessons 1 and 3 activated; 5 not — continue should pick the highest activated (3)
+    vi.mocked(listActivatedLessons).mockResolvedValue(new Set(['lesson-1', 'lesson-3']))
     renderDashboard()
     const link = await screen.findByRole('link', { name: /doorgaan met les|continue lesson/i })
-    expect(link).toHaveAttribute('href', '/lesson/lesson-1')
+    expect(link).toHaveAttribute('href', '/lesson/lesson-3')
   })
 
   it('does not render TodaysPlanHero or weekly goal rings (regression check)', async () => {

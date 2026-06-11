@@ -1,24 +1,27 @@
 // src/pages/Progress.tsx
 //
 // Voortgang — the learner's "reflect" surface, on two capability/mastery-aligned
-// axes (CONTEXT.md → Learner Progress Axes): Practice Time (engagement) and
-// Mastery progression (the ladder funnels + weekly movement + skill-mode gaps).
-// The legacy FSRS-machinery surfaces (memory-health hero, 5-stage funnel,
-// accuracy-by-skill, stability, latency, forecast) were retired in the analytics
-// redesign (#206–#212).
+// axes (CONTEXT.md → Learner Progress Axes). A tabbed layout (minimal scroll on
+// mobile): Voortgang (the journey funnel, vocab/grammar filter) · Vaardigheden
+// (skill-mode gaps) · Tijd (week/month comparison) · Grammatica (named topics).
+// Each view animates in on switch.
+import { useState } from 'react'
+import { SegmentedControl } from '@mantine/core'
 import { PageContainer, PageBody, PageHeader } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
-import { PracticeTimeCard } from '@/components/progress/PracticeTimeCard'
-import { WeeklyRecapCard } from '@/components/progress/WeeklyRecapCard'
 import { MasteryFunnelCard } from '@/components/progress/MasteryFunnelCard'
 import { SkillModeGapsCard } from '@/components/progress/SkillModeGapsCard'
+import { TimeComparisonCard } from '@/components/progress/TimeComparisonCard'
 import { GrammarTopicsList } from '@/components/progress/GrammarTopicsList'
 import classes from './Progress.module.css'
+
+type Tab = 'funnel' | 'skills' | 'time' | 'grammar'
 
 export function Progress() {
   const T = useT()
   const user = useAuthStore((state) => state.user)
+  const [tab, setTab] = useState<Tab>('funnel')
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   return (
@@ -28,25 +31,26 @@ export function Progress() {
 
         {user && (
           <>
-            <section className={classes.section}>
-              <PracticeTimeCard userId={user.id} timezone={timezone} />
-            </section>
+            <SegmentedControl
+              className={classes.tabs}
+              fullWidth
+              value={tab}
+              onChange={(v) => setTab(v as Tab)}
+              data={[
+                { value: 'funnel', label: T.progress.tabFunnel },
+                { value: 'skills', label: T.progress.tabSkills },
+                { value: 'time', label: T.progress.tabTime },
+                { value: 'grammar', label: T.progress.tabGrammar },
+              ]}
+            />
 
-            <section className={classes.section}>
-              <WeeklyRecapCard userId={user.id} timezone={timezone} />
-            </section>
-
-            <section className={classes.section}>
-              <MasteryFunnelCard userId={user.id} />
-            </section>
-
-            <section className={classes.section}>
-              <SkillModeGapsCard userId={user.id} />
-            </section>
-
-            <section className={classes.section}>
-              <GrammarTopicsList userId={user.id} />
-            </section>
+            {/* key re-mounts the active view so it animates in on every switch */}
+            <div key={tab} className={classes.view}>
+              {tab === 'funnel' && <MasteryFunnelCard userId={user.id} />}
+              {tab === 'skills' && <SkillModeGapsCard userId={user.id} />}
+              {tab === 'time' && <TimeComparisonCard userId={user.id} timezone={timezone} />}
+              {tab === 'grammar' && <GrammarTopicsList userId={user.id} />}
+            </div>
           </>
         )}
       </PageBody>

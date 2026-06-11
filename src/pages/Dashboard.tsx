@@ -1,31 +1,33 @@
 // src/pages/Dashboard.tsx
+//
+// Home — "decide + glance" (CONTEXT.md → Learner Progress Axes). One focal
+// action (start session), a small first-of-day greeting, two glanceable "this
+// week" cards (practice time with a week-over-week trend cue, and rung movement),
+// and "continue lesson" rebased on ACTIVATION (the queue trigger), not the old
+// reading-progress heuristic. Richer comparison analytics live on voortgang.
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Stack,
-  Text,
-  Button,
-  Group,
-} from '@mantine/core'
+import { Stack, Text, Button, Group } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconFlame, IconAlertTriangle, IconBook, IconTrendingUp } from '@tabler/icons-react'
 import {
-  PageContainer,
-  PageBody,
-  PageHeader,
-  ListCard,
-  ActionCard,
-  LoadingState,
-} from '@/components/page/primitives'
-import { RecencyBadge } from '@/components/dashboard/RecencyBadge'
-import { lessonService } from '@/services/lessonService'
+  IconFlame,
+  IconBook,
+  IconTrendingUp,
+  IconTrendingDown,
+  IconArrowUpRight,
+} from '@tabler/icons-react'
+import { PageContainer, PageBody, ListCard, LoadingState } from '@/components/page/primitives'
 import { getLessonsBasic } from '@/lib/lessons'
-import { learnerStateService } from '@/services/learnerStateService'
+import { listActivatedLessons } from '@/lib/lessons/activation'
 import { engagement } from '@/lib/analytics/engagement'
 import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
+
+function todayKey(): string {
+  return new Date().toLocaleDateString('en-CA')
+}
 
 export function Dashboard() {
   const T = useT()
@@ -35,43 +37,50 @@ export function Dashboard() {
 
   const [loading, setLoading] = useState(true)
   const [continueUrl, setContinueUrl] = useState('/lessons')
+  const [continueLessonNo, setContinueLessonNo] = useState<number | null>(null)
   const [currentStreak, setCurrentStreak] = useState(0)
-  const [lapsingCount, setLapsingCount] = useState(0)
-  const [lastPracticeAgeDays, setLastPracticeAgeDays] = useState<number | null>(null)
   const [minutesThisWeek, setMinutesThisWeek] = useState(0)
+  const [minutesLastWeek, setMinutesLastWeek] = useState(0)
   const [advancedThisWeek, setAdvancedThisWeek] = useState(0)
+
+  // Welcome line only on the first Dashboard view of the day.
+  const [showWelcome] = useState(() => {
+    try {
+      const seen = localStorage.getItem('welcome_seen_date')
+      if (seen === todayKey()) return false
+      localStorage.setItem('welcome_seen_date', todayKey())
+      return true
+    } catch {
+      return true
+    }
+  })
 
   useEffect(() => {
     async function fetchData() {
       if (!user) return
       try {
-        const [lapsingResult, lessonProgress, lessons] = await Promise.all([
-          learnerStateService.getLapsingItems(user.id),
-          lessonService.getUserLessonProgress(user.id),
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+        const [lessons, activated, pt, movement] = await Promise.all([
           getLessonsBasic(),
+          listActivatedLessons(user.id),
+          engagement.practiceTime(user.id, tz),
+          getWeeklyMovement(user.id, tz),
         ])
-        setLapsingCount(lapsingResult.count)
 
-        const inProgress = lessons.find((l) => {
-          const p = lessonProgress.find((lp) => lp.lesson_id === l.id)
-          return p && p.completed_at == null && p.sections_completed.length > 0
-        })
-        const notStarted = lessons.find((l) =>
-          !lessonProgress.find((lp) => lp.lesson_id === l.id)
-        )
-        const target = inProgress ?? notStarted
+        // "Continue lesson" follows ACTIVATION (the queue trigger) — the
+        // learner's latest activated lesson — not the retired reading-progress
+        // heuristic.
+        const target = lessons
+          .filter((l) => activated.has(l.id))
+          .sort((a, b) => b.order_index - a.order_index)[0]
         if (target) {
           setContinueUrl(`/lesson/${target.id}`)
+          setContinueLessonNo(target.order_index)
         }
 
-        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const [pt, movement] = await Promise.all([
-          engagement.practiceTime(user.id, userTimezone),
-          getWeeklyMovement(user.id, userTimezone),
-        ])
         setCurrentStreak(pt.streakDays)
-        setLastPracticeAgeDays(pt.lastPracticeAgeDays)
         setMinutesThisWeek(pt.minutesThisWeek)
+        setMinutesLastWeek(pt.minutesLastWeek)
         setAdvancedThisWeek(movement.advanced)
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
@@ -98,46 +107,57 @@ export function Dashboard() {
   }
 
   const name = profile?.fullName?.split(' ')[0] ?? profile?.email ?? 'User'
+  const weekDelta = minutesThisWeek - minutesLastWeek
+  const TrendIcon = weekDelta > 0 ? IconTrendingUp : weekDelta < 0 ? IconTrendingDown : IconArrowUpRight
+  const trendColor = weekDelta > 0 ? 'var(--success)' : weekDelta < 0 ? 'var(--danger)' : 'var(--text-secondary)'
+  const deltaLabel =
+    weekDelta === 0
+      ? T.dashboard.sameAsLastWeek
+      : `${weekDelta > 0 ? '+' : ''}${weekDelta} ${T.dashboard.minVsLastWeek}`
 
   return (
     <PageContainer size="lg">
       <PageBody>
-        <PageHeader
-          title={`${T.dashboard.welcomeBack}, ${name}`}
-          action={(
-            <Group gap="xs">
-              <IconFlame size={18} color="orange" />
-              <Text size="sm" fw={600}>{currentStreak} {T.dashboard.daysInARow}</Text>
-            </Group>
+        <Group justify="space-between" align="center" mb="md">
+          {showWelcome ? (
+            <Text size="sm" c="dimmed">
+              {T.dashboard.welcomeBack}, {name}
+            </Text>
+          ) : (
+            <span />
           )}
-        />
+          <Group gap="xs">
+            <IconFlame size={16} color="orange" />
+            <Text size="sm" fw={600}>
+              {currentStreak} {T.dashboard.daysInARow}
+            </Text>
+          </Group>
+        </Group>
 
         <Stack gap="md">
-          <RecencyBadge ageDays={lastPracticeAgeDays} />
-
-          {lapsingCount > 0 && (
-            <ActionCard
-              tone="danger"
-              icon={<IconAlertTriangle size={18} />}
-              title={T.dashboard.rescueTitle.replace('{count}', `${lapsingCount}`)}
-              focus={`${lapsingCount} ${T.dashboard.lapsesLabel}`}
-              reason={T.dashboard.rescueSubtitle}
-              to="/session?mode=standard"
-            />
-          )}
-
           <ListCard
-            to={continueUrl}
-            icon={<IconBook size={18} color="var(--accent-primary)" />}
-            title={T.dashboard.continueLesson}
-            subtitle={T.dashboard.nextLesson}
+            to="/progress"
+            icon={<TrendIcon size={18} color={trendColor} />}
+            title={`${minutesThisWeek} ${T.progress.minutesShort} ${T.dashboard.thisWeekLower}`}
+            subtitle={deltaLabel}
           />
 
           <ListCard
             to="/progress"
-            icon={<IconTrendingUp size={18} color="var(--accent-primary)" />}
-            title={`${minutesThisWeek} ${T.progress.minutesShort} · ↑${advancedThisWeek}`}
-            subtitle={T.progress.pulseThisWeek}
+            icon={<IconArrowUpRight size={18} color="var(--accent-primary)" />}
+            title={`${advancedThisWeek} ${T.dashboard.rungsUpThisWeek}`}
+            subtitle={T.dashboard.viewProgress}
+          />
+
+          <ListCard
+            to={continueUrl}
+            icon={<IconBook size={18} color="var(--accent-primary)" />}
+            title={
+              continueLessonNo != null
+                ? `${T.dashboard.continueLesson} ${continueLessonNo}`
+                : T.dashboard.continueLesson
+            }
+            subtitle={T.dashboard.nextLesson}
           />
 
           <Button onClick={() => navigate('/session')} size="lg" fullWidth>
