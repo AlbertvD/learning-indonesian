@@ -10,16 +10,21 @@ vi.mock('@/lib/analytics/mastery/masteryModel', () => ({
 describe('GrammarTopicsList', () => {
   beforeEach(() => vi.clearAllMocks())
 
-  it('lists each named grammar topic with its ladder label', async () => {
+  it('groups topics by lesson and shows each name, explanation, and ladder label', async () => {
     vi.mocked(getGrammarTopics).mockResolvedValue([
-      { slug: 'l3-meN-prefix', name: 'Het meN- voorvoegsel', shortExplanation: 'x', label: 'strengthening' },
-      { slug: 'l4-ber-prefix', name: 'Het ber- voorvoegsel', shortExplanation: 'y', label: 'introduced' },
+      { slug: 'lesson-3/pattern-l3-meN-prefix', lessonNumber: 3, name: 'Het meN- voorvoegsel', shortExplanation: 'maakt werkwoorden actief', label: 'strengthening' },
+      { slug: 'lesson-4/pattern-l4-ber-prefix', lessonNumber: 4, name: 'Het ber- voorvoegsel', shortExplanation: 'bezit of toestand', label: 'introduced' },
     ])
 
     render(<GrammarTopicsList userId="user-1" />)
 
     expect(await screen.findByText('Het meN- voorvoegsel')).toBeInTheDocument()
     expect(screen.getByText('Het ber- voorvoegsel')).toBeInTheDocument()
+    // lesson group headers
+    expect(screen.getByText('Les 3')).toBeInTheDocument()
+    expect(screen.getByText('Les 4')).toBeInTheDocument()
+    // the explanation is now rendered (was fetched but hidden before)
+    expect(screen.getByText('maakt werkwoorden actief')).toBeInTheDocument()
     expect(getGrammarTopics).toHaveBeenCalledWith('user-1')
   })
 

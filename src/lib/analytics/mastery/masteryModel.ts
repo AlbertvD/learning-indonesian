@@ -477,6 +477,8 @@ export function deriveStubbornWords(input: { evidence: CapabilityMasteryEvidence
 
 export interface GrammarTopicLabel {
   slug: string
+  /** Lesson that introduces the pattern, parsed from the `lesson-N/...` source_ref. */
+  lessonNumber: number | null
   label: MasteryLabel
 }
 
@@ -485,8 +487,16 @@ export interface GrammarTopic extends GrammarTopicLabel {
   shortExplanation: string
 }
 
+// A pattern cap's source_ref is `lesson-N/pattern-<slug>`; the introducing lesson
+// number drives the voortgang grouping. `null` if the envelope is absent.
+function lessonNumberFromSourceRef(sourceRef: string): number | null {
+  const match = sourceRef.match(/^lesson-(\d+)\//)
+  return match ? Number(match[1]) : null
+}
+
 // Named grammar topics (source_kind 'pattern' only — affixed_form_pairs are not
 // named grammar_patterns), each rolled up weakest-wins to one ladder label.
+// Sorted by introducing lesson then slug (the learning order the UI groups on).
 // Used by the voortgang grammar-topics drill-down (#209).
 export function deriveGrammarTopics(input: {
   evidence: CapabilityMasteryEvidence[]
@@ -501,9 +511,14 @@ export function deriveGrammarTopics(input: {
   return [...bySlug.entries()]
     .map(([slug, caps]) => ({
       slug,
+      lessonNumber: lessonNumberFromSourceRef(slug),
       label: weakestLabel(caps.map((cap) => labelForCapability(cap, now))),
     }))
-    .sort((a, b) => a.slug.localeCompare(b.slug))
+    .sort((a, b) => {
+      const la = a.lessonNumber ?? Number.POSITIVE_INFINITY
+      const lb = b.lessonNumber ?? Number.POSITIVE_INFINITY
+      return la !== lb ? la - lb : a.slug.localeCompare(b.slug)
+    })
 }
 
 // ---- Vocabulary skill profile (receptive / productive / aural, #211) ----
@@ -854,6 +869,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
         const row = bySlug.get(patternSlug)
         return {
           slug: topic.slug,
+          lessonNumber: topic.lessonNumber,
           name: row?.name ?? patternSlug,
           shortExplanation: row?.short_explanation ?? '',
           label: topic.label,

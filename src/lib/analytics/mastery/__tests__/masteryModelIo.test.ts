@@ -116,5 +116,6 @@ describe('mastery model — capability fetch chunking', () => {
     expect(topics).toHaveLength(1)
     expect(topics[0]!.name).toBe('ini/itu als aanwijzend voornaamwoord')
     expect(topics[0]!.shortExplanation).toBe('dit/dat')
+    expect(topics[0]!.lessonNumber).toBe(2) // parsed from the source_ref for grouping
   })
 })

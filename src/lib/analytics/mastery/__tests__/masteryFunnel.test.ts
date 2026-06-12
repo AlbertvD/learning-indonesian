@@ -83,18 +83,19 @@ describe('deriveMasteryFunnel', () => {
 describe('deriveGrammarTopics', () => {
   it('rolls each grammar pattern (by slug) up weakest-wins to one ladder label', () => {
     const evidence = [
-      ev({ sourceKind: 'pattern', sourceRef: 'l3-meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
-      ev({ sourceKind: 'pattern', sourceRef: 'l3-meN-prefix', reviewCount: 1, stability: 1 }),
-      ev({ sourceKind: 'pattern', sourceRef: 'l4-ber-prefix', reviewCount: 0, lessonActivated: true }),
+      ev({ sourceKind: 'pattern', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'pattern', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 1, stability: 1 }),
+      ev({ sourceKind: 'pattern', sourceRef: 'lesson-4/pattern-l4-ber-prefix', reviewCount: 0, lessonActivated: true }),
       // not a grammar pattern → excluded
       ev({ sourceKind: 'item', sourceRef: 'makan', reviewCount: 5, stability: 20 }),
     ]
 
     const topics = deriveGrammarTopics({ evidence, now: NOW })
 
+    // sorted by introducing lesson; carries the parsed lessonNumber for grouping
     expect(topics).toEqual([
-      { slug: 'l3-meN-prefix', label: 'learning' },
-      { slug: 'l4-ber-prefix', label: 'introduced' },
+      { slug: 'lesson-3/pattern-l3-meN-prefix', lessonNumber: 3, label: 'learning' },
+      { slug: 'lesson-4/pattern-l4-ber-prefix', lessonNumber: 4, label: 'introduced' },
     ])
   })
 })
