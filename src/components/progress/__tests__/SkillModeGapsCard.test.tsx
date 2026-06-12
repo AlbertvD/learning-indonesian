@@ -10,11 +10,11 @@ vi.mock('@/lib/analytics/mastery/masteryModel', () => ({
 describe('SkillModeGapsCard', () => {
   beforeEach(() => vi.clearAllMocks())
 
-  it('renders a per-mode proportion gauge (receptive-productive gap), gating low-data modes', async () => {
+  it('renders per-mode known-word COUNTS (vocabulary sizes), gating low-data modes', async () => {
     vi.mocked(getSkillModeGaps).mockResolvedValue([
-      { mode: 'recognise', strong: 90, total: 100, strongPct: 90, confidence: 'high' },
-      { mode: 'produce', strong: 30, total: 100, strongPct: 30, confidence: 'high' },
-      { mode: 'listen', strong: 0, total: 0, strongPct: 0, confidence: 'none' },
+      { mode: 'recognise', knownWords: 91, practisedWords: 301, strongPct: 30, confidence: 'high' },
+      { mode: 'produce', knownWords: 18, practisedWords: 84, strongPct: 21, confidence: 'high' },
+      { mode: 'listen', knownWords: 0, practisedWords: 0, strongPct: 0, confidence: 'none' },
     ])
 
     render(<SkillModeGapsCard userId="user-1" />)
@@ -22,11 +22,15 @@ describe('SkillModeGapsCard', () => {
     expect(await screen.findByText('Herkennen')).toBeInTheDocument()
     expect(screen.getByText('Produceren')).toBeInTheDocument()
     expect(screen.getByText('Luisteren')).toBeInTheDocument()
-    // proportions, not a fuzzy "weak" word — and the receptive (90%) vs productive (30%) gap
-    expect(screen.getByText('90%')).toBeInTheDocument()
-    expect(screen.getByText('30%')).toBeInTheDocument()
-    // a mode with no words is gated, not shown as a red 0%
+    // the receptive (91) vs productive (18) gap shown as absolute word counts
+    expect(screen.getByText('91')).toBeInTheDocument()
+    expect(screen.getByText('18')).toBeInTheDocument()
+    // denominator shown as context, not as the headline
+    expect(screen.getByText(/van 301 geoefend/)).toBeInTheDocument()
+    // a mode with no words is gated, not shown as a red 0
     expect(screen.getByText('Nog te weinig data')).toBeInTheDocument()
+    // the anti-gap-shaming framing note is present
+    expect(screen.getByText(/komen later in je leerroute/)).toBeInTheDocument()
     expect(getSkillModeGaps).toHaveBeenCalledWith('user-1')
   })
 })

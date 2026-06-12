@@ -508,22 +508,26 @@ export function deriveGrammarTopics(input: {
 // ---- Vocabulary skill profile (receptive / productive / aural, #211) ----
 //
 // The literature's receptive-vs-productive vocabulary distinction (Webb 2008;
-// Nation): you recognise far more words than you can produce, and closing that
-// "receptive-productive gap" is a core goal. So this is scoped to VOCABULARY
-// (item capabilities) and reports, per mode, the SHARE of your words you know
-// solidly (mastered or strengthening) — a proportion, NOT weakest-wins. The old
-// weakest-wins made every mode permanently red (one weak word pinned the whole
-// mode). Grammar has its own funnel/topics and is excluded here.
+// Laufer & Nation 1999): you recognise far more WORDS than you can produce, and
+// the receptive/productive split is measured per word as a vocabulary *size* — a
+// count of words that climbs — not as a ratio over capabilities. So this counts
+// DISTINCT WORDS per mode (deduped by source_ref; a word has up to 3 recognise
+// caps, 2 produce, 2 listen): `knownWords` = words solid in this mode (ANY of the
+// word's mode-caps mastered/strengthening), `practisedWords` = words with any
+// mode-cap in scheduling (the denominator). Reporting an absolute count (Anki
+// mature cards, Nation's VST) avoids the old faults: a ratio over a growing pile
+// can't climb, and "capabilities" labelled "words" invited a false funnel
+// reconciliation. Grammar has its own funnel/topics and is excluded here.
 
 export type SkillMode = 'recognise' | 'produce' | 'listen'
 
 export interface SkillModeGap {
   mode: SkillMode
-  /** Words known solidly (mastered + strengthening) in this mode. */
-  strong: number
-  /** Words with any state in this mode (the denominator). */
-  total: number
-  /** strong / total as a 0–100 percentage. */
+  /** Distinct words solid in this mode (ANY mode-cap mastered/strengthening). */
+  knownWords: number
+  /** Distinct words with any mode-cap in scheduling (the denominator). */
+  practisedWords: number
+  /** knownWords / practisedWords as a 0–100 percentage (a quality ratio, not the headline). */
   strongPct: number
   confidence: MasteryConfidence
 }
@@ -540,6 +544,9 @@ const ITEM_TYPE_MODE: Partial<Record<CapabilityType, SkillMode>> = {
   dictation: 'listen',
 }
 
+// Already the receptive→productive→aural progression order; the card numbers the
+// stages ①②③ from it (a learning sequence, not a ranking — listening trails
+// because it is scheduled last, by design, not because the learner is weaker).
 const SKILL_MODES: SkillMode[] = ['recognise', 'produce', 'listen']
 
 export function deriveSkillModeGaps(input: {
@@ -547,27 +554,32 @@ export function deriveSkillModeGaps(input: {
   now?: Date
 }): SkillModeGap[] {
   const now = input.now ?? new Date()
-  const byMode = new Map<SkillMode, { strong: number; total: number }>(
-    SKILL_MODES.map((m) => [m, { strong: 0, total: 0 }]),
+  // Per mode, map each WORD (source_ref) → is it solid in this mode (any of its
+  // caps in this mode mastered/strengthening). The map size is practisedWords.
+  const byMode = new Map<SkillMode, Map<string, boolean>>(
+    SKILL_MODES.map((m) => [m, new Map<string, boolean>()]),
   )
   for (const cap of input.evidence) {
     if (cap.sourceKind !== 'item') continue
     const mode = ITEM_TYPE_MODE[cap.capabilityType]
     if (!mode) continue
-    const bucket = byMode.get(mode)!
-    bucket.total += 1
+    const words = byMode.get(mode)!
     const label = labelForCapability(cap, now)
-    if (label === 'mastered' || label === 'strengthening') bucket.strong += 1
+    const solid = label === 'mastered' || label === 'strengthening'
+    words.set(cap.sourceRef, (words.get(cap.sourceRef) ?? false) || solid)
   }
   return SKILL_MODES.map((mode) => {
-    const { strong, total } = byMode.get(mode)!
+    const words = byMode.get(mode)!
+    const practisedWords = words.size
+    let knownWords = 0
+    for (const isSolid of words.values()) if (isSolid) knownWords += 1
     return {
       mode,
-      strong,
-      total,
-      strongPct: total === 0 ? 0 : Math.round((strong / total) * 100),
-      // Confidence gates the surface: <5 words in a mode = "not enough data yet".
-      confidence: total === 0 ? 'none' : total < 5 ? 'low' : total < 20 ? 'medium' : 'high',
+      knownWords,
+      practisedWords,
+      strongPct: practisedWords === 0 ? 0 : Math.round((knownWords / practisedWords) * 100),
+      // Confidence gates the surface: <5 WORDS in a mode = "not enough data yet".
+      confidence: practisedWords === 0 ? 'none' : practisedWords < 5 ? 'low' : practisedWords < 20 ? 'medium' : 'high',
     }
   })
 }
