@@ -66,6 +66,7 @@ export type {
 export {
   buildCanonicalKey,
   normalizeLessonSourceRef,
+  patternSlugFromSourceRef,
 } from './canonicalKey'
 export type { CanonicalKeyInput } from './canonicalKey'
 

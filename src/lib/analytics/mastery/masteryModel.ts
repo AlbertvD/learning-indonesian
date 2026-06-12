@@ -3,6 +3,7 @@ import type {
   CapabilitySourceKind,
   CapabilityType,
 } from '@/lib/capabilities'
+import { patternSlugFromSourceRef } from '@/lib/capabilities'
 import { listActivatedLessons } from '@/lib/lessons'
 import { chunkedIn } from '@/lib/chunkedQuery'
 import { isCapabilityMastered, isRecent } from './mastered'
@@ -833,19 +834,31 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
       const topics = deriveGrammarTopics({ evidence })
       if (topics.length === 0) return []
+      // `topic.slug` is the capability source_ref (`lesson-N/pattern-<slug>`);
+      // grammar_patterns is keyed by the bare `<slug>`. Strip the envelope before
+      // the join — otherwise nothing matches and the row falls back to printing
+      // the raw source_ref (the "lesson-N/pattern-…" noise). Shared helper so this
+      // reader and the grammar exercise reader can't drift.
+      const patternSlugByTopic = new Map(
+        topics.map(topic => [topic.slug, patternSlugFromSourceRef(topic.slug)] as const),
+      )
       const { data: patternRows, error: patternError } = await db()
         .from('grammar_patterns')
         .select('slug, name, short_explanation')
-        .in('slug', topics.map(topic => topic.slug))
+        .in('slug', [...new Set(patternSlugByTopic.values())])
       if (patternError) throw patternError
       const rows = (patternRows ?? []) as Array<{ slug: string; name: string; short_explanation: string }>
       const bySlug = new Map(rows.map(p => [p.slug, p] as const))
-      return topics.map(topic => ({
-        slug: topic.slug,
-        name: bySlug.get(topic.slug)?.name ?? topic.slug,
-        shortExplanation: bySlug.get(topic.slug)?.short_explanation ?? '',
-        label: topic.label,
-      }))
+      return topics.map(topic => {
+        const patternSlug = patternSlugByTopic.get(topic.slug)!
+        const row = bySlug.get(patternSlug)
+        return {
+          slug: topic.slug,
+          name: row?.name ?? patternSlug,
+          shortExplanation: row?.short_explanation ?? '',
+          label: topic.label,
+        }
+      })
     },
 
     async getStubbornWords(userId: string): Promise<StubbornWord[]> {
