@@ -1,0 +1,55 @@
+/* A distinct violet accent so "moeilijk" reads as its own thing, separate from the
+   warning-orange at-risk banner and the blue→green funnel. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+
+.head {
+  display: flex;
+  gap: 0.6rem;
+  border-radius: 12px;
+  padding: 0.7rem 0.85rem;
+  background: color-mix(in srgb, #7048e8 11%, transparent);
+  border-left: 3px solid #7048e8;
+}
+
+.icon {
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #9775fa;
+}
+
+.explain {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--text-secondary, #868e96);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #7048e8 16%, transparent);
+  color: var(--text-primary, #f1f3f5);
+}

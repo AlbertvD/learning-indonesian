@@ -2,10 +2,11 @@ import { render, screen } from '@testing-library/react'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { MasteryFunnelCard } from '../MasteryFunnelCard'
-import { getMasteryFunnel } from '@/lib/analytics/mastery/masteryModel'
+import { getMasteryFunnel, getStubbornWords } from '@/lib/analytics/mastery/masteryModel'
 
 vi.mock('@/lib/analytics/mastery/masteryModel', () => ({
   getMasteryFunnel: vi.fn(),
+  getStubbornWords: vi.fn(),
 }))
 
 const funnels = {
@@ -26,6 +27,7 @@ describe('MasteryFunnelCard', () => {
 
   it('shows the vocabulary journey by default with its rung counts and a vocab/grammar filter', async () => {
     vi.mocked(getMasteryFunnel).mockResolvedValue(funnels)
+    vi.mocked(getStubbornWords).mockResolvedValue([])
 
     renderCard()
 
