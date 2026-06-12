@@ -23,6 +23,7 @@ import { resolveCapabilityBlocks, type CapabilityRenderContext } from '@/lib/exe
 import { logError } from '@/lib/logger'
 import { commitCapabilityAnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import { capabilityReviewService } from '@/services/capabilityReviewService'
+import { markSessionComplete } from '@/services/sessionService'
 
 const VALID_SESSION_MODES: SessionMode[] = ['standard', 'lesson_practice', 'lesson_review']
 
@@ -77,6 +78,8 @@ export function Session() {
     && profile?.isAdmin === true
     && (import.meta.env.DEV === true || import.meta.env.VITE_ALLOW_FORCE_CAPABILITY === 'true')
   const didInit = useRef(false)
+  // The client-minted sessionId, kept so onComplete can mark the session finished.
+  const sessionIdRef = useRef<string | null>(null)
 
   // Initialize session
   useEffect(() => {
@@ -98,6 +101,7 @@ export function Session() {
         // learning_sessions row lazily on the first answer; no DB write at
         // session start. See docs/plans/2026-05-07-retire-session-lifecycle.md.
         const sid = crypto.randomUUID()
+        sessionIdRef.current = sid
         const lessonScope = isLessonScopedSessionMode(sessionMode)
           ? await loadSelectedLessonScope(lessonFilter)
           : null
@@ -155,7 +159,20 @@ export function Session() {
     initSession()
   }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, sessionMode, forceCapabilityKey, allowForceCapability])
 
-  const handleNavigateHome = () => navigate('/')
+  // Session finished (queue exhausted): mark it complete so it counts toward the
+  // streak, then go home. The mark is best-effort — a failure must not trap the
+  // learner on the completion screen.
+  const handleSessionComplete = async () => {
+    const sid = sessionIdRef.current
+    if (sid) {
+      try {
+        await markSessionComplete(sid)
+      } catch (err) {
+        logError({ page: 'session', action: 'markSessionComplete', error: err })
+      }
+    }
+    navigate('/')
+  }
 
   const handleCapabilityAnswer = async (event: SessionAnswerEvent) => {
     if (!user || !capabilityPlan) return
@@ -253,7 +270,7 @@ export function Session() {
           audioMap={capabilityAudioMap}
           userLanguage={userLanguage}
           onAnswer={handleCapabilityAnswer}
-          onComplete={handleNavigateHome}
+          onComplete={handleSessionComplete}
         />
       </>
     )

@@ -26,10 +26,15 @@ export function StreakBar({ streakDays, days, to = '/progress?tab=time' }: Strea
   const locale = lang === 'nl' ? 'nl-NL' : 'en-US'
 
   const maxSessions = Math.max(1, ...days.map((d) => d.sessions))
-  // Streak membership within the visible window: consecutive active days counted
-  // back from the newest. (The flame number is the true streak, which may exceed 5.)
+  // Streak membership within the visible window: consecutive days with a COMPLETED
+  // session, counted back from the newest. Grace: today (the last day) may not be
+  // finished yet while the streak is still alive from yesterday — so if today has
+  // none, begin one day back. Mirrors get_current_streak_days. (The flame number
+  // is the true streak, which may exceed 5.)
   const inStreak: boolean[] = days.map(() => false)
-  for (let i = days.length - 1; i >= 0; i--) {
+  let i = days.length - 1
+  if (i >= 0 && days[i].sessions === 0) i -= 1
+  for (; i >= 0; i--) {
     if (days[i].sessions > 0) inStreak[i] = true
     else break
   }

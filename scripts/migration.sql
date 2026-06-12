@@ -259,6 +259,15 @@ ALTER TABLE indonesian.learning_sessions ADD CONSTRAINT learning_sessions_sessio
 CREATE INDEX IF NOT EXISTS ls_user_started_idx
   ON indonesian.learning_sessions(user_id, started_at);
 
+-- Session completion marker: the streak + streak bar count COMPLETED sessions
+-- (the learner finished their full session at their configured length), not raw
+-- answers, so a single tap no longer keeps a streak. Set by mark_session_complete
+-- when ExperiencePlayer fires onComplete (queue exhausted). NULL = started but not
+-- finished (or abandoned). Partial index serves the per-day streak walk.
+ALTER TABLE indonesian.learning_sessions ADD COLUMN IF NOT EXISTS completed_at timestamptz;
+CREATE INDEX IF NOT EXISTS ls_user_completed_idx
+  ON indonesian.learning_sessions(user_id, completed_at) WHERE completed_at IS NOT NULL;
+
 -- Drop stale exercise_type CHECK constraint from review_events (constraint name from original migration)
 ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_exercise_type_check;
 
@@ -2093,18 +2102,29 @@ create or replace function indonesian.get_current_streak_days(
 )
 returns int language plpgsql stable security invoker as $$
 declare
-  v_check_date date := (now() at time zone p_timezone)::date;
+  v_today date := (now() at time zone p_timezone)::date;
+  v_check_date date;
   v_streak int := 0;
-  v_has_review boolean;
+  v_done boolean;
 begin
+  -- A day counts only if the learner COMPLETED at least one session that day
+  -- (finished their full session — completed_at set by mark_session_complete),
+  -- not merely answered a card. Grace: if today isn't finished yet, the streak is
+  -- still alive from yesterday, so begin the walk one day back rather than reading
+  -- 0 until the day's session is done.
+  select exists (
+    select 1 from indonesian.learning_sessions
+    where user_id = p_user_id and completed_at is not null
+      and (completed_at at time zone p_timezone)::date = v_today
+  ) into v_done;
+  v_check_date := case when v_done then v_today else v_today - 1 end;
   loop
     select exists (
-      select 1
-      from indonesian.capability_review_events
-      where user_id = p_user_id
-        and (created_at at time zone p_timezone)::date = v_check_date
-    ) into v_has_review;
-    if not v_has_review then exit; end if;
+      select 1 from indonesian.learning_sessions
+      where user_id = p_user_id and completed_at is not null
+        and (completed_at at time zone p_timezone)::date = v_check_date
+    ) into v_done;
+    if not v_done then exit; end if;
     v_streak := v_streak + 1;
     v_check_date := v_check_date - 1;
     if v_streak >= 365 then exit; end if;
@@ -2257,10 +2277,11 @@ returns json language sql stable security invoker as $$
   ) from ranked;
 $$;
 
--- Daily activity strip for the home streak bar (#: per-day session counts for the
--- last p_days timezone-local days, chronological, zero-filled). Mirrors
--- get_practice_time's tz/day math; counts learning_sessions rows (exercises-only,
--- per Practice Time). The streak number itself comes from get_practice_time.
+-- Daily activity strip for the home streak bar: per-day COMPLETED-session counts
+-- for the last p_days timezone-local days, chronological, zero-filled. Mirrors
+-- get_practice_time's tz/day math; counts only completed sessions (completed_at)
+-- so the bar agrees with the streak rule. The streak number comes from
+-- get_current_streak_days (via get_practice_time).
 create or replace function indonesian.get_daily_activity(
   p_user_id uuid,
   p_timezone text,
@@ -2272,10 +2293,13 @@ returns json language sql stable security invoker as $$
     from generate_series(0, p_days - 1) as g
   ),
   sess as (
-    select (ls.started_at at time zone p_timezone)::date as d, count(*)::int as n
+    -- COMPLETED sessions only (completed_at), bucketed by completion day — matches
+    -- the streak rule so the bar and the flame agree.
+    select (ls.completed_at at time zone p_timezone)::date as d, count(*)::int as n
     from indonesian.learning_sessions ls
     where ls.user_id = p_user_id
-      and (ls.started_at at time zone p_timezone)::date > ((now() at time zone p_timezone)::date - p_days)
+      and ls.completed_at is not null
+      and (ls.completed_at at time zone p_timezone)::date > ((now() at time zone p_timezone)::date - p_days)
     group by 1
   )
   select coalesce(json_agg(
@@ -2288,6 +2312,26 @@ $$;
 grant execute on function indonesian._mastery_label(int, int, int, double precision, timestamptz, timestamptz) to authenticated;
 grant execute on function indonesian.get_weekly_movement(uuid, text) to authenticated;
 grant execute on function indonesian.get_daily_activity(uuid, text, int) to authenticated;
+
+-- Mark a session complete — the learner finished their full session (all served
+-- cards; ExperiencePlayer.onComplete). The streak + streak bar count COMPLETED
+-- sessions, so finishing a 10-card session counts and finishing a 25-card one
+-- counts, but a single answer does not. Idempotent (keeps the first completion
+-- time). security definer because authenticated has no write policy on
+-- learning_sessions under retirement #5 — scoped to the caller's own row via
+-- auth.uid(), so a learner can only complete their own session.
+create or replace function indonesian.mark_session_complete(p_session_id uuid)
+returns void
+language sql
+security definer
+set search_path = indonesian, pg_temp
+as $$
+  update indonesian.learning_sessions
+     set completed_at = coalesce(completed_at, now())
+   where id = p_session_id and user_id = auth.uid();
+$$;
+revoke all on function indonesian.mark_session_complete(uuid) from public;
+grant execute on function indonesian.mark_session_complete(uuid) to authenticated;
 
 -- (PR 5: the lesson_page_blocks column-drop DO blocks — source_progress_event
 --  and capability_key_refs — were removed; the whole table is dropped below.)
