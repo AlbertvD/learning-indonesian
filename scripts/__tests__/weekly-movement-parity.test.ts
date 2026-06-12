@@ -42,11 +42,15 @@ describe('weekly movement: SQL _mastery_label ⟷ TS labelForCapability parity',
     expect(/p_review_count >= 3 or coalesce\(p_stability, 0\) >= 5/.test(sqlLabel)).toBe(true)
   })
 
-  it('SQL mirror short-circuits at_risk on a CURRENT failure only (self-healing), matching TS', () => {
-    // 2026-06-11: at_risk = consecutiveFailureCount > 0; the cumulative lapse clause is gone.
-    expect(/p_consec > 0 then 'at_risk'/.test(sqlLabel)).toBe(true)
-    expect(/p_lapse > 0 then 'at_risk'/.test(sqlLabel)).toBe(false)
-    expect(/evidence\.consecutiveFailureCount > 0\) return 'at_risk'/.test(masterySrc)).toBe(true)
-    expect(/lapseCount > 0\) return 'at_risk'/.test(masterySrc)).toBe(false)
+  it('SQL mirror gates at_risk on a genuine lapse (failing AND lapsed), matching TS', () => {
+    // 2026-06-12: at_risk = consecutiveFailureCount > 0 AND lapseCount > 0; a
+    // never-lapsed failing word routes to 'introduced', not 'at_risk' (still acquiring).
+    expect(/when p_consec > 0 and p_lapse > 0 then 'at_risk'/.test(sqlLabel)).toBe(true)
+    // no naked consec-only at_risk clause survives
+    expect(/when p_consec > 0 then 'at_risk'/.test(sqlLabel)).toBe(false)
+    // never-lapsed failing → introduced
+    expect(/when p_consec > 0 then 'introduced'/.test(sqlLabel)).toBe(true)
+    // TS side: lapseCount gates at_risk (the failing branch's ternary)
+    expect(/lapseCount > 0[\s\S]{0,40}'at_risk'/.test(masterySrc)).toBe(true)
   })
 })

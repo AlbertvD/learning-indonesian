@@ -54,16 +54,29 @@ describe('deriveMasteryFunnel', () => {
     expect(funnel.vocabulary.learning).toBe(0)
   })
 
-  it('marks a word at_risk when any of its caps is currently failing', () => {
+  it('marks a word at_risk when any of its caps has genuinely lapsed (failing AND lapsed)', () => {
     const evidence = [
       ev({ sourceKind: 'item', sourceRef: 'pergi', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
-      ev({ sourceKind: 'item', sourceRef: 'pergi', reviewCount: 2, consecutiveFailureCount: 1 }),
+      // a cap that had been learned (lapseCount > 0) and is now failing → a real lapse
+      ev({ sourceKind: 'item', sourceRef: 'pergi', reviewCount: 4, lapseCount: 1, consecutiveFailureCount: 1 }),
     ]
 
     const funnel = deriveMasteryFunnel({ evidence, now: NOW })
 
     expect(funnel.vocabulary.at_risk).toBe(1)
     expect(funnel.vocabulary.mastered).toBe(0)
+  })
+
+  it('a never-learned word that is currently failing is introduced, not at_risk', () => {
+    const evidence = [
+      // failing on first acquisition (lapseCount 0) — never learned yet
+      ev({ sourceKind: 'item', sourceRef: 'becak', reviewCount: 2, lapseCount: 0, consecutiveFailureCount: 2 }),
+    ]
+
+    const funnel = deriveMasteryFunnel({ evidence, now: NOW })
+
+    expect(funnel.vocabulary.at_risk).toBe(0)
+    expect(funnel.vocabulary.introduced).toBe(1)
   })
 })
 

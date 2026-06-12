@@ -72,9 +72,14 @@ load-bearing definition lives in exactly one place:
   re-implements the thresholds.
 - **`mastered`** — `isCapabilityMastered` (`mastered.ts`): reviewCount ≥ 4,
   stability ≥ 14d, reviewed within 30d, **and not currently failing**.
-- **`at_risk` is self-healing** (2026-06-11): `consecutiveFailureCount > 0` only
-  (currently failing) — *not* "ever lapsed". A relearned word climbs back to
-  `mastered`. A cumulative "leech" signal is a separate, deferred concept.
+- **`at_risk` = a genuine lapse** (2026-06-12): `consecutiveFailureCount > 0 AND
+  lapseCount > 0` (currently failing **and** previously learned). Still
+  self-healing (a correct answer clears it); a never-learned failing word is
+  `introduced`, not `at_risk`. The boundary is "have you ever learned this word?"
+- **`moeilijk` (stubborn)** — a *separate* acquisition-difficulty signal
+  (`isStubborn` / `deriveStubbornWords`): never learned (`lapseCount = 0`) and
+  failed ≥ 4×. Not a `MasteryLabel`/rung (rung stays `introduced`); a callout with
+  *change-your-strategy* help. TS-only, no SQL mirror.
 - **The vocab/grammar split** — `funnelBucket(sourceKind)` (`masteryModel.ts`):
   `item`→vocab, `pattern`/`affixed_form_pair`→grammar, else excluded. Shared by
   the funnel, weekly movement, and HC28 — so they can't disagree on what counts

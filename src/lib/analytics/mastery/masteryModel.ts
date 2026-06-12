@@ -167,7 +167,19 @@ function dimensionForCapability(type: CapabilityType): MasteryDimension {
 }
 
 function labelForCapability(evidence: CapabilityMasteryEvidence, now: Date): MasteryLabel {
-  if (evidence.consecutiveFailureCount > 0) return 'at_risk'
+  // Currently failing: distinguish a genuine LAPSE (learned, then forgotten) from a
+  // word never learned yet. `lapseCount` is the only counter that survives a
+  // failure (stability resets, consecutiveFailureCount is "right now"); FSRS bumps
+  // it only when a *graduated* card is forgotten. So failing + lapsed = `at_risk`
+  // (self-healing: a correct answer resets consecutiveFailureCount → not at_risk);
+  // failing + never-lapsed = still `introduced` — you can't be "at risk of
+  // forgetting" a word you never learned. (2026-06-12, see
+  // docs/plans/2026-06-12-mastery-ladder-lapse-and-stubborn.md.)
+  if (evidence.consecutiveFailureCount > 0) {
+    return evidence.lapseCount > 0
+      ? 'at_risk'
+      : (evidence.lessonActivated ? 'introduced' : 'not_assessed')
+  }
   if (evidence.reviewCount === 0) {
     return evidence.lessonActivated ? 'introduced' : 'not_assessed'
   }
@@ -208,6 +220,10 @@ function weakestLabel(labels: MasteryLabel[]): MasteryLabel {
     mastered: 4,
   }
   if (labels.length === 0) return 'not_assessed'
+  // A word with any genuinely-lapsed cap surfaces as at_risk regardless of its
+  // other caps. Post-2026-06-12 this fires only on real lapses (lapseCount > 0);
+  // a never-learned failing cap is labelled `introduced`, so it rolls up by rank
+  // like any other rung rather than hijacking the word into at_risk.
   if (labels.includes('at_risk')) return 'at_risk'
   return labels.reduce((weakest, label) => rank[label] < rank[weakest] ? label : weakest, labels[0]!)
 }
@@ -415,6 +431,47 @@ export function deriveMasteryFunnel(input: {
     return funnel
   }
   return { vocabulary: tally(vocab), grammar: tally(grammar) }
+}
+
+// ── Stubborn ("moeilijk") words — an ACQUISITION-difficulty signal, distinct from
+// at_risk (a RETENTION loss). A word never learned (`lapseCount === 0`) that the
+// learner keeps failing (`consecutiveFailureCount >= STUBBORN_THRESHOLD`) needs a
+// different *strategy* — mnemonic / add context / deconstruct — not more reps (the
+// "labor in vain" finding; the bottleneck is encoding, not retrieval). Self-
+// clearing: a correct answer resets consecutiveFailureCount → 0 → it leaves the
+// list and becomes `learning`. It is NOT a MasteryLabel and NOT a funnel rung (the
+// rung stays `introduced` — it hasn't progressed); it's a separate callout.
+// Threshold 4 (a TS constant): Anki's leech default of 8 is a *retention* concept
+// and deliberately generous; for acquisition the evidence says intervene earlier.
+// (2026-06-12, docs/plans/2026-06-12-mastery-ladder-lapse-and-stubborn.md.)
+export const STUBBORN_THRESHOLD = 4
+
+export function isStubborn(evidence: CapabilityMasteryEvidence): boolean {
+  return evidence.lapseCount === 0
+    && evidence.reviewCount > 0
+    && evidence.consecutiveFailureCount >= STUBBORN_THRESHOLD
+}
+
+export interface StubbornWord {
+  sourceRef: string
+  sourceKind: CapabilitySourceKind
+  /** The specific skill (capability type) being repeatedly failed. */
+  capabilityType: CapabilityType
+  consecutiveFailures: number
+}
+
+// any-cap-stubborn → the word is "moeilijk"; one entry per stubborn capability so
+// the callout can name the specific failing skill, hardest first.
+export function deriveStubbornWords(input: { evidence: CapabilityMasteryEvidence[] }): StubbornWord[] {
+  return input.evidence
+    .filter(isStubborn)
+    .map(e => ({
+      sourceRef: e.sourceRef,
+      sourceKind: e.sourceKind,
+      capabilityType: e.capabilityType,
+      consecutiveFailures: e.consecutiveFailureCount,
+    }))
+    .sort((a, b) => b.consecutiveFailures - a.consecutiveFailures)
 }
 
 export interface GrammarTopicLabel {
@@ -778,6 +835,19 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
         label: topic.label,
       }))
     },
+
+    async getStubbornWords(userId: string): Promise<StubbornWord[]> {
+      const { data: stateRows, error: stateError } = await db()
+        .from('learner_capability_state')
+        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
+        .eq('user_id', userId)
+      if (stateError) throw stateError
+      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
+      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
+      const activatedLessonsSet = await listActivatedLessons(userId, client)
+      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      return deriveStubbornWords({ evidence })
+    },
   }
 }
 
@@ -804,6 +874,10 @@ export async function getGrammarTopics(userId: string): Promise<GrammarTopic[]> 
 
 export async function getSkillModeGaps(userId: string): Promise<SkillModeGap[]> {
   return (await defaultModel()).getSkillModeGaps(userId)
+}
+
+export async function getStubbornWords(userId: string): Promise<StubbornWord[]> {
+  return (await defaultModel()).getStubbornWords(userId)
 }
 
 // Server-side aggregation (ADR 0015 — small result, bounded window): the SQL

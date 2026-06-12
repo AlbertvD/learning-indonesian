@@ -141,6 +141,7 @@ describe('mastery model derivation', () => {
           sourceRef: 'lesson-1/pattern-belum-vs-tidak',
           capabilityType: 'pattern_contrast',
           reviewCount: 3,
+          lapseCount: 1,
           consecutiveFailureCount: 1,
           stability: 4,
           lastReviewedAt: '2026-04-21T12:00:00.000Z',
