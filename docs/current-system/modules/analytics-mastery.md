@@ -1,7 +1,7 @@
 ---
 module: analytics-mastery
 surface: src/lib/analytics/mastery/
-last_verified_against_code: 2026-06-11
+last_verified_against_code: 2026-06-12
 status: partial
 ---
 
@@ -46,23 +46,40 @@ All in `masteryModel.ts`:
   SQL `_mastery_label` mirror is kept in lockstep with `labelForCapability` by
   **HC28** (ADR 0015). `WeeklyReviewEvent` carries `{sourceRef, sourceKind,
   before, after}`.
+- **Stubborn ("moeilijk") words** (acquisition-difficulty signal): predicate
+  `isStubborn(evidence)` + constant `STUBBORN_THRESHOLD` (4) + pure deriver
+  `deriveStubbornWords({evidence})` → `StubbornWord[]` + IO wrapper
+  `getStubbornWords(userId)`. `lapseCount === 0 ∧ reviewCount > 0 ∧
+  consecutiveFailureCount ≥ 4`. Not a `MasteryLabel`/rung; TS-only (no SQL mirror,
+  no RPC), like the funnel/skill/grammar derivers.
 
 ## 2. The canonical `mastered` predicate (single source of truth)
 
-`labelForCapability` (`masteryModel.ts:174-182`) maps one capability's evidence
+`labelForCapability` (`masteryModel.ts:169`) maps one capability's evidence
 to a `MasteryLabel` on the ladder
-`at_risk / not_assessed / introduced / learning / strengthening / mastered`:
+`at_risk / not_assessed / introduced / learning / strengthening / mastered`
+(current as of 2026-06-12 — the at_risk gate was a permanent OR, then self-healing
+consec-only, now the lapse-AND below):
 
 ```
-consecutiveFailureCount > 0 ∨ lapseCount > 0          → at_risk      (override, :175)
-reviewCount === 0                                      → introduced (lesson activated) | not_assessed  (:176-178)
-reviewCount ≥ 4 ∧ stability ≥ 14 ∧ isRecent(30d)       → mastered    (:179)
-reviewCount ≥ 3 ∨ stability ≥ 5                        → strengthening (:180)
-otherwise                                              → learning    (:181)
+consecutiveFailureCount > 0:
+    lapseCount > 0   → at_risk        (a genuine lapse: learned, now forgetting)
+    lapseCount === 0 → introduced (activated) | not_assessed   (never learned — still acquiring)
+reviewCount === 0                    → introduced (activated) | not_assessed
+reviewCount ≥ 4 ∧ stability ≥ 14 ∧ isRecent(30d) → mastered
+reviewCount ≥ 3 ∨ stability ≥ 5      → strengthening
+otherwise                            → learning
 ```
 
-`isRecent` (`:168-172`) is `false` for a null `lastReviewedAt`. The `?? 0`
-fallbacks on `stability` are load-bearing (the column is nullable).
+`at_risk` is **self-healing** (a correct answer clears `consecutiveFailureCount`)
+and now means *learned-then-forgetting*; `lapseCount` is the only counter that
+survives a failure (the boundary "have you ever learned this word?"). `isRecent`
+is `false` for a null `lastReviewedAt`; the `?? 0` stability fallbacks are
+load-bearing (nullable column). **Moeilijk** (stubborn) is a *separate* TS signal
+(`isStubborn` / `deriveStubbornWords`, `masteryModel.ts`), **not** a `MasteryLabel`
+and not a funnel rung — `lapseCount === 0 ∧ consecutiveFailureCount ≥ 4` (a
+never-learned word repeatedly failed); surfaced as its own callout, no SQL mirror.
+See `docs/plans/2026-06-12-mastery-ladder-lapse-and-stubborn.md`.
 
 **This `mastered` rung is mirrored in SQL** inside `get_lessons_overview`
 (`scripts/migration.sql`) to compute per-lesson `% mastered` server-side. The two

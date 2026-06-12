@@ -1470,8 +1470,14 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     reviewCount?: number; lapseCount?: number; consecutiveFailureCount?: number
     stability?: number | null; lastReviewedAt?: string | null
   }
+  // Mirrors _mastery_label / labelForCapability, same clause order (2026-06-12):
+  // at_risk = failing AND a genuine lapse (lapseCount > 0); a never-lapsed failing
+  // cap ranks as introduced (rank 1), not at_risk.
   const rankOf = (s: StateJson, now: Date): number => {
-    if ((s.consecutiveFailureCount ?? 0) > 0) return 2 // at_risk (currently failing)
+    const consec = s.consecutiveFailureCount ?? 0
+    const lapse = s.lapseCount ?? 0
+    if (consec > 0 && lapse > 0) return 2 // at_risk
+    if (consec > 0) return 1 // introduced (never-lapsed failing → still acquiring)
     if ((s.reviewCount ?? 0) === 0) return 1 // introduced
     if (isCapabilityMastered({
       reviewCount: s.reviewCount ?? 0, stability: s.stability,
@@ -1482,7 +1488,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     return 2 // learning
   }
   const isMastered = (s: StateJson, now: Date) => rankOf(s, now) === 4 && (s.consecutiveFailureCount ?? 0) === 0
-  const isAtRisk = (s: StateJson) => (s.consecutiveFailureCount ?? 0) > 0
+  const isAtRisk = (s: StateJson) => (s.consecutiveFailureCount ?? 0) > 0 && (s.lapseCount ?? 0) > 0
   const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
   try {
     const now = new Date()

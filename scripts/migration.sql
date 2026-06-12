@@ -2006,7 +2006,7 @@ language sql stable security invoker as $$
     select c.lesson_id, c.id as capability_id,
            c.readiness_status, c.publication_status,
            s.review_count, s.stability, s.last_reviewed_at,
-           s.lapse_count, s.consecutive_failure_count
+           s.consecutive_failure_count
     from indonesian.learning_capabilities c
     left join indonesian.learner_capability_state s
       on s.capability_id = c.id and s.user_id = p_user_id
@@ -2209,8 +2209,15 @@ create or replace function indonesian._mastery_label(
   p_now timestamptz
 )
 returns text language sql immutable as $$
+  -- Mirrors TS labelForCapability (masteryModel.ts), same clause order (2026-06-12).
+  -- at_risk = currently failing AND a genuine lapse (p_lapse > 0 — learned, then
+  -- forgotten); a never-lapsed failing word is still 'introduced' (still acquiring),
+  -- not 'at_risk'. The two early branches (p_consec > 0, review_count = 0) are
+  -- mutually exclusive on live data (the commit RPC increments review_count on every
+  -- review, so a failing cap has review_count >= 1); order pinned for parity.
   select case
-    when p_consec > 0 then 'at_risk'
+    when p_consec > 0 and p_lapse > 0 then 'at_risk'
+    when p_consec > 0 then 'introduced'
     when coalesce(p_review_count, 0) = 0 then 'introduced'
     when p_review_count >= 4 and coalesce(p_stability, 0) >= 14
          and p_last_reviewed is not null and p_last_reviewed > p_now - interval '30 days' then 'mastered'
