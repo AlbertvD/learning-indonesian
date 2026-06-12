@@ -35,6 +35,7 @@ import lesson12Content from '@/pages/lessons/lesson-12/content.json'
 import lesson13Content from '@/pages/lessons/lesson-13/content.json'
 import lesson14Content from '@/pages/lessons/lesson-14/content.json'
 import lesson15Content from '@/pages/lessons/lesson-15/content.json'
+import lesson16Content from '@/pages/lessons/lesson-16/content.json'
 
 const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
 const Lesson2Bespoke = lazy(() => import('@/pages/lessons/lesson-2/Page'))
@@ -51,6 +52,7 @@ const Lesson12Bespoke = lazy(() => import('@/pages/lessons/lesson-12/Page'))
 const Lesson13Bespoke = lazy(() => import('@/pages/lessons/lesson-13/Page'))
 const Lesson14Bespoke = lazy(() => import('@/pages/lessons/lesson-14/Page'))
 const Lesson15Bespoke = lazy(() => import('@/pages/lessons/lesson-15/Page'))
+const Lesson16Bespoke = lazy(() => import('@/pages/lessons/lesson-16/Page'))
 
 const fallback = <Center h="60vh"><Loader size="lg" /></Center>
 
@@ -70,6 +72,7 @@ export const bespokeLessonElements: Record<string, ReactElement> = {
   [lesson13Content.meta.id]: <Suspense fallback={fallback}><Lesson13Bespoke /></Suspense>,
   [lesson14Content.meta.id]: <Suspense fallback={fallback}><Lesson14Bespoke /></Suspense>,
   [lesson15Content.meta.id]: <Suspense fallback={fallback}><Lesson15Bespoke /></Suspense>,
+  [lesson16Content.meta.id]: <Suspense fallback={fallback}><Lesson16Bespoke /></Suspense>,
 }
 
 // Ordered index of the bespoke lessons, derived from the same content.json
@@ -91,6 +94,7 @@ export const bespokeLessonPreviews: BespokeLessonPreview[] = [
   lesson7Content.meta, lesson8Content.meta, lesson9Content.meta,
   lesson10Content.meta, lesson11Content.meta, lesson12Content.meta,
   lesson13Content.meta, lesson14Content.meta, lesson15Content.meta,
+  lesson16Content.meta,
 ]
   .map(m => ({
     id: m.id,

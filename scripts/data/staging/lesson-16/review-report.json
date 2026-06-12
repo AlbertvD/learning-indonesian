@@ -1,0 +1,94 @@
+{
+  "lesson": 16,
+  "revision": 1,
+  "reviewedAt": "2026-06-12T12:30:00Z",
+  "status": "needs_revision",
+  "issues": [
+    {
+      "severity": "CRITICAL",
+      "file": "candidates.ts",
+      "item": "all 5 contrast_pair candidates",
+      "issue": "contrast_pair option.id values are abstract 'cp-a' / 'cp-b' and do NOT equal option.text. The reviewer contract forbids abstract IDs: id must be the Indonesian word/phrase itself.",
+      "fix": "Set each option.id equal to its option.text (the full Indonesian sentence/phrase) and update correctOptionId to match. Affects candidates #1, #5, #9, #13, #17."
+    },
+    {
+      "severity": "CRITICAL",
+      "file": "cloze-contexts.ts",
+      "item": "pinjam context #1 (line 424)",
+      "issue": "source_text 'Di mana lem? Ooh, sudah dipinjam.' contains zero '___' blanks. A cloze context must contain exactly one blank.",
+      "fix": "Insert a blank on the target word, e.g. 'Di mana lem? Ooh, sudah ___.' with cloze answer 'dipinjam', or rewrite so 'pinjam' is the blanked token. (pinjam still has a valid context #2, so vocab coverage is not lost, but this malformed entry must be fixed or removed.)"
+    },
+    {
+      "severity": "CRITICAL",
+      "file": "cloze-contexts.ts",
+      "item": "kejar context #2 (line 238)",
+      "issue": "Vocab-cloze slug/blank mismatch. learning_item_slug is 'kejar' but the blanked token in 'Anak-anak berlari karena dikejar ___.' is the agent noun 'anjing' (translation: 'achtervolgd door de hond'). 'kejar' appears unblanked as 'dikejar'. The cloze tests 'anjing', not the target 'kejar'.",
+      "fix": "Rewrite so 'kejar' is the blanked token, e.g. 'Anjing itu suka ___ kucing di jalan.' (kejar context #1 already does this — make #2 a different kejar-blanking sentence). kejar context #1 is valid, so coverage holds."
+    },
+    {
+      "severity": "WARNING",
+      "file": "vocab-enrichments.ts",
+      "item": "diisi (dibuka), dibayar (dibeli), filateli (filsafat), kualitas (kuantitas), pilih (pulih)",
+      "issue": "Several distractors are not present in the current/prior lesson vocabulary pool. 'dibuka' and 'dibeli' are not learning items (only roots 'buka'/'beli' exist); 'filsafat', 'kuantitas', 'pulih' are near-miss forms not in any lesson. These are plausible-but-wrong (good near-miss pedagogy) but fall outside the pool-membership convention.",
+      "fix": "Either accept as deliberate near-miss distractors (admin call) or swap for in-pool items of the same POS/field (e.g. diisi -> dikirim/ditimbang/dibayar; dibayar -> diisi/ditimbang/dikirim)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "vocab-enrichments.ts",
+      "item": "keranjang/lem/lekat/kejar/tangkap distractor arrays",
+      "issue": "Five distractor arrays are authored as runtime .filter(...).concat(...).slice(0,3) expressions that scrub a bad/duplicate value at evaluation time (e.g. keranjang cloze_distractors_id). They evaluate to clean 3-item arrays, but encoding distractor selection as defensive JS in a data file is a maintainability smell and hides the intended literal set.",
+      "fix": "Replace each chained expression with the resolved literal array, e.g. keranjang.cloze_distractors_id: ['kursi','dapur','pintu']."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "contrast_pair #9 (l16-oleh-en-voorkeur-voor-di-vorm)",
+      "issue": "The distractor is not a clear Dutch-speaker error: both options ('Daging itu dibeli oleh Siti' vs 'Daging itu dibeli oleh dia') are grammatical Indonesian. The explanationText is self-contradictory — it argues A is correct yet concedes B is 'de standaardvorm' and that the 'oleh'-with-proper-name form A demonstrates is dispreferred per the lesson rule (eigennamen -> 'oleh' weglaten). The exercise can confuse rather than teach the oleh-omission rule.",
+      "fix": "Recast so the wrong option is the actual error (inserting 'oleh' before a proper name): correct 'Daging itu dibeli Siti.' vs wrong 'Daging itu dibeli oleh Siti.', with an explanation that states the eigennaam -> drop 'oleh' rule cleanly."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "cloze_mcq #4 (l16-di-vorm-...) distractors dibayar/membayar/bayar/terbayar",
+      "issue": "All four options are morphological variants of the same root 'bayar'. For a generic content-word blank this would violate the distinct-vocabulary rule, but here the blank deliberately tests voice marking (di- vs me- vs base vs ter-), which is the explicit DI-vorm lesson goal. Noted as acceptable-by-design, not a defect; flagged only so admin is aware it is a form-contrast, not a vocab-contrast item."
+    }
+  ],
+  "summary": {
+    "total": 7,
+    "critical": 3,
+    "warning": 4
+  },
+  "counts": {
+    "grammar_patterns": 5,
+    "learning_items_total": 53,
+    "learning_items_vocab": 36,
+    "learning_items_dialogue_chunk": 17,
+    "cloze_contexts_vocab": 72,
+    "cloze_contexts_dialogue": 12,
+    "cloze_skips_dialogue": 5,
+    "candidates_total": 20,
+    "candidates_by_type": {
+      "contrast_pair": 5,
+      "sentence_transformation": 5,
+      "constrained_translation": 5,
+      "cloze_mcq": 5
+    },
+    "vocab_enrichments": 36
+  },
+  "checks": {
+    "lesson_ts_structure": "PASS -- grammar section uses grammar_topics (rules/examples/table); exercises section uses sections array; all grammar_drill/translation items have populated answer fields (Oefening I-IV)",
+    "grammar_patterns_fields": "PASS -- all 5 have pattern_name, description, slug (kebab-case), complexity_score (4-6, plausible); confusion_group set on me-di-voice + transitiviteit patterns",
+    "slug_uniqueness_staging": "PASS -- all 5 slugs l16-prefixed; no collision with other staging lessons",
+    "slug_uniqueness_db": "PASS -- queried indonesian.grammar_patterns; no l16-* or di-vorm/volgorde/oleh/transitie slug exists in DB",
+    "candidate_payloads": "PASS (field presence) -- every candidate nests content under payload with all required fields per type; acceptableAnswers non-empty; grammar_pattern_slug + requiredTargetPattern reference existing slugs; no speaking candidates; constrained_translation single-slot blank fields not required for these phrase-level patterns",
+    "contrast_pair_option_ids": "FAIL -- all 5 contrast_pairs use abstract cp-a/cp-b ids that do not equal option.text (CRITICAL). correctOptionId resolves to a valid option id in every case, so answers register, but the id==text contract is violated.",
+    "cloze_mcq_correct_option": "PASS -- correctOptionId present in options array for all 5 cloze_mcq; no substring/prefix duplicate options; each sentence has exactly one ___",
+    "dialogue_cloze_quality": "PASS -- 12 dialogue clozes each blank a single known vocab word (kartu pos, lem, loket, pos laut, diisi, ditimbang, makan waktu, diterima, dibayar, mengumpulkan, ke mari); 'diterima' confirmed present as a prior-lesson learning_item in DB; blanked tokens are >=6-token lines and uniquely fitted",
+    "cloze_skips_validity": "PASS -- 5 skips; below_6_token_threshold entries confirmed <6 tokens; 'Jadi, harga keduanya Rp 1225, Bu.' reason no_current_or_prior_vocab_in_line is plausible (content words are numerals/harga)",
+    "vocab_cloze_correctness": "FAIL -- 2 of 72 vocab contexts malformed: pinjam #1 has no blank (CRITICAL); kejar #2 blanks the agent noun anjing not the target kejar (CRITICAL). Both targets retain a valid sibling context so coverage holds.",
+    "cloze_context_coverage": "PASS -- all 36 vocab items have >=1 valid cloze context after excluding the 2 malformed entries",
+    "distractor_quality": "PASS (no answer-as-distractor, no dupes) / WARNING (several out-of-pool near-miss distractors; 5 arrays use runtime .filter/.concat/.slice expressions that evaluate clean but are a smell)",
+    "pattern_brief_integrity": "PASS -- all 5 brief slugs match grammar-patterns.ts; vocabulary_pool non-empty with item_type on every entry; research_notes + >=4 example_sentences per pattern",
+    "vocab_enrichments_coverage": "PASS -- all 36 learning-items vocab words have an enrichment entry; each has 3 recognition_distractors_nl, 3 cued_recall_distractors_id, 3 cloze_distractors_id (after expression evaluation); no distractor equals its correct answer"
+  }
+}
