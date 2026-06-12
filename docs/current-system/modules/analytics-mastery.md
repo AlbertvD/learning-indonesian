@@ -99,13 +99,21 @@ lesson-status spec / `lessons-overview` module.
 
 - **Upstream**: `lib/capabilities/` (types), `lib/lessons/` (`listActivatedLessons`),
   `lib/chunkedQuery`, `lib/supabase`.
-- **Downstream consumers**: `get_lessons_overview` RPC (the `mastered` mirror, for
-  the lesson tile's `% mastered`); `components/progress/` surfaces are a *separate*
-  `itemsByStage` calc, not this model (see `Progress.tsx` / `MasteryFunnel.tsx`).
+- **Downstream consumers**: the Voortgang surfaces **do** consume this model
+  (updated 2026-06-12 — the old "separate `itemsByStage` calc" note was
+  pre-redesign drift): `MasteryFunnelCard` ← `deriveMasteryFunnel`,
+  `SkillModeGapsCard` ← `deriveSkillModeGaps`, `GrammarTopicsList` ←
+  `deriveGrammarTopics`, and the home movement card ← `deriveWeeklyMovement`.
+  `get_lessons_overview` mirrors the `mastered` predicate in SQL for the lesson
+  tile's `% mastered` (parity-tested, ADR 0015).
+- **Sibling / umbrella**: [[analytics-engagement]] (the Practice Time axis) and
+  `analytics.md` (the umbrella read-model map — which surface reads which RPC).
 
 ## 6. What this spec does NOT cover
 
 - The lesson tile's two statuses (activation + `% mastered`) — see the
   `lessons-overview` module spec and `docs/plans/2026-06-09-lesson-status-two-sources-design.md`.
-- The Progress-page funnel — a separate calc, not this model.
+- The Practice Time / streak axis — see [[analytics-engagement]].
+- The umbrella view of all analytics surfaces + the server-RPC-vs-TS-deriver
+  split — see `analytics.md`.
 - The deferred intra-module decomposition (target-architecture.md:682-719).
