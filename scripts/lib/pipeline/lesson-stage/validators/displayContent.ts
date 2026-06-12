@@ -6,8 +6,12 @@
  * GT5 leaves permissive (ADR 0013 §1).
  *
  * Folded from lint-staging's `checkLessonStructure`:
- *   - grammar-section-unstructured  (CRITICAL): grammar section still carries a
- *       legacy `body:string` and no `categories[]` array.
+ *   - grammar-section-no-categories (CRITICAL): a grammar section has no
+ *       non-empty `categories[]` — whether it kept a legacy `body:string` or
+ *       (the 2026-06-12 L16 failure) put its rules under the enricher-owned
+ *       `grammar_topics` key. Either way it projects zero grammar categories →
+ *       zero grammar capabilities, silently. The invariant is "rule-bearing
+ *       content lives under content.categories"; this asserts it pre-write.
  *   - grammar-category-empty        (WARNING):  a category has no rules,
  *       examples, or table.
  *   - translation-drill-no-answer   (WARNING):  a translation/grammar_drill
@@ -54,12 +58,22 @@ export function validateDisplayContentShape(sections: SectionLike[]): Validation
     const ctx = { sectionTitle: s?.title, sectionOrderIndex: s?.order_index }
 
     if (type === 'grammar') {
-      // grammar-section-unstructured (CRITICAL).
-      if (typeof c.body === 'string' && !Array.isArray(c.categories)) {
+      // grammar-section-no-categories (CRITICAL). A grammar section's
+      // rule-bearing content MUST live under content.categories[] — that is the
+      // shape projectSections reads into lesson_section_grammar_categories, the
+      // typed rows the capability stage's pattern path needs to emit grammar
+      // capabilities. A grammar section with no non-empty categories[] — whether
+      // it kept a legacy body:string, OR (the silent 2026-06-12 L16 failure) put
+      // all its rules under the enricher-owned grammar_topics key — projects ZERO
+      // categories and therefore ZERO grammar capabilities, while the publish and
+      // the capability gate both otherwise pass green. Fail it here, pre-write.
+      if (!isNonEmptyArray(c.categories)) {
         out.push({
           gate: 'GT10',
           severity: 'error',
-          message: 'grammar section still has body:string and no categories array',
+          message: typeof c.body === 'string'
+            ? 'grammar section still has body:string and no categories[] — structure the rules under content.categories'
+            : 'grammar section has no non-empty categories[] — rule content must live under content.categories, not grammar_topics (which is enricher-owned flat labels)',
           context: ctx,
         })
       }

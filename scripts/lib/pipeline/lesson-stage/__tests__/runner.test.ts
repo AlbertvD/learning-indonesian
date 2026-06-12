@@ -54,7 +54,18 @@ function buildSyntheticStaging(): StagingBundle {
         {
           title: 'Grammatica',
           order_index: 2,
-          content: { type: 'grammar', grammar_topics: ['ada existential'] },
+          content: {
+            type: 'grammar',
+            grammar_topics: ['ada existential'],
+            categories: [
+              {
+                title: 'Ada als existentieel werkwoord',
+                title_en: 'Ada as existential verb',
+                rules: ['Ada drukt bestaan/aanwezigheid uit.'],
+                rules_en: ['Ada expresses existence/presence.'],
+              },
+            ],
+          },
         },
       ],
     },

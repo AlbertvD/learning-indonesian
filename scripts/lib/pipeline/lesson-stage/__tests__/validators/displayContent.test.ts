@@ -7,7 +7,10 @@ import { validateDisplayContentShape } from '../../validators/displayContent'
  * display-only sections GT5 leaves permissive (culture, reference_table).
  *
  * Folded from lint-staging's checkLessonStructure:
- *   - grammar-section-unstructured (CRITICAL)
+ *   - grammar-section-no-categories (CRITICAL) — a grammar section with no
+ *       non-empty categories[] (legacy body:string, rules misplaced under
+ *       grammar_topics, or empty). Broadened 2026-06-12 after L16 shipped 0
+ *       grammar capabilities silently.
  *   - grammar-category-empty       (WARNING)
  *   - translation-drill-no-answer  (WARNING)
  * (exercises-section-unstructured is already enforced by GT5's exercises
@@ -23,6 +26,35 @@ describe('validateDisplayContentShape — folded grammar checks', () => {
     expect(findings[0].gate).toBe('GT10')
     expect(findings[0].severity).toBe('error')
     expect(findings[0].message).toMatch(/body:string/)
+  })
+
+  // Regression: lesson 16 (2026-06-12) shipped with all rule content under
+  // grammar_topics (as objects) and no categories[] — no body:string, so the
+  // old check missed it and 0 grammar capabilities generated silently.
+  it('flags a grammar section whose rules sit under grammar_topics with no categories[] as CRITICAL', () => {
+    const findings = validateDisplayContentShape([
+      {
+        title: 'Grammatica',
+        content: {
+          type: 'grammar',
+          grammar_topics: [{ title: 'De DI-vorm', rules: ['een regel'], examples: [{ indonesian: 'x', dutch: 'y' }] }],
+        },
+      },
+    ])
+    expect(findings.length).toBe(1)
+    expect(findings[0].gate).toBe('GT10')
+    expect(findings[0].severity).toBe('error')
+    expect(findings[0].message).toMatch(/categories/)
+    expect(findings[0].message).not.toMatch(/body:string/)
+  })
+
+  it('flags a grammar section with an empty categories[] as CRITICAL', () => {
+    const findings = validateDisplayContentShape([
+      { title: 'Grammatica', content: { type: 'grammar', categories: [] } },
+    ])
+    expect(findings.length).toBe(1)
+    expect(findings[0].gate).toBe('GT10')
+    expect(findings[0].severity).toBe('error')
   })
 
   it('flags an empty grammar category (no rules/examples/table) as a warning', () => {
