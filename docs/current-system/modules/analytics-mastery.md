@@ -52,6 +52,19 @@ All in `masteryModel.ts`:
   `getStubbornWords(userId)`. `lapseCount === 0 ∧ reviewCount > 0 ∧
   consecutiveFailureCount ≥ 4`. Not a `MasteryLabel`/rung; TS-only (no SQL mirror,
   no RPC), like the funnel/skill/grammar derivers.
+- **Vocabulary skill profile** (receptive→productive→aural gap, #211; redesigned
+  2026-06-12 from capability-% to **word counts**): pure deriver
+  `deriveSkillModeGaps({evidence, now?})` → `SkillModeGap[]` + IO wrapper
+  `getSkillModeGaps(userId)`. `SkillMode = 'recognise' | 'produce' | 'listen'`,
+  with `ITEM_TYPE_MODE` mapping the seven **item** capability types to a mode
+  (grammar/morphology excluded). Counts **distinct words** (`source_ref`, deduped
+  — a word has up to 3 recognise / 2 produce / 2 listen caps): `knownWords` = words
+  solid in the mode (ANY mode-cap `mastered`/`strengthening`), `practisedWords` =
+  words with any mode-cap in scheduling; `strongPct = knownWords/practisedWords`
+  is a kept-but-secondary quality ratio (the headline is the *count*, a vocabulary
+  size that climbs — Webb 2008; Laufer & Nation 1999 — not a ratio over a growing
+  pile, which can't). `confidence` thresholds are in **words** (5/20). TS-only (no
+  SQL mirror, no RPC).
 
 ## 2. The canonical `mastered` predicate (single source of truth)
 

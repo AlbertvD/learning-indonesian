@@ -28,24 +28,41 @@ const mastered = { reviewCount: 5, stability: 20, lastReviewedAt: RECENT }
 const learning = { reviewCount: 1, stability: 1 }
 
 describe('deriveSkillModeGaps (vocabulary skill profile)', () => {
-  it('reports a per-mode proportion of solidly-known words (receptive-productive gap), never weakest-wins', () => {
+  it('counts DISTINCT WORDS per mode (a word with several caps counts once), known if any cap is solid', () => {
     const evidence = [
-      // recognise: 2 of 2 strong → 100%
-      ev({ capabilityType: 'text_recognition', ...mastered }),
-      ev({ capabilityType: 'meaning_recall', ...mastered }),
-      // produce: 1 of 2 strong → 50% (NOT pinned to the weak one)
-      ev({ capabilityType: 'form_recall', ...mastered }),
-      ev({ capabilityType: 'form_recall', ...learning }),
-      // listen: 0 of 1 strong → 0%
-      ev({ capabilityType: 'audio_recognition', ...learning }),
+      // word A, recognise: two caps, both solid → 1 known word
+      ev({ sourceRef: 'A', capabilityType: 'text_recognition', ...mastered }),
+      ev({ sourceRef: 'A', capabilityType: 'meaning_recall', ...mastered }),
+      // word B, recognise: one solid cap, one weak cap → still 1 known word (any-cap-solid)
+      ev({ sourceRef: 'B', capabilityType: 'text_recognition', ...mastered }),
+      ev({ sourceRef: 'B', capabilityType: 'meaning_recall', ...learning }),
+      // word C, recognise: only a weak cap → practised but not known
+      ev({ sourceRef: 'C', capabilityType: 'l1_to_id_choice', ...learning }),
     ]
 
-    const gaps = deriveSkillModeGaps({ evidence, now: NOW })
-    const byMode = Object.fromEntries(gaps.map((g) => [g.mode, g]))
+    const recognise = deriveSkillModeGaps({ evidence, now: NOW }).find((g) => g.mode === 'recognise')!
+    expect(recognise.practisedWords).toBe(3) // A, B, C
+    expect(recognise.knownWords).toBe(2) // A, B
+    expect(recognise.strongPct).toBe(67) // 2/3
+  })
 
-    expect(byMode.recognise.strongPct).toBe(100)
-    expect(byMode.produce.strongPct).toBe(50)
-    expect(byMode.listen.strongPct).toBe(0)
+  it('reports the receptive→productive→aural gap as word counts (never weakest-wins)', () => {
+    const evidence = [
+      // recognise: 2 known words
+      ev({ sourceRef: 'A', capabilityType: 'text_recognition', ...mastered }),
+      ev({ sourceRef: 'B', capabilityType: 'meaning_recall', ...mastered }),
+      // produce: 1 known word
+      ev({ sourceRef: 'A', capabilityType: 'form_recall', ...mastered }),
+      ev({ sourceRef: 'B', capabilityType: 'form_recall', ...learning }),
+      // listen: 0 known words
+      ev({ sourceRef: 'A', capabilityType: 'audio_recognition', ...learning }),
+    ]
+    const byMode = Object.fromEntries(
+      deriveSkillModeGaps({ evidence, now: NOW }).map((g) => [g.mode, g]),
+    )
+    expect(byMode.recognise.knownWords).toBe(2)
+    expect(byMode.produce.knownWords).toBe(1)
+    expect(byMode.listen.knownWords).toBe(0)
   })
 
   it('only counts vocabulary (item) capabilities — grammar/pattern caps are excluded', () => {
@@ -54,13 +71,16 @@ describe('deriveSkillModeGaps (vocabulary skill profile)', () => {
       ev({ sourceKind: 'pattern', capabilityType: 'pattern_recognition', ...mastered }),
     ]
     const recognise = deriveSkillModeGaps({ evidence, now: NOW }).find((g) => g.mode === 'recognise')!
-    expect(recognise.total).toBe(1)
+    expect(recognise.practisedWords).toBe(1)
   })
 
-  it('gates a mode with no words as confidence none', () => {
+  it('gates a mode with no words as confidence none, and uses WORD counts for the thresholds', () => {
     const evidence = [ev({ capabilityType: 'text_recognition', ...mastered })]
-    const listen = deriveSkillModeGaps({ evidence, now: NOW }).find((g) => g.mode === 'listen')!
+    const gaps = deriveSkillModeGaps({ evidence, now: NOW })
+    const listen = gaps.find((g) => g.mode === 'listen')!
     expect(listen.confidence).toBe('none')
-    expect(listen.total).toBe(0)
+    expect(listen.practisedWords).toBe(0)
+    // 1 practised word < 5 → low, even though it is solidly known
+    expect(gaps.find((g) => g.mode === 'recognise')!.confidence).toBe('low')
   })
 })
