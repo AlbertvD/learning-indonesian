@@ -10,6 +10,7 @@ import { useT } from '@/hooks/useT'
 import { getMasteryFunnel, type MasteryFunnels } from '@/lib/analytics/mastery/masteryModel'
 import { logError } from '@/lib/logger'
 import { MasteryJourney } from './MasteryJourney'
+import { StubbornWordsCard } from './StubbornWordsCard'
 import { PillSegmented } from './PillSegmented'
 import classes from './MasteryFunnelCard.module.css'
 
@@ -54,6 +55,9 @@ export function MasteryFunnelCard({ userId }: MasteryFunnelCardProps) {
       />
       {/* key re-mounts MasteryJourney so its entrance animation replays on switch */}
       <MasteryJourney key={view} funnel={funnels[view]} unitLabel={unitLabel} />
+      {/* Stubborn-word callout spans both vocab + grammar — outside the keyed
+          remount so it doesn't re-fetch/re-animate on filter switch. */}
+      <StubbornWordsCard userId={userId} />
     </div>
   )
 }

@@ -12,7 +12,7 @@
 //   - Spacing extends L2 vocab retention for years.
 //   - Listening gives cues; production needs you to generate your own.
 
-export type TipArea = 'recognise' | 'produce' | 'listen' | 'at_risk' | 'general'
+export type TipArea = 'recognise' | 'produce' | 'listen' | 'at_risk' | 'stubborn' | 'general'
 type Lang = 'nl' | 'en'
 
 interface TipSet {
@@ -78,6 +78,27 @@ export const STUDY_TIPS: Record<TipArea, TipSet> = {
         'Do a session today — the app surfaces your slipping words first.',
         'A short session now already helps; you don’t have to claw them all back at once.',
         'Say the slipping words aloud and tie each to an image or a short sentence.',
+      ],
+    },
+  },
+  stubborn: {
+    // Acquisition difficulty, not retention loss: more reps is "labor in vain"
+    // (Nelson & Leonesio) — the bottleneck is encoding. The evidence-backed fix is
+    // a richer encoding: keyword mnemonic (best for difficult L2 vocab) + making
+    // the card atomic + context. (Anki leech guidance + Springer 2019.)
+    title: { nl: 'Moeilijke woorden anders aanpakken', en: 'Tackling stubborn words differently' },
+    tips: {
+      nl: [
+        'Nóg een keer herhalen werkt hier niet — verander de aanpak. Maak een sleutelwoord-beeld: koppel het Indonesische woord aan een Nederlands klankwoord + een gek plaatje (bv. “pintar” → een schilder die heel slim is).',
+        'Hak een lang of samengesteld woord in stukjes en leer die los; voeg ze daarna samen.',
+        'Zet het woord in één korte, persoonlijke zin met context — context geeft gratis geheugenhaakjes, los drillen niet.',
+        'Zeg het hardop en schrijf het een paar keer: verbind klank, vorm én betekenis in plaats van alleen te herkennen.',
+      ],
+      en: [
+        'Repeating it again won’t help here — change the approach. Make a keyword image: link the Indonesian word to a Dutch/English sound-alike + a vivid picture (e.g. “pintar” → a painter who is very clever).',
+        'Break a long or compound word into pieces and learn those separately, then join them.',
+        'Put the word in one short, personal sentence with context — context gives free memory hooks; drilling it in isolation doesn’t.',
+        'Say it aloud and write it a few times: connect sound, form and meaning instead of just recognising it.',
       ],
     },
   },
