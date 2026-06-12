@@ -130,12 +130,16 @@ lesson-status spec / `lessons-overview` module.
 - **Upstream**: `lib/capabilities/` (types), `lib/lessons/` (`listActivatedLessons`),
   `lib/chunkedQuery`, `lib/supabase`.
 - **Downstream consumers**: the Voortgang surfaces **do** consume this model
-  (updated 2026-06-12 — the old "separate `itemsByStage` calc" note was
-  pre-redesign drift): `MasteryFunnelCard` ← `deriveMasteryFunnel`,
-  `SkillModeGapsCard` ← `deriveSkillModeGaps`, `GrammarTopicsList` ←
-  `deriveGrammarTopics`, and the home movement card ← `deriveWeeklyMovement`.
+  (updated 2026-06-12): the parallel **Woordenschat** and **Grammatica** pages
+  share `MasteryFunnelPanel` ← `getMasteryFunnels` (all-lessons + per-lesson
+  funnels, the latter from `deriveMasteryFunnelByLesson`); Grammatica's per-lesson
+  drill-down `GrammarPatternList` ← `getGrammarTopics`/`deriveGrammarTopics`;
+  `SkillModeGapsCard` ← `deriveSkillModeGaps`; the moeilijke-woorden callout ←
+  `deriveStubbornWords`; the home movement card ← `deriveWeeklyMovement`.
   `get_lessons_overview` mirrors the `mastered` predicate in SQL for the lesson
-  tile's `% mastered` (parity-tested, ADR 0015).
+  tile's `% mastered` (parity-tested, ADR 0015). Per-lesson funnels work because
+  `CapabilityMasteryEvidence` now carries the introducing `lessonNumber` (the
+  cap's `lesson_id` → `lessons.order_index`).
 - **Sibling / umbrella**: [[analytics-engagement]] (the Practice Time axis) and
   `analytics.md` (the umbrella read-model map — which surface reads which RPC).
 
