@@ -1,5 +1,13 @@
 ---
-status: approved
+status: shipped
+implementation: PR #234
+merged_at: 2026-06-12
+implementation_paths:
+  - src/lib/analytics/mastery/masteryModel.ts          # labelForCapability + isStubborn/deriveStubbornWords/getStubbornWords
+  - scripts/migration.sql                              # _mastery_label pinned order; get_lessons_overview dead-select drop
+  - scripts/check-supabase-deep.ts                     # HC28 lapse-gated mirror
+  - scripts/__tests__/weekly-movement-parity.test.ts
+  - src/lib/analytics/mastery/__tests__/              # masteryFunnel, masteryModel, stubbornWords
 reviewed_by: [architect, data-architect]   # both APPROVE-WITH-CHANGES (2026-06-12); all findings applied
 review_notes: |
   architect APPROVE-WITH-CHANGES: Q2 (moeilijk = separate TS signal, not a MasteryLabel/rung) confirmed sound;
