@@ -81,21 +81,36 @@ describe('deriveMasteryFunnel', () => {
 })
 
 describe('deriveGrammarTopics', () => {
-  it('rolls each grammar pattern (by slug) up weakest-wins to one ladder label', () => {
+  it('splits each pattern into recognise/use dimensions, rolls up weakest-wins, sums reviews, sorts by lesson', () => {
     const evidence = [
-      ev({ sourceKind: 'pattern', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
-      ev({ sourceKind: 'pattern', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 1, stability: 1 }),
-      ev({ sourceKind: 'pattern', sourceRef: 'lesson-4/pattern-l4-ber-prefix', reviewCount: 0, lessonActivated: true }),
+      // meN-prefix: recognition mastered, use still learning → overall learning
+      ev({ sourceKind: 'pattern', capabilityType: 'pattern_recognition', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'pattern', capabilityType: 'pattern_contrast', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 1, stability: 1 }),
+      // ber-prefix: only a recognition cap, never reviewed → introduced, no use dimension
+      ev({ sourceKind: 'pattern', capabilityType: 'pattern_recognition', sourceRef: 'lesson-4/pattern-l4-ber-prefix', reviewCount: 0, lessonActivated: true }),
       // not a grammar pattern → excluded
       ev({ sourceKind: 'item', sourceRef: 'makan', reviewCount: 5, stability: 20 }),
     ]
 
     const topics = deriveGrammarTopics({ evidence, now: NOW })
 
-    // sorted by introducing lesson; carries the parsed lessonNumber for grouping
     expect(topics).toEqual([
-      { slug: 'lesson-3/pattern-l3-meN-prefix', lessonNumber: 3, label: 'learning' },
-      { slug: 'lesson-4/pattern-l4-ber-prefix', lessonNumber: 4, label: 'introduced' },
+      {
+        slug: 'lesson-3/pattern-l3-meN-prefix',
+        lessonNumber: 3,
+        label: 'learning',
+        reviewCount: 6,
+        recognise: { label: 'mastered', reviewCount: 5 },
+        use: { label: 'learning', reviewCount: 1 },
+      },
+      {
+        slug: 'lesson-4/pattern-l4-ber-prefix',
+        lessonNumber: 4,
+        label: 'introduced',
+        reviewCount: 0,
+        recognise: { label: 'introduced', reviewCount: 0 },
+        use: null,
+      },
     ])
   })
 })

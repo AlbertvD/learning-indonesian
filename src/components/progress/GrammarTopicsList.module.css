@@ -9,7 +9,12 @@
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.6rem;
+}
+
+.filter {
+  margin-bottom: 0.85rem;
+  max-width: 14rem;
 }
 
 .group {
@@ -31,16 +36,15 @@
 
 .list {
   list-style: none;
-  margin: 0;
+  margin: 0.4rem 0 0;
   padding: 0;
 }
 
 .row {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.65rem 0;
   border-top: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.12));
 }
 
@@ -48,23 +52,31 @@
   border-top: none;
 }
 
-.info {
+.rowHead {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  min-width: 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .name {
   font-size: 0.88rem;
+  font-weight: 600;
   color: var(--text-primary);
+}
+
+.reviews {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #868e96);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .desc {
   font-size: 0.76rem;
   line-height: 1.4;
   color: var(--text-secondary, #868e96);
-  /* keep rows tidy: at most two lines of explanation */
+  margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -72,41 +84,64 @@
   overflow: hidden;
 }
 
-.badge {
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.15rem 0.5rem;
+.dims {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
+}
+
+.dim {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr 6.5rem;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dimLabel {
+  font-size: 0.76rem;
+  color: var(--text-primary);
+}
+
+.track {
+  height: 8px;
   border-radius: 999px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-top: 0.1rem;
   background: var(--surface-2, rgba(128, 128, 128, 0.14));
-  color: var(--text-secondary, #888);
+  overflow: hidden;
 }
 
-/* The ladder as the funnel's cool→green progression, so the three middle rungs
-   no longer read as one undifferentiated grey. not_assessed keeps the grey. */
-.badge.introduced {
-  background: color-mix(in srgb, #4dabf7 18%, transparent);
-  color: #4dabf7;
+.fill {
+  display: block;
+  height: 100%;
+  width: var(--fill, 0%);
+  border-radius: 999px;
+  background: var(--text-secondary, #868e96);
 }
 
-.badge.learning {
-  background: color-mix(in srgb, #3bc9db 20%, transparent);
-  color: #1098ad;
+.dimRung {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #868e96);
+  text-align: right;
+  white-space: nowrap;
 }
 
-.badge.strengthening {
-  background: color-mix(in srgb, #20c997 20%, transparent);
-  color: #0ca678;
+/* The ladder as the funnel's cool→green progression. */
+.fill.introduced {
+  background: #4dabf7;
 }
 
-.badge.mastered {
-  background: color-mix(in srgb, var(--success, #2f9e44) 18%, transparent);
-  color: var(--success, #2f9e44);
+.fill.learning {
+  background: #3bc9db;
 }
 
-.badge.at_risk {
-  background: color-mix(in srgb, var(--warning, #e8590c) 18%, transparent);
-  color: var(--warning, #e8590c);
+.fill.strengthening {
+  background: #20c997;
+}
+
+.fill.mastered {
+  background: var(--success, #2f9e44);
+}
+
+.fill.at_risk {
+  background: var(--warning, #e8590c);
 }

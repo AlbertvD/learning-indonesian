@@ -475,11 +475,25 @@ export function deriveStubbornWords(input: { evidence: CapabilityMasteryEvidence
     .sort((a, b) => b.consecutiveFailures - a.consecutiveFailures)
 }
 
+// One of a grammar pattern's two skill dimensions (recognise the rule / apply it):
+// its rolled-up rung plus how many times the learner has practised it.
+export interface GrammarDimensionProgress {
+  label: MasteryLabel
+  reviewCount: number
+}
+
 export interface GrammarTopicLabel {
   slug: string
   /** Lesson that introduces the pattern, parsed from the `lesson-N/...` source_ref. */
   lessonNumber: number | null
+  /** Weakest-wins across both dimensions — the one rung the lesson funnel tallies. */
   label: MasteryLabel
+  /** Total reviews across the pattern's capabilities ("N× geoefend"). */
+  reviewCount: number
+  /** `pattern_recognition` caps; null if the pattern has none. */
+  recognise: GrammarDimensionProgress | null
+  /** `pattern_contrast` (apply) caps; null if the pattern has none. */
+  use: GrammarDimensionProgress | null
 }
 
 export interface GrammarTopic extends GrammarTopicLabel {
@@ -494,8 +508,21 @@ function lessonNumberFromSourceRef(sourceRef: string): number | null {
   return match ? Number(match[1]) : null
 }
 
+function dimensionProgress(
+  caps: CapabilityMasteryEvidence[],
+  now: Date,
+): GrammarDimensionProgress | null {
+  if (caps.length === 0) return null
+  return {
+    label: weakestLabel(caps.map((cap) => labelForCapability(cap, now))),
+    reviewCount: caps.reduce((sum, cap) => sum + cap.reviewCount, 0),
+  }
+}
+
 // Named grammar topics (source_kind 'pattern' only — affixed_form_pairs are not
-// named grammar_patterns), each rolled up weakest-wins to one ladder label.
+// named grammar_patterns). Each pattern splits into its two dimensions —
+// `recognise` (pattern_recognition) and `use` (pattern_contrast) — plus a
+// weakest-wins overall rung (what the lesson funnel tallies) and total reviews.
 // Sorted by introducing lesson then slug (the learning order the UI groups on).
 // Used by the voortgang grammar-topics drill-down (#209).
 export function deriveGrammarTopics(input: {
@@ -513,6 +540,9 @@ export function deriveGrammarTopics(input: {
       slug,
       lessonNumber: lessonNumberFromSourceRef(slug),
       label: weakestLabel(caps.map((cap) => labelForCapability(cap, now))),
+      reviewCount: caps.reduce((sum, cap) => sum + cap.reviewCount, 0),
+      recognise: dimensionProgress(caps.filter((c) => c.capabilityType === 'pattern_recognition'), now),
+      use: dimensionProgress(caps.filter((c) => c.capabilityType === 'pattern_contrast'), now),
     }))
     .sort((a, b) => {
       const la = a.lessonNumber ?? Number.POSITIVE_INFINITY
@@ -868,11 +898,9 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
         const patternSlug = patternSlugByTopic.get(topic.slug)!
         const row = bySlug.get(patternSlug)
         return {
-          slug: topic.slug,
-          lessonNumber: topic.lessonNumber,
+          ...topic,
           name: row?.name ?? patternSlug,
           shortExplanation: row?.short_explanation ?? '',
-          label: topic.label,
         }
       })
     },

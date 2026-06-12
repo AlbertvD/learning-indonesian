@@ -1,33 +1,68 @@
 // src/components/progress/GrammarTopicsList.tsx
 //
-// Grammar-topics drill-down on voortgang (#209): each named grammar_pattern with
-// its mastery ladder label. Read-only, client-side over the same evidence the
-// funnels use (joins grammar_patterns names). Coaching labels (at-risk reads
-// "needs review"), per the engagement research.
-import { useEffect, useState } from 'react'
+// Grammar progress on voortgang (#209): a lesson filter on top, then for the
+// selected lesson a rung distribution (the same MasteryJourney funnel as the
+// Voortgang vocab/grammar funnels — grammar-only, counting THIS lesson's
+// patterns) and below it each pattern's two skill dimensions — Herkennen
+// (recognise the rule) and Toepassen (apply it) — as a position on the same
+// ladder, plus how often it's been practised. "Alle lessen" shows the grouped
+// overview without the per-lesson funnel. Read-only, client-side over the same
+// evidence the funnels use.
+import { useEffect, useMemo, useState } from 'react'
+import { Select } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
 import {
   getGrammarTopics,
   type GrammarTopic,
+  type GrammarDimensionProgress,
+  type MasteryFunnel,
+  type MasteryLabel,
 } from '@/lib/analytics/mastery/masteryModel'
-import type { MasteryLabel } from '@/lib/analytics/mastery/masteryModel'
 import { logError } from '@/lib/logger'
+import { MasteryJourney } from './MasteryJourney'
 import classes from './GrammarTopicsList.module.css'
 
 export interface GrammarTopicsListProps {
   userId: string
 }
 
+const ALL = 'all'
+
+// How far a rung fills the dimension bar (the ladder as a fraction).
+const RUNG_FILL: Record<MasteryLabel, number> = {
+  not_assessed: 0,
+  introduced: 0.25,
+  learning: 0.5,
+  strengthening: 0.75,
+  mastered: 1,
+  at_risk: 0.5,
+}
+
+function buildFunnel(topics: GrammarTopic[]): MasteryFunnel {
+  const funnel: MasteryFunnel = {
+    not_assessed: 0, introduced: 0, learning: 0, strengthening: 0, mastered: 0, at_risk: 0,
+  }
+  for (const topic of topics) funnel[topic.label] += 1
+  return funnel
+}
+
 export function GrammarTopicsList({ userId }: GrammarTopicsListProps) {
   const T = useT()
   const [topics, setTopics] = useState<GrammarTopic[]>([])
+  const [lesson, setLesson] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
     getGrammarTopics(userId)
       .then((value) => {
-        if (active) setTopics(value)
+        if (!active) return
+        setTopics(value)
+        // Default to the most recent lesson so the view opens focused, not as an
+        // endless scroll. Only lessons that actually have patterns are offered.
+        const lessons = [...new Set(value.map((t) => t.lessonNumber).filter((n): n is number => n != null))]
+        if (lessons.length > 0) setLesson(String(Math.max(...lessons)))
+        else setLesson(ALL)
       })
       .catch((err) => {
         logError({ page: 'progress', action: 'grammarTopics', error: err })
@@ -43,7 +78,7 @@ export function GrammarTopicsList({ userId }: GrammarTopicsListProps) {
   }, [userId, T.common.error, T.common.somethingWentWrong])
 
   const rungLabel: Record<MasteryLabel, string> = {
-    not_assessed: T.progress.rungLearning,
+    not_assessed: T.progress.grammarNotStarted,
     introduced: T.progress.rungIntroduced,
     learning: T.progress.rungLearning,
     strengthening: T.progress.rungStrengthening,
@@ -51,41 +86,98 @@ export function GrammarTopicsList({ userId }: GrammarTopicsListProps) {
     at_risk: T.progress.rungAtRisk,
   }
 
-  // Group by introducing lesson (the learning order). deriveGrammarTopics already
-  // sorts by lessonNumber → slug, so insertion order gives ascending lessons with
-  // a stable within-lesson order; null (no lesson) collects under "Overig" last.
+  const lessons = useMemo(
+    () => [...new Set(topics.map((t) => t.lessonNumber).filter((n): n is number => n != null))].sort((a, b) => a - b),
+    [topics],
+  )
+
+  const selectData = [
+    ...lessons.map((n) => ({ value: String(n), label: `${T.progress.grammarLessonLabel} ${n}` })),
+    { value: ALL, label: T.progress.grammarAllLessons },
+  ]
+
+  const singleLesson = lesson != null && lesson !== ALL
+  const visible = singleLesson ? topics.filter((t) => String(t.lessonNumber) === lesson) : topics
+
+  // Group the visible patterns by lesson (deriveGrammarTopics already sorted them
+  // by lesson then slug, so insertion order is the learning order).
   const byLesson = new Map<number | null, GrammarTopic[]>()
-  for (const topic of topics) {
+  for (const topic of visible) {
     byLesson.set(topic.lessonNumber, [...(byLesson.get(topic.lessonNumber) ?? []), topic])
   }
 
   return (
     <div className={classes.card}>
       <h3 className={classes.title}>{T.progress.grammarTopicsTitle}</h3>
+
+      {lessons.length > 0 && (
+        <Select
+          className={classes.filter}
+          aria-label={T.progress.grammarTopicsTitle}
+          data={selectData}
+          value={lesson}
+          onChange={(value) => value && setLesson(value)}
+          allowDeselect={false}
+          comboboxProps={{ withinPortal: false }}
+        />
+      )}
+
       {[...byLesson.entries()].map(([lessonNumber, lessonTopics]) => (
         <div key={lessonNumber ?? 'other'} className={classes.group}>
-          <h4 className={classes.groupHead}>
-            {lessonNumber != null
-              ? `${T.progress.grammarLessonLabel} ${lessonNumber}`
-              : T.progress.grammarOtherLabel}
-          </h4>
+          {singleLesson ? (
+            <MasteryJourney funnel={buildFunnel(lessonTopics)} unitLabel={T.progress.grammarUnitPatterns} />
+          ) : (
+            <h4 className={classes.groupHead}>
+              {lessonNumber != null
+                ? `${T.progress.grammarLessonLabel} ${lessonNumber}`
+                : T.progress.grammarOtherLabel}
+            </h4>
+          )}
           <ul className={classes.list}>
             {lessonTopics.map((topic) => (
               <li key={topic.slug} className={classes.row}>
-                <span className={classes.info}>
+                <div className={classes.rowHead}>
                   <span className={classes.name}>{topic.name}</span>
-                  {topic.shortExplanation && (
-                    <span className={classes.desc}>{topic.shortExplanation}</span>
+                  {topic.reviewCount > 0 && (
+                    <span className={classes.reviews}>
+                      {topic.reviewCount}× {T.progress.grammarPractised}
+                    </span>
                   )}
-                </span>
-                <span className={`${classes.badge} ${classes[topic.label] ?? ''}`}>
-                  {rungLabel[topic.label]}
-                </span>
+                </div>
+                {topic.shortExplanation && <p className={classes.desc}>{topic.shortExplanation}</p>}
+                <div className={classes.dims}>
+                  <DimBar label={T.progress.grammarRecognise} dim={topic.recognise} rungLabel={rungLabel} />
+                  <DimBar label={T.progress.grammarUse} dim={topic.use} rungLabel={rungLabel} />
+                </div>
               </li>
             ))}
           </ul>
         </div>
       ))}
+    </div>
+  )
+}
+
+function DimBar({
+  label,
+  dim,
+  rungLabel,
+}: {
+  label: string
+  dim: GrammarDimensionProgress | null
+  rungLabel: Record<MasteryLabel, string>
+}) {
+  if (!dim) return null
+  return (
+    <div className={classes.dim}>
+      <span className={classes.dimLabel}>{label}</span>
+      <span className={classes.track}>
+        <span
+          className={`${classes.fill} ${classes[dim.label] ?? ''}`}
+          style={{ ['--fill' as string]: `${RUNG_FILL[dim.label] * 100}%` }}
+        />
+      </span>
+      <span className={classes.dimRung}>{rungLabel[dim.label]}</span>
     </div>
   )
 }
