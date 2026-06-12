@@ -1,0 +1,138 @@
+---
+module: analytics
+surface: src/lib/analytics/, src/components/progress/, src/components/dashboard/
+last_verified_against_code: 2026-06-12
+status: stable
+---
+
+# Analytics (the learner-progress read-model)
+
+The analytics module is the **read-only** layer that tells the learner how they're
+doing. It schedules nothing and writes nothing (except one completion stamp — see
+§4); it reads capability review state + sessions and derives learner-facing
+progress. It powers three surfaces: the **home** page (decide + glance), the
+**Voortgang** page (reflect), and the **lesson tiles** (per-lesson % mastered).
+
+It has two sub-modules, one per **axis** (CONTEXT.md → Learner Progress Axes):
+
+- **Axis 1 — Practice Time** (input / engagement): `lib/analytics/engagement/` →
+  spec [[analytics-engagement]]. Streak · minutes · sessions.
+- **Axis 2 — Mastery progression** (outcome): `lib/analytics/mastery/` → spec
+  [[analytics-mastery]]. The ladder funnel, weekly movement, skill gaps, grammar
+  topics, the canonical `mastered`/`at_risk` predicates.
+
+The leaderboard was **decommissioned** in this redesign; analytics is learner-
+facing, not competitive.
+
+## 1. Surfaces (who reads what)
+
+**Home — `src/pages/Dashboard.tsx`:**
+- **Streak bar** (`components/dashboard/StreakBar.tsx`) — last 5 days of completed
+  sessions + the streak flame. Fed by `engagement.dailyActivity` +
+  `engagement.practiceTime`.
+- **"… min deze week"** cell → deep-links to Voortgang **Tijd** (`/progress?tab=time`).
+- **"Deze week omhoog"** cell — split **woorden · grammatica** → deep-links to the
+  Voortgang **funnel** (`/progress?tab=funnel`). Fed by `getWeeklyMovement`.
+- **Continue lesson** — latest activated lesson.
+
+**Voortgang — `src/pages/Progress.tsx`** (URL-addressable tabs via `useSearchParams`):
+- **Voortgang / funnel** (`MasteryFunnelCard`) — the ladder funnel with a
+  vocab/grammar filter.
+- **Vaardigheden** (`SkillModeGapsCard`) — skill-mode gaps (recognise/produce/listen).
+- **Tijd** (`TimeComparisonCard`) — week/month time comparison.
+- **Grammatica** (`GrammarTopicsList`) — named grammar topics + their ladder label.
+
+**Lesson tiles** — per-lesson **% mastered** from `get_lessons_overview`
+(`migration.sql:1979`); see [[lessons-overview]].
+
+## 2. The read-model — server RPCs vs TS derivers
+
+Some metrics aggregate **server-side** (an RPC returns a small result, ADR 0015);
+others fetch capability rows and derive **in TS**. The split:
+
+| Metric | Where computed | Cite |
+|---|---|---|
+| Practice time / minutes | RPC `get_practice_time` | `migration.sql:2138` |
+| Streak | RPC `get_current_streak_days` | `migration.sql:2099` |
+| Daily activity (streak bar) | RPC `get_daily_activity` | `migration.sql:2285` |
+| Weekly movement | RPC `get_weekly_movement` | `migration.sql:2222` |
+| Per-lesson % mastered | RPC `get_lessons_overview` | `migration.sql:1979` |
+| Mastery funnel (vocab/grammar) | TS `deriveMasteryFunnel` | `masteryModel.ts` |
+| Skill-mode gaps | TS `deriveSkillModeGaps` | `masteryModel.ts` |
+| Grammar topics | TS `deriveGrammarTopics` | `masteryModel.ts` |
+
+## 3. Canonical definitions — stored once, reused everywhere
+
+The whole point of this module is **aligned definitions across surfaces**. Each
+load-bearing definition lives in exactly one place:
+
+- **The mastery rung** — `labelForCapability` (`masteryModel.ts`) maps one
+  capability's evidence to `introduced/learning/strengthening/mastered/at_risk`.
+  The funnel, weekly movement, skill gaps, and lesson tiles all call it; none
+  re-implements the thresholds.
+- **`mastered`** — `isCapabilityMastered` (`mastered.ts`): reviewCount ≥ 4,
+  stability ≥ 14d, reviewed within 30d, **and not currently failing**.
+- **`at_risk` is self-healing** (2026-06-11): `consecutiveFailureCount > 0` only
+  (currently failing) — *not* "ever lapsed". A relearned word climbs back to
+  `mastered`. A cumulative "leech" signal is a separate, deferred concept.
+- **The vocab/grammar split** — `funnelBucket(sourceKind)` (`masteryModel.ts`):
+  `item`→vocab, `pattern`/`affixed_form_pair`→grammar, else excluded. Shared by
+  the funnel, weekly movement, and HC28 — so they can't disagree on what counts
+  as vocab vs grammar.
+- **The streak** — a **completed session**, not an answer (see [[analytics-engagement]] §3).
+
+### The cross-language mirror (ADR 0015)
+
+The metrics computed in SQL (`get_lessons_overview`, `get_weekly_movement`'s
+`_mastery_label` at `migration.sql:2203`) necessarily duplicate the TS predicate —
+a SQL function can't import TS. That duplication is policed, not trusted:
+
+- **Parity tests** (`scripts/__tests__/lessons-overview-mastery-parity.test.ts`,
+  `weekly-movement-parity.test.ts`) assert the SQL carries the same thresholds.
+- **Health checks** recompute in TS and compare to the RPC over live data:
+  **HC27** % mastered (`check-supabase-deep.ts:1397`) and **HC28** weekly movement.
+  They go RED if the two sides ever diverge.
+
+So: TS-only metrics propagate automatically (one function, many callers); SQL
+mirrors are enforced-equal by HC27/HC28.
+
+## 4. Weekly Movement (the fast pulse on the slow axis)
+
+`getWeeklyMovement` / `deriveWeeklyMovement` (`masteryModel.ts`) →
+`{ advancedVocab, advancedGrammar, reachedMastered, slipped }`. Counts **distinct
+`source_ref`** (a word / grammar topic, counted once however many of its caps
+advanced) that climbed a rung this week, **split + scoped to the same two buckets
+as the funnel** (`funnelBucket`); `dialogue_line`/`podcast` excluded. Derived from
+`capability_review_events` before/after rungs (ADR 0016, not snapshotted). The
+home card shows it split (`X woorden · Y grammatica`).
+
+## 5. What changed in the 2026-06-10..12 redesign
+
+- Two learner-aligned axes (Practice Time + Mastery progression); leaderboard
+  decommissioned.
+- Weekly movement (ADR 0016, derive-from-event-log), then fixed to count distinct
+  **words** not capabilities, then **split** vocab/grammar via `funnelBucket`.
+- `at_risk` made self-healing (currently-failing only).
+- Home rebuilt: first-of-day greeting, streak bar, deep-links, split movement card.
+- Voortgang rebuilt as URL-addressable animated tabs (funnel · skills · time ·
+  grammar) with pill segmented controls + a chevron funnel.
+- App-tailored study tips (`lib/analytics/studyTips.ts`) surfaced via `InsightTips`.
+- Streak tightened: a day counts only if you **finish a session**
+  (`completed_at` + `mark_session_complete`, grace day).
+
+## 6. Seams
+
+- **Upstream:** capability review state (`learner_capability_state`,
+  `capability_review_events`) written by the review commit
+  (`migration.sql:1489`); `learning_sessions` (engagement). Activation gates which
+  caps count (ADR 0006).
+- **Sub-module specs:** [[analytics-mastery]] (ladder/funnel/movement/predicates),
+  [[analytics-engagement]] (Practice Time/streak).
+- **Sibling:** [[lessons-overview]] (per-lesson % mastered — same `mastered`
+  predicate, SQL-mirrored).
+
+## 7. What this spec does NOT cover
+
+Internal flow of the mastery derivers → [[analytics-mastery]]. Practice Time
+internals → [[analytics-engagement]]. The exercise-play surface that *produces* the
+review events → [[experience]] / [[session-builder]].
