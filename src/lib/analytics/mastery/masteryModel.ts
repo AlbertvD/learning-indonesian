@@ -3,6 +3,7 @@ import type {
   CapabilitySourceKind,
   CapabilityType,
 } from '@/lib/capabilities'
+import { patternSlugFromSourceRef } from '@/lib/capabilities'
 import { listActivatedLessons } from '@/lib/lessons'
 import { chunkedIn } from '@/lib/chunkedQuery'
 import { isCapabilityMastered, isRecent } from './mastered'
@@ -43,6 +44,9 @@ export interface CapabilityMasteryEvidence {
   // 'not_assessed'. NULL lessonId (cross-lesson capability, e.g. podcast)
   // counts as activated for the purposes of this signal.
   lessonActivated: boolean
+  // Introducing lesson's order_index (the "Les N" number), for per-lesson funnels.
+  // null for cross-lesson caps (podcast) and where the lesson can't be resolved.
+  lessonNumber: number | null
   reviewCount: number
   lapseCount: number
   consecutiveFailureCount: number
@@ -433,6 +437,27 @@ export function deriveMasteryFunnel(input: {
   return { vocabulary: tally(vocab), grammar: tally(grammar) }
 }
 
+// The same vocab/grammar funnels, split per introducing lesson (order_index).
+// A unit (word / pattern) lands in exactly one lesson bucket — its capabilities
+// share one introducing lesson (ADR 0006) — so this is just deriveMasteryFunnel
+// run over each lesson's slice. Caps with no lessonNumber (podcast) are skipped.
+export function deriveMasteryFunnelByLesson(input: {
+  evidence: CapabilityMasteryEvidence[]
+  now?: Date
+}): Map<number, MasteryFunnels> {
+  const now = input.now ?? new Date()
+  const byLesson = new Map<number, CapabilityMasteryEvidence[]>()
+  for (const e of input.evidence) {
+    if (e.lessonNumber == null) continue
+    byLesson.set(e.lessonNumber, [...(byLesson.get(e.lessonNumber) ?? []), e])
+  }
+  const result = new Map<number, MasteryFunnels>()
+  for (const [lessonNumber, caps] of byLesson) {
+    result.set(lessonNumber, deriveMasteryFunnel({ evidence: caps, now }))
+  }
+  return result
+}
+
 // ── Stubborn ("moeilijk") words — an ACQUISITION-difficulty signal, distinct from
 // at_risk (a RETENTION loss). A word never learned (`lapseCount === 0`) that the
 // learner keeps failing (`consecutiveFailureCount >= STUBBORN_THRESHOLD`) needs a
@@ -474,9 +499,25 @@ export function deriveStubbornWords(input: { evidence: CapabilityMasteryEvidence
     .sort((a, b) => b.consecutiveFailures - a.consecutiveFailures)
 }
 
+// One of a grammar pattern's two skill dimensions (recognise the rule / apply it):
+// its rolled-up rung plus how many times the learner has practised it.
+export interface GrammarDimensionProgress {
+  label: MasteryLabel
+  reviewCount: number
+}
+
 export interface GrammarTopicLabel {
   slug: string
+  /** Lesson that introduces the pattern, parsed from the `lesson-N/...` source_ref. */
+  lessonNumber: number | null
+  /** Weakest-wins across both dimensions — the one rung the lesson funnel tallies. */
   label: MasteryLabel
+  /** Total reviews across the pattern's capabilities ("N× geoefend"). */
+  reviewCount: number
+  /** `pattern_recognition` caps; null if the pattern has none. */
+  recognise: GrammarDimensionProgress | null
+  /** `pattern_contrast` (apply) caps; null if the pattern has none. */
+  use: GrammarDimensionProgress | null
 }
 
 export interface GrammarTopic extends GrammarTopicLabel {
@@ -484,8 +525,29 @@ export interface GrammarTopic extends GrammarTopicLabel {
   shortExplanation: string
 }
 
+// A pattern cap's source_ref is `lesson-N/pattern-<slug>`; the introducing lesson
+// number drives the voortgang grouping. `null` if the envelope is absent.
+function lessonNumberFromSourceRef(sourceRef: string): number | null {
+  const match = sourceRef.match(/^lesson-(\d+)\//)
+  return match ? Number(match[1]) : null
+}
+
+function dimensionProgress(
+  caps: CapabilityMasteryEvidence[],
+  now: Date,
+): GrammarDimensionProgress | null {
+  if (caps.length === 0) return null
+  return {
+    label: weakestLabel(caps.map((cap) => labelForCapability(cap, now))),
+    reviewCount: caps.reduce((sum, cap) => sum + cap.reviewCount, 0),
+  }
+}
+
 // Named grammar topics (source_kind 'pattern' only — affixed_form_pairs are not
-// named grammar_patterns), each rolled up weakest-wins to one ladder label.
+// named grammar_patterns). Each pattern splits into its two dimensions —
+// `recognise` (pattern_recognition) and `use` (pattern_contrast) — plus a
+// weakest-wins overall rung (what the lesson funnel tallies) and total reviews.
+// Sorted by introducing lesson then slug (the learning order the UI groups on).
 // Used by the voortgang grammar-topics drill-down (#209).
 export function deriveGrammarTopics(input: {
   evidence: CapabilityMasteryEvidence[]
@@ -500,9 +562,17 @@ export function deriveGrammarTopics(input: {
   return [...bySlug.entries()]
     .map(([slug, caps]) => ({
       slug,
+      lessonNumber: lessonNumberFromSourceRef(slug),
       label: weakestLabel(caps.map((cap) => labelForCapability(cap, now))),
+      reviewCount: caps.reduce((sum, cap) => sum + cap.reviewCount, 0),
+      recognise: dimensionProgress(caps.filter((c) => c.capabilityType === 'pattern_recognition'), now),
+      use: dimensionProgress(caps.filter((c) => c.capabilityType === 'pattern_contrast'), now),
     }))
-    .sort((a, b) => a.slug.localeCompare(b.slug))
+    .sort((a, b) => {
+      const la = a.lessonNumber ?? Number.POSITIVE_INFINITY
+      const lb = b.lessonNumber ?? Number.POSITIVE_INFINITY
+      return la !== lb ? la - lb : a.slug.localeCompare(b.slug)
+    })
 }
 
 // ---- Vocabulary skill profile (receptive / productive / aural, #211) ----
@@ -645,6 +715,7 @@ function labelFromState(state: MovementState, now: Date): MasteryLabel {
       readinessStatus: 'ready',
       publicationStatus: 'published',
       lessonActivated: true,
+      lessonNumber: null,
       reviewCount: state.reviewCount,
       lapseCount: state.lapseCount,
       consecutiveFailureCount: state.consecutiveFailureCount,
@@ -687,6 +758,7 @@ function toEvidence(input: {
   capabilities: LearningCapabilityRow[]
   states: LearnerCapabilityStateRow[]
   activatedLessons: Set<string>
+  lessonOrderById: Map<string, number>
 }): CapabilityMasteryEvidence[] {
   const stateByCapabilityId = new Map(input.states.map(state => [state.capability_id, state]))
 
@@ -700,6 +772,9 @@ function toEvidence(input: {
     // (scripts/migration.sql); those caps are gated on the activation set.
     const lessonActivated = capability.lesson_id == null
       || input.activatedLessons.has(capability.lesson_id)
+    const lessonNumber = capability.lesson_id == null
+      ? null
+      : input.lessonOrderById.get(capability.lesson_id) ?? null
     return {
       capabilityId: capability.id,
       canonicalKey: capability.canonical_key,
@@ -710,6 +785,7 @@ function toEvidence(input: {
       readinessStatus: capability.readiness_status,
       publicationStatus: capability.publication_status,
       lessonActivated,
+      lessonNumber,
       reviewCount: state?.review_count ?? 0,
       lapseCount: state?.lapse_count ?? 0,
       consecutiveFailureCount: state?.consecutive_failure_count ?? 0,
@@ -747,13 +823,40 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     )
   }
 
+  // lesson_id → order_index ("Les N"), so evidence can carry the introducing
+  // lesson number for per-lesson funnels. One small unfiltered read.
+  async function lessonOrderMap(): Promise<Map<string, number>> {
+    const { data, error } = await db().from('lessons').select('id, order_index')
+    if (error) throw error
+    return new Map(((data ?? []) as Array<{ id: string; order_index: number }>).map(l => [l.id, l.order_index]))
+  }
+
   async function evidenceForCapabilities(userId: string, capabilities: LearningCapabilityRow[]): Promise<CapabilityMasteryEvidence[]> {
     const capabilityIds = capabilities.map(capability => capability.id)
-    const [states, activatedLessonsSet] = await Promise.all([
+    const [states, activatedLessons, lessonOrderById] = await Promise.all([
       learnerStates(userId, capabilityIds),
       listActivatedLessons(userId, client),
+      lessonOrderMap(),
     ])
-    return toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+    return toEvidence({ capabilities, states, activatedLessons, lessonOrderById })
+  }
+
+  // The learner's full evidence set — every capability with a state row, joined to
+  // its capability + activation + lesson-number. Shared by the overview, funnel,
+  // skill, grammar and stubborn readers (all previously duplicated this fetch).
+  async function allLearnerEvidence(userId: string): Promise<CapabilityMasteryEvidence[]> {
+    const { data: stateRows, error: stateError } = await db()
+      .from('learner_capability_state')
+      .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
+      .eq('user_id', userId)
+    if (stateError) throw stateError
+    const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
+    const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
+    const [activatedLessons, lessonOrderById] = await Promise.all([
+      listActivatedLessons(userId, client),
+      lessonOrderMap(),
+    ])
+    return toEvidence({ capabilities, states, activatedLessons, lessonOrderById })
   }
 
   return {
@@ -783,81 +886,62 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     },
 
     async getMasteryOverview(userId: string): Promise<MasteryOverview> {
-      const { data: stateRows, error: stateError } = await db()
-        .from('learner_capability_state')
-        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
-        .eq('user_id', userId)
-      if (stateError) throw stateError
-      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
-      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
-      const activatedLessonsSet = await listActivatedLessons(userId, client)
-      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      const evidence = await allLearnerEvidence(userId)
       return deriveMasteryOverview({ userId, evidence })
     },
 
     async getMasteryFunnel(userId: string): Promise<MasteryFunnels> {
-      const { data: stateRows, error: stateError } = await db()
-        .from('learner_capability_state')
-        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
-        .eq('user_id', userId)
-      if (stateError) throw stateError
-      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
-      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
-      const activatedLessonsSet = await listActivatedLessons(userId, client)
-      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      const evidence = await allLearnerEvidence(userId)
       return deriveMasteryFunnel({ evidence })
     },
 
+    // Both the all-lessons funnels and the per-lesson breakdown in one fetch, for
+    // the Woordenschat / Grammatica panels (landing = all, filter = per lesson).
+    async getMasteryFunnels(userId: string): Promise<{ all: MasteryFunnels; byLesson: Map<number, MasteryFunnels> }> {
+      const evidence = await allLearnerEvidence(userId)
+      return {
+        all: deriveMasteryFunnel({ evidence }),
+        byLesson: deriveMasteryFunnelByLesson({ evidence }),
+      }
+    },
+
     async getSkillModeGaps(userId: string): Promise<SkillModeGap[]> {
-      const { data: stateRows, error: stateError } = await db()
-        .from('learner_capability_state')
-        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
-        .eq('user_id', userId)
-      if (stateError) throw stateError
-      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
-      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
-      const activatedLessonsSet = await listActivatedLessons(userId, client)
-      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      const evidence = await allLearnerEvidence(userId)
       return deriveSkillModeGaps({ evidence })
     },
 
     async getGrammarTopics(userId: string): Promise<GrammarTopic[]> {
-      const { data: stateRows, error: stateError } = await db()
-        .from('learner_capability_state')
-        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
-        .eq('user_id', userId)
-      if (stateError) throw stateError
-      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
-      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
-      const activatedLessonsSet = await listActivatedLessons(userId, client)
-      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      const evidence = await allLearnerEvidence(userId)
       const topics = deriveGrammarTopics({ evidence })
       if (topics.length === 0) return []
+      // `topic.slug` is the capability source_ref (`lesson-N/pattern-<slug>`);
+      // grammar_patterns is keyed by the bare `<slug>`. Strip the envelope before
+      // the join — otherwise nothing matches and the row falls back to printing
+      // the raw source_ref (the "lesson-N/pattern-…" noise). Shared helper so this
+      // reader and the grammar exercise reader can't drift.
+      const patternSlugByTopic = new Map(
+        topics.map(topic => [topic.slug, patternSlugFromSourceRef(topic.slug)] as const),
+      )
       const { data: patternRows, error: patternError } = await db()
         .from('grammar_patterns')
         .select('slug, name, short_explanation')
-        .in('slug', topics.map(topic => topic.slug))
+        .in('slug', [...new Set(patternSlugByTopic.values())])
       if (patternError) throw patternError
       const rows = (patternRows ?? []) as Array<{ slug: string; name: string; short_explanation: string }>
       const bySlug = new Map(rows.map(p => [p.slug, p] as const))
-      return topics.map(topic => ({
-        slug: topic.slug,
-        name: bySlug.get(topic.slug)?.name ?? topic.slug,
-        shortExplanation: bySlug.get(topic.slug)?.short_explanation ?? '',
-        label: topic.label,
-      }))
+      return topics.map(topic => {
+        const patternSlug = patternSlugByTopic.get(topic.slug)!
+        const row = bySlug.get(patternSlug)
+        return {
+          ...topic,
+          name: row?.name ?? patternSlug,
+          shortExplanation: row?.short_explanation ?? '',
+        }
+      })
     },
 
     async getStubbornWords(userId: string): Promise<StubbornWord[]> {
-      const { data: stateRows, error: stateError } = await db()
-        .from('learner_capability_state')
-        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
-        .eq('user_id', userId)
-      if (stateError) throw stateError
-      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
-      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
-      const activatedLessonsSet = await listActivatedLessons(userId, client)
-      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      const evidence = await allLearnerEvidence(userId)
       return deriveStubbornWords({ evidence })
     },
   }
@@ -878,6 +962,10 @@ export async function getPatternMastery(patternId: string, userId: string): Prom
 
 export async function getMasteryFunnel(userId: string): Promise<MasteryFunnels> {
   return (await defaultModel()).getMasteryFunnel(userId)
+}
+
+export async function getMasteryFunnels(userId: string): Promise<{ all: MasteryFunnels; byLesson: Map<number, MasteryFunnels> }> {
+  return (await defaultModel()).getMasteryFunnels(userId)
 }
 
 export async function getGrammarTopics(userId: string): Promise<GrammarTopic[]> {

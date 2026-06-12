@@ -1,0 +1,104 @@
+.list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.12));
+}
+
+.row:first-child {
+  border-top: none;
+}
+
+.rowHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.reviews {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #868e96);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.desc {
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: var(--text-secondary, #868e96);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dims {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin-top: 0.3rem;
+}
+
+.dim {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dimLabel {
+  font-size: 0.76rem;
+  color: var(--text-secondary, #868e96);
+}
+
+/* The rung as a status chip (not a quantity), in the funnel's cool→green
+   progression. not_assessed keeps the neutral grey. */
+.chip {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: var(--surface-2, rgba(128, 128, 128, 0.14));
+  color: var(--text-secondary, #868e96);
+}
+
+.chip.introduced {
+  background: color-mix(in srgb, #4dabf7 18%, transparent);
+  color: #4dabf7;
+}
+
+.chip.learning {
+  background: color-mix(in srgb, #3bc9db 20%, transparent);
+  color: #1098ad;
+}
+
+.chip.strengthening {
+  background: color-mix(in srgb, #20c997 20%, transparent);
+  color: #0ca678;
+}
+
+.chip.mastered {
+  background: color-mix(in srgb, var(--success, #2f9e44) 18%, transparent);
+  color: var(--success, #2f9e44);
+}
+
+.chip.at_risk {
+  background: color-mix(in srgb, var(--warning, #e8590c) 18%, transparent);
+  color: var(--warning, #e8590c);
+}

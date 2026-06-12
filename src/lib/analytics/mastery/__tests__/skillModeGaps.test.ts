@@ -16,6 +16,7 @@ function ev(p: Partial<CapabilityMasteryEvidence>): CapabilityMasteryEvidence {
     readinessStatus: 'ready',
     publicationStatus: 'published',
     lessonActivated: true,
+    lessonNumber: p.lessonNumber ?? null,
     reviewCount: p.reviewCount ?? 0,
     lapseCount: p.lapseCount ?? 0,
     consecutiveFailureCount: p.consecutiveFailureCount ?? 0,

@@ -30,6 +30,7 @@ import {
   makeFailContext,
 } from '../adapter'
 import type { PatternExerciseInput } from '@/lib/capabilities'
+import { patternSlugFromSourceRef } from '@/lib/capabilities'
 
 // exercise_type → typed table. The 4 grammar types this fetcher serves; any
 // other exerciseType on a pattern block is a planner bug (surfaced as a fail).
@@ -43,12 +44,6 @@ type GrammarExerciseType = keyof typeof TABLE_BY_TYPE
 
 const GRAMMAR_TYPES = new Set<string>(Object.keys(TABLE_BY_TYPE))
 
-/** lesson-N/pattern-<slug> → <slug>. Verified against the live DB: all 94
- *  pattern caps' source_refs resolve to a grammar_patterns.slug this way. */
-function slugFromSourceRef(sourceRef: string): string {
-  return sourceRef.replace(/^lesson-\d+\/pattern-/u, '')
-}
-
 export async function fetchForPatternBlocks(
   client: SupabaseSchemaClient,
   patternBlocks: PatternBucketEntry[],
@@ -60,7 +55,7 @@ export async function fetchForPatternBlocks(
   // 1. Resolve all needed slugs → grammar_pattern_id in one query.
   const slugByBlockId = new Map<string, string>()
   for (const { block, sourceRef } of patternBlocks) {
-    slugByBlockId.set(block.id, slugFromSourceRef(sourceRef))
+    slugByBlockId.set(block.id, patternSlugFromSourceRef(sourceRef))
   }
   const slugs = [...new Set(slugByBlockId.values())]
   const { data: patternRows, error: pErr } = await client.schema('indonesian')

@@ -26,6 +26,19 @@ export function normalizeLessonSourceRef(sourceRef: string): string {
   return [normalizedLesson, ...rest].join('/')
 }
 
+/**
+ * A pattern capability's `source_ref` is `lesson-<N>/pattern-<slug>`; strip the
+ * envelope back to the bare `grammar_patterns.slug`. The single source of truth
+ * for this mapping, shared by the grammar exercise reader (`exercise-content/
+ * byKind/pattern.ts`) and the voortgang grammar-topics reader (`getGrammarTopics`)
+ * so the two cannot drift. Verified against the live DB: all pattern caps'
+ * source_refs resolve to a `grammar_patterns.slug` this way (byKind/pattern.ts,
+ * 2026-05-24). A source_ref without the envelope is returned unchanged.
+ */
+export function patternSlugFromSourceRef(sourceRef: string): string {
+  return sourceRef.replace(/^lesson-\d+\/pattern-/u, '')
+}
+
 export function buildCanonicalKey(input: CanonicalKeyInput): string {
   return [
     'cap',
