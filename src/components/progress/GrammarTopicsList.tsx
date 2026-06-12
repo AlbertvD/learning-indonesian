@@ -29,16 +29,6 @@ export interface GrammarTopicsListProps {
 
 const ALL = 'all'
 
-// How far a rung fills the dimension bar (the ladder as a fraction).
-const RUNG_FILL: Record<MasteryLabel, number> = {
-  not_assessed: 0,
-  introduced: 0.25,
-  learning: 0.5,
-  strengthening: 0.75,
-  mastered: 1,
-  at_risk: 0.5,
-}
-
 function buildFunnel(topics: GrammarTopic[]): MasteryFunnel {
   const funnel: MasteryFunnel = {
     not_assessed: 0, introduced: 0, learning: 0, strengthening: 0, mastered: 0, at_risk: 0,
@@ -169,15 +159,9 @@ function DimBar({
 }) {
   if (!dim) return null
   return (
-    <div className={classes.dim}>
+    <span className={classes.dim}>
       <span className={classes.dimLabel}>{label}</span>
-      <span className={classes.track}>
-        <span
-          className={`${classes.fill} ${classes[dim.label] ?? ''}`}
-          style={{ ['--fill' as string]: `${RUNG_FILL[dim.label] * 100}%` }}
-        />
-      </span>
-      <span className={classes.dimRung}>{rungLabel[dim.label]}</span>
-    </div>
+      <span className={`${classes.chip} ${classes[dim.label] ?? ''}`}>{rungLabel[dim.label]}</span>
+    </span>
   )
 }

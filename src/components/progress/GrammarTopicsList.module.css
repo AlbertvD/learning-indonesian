@@ -86,62 +86,55 @@
 
 .dims {
   display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  margin-top: 0.2rem;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin-top: 0.3rem;
 }
 
 .dim {
-  display: grid;
-  grid-template-columns: 5.5rem 1fr 6.5rem;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .dimLabel {
   font-size: 0.76rem;
-  color: var(--text-primary);
-}
-
-.track {
-  height: 8px;
-  border-radius: 999px;
-  background: var(--surface-2, rgba(128, 128, 128, 0.14));
-  overflow: hidden;
-}
-
-.fill {
-  display: block;
-  height: 100%;
-  width: var(--fill, 0%);
-  border-radius: 999px;
-  background: var(--text-secondary, #868e96);
-}
-
-.dimRung {
-  font-size: 0.72rem;
   color: var(--text-secondary, #868e96);
-  text-align: right;
+}
+
+/* The rung as a status chip (not a quantity), in the funnel's cool→green
+   progression. not_assessed keeps the neutral grey. */
+.chip {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
   white-space: nowrap;
+  background: var(--surface-2, rgba(128, 128, 128, 0.14));
+  color: var(--text-secondary, #868e96);
 }
 
-/* The ladder as the funnel's cool→green progression. */
-.fill.introduced {
-  background: #4dabf7;
+.chip.introduced {
+  background: color-mix(in srgb, #4dabf7 18%, transparent);
+  color: #4dabf7;
 }
 
-.fill.learning {
-  background: #3bc9db;
+.chip.learning {
+  background: color-mix(in srgb, #3bc9db 20%, transparent);
+  color: #1098ad;
 }
 
-.fill.strengthening {
-  background: #20c997;
+.chip.strengthening {
+  background: color-mix(in srgb, #20c997 20%, transparent);
+  color: #0ca678;
 }
 
-.fill.mastered {
-  background: var(--success, #2f9e44);
+.chip.mastered {
+  background: color-mix(in srgb, var(--success, #2f9e44) 18%, transparent);
+  color: var(--success, #2f9e44);
 }
 
-.fill.at_risk {
-  background: var(--warning, #e8590c);
+.chip.at_risk {
+  background: color-mix(in srgb, var(--warning, #e8590c) 18%, transparent);
+  color: var(--warning, #e8590c);
 }
