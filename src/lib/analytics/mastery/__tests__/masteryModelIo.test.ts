@@ -85,6 +85,10 @@ describe('mastery model — capability fetch chunking', () => {
               }),
             }
           }
+          if (table === 'lessons') {
+            // lessonOrderMap(): db().from('lessons').select(...) awaited directly
+            return { select: () => Promise.resolve({ data: [], error: null }) }
+          }
           if (table === 'grammar_patterns') {
             return {
               select: () => ({

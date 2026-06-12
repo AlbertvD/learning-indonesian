@@ -21,6 +21,7 @@ function evidence(overrides: Partial<CapabilityMasteryEvidence>): CapabilityMast
     readinessStatus: 'ready',
     publicationStatus: 'published',
     lessonActivated: true,
+    lessonNumber: null,
     reviewCount: 0,
     lapseCount: 0,
     consecutiveFailureCount: 0,

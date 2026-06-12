@@ -1,39 +1,3 @@
-.card {
-  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.2));
-  border-radius: 12px;
-  padding: 1rem;
-  background: var(--surface-1, transparent);
-}
-
-.title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 0.6rem;
-}
-
-.filter {
-  margin-bottom: 0.85rem;
-  max-width: 14rem;
-}
-
-.group {
-  margin-top: 0.85rem;
-}
-
-.group:first-of-type {
-  margin-top: 0.25rem;
-}
-
-.groupHead {
-  font-size: 0.74rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary, #868e96);
-  margin: 0 0 0.15rem;
-}
-
 .list {
   list-style: none;
   margin: 0.4rem 0 0;

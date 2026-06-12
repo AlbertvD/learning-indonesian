@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { deriveMasteryFunnel, deriveGrammarTopics } from '../masteryModel'
+import { deriveMasteryFunnel, deriveMasteryFunnelByLesson, deriveGrammarTopics } from '../masteryModel'
 import type { CapabilityMasteryEvidence } from '../masteryModel'
 
 const NOW = new Date('2026-06-10T12:00:00Z')
@@ -15,6 +15,7 @@ function ev(p: Partial<CapabilityMasteryEvidence>): CapabilityMasteryEvidence {
     readinessStatus: 'ready',
     publicationStatus: 'published',
     lessonActivated: p.lessonActivated ?? true,
+    lessonNumber: p.lessonNumber ?? null,
     reviewCount: p.reviewCount ?? 0,
     lapseCount: p.lapseCount ?? 0,
     consecutiveFailureCount: p.consecutiveFailureCount ?? 0,
@@ -77,6 +78,30 @@ describe('deriveMasteryFunnel', () => {
 
     expect(funnel.vocabulary.at_risk).toBe(0)
     expect(funnel.vocabulary.introduced).toBe(1)
+  })
+})
+
+describe('deriveMasteryFunnelByLesson', () => {
+  it('splits the vocab/grammar funnels per introducing lesson, skipping caps with no lessonNumber', () => {
+    const evidence = [
+      // lesson 2 vocab: makan mastered, minum introduced
+      ev({ sourceKind: 'item', sourceRef: 'makan', lessonNumber: 2, reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'item', sourceRef: 'minum', lessonNumber: 2, reviewCount: 0, lessonActivated: true }),
+      // lesson 3 vocab: pagi learning + a grammar pattern introduced
+      ev({ sourceKind: 'item', sourceRef: 'pagi', lessonNumber: 3, reviewCount: 1, stability: 1 }),
+      ev({ sourceKind: 'pattern', capabilityType: 'pattern_recognition', sourceRef: 'lesson-3/pattern-x', lessonNumber: 3, reviewCount: 0, lessonActivated: true }),
+      // no lessonNumber → excluded from every bucket
+      ev({ sourceKind: 'item', sourceRef: 'orphan', lessonNumber: null, reviewCount: 3 }),
+    ]
+
+    const byLesson = deriveMasteryFunnelByLesson({ evidence, now: NOW })
+
+    expect(byLesson.get(2)!.vocabulary.mastered).toBe(1)
+    expect(byLesson.get(2)!.vocabulary.introduced).toBe(1)
+    expect(byLesson.get(3)!.vocabulary.learning).toBe(1)
+    expect(byLesson.get(3)!.grammar.introduced).toBe(1)
+    // orphan (no lessonNumber) created no bucket
+    expect([...byLesson.keys()].sort()).toEqual([2, 3])
   })
 })
 

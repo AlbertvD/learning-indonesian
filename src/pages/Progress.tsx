@@ -1,23 +1,25 @@
 // src/pages/Progress.tsx
 //
-// Voortgang — the learner's "reflect" surface, on two capability/mastery-aligned
-// axes (CONTEXT.md → Learner Progress Axes). A tabbed layout (minimal scroll on
-// mobile): Voortgang (the journey funnel, vocab/grammar filter) · Vaardigheden
-// (skill-mode gaps) · Tijd (week/month comparison) · Grammatica (named topics).
-// Each view animates in on switch.
+// Voortgang — the learner's "reflect" surface. Four tabs (minimal scroll on
+// mobile): Woordenschat and Grammatica each show the mastery-progression funnel
+// (landing = all lessons, filter = per lesson) — vocab and grammar as parallel
+// pages, no longer a toggle inside one funnel; Grammatica adds per-pattern detail
+// when a lesson is picked. Vaardigheden (skill-mode gaps) and Tijd (week/month)
+// stay as their own tabs. Each view animates in on switch.
 import { useSearchParams } from 'react-router-dom'
 import { PageContainer, PageBody, PageHeader } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
 import { PillSegmented } from '@/components/progress/PillSegmented'
-import { MasteryFunnelCard } from '@/components/progress/MasteryFunnelCard'
+import { MasteryFunnelPanel } from '@/components/progress/MasteryFunnelPanel'
+import { StubbornWordsCard } from '@/components/progress/StubbornWordsCard'
+import { GrammarPatternList } from '@/components/progress/GrammarPatternList'
 import { SkillModeGapsCard } from '@/components/progress/SkillModeGapsCard'
 import { TimeComparisonCard } from '@/components/progress/TimeComparisonCard'
-import { GrammarTopicsList } from '@/components/progress/GrammarTopicsList'
 import classes from './Progress.module.css'
 
-type Tab = 'funnel' | 'skills' | 'time' | 'grammar'
-const TABS: Tab[] = ['funnel', 'skills', 'time', 'grammar']
+type Tab = 'woorden' | 'grammar' | 'skills' | 'time'
+const TABS: Tab[] = ['woorden', 'grammar', 'skills', 'time']
 
 export function Progress() {
   const T = useT()
@@ -26,7 +28,7 @@ export function Progress() {
   // straight to the matching sub-page (e.g. the "min deze week" cell → Tijd).
   const [searchParams, setSearchParams] = useSearchParams()
   const param = searchParams.get('tab') as Tab | null
-  const tab: Tab = param && TABS.includes(param) ? param : 'funnel'
+  const tab: Tab = param && TABS.includes(param) ? param : 'woorden'
   const setTab = (value: Tab) => setSearchParams({ tab: value }, { replace: true })
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
@@ -43,20 +45,38 @@ export function Progress() {
                 value={tab}
                 onChange={(v) => setTab(v as Tab)}
                 data={[
-                  { value: 'funnel', label: T.progress.tabFunnel },
+                  { value: 'woorden', label: T.progress.tabWoordenschat },
+                  { value: 'grammar', label: T.progress.tabGrammar },
                   { value: 'skills', label: T.progress.tabSkills },
                   { value: 'time', label: T.progress.tabTime },
-                  { value: 'grammar', label: T.progress.tabGrammar },
                 ]}
               />
             </div>
 
             {/* key re-mounts the active view so it animates in on every switch */}
             <div key={tab} className={classes.view}>
-              {tab === 'funnel' && <MasteryFunnelCard userId={user.id} />}
+              {tab === 'woorden' && (
+                <MasteryFunnelPanel
+                  userId={user.id}
+                  kind="vocabulary"
+                  unitLabel={T.progress.unitWords}
+                  footer={() => <StubbornWordsCard userId={user.id} />}
+                />
+              )}
+              {tab === 'grammar' && (
+                <MasteryFunnelPanel
+                  userId={user.id}
+                  kind="grammar"
+                  unitLabel={T.progress.grammarUnitPatterns}
+                  footer={(scope) =>
+                    scope.lessonNumber != null
+                      ? <GrammarPatternList userId={user.id} lessonNumber={scope.lessonNumber} />
+                      : null
+                  }
+                />
+              )}
               {tab === 'skills' && <SkillModeGapsCard userId={user.id} />}
               {tab === 'time' && <TimeComparisonCard userId={user.id} timezone={timezone} />}
-              {tab === 'grammar' && <GrammarTopicsList userId={user.id} />}
             </div>
           </>
         )}
