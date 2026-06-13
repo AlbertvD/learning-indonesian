@@ -24,6 +24,7 @@ import { logError } from '@/lib/logger'
 import { commitCapabilityAnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import { capabilityReviewService } from '@/services/capabilityReviewService'
 import { markSessionComplete } from '@/services/sessionService'
+import { useListening } from '@/contexts/ListeningContext'
 
 const VALID_SESSION_MODES: SessionMode[] = ['standard', 'lesson_practice', 'lesson_review']
 
@@ -56,6 +57,7 @@ export function Session() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user, profile } = useAuthStore()
+  const { listeningEnabled } = useListening()
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -118,6 +120,7 @@ export function Session() {
           now: new Date(),
           limit: preferredSessionSize,
           preferredSessionSize,
+          listeningEnabled,
           ...(lessonScope ?? {}),
           ...(allowForceCapability && forceCapabilityKey ? { forceCapabilityKey } : {}),
           adapter: sessionBuilderAdapter,
@@ -157,7 +160,7 @@ export function Session() {
     }
 
     initSession()
-  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, sessionMode, forceCapabilityKey, allowForceCapability])
+  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, sessionMode, forceCapabilityKey, allowForceCapability, listeningEnabled])
 
   // Session finished (queue exhausted): mark it complete so it counts toward the
   // streak, then go home. The mark is best-effort — a failure must not trap the

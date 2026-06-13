@@ -696,3 +696,48 @@ describe('capability session loader', () => {
     })
   })
 })
+
+describe('capability session loader — listening disabled', () => {
+  const audioKey = 'cap:v1:item:learning_items/audio-1:dictation:id_to_l1:audio:nl'
+  const audioRef = 'learning_items/audio-1'
+
+  function withAudioDueCap(listeningEnabled?: boolean): Parameters<typeof loadCapabilitySessionPlan>[0] {
+    const textProjection = projectedCapability() // meaning_recall (text-answerable)
+    const audioProjection = projectedCapability({
+      canonicalKey: audioKey, sourceRef: audioRef, capabilityType: 'dictation',
+      skillType: 'form_recall', modality: 'audio', requiredArtifacts: [],
+    })
+    return baseInput({
+      listeningEnabled,
+      schedulerRows: [
+        activeState(), // text cap, due
+        activeState({
+          id: 'state-audio', capabilityId: 'capability-audio',
+          canonicalKeySnapshot: audioKey, nextDueAt: '2026-04-25T08:00:00.000Z',
+        }),
+      ],
+      capabilitiesByKey: new Map([
+        [textProjection.canonicalKey, textProjection],
+        [audioKey, audioProjection],
+      ]),
+      readinessByKey: new Map([
+        [textProjection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }],
+        [audioKey, { status: 'ready', allowedExercises: ['dictation'] }],
+      ]),
+    })
+  }
+
+  it('serves the audio due capability by default (listeningEnabled omitted)', async () => {
+    const plan = await loadCapabilitySessionPlan(withAudioDueCap())
+    const dueKeys = plan.blocks.filter(b => b.kind === 'due_review').map(b => b.canonicalKeySnapshot)
+    expect(dueKeys).toContain(audioKey)
+  })
+
+  it('drops the audio due capability when listening is disabled', async () => {
+    const plan = await loadCapabilitySessionPlan(withAudioDueCap(false))
+    const dueKeys = plan.blocks.filter(b => b.kind === 'due_review').map(b => b.canonicalKeySnapshot)
+    expect(dueKeys).not.toContain(audioKey)
+    // the non-audio due capability is still served
+    expect(plan.blocks.some(b => b.kind === 'due_review')).toBe(true)
+  })
+})

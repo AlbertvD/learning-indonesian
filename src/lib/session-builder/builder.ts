@@ -1,4 +1,5 @@
 import {
+  isAudioPromptCapabilityType,
   type CapabilityReadiness,
   type ProjectedCapability,
 } from '@/lib/capabilities'
@@ -37,6 +38,14 @@ export interface CapabilitySessionLoaderInput {
   // rules. See drying.ts and the fold plan §4.1.
   currentLessonId?: string | null
   nextLessonNeedsExposure?: boolean
+  // Accessibility opt-out (the "Luister- en dicteeoefeningen" profile toggle),
+  // a CLIENT preference — passed top-level by buildSession, NOT carried in the
+  // adapter-built plannerInput. When false, audio-prompt capabilities
+  // (isAudioPromptCapabilityType) are filtered out of the due + practice lists
+  // here and gated out of new introductions in planLearningPath, all BEFORE
+  // budget allocation so the session still reaches preferredSessionSize.
+  // Defaults to true when absent.
+  listeningEnabled?: boolean
 }
 
 export interface CapabilitySessionDataSnapshot {
@@ -236,11 +245,24 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
 
   const stateById = new Map(input.schedulerRows.map(row => [row.id, row]))
   const dueKeys = new Set(dueList.map(due => due.canonicalKeySnapshot))
-  const scopedDueList = dueList.filter(due => isCapabilityInScope({
-    mode: input.mode,
-    capability: input.capabilitiesByKey.get(due.canonicalKeySnapshot),
-    selectedSourceRefs: scope.selectedSourceRefs,
-  }))
+  // Accessibility opt-out: when listening is disabled, drop audio-prompt
+  // capabilities (dictation / audio_recognition / podcast_gist) from the due
+  // list BEFORE burying + before dueCount feeds the planner. A lower dueCount
+  // widens the new-capability budget (loadBudget.openSlots), so the freed slots
+  // backfill with non-audio words and the session still reaches its size.
+  const listeningEnabled = input.listeningEnabled ?? true
+  const isAudioCap = (canonicalKey: string): boolean => {
+    const capabilityType = input.capabilitiesByKey.get(canonicalKey)?.capabilityType
+    return capabilityType != null && isAudioPromptCapabilityType(capabilityType)
+  }
+  const scopedDueList = dueList.filter(due => (
+    isCapabilityInScope({
+      mode: input.mode,
+      capability: input.capabilitiesByKey.get(due.canonicalKeySnapshot),
+      selectedSourceRefs: scope.selectedSourceRefs,
+    })
+    && (listeningEnabled || !isAudioCap(due.canonicalKeySnapshot))
+  ))
 
   const resolveCtx = {
     capabilitiesByKey: input.capabilitiesByKey,
@@ -298,6 +320,7 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
           && row.publicationStatus === 'published'
           && !dueKeys.has(row.canonicalKeySnapshot)
           && (input.mode === 'lesson_practice' || row.reviewCount > 0)
+          && (listeningEnabled || !isAudioCap(row.canonicalKeySnapshot))
           && isCapabilityInScope({
             mode: input.mode,
             capability: input.capabilitiesByKey.get(row.canonicalKeySnapshot),
@@ -347,6 +370,7 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     selectedLessonId: scope.selectedLessonId,
     selectedSourceRefs: scope.selectedSourceRefs,
     usedSourceRefs: usedRefs,
+    listeningEnabled,
   })
   // No post-hoc bury here anymore — the planner already buried siblings BEFORE
   // budget allocation (seeded with usedRefs above), so eligibleNewCapabilities is
@@ -460,6 +484,11 @@ export async function buildSession(input: {
   selectedLessonId?: string
   selectedSourceRefs?: string[]
   forceCapabilityKey?: string
+  // Accessibility opt-out (the "Luister- en dicteeoefeningen" profile toggle).
+  // Sourced from the ListeningContext client preference by Session.tsx. When
+  // false, audio-prompt capabilities are removed from the built session.
+  // Defaults to true when absent (audio enabled).
+  listeningEnabled?: boolean
   adapter: CapabilitySessionDataAdapter & Partial<ForceCapabilityAdapter>
 }): Promise<SessionPlan> {
   if (!input.enabled) {
@@ -500,6 +529,7 @@ export async function buildSession(input: {
     readinessByKey: snapshot.readinessByKey,
     selectedLessonId: input.selectedLessonId,
     selectedSourceRefs: input.selectedSourceRefs,
+    listeningEnabled: input.listeningEnabled,
     reviewedTodayRefs: snapshot.reviewedTodayRefs,
     currentLessonId: snapshot.currentLessonId,
     nextLessonNeedsExposure: snapshot.nextLessonNeedsExposure,
