@@ -253,3 +253,20 @@ export function deriveSkillTypeFromCapabilityType(capabilityType: CapabilityType
       return 'form_recall'
   }
 }
+
+// The capability types whose exercises (dictation, listening_mcq) make AUDIO the
+// only path to the answer — the Indonesian text is hidden until after answering,
+// and the exercise refuses to render without a clip. These are exactly the types
+// the "Luister- en dicteeoefeningen" profile toggle removes from sessions when a
+// learner disables listening (accessibility opt-out). Single source of truth,
+// consumed by both the session loader (due + practice filtering) and the pedagogy
+// planner (new-introduction gating). Distinct from the supplementary-audio
+// exercises (recognition_mcq, meaning_recall, …) which show their text prompt and
+// stay answerable without sound.
+export function isAudioPromptCapabilityType(capabilityType: CapabilityType): boolean {
+  return (
+    capabilityType === 'audio_recognition'
+    || capabilityType === 'dictation'
+    || capabilityType === 'podcast_gist'
+  )
+}

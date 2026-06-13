@@ -13,6 +13,7 @@ export {
   CAPABILITY_SOURCE_KINDS,
   CAPABILITY_TYPES,
   deriveSkillTypeFromCapabilityType,
+  isAudioPromptCapabilityType,
 } from './capabilityTypes'
 export type {
   CapabilitySourceKind,

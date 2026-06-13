@@ -710,3 +710,65 @@ describe('sibling-burying before budget allocation (fill-to-size)', () => {
     expect(plan.suppressedCapabilities.filter(s => s.reason === 'sibling_buried')).toHaveLength(2)
   })
 })
+
+describe('pedagogy planner — listening-disabled gating', () => {
+  const now = new Date('2026-04-25T00:00:00.000Z')
+
+  // Audio-prompt capability types: dictation / audio_recognition / podcast_gist.
+  // audio_recognition is Phase 1 (recognition) — not staging-gated — so it is
+  // admitted by default and the listening gate is the only thing that removes it.
+  function audioCap(n: number): PlannerCapability {
+    return capability({
+      id: `audio-${n}`,
+      canonicalKey: `cap:audio:${n}`,
+      sourceRef: `learning_items/audio-${n}`,
+      capabilityType: 'audio_recognition',
+      skillType: 'recognition',
+    })
+  }
+  function textCap(n: number): PlannerCapability {
+    return capability({
+      id: `text-${n}`,
+      canonicalKey: `cap:text:${n}`,
+      sourceRef: `learning_items/text-${n}`,
+      capabilityType: 'text_recognition',
+      skillType: 'recognition',
+    })
+  }
+
+  it('admits audio-prompt new capabilities by default (listeningEnabled omitted)', () => {
+    const plan = planLearningPath({
+      userId: 'u', mode: 'standard', now, preferredSessionSize: 15, dueCount: 0,
+      readyCapabilities: [audioCap(1)], learnerCapabilityStates: [], activatedLessons: new Set(),
+    })
+    expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toEqual(['cap:audio:1'])
+  })
+
+  it('suppresses audio-prompt new capabilities when listeningEnabled is false', () => {
+    const plan = planLearningPath({
+      userId: 'u', mode: 'standard', now, preferredSessionSize: 15, dueCount: 0,
+      readyCapabilities: [audioCap(1), textCap(1)], learnerCapabilityStates: [],
+      activatedLessons: new Set(), listeningEnabled: false,
+    })
+    expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toEqual(['cap:text:1'])
+    expect(plan.suppressedCapabilities).toEqual(expect.arrayContaining([
+      expect.objectContaining({ canonicalKey: 'cap:audio:1', reason: 'listening_disabled' }),
+    ]))
+  })
+
+  it('still fills to preferredSessionSize from non-audio caps when audio is disabled', () => {
+    // 2 audio + 5 text candidates, session size 4. With audio suppressed at the
+    // gate (before allocation), the budget backfills 4 text caps — not 2.
+    const readyCapabilities = [
+      audioCap(1), audioCap(2),
+      ...[1, 2, 3, 4, 5].map(textCap),
+    ]
+    const plan = planLearningPath({
+      userId: 'u', mode: 'standard', now, preferredSessionSize: 4, dueCount: 0,
+      readyCapabilities, learnerCapabilityStates: [],
+      activatedLessons: new Set(), listeningEnabled: false,
+    })
+    expect(plan.eligibleNewCapabilities).toHaveLength(4)
+    expect(plan.eligibleNewCapabilities.every(e => e.capability.canonicalKey.startsWith('cap:text:'))).toBe(true)
+  })
+})

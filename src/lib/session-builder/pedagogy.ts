@@ -1,6 +1,7 @@
-import type {
-  CapabilitySourceKind,
-  CapabilityType,
+import {
+  isAudioPromptCapabilityType,
+  type CapabilitySourceKind,
+  type CapabilityType,
 } from '@/lib/capabilities'
 import type { SkillType } from '@/types/learning'
 import { decideLoadBudget, type LoadBudgetDecision } from '@/lib/session-builder/loadBudget'
@@ -90,6 +91,7 @@ export type PlannerReason =
   | 'load_budget_exhausted'
   | 'productive_capability_not_unlocked'
   | 'sibling_buried'
+  | 'listening_disabled'
 
 export interface EligibleCapability {
   capability: PlannerCapability
@@ -140,6 +142,14 @@ export interface PedagogyInput {
   // budget allocation, so the freed slots fill with other words. See
   // docs/plans/2026-06-09-sibling-bury-before-allocate-fix.md.
   usedSourceRefs?: ReadonlySet<string>
+  // Accessibility opt-out (the "Luister- en dicteeoefeningen" profile toggle).
+  // When false, audio-prompt capability types (dictation, audio_recognition,
+  // podcast_gist — see isAudioPromptCapabilityType) are suppressed at the gate
+  // BEFORE budget allocation, so allocateBudget refills the freed slots from
+  // non-audio candidates and the session still reaches preferredSessionSize.
+  // Defaults to true (audio enabled) when omitted — server/test callers and the
+  // force-capability bypass are unaffected.
+  listeningEnabled?: boolean
 }
 
 function isPattern(capability: PlannerCapability): boolean {
@@ -161,11 +171,7 @@ function isNewProductionTask(capability: PlannerCapability): boolean {
 }
 
 function isHiddenAudioTask(capability: PlannerCapability): boolean {
-  return (
-    capability.capabilityType === 'audio_recognition'
-    || capability.capabilityType === 'dictation'
-    || capability.capabilityType === 'podcast_gist'
-  )
+  return isAudioPromptCapabilityType(capability.capabilityType)
 }
 
 function hasRecentFailureFatigue(input: {
@@ -264,6 +270,7 @@ interface GateContext {
   satisfiedKeys: ReadonlySet<string>
   unlockedSourceRefs: ReadonlySet<string>
   stateByKey: ReadonlyMap<string, PlannerLearnerCapabilityState>
+  listeningEnabled: boolean
 }
 
 // ── Stage 1: gate ──────────────────────────────────────────────────────────
@@ -289,6 +296,14 @@ function gateCandidates(
     }
     if (capability.publicationStatus !== 'published') {
       suppress('capability_not_published')
+      continue
+    }
+    // Accessibility opt-out: when the learner has disabled listening, audio-prompt
+    // capabilities never become new introductions. Suppressing here (the gate,
+    // before prioritise + allocate) means allocateBudget fills the freed slots
+    // with non-audio candidates, so the session still reaches the budgeted size.
+    if (!ctx.listeningEnabled && isHiddenAudioTask(capability)) {
+      suppress('listening_disabled')
       continue
     }
     if (
@@ -500,6 +515,7 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
       readyCapabilities: input.readyCapabilities,
       learnerCapabilityStates: input.learnerCapabilityStates,
     }),
+    listeningEnabled: input.listeningEnabled ?? true,
   }
 
   const { gatePassing, suppressed: gateSuppressed } = gateCandidates(input.readyCapabilities, ctx)
