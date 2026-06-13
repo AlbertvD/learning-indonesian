@@ -1,7 +1,7 @@
 ---
 module: analytics-mastery
 surface: src/lib/analytics/mastery/
-last_verified_against_code: 2026-06-12
+last_verified_against_code: 2026-06-13
 status: partial
 ---
 
@@ -29,11 +29,17 @@ All in `masteryModel.ts`:
   `derivePatternMastery({userId, patternId, evidence, now?})`,
   `deriveMasteryOverview({userId, evidence, now?})`.
 - **IO model**: `createMasteryModel(client)` → `{ getContentUnitMastery,
-  getPatternMastery, getMasteryOverview }`; default-client wrappers
-  `getContentUnitMastery / getPatternMastery / getMasteryOverview`.
+  getPatternMastery, getMasteryOverview, getMasteryFunnel, getMasteryFunnels,
+  getSkillModeGaps, getGrammarTopics, getStubbornWords }` (+ the standalone
+  `getWeeklyMovement` RPC wrapper); every method has a default-client wrapper of
+  the same name. All readers except content-unit/pattern share one
+  `allLearnerEvidence(userId)` fetch (states → caps → activation → lesson-number).
 - **Types**: `MasteryLabel`, `MasteryConfidence`, `MasteryDimension`,
-  `CapabilityMasteryEvidence`, `MasteryDimensionSummary`, `ContentUnitMastery`,
-  `PatternMastery`, `MasteryOverview`.
+  `CapabilityMasteryEvidence` (carries the introducing `lessonNumber` — cap
+  `lesson_id` → `lessons.order_index` — for per-lesson funnels),
+  `MasteryDimensionSummary`, `ContentUnitMastery`, `PatternMastery`,
+  `MasteryOverview`, `MasteryFunnel` / `MasteryFunnels`, `GrammarTopic` /
+  `GrammarDimensionProgress`, `SkillModeGap`.
 - **Weekly Movement** (the fast pulse on the slow axis): pure deriver
   `deriveWeeklyMovement({events, now?})` + IO wrapper `getWeeklyMovement(userId,
   timezone)` → `WeeklyMovement { advancedVocab, advancedGrammar, reachedMastered,
@@ -65,6 +71,23 @@ All in `masteryModel.ts`:
   size that climbs — Webb 2008; Laufer & Nation 1999 — not a ratio over a growing
   pile, which can't). `confidence` thresholds are in **words** (5/20). TS-only (no
   SQL mirror, no RPC).
+- **Mastery progression funnels** (the journey distribution): pure derivers
+  `deriveMasteryFunnel({evidence, now?})` → `MasteryFunnels {vocabulary, grammar}`
+  (each a `MasteryFunnel` = per-rung counts) and
+  `deriveMasteryFunnelByLesson({evidence, now?})` → `Map<lessonNumber,
+  MasteryFunnels>`; IO `getMasteryFunnel` (all lessons) and `getMasteryFunnels`
+  (all + per-lesson in one fetch). Units are `source_ref` rolled up weakest-wins;
+  the vocab/grammar split is `funnelBucket(sourceKind)` (`item`→vocab,
+  `pattern`/`affixed_form_pair`→grammar, else excluded) — the single source of
+  truth shared with Weekly Movement (and HC28, ADR 0015). TS-only.
+- **Grammar topics** (per-pattern drill-down): pure deriver
+  `deriveGrammarTopics({evidence, now?})` → `GrammarTopicLabel[]` (per pattern:
+  `lessonNumber`, weakest-wins `label`, total `reviewCount`, and `recognise` /
+  `contrast` `GrammarDimensionProgress` from the `pattern_recognition` /
+  `pattern_contrast` caps — both receptive facets per the capability-type table)
+  + IO `getGrammarTopics` (joins `grammar_patterns` for
+  name + explanation, resolving the cap source_ref via `patternSlugFromSourceRef`).
+  TS-only.
 
 ## 2. The canonical `mastered` predicate (single source of truth)
 
