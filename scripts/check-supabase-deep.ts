@@ -195,10 +195,14 @@ for (const table of EXPECTED_TABLES) {
 
 // ── Check: lessons have audio_path populated ──────────────────────────────
 {
+  // Exclude hidden lessons (e.g. the "Common Words" gap-word home, collections
+  // feature): they are capability containers, not learner-facing lessons, so they
+  // carry no audio by design.
   const { data: lessons, error } = await supabase
     .schema('indonesian')
     .from('lessons')
     .select('title, audio_path')
+    .eq('is_hidden', false)
   if (error) {
     fail('Lesson audio_path seeded', error.message)
   } else if (!lessons || lessons.length === 0) {
