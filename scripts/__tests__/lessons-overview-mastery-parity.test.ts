@@ -85,6 +85,23 @@ describe('get_lessons_overview mastered predicate ↔ masteryModel parity (ADR 0
     // matching isRecent's `if (!iso) return false`.
     expect(sql).toContain(`last_reviewed_at >= now() - interval '30 days'`)
   })
+
+  // Three-way parity (data-architect M1, 2026-06-13): get_collections_overview
+  // defines "known" as `_mastery_label(...) = 'mastered'`, so its mastered
+  // definition is the helper's, NOT the inline filter above. This guards that the
+  // helper's mastered branch keeps the SAME thresholds, so the two readers can't
+  // silently diverge if someone edits one. Chain: inline filter ↔ _mastery_label
+  // ↔ masteryModel.ts.
+  it('_mastery_label mastered branch uses the SAME thresholds as the inline filter', () => {
+    const end = migrationSql.indexOf("then 'mastered'")
+    expect(end).toBeGreaterThan(-1)
+    const branch = migrationSql.slice(migrationSql.lastIndexOf('when', end), end)
+    const [, reviewMin, stabilityMin] = tsMastered!
+    const [, recencyDays] = tsRecency!
+    expect(branch).toContain(`p_review_count >= ${reviewMin}`)
+    expect(branch).toContain(`coalesce(p_stability, 0) >= ${stabilityMin}`)
+    expect(branch).toContain(`interval '${recencyDays} days'`)
+  })
 })
 
 describe('get_lessons_overview practiced predicate ↔ overview.ts parity', () => {

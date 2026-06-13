@@ -7,3 +7,4 @@
 // — session-builder consumes collections, not the reverse.
 export { resolveActivatedMemberRefs } from './membership'
 export { setCollectionActivated } from './activation'
+export { getCollectionsOverview, type CollectionOverview } from './overview'

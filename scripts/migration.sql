@@ -3501,3 +3501,78 @@ grant execute on function indonesian.set_collection_activation(uuid, uuid, boole
 insert into indonesian.lessons (module_id, level, title, description, order_index, is_hidden)
 values ('common-words', 'A1', 'Common Words', 'Hidden home for frequency-band gap words (collections feature).', 999, true)
 on conflict (module_id, order_index) do nothing;
+
+-- ── Collections coverage read-model (foundation doc §4, ADR 0015) ────────────
+-- One row per published collection with the learner's per-collection progress:
+-- total member words + how many are "known". Server-side aggregation (small
+-- result) — feeds the Woordenlijsten checklist + the Home goal widget, and is why
+-- lib/collections needs no analytics import.
+--
+-- "Known word" = the word's RECEPTIVE RECOGNITION capability (text_recognition)
+-- is mastered. Rationale: receptive recognition is the floor of "I know this
+-- word" (ADR 0007 receptive-before-productive) and the most intuitive basis for
+-- a coverage number ("you know 72/100"). To make it STRICTER (all caps mastered)
+-- change the join + bool_or below. The mastered test reuses _mastery_label — the
+-- SAME parity-guarded predicate as get_lessons_overview (foundation doc M1) — so
+-- no second mastery definition is introduced (no new parity test needed).
+--
+-- The item-cap join uses the §5 resolution path: source_ref = 'learning_items/' ||
+-- normalized_text (the HC9 invariant). SECURITY INVOKER over RLS-protected tables.
+drop function if exists indonesian.get_collections_overview(uuid);
+create or replace function indonesian.get_collections_overview(p_user_id uuid)
+returns table (
+  collection_id uuid,
+  slug text,
+  name text,
+  kind text,
+  rank_cutoff int,
+  is_activated boolean,
+  total_words int,
+  known_words int
+)
+language sql stable security invoker as $$
+  with member_recognition as (
+    select ci.collection_id,
+           ci.learning_item_id,
+           bool_or(
+             -- args: (p_review_count, p_lapse, p_consec, p_stability, p_last_reviewed, p_now)
+             indonesian._mastery_label(
+               s.review_count, s.lapse_count, s.consecutive_failure_count,
+               s.stability, s.last_reviewed_at, now()
+             ) = 'mastered'
+           ) as is_known
+    from indonesian.collection_items ci
+    join indonesian.learning_items li on li.id = ci.learning_item_id
+    left join indonesian.learning_capabilities c
+      on c.source_kind = 'item'
+      and c.capability_type = 'text_recognition'
+      and c.source_ref = 'learning_items/' || li.normalized_text
+    left join indonesian.learner_capability_state s
+      on s.capability_id = c.id and s.user_id = p_user_id
+    group by ci.collection_id, ci.learning_item_id
+  ),
+  coverage as (
+    select collection_id,
+           count(*)::int as total_words,
+           count(*) filter (where is_known)::int as known_words
+    from member_recognition
+    group by collection_id
+  )
+  select
+    col.id,
+    col.slug,
+    col.name,
+    col.kind,
+    col.rank_cutoff,
+    exists (
+      select 1 from indonesian.learner_collection_activation lca
+      where lca.user_id = p_user_id and lca.collection_id = col.id
+    ) as is_activated,
+    coalesce(cov.total_words, 0) as total_words,
+    coalesce(cov.known_words, 0) as known_words
+  from indonesian.collections col
+  left join coverage cov on cov.collection_id = col.id
+  where col.is_published
+  order by col.rank_cutoff nulls last, col.slug;
+$$;
+grant execute on function indonesian.get_collections_overview(uuid) to authenticated;
