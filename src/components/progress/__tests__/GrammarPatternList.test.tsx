@@ -14,12 +14,12 @@ describe('GrammarPatternList', () => {
     vi.mocked(getGrammarTopics).mockResolvedValue([
       {
         slug: 'lesson-3/pattern-meN', lessonNumber: 3, label: 'learning', reviewCount: 4,
-        recognise: { label: 'strengthening', reviewCount: 3 }, use: { label: 'learning', reviewCount: 1 },
+        recognise: { label: 'strengthening', reviewCount: 3 }, contrast: { label: 'learning', reviewCount: 1 },
         name: 'meN- voorvoegsel', shortExplanation: 'maakt werkwoorden actief',
       },
       {
         slug: 'lesson-2/pattern-ander', lessonNumber: 2, label: 'introduced', reviewCount: 0,
-        recognise: { label: 'introduced', reviewCount: 0 }, use: null,
+        recognise: { label: 'introduced', reviewCount: 0 }, contrast: null,
         name: 'ander patroon', shortExplanation: 'iets anders',
       },
     ])
@@ -30,7 +30,7 @@ describe('GrammarPatternList', () => {
     // a pattern from another lesson is filtered out
     expect(screen.queryByText('ander patroon')).not.toBeInTheDocument()
     expect(screen.getByText('Herkennen')).toBeInTheDocument()
-    expect(screen.getByText('Toepassen')).toBeInTheDocument()
+    expect(screen.getByText('Onderscheiden')).toBeInTheDocument()
     expect(screen.getByText('4× geoefend')).toBeInTheDocument()
   })
 })

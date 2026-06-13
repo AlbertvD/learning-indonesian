@@ -516,8 +516,9 @@ export interface GrammarTopicLabel {
   reviewCount: number
   /** `pattern_recognition` caps; null if the pattern has none. */
   recognise: GrammarDimensionProgress | null
-  /** `pattern_contrast` (apply) caps; null if the pattern has none. */
-  use: GrammarDimensionProgress | null
+  /** `pattern_contrast` caps — distinguishing from a contrasting pattern (also a
+   *  receptive facet per CONTEXT capability types); null if the pattern has none. */
+  contrast: GrammarDimensionProgress | null
 }
 
 export interface GrammarTopic extends GrammarTopicLabel {
@@ -544,9 +545,10 @@ function dimensionProgress(
 }
 
 // Named grammar topics (source_kind 'pattern' only — affixed_form_pairs are not
-// named grammar_patterns). Each pattern splits into its two dimensions —
-// `recognise` (pattern_recognition) and `use` (pattern_contrast) — plus a
-// weakest-wins overall rung (what the lesson funnel tallies) and total reviews.
+// named grammar_patterns). Each pattern splits into its two (both receptive,
+// per CONTEXT capability types) dimensions — `recognise` (pattern_recognition)
+// and `contrast` (pattern_contrast) — plus a weakest-wins overall rung (what the
+// lesson funnel tallies) and total reviews.
 // Sorted by introducing lesson then slug (the learning order the UI groups on).
 // Used by the voortgang grammar-topics drill-down (#209).
 export function deriveGrammarTopics(input: {
@@ -566,7 +568,7 @@ export function deriveGrammarTopics(input: {
       label: weakestLabel(caps.map((cap) => labelForCapability(cap, now))),
       reviewCount: caps.reduce((sum, cap) => sum + cap.reviewCount, 0),
       recognise: dimensionProgress(caps.filter((c) => c.capabilityType === 'pattern_recognition'), now),
-      use: dimensionProgress(caps.filter((c) => c.capabilityType === 'pattern_contrast'), now),
+      contrast: dimensionProgress(caps.filter((c) => c.capabilityType === 'pattern_contrast'), now),
     }))
     .sort((a, b) => {
       const la = a.lessonNumber ?? Number.POSITIVE_INFINITY

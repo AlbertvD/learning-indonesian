@@ -126,7 +126,7 @@ describe('deriveGrammarTopics', () => {
         label: 'learning',
         reviewCount: 6,
         recognise: { label: 'mastered', reviewCount: 5 },
-        use: { label: 'learning', reviewCount: 1 },
+        contrast: { label: 'learning', reviewCount: 1 },
       },
       {
         slug: 'lesson-4/pattern-l4-ber-prefix',
@@ -134,7 +134,7 @@ describe('deriveGrammarTopics', () => {
         label: 'introduced',
         reviewCount: 0,
         recognise: { label: 'introduced', reviewCount: 0 },
-        use: null,
+        contrast: null,
       },
     ])
   })
