@@ -53,3 +53,7 @@ scripts/data/staging/lesson-*/lesson-page-blocks.ts
 # grammar lesson_sections (scripts/generate-grammar-audio-script.ts). The DB
 # is the source of truth; these are throwaway recording aids.
 audio-scripts/
+
+# PBWL source data (CC BY-NC-SA — never commit; reference only, see docs/plans/2026-06-13-collections-and-frequency-bands.md)
+PBWL_*.xlsx
+*.xlsx
