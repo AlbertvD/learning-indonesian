@@ -6,3 +6,4 @@
 // lib/scheduling/, or lib/analytics/ (target-architecture Rule 7, no back-edges)
 // — session-builder consumes collections, not the reverse.
 export { resolveActivatedMemberRefs } from './membership'
+export { setCollectionActivated } from './activation'
