@@ -73,6 +73,45 @@ describe('pedagogy planner', () => {
     expect(plan.suppressedCapabilities[0]?.reason).toBe('lesson_not_activated')
   })
 
+  it('rescues a collection-member capability whose home lesson is NOT activated', () => {
+    // Gap-word caps are homed on the hidden "Common Words" lesson that no learner
+    // activates. Activating a collection that contains the word must surface its
+    // caps via the gate-OR (collections spec §5): suppress only if the lesson is
+    // not activated AND the word is in no activated collection.
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [capability({ lessonId: 'common-words-lesson', sourceRef: 'learning_items/yang' })],
+      learnerCapabilityStates: [],
+      activatedLessons: new Set(),
+      activatedCollectionRefs: new Set(['learning_items/yang']),
+    })
+
+    expect(plan.eligibleNewCapabilities).toHaveLength(1)
+    expect(plan.suppressedCapabilities).toEqual([])
+  })
+
+  it('still suppresses a capability whose lesson is not activated AND is in no activated collection', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [capability({ lessonId: 'lesson-uuid', sourceRef: 'learning_items/baca' })],
+      learnerCapabilityStates: [],
+      activatedLessons: new Set(),
+      // a DIFFERENT word is in the activated collection — must not rescue baca
+      activatedCollectionRefs: new Set(['learning_items/yang']),
+    })
+
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities[0]?.reason).toBe('lesson_not_activated')
+  })
+
   it('admits a lesson-scoped capability once its lesson is activated', () => {
     const plan = planLearningPath({
       userId: 'user-1',
