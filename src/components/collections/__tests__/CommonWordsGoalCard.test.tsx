@@ -15,7 +15,7 @@ import { CommonWordsGoalCard } from '../CommonWordsGoalCard'
 
 const band = (over: Partial<CollectionOverview>): CollectionOverview => ({
   collectionId: 'c', slug: 's', name: 'n', kind: 'frequency',
-  rankCutoff: 100, isActivated: false, totalWords: 100, knownWords: 0, ...over,
+  rankCutoff: 100, isActivated: false, totalWords: 100, knownWords: 0, eligibleNow: 0, gain: 100, ...over,
 })
 
 function renderGoal() {

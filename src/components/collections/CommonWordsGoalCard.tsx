@@ -47,7 +47,7 @@ export function CommonWordsGoalCard() {
     <ListCard
       to="/lessons"
       icon={<IconListCheck size={18} color="var(--accent-primary)" />}
-      title={band.name}
+      title={T.collections.lists[band.slug]?.name ?? band.name}
       subtitle={subtitle}
     />
   )

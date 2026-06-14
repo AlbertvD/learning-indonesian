@@ -3528,7 +3528,8 @@ returns table (
   rank_cutoff int,
   is_activated boolean,
   total_words int,
-  known_words int
+  known_words int,
+  eligible_words int
 )
 language sql stable security invoker as $$
   with member_recognition as (
@@ -3540,7 +3541,32 @@ language sql stable security invoker as $$
                s.review_count, s.lapse_count, s.consecutive_failure_count,
                s.stability, s.last_reviewed_at, now()
              ) = 'mastered'
-           ) as is_known
+           ) as is_known,
+           -- eligible-now = the §5 pedagogy gate-OR, per member word: it is already
+           -- schedulable iff it has a ready/published item cap whose introducing
+           -- lesson is activated, OR the word is a member of ANY activated collection
+           -- (so an activated list's own members all count as eligible → gain=0).
+           -- "Gain" (computed by the reader) = total_words − eligible_words.
+           bool_or(
+             exists (
+               select 1
+               from indonesian.learning_capabilities c2
+               join indonesian.learner_lesson_activation lla
+                 on lla.lesson_id = c2.lesson_id and lla.user_id = p_user_id
+               where c2.source_kind = 'item'
+                 and c2.source_ref = 'learning_items/' || li.normalized_text
+                 and c2.readiness_status = 'ready'
+                 and c2.publication_status = 'published'
+                 and c2.retired_at is null
+             )
+             or exists (
+               select 1
+               from indonesian.collection_items ci2
+               join indonesian.learner_collection_activation lca
+                 on lca.collection_id = ci2.collection_id and lca.user_id = p_user_id
+               where ci2.learning_item_id = ci.learning_item_id
+             )
+           ) as is_eligible
     from indonesian.collection_items ci
     join indonesian.learning_items li on li.id = ci.learning_item_id
     left join indonesian.learning_capabilities c
@@ -3549,12 +3575,13 @@ language sql stable security invoker as $$
       and c.source_ref = 'learning_items/' || li.normalized_text
     left join indonesian.learner_capability_state s
       on s.capability_id = c.id and s.user_id = p_user_id
-    group by ci.collection_id, ci.learning_item_id
+    group by ci.collection_id, ci.learning_item_id, li.normalized_text
   ),
   coverage as (
     select collection_id,
            count(*)::int as total_words,
-           count(*) filter (where is_known)::int as known_words
+           count(*) filter (where is_known)::int as known_words,
+           count(*) filter (where is_eligible)::int as eligible_words
     from member_recognition
     group by collection_id
   )
@@ -3569,7 +3596,8 @@ language sql stable security invoker as $$
       where lca.user_id = p_user_id and lca.collection_id = col.id
     ) as is_activated,
     coalesce(cov.total_words, 0) as total_words,
-    coalesce(cov.known_words, 0) as known_words
+    coalesce(cov.known_words, 0) as known_words,
+    coalesce(cov.eligible_words, 0) as eligible_words
   from indonesian.collections col
   left join coverage cov on cov.collection_id = col.id
   where col.is_published

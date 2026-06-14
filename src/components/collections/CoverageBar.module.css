@@ -1,0 +1,35 @@
+.track {
+  display: flex;
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--card-border);
+}
+
+.known,
+.eligible,
+.gain {
+  display: block;
+  height: 100%;
+}
+
+.known {
+  background: var(--success);
+}
+
+.eligible {
+  background: var(--accent-primary);
+}
+
+/* The "gain" tail — striped accent so it reads as an actionable opportunity
+   rather than settled progress. Collapses to width:0 once the list is activated
+   (eligible == total). */
+.gain {
+  background-color: var(--accent-primary-glow);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 5px,
+    var(--accent-primary-subtle) 5px 10px
+  );
+}
