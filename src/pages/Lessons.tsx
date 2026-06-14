@@ -20,6 +20,7 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { LessonCard } from '@/components/lessons/LessonCard'
+import { Woordenlijsten } from '@/components/collections/Woordenlijsten'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
@@ -319,6 +320,11 @@ export function Lessons() {
             )
           })}
         </ol>
+
+        {/* The check-to-schedule word-lists surface (foundation doc §2: Leren =
+            lessons grid + Woordenlijsten). Renders nothing until a band is
+            seeded, so it is inert here until the collections content lands. */}
+        <Woordenlijsten />
       </PageBody>
     </PageContainer>
   )
