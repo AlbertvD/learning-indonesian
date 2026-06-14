@@ -263,6 +263,16 @@ export const lesson = {
             "indonesian": "uang logam",
             "dutch": "munt",
             "english": "coin"
+          },
+          {
+            "indonesian": "baca",
+            "dutch": "lezen",
+            "english": "read"
+          },
+          {
+            "indonesian": "obrol",
+            "dutch": "kletsen",
+            "english": "chat"
           }
         ]
       }

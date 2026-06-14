@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { listActivatedLessons } from '@/lib/lessons'
+import { resolveActivatedMemberRefs } from '@/lib/collections'
 import {
   CAPABILITY_PROJECTION_VERSION,
   deriveSkillTypeFromCapabilityType,
@@ -247,6 +248,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         activatedLessons,
         lessonsResult,
         reviewEventsResult,
+        activatedCollectionRefs,
       ] = await Promise.all([
         db()
           .from('learning_capabilities')
@@ -262,6 +264,10 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
           .select('capability_id')
           .eq('user_id', request.userId)
           .gte('created_at', dayStart.toISOString()),
+        // Collections gate-OR (spec §5): the source_refs of words in any collection
+        // the learner has activated. Feeds plannerInput.activatedCollectionRefs so
+        // gap-word caps (homed on the un-activated "Common Words" lesson) surface.
+        resolveActivatedMemberRefs(request.userId, client),
       ])
 
       if (capabilitiesResult.error) throw capabilitiesResult.error
@@ -330,6 +336,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
           readyCapabilities,
           learnerCapabilityStates: schedulerRows.map(toPlannerState),
           activatedLessons,
+          activatedCollectionRefs,
           recentFailures,
           selectedLessonId: request.selectedLessonId,
           selectedSourceRefs: request.selectedSourceRefs,

@@ -404,6 +404,81 @@ export const lesson = {
             "dutch": "lucht, luchtruim",
             "indonesian": "udara",
             "english": "air"
+          },
+          {
+            "indonesian": "bagaimana?",
+            "dutch": "hoe?",
+            "english": "how?"
+          },
+          {
+            "indonesian": "kapan?",
+            "dutch": "wanneer?",
+            "english": "when?"
+          },
+          {
+            "indonesian": "mengapa?",
+            "dutch": "waarom?",
+            "english": "why?"
+          },
+          {
+            "indonesian": "kenapa?",
+            "dutch": "waarom? (oorzaak)",
+            "english": "why? (cause)"
+          },
+          {
+            "indonesian": "yang mana?",
+            "dutch": "welke?",
+            "english": "which?"
+          },
+          {
+            "indonesian": "atas",
+            "dutch": "op/bovenkant",
+            "english": "on/top"
+          },
+          {
+            "indonesian": "bawah",
+            "dutch": "onder/onderkant",
+            "english": "under/bottom"
+          },
+          {
+            "indonesian": "belakang",
+            "dutch": "achter",
+            "english": "behind"
+          },
+          {
+            "indonesian": "muka",
+            "dutch": "voor/voorkant",
+            "english": "front/in front"
+          },
+          {
+            "indonesian": "dalam",
+            "dutch": "in",
+            "english": "in"
+          },
+          {
+            "indonesian": "luar",
+            "dutch": "buiten",
+            "english": "outside"
+          },
+          {
+            "indonesian": "tengah",
+            "dutch": "midden",
+            "english": "middle"
+          },
+          {
+            "indonesian": "kiri",
+            "dutch": "links",
+            "english": "left"
+          },
+          {
+            "indonesian": "sini",
+            "dutch": "hier",
+            "english": "here"
+          },
+          {
+            "indonesian": "situ",
+            "dutch": "daar",
+            "english": "there"
           }
         ]
       }

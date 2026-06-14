@@ -300,6 +300,16 @@ export const lesson = {
             "indonesian": "telah",
             "dutch": "al / reeds",
             "english": "already"
+          },
+          {
+            "indonesian": "usah",
+            "dutch": "nodig (tidak usah)",
+            "english": "need (not need)"
+          },
+          {
+            "indonesian": "sangat",
+            "dutch": "zeer/erg",
+            "english": "very/very much"
           }
         ]
       }
