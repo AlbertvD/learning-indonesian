@@ -80,6 +80,7 @@ export function CapabilityExerciseFrame({
           adminOverlay={
             <AdminFlagOverlay
               learningItemId={context.exerciseItem.learningItem?.id ?? null}
+              grammarPatternId={context.exerciseItem.grammarPatternId ?? null}
               exerciseType={block.renderPlan.exerciseType}
             />
           }

@@ -3,7 +3,7 @@ import { MantineProvider } from '@mantine/core'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 
 vi.mock('@/services/contentFlagService', () => ({
-  contentFlagService: { getFlagForItem: vi.fn() },
+  contentFlagService: { getFlagForItem: vi.fn(), getFlagForGrammarPattern: vi.fn() },
 }))
 vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
 
@@ -26,6 +26,7 @@ function renderOverlay(props: { learningItemId: string | null }) {
 beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(contentFlagService.getFlagForItem).mockResolvedValue(null)
+  vi.mocked(contentFlagService.getFlagForGrammarPattern).mockResolvedValue(null)
 })
 
 describe('AdminFlagOverlay', () => {
@@ -45,10 +46,24 @@ describe('AdminFlagOverlay', () => {
     )
   })
 
-  it('renders nothing for an admin when there is no learning item (e.g. grammar)', () => {
+  it('renders nothing for an admin when neither an item nor a grammar pattern is present', () => {
     mockState = { user: { id: 'admin-1' }, profile: { isAdmin: true } }
     renderOverlay({ learningItemId: null })
     expect(screen.queryByRole('button', { name: 'Markeer voor review' })).not.toBeInTheDocument()
+    expect(contentFlagService.getFlagForItem).not.toHaveBeenCalled()
+  })
+
+  it('flags a grammar exercise via its pattern id (not an item)', async () => {
+    mockState = { user: { id: 'admin-1' }, profile: { isAdmin: true } }
+    render(
+      <MantineProvider>
+        <AdminFlagOverlay learningItemId={null} grammarPatternId="pat-7" exerciseType={'contrast_pair' as any} />
+      </MantineProvider>,
+    )
+    expect(await screen.findByRole('button', { name: 'Markeer voor review' })).toBeInTheDocument()
+    await waitFor(() =>
+      expect(contentFlagService.getFlagForGrammarPattern).toHaveBeenCalledWith('admin-1', 'pat-7', 'contrast_pair'),
+    )
     expect(contentFlagService.getFlagForItem).not.toHaveBeenCalled()
   })
 })

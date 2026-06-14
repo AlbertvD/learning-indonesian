@@ -180,6 +180,10 @@ export interface ReviewCommentWithContext extends ReviewComment {
 
 export interface ExerciseItem {
   learningItem: LearningItem | null   // null for grammar exercises
+  /** Set for grammar-pattern exercises (contrast_pair, sentence_transformation,
+   *  constrained_translation, cloze_mcq); null/absent for item-sourced ones.
+   *  Carries the flag-tool anchor so admins can flag grammar content. */
+  grammarPatternId?: string | null
   meanings: ItemMeaning[]
   contexts: ItemContext[]
   answerVariants: ItemAnswerVariant[]

@@ -25,6 +25,7 @@ export function buildContrastPair(input: BuilderInputFor<'contrast_pair'>): Buil
 
   const exerciseItem = {
     learningItem: null,
+    grammarPatternId: ex.grammar_pattern_id,
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: [],
