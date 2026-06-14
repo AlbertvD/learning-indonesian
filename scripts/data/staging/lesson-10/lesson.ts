@@ -373,6 +373,66 @@ export const lesson = {
             "indonesian": "universitas",
             "dutch": "universiteit",
             "english": "university"
+          },
+          {
+            "indonesian": "misalnya",
+            "dutch": "bijvoorbeeld",
+            "english": "for example"
+          },
+          {
+            "indonesian": "jikalau",
+            "dutch": "indien",
+            "english": "if"
+          },
+          {
+            "indonesian": "meskipun",
+            "dutch": "ofschoon",
+            "english": "although"
+          },
+          {
+            "indonesian": "walaupun",
+            "dutch": "ofschoon",
+            "english": "although"
+          },
+          {
+            "indonesian": "supaya",
+            "dutch": "opdat",
+            "english": "so that"
+          },
+          {
+            "indonesian": "agar",
+            "dutch": "opdat",
+            "english": "so that"
+          },
+          {
+            "indonesian": "sementara",
+            "dutch": "terwijl",
+            "english": "while"
+          },
+          {
+            "indonesian": "sebelumnya",
+            "dutch": "tevoren",
+            "english": "beforehand"
+          },
+          {
+            "indonesian": "sebelum",
+            "dutch": "voordat",
+            "english": "before"
+          },
+          {
+            "indonesian": "kali",
+            "dutch": "keer/maal (×)",
+            "english": "times/multiplied by (×)"
+          },
+          {
+            "indonesian": "bagi",
+            "dutch": "delen/voor (÷)",
+            "english": "divided by/for (÷)"
+          },
+          {
+            "indonesian": "terakhir",
+            "dutch": "laatste",
+            "english": "last"
           }
         ]
       }

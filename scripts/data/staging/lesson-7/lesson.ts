@@ -428,6 +428,121 @@ export const lesson = {
             "indonesian": "warna",
             "dutch": "kleur",
             "english": "color"
+          },
+          {
+            "indonesian": "Januari",
+            "dutch": "januari",
+            "english": "January"
+          },
+          {
+            "indonesian": "Februari",
+            "dutch": "februari",
+            "english": "February"
+          },
+          {
+            "indonesian": "Maret",
+            "dutch": "maart",
+            "english": "March"
+          },
+          {
+            "indonesian": "April",
+            "dutch": "april",
+            "english": "April"
+          },
+          {
+            "indonesian": "Mei",
+            "dutch": "mei",
+            "english": "May"
+          },
+          {
+            "indonesian": "Juni",
+            "dutch": "juni",
+            "english": "June"
+          },
+          {
+            "indonesian": "Juli",
+            "dutch": "juli",
+            "english": "July"
+          },
+          {
+            "indonesian": "Agustus",
+            "dutch": "augustus",
+            "english": "August"
+          },
+          {
+            "indonesian": "September",
+            "dutch": "september",
+            "english": "September"
+          },
+          {
+            "indonesian": "Oktober",
+            "dutch": "oktober",
+            "english": "October"
+          },
+          {
+            "indonesian": "November",
+            "dutch": "november",
+            "english": "November"
+          },
+          {
+            "indonesian": "Desember",
+            "dutch": "december",
+            "english": "December"
+          },
+          {
+            "indonesian": "hari Senin",
+            "dutch": "maandag",
+            "english": "Monday"
+          },
+          {
+            "indonesian": "hari Selasa",
+            "dutch": "dinsdag",
+            "english": "Tuesday"
+          },
+          {
+            "indonesian": "hari Jumat",
+            "dutch": "vrijdag",
+            "english": "Friday"
+          },
+          {
+            "indonesian": "hari Sabtu",
+            "dutch": "zaterdag",
+            "english": "Saturday"
+          },
+          {
+            "indonesian": "kemarin",
+            "dutch": "gisteren",
+            "english": "yesterday"
+          },
+          {
+            "indonesian": "lusa",
+            "dutch": "overmorgen",
+            "english": "the day after tomorrow"
+          },
+          {
+            "indonesian": "tadi",
+            "dutch": "zojuist",
+            "english": "just now"
+          },
+          {
+            "indonesian": "pekan",
+            "dutch": "week",
+            "english": "week"
+          },
+          {
+            "indonesian": "akhir minggu",
+            "dutch": "weekend",
+            "english": "weekend"
+          },
+          {
+            "indonesian": "malam Minggu",
+            "dutch": "zaterdagavond",
+            "english": "Saturday evening"
+          },
+          {
+            "indonesian": "Minggu malam",
+            "dutch": "zondagavond",
+            "english": "Sunday evening"
           }
         ]
       }
@@ -604,7 +719,7 @@ export const lesson = {
                 "januari"
               ],
               [
-                "bulan Pebruari",
+                "bulan Februari",
                 "februari"
               ],
               [
@@ -640,7 +755,7 @@ export const lesson = {
                 "oktober"
               ],
               [
-                "bulan Nopember",
+                "bulan November",
                 "november"
               ],
               [

@@ -286,6 +286,26 @@ export const lesson = {
             "indonesian": "utama",
             "dutch": "voornaamste, uitmuntend",
             "english": "main, principal"
+          },
+          {
+            "indonesian": "utara",
+            "dutch": "noord",
+            "english": "north"
+          },
+          {
+            "indonesian": "selatan",
+            "dutch": "zuid",
+            "english": "south"
+          },
+          {
+            "indonesian": "timur",
+            "dutch": "oost",
+            "english": "east"
+          },
+          {
+            "indonesian": "barat",
+            "dutch": "west",
+            "english": "west"
           }
         ]
       }

@@ -359,6 +359,81 @@ export const lesson = {
             "dutch": "toerist",
             "indonesian": "turis",
             "english": "tourist"
+          },
+          {
+            "indonesian": "lama",
+            "dutch": "oud (van vroeger)",
+            "english": "old (from the past)"
+          },
+          {
+            "indonesian": "buruk",
+            "dutch": "slecht/lelijk",
+            "english": "bad/ugly"
+          },
+          {
+            "indonesian": "kotor",
+            "dutch": "vuil",
+            "english": "dirty"
+          },
+          {
+            "indonesian": "ringan",
+            "dutch": "licht",
+            "english": "light"
+          },
+          {
+            "indonesian": "enak",
+            "dutch": "lekker",
+            "english": "delicious"
+          },
+          {
+            "indonesian": "miskin",
+            "dutch": "arm",
+            "english": "poor"
+          },
+          {
+            "indonesian": "manis",
+            "dutch": "zoet",
+            "english": "sweet"
+          },
+          {
+            "indonesian": "pahit",
+            "dutch": "bitter",
+            "english": "bitter"
+          },
+          {
+            "indonesian": "asam",
+            "dutch": "zuur",
+            "english": "sour"
+          },
+          {
+            "indonesian": "matang",
+            "dutch": "rijp",
+            "english": "ripe"
+          },
+          {
+            "indonesian": "mentah",
+            "dutch": "onrijp",
+            "english": "unripe"
+          },
+          {
+            "indonesian": "tua",
+            "dutch": "oud",
+            "english": "old"
+          },
+          {
+            "indonesian": "penuh",
+            "dutch": "vol",
+            "english": "full"
+          },
+          {
+            "indonesian": "panjang",
+            "dutch": "lang",
+            "english": "long"
+          },
+          {
+            "indonesian": "pendek",
+            "dutch": "kort",
+            "english": "short"
           }
         ]
       }

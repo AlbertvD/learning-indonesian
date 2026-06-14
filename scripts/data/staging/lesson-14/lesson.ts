@@ -258,6 +258,16 @@ export const lesson = {
             "indonesian": "tutup",
             "dutch": "sluiten",
             "english": "close"
+          },
+          {
+            "indonesian": "darat",
+            "dutch": "land/wal",
+            "english": "land"
+          },
+          {
+            "indonesian": "langkah",
+            "dutch": "stap",
+            "english": "step"
           }
         ]
       }
