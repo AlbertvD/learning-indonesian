@@ -25,6 +25,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { extractAnswerKey } from './validators/candidatePayload'
 import { GRAMMAR_EXERCISE_TABLES, type GrammarExerciseType } from './loadFromDb'
+import { findCapsMissingSatellite, type CapForSatelliteCheck } from './satellitePresence'
 import { normalizeTtsText } from '../../tts-normalize'
 import { itemSlug } from '@/lib/capabilities'
 
@@ -160,6 +161,43 @@ export interface RetireOrphanedCapabilitiesResult {
 }
 
 /**
+ * The shared SOFT-RETIRE write seam. Sets `retired_at = now()` on each cap id
+ * AND clears the companion `learner_capability_state.next_due_at` so no past-due
+ * scheduler row is left pointing at a retired cap (HC14 invariant — data-arch M1
+ * of 2026-06-14-readiness-artifact-reconciliation.md §2d).
+ *
+ * Clearing `next_due_at` (not the row) is sufficient and history-preserving: the
+ * due filter requires `nextDueAt != null` (session-builder/dueFilter.ts), while
+ * FSRS `stability`/`difficulty`/`lapseCount`/`reviewCount` are untouched — so a
+ * later re-emission (upsertCapabilities sets retired_at=null) reanimates the cap
+ * and scheduling resumes from preserved state.
+ *
+ * Both reasons-to-retire share this write: `retireOrphanedCapabilities`
+ * (key-not-emitted) and `reconcileArtifactPresence` (satellite-absent).
+ */
+async function softRetireCapabilities(
+  supabase: CapabilitySupabaseClient,
+  capIds: string[],
+): Promise<void> {
+  if (capIds.length === 0) return
+  const nowIso = new Date().toISOString()
+  const { error: updateError } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .update({ retired_at: nowIso, updated_at: nowIso })
+    .in('id', capIds)
+  if (updateError) throw updateError
+
+  // M1: a retired cap must not leave a past-due scheduler row behind (HC14).
+  const { error: stateError } = await supabase
+    .schema('indonesian')
+    .from('learner_capability_state')
+    .update({ next_due_at: null })
+    .in('capability_id', capIds)
+  if (stateError) throw stateError
+}
+
+/**
  * PR 1.5: soft-retire active capabilities attached to `lessonId` whose
  * canonical_key is NOT in `emittedKeys`. Sets `retired_at = now()`; readers
  * filter `retired_at IS NULL`. Child rows (learner_capability_state FSRS,
@@ -209,17 +247,56 @@ export async function retireOrphanedCapabilities(
   }
 
   const orphanIds = orphans.map((o: { id: string }) => o.id)
-  const nowIso = new Date().toISOString()
-  const { error: updateError } = await supabase
-    .schema('indonesian')
-    .from('learning_capabilities')
-    .update({ retired_at: nowIso, updated_at: nowIso })
-    .in('id', orphanIds)
-  if (updateError) throw updateError
+  await softRetireCapabilities(supabase, orphanIds)
 
   return {
     retiredCount: orphanIds.length,
     retiredKeys: orphans.map((o: { canonical_key: string }) => o.canonical_key),
+  }
+}
+
+/**
+ * Readiness↔artifact reconciliation (2026-06-14 spec). The sibling soft-retire
+ * reason on the same write seam as `retireOrphanedCapabilities`, with a different
+ * predicate: instead of "canonical_key not re-emitted" it is "required typed
+ * satellite row is ABSENT" (the shared `findCapsMissingSatellite` predicate).
+ *
+ * Soft-retires any active + ready + published capability for `lessonId` (scoped
+ * to `sourceKinds`) whose render artifact has disappeared post-seed — so an
+ * unrenderable cap can never stay schedulable (the live N−2 bug). The cap
+ * re-activates automatically on a later publish once its satellite exists again
+ * (upsertCapabilities sets retired_at=null on re-emission).
+ *
+ * MUST run AFTER this run's typed satellite writes (so a just-written row counts
+ * as present) and BEFORE promotion (so a cap retired this run is not re-promoted).
+ * Source-kind scoping is load-bearing: the runner owns the non-item kinds and the
+ * vocab module owns `['item']`; an unscoped sweep would cross the ownership line.
+ */
+export async function reconcileArtifactPresence(
+  supabase: CapabilitySupabaseClient,
+  input: { lessonId: string; sourceKinds: ReadonlyArray<string> },
+): Promise<RetireOrphanedCapabilitiesResult> {
+  if (input.sourceKinds.length === 0) return { retiredCount: 0, retiredKeys: [] }
+
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .select('id, canonical_key, source_kind, source_ref, capability_type')
+    .eq('lesson_id', input.lessonId)
+    .eq('readiness_status', 'ready')
+    .eq('publication_status', 'published')
+    .is('retired_at', null)
+    .in('source_kind', [...input.sourceKinds])
+  if (error) throw error
+
+  const caps = (data ?? []) as CapForSatelliteCheck[]
+  const missing = await findCapsMissingSatellite(supabase, caps)
+  if (missing.length === 0) return { retiredCount: 0, retiredKeys: [] }
+
+  await softRetireCapabilities(supabase, missing.map((c) => c.id))
+  return {
+    retiredCount: missing.length,
+    retiredKeys: missing.map((c) => c.canonical_key),
   }
 }
 
