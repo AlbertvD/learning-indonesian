@@ -1148,15 +1148,20 @@ export async function fetchLearningItemPosByNormalizedText(
   const result = new Map<string, string | null>()
   if (normalizedTexts.length === 0) return result
 
-  const { data, error } = await supabase
-    .schema('indonesian')
-    .from('learning_items')
-    .select('normalized_text, pos')
-    .in('normalized_text', normalizedTexts)
-  if (error) throw error
-
-  for (const row of (data ?? []) as Array<{ normalized_text: string; pos: string | null }>) {
-    result.set(row.normalized_text, row.pos ?? null)
+  // Chunk the .in() filter: a ~500-item unit makes the GET URL overrun the Kong
+  // gateway (502 "invalid response from upstream") before any work is logged.
+  const IN_CHUNK = 100
+  for (let i = 0; i < normalizedTexts.length; i += IN_CHUNK) {
+    const slice = normalizedTexts.slice(i, i + IN_CHUNK)
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('learning_items')
+      .select('normalized_text, pos')
+      .in('normalized_text', slice)
+    if (error) throw error
+    for (const row of (data ?? []) as Array<{ normalized_text: string; pos: string | null }>) {
+      result.set(row.normalized_text, row.pos ?? null)
+    }
   }
   return result
 }

@@ -97,27 +97,32 @@ export async function validateItemDuplicates(
   // Item capabilities have source_kind='item' and source_ref='learning_items/<nt>'.
   // Any row with lesson_id != this lesson's lesson_id was first published by
   // another lesson — that is the cross-lesson duplicate the author must fix.
-  const { data, error } = await (supabase as any)
-    .schema('indonesian')
-    .from('learning_capabilities')
-    .select('source_ref, lesson_id')
-    .eq('source_kind', 'item')
-    .in('source_ref', sourceRefs)
-    .not('lesson_id', 'is', null)
+  // Chunk the .in() — a ~500-item unit overruns the Kong GET URL limit (502).
+  const IN_CHUNK = 100
+  const rows: Array<{ source_ref: string; lesson_id: string }> = []
+  for (let i = 0; i < sourceRefs.length; i += IN_CHUNK) {
+    const slice = sourceRefs.slice(i, i + IN_CHUNK)
+    const { data, error } = await (supabase as any)
+      .schema('indonesian')
+      .from('learning_capabilities')
+      .select('source_ref, lesson_id')
+      .eq('source_kind', 'item')
+      .in('source_ref', slice)
+      .not('lesson_id', 'is', null)
 
-  if (error) {
-    // Non-fatal: surface as a warning rather than crashing the gate.
-    findings.push({
-      gate: 'CS17',
-      severity: 'warning',
-      message:
-        `Item duplicate check failed: ${error.message}. ` +
-        `Cross-lesson duplicate detection skipped for lesson ${lessonNumber}.`,
-    })
-    return findings
+    if (error) {
+      // Non-fatal: surface as a warning rather than crashing the gate.
+      findings.push({
+        gate: 'CS17',
+        severity: 'warning',
+        message:
+          `Item duplicate check failed: ${error.message}. ` +
+          `Cross-lesson duplicate detection skipped for lesson ${lessonNumber}.`,
+      })
+      return findings
+    }
+    rows.push(...((data ?? []) as Array<{ source_ref: string; lesson_id: string }>))
   }
-
-  const rows = (data ?? []) as Array<{ source_ref: string; lesson_id: string }>
 
   for (const row of rows) {
     if (row.lesson_id !== lessonId) {
