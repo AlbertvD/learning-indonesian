@@ -7,6 +7,7 @@ import { classifyDutchSeparator, classifyIndonesianSeparator } from '@/lib/capab
 import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
 import { funnelBucket } from '@/lib/analytics/mastery/masteryModel'
+import { findCapsMissingSatellite, type CapForSatelliteCheck } from './lib/pipeline/capability-stage/satellitePresence'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
@@ -847,30 +848,26 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 //        and filter parent on embed.col IS NULL" — the embed-side `.is()`
 //        filters the embedded row, not the parent's visibility. We instead
 //        fetch the two id sets and difference them in code.
+// Refactored 2026-06-14: the satellite-presence difference now runs through the
+// SHARED findCapsMissingSatellite predicate (scripts/lib/pipeline/capability-stage/
+// satellitePresence.ts), the same Layer-1 home the capability-stage reconciliation
+// step imports — so this live mirror can never drift from what the pipeline enforces.
 {
   const { data: capRows, error: capsError } = await supabase
     .schema('indonesian')
     .from('learning_capabilities')
-    .select('id, canonical_key, source_ref')
+    .select('id, canonical_key, source_ref, source_kind, capability_type')
     .eq('source_kind', 'dialogue_line')
     .is('retired_at', null)
   if (capsError) {
     fail('HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2)', capsError.message)
   } else {
-    const activeCaps = (capRows ?? []) as Array<{ id: string; canonical_key: string; source_ref: string }>
+    const activeCaps = (capRows ?? []) as CapForSatelliteCheck[]
     if (activeCaps.length === 0) {
       pass('HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2) (no dialogue_line caps in DB; vacuously green)')
     } else {
-      const { data: dcRows, error: dcError } = await supabase
-        .schema('indonesian')
-        .from('dialogue_clozes')
-        .select('capability_id')
-        .in('capability_id', activeCaps.map((c) => c.id))
-      if (dcError) {
-        fail('HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2)', dcError.message)
-      } else {
-        const haveClozes = new Set(((dcRows ?? []) as Array<{ capability_id: string }>).map((r) => r.capability_id))
-        const offenders = activeCaps.filter((c) => !haveClozes.has(c.id))
+      try {
+        const offenders = await findCapsMissingSatellite(supabase, activeCaps)
         if (offenders.length === 0) {
           pass(`HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2) (${activeCaps.length} cap(s) checked)`)
         } else {
@@ -884,6 +881,8 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
             `bridge from the legacy capability_artifacts rows.`,
           )
         }
+      } catch (err) {
+        fail('HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2)', (err as Error).message)
       }
     }
   }
@@ -940,26 +939,18 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   const { data: capRows, error: capsError } = await supabase
     .schema('indonesian')
     .from('learning_capabilities')
-    .select('id, canonical_key, source_ref')
+    .select('id, canonical_key, source_ref, source_kind, capability_type')
     .eq('source_kind', 'affixed_form_pair')
     .is('retired_at', null)
   if (capsError) {
     fail('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3)', capsError.message)
   } else {
-    const activeCaps = (capRows ?? []) as Array<{ id: string; canonical_key: string; source_ref: string }>
+    const activeCaps = (capRows ?? []) as CapForSatelliteCheck[]
     if (activeCaps.length === 0) {
       pass('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3) (no affixed_form_pair caps in DB; vacuously green)')
     } else {
-      const { data: afpRows, error: afpError } = await supabase
-        .schema('indonesian')
-        .from('affixed_form_pairs')
-        .select('capability_id')
-        .in('capability_id', activeCaps.map((c) => c.id))
-      if (afpError) {
-        fail('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3)', afpError.message)
-      } else {
-        const havePairs = new Set(((afpRows ?? []) as Array<{ capability_id: string }>).map((r) => r.capability_id))
-        const offenders = activeCaps.filter((c) => !havePairs.has(c.id))
+      try {
+        const offenders = await findCapsMissingSatellite(supabase, activeCaps)
         if (offenders.length === 0) {
           pass(`HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3) (${activeCaps.length} cap(s) checked)`)
         } else {
@@ -973,6 +964,8 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
             `bridge from the legacy capability_artifacts rows.`,
           )
         }
+      } catch (err) {
+        fail('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3)', (err as Error).message)
       }
     }
   }
@@ -1000,69 +993,37 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 //        Implementation note (same as HC15/HC17): PostgREST can't express the
 //        anti-join, so we fetch id sets and difference in code.
 {
-  const slugOf = (sourceRef: string) => sourceRef.replace(/^lesson-\d+\/pattern-/u, '')
-
   const { data: capRows, error: capsError } = await supabase
     .schema('indonesian')
     .from('learning_capabilities')
-    .select('id, canonical_key, source_ref, capability_type')
+    .select('id, canonical_key, source_ref, source_kind, capability_type')
     .eq('source_kind', 'pattern')
     .is('retired_at', null)
   if (capsError) {
     fail('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4)', capsError.message)
     fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)', capsError.message)
   } else {
-    const caps = (capRows ?? []) as Array<{ id: string; canonical_key: string; source_ref: string; capability_type: string }>
+    const caps = (capRows ?? []) as CapForSatelliteCheck[]
     if (caps.length === 0) {
       pass('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4) (no pattern caps in DB; vacuously green)')
       pass('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4) (no pattern caps in DB; vacuously green)')
     } else {
-      // slug → grammar_pattern_id
-      const slugs = [...new Set(caps.map((c) => slugOf(c.source_ref)))]
-      const { data: patternRows, error: pErr } = await supabase
-        .schema('indonesian')
-        .from('grammar_patterns')
-        .select('id, slug')
-        .in('slug', slugs)
-      // active grammar_pattern_id set per table
-      const activePatternIds = async (table: string): Promise<Set<string> | { error: string }> => {
-        const { data, error } = await supabase
-          .schema('indonesian')
-          .from(table)
-          .select('grammar_pattern_id')
-          .eq('is_active', true)
-        if (error) return { error: error.message }
-        return new Set(((data ?? []) as Array<{ grammar_pattern_id: string }>).map((r) => r.grammar_pattern_id))
-      }
-      const contrastIds = await activePatternIds('contrast_pair_exercises')
-      const stIds = await activePatternIds('sentence_transformation_exercises')
-      const ctIds = await activePatternIds('constrained_translation_exercises')
-      const cmIds = await activePatternIds('cloze_mcq_exercises')
-      const firstErr = [contrastIds, stIds, ctIds, cmIds].find((x) => 'error' in (x as object)) as { error: string } | undefined
-
-      if (pErr || firstErr) {
-        const msg = pErr?.message ?? firstErr?.error ?? 'unknown'
-        fail('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4)', msg)
-        fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)', msg)
-      } else {
-        const patternIdBySlug = new Map(((patternRows ?? []) as Array<{ id: string; slug: string }>).map((p) => [p.slug, p.id]))
-        const contrastSet = contrastIds as Set<string>
-        const recognitionUnion = new Set<string>([...(stIds as Set<string>), ...(ctIds as Set<string>), ...(cmIds as Set<string>)])
-
-        const describe = (c: { canonical_key: string; source_ref: string }) => `${c.canonical_key} (${c.source_ref})`
-        const reportFmt = (offenders: Array<{ canonical_key: string; source_ref: string }>) => {
-          const sample = offenders.slice(0, 5).map(describe).join(', ')
-          return `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
+      try {
+        // The shared predicate returns every pattern cap missing its satellite
+        // (HC19's contrast arm + HC20's recognition arm); split by capability_type
+        // for the two separate gate reports.
+        const offenders = await findCapsMissingSatellite(supabase, caps)
+        const describe = (c: CapForSatelliteCheck) => `${c.canonical_key} (${c.source_ref})`
+        const reportFmt = (offs: CapForSatelliteCheck[]) => {
+          const sample = offs.slice(0, 5).map(describe).join(', ')
+          return `Sample: ${sample}${offs.length > 5 ? ' …' : ''}\n` +
             `   → Run scripts/migrate-typed-tables-pr4-grammar.ts to bridge the existing exercise_variants, ` +
             `or re-publish (Stage B dual-writes the typed rows for not-yet-published candidates).`
         }
 
         // HC19 — pattern_contrast
         const contrastCaps = caps.filter((c) => c.capability_type === 'pattern_contrast')
-        const contrastOffenders = contrastCaps.filter((c) => {
-          const pid = patternIdBySlug.get(slugOf(c.source_ref))
-          return !pid || !contrastSet.has(pid)
-        })
+        const contrastOffenders = offenders.filter((c) => c.capability_type === 'pattern_contrast')
         if (contrastOffenders.length === 0) {
           pass(`HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4) (${contrastCaps.length} cap(s) checked)`)
         } else {
@@ -1072,16 +1033,16 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 
         // HC20 — pattern_recognition (union of the 3 recognition tables)
         const recognitionCaps = caps.filter((c) => c.capability_type === 'pattern_recognition')
-        const recognitionOffenders = recognitionCaps.filter((c) => {
-          const pid = patternIdBySlug.get(slugOf(c.source_ref))
-          return !pid || !recognitionUnion.has(pid)
-        })
+        const recognitionOffenders = offenders.filter((c) => c.capability_type === 'pattern_recognition')
         if (recognitionOffenders.length === 0) {
           pass(`HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4) (${recognitionCaps.length} cap(s) checked)`)
         } else {
           fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)',
             `${recognitionOffenders.length}+ pattern_recognition caps with no sentence_transformation/constrained_translation/cloze_mcq row for their pattern. ${reportFmt(recognitionOffenders)}`)
         }
+      } catch (err) {
+        fail('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4)', (err as Error).message)
+        fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)', (err as Error).message)
       }
     }
   }

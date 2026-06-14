@@ -43,6 +43,7 @@ import {
 } from './model'
 import {
   createSupabaseClient as defaultCreateSupabaseClient,
+  reconcileArtifactPresence,
   retireOrphanedCapabilities,
   upsertCapabilities,
   upsertCapabilityContentUnits,
@@ -583,6 +584,26 @@ export async function runCapabilityStage(
     affixedFormPairsResult.rows,
   )
   counts.affixedFormPairs = affixedFormPairsLanded
+
+  // ---- 7d. Readiness↔artifact reconciliation (2026-06-14 spec). ----------
+  // Soft-retire any active+ready+published non-item cap whose required typed
+  // satellite row is absent — so an unrenderable cap can never stay schedulable
+  // (the live N−2 session-shrink bug). MUST run AFTER the satellite writes above
+  // (a row written this run counts as present, so a just-fixed cap is not wrongly
+  // retired) and BEFORE promotion (a cap retired this run is not re-promoted —
+  // loadPromotionPlan filters retired_at IS NULL). Runs regardless of `status`
+  // (a partial run from a CS22 cloze gap is exactly when caps go artifact-less)
+  // and does NOT itself flip status to partial. Scoped to the runner's OWN source
+  // kinds — the vocab module reconciles ['item'] for the same lesson (architect C1).
+  const reconciled = await reconcileArtifactPresence(supabase, {
+    lessonId: input.lessonId,
+    sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
+  })
+  if (reconciled.retiredCount > 0) {
+    const previewKeys = reconciled.retiredKeys.slice(0, 5).join(', ')
+    const suffix = reconciled.retiredKeys.length > 5 ? ', …' : ''
+    console.log(`   ✓ Soft-retired ${reconciled.retiredCount} cap(s) for missing artifact: ${previewKeys}${suffix}`)
+  }
 
   // ---- 8. Write — grammar_patterns (PGRST205 fallback preserved). ------
   // Slice 2 (Task 6): when usePatternPath, the pattern path (step 5d) already

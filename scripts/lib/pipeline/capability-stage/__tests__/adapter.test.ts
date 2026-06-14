@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  reconcileArtifactPresence,
   retireOrphanedCapabilities,
   upsertCapabilities,
   upsertLearningItem,
@@ -133,11 +134,25 @@ describe('capability-stage adapter — upsertCapabilities un-retires on re-emiss
 // Mock supabase client that supports the chains retireOrphanedCapabilities calls:
 //   .from('learning_capabilities').select(...).eq('lesson_id', X).is('retired_at', null)
 //   .from('learning_capabilities').update({ retired_at, updated_at }).in('id', ids)
+//   .from('learner_capability_state').update({ next_due_at: null }).in('capability_id', ids)  ← M1
+// `updateCalls` records ONLY the learning_capabilities retire update; `stateClearCalls`
+// records the companion next_due_at clear so tests can assert the M1 state write.
 function buildRetireClient(activeCapsForLesson: Array<{ id: string; canonical_key: string }>) {
   const updateCalls: Array<{ payload: Record<string, unknown>; ids: string[] }> = []
+  const stateClearCalls: Array<{ payload: Record<string, unknown>; capIds: string[] }> = []
   const client = {
     schema: () => ({
       from: (table: string) => {
+        if (table === 'learner_capability_state') {
+          return {
+            update: (payload: Record<string, unknown>) => ({
+              in: async (_column: string, capIds: string[]) => {
+                stateClearCalls.push({ payload, capIds })
+                return { error: null }
+              },
+            }),
+          }
+        }
         if (table !== 'learning_capabilities') throw new Error(`unexpected table: ${table}`)
         return {
           select: () => ({
@@ -155,12 +170,12 @@ function buildRetireClient(activeCapsForLesson: Array<{ id: string; canonical_ke
       },
     }),
   } as never
-  return { client, updateCalls }
+  return { client, updateCalls, stateClearCalls }
 }
 
 describe('capability-stage adapter — retireOrphanedCapabilities', () => {
   it('retires caps attached to the lesson that did NOT reappear in the emit set', async () => {
-    const { client, updateCalls } = buildRetireClient([
+    const { client, updateCalls, stateClearCalls } = buildRetireClient([
       { id: 'cap-a', canonical_key: 'item:halo:recognition' },     // re-emitted → keep
       { id: 'cap-b', canonical_key: 'item:gone:recognition' },     // orphan    → retire
       { id: 'cap-c', canonical_key: 'item:halo:cued_recall' },     // re-emitted → keep
@@ -179,6 +194,10 @@ describe('capability-stage adapter — retireOrphanedCapabilities', () => {
     expect(updateCalls[0].ids.sort()).toEqual(['cap-b', 'cap-d'])
     expect(updateCalls[0].payload.retired_at).toEqual(expect.any(String))
     expect(updateCalls[0].payload.updated_at).toEqual(expect.any(String))
+    // M1: the same retired ids get next_due_at cleared (HC14 invariant).
+    expect(stateClearCalls).toHaveLength(1)
+    expect(stateClearCalls[0].capIds.sort()).toEqual(['cap-b', 'cap-d'])
+    expect(stateClearCalls[0].payload.next_due_at).toBeNull()
   })
 
   it('makes no update call when every active cap is in the emit set', async () => {
@@ -287,5 +306,116 @@ describe('retireOrphanedCapabilities — source-kind scoping (cap-v2 #161 landmi
     expect(updateCalls[0].ids).toEqual(['item-orphan'])
     expect(updateCalls[0].ids).not.toContain('pat-keep')
     expect(updateCalls[0].ids).not.toContain('dlg-orphan')
+  })
+})
+
+// ── Readiness↔artifact reconciliation (2026-06-14 spec) ────────────────────
+
+// Mock supporting the chains reconcileArtifactPresence + findCapsMissingSatellite use:
+//   .from('learning_capabilities').select(...).eq().eq().eq().is().in('source_kind', kinds)  → caps
+//   .from('learning_capabilities').update({ retired_at }).in('id', ids)                       → retireUpdate
+//   .from('learner_capability_state').update({ next_due_at: null }).in('capability_id', ids)  → stateClear
+//   .from(<satellite table>).select(...).in(...)/.eq(...)                                     → tables[table]
+function buildReconcileClient(
+  caps: Array<Record<string, unknown>>,
+  tables: Record<string, Array<Record<string, unknown>>>,
+) {
+  const retireUpdate: Array<{ payload: Record<string, unknown>; ids: string[] }> = []
+  const stateClear: Array<{ payload: Record<string, unknown>; capIds: string[] }> = []
+  function chain(rows: Array<Record<string, unknown>>): never {
+    const p = Promise.resolve({ data: rows, error: null })
+    return {
+      select: () => chain(rows),
+      eq: () => chain(rows),
+      is: () => chain(rows),
+      in: (col: string, vals: string[]) => chain(rows.filter((r) => vals.includes(r[col] as string))),
+      then: p.then.bind(p),
+      catch: p.catch.bind(p),
+      finally: p.finally.bind(p),
+    } as never
+  }
+  const client = {
+    schema: () => ({
+      from: (table: string) => {
+        if (table === 'learning_capabilities') {
+          return {
+            select: () => chain(caps),
+            update: (payload: Record<string, unknown>) => ({
+              in: async (_c: string, ids: string[]) => { retireUpdate.push({ payload, ids }); return { error: null } },
+            }),
+          }
+        }
+        if (table === 'learner_capability_state') {
+          return {
+            update: (payload: Record<string, unknown>) => ({
+              in: async (_c: string, capIds: string[]) => { stateClear.push({ payload, capIds }); return { error: null } },
+            }),
+          }
+        }
+        return { select: () => chain(tables[table] ?? []) }
+      },
+    }),
+  } as never
+  return { client, retireUpdate, stateClear }
+}
+
+describe('capability-stage adapter — reconcileArtifactPresence', () => {
+  const dlgCap = (id: string) => ({
+    id,
+    canonical_key: `dialogue_line:${id}:contextual_cloze`,
+    source_kind: 'dialogue_line',
+    source_ref: `lesson-1/section-3/line-${id}`,
+    capability_type: 'contextual_cloze',
+  })
+
+  it('soft-retires a ready+published dialogue cap whose dialogue_clozes row vanished, and clears next_due_at', async () => {
+    const { client, retireUpdate, stateClear } = buildReconcileClient(
+      [dlgCap('keep'), dlgCap('orphan')],
+      { dialogue_clozes: [{ capability_id: 'keep' }] }, // 'orphan' has no cloze row
+    )
+    const result = await reconcileArtifactPresence(client, {
+      lessonId: 'L1',
+      sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
+    })
+    expect(result.retiredKeys).toEqual(['dialogue_line:orphan:contextual_cloze'])
+    expect(retireUpdate).toHaveLength(1)
+    expect(retireUpdate[0].ids).toEqual(['orphan'])
+    expect(retireUpdate[0].payload.retired_at).toEqual(expect.any(String))
+    // M1: the retired cap's scheduler row is cleared.
+    expect(stateClear).toHaveLength(1)
+    expect(stateClear[0].capIds).toEqual(['orphan'])
+    expect(stateClear[0].payload.next_due_at).toBeNull()
+  })
+
+  it('retires nothing (and writes nothing) when every cap has its satellite row', async () => {
+    const { client, retireUpdate, stateClear } = buildReconcileClient(
+      [dlgCap('a'), dlgCap('b')],
+      { dialogue_clozes: [{ capability_id: 'a' }, { capability_id: 'b' }] },
+    )
+    const result = await reconcileArtifactPresence(client, {
+      lessonId: 'L1',
+      sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
+    })
+    expect(result.retiredCount).toBe(0)
+    expect(retireUpdate).toHaveLength(0)
+    expect(stateClear).toHaveLength(0)
+  })
+
+  it('is a no-op for the item scope — item caps have no satellite predicate (§2c)', async () => {
+    const itemCap = {
+      id: 'i1', canonical_key: 'item:halo:recognition',
+      source_kind: 'item', source_ref: 'learning_items/halo', capability_type: 'recognition',
+    }
+    const { client, retireUpdate } = buildReconcileClient([itemCap], {})
+    const result = await reconcileArtifactPresence(client, { lessonId: 'L1', sourceKinds: ['item'] })
+    expect(result.retiredCount).toBe(0)
+    expect(retireUpdate).toHaveLength(0)
+  })
+
+  it('short-circuits on an empty sourceKinds scope', async () => {
+    const { client, retireUpdate } = buildReconcileClient([dlgCap('x')], {})
+    const result = await reconcileArtifactPresence(client, { lessonId: 'L1', sourceKinds: [] })
+    expect(result.retiredCount).toBe(0)
+    expect(retireUpdate).toHaveLength(0)
   })
 })
