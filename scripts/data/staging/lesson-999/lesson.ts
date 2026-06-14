@@ -1,23 +1,11 @@
-// Common Words — the hidden gap-word home for frequency-band collections
-// (collections spec §6). NOT a coursebook lesson: it is the ingestion vehicle for
-// high-frequency words taught in no chapter. module_id 'common-words' +
-// order_index 999 match the seeded hidden `lessons` row; is_hidden=true keeps it
-// out of get_lessons_overview and the sign-in backfill, so its caps surface ONLY
-// via collection activation.
-//
-// Publish with: bun scripts/publish-approved-content.ts 999
-// Vocab-only → Stage A writes the section + learning_items + vocab caps. Words
-// already taught elsewhere dedupe by resolve-or-create on normalized_text.
-//
-// Section 0 = PBWL top-100 residual (26 function words). Section 1 = PBWL 101–1000
-// residual (492 root words). Glosses authored 2026-06-14 from the PBWL
-// root list + its English definitions as meaning hints (own NL/EN, not copied).
-// NL is the author-reviewed answer key — REVIEW before relying. Many are common
-// concrete A1 roots; PBWL is a root list, so roots are taught even where a derived
-// form exists elsewhere.
+// Common Words — hidden gap-word home for collections (spec §6). module_id
+// 'common-words' / order_index 999 match the seeded hidden lesson. Sections:
+// 0 = PBWL top-100 residual, 1 = PBWL 101–1000 residual, 2 = themepack gaps
+// (words for the 7 theme collections not in any lesson). Publish: bun
+// scripts/publish-approved-content.ts 999. NL is author-draft — review.
 export const lesson = {
   "title": "Common Words",
-  "description": "Veelvoorkomende woorden uit de frequentielijst (top-1000) die in geen enkel hoofdstuk worden onderwezen — voor de woordenlijsten/frequentiebanden.",
+  "description": "Veelvoorkomende + thematische woorden die in geen enkel hoofdstuk worden onderwezen — voor de woordenlijsten (frequentiebanden + themapakketten).",
   "level": "A1",
   "module_id": "common-words",
   "order_index": 999,
@@ -555,6 +543,39 @@ export const lesson = {
           { "indonesian": "papa", "dutch": "papa", "english": "dad" },
           { "indonesian": "nyamuk", "dutch": "mug", "english": "mosquito" },
           { "indonesian": "mabuk", "dutch": "dronken; misselijk", "english": "drunk; nauseous" }
+        ]
+      }
+    },
+    {
+      "title": "Themawoorden (collectie-gaten)",
+      "order_index": 2,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          { "indonesian": "mangga", "dutch": "mango", "english": "mango" },
+          { "indonesian": "alpukat", "dutch": "avocado", "english": "avocado" },
+          { "indonesian": "air mineral", "dutch": "mineraalwater", "english": "mineral water" },
+          { "indonesian": "rumah makan", "dutch": "restaurant, eethuis", "english": "restaurant" },
+          { "indonesian": "sarapan", "dutch": "ontbijt", "english": "breakfast" },
+          { "indonesian": "gua", "dutch": "grot", "english": "cave" },
+          { "indonesian": "air terjun", "dutch": "waterval", "english": "waterfall" },
+          { "indonesian": "berdiri", "dutch": "staan", "english": "to stand" },
+          { "indonesian": "bingung", "dutch": "verward, in de war", "english": "confused" },
+          { "indonesian": "bantal", "dutch": "kussen", "english": "pillow" },
+          { "indonesian": "selimut", "dutch": "deken", "english": "blanket" },
+          { "indonesian": "kulkas", "dutch": "koelkast", "english": "refrigerator" },
+          { "indonesian": "kompor", "dutch": "fornuis, kookplaat", "english": "stove" },
+          { "indonesian": "kipas", "dutch": "waaier, ventilator", "english": "fan" },
+          { "indonesian": "kaos", "dutch": "T-shirt", "english": "T-shirt" },
+          { "indonesian": "gaun", "dutch": "jurk, japon", "english": "dress, gown" },
+          { "indonesian": "jaket", "dutch": "jas, jasje", "english": "jacket" },
+          { "indonesian": "sweter", "dutch": "trui", "english": "sweater" },
+          { "indonesian": "kaus kaki", "dutch": "sokken", "english": "socks" },
+          { "indonesian": "dasi", "dutch": "stropdas", "english": "tie" },
+          { "indonesian": "sabuk", "dutch": "riem, gordel", "english": "belt" },
+          { "indonesian": "sarung", "dutch": "sarong", "english": "sarong" },
+          { "indonesian": "jilbab", "dutch": "hoofddoek", "english": "headscarf" },
+          { "indonesian": "jam tangan", "dutch": "horloge", "english": "watch" }
         ]
       }
     }
