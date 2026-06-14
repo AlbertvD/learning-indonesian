@@ -8,6 +8,7 @@ import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
 import { funnelBucket } from '@/lib/analytics/mastery/masteryModel'
 import { findCapsMissingSatellite, type CapForSatelliteCheck } from './lib/pipeline/capability-stage/satellitePresence'
+import { projectionViolations, type RankedItem } from './collections/projection'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
@@ -43,6 +44,10 @@ const EXPECTED_TABLES = [
   'error_logs',
   'audio_clips',
   'learner_lesson_activation',  // retirement #6
+  // collections (frequency bands + thematic packs) — spec §4.3 / §8 gate 3
+  'collections',
+  'collection_items',
+  'learner_collection_activation',
 ]
 
 // Expected grants: table → { role → privileges[] }
@@ -63,6 +68,10 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   user_roles:           { authenticated: ['SELECT'] },
   audio_clips:          { authenticated: ['SELECT'] },
   learner_lesson_activation: { authenticated: ['SELECT'] },  // retirement #6 — writes via RPC only
+  // Content tables world-readable; activation owner-read + RPC-only writes (spec §4.3).
+  collections:           { authenticated: ['SELECT'] },
+  collection_items:      { authenticated: ['SELECT'] },
+  learner_collection_activation: { authenticated: ['SELECT'] },  // writes via set_collection_activation only
 }
 
 // ── Fetch schema health report ─────────────────────────────────────────────
@@ -1495,6 +1504,66 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     }
   } catch (err) {
     fail('HC28 weekly movement parity', err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC29 (collections spec §8 gate 3): frequency-band projection is consistent ──
+// For every kind='frequency' collection, the materialised collection_items must
+// equal { item | frequency_rank <= rank_cutoff } in BOTH directions: no member
+// above the cutoff, and no eligible item missing (catches a stale projection
+// after a frequency_rank update). Reuses projectionViolations — the SAME §8
+// gate-1 predicate the seed script asserts at write time (three-layer parity).
+// Orphan collection_items are impossible by FK (on delete cascade); source_ref→
+// item resolution (§8 gate 3, third bullet) is already HC9, not duplicated here.
+{
+  try {
+    const { data: freqColls, error: cErr } = await supabase.schema('indonesian')
+      .from('collections')
+      .select('id, slug, rank_cutoff')
+      .eq('kind', 'frequency')
+    if (cErr) throw new Error(cErr.message)
+
+    const colls = (freqColls ?? []) as Array<{ id: string; slug: string; rank_cutoff: number | null }>
+    if (colls.length === 0) {
+      pass('HC29 collections frequency-projection invariant — no frequency collections yet')
+    } else {
+      const { data: itemRows, error: iErr } = await supabase.schema('indonesian')
+        .from('learning_items')
+        .select('id, frequency_rank')
+      if (iErr) throw new Error(iErr.message)
+      const allItems: RankedItem[] = (itemRows ?? []).map(r => {
+        const row = r as { id: string; frequency_rank: number | null }
+        return { id: row.id, frequencyRank: row.frequency_rank }
+      })
+
+      let anyFail = false
+      for (const c of colls) {
+        if (c.rank_cutoff == null) {
+          fail(`HC29 ${c.slug} projection`, 'frequency collection has NULL rank_cutoff (DB CHECK should forbid this)')
+          anyFail = true
+          continue
+        }
+        const { data: memberRows, error: mErr } = await supabase.schema('indonesian')
+          .from('collection_items')
+          .select('learning_item_id')
+          .eq('collection_id', c.id)
+        if (mErr) throw new Error(mErr.message)
+        const memberIds = new Set((memberRows ?? []).map(r => (r as { learning_item_id: string }).learning_item_id))
+        const violations = projectionViolations(allItems, memberIds, c.rank_cutoff)
+        if (violations.length === 0) {
+          pass(`HC29 ${c.slug} projection (rank<=${c.rank_cutoff}): ${memberIds.size} members, consistent both directions`)
+        } else {
+          const over = violations.filter(v => v.kind === 'member-over-cutoff').length
+          const missing = violations.filter(v => v.kind === 'missing-eligible').length
+          fail(`HC29 ${c.slug} projection (rank<=${c.rank_cutoff})`,
+            `${over} member(s) above cutoff + ${missing} eligible item(s) missing — re-run seed-collection.ts to re-project`)
+          anyFail = true
+        }
+      }
+      if (!anyFail && colls.length > 1) pass(`HC29 all ${colls.length} frequency collections consistent`)
+    }
+  } catch (err) {
+    fail('HC29 collections frequency-projection invariant', err instanceof Error ? err.message : String(err))
   }
 }
 
