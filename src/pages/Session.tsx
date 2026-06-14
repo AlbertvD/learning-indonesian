@@ -159,20 +159,23 @@ export function Session() {
     initSession()
   }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, sessionMode, forceCapabilityKey, allowForceCapability])
 
-  // Session finished (queue exhausted): mark it complete so it counts toward the
-  // streak, then go home. The mark is best-effort — a failure must not trap the
-  // learner on the completion screen.
+  // Session finished (queue exhausted) — fired by ExperiencePlayer the moment the
+  // cards run out, NOT on the recap button. Marks the session complete so it
+  // counts toward the streak + daily-activity. Best-effort: a failure must not
+  // trap the learner (it does not navigate; the recap stays visible).
   const handleSessionComplete = async () => {
     const sid = sessionIdRef.current
-    if (sid) {
-      try {
-        await markSessionComplete(sid)
-      } catch (err) {
-        logError({ page: 'session', action: 'markSessionComplete', error: err })
-      }
+    if (!sid) return
+    try {
+      await markSessionComplete(sid)
+    } catch (err) {
+      logError({ page: 'session', action: 'markSessionComplete', error: err })
     }
-    navigate('/')
   }
+
+  // Recap "Terug naar dashboard" button — navigation only; completion already
+  // recorded by handleSessionComplete when the cards ran out.
+  const handleExit = () => navigate('/')
 
   const handleCapabilityAnswer = async (event: SessionAnswerEvent) => {
     if (!user || !capabilityPlan) return
@@ -271,6 +274,7 @@ export function Session() {
           userLanguage={userLanguage}
           onAnswer={handleCapabilityAnswer}
           onComplete={handleSessionComplete}
+          onExit={handleExit}
         />
       </>
     )

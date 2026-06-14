@@ -8,7 +8,9 @@ interface RecapScreenProps {
   answeredBlocks: Set<string>
   skippedBlocks: Set<string>
   commitFailedBlocks: Set<string>
-  onComplete: () => void
+  // Leave the recap (navigate home). Completion is recorded by the player when
+  // the cards run out, not here — so this is navigation only.
+  onExit: () => void
 }
 
 export function RecapScreen({
@@ -16,7 +18,7 @@ export function RecapScreen({
   answeredBlocks,
   skippedBlocks,
   commitFailedBlocks,
-  onComplete,
+  onExit,
 }: RecapScreenProps) {
   if (renderableBlocks.length === 0) {
     return (
@@ -24,7 +26,7 @@ export function RecapScreen({
         <HeroCard title="Niets te doen">
           <Text>Er zijn geen kaarten beschikbaar voor deze sessie.</Text>
         </HeroCard>
-        <Button onClick={onComplete} fullWidth>
+        <Button onClick={onExit} fullWidth>
           Terug naar dashboard
         </Button>
       </Stack>
@@ -98,7 +100,7 @@ export function RecapScreen({
         })}
       </ul>
 
-      <Button onClick={onComplete} fullWidth>
+      <Button onClick={onExit} fullWidth>
         Terug naar dashboard
       </Button>
     </Stack>
