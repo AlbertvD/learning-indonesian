@@ -171,6 +171,7 @@ const baseProps = {
   userLanguage: 'nl' as const,
   onAnswer: vi.fn(async () => {}),
   onComplete: vi.fn(),
+  onExit: vi.fn(),
 }
 
 beforeEach(async () => {
@@ -350,19 +351,23 @@ describe('ExperiencePlayer — stepwise shell', () => {
     expect(screen.getByRole('button', { name: 'Terug naar dashboard' })).toBeInTheDocument()
   })
 
-  it('9. Empty-state recap when zero renderable blocks', async () => {
+  it('9. Empty-state recap when zero renderable blocks — exits, records nothing', async () => {
     const user = userEvent.setup()
     const onComplete = vi.fn()
+    const onExit = vi.fn()
     const blocks = [makeBlock('b1', 'due_review'), makeBlock('b2', 'due_review')]
     const p = makePlan(blocks)
     const contexts = new Map(blocks.map(b => [b.id, makeFail(b)]))
-    renderPlayer({ ...baseProps, plan: p, contexts, onComplete })
+    renderPlayer({ ...baseProps, plan: p, contexts, onComplete, onExit })
 
     expect(await screen.findByText('Niets te doen')).toBeInTheDocument()
     expect(screen.getByText('Er zijn geen kaarten beschikbaar voor deze sessie.')).toBeInTheDocument()
 
+    // An empty session (no renderable cards) has nothing to complete.
+    expect(onComplete).not.toHaveBeenCalled()
     await user.click(screen.getByRole('button', { name: 'Terug naar dashboard' }))
-    expect(onComplete).toHaveBeenCalledTimes(1)
+    expect(onExit).toHaveBeenCalledTimes(1)
+    expect(onComplete).not.toHaveBeenCalled()
   })
 
   it('9a. Recap excludes commit-failed from savedCount; singular subline', async () => {
@@ -450,18 +455,24 @@ describe('ExperiencePlayer — stepwise shell', () => {
     expect(screen.getByText('Oefening 1 van 2')).toBeInTheDocument()
   })
 
-  it('10. onComplete fires from recap button only — not auto-fired after last answer', async () => {
+  it('10. onComplete fires automatically when the cards run out, once — recap button only exits', async () => {
     const user = userEvent.setup()
     const onComplete = vi.fn()
+    const onExit = vi.fn()
     const blocks = [makeBlock('b1', 'due_review')]
     const p = makePlan(blocks)
     const contexts = new Map(blocks.map(b => [b.id, makeOk(b)]))
-    renderPlayer({ ...baseProps, plan: p, contexts, onComplete })
+    renderPlayer({ ...baseProps, plan: p, contexts, onComplete, onExit })
 
+    // Answering the last (only) card exhausts the queue → completion records now,
+    // before the learner touches the recap button.
     await user.click(screen.getByRole('button', { name: 'Mark correct' }))
+    await waitFor(() => expect(onComplete).toHaveBeenCalledTimes(1))
+    expect(onExit).not.toHaveBeenCalled()
 
-    expect(onComplete).not.toHaveBeenCalled()
+    // The recap button navigates home without re-recording completion.
     await user.click(await screen.findByRole('button', { name: 'Terug naar dashboard' }))
+    expect(onExit).toHaveBeenCalledTimes(1)
     expect(onComplete).toHaveBeenCalledTimes(1)
   })
 

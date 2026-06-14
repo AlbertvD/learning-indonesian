@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { notifications } from '@mantine/notifications'
 import { Progress, Text, Group, Stack } from '@mantine/core'
 import { PageContainer, PageBody } from '@/components/page/primitives'
@@ -24,7 +24,15 @@ export interface ExperiencePlayerProps {
   audioMap: SessionAudioMap
   userLanguage: 'nl' | 'en'
   onAnswer: (event: SessionAnswerEvent) => Promise<void>
+  // Fired ONCE when the card queue is exhausted (every renderable block answered
+  // or skipped) — i.e. when the cards run out, not when the learner taps the
+  // recap button. This is what records the session as completed (streak +
+  // daily-activity count). Gating completion on the recap button made it
+  // unreliable: a learner who left the recap any other way never counted.
   onComplete: () => void
+  // Fired when the learner leaves the recap screen (the "Terug naar dashboard"
+  // button). Navigation only — completion has already been recorded via onComplete.
+  onExit: () => void
 }
 
 interface FeedbackState {
@@ -75,7 +83,7 @@ function pickRedrillOffset(): number {
 }
 
 export function ExperiencePlayer(props: ExperiencePlayerProps) {
-  const { plan, contexts, audioMap, userLanguage, onAnswer, onComplete } = props
+  const { plan, contexts, audioMap, userLanguage, onAnswer, onComplete, onExit } = props
   const { profile } = useAuthStore()
 
   const renderableBlocks = useMemo(() => {
@@ -123,6 +131,8 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
   const [commitFailedBlocks, setCommitFailedBlocks] = useState<Set<string>>(() => new Set())
   const [feedback, setFeedback] = useState<FeedbackState | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  // Guards the one-shot completion fire (see the exhaustion effect below).
+  const completedRef = useRef(false)
 
   // Reset queue when renderableBlocks changes (new session plan).
   useEffect(() => {
@@ -134,11 +144,23 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
     setCorrectCapabilityIds(new Set())
     setCommitFailedBlocks(new Set())
     setFeedback(null)
+    completedRef.current = false
   }, [renderableBlocks])
 
   const queueLength = queue.length
   const currentBlock = queue[position]
   const isComplete = position >= queueLength
+
+  // Record completion the moment the cards run out — NOT when the learner taps
+  // the recap button. A session with at least one renderable card that the
+  // learner has worked all the way through is "finished"; fire onComplete once.
+  // (An empty session — zero renderable blocks — has nothing to record.)
+  useEffect(() => {
+    if (isComplete && queueLength > 0 && !completedRef.current) {
+      completedRef.current = true
+      onComplete()
+    }
+  }, [isComplete, queueLength, onComplete])
   const totalUniqueCaps = uniqueCapabilityIds.size
   const correctCount = correctCapabilityIds.size
   const progress = totalUniqueCaps === 0
@@ -235,7 +257,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
               answeredBlocks={answeredBlocks}
               skippedBlocks={skippedBlocks}
               commitFailedBlocks={commitFailedBlocks}
-              onComplete={onComplete}
+              onExit={onExit}
             />
           </PageBody>
         </PageContainer>
