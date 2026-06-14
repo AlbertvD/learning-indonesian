@@ -1,7 +1,7 @@
 ---
 module: capability-stage-vocabulary
 surface: scripts/lib/pipeline/capability-stage/vocabulary/
-last_verified_against_code: 2026-06-07
+last_verified_against_code: 2026-06-14
 status: in-flight   # cutover (Task 8) not yet landed — the runner still co-writes item caps until then
 ---
 
@@ -43,6 +43,10 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
    - **Item `contextual_cloze` is NOT emitted** — won't-build (see §4); cloze stays dialogue-only.
 6. **Seed distractors** (absorbs the old Stage C): `seedDistractors` over `createDistractorStore` +
    `createLocalEmbedder` (the done distractor slice — `selectDistractors`/`planDistractors`/`seedDistractors`).
+6b. **Reconcile artifact presence** (`reconcileArtifactPresence({ sourceKinds: ['item'] })`, after the
+   seed, before promotion — 2026-06-14 spec): the item-scoped mirror of the runner's reconciliation.
+   Effectively a no-op (item MCQ caps have no per-cap satellite row — `findCapsMissingSatellite` returns
+   none for them); kept for ownership symmetry (the runner owns the non-item kinds).
 7. **Gate post-write** (`gate.ts:runVocabGatePostWrite`) — MUST run after step 6 so CS15 reads seeded
    counts: CS14 (POS post-backfill), CS15 (distractor coverage), CS23 (audio coverage WARN), CS17
    (cross-lesson dupes). Aggregates into `status` (`ok`|`partial`).
@@ -57,8 +61,10 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
 - **No staging reads (Stage Contract).** Inputs are DB tables only; enforced by `__tests__/enforcement/noDiskReads.test.ts`.
 - **content_units split.** Item units carry a disjoint `content_unit_key` set + `display_order` range
   (1000+) from the runner's section/grammar/affixed units, so both write `content_units` idempotently.
-- **Orphan-sweep scoping.** `retireOrphanedCapabilities` is scoped to `sourceKinds:['item']` so it never
-  retires the runner's non-item caps for the same lesson (and vice-versa).
+- **Orphan-sweep scoping.** `retireOrphanedCapabilities` AND `reconcileArtifactPresence` are both scoped
+  to `sourceKinds:['item']` so neither sweep retires the runner's non-item caps for the same lesson (and
+  vice-versa). The two share one soft-retire write seam (`softRetireCapabilities`) that also clears the
+  retired caps' `learner_capability_state.next_due_at` (HC14 invariant — 2026-06-14 spec §2d).
 - **Audio (§0.8 / #165).** Audio caps are emitted for word/phrase items; a missing `audio_clip` is a
   CS23 WARNING (not blocked). The hard Stage-A error is #165.
 

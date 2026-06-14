@@ -45,6 +45,7 @@ import {
   fetchLearningItemPosByNormalizedText,
   updateLearningItemPos,
   retireOrphanedCapabilities,
+  reconcileArtifactPresence,
   type CapabilityContentUnitInput,
   type CapabilityInput,
   type CapabilitySupabaseClient,
@@ -250,6 +251,21 @@ export async function publishVocabulary(
         : {},
   )
   counts.itemDistractorSets = seedResult.capsSeeded
+
+  // ---- 8b. Readiness↔artifact reconciliation (2026-06-14 spec), item scope. --
+  // The item-scoped mirror of the runner's reconciliation, kept for symmetry and
+  // ownership-correctness (architect C1 — the runner owns the non-item kinds, this
+  // module owns ['item']). Effectively a no-op today: item MCQ caps have no per-cap
+  // satellite row to key on (CS15 is warning-only; the runtime distractor-pool
+  // fallback degrades gracefully — §2c), so findCapsMissingSatellite returns none
+  // for item caps. After the seed, before promotion.
+  const reconciled = await reconcileArtifactPresence(supabase, {
+    lessonId: input.lessonId,
+    sourceKinds: ['item'],
+  })
+  if (reconciled.retiredCount > 0) {
+    console.log(`   ✓ Soft-retired ${reconciled.retiredCount} item cap(s) for missing artifact`)
+  }
 
   // ---- 9. Gate (post-write). MUST run after the seed (CS15 reads counts). -
   const itemCapIds = allItemCaps
