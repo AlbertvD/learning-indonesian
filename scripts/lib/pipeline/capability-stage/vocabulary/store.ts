@@ -124,13 +124,24 @@ export function createDistractorStore(
 
   return {
     async fetchItemCapsForLesson(lessonId: string): Promise<SeedCapInput[]> {
-      const { data, error } = await idn()
-        .from('learning_capabilities')
-        .select('id, capability_type, source_ref')
-        .eq('source_kind', 'item')
-        .eq('lesson_id', lessonId)
-      if (error) throw new Error(`store.fetchItemCapsForLesson: ${error.message}`)
-      const caps = (data ?? []) as Array<{ id: string; capability_type: string; source_ref: string }>
+      // Paginate: a ~500-item Common Words unit has ~3k item caps; an unpaginated
+      // select silently caps at PostgREST's 1000-row default, leaving the rest
+      // without curated distractors.
+      const caps: Array<{ id: string; capability_type: string; source_ref: string }> = []
+      let offset = 0
+      while (true) {
+        const { data, error } = await idn()
+          .from('learning_capabilities')
+          .select('id, capability_type, source_ref')
+          .eq('source_kind', 'item')
+          .eq('lesson_id', lessonId)
+          .range(offset, offset + PAGE_SIZE - 1)
+        if (error) throw new Error(`store.fetchItemCapsForLesson: ${error.message}`)
+        const page = (data ?? []) as Array<{ id: string; capability_type: string; source_ref: string }>
+        caps.push(...page)
+        if (page.length < PAGE_SIZE) break
+        offset += PAGE_SIZE
+      }
 
       const items = await fetchAllActiveItems(supabase)
 

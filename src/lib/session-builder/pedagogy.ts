@@ -126,6 +126,15 @@ export interface PedagogyInput {
   // capabilities with null lessonId are podcast source kinds — those bypass
   // this gate and rely on `isAllowedInSessionMode` for mode admission.
   activatedLessons: ReadonlySet<string>
+  // Set of capability source_refs that belong to a collection the learner has
+  // activated (collections feature, spec §5). For item caps the form is
+  // `learning_items/<normalized_text>` — matching PlannerCapability.sourceRef and
+  // the HC9 invariant. A cap in this set is RESCUED from the lesson-activation
+  // gate below: a gap word homed on the un-activated "Common Words" lesson still
+  // surfaces when its collection is activated. Resolved by `lib/collections`;
+  // optional (empty = no collections active) so non-collection callers are
+  // unaffected.
+  activatedCollectionRefs?: ReadonlySet<string>
   recentFailures?: Array<{
     canonicalKey: string
     failedAt: string
@@ -259,6 +268,7 @@ interface GateContext {
   now: Date
   recentFailures?: PedagogyInput['recentFailures']
   activatedLessons: ReadonlySet<string>
+  activatedCollectionRefs: ReadonlySet<string>
   selectedLessonId?: string
   selectedSourceRefs?: string[]
   satisfiedKeys: ReadonlySet<string>
@@ -370,7 +380,18 @@ function gateCandidates(
     // rely on `isAllowedInSessionMode` above to gate them by mode. For every
     // other source kind, the schema guarantees lessonId is non-null and the
     // gate fires whenever the learner has not activated that lesson.
-    if (capability.lessonId != null && !ctx.activatedLessons.has(capability.lessonId)) {
+    //
+    // Collections gate-OR (spec §5): a cap is suppressed only if its lesson is
+    // not activated AND its word is in NO activated collection. This rescues
+    // gap-word caps homed on the un-activated "Common Words" lesson when the
+    // learner activates a collection containing the word. Clause ORDER is
+    // load-bearing — the collection membership is an OR with the lesson gate,
+    // not a separate suppression.
+    if (
+      capability.lessonId != null
+      && !ctx.activatedLessons.has(capability.lessonId)
+      && !ctx.activatedCollectionRefs.has(capability.sourceRef)
+    ) {
       suppress('lesson_not_activated')
       continue
     }
@@ -490,6 +511,7 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
     now: input.now,
     recentFailures: input.recentFailures,
     activatedLessons: input.activatedLessons,
+    activatedCollectionRefs: input.activatedCollectionRefs ?? new Set(),
     selectedLessonId: input.selectedLessonId,
     selectedSourceRefs: input.selectedSourceRefs,
     stateByKey: new Map(input.learnerCapabilityStates.map(state => [state.canonicalKey, state])),

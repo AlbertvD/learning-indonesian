@@ -983,6 +983,86 @@ export const lesson = {
             "dutch": "goh! nou! (stopwoord/uitroep)",
             "indonesian": "wah!",
             "english": "wow! goodness! (exclamation)"
+          },
+          {
+            "indonesian": "dia",
+            "dutch": "hij/zij",
+            "english": "he/she"
+          },
+          {
+            "indonesian": "ia",
+            "dutch": "hij/zij",
+            "english": "he/she"
+          },
+          {
+            "indonesian": "beliau",
+            "dutch": "hij/zij (respect)",
+            "english": "he/she (respectful)"
+          },
+          {
+            "indonesian": "anda",
+            "dutch": "u/jij",
+            "english": "you (formal/informal)"
+          },
+          {
+            "indonesian": "kalian",
+            "dutch": "jullie",
+            "english": "you all"
+          },
+          {
+            "indonesian": "engkau",
+            "dutch": "jij (informeel)",
+            "english": "you (informal)"
+          },
+          {
+            "indonesian": "tuan",
+            "dutch": "meneer (formeel)",
+            "english": "sir (formal)"
+          },
+          {
+            "indonesian": "saudara",
+            "dutch": "kameraad (m)",
+            "english": "colleague (m)"
+          },
+          {
+            "indonesian": "saudari",
+            "dutch": "kameraad (v)",
+            "english": "colleague (f)"
+          },
+          {
+            "indonesian": "nona",
+            "dutch": "juffrouw",
+            "english": "miss"
+          },
+          {
+            "indonesian": "tuan-tuan",
+            "dutch": "heren",
+            "english": "gentlemen"
+          },
+          {
+            "indonesian": "bapak-bapak",
+            "dutch": "heren (neutraal)",
+            "english": "gentlemen (neutral)"
+          },
+          {
+            "indonesian": "nyonya-nyonya",
+            "dutch": "dames (formeel)",
+            "english": "ladies (formal)"
+          },
+          {
+            "indonesian": "ibu-ibu",
+            "dutch": "dames (neutraal)",
+            "english": "ladies (neutral)"
+          },
+          {
+            "indonesian": "saudara-saudara",
+            "dutch": "dames en heren",
+            "english": "ladies and gentlemen"
+          },
+          {
+            "indonesian": "saudari-saudari",
+            "dutch": "dames",
+            "english": "ladies"
           }
         ]
       }

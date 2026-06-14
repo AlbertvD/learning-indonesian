@@ -17,6 +17,7 @@ import {
 } from '@tabler/icons-react'
 import { PageContainer, PageBody, ListCard, LoadingState } from '@/components/page/primitives'
 import { StreakBar } from '@/components/dashboard/StreakBar'
+import { CommonWordsGoalCard } from '@/components/collections/CommonWordsGoalCard'
 import { getLessonsBasic } from '@/lib/lessons'
 import { listActivatedLessons } from '@/lib/lessons/activation'
 import { engagement } from '@/lib/analytics/engagement'
@@ -150,6 +151,9 @@ export function Dashboard() {
             title={T.dashboard.movementTitle}
             subtitle={movementSubtitle}
           />
+
+          {/* Headline frequency-band coverage — inert until a band is seeded. */}
+          <CommonWordsGoalCard />
 
           <ListCard
             to={continueUrl}

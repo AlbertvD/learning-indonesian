@@ -1148,15 +1148,20 @@ export async function fetchLearningItemPosByNormalizedText(
   const result = new Map<string, string | null>()
   if (normalizedTexts.length === 0) return result
 
-  const { data, error } = await supabase
-    .schema('indonesian')
-    .from('learning_items')
-    .select('normalized_text, pos')
-    .in('normalized_text', normalizedTexts)
-  if (error) throw error
-
-  for (const row of (data ?? []) as Array<{ normalized_text: string; pos: string | null }>) {
-    result.set(row.normalized_text, row.pos ?? null)
+  // Chunk the .in() filter: a ~500-item unit makes the GET URL overrun the Kong
+  // gateway (502 "invalid response from upstream") before any work is logged.
+  const IN_CHUNK = 100
+  for (let i = 0; i < normalizedTexts.length; i += IN_CHUNK) {
+    const slice = normalizedTexts.slice(i, i + IN_CHUNK)
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('learning_items')
+      .select('normalized_text, pos')
+      .in('normalized_text', slice)
+    if (error) throw error
+    for (const row of (data ?? []) as Array<{ normalized_text: string; pos: string | null }>) {
+      result.set(row.normalized_text, row.pos ?? null)
+    }
   }
   return result
 }
@@ -1222,15 +1227,22 @@ export async function upsertCapabilitiesSkipIfExists(
     updated_at: new Date().toISOString(),
   }))
 
-  const { data, error } = await supabase
-    .schema('indonesian')
-    .from('learning_capabilities')
-    .upsert(rows, { onConflict: 'canonical_key', ignoreDuplicates: true })
-    .select('id, canonical_key')
-  if (error) throw error
-
-  for (const row of (data ?? []) as Array<{ id: string; canonical_key: string }>) {
-    idsByKey.set(row.canonical_key, row.id)
+  // Chunk the upsert: a single request with every row (a ~500-item Common Words
+  // unit yields ~3k cap rows) overruns the Kong gateway → 502 "invalid response
+  // from upstream". 200 keeps each request well under the limit; the returned
+  // id↔key maps union losslessly (onConflict+ignoreDuplicates is per-row).
+  const CAP_UPSERT_CHUNK = 200
+  for (let i = 0; i < rows.length; i += CAP_UPSERT_CHUNK) {
+    const slice = rows.slice(i, i + CAP_UPSERT_CHUNK)
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('learning_capabilities')
+      .upsert(slice, { onConflict: 'canonical_key', ignoreDuplicates: true })
+      .select('id, canonical_key')
+    if (error) throw error
+    for (const row of (data ?? []) as Array<{ id: string; canonical_key: string }>) {
+      idsByKey.set(row.canonical_key, row.id)
+    }
   }
   return idsByKey
 }

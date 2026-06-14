@@ -25,12 +25,14 @@ vi.mock('@/lib/analytics/engagement')
 vi.mock('@/lib/analytics/mastery/masteryModel')
 vi.mock('@/lib/lessons/adapter')
 vi.mock('@/lib/lessons/activation')
+vi.mock('@/lib/collections')
 vi.mock('@/lib/supabase')
 
 import { engagement } from '@/lib/analytics/engagement'
 import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
 import * as lessonsAdapter from '@/lib/lessons/adapter'
 import { listActivatedLessons } from '@/lib/lessons/activation'
+import { getCollectionsOverview } from '@/lib/collections'
 import { Dashboard } from '@/pages/Dashboard'
 
 const mockNavigate = vi.fn()
@@ -66,6 +68,7 @@ beforeEach(() => {
   vi.mocked(getWeeklyMovement).mockResolvedValue({ advancedVocab: 0, advancedGrammar: 0, reachedMastered: 0, slipped: 0 })
   vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([])
   vi.mocked(listActivatedLessons).mockResolvedValue(new Set<string>())
+  vi.mocked(getCollectionsOverview).mockResolvedValue([])
 })
 
 function practiceWith(streakDays: number) {

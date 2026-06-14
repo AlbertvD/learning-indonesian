@@ -56,6 +56,7 @@ export default defineConfig({
       'src/**/__tests__/**/*.test.{ts,tsx}',
       'scripts/__tests__/**/*.test.ts',
       'scripts/lib/**/__tests__/**/*.test.ts',
+      'scripts/collections/__tests__/**/*.test.ts',
     ],
     // Progress.test.tsx tests require completed implementation work on the
     // redesigned Progress page — re-enable as implementation catches up.

@@ -20,6 +20,7 @@ export function buildSentenceTransformation(input: BuilderInputFor<'sentence_tra
 
   const exerciseItem = {
     learningItem: null,
+    grammarPatternId: ex.grammar_pattern_id,
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: [],

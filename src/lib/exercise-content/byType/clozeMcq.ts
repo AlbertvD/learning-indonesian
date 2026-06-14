@@ -23,6 +23,7 @@ export function buildClozeMcq(input: BuilderInputFor<'cloze_mcq'>): BuilderResul
   }
   const exerciseItem = {
     learningItem: null,
+    grammarPatternId: ex.grammar_pattern_id,
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,

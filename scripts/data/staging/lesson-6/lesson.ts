@@ -279,6 +279,36 @@ export const lesson = {
             "indonesian": "warna",
             "dutch": "kleur",
             "english": "color"
+          },
+          {
+            "indonesian": "pagi",
+            "dutch": "ochtend",
+            "english": "morning"
+          },
+          {
+            "indonesian": "malam",
+            "dutch": "avond/nacht",
+            "english": "evening/night"
+          },
+          {
+            "indonesian": "detik",
+            "dutch": "seconde",
+            "english": "second"
+          },
+          {
+            "indonesian": "bulan",
+            "dutch": "maand",
+            "english": "month"
+          },
+          {
+            "indonesian": "tahun",
+            "dutch": "jaar",
+            "english": "year"
+          },
+          {
+            "indonesian": "abad",
+            "dutch": "eeuw",
+            "english": "century"
           }
         ]
       }
