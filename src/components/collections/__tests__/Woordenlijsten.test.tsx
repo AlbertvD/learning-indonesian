@@ -24,6 +24,8 @@ const band = (over: Partial<CollectionOverview> = {}): CollectionOverview => ({
   isActivated: false,
   totalWords: 100,
   knownWords: 67,
+  eligibleNow: 67,
+  gain: 33,
   ...over,
 })
 
@@ -42,10 +44,11 @@ beforeEach(() => {
 })
 
 describe('Woordenlijsten', () => {
-  it('renders a card per collection from the coverage model', async () => {
+  it('renders a card per collection with localized name + description', async () => {
     renderList()
-    expect(await screen.findByRole('heading', { name: 'Top 100 woorden' })).toBeInTheDocument()
-    expect(screen.getByText('67/100 woorden gekend')).toBeInTheDocument()
+    // Name + description come from i18n (keyed by slug 'top-100'), not the DB name.
+    expect(await screen.findByRole('heading', { name: /Top 100 woorden/ })).toBeInTheDocument()
+    expect(screen.getByText(/100 meest gebruikte woorden/)).toBeInTheDocument()
     expect(getCollectionsOverview).toHaveBeenCalledWith('user-uuid')
   })
 
@@ -69,16 +72,14 @@ describe('Woordenlijsten', () => {
     expect(toggle).not.toBeChecked() // reverted
   })
 
-  it('renders nothing until a band is seeded (empty overview)', async () => {
+  it('shows an empty state when no lists are seeded', async () => {
     vi.mocked(getCollectionsOverview).mockResolvedValue([])
-    const { container } = render(
+    render(
       <MantineProvider>
         <Woordenlijsten />
       </MantineProvider>,
     )
-    await waitFor(() => expect(getCollectionsOverview).toHaveBeenCalled())
-    expect(screen.queryByRole('heading', { name: 'Woordenlijsten' })).not.toBeInTheDocument()
-    // section root absent
-    expect(container.querySelector('section')).toBeNull()
+    expect(await screen.findByText('Er zijn nog geen woordenlijsten beschikbaar.')).toBeInTheDocument()
+    expect(screen.queryByRole('switch')).not.toBeInTheDocument()
   })
 })

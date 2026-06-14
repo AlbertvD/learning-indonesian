@@ -10,6 +10,12 @@ export interface CollectionOverview {
   isActivated: boolean
   totalWords: number
   knownWords: number
+  /** Member words already schedulable for this learner (lesson- or collection-
+   *  activated). knownWords ⊆ eligibleNow ⊆ totalWords. */
+  eligibleNow: number
+  /** Words that would become NEWLY schedulable by activating this list
+   *  (= totalWords − eligibleNow) — the marginal value of the toggle. */
+  gain: number
 }
 
 interface CollectionsRpcClient {
@@ -25,6 +31,7 @@ interface OverviewRow {
   is_activated: boolean
   total_words: number
   known_words: number
+  eligible_words: number
 }
 
 export async function getCollectionsOverview(
@@ -35,14 +42,21 @@ export async function getCollectionsOverview(
     .schema('indonesian')
     .rpc('get_collections_overview', { p_user_id: userId })
   if (error) throw error
-  return ((data ?? []) as OverviewRow[]).map(row => ({
-    collectionId: row.collection_id,
-    slug: row.slug,
-    name: row.name,
-    kind: row.kind,
-    rankCutoff: row.rank_cutoff,
-    isActivated: row.is_activated,
-    totalWords: row.total_words,
-    knownWords: row.known_words,
-  }))
+  return ((data ?? []) as OverviewRow[]).map(row => {
+    const totalWords = row.total_words
+    // Fallback keeps the UI sane if the RPC predates eligible_words.
+    const eligibleNow = Math.min(totalWords, row.eligible_words ?? row.known_words)
+    return {
+      collectionId: row.collection_id,
+      slug: row.slug,
+      name: row.name,
+      kind: row.kind,
+      rankCutoff: row.rank_cutoff,
+      isActivated: row.is_activated,
+      totalWords,
+      knownWords: row.known_words,
+      eligibleNow,
+      gain: Math.max(0, totalWords - eligibleNow),
+    }
+  })
 }

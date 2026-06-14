@@ -19,6 +19,7 @@ describe('collections overview read-model', () => {
         is_activated: true,
         total_words: 100,
         known_words: 72,
+        eligible_words: 85,
       },
     ])
 
@@ -35,6 +36,8 @@ describe('collections overview read-model', () => {
         isActivated: true,
         totalWords: 100,
         knownWords: 72,
+        eligibleNow: 85,
+        gain: 15,
       },
     ])
   })

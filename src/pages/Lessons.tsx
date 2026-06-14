@@ -151,6 +151,7 @@ function rememberOverviewScrollPosition() {
 
 export function Lessons() {
   const T = useT()
+  const [tab, setTab] = useState<'lessen' | 'woordenlijsten'>('lessen')
   const [model, setModel] = useState<LessonOverviewModel>(emptyModel)
   const [loading, setLoading] = useState(true)
   const [progressRefreshFailed, setProgressRefreshFailed] = useState(false)
@@ -282,6 +283,32 @@ export function Lessons() {
       <PageBody>
         <PageHeader title={T.nav.lessons} />
 
+        {/* Two peer views of the Leren surface (foundation doc §2): the lesson
+            grid + the check-to-schedule word-lists. Local state — these are not
+            deep-linkable destinations and the grid owns scroll-restore. */}
+        <div className={classes.tabs} role="tablist" aria-label={T.nav.lessons}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'lessen'}
+            data-active={tab === 'lessen' || undefined}
+            className={classes.tab}
+            onClick={() => setTab('lessen')}
+          >
+            {T.nav.lessons}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'woordenlijsten'}
+            data-active={tab === 'woordenlijsten' || undefined}
+            className={classes.tab}
+            onClick={() => setTab('woordenlijsten')}
+          >
+            {T.collections.title}
+          </button>
+        </div>
+
         {loadFailed && (
           <div className={classes.notice} role="status">
             {T.common.somethingWentWrong}
@@ -294,37 +321,36 @@ export function Lessons() {
           </div>
         )}
 
-        <ol className={classes.lessonGrid} aria-label={T.lessons.title}>
-          {model.rows.map((row) => {
-            const isAvailable = Boolean(row.href)
-            return (
-              <li
-                key={row.lessonId}
-                className={classes.lessonGridItem}
-                data-testid={`lesson-overview-row-${row.lessonId}`}
-                onClick={isAvailable ? rememberOverviewScrollPosition : undefined}
-              >
-                <LessonCard
-                  banner={<LessonBanner orderIndex={row.orderIndex} />}
-                  orderIndex={row.orderIndex}
-                  title={displayTitle(row.orderIndex, row.title)}
-                  level={row.level}
-                  grammarTopics={row.grammarTopicTag}
-                  practiced={{ label: T.lessons.practiced, percent: row.practicedPercent }}
-                  mastered={{ label: T.lessons.mastered, percent: row.masteredPercent }}
-                  status={{ tone: activationTone(row), label: activationLabel(row) }}
-                  to={row.href ?? undefined}
-                  disabled={!isAvailable}
-                />
-              </li>
-            )
-          })}
-        </ol>
-
-        {/* The check-to-schedule word-lists surface (foundation doc §2: Leren =
-            lessons grid + Woordenlijsten). Renders nothing until a band is
-            seeded, so it is inert here until the collections content lands. */}
-        <Woordenlijsten />
+        {tab === 'lessen' ? (
+          <ol className={classes.lessonGrid} aria-label={T.lessons.title}>
+            {model.rows.map((row) => {
+              const isAvailable = Boolean(row.href)
+              return (
+                <li
+                  key={row.lessonId}
+                  className={classes.lessonGridItem}
+                  data-testid={`lesson-overview-row-${row.lessonId}`}
+                  onClick={isAvailable ? rememberOverviewScrollPosition : undefined}
+                >
+                  <LessonCard
+                    banner={<LessonBanner orderIndex={row.orderIndex} />}
+                    orderIndex={row.orderIndex}
+                    title={displayTitle(row.orderIndex, row.title)}
+                    level={row.level}
+                    grammarTopics={row.grammarTopicTag}
+                    practiced={{ label: T.lessons.practiced, percent: row.practicedPercent }}
+                    mastered={{ label: T.lessons.mastered, percent: row.masteredPercent }}
+                    status={{ tone: activationTone(row), label: activationLabel(row) }}
+                    to={row.href ?? undefined}
+                    disabled={!isAvailable}
+                  />
+                </li>
+              )
+            })}
+          </ol>
+        ) : (
+          <Woordenlijsten />
+        )}
       </PageBody>
     </PageContainer>
   )
