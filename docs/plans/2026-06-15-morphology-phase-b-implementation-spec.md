@@ -25,7 +25,7 @@ one new capability type + ~4 new exercise types — on top of the already-live r
 follow-up book's affix chapters land as real generative drills, not generic grammar exercises.
 
 **Architecture:** One content table (`affixed_form_pairs`) gains discriminator + payload columns; the
-new caps reuse `source_kind='affixed_form_pair'`; the affix's existing `grammar_pattern` becomes the
+new caps reuse `source_kind='word_form_pair_src'`; the affix's existing grammar-pattern capability becomes the
 FSRS prerequisite via a new `grammar_pattern_id` FK. No new spine, no new source_kind.
 
 **Tech stack:** Supabase/Postgres (additive migration in `scripts/migration.sql`), capability-stage
@@ -35,18 +35,30 @@ Vitest.
 
 ---
 
-## 0. NAMING — use the CURRENT convention, NOT the target `_cap`/`_ex` names
+## 0. NAMING — this spec uses the §8 TARGET names (`_src`/`_mode`/`_cap`/`_ex`)
 
-The §8 rename is **deferred to its own plan** (program-doc Decision 4). So everything here uses the
-**current** naming convention, matching `root_derived_recognition` / `recognition_mcq`:
+This spec is authored in the **§8 target naming convention** (the single source of truth is
+`docs/current-system/capability-and-exercise-model.md` §8; `_cap` = `operation_object_from_stimulus`,
+`_ex` = `verb_what`). The morphology build mints its new caps/exercises directly in the target names so
+the morphology vertical is never built-then-renamed.
 
-| Concept | Name to USE (current) | NOT the target name |
+| Concept | Name (target §8) | Former current name |
 |---|---|---|
-| new capability type | `allomorph_recognition` | ~~recognise_allomorph_cap~~ |
-| existing app caps | `root_derived_recognition`, `root_derived_recall` | ~~recognise_word_form_link_cap~~ |
-| new exercise types | `decompose_word`, `choose_affix`, `choose_allomorph`, `build_confix` | ~~`*_ex`~~ |
+| source kind | `word_form_pair_src` | `affixed_form_pair` |
+| new capability type | `recognise_allomorph_from_root_cap` (new — minted by this build, added to §8) | ~~`allomorph_recognition`~~ |
+| existing app caps | `recognise_word_form_link_cap`, `produce_derived_form_cap` (per §8) | `root_derived_recognition`, `root_derived_recall` |
+| new exercise types | `decompose_word_ex`, `choose_affix_ex`, `choose_allomorph_ex`, `build_confix_ex` (new — added to §8) | ~~`decompose_word`, `choose_affix`, `choose_allomorph`, `build_confix`~~ |
+| plain produce reuses | `type_form_ex` (existing — no new exercise) | `typed_recall` |
+| modes (level refs) | `recognise_mode`, `produce_mode` | `recognition`, `form_recall` |
 
-The program doc §6 used target names for illustration; this spec overrides with current names.
+> **SEQUENCING GATE (load-bearing).** These target names only exist *in code* AFTER the §8 rename
+> (`docs/plans/2026-06-15-capability-naming-rename-plan.md`, Phases A/B/C) ships. The rename MUST ship
+> before this morphology build starts; otherwise the names this spec adds (`recognise_allomorph_from_root_cap`,
+> the four `_ex` names, the `word_form_pair_src` source kind) collide with the unrenamed enums. The code
+> `file:line` cites below intentionally point at the **post-rename** codebase.
+
+The program doc §6 used target names for illustration (its `recognise_allomorph_cap` shorthand is the
+rule-correct `recognise_allomorph_from_root_cap` here).
 
 ## 1. Schema migration (additive; `scripts/migration.sql`)
 
@@ -102,39 +114,39 @@ ALTER COLUMN grammar_pattern_id SET NOT NULL;  ALTER COLUMN affix_type SET NOT N
 - Run `make migrate-idempotent-check` before merge.
 - RLS/grants: additive columns inherit the existing `affixed_form_pairs` policies (verified `migration.sql:2972-2978`) — no policy change; verify after migrate.
 
-## 2. New capability type `allomorph_recognition` — the SIX-corner triangle (atomic, one PR)
+## 2. New capability type `recognise_allomorph_from_root_cap` — the SIX-corner triangle (atomic, one PR)
 
 All six MUST land in the same commit or the app won't boot (module-load assertions):
 
-1. **Union + array** — `src/lib/capabilities/capabilityTypes.ts:32` (`CapabilityType`) + `:46` (`CAPABILITY_TYPES`): add `'allomorph_recognition'`. (`as const satisfies` flags incompleteness.)
-2. **Skill level** — `capabilityTypes.ts:233` `deriveSkillTypeFromCapabilityType`: add `case 'allomorph_recognition': return 'recognition'` (it's recognition-level — the level-purity resolution).
-3. **Render contract** — `src/lib/capabilities/renderContracts.ts:56` `RENDER_CONTRACTS`: the new `choose_allomorph` exercise entry lists `capabilityTypes: ['allomorph_recognition']`, `supportedSourceKinds: ['affixed_form_pair']`, `requiredArtifacts: { affixed_form_pair: [] }`. (Module-load assertion `:167` refuses boot if a supportedSourceKind lacks a requiredArtifacts key; `assertCapabilityTypesRenderable` refuses boot if `allomorph_recognition` is in no contract.)
-4. **Mastery dimension** — `src/lib/analytics/mastery/masteryModel.ts:~139` `dimensionForCapability`: add the `allomorph_recognition` case (exhaustive `never` guard at `:164` is a compile error otherwise). Group with grammar/morphology dimension.
-5. **Writer** — capability emitter (`projectors/affixedCapabilities.ts`): emit a 3rd cap per meN-/peN- pair (`allomorph_recognition`, **`direction='root_to_derived'`** — REUSE the existing enum value, no new direction; the distinct `capability_type` already makes the canonical key unique vs `root_derived_recognition`, so no key collision — data-architect key-axis decision; `modality='text'`, `learnerLanguage='none'`), gated on `allomorph_class IS NOT NULL`. Prereq = the pair's `root_derived_recognition` key.
-6. **Reader** — `byKind/affixedFormPair.ts` SELECT widened + `AffixedFormPairInput` (`renderContracts.ts:303`) gains `allomorphClass` + `affix`; `byType` packager for `choose_allomorph` reads it.
+1. **Union + array** — `src/lib/capabilities/capabilityTypes.ts:32` (`CapabilityType`) + `:46` (`CAPABILITY_TYPES`): add `'recognise_allomorph_from_root_cap'`. (`as const satisfies` flags incompleteness.)
+2. **Skill level** — `capabilityTypes.ts:233` `deriveSkillTypeFromCapabilityType`: add `case 'recognise_allomorph_from_root_cap': return 'recognise_mode'` (it's recognise-level — the level-purity resolution).
+3. **Render contract** — `src/lib/capabilities/renderContracts.ts:56` `RENDER_CONTRACTS`: the new `choose_allomorph_ex` exercise entry lists `capabilityTypes: ['recognise_allomorph_from_root_cap']`, `supportedSourceKinds: ['word_form_pair_src']`, `requiredArtifacts: { word_form_pair_src: [] }`. (Module-load assertion `:167` refuses boot if a supportedSourceKind lacks a requiredArtifacts key; `assertCapabilityTypesRenderable` refuses boot if `recognise_allomorph_from_root_cap` is in no contract.)
+4. **Mastery dimension** — `src/lib/analytics/mastery/masteryModel.ts:~139` `dimensionForCapability`: add the `recognise_allomorph_from_root_cap` case (exhaustive `never` guard at `:164` is a compile error otherwise). Group with grammar/morphology dimension.
+5. **Writer** — capability emitter (`projectors/affixedCapabilities.ts`): emit a 3rd cap per meN-/peN- pair (`recognise_allomorph_from_root_cap`, **`direction='root_to_derived'`** — REUSE the existing enum value, no new direction; the distinct `capability_type` already makes the canonical key unique vs `recognise_word_form_link_cap`, so no key collision — data-architect key-axis decision; `modality='text'`, `learnerLanguage='none'`), gated on `allomorph_class IS NOT NULL`. Prereq = the pair's `recognise_word_form_link_cap` key.
+6. **Reader** — `byKind/affixedFormPair.ts` SELECT widened + `AffixedFormPairInput` (`renderContracts.ts:303`) gains `allomorphClass` + `affix`; `byType` packager for `choose_allomorph_ex` reads it.
 
-## 3. New exercise types (current naming)
+## 3. New exercise types (target `_ex` naming)
 
 Add to `ExerciseType` union (`src/types/learning.ts`) + `RENDER_CONTRACTS` (`renderContracts.ts:56`) + `ContractInputShapes` (`renderContracts.ts:~414`, compile-enforced) + `projectBuilderInput` switch (`renderContracts.ts:~599`) + the registry (`src/components/exercises/registry.ts`) + `implementations/`:
 
-| Exercise type | Level → cap | supportedSourceKinds | reads |
+| Exercise type | Level (`_mode`) → cap | supportedSourceKinds | reads |
 |---|---|---|---|
-| `decompose_word` | recognition → `root_derived_recognition` | `['affixed_form_pair']` | root/derived/affix/circumfix |
-| `choose_affix` | recognition → `root_derived_recognition` | `['affixed_form_pair']` | affix + a distractor affix set |
-| `choose_allomorph` | recognition → `allomorph_recognition` | `['affixed_form_pair']` | `allomorph_class` |
-| `build_confix` | produce → `root_derived_recall` | `['affixed_form_pair']` | root + circumfix_left/right |
+| `decompose_word_ex` | `recognise_mode` → `recognise_word_form_link_cap` | `['word_form_pair_src']` | root/derived/affix/circumfix |
+| `choose_affix_ex` | `recognise_mode` → `recognise_word_form_link_cap` | `['word_form_pair_src']` | affix + a distractor affix set |
+| `choose_allomorph_ex` | `recognise_mode` → `recognise_allomorph_from_root_cap` | `['word_form_pair_src']` | `allomorph_class` |
+| `build_confix_ex` | `produce_mode` → `produce_derived_form_cap` | `['word_form_pair_src']` | root + circumfix_left/right |
 
-`produce_derived_form` reuses the EXISTING `typed_recall` (already serves `root_derived_recall` on `affixed_form_pair`, `renderContracts.ts:74-88`) — no new type needed for plain produce. **Root Race CUT.** Each new component composes `exercises/primitives/` and renders the `adminOverlay` slot (the flag fix from earlier this session).
+Plain produce reuses the EXISTING `type_form_ex` (already serves `produce_derived_form_cap` on `word_form_pair_src`, `renderContracts.ts:74-88`) — no new type needed for plain produce. **Root Race CUT.** Each new component composes `exercises/primitives/` and renders the `adminOverlay` slot (the flag fix from earlier this session).
 
 **Atomic-boot constraint (exercise side too, architect WARNING):** each new `ExerciseType` must land
 WITH its `ContractInputShapes` entry (`renderContracts.ts:~414`, `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK`
 at `:431`) AND its `projectBuilderInput` switch branch (the `never` exhaustiveness at `:635`) in the
 SAME commit — both are compile-time gates that fail the build otherwise.
 
-**Level↔phase note (architect WARNING):** `decompose_word`/`choose_affix` route through
-`root_derived_recognition`, which `deriveSkillTypeFromCapabilityType` returns as `recognition`
+**Level↔phase note (architect WARNING):** `decompose_word_ex`/`choose_affix_ex` route through
+`recognise_word_form_link_cap`, which `deriveSkillTypeFromCapabilityType` returns as `recognise_mode`
 (`capabilityTypes.ts:243`) but ADR 0007:40 classifies at Phase 4 (productive). This is INTENTIONAL and
-inert — `affixed_form_pair` is exempt from the staging phase gate (ADR 0007:44). Do NOT "fix" the phase
+inert — `word_form_pair_src` is exempt from the staging phase gate (ADR 0007:44). Do NOT "fix" the phase
 table; this is resolved by the §7 ADR addendum.
 
 ## 4. Writer chain — crosses the Lesson→Capability stage boundary (CORRECTED per round-2 review)
@@ -159,8 +171,8 @@ The capability stage reads ONLY the DB (`runner.ts:9`, ADR 0011/0012); `morpholo
    null for `affix IN ('meN-','peN-')`, or a confix lacks `circumfix_left/right`.
 
 5. **`productive=false` ⇒ skip the produce cap** (`projectors/affixedCapabilities.ts`): emit only
-   `root_derived_recognition` (+ the recognition exercises), NOT `root_derived_recall`, for lexicalised
-   pairs (data-architect i1).
+   `recognise_word_form_link_cap` (+ the recognise-mode exercises), NOT `produce_derived_form_cap`, for
+   lexicalised pairs (data-architect i1).
 6. **`MORPHOLOGY_PATTERN_SLUGS`** (`morphology.ts:20`): add the follow-up book's affix slugs (`-kan`,
    `-i`, `pe-an`, `per-an`, `ter-`, etc.) so those lessons stamp `lesson_id` (ADR 0006).
 
@@ -168,7 +180,7 @@ The capability stage reads ONLY the DB (`runner.ts:9`, ADR 0011/0012); `morpholo
 
 - `byKind/affixedFormPair.ts:~54` SELECT: add the new columns.
 - `AffixedFormPairInput` (`renderContracts.ts:303`): add `affix`, `affixType`, `affixGloss`, `allomorphClass?`, `circumfixLeft?`, `circumfixRight?`.
-- `byType` packagers: extend `typedRecall.ts` (build_confix path) + add packagers for `decompose_word`/`choose_affix`/`choose_allomorph`.
+- `byType` packagers: extend `typedRecall.ts` (`build_confix_ex` path) + add packagers for `decompose_word_ex`/`choose_affix_ex`/`choose_allomorph_ex`.
 
 ## 6. Three-layer invariant gate (all three layers — program doc §9)
 
@@ -183,9 +195,9 @@ The capability stage reads ONLY the DB (`runner.ts:9`, ADR 0011/0012); `morpholo
 
 ## 7. ADR addendum (program doc §9 / architect CRITICAL)
 
-The rule→pair prerequisite is **cross-source-kind** (`pattern` rule cap → `affixed_form_pair` application cap). ADR 0007:44 currently EXEMPTS `affixed_form_pair` from the staging gate and the `prerequisiteKeys` chain is only WITHIN a pair.
+The rule→pair prerequisite is **cross-source-kind** (`grammar_pattern_src` rule cap → `word_form_pair_src` application cap). ADR 0007:44 currently EXEMPTS `word_form_pair_src` from the staging gate and the `prerequisiteKeys` chain is only WITHIN a pair.
 - **The planner half ALREADY works** (verified, both reviewers): `satisfiedKeys` is a flat source-kind-agnostic `canonical_key` set (`src/lib/session-builder/pedagogy.ts:518-520`) and the prereq test (`:320`) is mechanical — it resolves a cross-source-kind key with no change. So only TWO things need building:
-  1. **Projector emit:** `projectAffixedCapabilities` (`affixedCapabilities.ts:77/98`) currently sets `prerequisiteKeys: []`/`[recognitionKey]` — add the affix's `grammar_pattern` cap canonical_key to the application caps' `prerequisiteKeys`.
+  1. **Projector emit:** `projectAffixedCapabilities` (`affixedCapabilities.ts:77/98`) currently sets `prerequisiteKeys: []`/`[recognitionKey]` — add the affix's grammar-pattern (`grammar_pattern_src`) cap canonical_key to the application caps' `prerequisiteKeys`.
   2. **ADR addendum/new ADR** documenting the rule→application gating axis (supersede 0007:44's "morphology has no siblings, exempt" note). **Sequence this as an EARLY task** (data-architect i1) — it gates the projector-emit task, not task 9.
 
 ## 8. Pipeline emission / harvest
@@ -204,11 +216,11 @@ The linguist agents emit `morphology-patterns.ts` for the affix-introducing less
    resolves `grammarPatternSlug`→`grammar_pattern_id` + writes `lesson_section_affixed_pairs` + unit tests.
 4. **DB-read + cap-stage copy** (§4.2-4): widen `TypedAffixedPair`/`fetchAffixedPairsFromDb` SELECT +
    `AffixedPairSource` + `projectAffixedFormPairs` blind copy into `AffixedFormPairRowInput` + CS12 guard tests.
-5. **`allomorph_recognition` triangle — ONE ATOMIC COMMIT** (data-architect C1): the 6 caps-side corners
-   (§2) + the `choose_allomorph` exercise's `ExerciseType`/`RENDER_CONTRACTS`/`ContractInputShapes`/
+5. **`recognise_allomorph_from_root_cap` triangle — ONE ATOMIC COMMIT** (data-architect C1): the 6 caps-side corners
+   (§2) + the `choose_allomorph_ex` exercise's `ExerciseType`/`RENDER_CONTRACTS`/`ContractInputShapes`/
    `projectBuilderInput`/component **+ the reader SELECT widen + `AffixedFormPairInput` threading** — all
    together, else it boots blank. Boot test (module-load assertions pass) + render test (non-undefined `allomorphClass`).
-6. Each REMAINING new exercise type (`decompose_word`, `choose_affix`, `build_confix`): union + RENDER_CONTRACTS
+6. Each REMAINING new exercise type (`decompose_word_ex`, `choose_affix_ex`, `build_confix_ex`): union + RENDER_CONTRACTS
    + input shape + projectBuilderInput case + byType packager + component + test — each its own atomic commit.
 7. `productive=false` skip-produce-cap branch (`affixedCapabilities.ts`) + projector-emit of the
    cross-source-kind prereq key + test.
@@ -229,7 +241,7 @@ roster pattern.
 
 ### Schema changes
 - Additive columns on `lesson_section_affixed_pairs` + `affixed_form_pairs` (§1); guarded CHECKs; `grammar_pattern_id` FK → `grammar_patterns`.
-- New `capability_type` value `allomorph_recognition` (no DB CHECK on `learning_capabilities.capability_type` today — `migration.sql:1324` — so no constraint migration; the unique index on `(source_ref, capability_type)` enforces after regen).
+- New `capability_type` value `recognise_allomorph_from_root_cap` (no DB CHECK on `learning_capabilities.capability_type` today — `migration.sql:1324` — so no constraint migration; the unique index on `(source_ref, capability_type)` enforces after regen).
 - New `ExerciseType` values (frontend union only; not a DB enum).
 - RLS/grants: additive — covered by existing table policies; verify after migrate.
 

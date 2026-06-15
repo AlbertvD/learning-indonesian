@@ -139,10 +139,17 @@ post-regen cleanly.
 
 ## 5. Sequencing dependency (the whole reason this is drafted now)
 
-**This plan lands BEFORE the morphology build.** On completion: the morphology phase-(b) spec's §0
-flips from current names to the new ones (`allomorph_recognition`→`recognise_allomorph_from_root_cap`,
-`decompose_word`→`decompose_word_ex` is already target-shaped, etc.), so the morphology vertical is
-authored once in the target convention — no build-then-rename churn.
+**This plan lands BEFORE the morphology build.** The morphology phase-(b) spec is **already authored in
+the target names** — its §0 was reframed from "use current names" to "uses the §8 target names"
+(`recognise_allomorph_from_root_cap`, `decompose_word_ex`/`choose_affix_ex`/`choose_allomorph_ex`/
+`build_confix_ex`, `word_form_pair_src`, `recognise_word_form_link_cap`/`produce_derived_form_cap`,
+`recognise_mode`/`produce_mode`). So the old "flip §0 later" follow-up is **DONE**.
+
+The only remaining dependency is now a **pure SEQUENCING GATE**: the rename (Phases A/B/C) must **ship in
+code** before the morphology build starts — because the morphology spec's names only *exist* in code
+after this rename. Building morphology first would mint `recognise_allomorph_from_root_cap` / the four
+`_ex` names / `word_form_pair_src` against unrenamed enums and collide. No further doc edit to the
+morphology spec is needed; it is correct as-authored once this rename has shipped.
 
 ## 6. Task breakdown (phased; expand at execution)
 
@@ -241,8 +248,11 @@ code) carry them, not just by convention:
    Allowlist: the §8 "former names" footnote, this plan, and migration-test fixtures that intentionally
    reference old names. A new spec/PR using an old quoted literal fails the gate. This catches exactly the
    substring/seed/hardcoded-set class the type system misses.
-5. **Sequencing gate** — the morphology phase-(b) spec's §0 flip to target names (§5) is a REQUIRED,
-   owned follow-up of Phase A; morphology implementation does not start until it's flipped.
+5. **Sequencing gate** — the morphology phase-(b) spec's §0 is **already in target names** (§5; the
+   former "flip §0 later" follow-up is done). The live gate is now ordering only: Phases A/B/C must
+   **ship in code** before the morphology build starts, since the morphology spec's target names
+   (`recognise_allomorph_from_root_cap`, the four `_ex` names, `word_form_pair_src`) only exist in code
+   after this rename.
 
 ## 10. Review round 2 — resolutions (2026-06-15)
 
