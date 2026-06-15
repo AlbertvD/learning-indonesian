@@ -151,8 +151,10 @@ export type FlagStatus = 'open' | 'resolved'
 export interface ContentFlag {
   id: string
   userId: string
-  learningItemId: string | null
-  grammarPatternId: string | null
+  /** Uniform anchor — every flag points at the capability the exercise drills.
+   *  Replaces the old learning_item_id / grammar_pattern_id anchors, which left
+   *  dialogue-cloze and affixed-pair exercises (capability-only) unflaggable. */
+  capabilityId: string
   exerciseType: ExerciseType
   exerciseVariantId: string | null
   flagType: FlagType

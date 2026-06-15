@@ -79,8 +79,7 @@ export function CapabilityExerciseFrame({
           onAnswer={handleOutcome}
           adminOverlay={
             <AdminFlagOverlay
-              learningItemId={context.exerciseItem.learningItem?.id ?? null}
-              grammarPatternId={context.exerciseItem.grammarPatternId ?? null}
+              capabilityId={block.capabilityId}
               exerciseType={block.renderPlan.exerciseType}
             />
           }

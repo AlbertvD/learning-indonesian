@@ -18,8 +18,7 @@ import classes from './FlagButton.module.css'
 
 export interface FlagButtonProps {
   userId: string
-  learningItemId: string | null
-  grammarPatternId?: string | null
+  capabilityId: string
   exerciseType: ExerciseType
   exerciseVariantId?: string | null
   existingFlag?: ContentFlag | null
@@ -29,8 +28,7 @@ export interface FlagButtonProps {
 
 export function FlagButton({
   userId,
-  learningItemId,
-  grammarPatternId = null,
+  capabilityId,
   exerciseType,
   exerciseVariantId = null,
   existingFlag = null,
@@ -61,8 +59,7 @@ export function FlagButton({
     try {
       const flag = await contentFlagService.upsertFlag({
         userId,
-        learningItemId,
-        grammarPatternId,
+        capabilityId,
         exerciseType,
         exerciseVariantId,
         // Chips were cut from the UI per design §6.12; every flag is
