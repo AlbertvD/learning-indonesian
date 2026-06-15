@@ -1009,6 +1009,61 @@ ALTER TABLE indonesian.content_flags
 ALTER TABLE indonesian.content_flags
   DROP CONSTRAINT IF EXISTS content_flags_flag_type_check;
 
+-- content_flags: migrate to a single uniform capability_id anchor.
+-- The two-anchor model (learning_item_id / grammar_pattern_id) left two live
+-- exercise families — dialogue-line cloze and affixed-form-pair — unflaggable,
+-- because they map to a capability but neither a learning_item nor a
+-- grammar_pattern. Every exercise block already carries a capability_id, so it
+-- is the universal exercise identity; the two old anchors were redundant
+-- projections of it. The flag→review loop reads only flag.id + comment +
+-- exercise_type, so nothing dereferences the old anchor FKs.
+-- The old columns stay (nullable, unused) — dropping them is irreversible and
+-- buys nothing. Pre-migration rows have capability_id IS NULL and would violate
+-- the new CHECK, so they are deleted (admin-only, disposable). DELETE (not
+-- TRUNCATE) preserves valid post-migration flags across future migrate runs.
+ALTER TABLE indonesian.content_flags
+  ADD COLUMN IF NOT EXISTS capability_id uuid
+    REFERENCES indonesian.learning_capabilities(id) ON DELETE CASCADE;
+
+-- Drop the old two-anchor CHECK and per-anchor UNIQUE constraints.
+ALTER TABLE indonesian.content_flags
+  DROP CONSTRAINT IF EXISTS content_flags_entity_check;
+ALTER TABLE indonesian.content_flags
+  DROP CONSTRAINT IF EXISTS content_flags_user_id_learning_item_id_exercise_type_key;
+ALTER TABLE indonesian.content_flags
+  DROP CONSTRAINT IF EXISTS content_flags_user_id_grammar_pattern_id_exercise_type_key;
+
+-- Clear anchorless pre-migration rows so the NOT-NULL CHECK can be added.
+DELETE FROM indonesian.content_flags WHERE capability_id IS NULL;
+
+-- Uniform anchor: capability_id must always be set.
+DO $$ BEGIN
+  ALTER TABLE indonesian.content_flags ADD CONSTRAINT content_flags_entity_check
+    CHECK (capability_id IS NOT NULL);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+-- One open flag per (user, capability, exercise_type).
+-- Guarded via information_schema (not EXCEPTION WHEN duplicate_object): adding an
+-- existing UNIQUE constraint raises duplicate_table (42P07, the backing index
+-- relation collides), which a duplicate_object handler does not catch.
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE constraint_schema = 'indonesian'
+    AND table_name = 'content_flags'
+    AND constraint_type = 'UNIQUE'
+    AND constraint_name = 'content_flags_user_capability_exercise_key'
+  ) THEN
+    ALTER TABLE indonesian.content_flags
+      ADD CONSTRAINT content_flags_user_capability_exercise_key
+      UNIQUE (user_id, capability_id, exercise_type);
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_content_flags_capability
+  ON indonesian.content_flags(capability_id);
+
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Audio clips (TTS-generated Indonesian pronunciation)
 -- ═══════════════════════════════════════════════════════════════════════════

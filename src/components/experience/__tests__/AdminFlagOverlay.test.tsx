@@ -3,7 +3,7 @@ import { MantineProvider } from '@mantine/core'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 
 vi.mock('@/services/contentFlagService', () => ({
-  contentFlagService: { getFlagForItem: vi.fn(), getFlagForGrammarPattern: vi.fn() },
+  contentFlagService: { getFlagForCapability: vi.fn() },
 }))
 vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
 
@@ -15,55 +15,52 @@ vi.mock('@/stores/authStore', () => ({
 import { contentFlagService } from '@/services/contentFlagService'
 import { AdminFlagOverlay } from '../AdminFlagOverlay'
 
-function renderOverlay(props: { learningItemId: string | null }) {
+function renderOverlay(props: { capabilityId: string | null; exerciseType?: string }) {
   render(
     <MantineProvider>
-      <AdminFlagOverlay learningItemId={props.learningItemId} exerciseType={'recognition_mcq' as any} />
+      <AdminFlagOverlay
+        capabilityId={props.capabilityId}
+        exerciseType={(props.exerciseType ?? 'recognition_mcq') as any}
+      />
     </MantineProvider>,
   )
 }
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(contentFlagService.getFlagForItem).mockResolvedValue(null)
-  vi.mocked(contentFlagService.getFlagForGrammarPattern).mockResolvedValue(null)
+  vi.mocked(contentFlagService.getFlagForCapability).mockResolvedValue(null)
 })
 
 describe('AdminFlagOverlay', () => {
   it('renders nothing for a non-admin learner', () => {
     mockState = { user: { id: 'u1' }, profile: { isAdmin: false } }
-    renderOverlay({ learningItemId: 'item-1' })
+    renderOverlay({ capabilityId: 'cap-1' })
     expect(screen.queryByRole('button', { name: 'Markeer voor review' })).not.toBeInTheDocument()
-    expect(contentFlagService.getFlagForItem).not.toHaveBeenCalled()
+    expect(contentFlagService.getFlagForCapability).not.toHaveBeenCalled()
   })
 
   it('shows the flag button for an admin and loads any existing flag', async () => {
     mockState = { user: { id: 'admin-1' }, profile: { isAdmin: true } }
-    renderOverlay({ learningItemId: 'item-1' })
+    renderOverlay({ capabilityId: 'cap-1' })
     expect(await screen.findByRole('button', { name: 'Markeer voor review' })).toBeInTheDocument()
     await waitFor(() =>
-      expect(contentFlagService.getFlagForItem).toHaveBeenCalledWith('admin-1', 'item-1', 'recognition_mcq'),
+      expect(contentFlagService.getFlagForCapability).toHaveBeenCalledWith('admin-1', 'cap-1', 'recognition_mcq'),
     )
   })
 
-  it('renders nothing for an admin when neither an item nor a grammar pattern is present', () => {
+  it('renders nothing for an admin when the capability id is missing', () => {
     mockState = { user: { id: 'admin-1' }, profile: { isAdmin: true } }
-    renderOverlay({ learningItemId: null })
+    renderOverlay({ capabilityId: null })
     expect(screen.queryByRole('button', { name: 'Markeer voor review' })).not.toBeInTheDocument()
-    expect(contentFlagService.getFlagForItem).not.toHaveBeenCalled()
+    expect(contentFlagService.getFlagForCapability).not.toHaveBeenCalled()
   })
 
-  it('flags a grammar exercise via its pattern id (not an item)', async () => {
+  it('flags a capability-only exercise (dialogue cloze) — previously unflaggable', async () => {
     mockState = { user: { id: 'admin-1' }, profile: { isAdmin: true } }
-    render(
-      <MantineProvider>
-        <AdminFlagOverlay learningItemId={null} grammarPatternId="pat-7" exerciseType={'contrast_pair' as any} />
-      </MantineProvider>,
-    )
+    renderOverlay({ capabilityId: 'cap-dlg-9', exerciseType: 'cloze' })
     expect(await screen.findByRole('button', { name: 'Markeer voor review' })).toBeInTheDocument()
     await waitFor(() =>
-      expect(contentFlagService.getFlagForGrammarPattern).toHaveBeenCalledWith('admin-1', 'pat-7', 'contrast_pair'),
+      expect(contentFlagService.getFlagForCapability).toHaveBeenCalledWith('admin-1', 'cap-dlg-9', 'cloze'),
     )
-    expect(contentFlagService.getFlagForItem).not.toHaveBeenCalled()
   })
 })
