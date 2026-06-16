@@ -11,7 +11,7 @@ import { describe, it, expect } from 'vitest'
 
 // ── Type definitions (mirrored from staging-utils.ts) ────────────────────────
 
-type ExerciseType = 'contrast_pair' | 'sentence_transformation' | 'constrained_translation' | 'cloze_mcq'
+type ExerciseType = 'choose_correct_form_ex' | 'transform_sentence_ex' | 'translate_sentence_ex' | 'choose_missing_word_ex'
 type ReviewStatus = 'pending_review' | 'approved' | 'rejected' | 'published'
 
 interface Candidate {
@@ -110,7 +110,7 @@ function extractVocabularyContext(lesson: LessonData | null): string {
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
 const publishedCandidate: Candidate = {
-  exercise_type: 'contrast_pair',
+  exercise_type: 'choose_correct_form_ex',
   grammar_pattern_slug: 'yang-relative-pronoun',
   source_page: 5,
   review_status: 'published',
@@ -119,7 +119,7 @@ const publishedCandidate: Candidate = {
 }
 
 const pendingCandidate: Candidate = {
-  exercise_type: 'sentence_transformation',
+  exercise_type: 'transform_sentence_ex',
   grammar_pattern_slug: 'yang-relative-pronoun',
   source_page: 5,
   review_status: 'pending_review',
@@ -134,7 +134,7 @@ const pendingCandidate: Candidate = {
 }
 
 const approvedCandidate: Candidate = {
-  exercise_type: 'cloze_mcq',
+  exercise_type: 'choose_missing_word_ex',
   grammar_pattern_slug: 'yang-single-adjective-emphasis',
   source_page: 5,
   review_status: 'approved',
@@ -149,7 +149,7 @@ const approvedCandidate: Candidate = {
 }
 
 const newGenerated: Candidate = {
-  exercise_type: 'contrast_pair',
+  exercise_type: 'choose_correct_form_ex',
   grammar_pattern_slug: 'yang-single-adjective-emphasis',
   source_page: 5,
   review_status: 'pending_review',
@@ -158,7 +158,7 @@ const newGenerated: Candidate = {
 }
 
 const conflictingGenerated: Candidate = {
-  exercise_type: 'sentence_transformation',
+  exercise_type: 'transform_sentence_ex',
   grammar_pattern_slug: 'yang-relative-pronoun',
   source_page: 5,
   review_status: 'pending_review',
@@ -173,7 +173,7 @@ const conflictingGenerated: Candidate = {
 }
 
 const publishedConflictGenerated: Candidate = {
-  exercise_type: 'contrast_pair',
+  exercise_type: 'choose_correct_form_ex',
   grammar_pattern_slug: 'yang-relative-pronoun',
   source_page: 5,
   review_status: 'pending_review',
@@ -295,7 +295,7 @@ describe('generate-exercises: candidate merge logic', () => {
 })
 
 describe('generate-exercises: candidate shape validation', () => {
-  it('validates contrast_pair payload fields', () => {
+  it('validates choose_correct_form_ex payload fields', () => {
     const payload = publishedCandidate.payload
     // Contract: must have promptText, options (array), correctOptionId, explanationText
     expect(typeof payload.promptText).toBe('string')
@@ -304,7 +304,7 @@ describe('generate-exercises: candidate shape validation', () => {
     expect(typeof payload.explanationText).toBe('string')
   })
 
-  it('validates sentence_transformation payload fields', () => {
+  it('validates transform_sentence_ex payload fields', () => {
     const payload = pendingCandidate.payload
     expect(typeof payload.sourceSentence).toBe('string')
     expect(typeof payload.transformationInstruction).toBe('string')
@@ -313,7 +313,7 @@ describe('generate-exercises: candidate shape validation', () => {
     expect(typeof payload.explanationText).toBe('string')
   })
 
-  it('validates cloze_mcq payload fields', () => {
+  it('validates choose_missing_word_ex payload fields', () => {
     const payload = approvedCandidate.payload
     expect(typeof payload.sentence).toBe('string')
     expect(typeof payload.translation).toBe('string')
@@ -323,9 +323,9 @@ describe('generate-exercises: candidate shape validation', () => {
     expect(payload.options).toContain(payload.correctOptionId)
   })
 
-  it('validates constrained_translation payload contract', () => {
+  it('validates translate_sentence_ex payload contract', () => {
     const ctCandidate: Candidate = {
-      exercise_type: 'constrained_translation',
+      exercise_type: 'translate_sentence_ex',
       grammar_pattern_slug: 'yang-relative-pronoun',
       source_page: 5,
       review_status: 'pending_review',
@@ -439,10 +439,10 @@ describe('generate-exercises: vocabulary context extraction', () => {
 
 describe('generate-exercises: exercise type validation', () => {
   const ALL_TYPES: ExerciseType[] = [
-    'contrast_pair',
-    'sentence_transformation',
-    'constrained_translation',
-    'cloze_mcq',
+    'choose_correct_form_ex',
+    'transform_sentence_ex',
+    'translate_sentence_ex',
+    'choose_missing_word_ex',
   ]
 
   it('all exercise types are known', () => {
@@ -453,10 +453,10 @@ describe('generate-exercises: exercise type validation', () => {
   })
 
   it('exercise types match the required exercise families from the spec', () => {
-    expect(ALL_TYPES).toContain('contrast_pair')
-    expect(ALL_TYPES).toContain('sentence_transformation')
-    expect(ALL_TYPES).toContain('constrained_translation')
-    expect(ALL_TYPES).toContain('cloze_mcq')
+    expect(ALL_TYPES).toContain('choose_correct_form_ex')
+    expect(ALL_TYPES).toContain('transform_sentence_ex')
+    expect(ALL_TYPES).toContain('translate_sentence_ex')
+    expect(ALL_TYPES).toContain('choose_missing_word_ex')
   })
 
   it('does not include speaking (disabled at launch)', () => {

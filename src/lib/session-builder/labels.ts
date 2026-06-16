@@ -79,17 +79,17 @@ export const CAPABILITY_DISPLAY = {
 } as const satisfies Record<CapabilityType, CapabilityDisplay>
 
 const exerciseLabels: Partial<Record<ExerciseType, string>> = {
-  recognition_mcq: 'Herkennen',
-  meaning_recall: 'Betekenis ophalen',
-  typed_recall: 'Typen uit herinnering',
-  cued_recall: 'Ophalen met hint',
-  cloze: 'Zin aanvullen',
-  cloze_mcq: 'Zin aanvullen met keuze',
-  contrast_pair: 'Verschil kiezen',
-  sentence_transformation: 'Zin ombouwen',
-  constrained_translation: 'Gericht vertalen',
-  listening_mcq: 'Luisterkeuze',
-  dictation: 'Dictee',
+  choose_meaning_ex: 'Herkennen',
+  type_meaning_ex: 'Betekenis ophalen',
+  type_form_ex: 'Typen uit herinnering',
+  choose_form_ex: 'Ophalen met hint',
+  type_missing_word_ex: 'Zin aanvullen',
+  choose_missing_word_ex: 'Zin aanvullen met keuze',
+  choose_correct_form_ex: 'Verschil kiezen',
+  transform_sentence_ex: 'Zin ombouwen',
+  translate_sentence_ex: 'Gericht vertalen',
+  choose_meaning_from_audio_ex: 'Luisterkeuze',
+  type_form_from_audio_ex: 'Dictee',
   speaking: 'Spreken',
 }
 

@@ -59,7 +59,7 @@ const constrainedTranslationSchema = z.object({
 const clozeMcqSchema = z.object({
   sentence: nonEmpty,
   translation: nonEmpty,
-  options: nonEmptyArray,  // string[] (audit I2 — differs from contrast_pair)
+  options: nonEmptyArray,  // string[] (audit I2 — differs from choose_correct_form_ex)
   correct_option_id: nonEmpty,
   explanation_text: nonEmpty,
 }).refine(
@@ -74,10 +74,10 @@ const clozeMcqSchema = z.object({
  * same DDL-shadowing schemas the CS13 pre-write gate uses — one home, no drift.
  */
 export const SCHEMA_BY_TYPE: Record<string, z.ZodTypeAny> = {
-  contrast_pair: contrastPairSchema,
-  sentence_transformation: sentenceTransformationSchema,
-  constrained_translation: constrainedTranslationSchema,
-  cloze_mcq: clozeMcqSchema,
+  choose_correct_form_ex: contrastPairSchema,
+  transform_sentence_ex: sentenceTransformationSchema,
+  translate_sentence_ex: constrainedTranslationSchema,
+  choose_missing_word_ex: clozeMcqSchema,
 }
 
 export function validateGrammarExercises(candidates: CandidateLike[]): ValidationFinding[] {

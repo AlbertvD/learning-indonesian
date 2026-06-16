@@ -132,18 +132,18 @@ export interface ReviewEvent {
 // === Exercise types ===
 
 export type ExerciseType =
-  | 'recognition_mcq'
-  | 'cued_recall'
-  | 'typed_recall'
-  | 'meaning_recall'
-  | 'cloze'
-  | 'cloze_mcq'
-  | 'contrast_pair'
-  | 'sentence_transformation'
-  | 'constrained_translation'
+  | 'choose_meaning_ex'
+  | 'choose_form_ex'
+  | 'type_form_ex'
+  | 'type_meaning_ex'
+  | 'type_missing_word_ex'
+  | 'choose_missing_word_ex'
+  | 'choose_correct_form_ex'
+  | 'transform_sentence_ex'
+  | 'translate_sentence_ex'
   | 'speaking'
-  | 'listening_mcq'
-  | 'dictation'
+  | 'choose_meaning_from_audio_ex'
+  | 'type_form_from_audio_ex'
 
 export type FlagType = 'wrong_translation' | 'bad_sentence' | 'confusing' | 'sunset' | 'other'
 export type FlagStatus = 'open' | 'resolved'
@@ -182,8 +182,8 @@ export interface ReviewCommentWithContext extends ReviewComment {
 
 export interface ExerciseItem {
   learningItem: LearningItem | null   // null for grammar exercises
-  /** Set for grammar-pattern exercises (contrast_pair, sentence_transformation,
-   *  constrained_translation, cloze_mcq); null/absent for item-sourced ones.
+  /** Set for grammar-pattern exercises (choose_correct_form_ex, transform_sentence_ex,
+   *  translate_sentence_ex, choose_missing_word_ex); null/absent for item-sourced ones.
    *  Carries the flag-tool anchor so admins can flag grammar content. */
   grammarPatternId?: string | null
   meanings: ItemMeaning[]
@@ -203,7 +203,7 @@ export interface ExerciseItem {
      *  for item-sourced clozes; UI omits the prefix. */
     speaker?: string | null
   }
-  /** For cloze_mcq: sentence with blank and 4 options to pick from */
+  /** For choose_missing_word_ex: sentence with blank and 4 options to pick from */
   clozeMcqData?: {
     sentence: string
     translation: string | null
@@ -213,7 +213,7 @@ export interface ExerciseItem {
     /** Same role as clozeContext.speaker — set for dialogue_line-sourced clozes. */
     speaker?: string | null
   }
-  /** For cued_recall: optional cue text and options */
+  /** For choose_form_ex: optional cue text and options */
   cuedRecallData?: {
     promptMeaningText: string
     cueText?: string
@@ -221,9 +221,9 @@ export interface ExerciseItem {
     correctOptionId: string
     explanationText?: string
   }
-  /** For typed_recall on word_form_pair_src source kind (morphology drills).
-   *  Set by the byType typed_recall builder when input.affixedFormPair is
-   *  populated; null for item-sourced typed_recall (existing path). The UI
+  /** For type_form_ex on word_form_pair_src source kind (morphology drills).
+   *  Set by the byType type_form_ex builder when input.affixedFormPair is
+   *  populated; null for item-sourced type_form_ex (existing path). The UI
    *  branches on this field's presence. */
   affixedFormPairData?: {
     /** Prompt the learner sees (e.g. "Form the meN- form of: baca"). */
@@ -240,7 +240,7 @@ export interface ExerciseItem {
     root: string
     derived: string
   }
-  /** For contrast_pair: contrast options and metadata */
+  /** For choose_correct_form_ex: contrast options and metadata */
   contrastPairData?: {
     promptText: string
     targetMeaning: string
@@ -248,7 +248,7 @@ export interface ExerciseItem {
     correctOptionId: string
     explanationText: string
   }
-  /** For sentence_transformation: source and instruction */
+  /** For transform_sentence_ex: source and instruction */
   sentenceTransformationData?: {
     sourceSentence: string
     transformationInstruction: string
@@ -256,7 +256,7 @@ export interface ExerciseItem {
     hintText?: string
     explanationText: string
   }
-  /** For constrained_translation: translation with constraints */
+  /** For translate_sentence_ex: translation with constraints */
   constrainedTranslationData?: {
     sourceLanguageSentence: string
     requiredTargetPattern: string
@@ -399,10 +399,10 @@ export interface ClozeMcqExercisesRow {
 // exercises are generated at runtime, never persisted — verified 0 vocab rows in
 // exercise_variants). The admin browser is therefore grammar-only.
 export type ExerciseReviewRow =
-  | ({ exercise_type: 'contrast_pair' } & ContrastPairExercisesRow)
-  | ({ exercise_type: 'sentence_transformation' } & SentenceTransformationExercisesRow)
-  | ({ exercise_type: 'constrained_translation' } & ConstrainedTranslationExercisesRow)
-  | ({ exercise_type: 'cloze_mcq' } & ClozeMcqExercisesRow)
+  | ({ exercise_type: 'choose_correct_form_ex' } & ContrastPairExercisesRow)
+  | ({ exercise_type: 'transform_sentence_ex' } & SentenceTransformationExercisesRow)
+  | ({ exercise_type: 'translate_sentence_ex' } & ConstrainedTranslationExercisesRow)
+  | ({ exercise_type: 'choose_missing_word_ex' } & ClozeMcqExercisesRow)
 
 export interface ExerciseTypeAvailability {
   exercise_type: string

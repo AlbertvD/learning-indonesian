@@ -1,4 +1,4 @@
-// builder for exerciseType='recognition_mcq'.
+// builder for exerciseType='choose_meaning_ex'.
 // User sees the Indonesian word, picks the user-language meaning from 4 options.
 // Pool option = each candidate's user-language translation.
 
@@ -6,7 +6,7 @@ import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
 
-export function buildRecognitionMCQ(input: BuilderInputFor<'recognition_mcq'>): BuilderResult {
+export function buildRecognitionMCQ(input: BuilderInputFor<'choose_meaning_ex'>): BuilderResult {
   // learningItem and primaryMeaning are non-null by contract (projector narrows).
   const correctAnswer = input.primaryMeaning.translation_text
 
@@ -64,7 +64,7 @@ export function buildRecognitionMCQ(input: BuilderInputFor<'recognition_mcq'>): 
     contexts: input.contexts,
     answerVariants: input.answerVariants,
     skillType: 'recognition' as const,
-    exerciseType: 'recognition_mcq' as const,
+    exerciseType: 'choose_meaning_ex' as const,
     distractors,
   }
   return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }

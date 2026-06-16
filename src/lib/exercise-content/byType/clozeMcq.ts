@@ -1,15 +1,15 @@
-// builder for exerciseType='cloze_mcq'.
+// builder for exerciseType='choose_missing_word_ex'.
 //
 // PATTERN-ONLY (cap-v2 #161): input.exercise is a typed cloze_mcq_exercises row
 // (sentence + options string[] + correct_option_id). The former item-sourced
 // runtime path (build a cloze from an item_contexts carrier + cascade distractors)
 // is removed — item cloze is now typed-only (it routes to the `cloze` builder, not
-// cloze_mcq). cloze_mcq serves only recognise_grammar_pattern_cap.
+// choose_missing_word_ex). choose_missing_word_ex serves only recognise_grammar_pattern_cap.
 
 import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildClozeMcq(input: BuilderInputFor<'cloze_mcq'>): BuilderResult {
+export function buildClozeMcq(input: BuilderInputFor<'choose_missing_word_ex'>): BuilderResult {
   // Pattern-sourced — typed cloze_mcq_exercises row (contract guarantees non-null,
   // like the other grammar exercises; the projector's needsPatternExercise guard).
   const ex = input.exercise
@@ -17,7 +17,7 @@ export function buildClozeMcq(input: BuilderInputFor<'cloze_mcq'>): BuilderResul
     return {
       kind: 'fail',
       reasonCode: 'malformed_payload',
-      message: `cloze_mcq exercise ${ex.id} missing sentence/options/correct_option_id`,
+      message: `choose_missing_word_ex exercise ${ex.id} missing sentence/options/correct_option_id`,
       payloadSnapshot: { exerciseId: ex.id, hasSentence: !!ex.sentence, optionsLength: ex.options.length, hasCorrect: !!ex.correct_option_id },
     }
   }
@@ -28,7 +28,7 @@ export function buildClozeMcq(input: BuilderInputFor<'cloze_mcq'>): BuilderResul
     contexts: input.contexts,
     answerVariants: input.answerVariants,
     skillType: 'recognition' as const,
-    exerciseType: 'cloze_mcq' as const,
+    exerciseType: 'choose_missing_word_ex' as const,
     clozeMcqData: {
       sentence: ex.sentence,
       translation: ex.translation,

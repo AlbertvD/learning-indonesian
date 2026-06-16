@@ -88,7 +88,7 @@ export function audibleTextFieldsOf(item: ExerciseItem): string[] {
     add(item.speakingData.targetPatternOrScenario)
   }
 
-  // Affixed-form-pair (typed_recall on morphology caps): root + derived are
+  // Affixed-form-pair (type_form_ex on morphology caps): root + derived are
   // both Indonesian-language. promptText + allomorphRule are explanatory
   // user-language text — excluded per the docstring convention above.
   if (item.affixedFormPairData) {

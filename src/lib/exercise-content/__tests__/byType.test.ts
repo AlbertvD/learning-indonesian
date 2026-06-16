@@ -55,7 +55,7 @@ function makeBlock(): SessionBlock {
     renderPlan: {
       capabilityKey: 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl',
       sourceRef: 'learning_items/item-1',
-      exerciseType: 'recognition_mcq',
+      exerciseType: 'choose_meaning_ex',
       capabilityType: 'recognise_meaning_from_text_cap',
       skillType: 'recognition',
     },
@@ -152,23 +152,23 @@ function patternEx(p: PatternExerciseInput): Partial<RawProjectorInput> {
 
 describe('buildMeaningRecall', () => {
   it('happy path', () => {
-    const r = buildForExerciseType('meaning_recall', baseInput())
+    const r = buildForExerciseType('type_meaning_ex', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
-      expect(r.exerciseItem.exerciseType).toBe('meaning_recall')
+      expect(r.exerciseItem.exerciseType).toBe('type_meaning_ex')
       expect(r.exerciseItem.skillType).toBe('meaning_recall')
       expect(r.audibleTexts).toContain(normalizeTtsText('akhir'))
     }
   })
 
   it('fails when no learningItem', () => {
-    const r = buildForExerciseType('meaning_recall', baseInput({ learningItem: null }))
+    const r = buildForExerciseType('type_meaning_ex', baseInput({ learningItem: null }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
   })
 
   it('fails when no user-lang meaning', () => {
-    const r = buildForExerciseType('meaning_recall', baseInput({ meanings: [makeMeaning('end', 'en')] }))
+    const r = buildForExerciseType('type_meaning_ex', baseInput({ meanings: [makeMeaning('end', 'en')] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_meaning_in_lang')
   })
@@ -176,16 +176,16 @@ describe('buildMeaningRecall', () => {
 
 describe('buildTypedRecall', () => {
   it('happy path', () => {
-    const r = buildForExerciseType('typed_recall', baseInput({ answerVariants: [makeAnswerVariant('akhir')] }))
+    const r = buildForExerciseType('type_form_ex', baseInput({ answerVariants: [makeAnswerVariant('akhir')] }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
-      expect(r.exerciseItem.exerciseType).toBe('typed_recall')
+      expect(r.exerciseItem.exerciseType).toBe('type_form_ex')
       expect(r.exerciseItem.answerVariants).toHaveLength(1)
     }
   })
 
   it('fails when no user-lang meaning', () => {
-    const r = buildForExerciseType('typed_recall', baseInput({ meanings: [] }))
+    const r = buildForExerciseType('type_form_ex', baseInput({ meanings: [] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_meaning_in_lang')
   })
@@ -193,16 +193,16 @@ describe('buildTypedRecall', () => {
 
 describe('buildDictation', () => {
   it('happy path', () => {
-    const r = buildForExerciseType('dictation', baseInput())
+    const r = buildForExerciseType('type_form_from_audio_ex', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
-      expect(r.exerciseItem.exerciseType).toBe('dictation')
+      expect(r.exerciseItem.exerciseType).toBe('type_form_from_audio_ex')
       expect(r.exerciseItem.skillType).toBe('form_recall')
     }
   })
 
   it('fails when no learningItem', () => {
-    const r = buildForExerciseType('dictation', baseInput({ learningItem: null }))
+    const r = buildForExerciseType('type_form_from_audio_ex', baseInput({ learningItem: null }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
   })
@@ -211,7 +211,7 @@ describe('buildDictation', () => {
 describe('buildCloze', () => {
   it('happy path with cloze context', () => {
     const ctx = makeContext('Saya ___ nasi', 'cloze')
-    const r = buildForExerciseType('cloze', baseInput({ contexts: [ctx] }))
+    const r = buildForExerciseType('type_missing_word_ex', baseInput({ contexts: [ctx] }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.clozeContext?.sentence).toBe('Saya ___ nasi')
@@ -220,14 +220,14 @@ describe('buildCloze', () => {
   })
 
   it('fails when no cloze context', () => {
-    const r = buildForExerciseType('cloze', baseInput({ contexts: [] }))
+    const r = buildForExerciseType('type_missing_word_ex', baseInput({ contexts: [] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_cloze')
   })
 
   it('fails when cloze context lacks `___` marker', () => {
     const ctx = makeContext('Saya makan nasi', 'cloze')  // no blank
-    const r = buildForExerciseType('cloze', baseInput({ contexts: [ctx] }))
+    const r = buildForExerciseType('type_missing_word_ex', baseInput({ contexts: [ctx] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_cloze')
   })
@@ -237,7 +237,7 @@ describe('buildCloze', () => {
 
 describe('buildRecognitionMCQ', () => {
   it('happy path with sufficient pool', () => {
-    const r = buildForExerciseType('recognition_mcq', baseInput())
+    const r = buildForExerciseType('choose_meaning_ex', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.distractors).toHaveLength(3)
@@ -246,7 +246,7 @@ describe('buildRecognitionMCQ', () => {
 
   it('fails with insufficient pool', () => {
     const small = makePoolItems(1)
-    const r = buildForExerciseType('recognition_mcq', baseInput({ poolItems: small.items, poolMeaningsByItem: small.meaningsByItem }))
+    const r = buildForExerciseType('choose_meaning_ex', baseInput({ poolItems: small.items, poolMeaningsByItem: small.meaningsByItem }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_distractor_candidates')
   })
@@ -254,7 +254,7 @@ describe('buildRecognitionMCQ', () => {
   it('uses curated distractors when a row exists for this capability (Task 8 / #99)', () => {
     const capabilityId = 'cap-1'  // matches makeBlock().capabilityId
     const curated = ['wrong-nl-1', 'wrong-nl-2', 'wrong-nl-3']
-    const r = buildForExerciseType('recognition_mcq', baseInput({
+    const r = buildForExerciseType('choose_meaning_ex', baseInput({
       curatedRecognitionDistractors: new Map([[capabilityId, curated]]),
     }))
     expect(r.kind).toBe('ok')
@@ -265,7 +265,7 @@ describe('buildRecognitionMCQ', () => {
 
   it('falls back to pool when no curated row exists (empty map)', () => {
     // Pool path with sufficient items → succeeds; distractors come from pool
-    const r = buildForExerciseType('recognition_mcq', baseInput({
+    const r = buildForExerciseType('choose_meaning_ex', baseInput({
       curatedRecognitionDistractors: new Map(),
     }))
     expect(r.kind).toBe('ok')
@@ -280,7 +280,7 @@ describe('buildRecognitionMCQ', () => {
     // contract: even if a malformed row reaches the reader, behaviour is correct.
     const capabilityId = 'cap-1'
     const tooFew = ['only-one']  // length 1 < 3
-    const r = buildForExerciseType('recognition_mcq', baseInput({
+    const r = buildForExerciseType('choose_meaning_ex', baseInput({
       curatedRecognitionDistractors: new Map([[capabilityId, tooFew]]),
     }))
     expect(r.kind).toBe('ok')
@@ -295,7 +295,7 @@ describe('buildRecognitionMCQ', () => {
     // A row with > 3 distractors must be sliced to exactly 3 (.slice(0,3)).
     const capabilityId = 'cap-1'
     const tooMany = ['d1', 'd2', 'd3', 'd4', 'd5']  // length 5 > 3
-    const r = buildForExerciseType('recognition_mcq', baseInput({
+    const r = buildForExerciseType('choose_meaning_ex', baseInput({
       curatedRecognitionDistractors: new Map([[capabilityId, tooMany]]),
     }))
     expect(r.kind).toBe('ok')
@@ -308,7 +308,7 @@ describe('buildRecognitionMCQ', () => {
 
 describe('buildCuedRecall', () => {
   it('happy path', () => {
-    const r = buildForExerciseType('cued_recall', baseInput())
+    const r = buildForExerciseType('choose_form_ex', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.cuedRecallData?.options).toHaveLength(4)  // 1 correct + 3 distractors
@@ -318,7 +318,7 @@ describe('buildCuedRecall', () => {
 
   it('fails with insufficient pool', () => {
     const small = makePoolItems(2)
-    const r = buildForExerciseType('cued_recall', baseInput({ poolItems: small.items, poolMeaningsByItem: small.meaningsByItem }))
+    const r = buildForExerciseType('choose_form_ex', baseInput({ poolItems: small.items, poolMeaningsByItem: small.meaningsByItem }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_distractor_candidates')
   })
@@ -326,7 +326,7 @@ describe('buildCuedRecall', () => {
   it('uses curated distractors when a row exists for this capability (Task 8 / #99)', () => {
     const capabilityId = 'cap-1'  // matches makeBlock().capabilityId
     const curated = ['salah-id-1', 'salah-id-2', 'salah-id-3']
-    const r = buildForExerciseType('cued_recall', baseInput({
+    const r = buildForExerciseType('choose_form_ex', baseInput({
       curatedCuedRecallDistractors: new Map([[capabilityId, curated]]),
     }))
     expect(r.kind).toBe('ok')
@@ -341,7 +341,7 @@ describe('buildCuedRecall', () => {
   })
 
   it('falls back to pool when no curated row exists (empty map)', () => {
-    const r = buildForExerciseType('cued_recall', baseInput({
+    const r = buildForExerciseType('choose_form_ex', baseInput({
       curatedCuedRecallDistractors: new Map(),
     }))
     expect(r.kind).toBe('ok')
@@ -356,7 +356,7 @@ describe('buildCuedRecall', () => {
     // the pool fallback must produce the full set of 4 options (correct + 3).
     const capabilityId = 'cap-1'
     const tooFew = ['salah-id-1', 'salah-id-2']  // length 2 < 3
-    const r = buildForExerciseType('cued_recall', baseInput({
+    const r = buildForExerciseType('choose_form_ex', baseInput({
       curatedCuedRecallDistractors: new Map([[capabilityId, tooFew]]),
     }))
     expect(r.kind).toBe('ok')
@@ -372,7 +372,7 @@ describe('buildCuedRecall', () => {
     // A row with > 3 distractors must be sliced to exactly 3 (.slice(0,3)).
     const capabilityId = 'cap-1'
     const tooMany = ['salah-1', 'salah-2', 'salah-3', 'salah-4', 'salah-5']  // length 5 > 3
-    const r = buildForExerciseType('cued_recall', baseInput({
+    const r = buildForExerciseType('choose_form_ex', baseInput({
       curatedCuedRecallDistractors: new Map([[capabilityId, tooMany]]),
     }))
     expect(r.kind).toBe('ok')
@@ -389,20 +389,20 @@ describe('buildCuedRecall', () => {
 
 describe('buildListeningMCQ', () => {
   it('happy path', () => {
-    const r = buildForExerciseType('listening_mcq', baseInput())
+    const r = buildForExerciseType('choose_meaning_from_audio_ex', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
-      expect(r.exerciseItem.exerciseType).toBe('listening_mcq')
+      expect(r.exerciseItem.exerciseType).toBe('choose_meaning_from_audio_ex')
       expect(r.exerciseItem.distractors).toHaveLength(3)
     }
   })
 })
 
-// ─── cloze_mcq (pattern-only since cap-v2 #161; item cloze is typed-only) ───
+// ─── choose_missing_word_ex (pattern-only since cap-v2 #161; item cloze is typed-only) ───
 
 describe('buildClozeMcq', () => {
   it('pattern path — typed cloze_mcq_exercises row', () => {
-    const r = buildForExerciseType('cloze_mcq', baseInput(patternEx({ exerciseType: 'cloze_mcq', row: clozeMcqRow() })))
+    const r = buildForExerciseType('choose_missing_word_ex', baseInput(patternEx({ exerciseType: 'choose_missing_word_ex', row: clozeMcqRow() })))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.learningItem).toBeNull()
@@ -412,14 +412,14 @@ describe('buildClozeMcq', () => {
   })
 
   it('fails when no typed pattern exercise is supplied (item cloze no longer routes here)', () => {
-    const r = buildForExerciseType('cloze_mcq', baseInput({ contexts: [] }))
+    const r = buildForExerciseType('choose_missing_word_ex', baseInput({ contexts: [] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('pattern_typed_row_missing')
   })
 
   it('pattern path fails on malformed typed row', () => {
-    const r = buildForExerciseType('cloze_mcq', baseInput(patternEx({
-      exerciseType: 'cloze_mcq', row: clozeMcqRow({ sentence: '', options: [], correct_option_id: '' }),
+    const r = buildForExerciseType('choose_missing_word_ex', baseInput(patternEx({
+      exerciseType: 'choose_missing_word_ex', row: clozeMcqRow({ sentence: '', options: [], correct_option_id: '' }),
     })))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
@@ -430,7 +430,7 @@ describe('buildClozeMcq', () => {
 
 describe('buildContrastPair', () => {
   it('happy path with [{id,text}] options', () => {
-    const r = buildForExerciseType('contrast_pair', baseInput(patternEx({ exerciseType: 'contrast_pair', row: contrastRow() })))
+    const r = buildForExerciseType('choose_correct_form_ex', baseInput(patternEx({ exerciseType: 'choose_correct_form_ex', row: contrastRow() })))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.learningItem).toBeNull()
@@ -442,14 +442,14 @@ describe('buildContrastPair', () => {
   it('fails when no pattern exercise', () => {
     // learningItem present + patternExercise null exercises the projector's
     // needsPatternExercise guard (production never has a learningItem here).
-    const r = buildForExerciseType('contrast_pair', baseInput())
+    const r = buildForExerciseType('choose_correct_form_ex', baseInput())
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('pattern_typed_row_missing')
   })
 
   it('fails when option count != 2', () => {
-    const r = buildForExerciseType('contrast_pair', baseInput(patternEx({
-      exerciseType: 'contrast_pair',
+    const r = buildForExerciseType('choose_correct_form_ex', baseInput(patternEx({
+      exerciseType: 'choose_correct_form_ex',
       row: contrastRow({ options: [{ id: 'a', text: 'x' }, { id: 'b', text: 'y' }, { id: 'c', text: 'z' }] }),
     })))
     expect(r.kind).toBe('fail')
@@ -459,7 +459,7 @@ describe('buildContrastPair', () => {
 
 describe('buildSentenceTransformation', () => {
   it('happy path', () => {
-    const r = buildForExerciseType('sentence_transformation', baseInput(patternEx({ exerciseType: 'sentence_transformation', row: sentenceRow() })))
+    const r = buildForExerciseType('transform_sentence_ex', baseInput(patternEx({ exerciseType: 'transform_sentence_ex', row: sentenceRow() })))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.sentenceTransformationData?.sourceSentence).toBe('Saya makan')
@@ -467,14 +467,14 @@ describe('buildSentenceTransformation', () => {
   })
 
   it('fails when no pattern exercise', () => {
-    const r = buildForExerciseType('sentence_transformation', baseInput())
+    const r = buildForExerciseType('transform_sentence_ex', baseInput())
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('pattern_typed_row_missing')
   })
 
   it('fails on missing acceptable_answers', () => {
-    const r = buildForExerciseType('sentence_transformation', baseInput(patternEx({
-      exerciseType: 'sentence_transformation', row: sentenceRow({ acceptable_answers: [] }),
+    const r = buildForExerciseType('transform_sentence_ex', baseInput(patternEx({
+      exerciseType: 'transform_sentence_ex', row: sentenceRow({ acceptable_answers: [] }),
     })))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
@@ -483,7 +483,7 @@ describe('buildSentenceTransformation', () => {
 
 describe('buildConstrainedTranslation', () => {
   it('happy path', () => {
-    const r = buildForExerciseType('constrained_translation', baseInput(patternEx({ exerciseType: 'constrained_translation', row: constrainedRow() })))
+    const r = buildForExerciseType('translate_sentence_ex', baseInput(patternEx({ exerciseType: 'translate_sentence_ex', row: constrainedRow() })))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.constrainedTranslationData?.acceptableAnswers).toEqual(['Saya belum makan'])
@@ -491,7 +491,7 @@ describe('buildConstrainedTranslation', () => {
   })
 
   it('fails when no pattern exercise', () => {
-    const r = buildForExerciseType('constrained_translation', baseInput())
+    const r = buildForExerciseType('translate_sentence_ex', baseInput())
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('pattern_typed_row_missing')
   })
@@ -511,9 +511,9 @@ describe('buildSpeaking', () => {
 
 describe('buildForExerciseType', () => {
   it('routes to the right builder', () => {
-    const r = buildForExerciseType('typed_recall', baseInput())
+    const r = buildForExerciseType('type_form_ex', baseInput())
     expect(r.kind).toBe('ok')
-    if (r.kind === 'ok') expect(r.exerciseItem.exerciseType).toBe('typed_recall')
+    if (r.kind === 'ok') expect(r.exerciseItem.exerciseType).toBe('type_form_ex')
   })
 
   it('returns unsupported_exercise_type for an unknown type', () => {
@@ -527,7 +527,7 @@ describe('buildForExerciseType', () => {
 // ─── dialogue_line cloze ───
 //
 // PR-B of the lib/exercise-content fold adds a parallel input shape: cloze
-// (typed only — cloze_mcq is pattern-only since cap-v2 #161) accepts a
+// (typed only — choose_missing_word_ex is pattern-only since cap-v2 #161) accepts a
 // dialogueLine instead of a learningItem. The adapter assembles dialogueLine
 // from artifact rows the publish pipeline writes; the byType packager reads it directly.
 
@@ -548,10 +548,10 @@ describe('buildCloze — dialogue_line source kind', () => {
   }
 
   it('produces a cloze exerciseItem with dialogueLine fields populated and learningItem=null', () => {
-    const r = buildForExerciseType('cloze', dialogueInput())
+    const r = buildForExerciseType('type_missing_word_ex', dialogueInput())
     expect(r.kind).toBe('ok')
     if (r.kind !== 'ok') return
-    expect(r.exerciseItem.exerciseType).toBe('cloze')
+    expect(r.exerciseItem.exerciseType).toBe('type_missing_word_ex')
     expect(r.exerciseItem.learningItem).toBeNull()
     expect(r.exerciseItem.clozeContext?.sentence).toBe('Aku tidak ___ tinggal di rumah terus')
     expect(r.exerciseItem.clozeContext?.targetWord).toBe('suka')
@@ -560,7 +560,7 @@ describe('buildCloze — dialogue_line source kind', () => {
   })
 
   it('fails malformed_cloze when sourceText lacks the ___ marker', () => {
-    const r = buildForExerciseType('cloze', dialogueInput({
+    const r = buildForExerciseType('type_missing_word_ex', dialogueInput({
       dialogueLine: {
         text: 'Aku tidak suka tinggal di rumah terus',
         speaker: 'Titin',
@@ -575,7 +575,7 @@ describe('buildCloze — dialogue_line source kind', () => {
   })
 
   it('exerciseItem.clozeContext.speaker is null when the dialogue line has no speaker', () => {
-    const r = buildForExerciseType('cloze', dialogueInput({
+    const r = buildForExerciseType('type_missing_word_ex', dialogueInput({
       dialogueLine: {
         text: 'Apa kabar?',
         speaker: null,
@@ -589,9 +589,9 @@ describe('buildCloze — dialogue_line source kind', () => {
     if (r.kind === 'ok') expect(r.exerciseItem.clozeContext?.speaker).toBeNull()
   })
 
-  it('cloze_mcq does not accept dialogue_line (pattern-only since cap-v2 #161)', () => {
-    const r = buildForExerciseType('cloze_mcq', dialogueInput({
-      // cloze_mcq is pattern-only: a dialogueLine (no learningItem, no pattern
+  it('choose_missing_word_ex does not accept dialogue_line (pattern-only since cap-v2 #161)', () => {
+    const r = buildForExerciseType('choose_missing_word_ex', dialogueInput({
+      // choose_missing_word_ex is pattern-only: a dialogueLine (no learningItem, no pattern
       // exercise) is not an accepted source → the projector emits item_not_found.
     }))
     expect(r.kind).toBe('fail')
@@ -599,13 +599,13 @@ describe('buildCloze — dialogue_line source kind', () => {
   })
 })
 
-// ─── word_form_pair_src typed_recall ───
+// ─── word_form_pair_src type_form_ex ───
 //
-// The affixed-form-pair PR (2026-05-21) extends typed_recall to accept the
+// The affixed-form-pair PR (2026-05-21) extends type_form_ex to accept the
 // word_form_pair_src source kind: the input carries an AffixedFormPairInput
 // instead of a LearningItem + ItemMeaning, the builder branches on which
 // field is populated, and the exerciseItem grows an `affixedFormPairData`
-// slot the UI reads. cued_recall stays item-only per D4.
+// slot the UI reads. choose_form_ex stays item-only per D4.
 
 describe('buildTypedRecall — word_form_pair_src source kind', () => {
   function affixedInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInput {
@@ -623,11 +623,11 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
     })
   }
 
-  it('produces a typed_recall exerciseItem with affixedFormPairData populated and learningItem=null (root→derived)', () => {
-    const r = buildForExerciseType('typed_recall', affixedInput())
+  it('produces a type_form_ex exerciseItem with affixedFormPairData populated and learningItem=null (root→derived)', () => {
+    const r = buildForExerciseType('type_form_ex', affixedInput())
     expect(r.kind).toBe('ok')
     if (r.kind !== 'ok') return
-    expect(r.exerciseItem.exerciseType).toBe('typed_recall')
+    expect(r.exerciseItem.exerciseType).toBe('type_form_ex')
     expect(r.exerciseItem.learningItem).toBeNull()
     expect(r.exerciseItem.affixedFormPairData).toEqual({
       promptText: 'Form the meN- form of: baca',
@@ -641,7 +641,7 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
   })
 
   it('flips prompt + answer for derived→root direction (recognition)', () => {
-    const r = buildForExerciseType('typed_recall', affixedInput({
+    const r = buildForExerciseType('type_form_ex', affixedInput({
       affixedFormPair: {
         root: 'baca',
         derived: 'membaca',
@@ -658,20 +658,20 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
   })
 
   it('audibleTexts harvest includes both root and derived (Indonesian-language)', () => {
-    const r = buildForExerciseType('typed_recall', affixedInput())
+    const r = buildForExerciseType('type_form_ex', affixedInput())
     expect(r.kind).toBe('ok')
     if (r.kind !== 'ok') return
     expect(r.audibleTexts).toEqual(expect.arrayContaining(['baca', 'membaca']))
   })
 
-  it('cued_recall stays item-only (the affixed-form-pair widening did not extend to it per D4)', () => {
-    const r = buildForExerciseType('cued_recall', affixedInput())
+  it('choose_form_ex stays item-only (the affixed-form-pair widening did not extend to it per D4)', () => {
+    const r = buildForExerciseType('choose_form_ex', affixedInput())
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
   })
 
-  it('dictation rejects word_form_pair_src input (typed_recall is the only exercise that accepts it)', () => {
-    const r = buildForExerciseType('dictation', affixedInput())
+  it('dictation rejects word_form_pair_src input (type_form_ex is the only exercise that accepts it)', () => {
+    const r = buildForExerciseType('type_form_from_audio_ex', affixedInput())
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
   })

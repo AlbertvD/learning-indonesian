@@ -64,7 +64,7 @@ function meaningsFromItem(item: LearningItem): ItemMeaning[] {
  * Resolve curated distractor pointer rows into the two `capability_id → string[]`
  * maps the builders consume (cap-v2). A pointer's string form depends on the
  * capability type: meaning MCQs (recognise_meaning_from_text_cap, recognise_meaning_from_audio_cap) render the
- * distractor item's L1 gloss (userLanguage); cued_recall (recognise_form_from_meaning_cap)
+ * distractor item's L1 gloss (userLanguage); choose_form_ex (recognise_form_from_meaning_cap)
  * renders its Indonesian form. Pure — no I/O; the fetcher supplies the looked-up
  * rows so this stays unit-testable.
  */
@@ -145,7 +145,7 @@ export async function fetchForItemBlocks(
   // Curated distractors (cap-v2): read the `distractors` pointer table and the
   // capability types, then resolve each item_id pointer to the wrong-option
   // string the builder renders — the L1 gloss for meaning MCQs
-  // (recognise_meaning_from_text_cap + recognise_meaning_from_audio_cap) or the Indonesian form for cued_recall
+  // (recognise_meaning_from_text_cap + recognise_meaning_from_audio_cap) or the Indonesian form for choose_form_ex
   // (recognise_form_from_meaning_cap). Replaces the old text-array tables
   // (recognition_mcq_distractors / cued_recall_distractors), dropped in the
   // vocabulary cutover. Chunked through chunkedIn (Kong 8 KB request-line guard).

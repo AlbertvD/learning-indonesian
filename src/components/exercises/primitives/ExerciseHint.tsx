@@ -1,5 +1,5 @@
 // src/components/exercises/primitives/ExerciseHint.tsx
-// Secondary guidance surface. Used by sentence_transformation after N failures
+// Secondary guidance surface. Used by transform_sentence_ex after N failures
 // today; future hint patterns can opt in.
 // See docs/plans/2026-04-23-exercise-framework-design.md §6.11
 

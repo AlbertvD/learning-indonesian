@@ -5,10 +5,10 @@
  * One-shot bridge for PR 4 — moves the 716 grammar exercises from the legacy
  * `exercise_variants` blob (payload_json + answer_key_json) into the 4 typed
  * grammar-exercise tables, dispatching by exercise_type:
- *   contrast_pair           → contrast_pair_exercises
- *   sentence_transformation → sentence_transformation_exercises
- *   constrained_translation → constrained_translation_exercises
- *   cloze_mcq               → cloze_mcq_exercises
+ *   choose_correct_form_ex           → contrast_pair_exercises
+ *   transform_sentence_ex → sentence_transformation_exercises
+ *   translate_sentence_ex → constrained_translation_exercises
+ *   choose_missing_word_ex               → cloze_mcq_exercises
  *
  * BACKGROUND
  * ----------
@@ -112,7 +112,7 @@ async function main() {
   const supabase: SupabaseClient = createClient(url, key)
 
   console.log(`PR 4 grammar typed-table bridge — dry-run=${DRY_RUN}`)
-  console.log('Surface: {contrast_pair,sentence_transformation,constrained_translation,cloze_mcq}_exercises ← exercise_variants\n')
+  console.log('Surface: {choose_correct_form_ex,transform_sentence_ex,translate_sentence_ex,choose_missing_word_ex}_exercises ← exercise_variants\n')
 
   const before = await countsByTable(supabase)
   console.log('BEFORE:', TABLES.map((t) => `${t}=${before[t]}`).join('  '))

@@ -32,17 +32,17 @@ type BuilderRegistry = {
 }
 
 const BUILDERS: BuilderRegistry = {
-  recognition_mcq:         buildRecognitionMCQ,
-  cued_recall:             buildCuedRecall,
-  typed_recall:            buildTypedRecall,
-  meaning_recall:          buildMeaningRecall,
-  listening_mcq:           buildListeningMCQ,
-  dictation:               buildDictation,
-  cloze:                   buildCloze,
-  cloze_mcq:               buildClozeMcq,
-  contrast_pair:           buildContrastPair,
-  sentence_transformation: buildSentenceTransformation,
-  constrained_translation: buildConstrainedTranslation,
+  choose_meaning_ex:         buildRecognitionMCQ,
+  choose_form_ex:             buildCuedRecall,
+  type_form_ex:            buildTypedRecall,
+  type_meaning_ex:          buildMeaningRecall,
+  choose_meaning_from_audio_ex:           buildListeningMCQ,
+  type_form_from_audio_ex:               buildDictation,
+  type_missing_word_ex:                   buildCloze,
+  choose_missing_word_ex:               buildClozeMcq,
+  choose_correct_form_ex:           buildContrastPair,
+  transform_sentence_ex: buildSentenceTransformation,
+  translate_sentence_ex: buildConstrainedTranslation,
   speaking:                buildSpeaking,
 }
 

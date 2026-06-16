@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import type { ExerciseItem } from '@/types/learning'
 
 describe('SentenceTransformationExercise types', () => {
-  it('compiles ExerciseItem with sentence_transformation data', () => {
+  it('compiles ExerciseItem with transform_sentence_ex data', () => {
     const exerciseItem: ExerciseItem = {
       learningItem: {
         id: 'item-1',
@@ -27,7 +27,7 @@ describe('SentenceTransformationExercise types', () => {
       contexts: [],
       answerVariants: [],
       skillType: 'form_recall',
-      exerciseType: 'sentence_transformation',
+      exerciseType: 'transform_sentence_ex',
       sentenceTransformationData: {
         sourceSentence: 'Saya makan nasi',
         transformationInstruction: 'Change to past tense',
@@ -37,7 +37,7 @@ describe('SentenceTransformationExercise types', () => {
       },
     }
 
-    expect(exerciseItem.exerciseType).toBe('sentence_transformation')
+    expect(exerciseItem.exerciseType).toBe('transform_sentence_ex')
     expect(exerciseItem.sentenceTransformationData?.acceptableAnswers.length).toBeGreaterThan(0)
   })
 })

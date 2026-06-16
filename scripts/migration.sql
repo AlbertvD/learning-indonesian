@@ -667,22 +667,29 @@ WHERE review_status IN ('pending_review', 'approved', 'rejected');
 -- (learner_analytics_events RLS/policies/grants retired in 2026-05-07 retirement #4)
 
 -- Seed exercise type availability (runtime feature flags)
+-- §8 rename Phase B: exercise_type is the PRIMARY KEY, so a rename changes the
+-- key value — no ON CONFLICT can migrate it. DELETE the old-named PK rows first,
+-- then INSERT the new _ex names (the INSERT keeps ON CONFLICT DO UPDATE so a 2nd
+-- run is idempotent; on a 2nd run the DELETE is a no-op since the old names are gone).
+DELETE FROM indonesian.exercise_type_availability
+  WHERE exercise_type IN ('recognition_mcq','cued_recall','typed_recall','cloze','contrast_pair',
+    'sentence_transformation','constrained_translation','meaning_recall','cloze_mcq');
 INSERT INTO indonesian.exercise_type_availability (
   exercise_type, session_enabled, authoring_enabled, requires_approved_content, rollout_phase, notes
 ) VALUES
-  ('recognition_mcq', true, true, false, 'full', 'Core exercise type'),
-  ('cued_recall', true, true, false, 'full', 'Core exercise type'),
-  ('typed_recall', true, true, false, 'full', 'Core exercise type'),
-  ('cloze', true, true, false, 'full', 'Core exercise type'),
-  ('contrast_pair', true, true, true, 'beta', 'Grammar-aware, requires published content'),
-  ('sentence_transformation', true, true, true, 'beta', 'Grammar-aware, requires published content'),
-  ('constrained_translation', true, true, true, 'beta', 'Grammar-aware, requires published content'),
+  ('choose_meaning_ex', true, true, false, 'full', 'Core exercise type'),
+  ('choose_form_ex', true, true, false, 'full', 'Core exercise type'),
+  ('type_form_ex', true, true, false, 'full', 'Core exercise type'),
+  ('type_missing_word_ex', true, true, false, 'full', 'Core exercise type'),
+  ('choose_correct_form_ex', true, true, true, 'beta', 'Grammar-aware, requires published content'),
+  ('transform_sentence_ex', true, true, true, 'beta', 'Grammar-aware, requires published content'),
+  ('translate_sentence_ex', true, true, true, 'beta', 'Grammar-aware, requires published content'),
   ('speaking', false, true, true, 'alpha', 'Not yet enabled in sessions'),
   -- PR 0 §3.6: backfill rows for exercise types that route through the
-  -- registry but had no availability row. recognition_mcq and cued_recall
-  -- already had rows; meaning_recall + cloze_mcq were missing.
-  ('meaning_recall', true, true, false, 'full', 'Item meaning recall — derived from learning_items + variants'),
-  ('cloze_mcq', true, true, true, 'full', 'Cloze MCQ — item + pattern source kinds')
+  -- registry but had no availability row. choose_meaning_ex and choose_form_ex
+  -- already had rows; type_meaning_ex + choose_missing_word_ex were missing.
+  ('type_meaning_ex', true, true, false, 'full', 'Item meaning recall — derived from learning_items + variants'),
+  ('choose_missing_word_ex', true, true, true, 'full', 'Cloze MCQ — item + pattern source kinds')
 ON CONFLICT (exercise_type) DO UPDATE SET
   session_enabled = EXCLUDED.session_enabled,
   authoring_enabled = EXCLUDED.authoring_enabled,
@@ -1151,10 +1158,12 @@ ALTER TABLE indonesian.learning_items
   );
 
 -- Listening MCQ (audio-only Indonesian prompt, user-language MCQ answer)
+-- §8 rename Phase B: DELETE old PK row, INSERT new _ex name (PK value changes).
+DELETE FROM indonesian.exercise_type_availability WHERE exercise_type = 'listening_mcq';
 INSERT INTO indonesian.exercise_type_availability
   (exercise_type, session_enabled, authoring_enabled, requires_approved_content, rollout_phase, notes)
 VALUES
-  ('listening_mcq', true, false, false, 'alpha',
+  ('choose_meaning_from_audio_ex', true, false, false, 'alpha',
    'Audio-only Indonesian prompt, user-language MCQ. Runtime-built. No authored variants.')
 ON CONFLICT (exercise_type) DO NOTHING;
 
@@ -1181,10 +1190,12 @@ $$;
 GRANT EXECUTE ON FUNCTION indonesian.audio_coverage_report() TO authenticated;
 
 -- Dictation (audio-only Indonesian prompt, typed Indonesian answer)
+-- §8 rename Phase B: DELETE old PK row, INSERT new _ex name (PK value changes).
+DELETE FROM indonesian.exercise_type_availability WHERE exercise_type = 'dictation';
 INSERT INTO indonesian.exercise_type_availability
   (exercise_type, session_enabled, authoring_enabled, requires_approved_content, rollout_phase, notes)
 VALUES
-  ('dictation', true, false, false, 'alpha',
+  ('type_form_from_audio_ex', true, false, false, 'alpha',
    'Audio-only Indonesian prompt, typed Indonesian answer. Runtime-built. Free text with fuzzy grading.')
 ON CONFLICT (exercise_type) DO NOTHING;
 

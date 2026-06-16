@@ -19,7 +19,7 @@ export const DIALOGUE_CLOZE_FIXTURE: ExerciseItem = {
   contexts: [],
   answerVariants: [],
   skillType: 'form_recall',
-  exerciseType: 'cloze',
+  exerciseType: 'type_missing_word_ex',
   clozeContext: {
     sentence: 'Aku tidak ___ tinggal di rumah terus',
     targetWord: 'suka',
@@ -40,7 +40,7 @@ export const VOCAB_CLOZE_FIXTURE: ExerciseItem = {
   contexts: [],
   answerVariants: [],
   skillType: 'form_recall',
-  exerciseType: 'cloze',
+  exerciseType: 'type_missing_word_ex',
   clozeContext: {
     sentence: 'Saya punya ___ buku',
     targetWord: 'tujuh',

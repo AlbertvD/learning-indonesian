@@ -112,10 +112,10 @@ async function findPatternCapsMissing(
     ((patternRows ?? []) as Array<{ id: string; slug: string }>).map((p) => [p.slug, p.id]),
   )
 
-  const contrastSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.contrast_pair)
-  const stSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.sentence_transformation)
-  const ctSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.constrained_translation)
-  const cmSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.cloze_mcq)
+  const contrastSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.choose_correct_form_ex)
+  const stSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.transform_sentence_ex)
+  const ctSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.translate_sentence_ex)
+  const cmSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.choose_missing_word_ex)
   const recognitionUnion = new Set<string>([...stSet, ...ctSet, ...cmSet])
 
   const missing: CapForSatelliteCheck[] = []

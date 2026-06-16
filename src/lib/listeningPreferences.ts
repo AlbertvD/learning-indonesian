@@ -1,6 +1,6 @@
 // src/lib/listeningPreferences.ts
 // localStorage-backed user preference for audio-prompt exercise types
-// (listening_mcq, dictation). Disabling removes all audio-prompt exercises
+// (choose_meaning_from_audio_ex, dictation). Disabling removes all audio-prompt exercises
 // from sessions — accessibility opt-out for hard-of-hearing learners.
 
 const KEY = 'listening_enabled'

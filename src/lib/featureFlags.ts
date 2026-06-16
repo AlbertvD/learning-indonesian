@@ -69,23 +69,23 @@ export const capabilityMigrationFlags: CapabilityMigrationFlags = {
  */
 export function isExerciseTypeEnabled(exerciseType: string): boolean {
   switch (exerciseType) {
-    case 'cued_recall':
+    case 'choose_form_ex':
       return featureFlags.cuedRecall
-    case 'contrast_pair':
+    case 'choose_correct_form_ex':
       return featureFlags.contrastPair
-    case 'sentence_transformation':
+    case 'transform_sentence_ex':
       return featureFlags.sentenceTransformation
-    case 'constrained_translation':
+    case 'translate_sentence_ex':
       return featureFlags.constrainedTranslation
     case 'speaking':
       return featureFlags.speaking
-    case 'listening_mcq':
+    case 'choose_meaning_from_audio_ex':
       return featureFlags.listeningMcq
     case 'dictation':
       return featureFlags.dictation
     // Core types cannot be disabled via feature flags
-    case 'recognition_mcq':
-    case 'typed_recall':
+    case 'choose_meaning_ex':
+    case 'type_form_ex':
     case 'cloze':
     case 'meaning_recall':
       return true

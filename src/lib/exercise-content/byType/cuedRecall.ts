@@ -1,4 +1,4 @@
-// builder for exerciseType='cued_recall'.
+// builder for exerciseType='choose_form_ex'.
 // User sees the user-language meaning, picks the correct Indonesian form.
 // Pool option = candidate's base_text; semanticGroup looked up via candidate's
 // translation so the group filter still works even though we render base_text.
@@ -8,7 +8,7 @@ import { shuffle } from './helpers'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
 
-export function buildCuedRecall(input: BuilderInputFor<'cued_recall'>): BuilderResult {
+export function buildCuedRecall(input: BuilderInputFor<'choose_form_ex'>): BuilderResult {
   // learningItem and primaryMeaning are non-null by contract (projector narrows).
   const promptMeaningText = input.primaryMeaning.translation_text
 
@@ -66,7 +66,7 @@ export function buildCuedRecall(input: BuilderInputFor<'cued_recall'>): BuilderR
     contexts: input.contexts,
     answerVariants: input.answerVariants,
     skillType: 'meaning_recall' as const,
-    exerciseType: 'cued_recall' as const,
+    exerciseType: 'choose_form_ex' as const,
     cuedRecallData: {
       promptMeaningText,
       options,

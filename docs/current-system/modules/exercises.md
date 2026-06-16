@@ -1,11 +1,22 @@
 ---
 module: exercises
 surface: src/components/exercises/
-last_verified_against_code: 2026-05-20
+last_verified_against_code: 2026-06-16
 status: stable
 ---
 
 # Exercises module (UI rendering layer)
+
+> **2026-06-16 — §8 naming rename Phase B.** `ExerciseType` adopted the readable `_ex`
+> names (`recognition_mcq`→`choose_meaning_ex`, `cued_recall`→`choose_form_ex`,
+> `typed_recall`→`type_form_ex`, `meaning_recall`→`type_meaning_ex`,
+> `listening_mcq`→`choose_meaning_from_audio_ex`, `dictation`→`type_form_from_audio_ex`,
+> `cloze`→`type_missing_word_ex`, `cloze_mcq`→`choose_missing_word_ex`,
+> `contrast_pair`→`choose_correct_form_ex`, `sentence_transformation`→`transform_sentence_ex`,
+> `constrained_translation`→`translate_sentence_ex`; `speaking` left as-is — dead surface).
+> The registry, `byType` builders, and the `exercise_type_availability` PK seed all moved.
+> References to the former names below are period-accurate. See
+> `capability-and-exercise-model.md` §8 + `docs/plans/2026-06-15-capability-naming-rename-plan.md`.
 
 **Surface:** `src/components/exercises/`. The UI half of capability rendering — the registry that maps `ExerciseType` → React component, the 12 per-type implementations consumed at runtime, the framework primitives those implementations are built on, and the feedback-shape adapter that bridges between the player chrome and the Doorgaan card primitive.
 

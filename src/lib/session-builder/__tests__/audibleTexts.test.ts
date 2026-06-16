@@ -25,7 +25,7 @@ function baseExerciseItem(overrides: Partial<ExerciseItem> = {}): ExerciseItem {
     contexts: [],
     answerVariants: [],
     skillType: 'form_recall',
-    exerciseType: 'typed_recall',
+    exerciseType: 'type_form_ex',
     ...overrides,
   }
 }
@@ -71,7 +71,7 @@ describe('audibleTextFieldsOf — existing slots (sanity coverage)', () => {
 
   it('includes clozeContext.sentence and targetWord', () => {
     const item = baseExerciseItem({
-      exerciseType: 'cloze',
+      exerciseType: 'type_missing_word_ex',
       clozeContext: {
         sentence: 'Saya tidak ___ tinggal di rumah',
         targetWord: 'suka',
@@ -89,7 +89,7 @@ describe('audibleTextFieldsOf — existing slots (sanity coverage)', () => {
 
   it('includes clozeMcqData filled sentence and options', () => {
     const item = baseExerciseItem({
-      exerciseType: 'cloze_mcq',
+      exerciseType: 'choose_missing_word_ex',
       clozeMcqData: {
         sentence: 'Saya ___ buku',
         translation: 'I have a book',

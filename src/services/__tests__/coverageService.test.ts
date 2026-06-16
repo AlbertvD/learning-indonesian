@@ -76,7 +76,7 @@ describe('getExerciseCoverage', () => {
     expect(row?.learningItems).toBe(2)
     expect(row?.hasMeanings).toBe(true)
     expect(row?.clozeContexts).toBe(1)
-    expect(row?.exerciseVariants).toEqual({ contrast_pair: 1, cloze_mcq: 1 })
+    expect(row?.exerciseVariants).toEqual({ choose_correct_form_ex: 1, choose_missing_word_ex: 1 })
   })
 
   it('counts grammar patterns via introduced_by_lesson_id and the typed tables, deduped', async () => {

@@ -8,15 +8,15 @@ import { describe, it, expect } from 'vitest'
 import { validatePatternCoverage } from '../validators/patternCoverage'
 import type { GrammarExerciseType } from '../loadFromDb'
 
-const ALL: GrammarExerciseType[] = ['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq']
+const ALL: GrammarExerciseType[] = ['choose_correct_form_ex', 'transform_sentence_ex', 'translate_sentence_ex', 'choose_missing_word_ex']
 
 /** Fake supabase whose 4 typed tables return the seeded coverage per pattern id. */
 function makeCoverageClient(coverageByPatternId: Record<string, GrammarExerciseType[]>) {
   const tableForType: Record<GrammarExerciseType, string> = {
-    contrast_pair: 'contrast_pair_exercises',
-    sentence_transformation: 'sentence_transformation_exercises',
-    constrained_translation: 'constrained_translation_exercises',
-    cloze_mcq: 'cloze_mcq_exercises',
+    choose_correct_form_ex: 'contrast_pair_exercises',
+    transform_sentence_ex: 'sentence_transformation_exercises',
+    translate_sentence_ex: 'constrained_translation_exercises',
+    choose_missing_word_ex: 'cloze_mcq_exercises',
   }
   const typeForTable: Record<string, GrammarExerciseType> = Object.fromEntries(
     Object.entries(tableForType).map(([t, tbl]) => [tbl, t as GrammarExerciseType]),
@@ -55,7 +55,7 @@ describe('validatePatternCoverage (CS18)', () => {
   })
 
   it('ERROR pattern_typed_row_missing when a pattern has partial coverage', async () => {
-    const client = makeCoverageClient({ 'pat-A': ['contrast_pair', 'cloze_mcq'] }) // missing 2
+    const client = makeCoverageClient({ 'pat-A': ['choose_correct_form_ex', 'choose_missing_word_ex'] }) // missing 2
     const findings = await validatePatternCoverage(client, {
       patternIdsBySlug: new Map([['l6-a', 'pat-A']]),
       skippedSlugs: [],
@@ -64,8 +64,8 @@ describe('validatePatternCoverage (CS18)', () => {
     expect(findings[0].gate).toBe('CS18')
     expect(findings[0].severity).toBe('error')
     expect(findings[0].message).toContain('pattern_typed_row_missing')
-    expect(findings[0].message).toContain('sentence_transformation')
-    expect(findings[0].message).toContain('constrained_translation')
+    expect(findings[0].message).toContain('transform_sentence_ex')
+    expect(findings[0].message).toContain('translate_sentence_ex')
     expect(findings[0].context?.itemSlug).toBe('l6-a')
   })
 

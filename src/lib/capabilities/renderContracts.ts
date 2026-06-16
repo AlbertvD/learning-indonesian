@@ -31,10 +31,10 @@ import type { SessionBlock } from '@/lib/session-builder'
  *
  * `requiredArtifacts` is source-kind-keyed: each entry in
  * `supportedSourceKinds` must have a corresponding non-undefined entry under
- * `requiredArtifacts`. This shape lets the same exercise (e.g. typed_recall)
+ * `requiredArtifacts`. This shape lets the same exercise (e.g. type_form_ex)
  * declare different artifact dependencies under different source kinds —
- * item-sourced typed_recall reads base_text + meaning:l1 + accepted_answers:id;
- * word_form_pair_src-sourced typed_recall reads root_derived_pair +
+ * item-sourced type_form_ex reads base_text + meaning:l1 + accepted_answers:id;
+ * word_form_pair_src-sourced type_form_ex reads root_derived_pair +
  * allomorph_rule. Enforced via a runtime exhaustiveness assertion at module
  * load time (see ASSERT_REQUIRED_ARTIFACTS_COMPLETE below).
  */
@@ -43,7 +43,7 @@ export interface RenderContract {
   capabilityTypes: readonly CapabilityType[]
   /** Which source kinds the exercise can render from. `cloze` accepts
    *  ['vocabulary_src', 'dialogue_line_src'] post the 2026-05-21 lib/exercise-content fold
-   *  (PR-B); `typed_recall` accepts ['vocabulary_src', 'word_form_pair_src'] post the
+   *  (PR-B); `type_form_ex` accepts ['vocabulary_src', 'word_form_pair_src'] post the
    *  affixed-form-pair PR (today); every other entry remains ['vocabulary_src'] until
    *  its source-kind fetcher lands in lib/exercise-content/byKind. */
   supportedSourceKinds: readonly CapabilitySourceKind[]
@@ -54,7 +54,7 @@ export interface RenderContract {
 }
 
 export const RENDER_CONTRACTS = {
-  recognition_mcq: {
+  choose_meaning_ex: {
     // Decision R (PR 1): item translations read from learning_items.translation_{nl,en}
     // directly. No capability_artifacts required for item caps. requiredArtifacts.item=[]
     // so validateCapability passes without artifact rows.
@@ -62,8 +62,8 @@ export const RENDER_CONTRACTS = {
     supportedSourceKinds: ['vocabulary_src'],
     requiredArtifacts: { vocabulary_src: [] },
   },
-  cued_recall: {
-    // cued_recall serves root_derived_* cap types but its
+  choose_form_ex: {
+    // choose_form_ex serves root_derived_* cap types but its
     // supportedSourceKinds stays ['vocabulary_src'] — word_form_pair_src extension
     // requires authored distractors, deferred to a follow-up plan (D3/D4
     // of the affixed-form-pair plan).
@@ -71,7 +71,7 @@ export const RENDER_CONTRACTS = {
     supportedSourceKinds: ['vocabulary_src'],
     requiredArtifacts: { vocabulary_src: [] },
   },
-  typed_recall: {
+  type_form_ex: {
     capabilityTypes: ['produce_form_from_meaning_cap', 'recognise_word_form_link_cap', 'produce_derived_form_cap'],
     supportedSourceKinds: ['vocabulary_src', 'word_form_pair_src'],
     requiredArtifacts: {
@@ -86,24 +86,24 @@ export const RENDER_CONTRACTS = {
       word_form_pair_src: [],
     },
   },
-  meaning_recall: {
+  type_meaning_ex: {
     capabilityTypes: ['recall_meaning_from_text_cap'],
     supportedSourceKinds: ['vocabulary_src'],
     requiredArtifacts: { vocabulary_src: [] },
   },
-  listening_mcq: {
+  choose_meaning_from_audio_ex: {
     // Decision Q (PR 1): audio read via capability_audio_refs + audio_clips.
     // The artifact bag no longer holds the audio_clip reference for item caps.
     capabilityTypes: ['recognise_meaning_from_audio_cap', 'recognise_gist_from_audio_cap'],
     supportedSourceKinds: ['vocabulary_src'],
     requiredArtifacts: { vocabulary_src: [] },
   },
-  dictation: {
+  type_form_from_audio_ex: {
     capabilityTypes: ['produce_form_from_audio_cap'],
     supportedSourceKinds: ['vocabulary_src'],
     requiredArtifacts: { vocabulary_src: [] },
   },
-  cloze: {
+  type_missing_word_ex: {
     capabilityTypes: ['produce_form_from_context_cap'],
     supportedSourceKinds: ['vocabulary_src', 'dialogue_line_src'],
     requiredArtifacts: {
@@ -116,12 +116,12 @@ export const RENDER_CONTRACTS = {
       dialogue_line_src: [],
     },
   },
-  cloze_mcq: {
-    // cap-v2 #161: cloze_mcq is now PATTERN-ONLY. Item cloze is typed-only — an
+  choose_missing_word_ex: {
+    // cap-v2 #161: choose_missing_word_ex is now PATTERN-ONLY. Item cloze is typed-only — an
     // item produce_form_from_context_cap cap routes solely to the `cloze` builder (the typed
     // item_contexts carrier), never to an MCQ. The former item-sourced
     // produce_form_from_context_cap leg (runtime cascade pool from item_contexts.source_lesson_id)
-    // is removed with the runner item-branch amputation. cloze_mcq serves only
+    // is removed with the runner item-branch amputation. choose_missing_word_ex serves only
     // recognise_grammar_pattern_cap (authored typed row from cloze_mcq_exercises — byKind/pattern.ts).
     capabilityTypes: ['recognise_grammar_pattern_cap'],
     supportedSourceKinds: ['grammar_pattern_src'],
@@ -129,7 +129,7 @@ export const RENDER_CONTRACTS = {
     // columns + validateGrammarExercises + HC20, not capability_artifacts.
     requiredArtifacts: { grammar_pattern_src: [] },
   },
-  contrast_pair: {
+  choose_correct_form_ex: {
     // PR 4 (Decision G): contrast_grammar_pattern_cap routes here, rendering from the typed
     // contrast_pair_exercises table (byKind/pattern.ts). requiredArtifacts.pattern=[]
     // — structure guaranteed by NOT NULL columns + validateGrammarExercises + HC19.
@@ -137,13 +137,13 @@ export const RENDER_CONTRACTS = {
     supportedSourceKinds: ['grammar_pattern_src'],
     requiredArtifacts: { grammar_pattern_src: [] },
   },
-  sentence_transformation: {
+  transform_sentence_ex: {
     // PR 4 (Decision G): recognise_grammar_pattern_cap → sentence_transformation_exercises.
     capabilityTypes: ['recognise_grammar_pattern_cap'],
     supportedSourceKinds: ['grammar_pattern_src'],
     requiredArtifacts: { grammar_pattern_src: [] },
   },
-  constrained_translation: {
+  translate_sentence_ex: {
     // PR 4 (Decision G): recognise_grammar_pattern_cap → constrained_translation_exercises.
     capabilityTypes: ['recognise_grammar_pattern_cap'],
     supportedSourceKinds: ['grammar_pattern_src'],
@@ -330,10 +330,10 @@ export interface AffixedFormPairInput {
  * builders read `input.exercise.<column>` instead of `input.variant.payload_json.X`.
  */
 export type PatternExerciseInput =
-  | { exerciseType: 'contrast_pair'; row: ContrastPairExercisesRow }
-  | { exerciseType: 'sentence_transformation'; row: SentenceTransformationExercisesRow }
-  | { exerciseType: 'constrained_translation'; row: ConstrainedTranslationExercisesRow }
-  | { exerciseType: 'cloze_mcq'; row: ClozeMcqExercisesRow }
+  | { exerciseType: 'choose_correct_form_ex'; row: ContrastPairExercisesRow }
+  | { exerciseType: 'transform_sentence_ex'; row: SentenceTransformationExercisesRow }
+  | { exerciseType: 'translate_sentence_ex'; row: ConstrainedTranslationExercisesRow }
+  | { exerciseType: 'choose_missing_word_ex'; row: ClozeMcqExercisesRow }
 
 /**
  * The raw input the dispatcher (lib/exercise-content/resolver via the
@@ -342,9 +342,9 @@ export type PatternExerciseInput =
  *
  * `learningItem`, `dialogueLine`, `affixedFormPair`, and `patternExercise` are
  * all honestly nullable. The bucketing invariant: at most one is populated per
- * block. cloze accepts learningItem or dialogueLine; typed_recall accepts
+ * block. cloze accepts learningItem or dialogueLine; type_form_ex accepts
  * learningItem or affixedFormPair; the 4 grammar exercises accept
- * patternExercise; cloze_mcq accepts learningItem (item) OR patternExercise
+ * patternExercise; choose_missing_word_ex accepts learningItem (item) OR patternExercise
  * (pattern); every other exercise type requires `learningItem` non-null and
  * treats the other slots as irrelevant.
  */
@@ -367,11 +367,11 @@ export interface RawProjectorInput {
   poolItems: LearningItem[]
   poolMeaningsByItem: Map<string, ItemMeaning[]>
   userLanguage: 'nl' | 'en'
-  /** Curated NL wrong-option strings for recognition_mcq, keyed by capability_id.
+  /** Curated NL wrong-option strings for choose_meaning_ex, keyed by capability_id.
    *  Populated by the item fetcher from `recognition_mcq_distractors` (Task 8 / #99).
    *  Absent (empty map) when no curated rows exist → builders fall back to pool. */
   curatedRecognitionDistractors: Map<string, string[]>
-  /** Curated Indonesian wrong-option strings for cued_recall, keyed by capability_id.
+  /** Curated Indonesian wrong-option strings for choose_form_ex, keyed by capability_id.
    *  Populated by the item fetcher from `cued_recall_distractors` (Task 8 / #99).
    *  Absent (empty map) when no curated rows exist → builders fall back to pool. */
   curatedCuedRecallDistractors: Map<string, string[]>
@@ -386,9 +386,9 @@ interface BuilderBase {
   poolItems: LearningItem[]
   poolMeaningsByItem: Map<string, ItemMeaning[]>
   userLanguage: 'nl' | 'en'
-  /** Curated NL wrong-option strings for recognition_mcq, keyed by capability_id. */
+  /** Curated NL wrong-option strings for choose_meaning_ex, keyed by capability_id. */
   curatedRecognitionDistractors: Map<string, string[]>
-  /** Curated Indonesian wrong-option strings for cued_recall, keyed by capability_id. */
+  /** Curated Indonesian wrong-option strings for choose_form_ex, keyed by capability_id. */
   curatedCuedRecallDistractors: Map<string, string[]>
 }
 
@@ -397,7 +397,7 @@ interface BuilderBase {
  * entry here is a compile error (enforced by `satisfies` on the value
  * `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK` below).
  *
- * cloze accepts two source kinds (`item` and `dialogue_line`). cloze_mcq (PR 4)
+ * cloze accepts two source kinds (`item` and `dialogue_line`). choose_missing_word_ex (PR 4)
  * accepts `item` (produce_form_from_context_cap) OR `pattern` (recognise_grammar_pattern_cap): the item
  * path needs a non-null learningItem + (clozeContext OR distractor pool); the
  * pattern path needs a non-null `exercise` (cloze_mcq_exercises row) and a null
@@ -405,24 +405,24 @@ interface BuilderBase {
  * dialogueLine is non-null" as nullable fields; the projector enforces the
  * invariant.
  *
- * The 4 grammar exercises (contrast_pair / sentence_transformation /
- * constrained_translation / cloze_mcq-pattern) read `exercise.<column>` — the
+ * The 4 grammar exercises (choose_correct_form_ex / transform_sentence_ex /
+ * translate_sentence_ex / choose_missing_word_ex-pattern) read `exercise.<column>` — the
  * typed grammar-exercise row replaces the retired exercise_variants.payload_json
  * (Decision M1: the typed row IS the contract). They carry no learningItem
  * (pattern caps are not item-rooted).
  */
 export interface ContractInputShapes {
-  recognition_mcq: BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
-  cued_recall:     BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
-  typed_recall:    BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
-  meaning_recall:  BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
-  listening_mcq:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
-  dictation:       BuilderBase & { learningItem: LearningItem }
-  cloze:           BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; dialogueLine: DialogueLineInput | null }
-  cloze_mcq:       BuilderBase & { exercise: ClozeMcqExercisesRow }
-  contrast_pair:   BuilderBase & { exercise: ContrastPairExercisesRow }
-  sentence_transformation: BuilderBase & { exercise: SentenceTransformationExercisesRow }
-  constrained_translation: BuilderBase & { exercise: ConstrainedTranslationExercisesRow }
+  choose_meaning_ex: BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
+  choose_form_ex:     BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
+  type_form_ex:    BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
+  type_meaning_ex:  BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
+  choose_meaning_from_audio_ex:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
+  type_form_from_audio_ex:       BuilderBase & { learningItem: LearningItem }
+  type_missing_word_ex:           BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; dialogueLine: DialogueLineInput | null }
+  choose_missing_word_ex:       BuilderBase & { exercise: ClozeMcqExercisesRow }
+  choose_correct_form_ex:   BuilderBase & { exercise: ContrastPairExercisesRow }
+  transform_sentence_ex: BuilderBase & { exercise: SentenceTransformationExercisesRow }
+  translate_sentence_ex: BuilderBase & { exercise: ConstrainedTranslationExercisesRow }
   speaking:        BuilderBase & { learningItem: LearningItem }
 }
 
@@ -453,9 +453,9 @@ export function projectBuilderInput<T extends ExerciseType>(
 ): ProjectorResult<T> {
   // Source-kind acceptance is keyed off RENDER_CONTRACTS[et].supportedSourceKinds.
   //   cloze        — accepts ['vocabulary_src', 'dialogue_line_src']
-  //   typed_recall — accepts ['vocabulary_src', 'word_form_pair_src']
-  //   cloze_mcq    — accepts ['vocabulary_src', 'grammar_pattern_src']  (PR 4)
-  //   contrast_pair / sentence_transformation / constrained_translation — ['grammar_pattern_src'] (PR 4)
+  //   type_form_ex — accepts ['vocabulary_src', 'word_form_pair_src']
+  //   choose_missing_word_ex    — accepts ['vocabulary_src', 'grammar_pattern_src']  (PR 4)
+  //   choose_correct_form_ex / transform_sentence_ex / translate_sentence_ex — ['grammar_pattern_src'] (PR 4)
   //   every other  — ['vocabulary_src']
   const acceptsDialogueLine = supportsSourceKind(exerciseType, 'dialogue_line_src')
   const acceptsAffixedFormPair = supportsSourceKind(exerciseType, 'word_form_pair_src')
@@ -478,7 +478,7 @@ export function projectBuilderInput<T extends ExerciseType>(
     return {
       ok: false,
       reasonCode: 'item_not_found',
-      message: `${exerciseType} requires a learningItem (or a dialogueLine for cloze, an affixedFormPair for typed_recall, or a patternExercise for grammar exercises)`,
+      message: `${exerciseType} requires a learningItem (or a dialogueLine for cloze, an affixedFormPair for type_form_ex, or a patternExercise for grammar exercises)`,
     }
   }
 
@@ -512,17 +512,17 @@ export function projectBuilderInput<T extends ExerciseType>(
 
   const learningItem = raw.learningItem  // may be null when dialogueLine / affixedFormPair / patternExercise path is active
 
-  // Builders that need a user-language meaning. For typed_recall the
+  // Builders that need a user-language meaning. For type_form_ex the
   // word_form_pair_src path skips this lookup — the prompt comes from the
-  // pair's root/derived, not from a translation. Item path for typed_recall
-  // still needs a meaning. recognition_mcq / cued_recall / meaning_recall /
-  // listening_mcq all stay item-only and always need primaryMeaning.
+  // pair's root/derived, not from a translation. Item path for type_form_ex
+  // still needs a meaning. choose_meaning_ex / choose_form_ex / meaning_recall /
+  // choose_meaning_from_audio_ex all stay item-only and always need primaryMeaning.
   const needsPrimaryMeaning: ReadonlySet<ExerciseType> = new Set([
-    'recognition_mcq', 'cued_recall', 'typed_recall', 'meaning_recall', 'listening_mcq',
+    'choose_meaning_ex', 'choose_form_ex', 'type_form_ex', 'type_meaning_ex', 'choose_meaning_from_audio_ex',
   ])
   let primaryMeaning: ItemMeaning | undefined
   if (needsPrimaryMeaning.has(exerciseType)) {
-    if (exerciseType === 'typed_recall' && raw.affixedFormPair) {
+    if (exerciseType === 'type_form_ex' && raw.affixedFormPair) {
       // word_form_pair_src path — no learningItem, no meanings. Skip lookup.
     } else {
       primaryMeaning = raw.meanings.find(m => m.translation_language === raw.userLanguage && m.is_primary)
@@ -540,12 +540,12 @@ export function projectBuilderInput<T extends ExerciseType>(
 
   // Builders that need a cloze-typed context (item-sourced path only — the
   // dialogue_line path carries source_text inside the DialogueLineInput, and
-  // the pattern path carries everything inside the typed cloze_mcq row).
-  //   cloze: requires either dialogueLine OR a cloze-typed context.
-  //   cloze_mcq: requires a cloze-typed context (item path) OR a patternExercise
+  // the pattern path carries everything inside the typed choose_missing_word_ex row).
+  //   type_missing_word_ex: requires either dialogueLine OR a cloze-typed context.
+  //   choose_missing_word_ex: requires a cloze-typed context (item path) OR a patternExercise
   //              (pattern path).
   let clozeContext: ItemContext | null = null
-  if (exerciseType === 'cloze') {
+  if (exerciseType === 'type_missing_word_ex') {
     if (raw.dialogueLine) {
       // dialogue_line path — sentence comes from dialogueLine.sourceText; no
       // item_contexts row is required (or available).
@@ -561,18 +561,18 @@ export function projectBuilderInput<T extends ExerciseType>(
       }
     }
   }
-  // cap-v2 #161: cloze_mcq is pattern-only — the former item path (cloze context
+  // cap-v2 #161: choose_missing_word_ex is pattern-only — the former item path (cloze context
   // → runtime cascade) is removed (item cloze is typed-only, via the `cloze`
   // builder). It now requires a typed cloze_mcq_exercises row like the other
   // grammar exercises (handled by needsPatternExercise below).
 
   // The pure-grammar exercises render exclusively from a typed pattern row
-  // (PR 4 + cap-v2 #161 cloze_mcq). The reader (byKind/pattern.ts) already fails
+  // (PR 4 + cap-v2 #161 choose_missing_word_ex). The reader (byKind/pattern.ts) already fails
   // loud when the typed table has no row for a ready pattern cap; this is the
   // projector-side belt-and-braces guard (e.g. resolver picked an exercise_type
   // with no row for this pattern).
   const needsPatternExercise: ReadonlySet<ExerciseType> = new Set([
-    'contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq',
+    'choose_correct_form_ex', 'transform_sentence_ex', 'translate_sentence_ex', 'choose_missing_word_ex',
   ])
   if (needsPatternExercise.has(exerciseType) && !patternExercise) {
     return {
@@ -597,24 +597,24 @@ export function projectBuilderInput<T extends ExerciseType>(
 
   // Per-exercise narrowing.
   switch (exerciseType) {
-    case 'cloze':
+    case 'type_missing_word_ex':
       // learningItem + clozeContext + dialogueLine are all honestly nullable
       // here. The projector has proven that exactly one of learningItem (with
       // its clozeContext) OR dialogueLine is populated. The byType packager
       // branches on which is present.
       return { ok: true, input: { ...base, learningItem, clozeContext, dialogueLine: raw.dialogueLine } as BuilderInputFor<T> }
-    case 'cloze_mcq':
-    case 'contrast_pair':
-    case 'sentence_transformation':
-    case 'constrained_translation':
-      // Pattern-only (PR 4 + cap-v2 #161 cloze_mcq): the typed grammar-exercise
+    case 'choose_missing_word_ex':
+    case 'choose_correct_form_ex':
+    case 'transform_sentence_ex':
+    case 'translate_sentence_ex':
+      // Pattern-only (PR 4 + cap-v2 #161 choose_missing_word_ex): the typed grammar-exercise
       // row IS the contract. patternExercise is non-null + type-matched by the
       // needsPatternExercise guard above.
       return { ok: true, input: { ...base, exercise: patternExercise!.row } as BuilderInputFor<T> }
     case 'speaking':
       return { ok: true, input: { ...base, learningItem: learningItem! } as BuilderInputFor<T> }
-    case 'typed_recall':
-      // typed_recall accepts item OR word_form_pair_src. The projector has
+    case 'type_form_ex':
+      // type_form_ex accepts item OR word_form_pair_src. The projector has
       // proven that exactly one is populated. The byType packager branches
       // on which.
       return { ok: true, input: {
@@ -623,12 +623,12 @@ export function projectBuilderInput<T extends ExerciseType>(
         primaryMeaning: primaryMeaning ?? null,
         affixedFormPair: raw.affixedFormPair,
       } as BuilderInputFor<T> }
-    case 'recognition_mcq':
-    case 'cued_recall':
-    case 'meaning_recall':
-    case 'listening_mcq':
+    case 'choose_meaning_ex':
+    case 'choose_form_ex':
+    case 'type_meaning_ex':
+    case 'choose_meaning_from_audio_ex':
       return { ok: true, input: { ...base, learningItem: learningItem!, primaryMeaning: primaryMeaning! } as BuilderInputFor<T> }
-    case 'dictation':
+    case 'type_form_from_audio_ex':
       return { ok: true, input: { ...base, learningItem: learningItem! } as BuilderInputFor<T> }
     default: {
       // Exhaustiveness check

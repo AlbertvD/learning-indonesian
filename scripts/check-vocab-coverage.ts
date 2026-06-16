@@ -86,19 +86,19 @@ async function loadKnownVocab(): Promise<Set<string>> {
 function extractIndonesianText(payload: Record<string, unknown>, exerciseType: string): string[] {
   const out: string[] = []
   switch (exerciseType) {
-    case 'constrained_translation':
+    case 'translate_sentence_ex':
       for (const a of (payload.acceptableAnswers as string[] | undefined) ?? []) out.push(a)
       break
-    case 'sentence_transformation':
+    case 'transform_sentence_ex':
       if (typeof payload.sourceSentence === 'string') out.push(payload.sourceSentence)
       for (const a of (payload.acceptableAnswers as string[] | undefined) ?? []) out.push(a)
       break
-    case 'contrast_pair':
+    case 'choose_correct_form_ex':
       for (const opt of (payload.options as Array<{ text: string }> | undefined) ?? []) {
         if (typeof opt?.text === 'string') out.push(opt.text)
       }
       break
-    case 'cloze_mcq':
+    case 'choose_missing_word_ex':
       if (typeof payload.sentence === 'string') out.push(payload.sentence)
       for (const opt of (payload.options as string[] | undefined) ?? []) {
         if (typeof opt === 'string') out.push(opt)

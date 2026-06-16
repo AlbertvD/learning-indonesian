@@ -15,10 +15,10 @@
 // which is pair-stable across both caps of a linguistic pair.
 //
 // No capability_artifacts are read: the legacy morphology artifact writes were
-// removed in this PR (renderContracts: typed_recall/word_form_pair_src → []).
+// removed in this PR (renderContracts: type_form_ex/word_form_pair_src → []).
 //
-// cued_recall remains item-only (its distractor pool requires authored
-// distractors per word_form_pair_src; deferred to a future plan). cued_recall
+// choose_form_ex remains item-only (its distractor pool requires authored
+// distractors per word_form_pair_src; deferred to a future plan). choose_form_ex
 // blocks scheduled for word_form_pair_src would be a planner bug — the projector
 // rejects the input shape with item_not_found.
 

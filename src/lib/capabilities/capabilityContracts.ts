@@ -67,8 +67,8 @@ export function validateCapability(input: CapabilityValidationInput): Capability
   // per-source-kind artifact list collapsed to []. Structure for each rendered
   // exercise is now guaranteed by the typed satellite tables + their pre-write
   // validators + the live health checks (HC15/HC17/HC19/HC20), not an artifact
-  // bag. `cloze` accepts item + dialogue_line; `typed_recall` accepts item +
-  // word_form_pair_src; the 4 grammar exercises + cloze_mcq accept pattern.
+  // bag. `cloze` accepts item + dialogue_line; `type_form_ex` accepts item +
+  // word_form_pair_src; the 4 grammar exercises + choose_missing_word_ex accept pattern.
   const candidateExercises = exerciseTypesForCapability(input.capability.capabilityType)
     .filter(et => supportsSourceKind(et, input.capability.sourceKind))
 

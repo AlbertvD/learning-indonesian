@@ -10,16 +10,16 @@
  * (validators/grammarExercises.ts) validates the output of this mapper.
  *
  * Column names mirror scripts/migration.sql:2483-2600 exactly. `options` shapes
- * differ per audit I2: contrast_pair = [{id,text}], cloze_mcq = string[]. The
+ * differ per audit I2: choose_correct_form_ex = [{id,text}], choose_missing_word_ex = string[]. The
  * answer key (correct/acceptable answers) is read from answer_key_json first,
  * falling back to payload_json — matching the legacy byType builders.
  */
 
 export const GRAMMAR_EXERCISE_TABLE: Record<string, string> = {
-  contrast_pair: 'contrast_pair_exercises',
-  sentence_transformation: 'sentence_transformation_exercises',
-  constrained_translation: 'constrained_translation_exercises',
-  cloze_mcq: 'cloze_mcq_exercises',
+  choose_correct_form_ex: 'contrast_pair_exercises',
+  transform_sentence_ex: 'sentence_transformation_exercises',
+  translate_sentence_ex: 'constrained_translation_exercises',
+  choose_missing_word_ex: 'cloze_mcq_exercises',
 }
 
 export interface GrammarExerciseRow {
@@ -49,9 +49,9 @@ export function buildGrammarExerciseRow(
 ): GrammarExerciseRow | null {
   const ak = answerKey ?? {}
   switch (exerciseType) {
-    case 'contrast_pair':
+    case 'choose_correct_form_ex':
       return {
-        table: GRAMMAR_EXERCISE_TABLE.contrast_pair,
+        table: GRAMMAR_EXERCISE_TABLE.choose_correct_form_ex,
         columns: {
           prompt_text: str(payload.promptText),
           target_meaning: str(payload.targetMeaning),
@@ -60,9 +60,9 @@ export function buildGrammarExerciseRow(
           explanation_text: str(payload.explanationText),
         },
       }
-    case 'sentence_transformation':
+    case 'transform_sentence_ex':
       return {
-        table: GRAMMAR_EXERCISE_TABLE.sentence_transformation,
+        table: GRAMMAR_EXERCISE_TABLE.transform_sentence_ex,
         columns: {
           source_sentence: str(payload.sourceSentence),
           transformation_instruction: str(payload.transformationInstruction),
@@ -71,9 +71,9 @@ export function buildGrammarExerciseRow(
           explanation_text: str(payload.explanationText),
         },
       }
-    case 'constrained_translation':
+    case 'translate_sentence_ex':
       return {
-        table: GRAMMAR_EXERCISE_TABLE.constrained_translation,
+        table: GRAMMAR_EXERCISE_TABLE.translate_sentence_ex,
         columns: {
           source_language_sentence: str(payload.sourceLanguageSentence),
           required_target_pattern: str(payload.requiredTargetPattern),
@@ -82,9 +82,9 @@ export function buildGrammarExerciseRow(
           explanation_text: str(payload.explanationText),
         },
       }
-    case 'cloze_mcq':
+    case 'choose_missing_word_ex':
       return {
-        table: GRAMMAR_EXERCISE_TABLE.cloze_mcq,
+        table: GRAMMAR_EXERCISE_TABLE.choose_missing_word_ex,
         columns: {
           sentence: str(payload.sentence),
           translation: str(payload.translation),

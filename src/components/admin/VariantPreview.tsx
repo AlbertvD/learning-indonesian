@@ -1,6 +1,6 @@
 // Admin-only preview of a typed grammar-exercise row. Renders rich question +
-// answer-revealed cards for the 4 grammar exercise types (cloze_mcq,
-// contrast_pair, sentence_transformation, constrained_translation), reading
+// answer-revealed cards for the 4 grammar exercise types (choose_missing_word_ex,
+// choose_correct_form_ex, transform_sentence_ex, translate_sentence_ex), reading
 // typed columns directly off the ExerciseReviewRow discriminated union (PR 4a —
 // replaces the retired exercise_variants.payload_json probing).
 //
@@ -75,11 +75,11 @@ function ExplanationCard({ text }: { text: string }) {
 function ClozeMcqPreview({ row, comment }: { row: ClozeMcqExercisesRow; comment?: ReviewComment }) {
   const options = row.options ?? []
   const parts = String(row.sentence ?? '').split('___')
-  // correct_option_id for cloze_mcq is the option text itself (options is string[]).
+  // correct_option_id for choose_missing_word_ex is the option text itself (options is string[]).
   const correct = row.correct_option_id
 
   return (
-    <PreviewFrame exerciseType="cloze_mcq" comment={comment}>
+    <PreviewFrame exerciseType="choose_missing_word_ex" comment={comment}>
       <Stack gap="xl">
         <Stack gap="xs">
           <Text size="sm" c="dimmed">Vul het ontbrekende woord in</Text>
@@ -126,11 +126,11 @@ function ClozeMcqPreview({ row, comment }: { row: ClozeMcqExercisesRow; comment?
 
 function ContrastPairPreview({ row, comment }: { row: ContrastPairExercisesRow; comment?: ReviewComment }) {
   const options = row.options ?? []
-  // correct_option_id for contrast_pair is the option id (options is [{id, text}]).
+  // correct_option_id for choose_correct_form_ex is the option id (options is [{id, text}]).
   const correct = row.correct_option_id
 
   return (
-    <PreviewFrame exerciseType="contrast_pair" comment={comment}>
+    <PreviewFrame exerciseType="choose_correct_form_ex" comment={comment}>
       <Stack gap="xl">
         <Text size="sm" c="dimmed">{row.prompt_text}</Text>
         <Stack gap="xs">
@@ -168,7 +168,7 @@ function SentenceTransformationPreview({ row, comment }: { row: SentenceTransfor
   const acceptableAnswers = row.acceptable_answers ?? []
 
   return (
-    <PreviewFrame exerciseType="sentence_transformation" comment={comment}>
+    <PreviewFrame exerciseType="transform_sentence_ex" comment={comment}>
       <Stack gap="xl">
         <Stack gap="xs">
           <Text size="sm" c="dimmed">Vorm de zin: {row.transformation_instruction}</Text>
@@ -199,7 +199,7 @@ function ConstrainedTranslationPreview({ row, comment }: { row: ConstrainedTrans
   const isWord = !sourceSentence.includes(' ')
 
   return (
-    <PreviewFrame exerciseType="constrained_translation" comment={comment}>
+    <PreviewFrame exerciseType="translate_sentence_ex" comment={comment}>
       <Stack gap="xl">
         <Stack gap="xs">
           <Text size="sm" c="dimmed">{isWord ? 'Vertaal het woord' : 'Vertaal de zin'}</Text>
@@ -229,13 +229,13 @@ function ConstrainedTranslationPreview({ row, comment }: { row: ConstrainedTrans
 
 export function VariantPreview({ row, comment }: VariantPreviewProps) {
   switch (row.exercise_type) {
-    case 'cloze_mcq':
+    case 'choose_missing_word_ex':
       return <ClozeMcqPreview row={row} comment={comment} />
-    case 'contrast_pair':
+    case 'choose_correct_form_ex':
       return <ContrastPairPreview row={row} comment={comment} />
-    case 'sentence_transformation':
+    case 'transform_sentence_ex':
       return <SentenceTransformationPreview row={row} comment={comment} />
-    case 'constrained_translation':
+    case 'translate_sentence_ex':
       return <ConstrainedTranslationPreview row={row} comment={comment} />
     default:
       // Forward-safety guard: a 5th grammar exercise_type added to ExerciseReviewRow

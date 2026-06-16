@@ -52,7 +52,7 @@ describe('capability promotion planner', () => {
       healthResults: [
         {
           canonicalKey: 'cap:v1:vocabulary_src:learning_items/makan:recognise_form_from_meaning_cap:l1_to_id:text:nl',
-          readiness: { status: 'ready', allowedExercises: ['cued_recall'] },
+          readiness: { status: 'ready', allowedExercises: ['choose_form_ex'] },
         },
       ],
     })
@@ -62,7 +62,7 @@ describe('capability promotion planner', () => {
       canonicalKey: 'cap:v1:vocabulary_src:learning_items/makan:recognise_form_from_meaning_cap:l1_to_id:text:nl',
       readinessStatus: 'ready',
       publicationStatus: 'published',
-      allowedExercises: ['cued_recall'],
+      allowedExercises: ['choose_form_ex'],
     }])
   })
 

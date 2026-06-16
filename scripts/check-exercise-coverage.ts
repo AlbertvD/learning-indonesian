@@ -5,8 +5,8 @@
  * Checks that every grammar pattern in each lesson's staging files has
  * at least one candidate of each required exercise type.
  *
- * Required types per pattern: contrast_pair, sentence_transformation,
- * constrained_translation, cloze_mcq
+ * Required types per pattern: choose_correct_form_ex, transform_sentence_ex,
+ * translate_sentence_ex, choose_missing_word_ex
  *
  * Usage:
  *   bun scripts/check-exercise-coverage.ts [lesson-number]
@@ -18,10 +18,10 @@ import fs from 'fs'
 import path from 'path'
 
 const REQUIRED_TYPES = [
-  'contrast_pair',
-  'sentence_transformation',
-  'constrained_translation',
-  'cloze_mcq',
+  'choose_correct_form_ex',
+  'transform_sentence_ex',
+  'translate_sentence_ex',
+  'choose_missing_word_ex',
 ] as const
 
 

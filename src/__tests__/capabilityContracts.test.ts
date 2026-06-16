@@ -25,7 +25,7 @@ describe('capability contract validation (post-4b: readiness off the typed contr
   it('readies a cap with a compatible exercise', () => {
     expect(validateCapability({ capability: baseCapability })).toEqual({
       status: 'ready',
-      allowedExercises: ['meaning_recall'],
+      allowedExercises: ['type_meaning_ex'],
     })
   })
 
@@ -39,7 +39,7 @@ describe('capability contract validation (post-4b: readiness off the typed contr
 
     expect(validateCapability({ capability: bridgeCapability })).toEqual({
       status: 'ready',
-      allowedExercises: ['cued_recall'],
+      allowedExercises: ['choose_form_ex'],
     })
   })
 
@@ -60,7 +60,7 @@ describe('capability contract validation (post-4b: readiness off the typed contr
       },
     })).toEqual({
       status: 'ready',
-      allowedExercises: ['listening_mcq'],
+      allowedExercises: ['choose_meaning_from_audio_ex'],
     })
   })
 
@@ -76,7 +76,7 @@ describe('capability contract validation (post-4b: readiness off the typed contr
       },
     })).toEqual({
       status: 'ready',
-      allowedExercises: ['cloze'],
+      allowedExercises: ['type_missing_word_ex'],
     })
   })
 

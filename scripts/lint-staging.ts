@@ -89,9 +89,9 @@ interface DbCtx {
   // consumed by checkCandidatesStructural (~:329) and checkGrammarPatterns (~:513).
 }
 
-const REQUIRED_TYPES = ['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq'] as const
+const REQUIRED_TYPES = ['choose_correct_form_ex', 'transform_sentence_ex', 'translate_sentence_ex', 'choose_missing_word_ex'] as const
 
-// Patterns where constrained_translation MAY include a slot blank for cloze
+// Patterns where translate_sentence_ex MAY include a slot blank for cloze
 // rendering. The ConstrainedTranslationExercise component treats this as
 // opt-in: present → cloze mode, absent → full-sentence translation. So a
 // missing blank is a content-quality WARNING, not a runtime breakage.
@@ -315,10 +315,10 @@ function checkCandidatesStructural(ctx: LessonCtx, db: DbCtx): Finding[] {
     }
     const t = c.exercise_type
     const slug: string | undefined = c.grammar_pattern_slug
-    if (t === 'contrast_pair') checkContrastPair(c.payload, slug, ctx, ref, out)
-    else if (t === 'cloze_mcq') checkClozeMcq(c.payload, slug, ctx, ref, out)
-    else if (t === 'sentence_transformation') checkSentenceTransformation(c.payload, ctx, ref, out)
-    else if (t === 'constrained_translation') checkConstrainedTranslation(c.payload, slug, localSlugs, db, ctx, ref, out)
+    if (t === 'choose_correct_form_ex') checkContrastPair(c.payload, slug, ctx, ref, out)
+    else if (t === 'choose_missing_word_ex') checkClozeMcq(c.payload, slug, ctx, ref, out)
+    else if (t === 'transform_sentence_ex') checkSentenceTransformation(c.payload, ctx, ref, out)
+    else if (t === 'translate_sentence_ex') checkConstrainedTranslation(c.payload, slug, localSlugs, db, ctx, ref, out)
   }
   return out
 }
@@ -427,7 +427,7 @@ function checkClozeMcq(p: any, slug: string | undefined, ctx: LessonCtx, ref: st
     }
   }
   if (p.translation == null) {
-    out.push(mkFinding('WARNING', ctx.n, 'candidates.ts', 'cloze_mcq-translation-null',
+    out.push(mkFinding('WARNING', ctx.n, 'candidates.ts', 'choose_missing_word_ex-translation-null',
       'translation should be a Dutch sentence; null only acceptable in rare metalinguistic cases', ref))
   }
   // Distractors all morphological variants of the correct answer

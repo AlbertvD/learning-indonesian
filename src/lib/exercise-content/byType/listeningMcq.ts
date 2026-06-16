@@ -1,5 +1,5 @@
-// builder for exerciseType='listening_mcq'.
-// Identical shape to recognition_mcq; the component reads exerciseType to
+// builder for exerciseType='choose_meaning_from_audio_ex'.
+// Identical shape to choose_meaning_ex; the component reads exerciseType to
 // decide whether to hide the Indonesian text and play audio instead.
 // Audio resolution is upstream (SessionAudioContext).
 
@@ -7,12 +7,12 @@ import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
 
-export function buildListeningMCQ(input: BuilderInputFor<'listening_mcq'>): BuilderResult {
+export function buildListeningMCQ(input: BuilderInputFor<'choose_meaning_from_audio_ex'>): BuilderResult {
   // learningItem and primaryMeaning are non-null by contract (projector narrows).
   const correctAnswer = input.primaryMeaning.translation_text
 
   // Prefer curated distractors (cap-v2): recognise_meaning_from_audio_cap caps carry meaning
-  // distractors in the same map as recognition_mcq. Fall back to the pool
+  // distractors in the same map as choose_meaning_ex. Fall back to the pool
   // cascade when a cap has no curated row (rare — undersupplied Pool(N)).
   const capabilityId = input.block?.capabilityId
   const curatedRow = capabilityId
@@ -63,7 +63,7 @@ export function buildListeningMCQ(input: BuilderInputFor<'listening_mcq'>): Buil
     contexts: input.contexts,
     answerVariants: input.answerVariants,
     skillType: 'recognition' as const,
-    exerciseType: 'listening_mcq' as const,
+    exerciseType: 'choose_meaning_from_audio_ex' as const,
     distractors,
   }
   return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }

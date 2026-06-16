@@ -10,7 +10,7 @@
 //     fetchForAffixedFormPairBlocks into a RawProjectorInput with
 //     `affixedFormPair` populated.
 //   - decodeCanonicalKey returns the cap's `direction` in the tail.
-//   - The projector accepts typed_recall with learningItem=null +
+//   - The projector accepts type_form_ex with learningItem=null +
 //     affixedFormPair set.
 //   - byType/typedRecall.ts builds an ExerciseItem with affixedFormPairData
 //     populated and direction-aware prompt/answer.
@@ -75,7 +75,7 @@ function makeAffixedBlock(opts: {
     renderPlan: {
       capabilityKey: key,
       sourceRef: opts.sourceRef,
-      exerciseType: 'typed_recall',
+      exerciseType: 'type_form_ex',
       capabilityType: opts.capabilityType,
       skillType: opts.direction === 'root_to_derived' ? 'form_recall' : 'recognition',
     },

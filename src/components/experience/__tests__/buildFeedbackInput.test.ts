@@ -50,12 +50,12 @@ function makeItem(exerciseType: ExerciseType): ExerciseItem {
     ],
     skillType: 'meaning_recall',
     exerciseType,
-    cuedRecallData: exerciseType === 'cued_recall' ? { promptMeaningText: 'eten', options: ['makan', 'minum'], correctOptionId: 'makan' } : undefined,
-    clozeMcqData: exerciseType === 'cloze_mcq' ? { sentence: 'Saya ___ nasi', translation: 'I eat rice', options: ['makan', 'minum'], correctOptionId: 'makan' } : undefined,
-    clozeContext: exerciseType === 'cloze' ? { sentence: 'Saya ___ nasi', targetWord: 'makan', translation: null } : undefined,
-    contrastPairData: exerciseType === 'contrast_pair' ? { promptText: 'makan vs minum', targetMeaning: 'eten', options: ['makan', 'minum'], correctOptionId: 'makan', explanationText: 'makan is eat' } : undefined,
-    sentenceTransformationData: exerciseType === 'sentence_transformation' ? { sourceSentence: 'Saya makan', transformationInstruction: 'negate', acceptableAnswers: ['Saya tidak makan'], explanationText: 'use tidak' } : undefined,
-    constrainedTranslationData: exerciseType === 'constrained_translation' ? { sourceLanguageSentence: 'I eat', requiredTargetPattern: 'me-', patternName: 'active prefix', acceptableAnswers: ['Saya makan'], explanationText: 'active prefix' } : undefined,
+    cuedRecallData: exerciseType === 'choose_form_ex' ? { promptMeaningText: 'eten', options: ['makan', 'minum'], correctOptionId: 'makan' } : undefined,
+    clozeMcqData: exerciseType === 'choose_missing_word_ex' ? { sentence: 'Saya ___ nasi', translation: 'I eat rice', options: ['makan', 'minum'], correctOptionId: 'makan' } : undefined,
+    clozeContext: exerciseType === 'type_missing_word_ex' ? { sentence: 'Saya ___ nasi', targetWord: 'makan', translation: null } : undefined,
+    contrastPairData: exerciseType === 'choose_correct_form_ex' ? { promptText: 'makan vs minum', targetMeaning: 'eten', options: ['makan', 'minum'], correctOptionId: 'makan', explanationText: 'makan is eat' } : undefined,
+    sentenceTransformationData: exerciseType === 'transform_sentence_ex' ? { sourceSentence: 'Saya makan', transformationInstruction: 'negate', acceptableAnswers: ['Saya tidak makan'], explanationText: 'use tidak' } : undefined,
+    constrainedTranslationData: exerciseType === 'translate_sentence_ex' ? { sourceLanguageSentence: 'I eat', requiredTargetPattern: 'me-', patternName: 'active prefix', acceptableAnswers: ['Saya makan'], explanationText: 'active prefix' } : undefined,
     speakingData: exerciseType === 'speaking' ? { promptText: 'Greet someone', targetPatternOrScenario: 'halo' } : undefined,
   }
 }
@@ -71,14 +71,14 @@ function makeContext(exerciseType: ExerciseType): CapabilityRenderContext {
 const audioMap = new Map([['makan|__default__', '/audio/makan.mp3']])
 
 const ALL_TYPES: ExerciseType[] = [
-  'recognition_mcq', 'cued_recall', 'typed_recall', 'meaning_recall',
-  'cloze', 'cloze_mcq', 'contrast_pair', 'sentence_transformation',
-  'constrained_translation', 'speaking', 'listening_mcq', 'dictation',
+  'choose_meaning_ex', 'choose_form_ex', 'type_form_ex', 'type_meaning_ex',
+  'type_missing_word_ex', 'choose_missing_word_ex', 'choose_correct_form_ex', 'transform_sentence_ex',
+  'translate_sentence_ex', 'speaking', 'choose_meaning_from_audio_ex', 'type_form_from_audio_ex',
 ]
 
 describe('16. buildFeedbackInput adapter', () => {
   it('isGrammar=false for vocab capability types', () => {
-    const vocabTypes: ExerciseType[] = ['meaning_recall', 'recognition_mcq', 'typed_recall', 'cued_recall']
+    const vocabTypes: ExerciseType[] = ['type_meaning_ex', 'choose_meaning_ex', 'type_form_ex', 'choose_form_ex']
     for (const type of vocabTypes) {
       const result = buildFeedbackInput({
         block: makeBlock(type, 'meaning_recall'),
@@ -96,8 +96,8 @@ describe('16. buildFeedbackInput adapter', () => {
   it('isGrammar=true for recognise_grammar_pattern_cap and contrast_grammar_pattern_cap capability types', () => {
     for (const capType of ['recognise_grammar_pattern_cap', 'contrast_grammar_pattern_cap'] as const) {
       const result = buildFeedbackInput({
-        block: makeBlock('cloze_mcq', capType),
-        context: makeContext('cloze_mcq'),
+        block: makeBlock('choose_missing_word_ex', capType),
+        context: makeContext('choose_missing_word_ex'),
         response: 'makan',
         outcome: 'wrong',
         userLanguage: 'nl',
@@ -110,8 +110,8 @@ describe('16. buildFeedbackInput adapter', () => {
 
   it('acceptedVariants includes only is_accepted=true variants', () => {
     const result = buildFeedbackInput({
-      block: makeBlock('meaning_recall'),
-      context: makeContext('meaning_recall'),
+      block: makeBlock('type_meaning_ex'),
+      context: makeContext('type_meaning_ex'),
       response: 'eten',
       outcome: 'wrong',
       userLanguage: 'nl',
@@ -121,10 +121,10 @@ describe('16. buildFeedbackInput adapter', () => {
     expect(result.acceptedVariants).toEqual(['eetje'])
   })
 
-  it('promptAudioUrl set for listening_mcq using audioMap lookup', () => {
+  it('promptAudioUrl set for choose_meaning_from_audio_ex using audioMap lookup', () => {
     const result = buildFeedbackInput({
-      block: makeBlock('listening_mcq'),
-      context: makeContext('listening_mcq'),
+      block: makeBlock('choose_meaning_from_audio_ex'),
+      context: makeContext('choose_meaning_from_audio_ex'),
       response: 'eten',
       outcome: 'wrong',
       userLanguage: 'nl',
@@ -136,8 +136,8 @@ describe('16. buildFeedbackInput adapter', () => {
 
   it('promptAudioUrl set for dictation', () => {
     const result = buildFeedbackInput({
-      block: makeBlock('dictation'),
-      context: makeContext('dictation'),
+      block: makeBlock('type_form_from_audio_ex'),
+      context: makeContext('type_form_from_audio_ex'),
       response: 'makan',
       outcome: 'wrong',
       userLanguage: 'nl',
@@ -149,9 +149,9 @@ describe('16. buildFeedbackInput adapter', () => {
 
   it('promptAudioUrl undefined for non-audio exercise types', () => {
     const nonAudioTypes: ExerciseType[] = [
-      'recognition_mcq', 'cued_recall', 'typed_recall', 'meaning_recall',
-      'cloze', 'cloze_mcq', 'contrast_pair', 'sentence_transformation',
-      'constrained_translation', 'speaking',
+      'choose_meaning_ex', 'choose_form_ex', 'type_form_ex', 'type_meaning_ex',
+      'type_missing_word_ex', 'choose_missing_word_ex', 'choose_correct_form_ex', 'transform_sentence_ex',
+      'translate_sentence_ex', 'speaking',
     ]
     for (const type of nonAudioTypes) {
       const result = buildFeedbackInput({
@@ -169,8 +169,8 @@ describe('16. buildFeedbackInput adapter', () => {
 
   it('commitFailed passes through', () => {
     const result = buildFeedbackInput({
-      block: makeBlock('meaning_recall'),
-      context: makeContext('meaning_recall'),
+      block: makeBlock('type_meaning_ex'),
+      context: makeContext('type_meaning_ex'),
       response: null,
       outcome: 'wrong',
       userLanguage: 'nl',

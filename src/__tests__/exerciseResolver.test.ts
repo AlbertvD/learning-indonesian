@@ -37,11 +37,11 @@ describe('exercise resolver', () => {
   it('resolves supported capability families to render plans', () => {
     expect(resolveExercise({
       capability: capability(),
-      readiness: { status: 'ready', allowedExercises: ['meaning_recall'] },
+      readiness: { status: 'ready', allowedExercises: ['type_meaning_ex'] },
     })).toEqual({
       status: 'resolved',
       plan: expect.objectContaining({
-        exerciseType: 'meaning_recall',
+        exerciseType: 'type_meaning_ex',
         capabilityKey: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
       }),
     })
@@ -55,11 +55,11 @@ describe('exercise resolver', () => {
         skillType: 'meaning_recall',
         direction: 'l1_to_id',
       }),
-      readiness: { status: 'ready', allowedExercises: ['cued_recall'] },
+      readiness: { status: 'ready', allowedExercises: ['choose_form_ex'] },
     })).toEqual({
       status: 'resolved',
       plan: expect.objectContaining({
-        exerciseType: 'cued_recall',
+        exerciseType: 'choose_form_ex',
         capabilityType: 'recognise_form_from_meaning_cap',
         skillType: 'meaning_recall',
       }),
@@ -84,7 +84,7 @@ describe('exercise resolver', () => {
         direction: 'audio_to_l1',
         modality: 'audio',
       }),
-      readiness: { status: 'ready', allowedExercises: ['meaning_recall'] },
+      readiness: { status: 'ready', allowedExercises: ['type_meaning_ex'] },
     })).toEqual(expect.objectContaining({
       status: 'failed',
       reason: 'no_supported_exercise_family',
@@ -115,17 +115,17 @@ describe('exercise resolver', () => {
 
     expect(resolveExercise({
       capability: podcast,
-      readiness: { status: 'ready', allowedExercises: ['listening_mcq'] },
+      readiness: { status: 'ready', allowedExercises: ['choose_meaning_from_audio_ex'] },
     })).toEqual(expect.objectContaining({
       status: 'resolved',
-      plan: expect.objectContaining({ exerciseType: 'listening_mcq' }),
+      plan: expect.objectContaining({ exerciseType: 'choose_meaning_from_audio_ex' }),
     }))
     expect(resolveExercise({
       capability: morphology,
-      readiness: { status: 'ready', allowedExercises: ['typed_recall'] },
+      readiness: { status: 'ready', allowedExercises: ['type_form_ex'] },
     })).toEqual(expect.objectContaining({
       status: 'resolved',
-      plan: expect.objectContaining({ exerciseType: 'typed_recall' }),
+      plan: expect.objectContaining({ exerciseType: 'type_form_ex' }),
     }))
   })
 })

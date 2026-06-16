@@ -16,10 +16,10 @@ import {
 import type { GrammarExerciseType } from '../loadFromDb'
 
 const ALL: GrammarExerciseType[] = [
-  'contrast_pair',
-  'sentence_transformation',
-  'constrained_translation',
-  'cloze_mcq',
+  'choose_correct_form_ex',
+  'transform_sentence_ex',
+  'translate_sentence_ex',
+  'choose_missing_word_ex',
 ]
 
 describe('REQUIRED_PATTERN_EXERCISE_TYPES', () => {
@@ -42,24 +42,24 @@ describe('classifyPatternSeedState', () => {
   })
 
   it('partial when a MID-WRITE CRASH left 2 of 4 types (the crash-safety guard)', () => {
-    // Crash after writing contrast_pair + sentence_transformation, before the
+    // Crash after writing choose_correct_form_ex + transform_sentence_ex, before the
     // other two → must be partial, NOT seeded.
-    const covered = new Set<GrammarExerciseType>(['contrast_pair', 'sentence_transformation'])
+    const covered = new Set<GrammarExerciseType>(['choose_correct_form_ex', 'transform_sentence_ex'])
     expect(classifyPatternSeedState(covered)).toBe('partial')
   })
 
   it('partial when exactly one required type is missing', () => {
     const covered = new Set<GrammarExerciseType>([
-      'contrast_pair',
-      'sentence_transformation',
-      'constrained_translation',
+      'choose_correct_form_ex',
+      'transform_sentence_ex',
+      'translate_sentence_ex',
     ])
     expect(classifyPatternSeedState(covered)).toBe('partial')
   })
 
   it('respects a caller-supplied required subset', () => {
-    const covered = new Set<GrammarExerciseType>(['contrast_pair'])
-    expect(classifyPatternSeedState(covered, ['contrast_pair'])).toBe('seeded')
+    const covered = new Set<GrammarExerciseType>(['choose_correct_form_ex'])
+    expect(classifyPatternSeedState(covered, ['choose_correct_form_ex'])).toBe('seeded')
   })
 })
 
@@ -69,13 +69,13 @@ describe('patternNeedsGeneration', () => {
   })
   it('true for absent + partial', () => {
     expect(patternNeedsGeneration(undefined)).toBe(true)
-    expect(patternNeedsGeneration(new Set<GrammarExerciseType>(['cloze_mcq']))).toBe(true)
+    expect(patternNeedsGeneration(new Set<GrammarExerciseType>(['choose_missing_word_ex']))).toBe(true)
   })
 })
 
 describe('patternNeedsDeleteFirst', () => {
   it('true only for partial (delete stragglers before regenerate)', () => {
-    expect(patternNeedsDeleteFirst(new Set<GrammarExerciseType>(['cloze_mcq']))).toBe(true)
+    expect(patternNeedsDeleteFirst(new Set<GrammarExerciseType>(['choose_missing_word_ex']))).toBe(true)
   })
   it('false for absent (nothing to delete) and seeded (skip)', () => {
     expect(patternNeedsDeleteFirst(undefined)).toBe(false)

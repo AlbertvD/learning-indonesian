@@ -53,10 +53,10 @@ import { ANTHROPIC_MAX_RETRIES, GENERATION_THROTTLE_MS, sleep } from '../generat
 
 /** The 4 grammar exercise types this generator emits (never `speaking`). */
 export const GENERATED_EXERCISE_TYPES = [
-  'contrast_pair',
-  'sentence_transformation',
-  'constrained_translation',
-  'cloze_mcq',
+  'choose_correct_form_ex',
+  'transform_sentence_ex',
+  'translate_sentence_ex',
+  'choose_missing_word_ex',
 ] as const
 
 export type GeneratedExerciseType = (typeof GENERATED_EXERCISE_TYPES)[number]
@@ -171,32 +171,32 @@ ${JSON.stringify(poolSummary, null, 2)}
 ## What to generate
 
 Generate a scaffolded set for this ONE pattern, recognition → production:
-- 3 cloze_mcq (recognition)
-- 3 contrast_pair (noticing)
-- 4 sentence_transformation (bridged production)
-- 5 constrained_translation (free production)
+- 3 choose_missing_word_ex (recognition)
+- 3 choose_correct_form_ex (noticing)
+- 4 transform_sentence_ex (bridged production)
+- 5 translate_sentence_ex (free production)
 
 At least 8 total, ideally 15. If the pattern is a reference list (e.g. a duration or day-parts table) that yields nothing genuinely drill-worthy, return an empty array \`[]\` rather than mechanical filler.
 
 ## Payload contracts (camelCase — exactly these keys)
 
-### contrast_pair
+### choose_correct_form_ex
 \`{ promptText (Dutch context, NEVER reveals the answer), targetMeaning (Dutch gloss 3-10 words), options: [{id,text},{id,text}] (exactly 2; set id === text === the Indonesian word), correctOptionId (=== the correct option's id), explanationText (Dutch — teach the WHY) }\`
 
-### sentence_transformation
+### transform_sentence_ex
 \`{ sourceSentence (Indonesian), transformationInstruction (Dutch — never gives away the target form), acceptableAnswers: string[] (non-empty; include punctuation variants), hintText (string|null — must not reveal the answer), explanationText (Dutch) }\`
 
-### constrained_translation
+### translate_sentence_ex
 \`{ sourceLanguageSentence (Dutch to translate), requiredTargetPattern (MUST equal the pattern slug "${pattern.slug}" exactly), acceptableAnswers: string[] (full Indonesian sentences, non-empty), disallowedShortcutForms: string[] (may be empty), explanationText (Dutch) }\`
 
-### cloze_mcq
+### choose_missing_word_ex
 \`{ sentence (Indonesian with one ___), translation (Dutch, shown before answering), options: [string,string,string,string] (exactly 4), correctOptionId (=== one of the options), explanationText (Dutch) }\`
 
 ## Quality rules (most-violated)
 
 1. NO pre-answer spoilers: promptText, sourceSentence, sourceLanguageSentence, sentence-with-blank, translation, hintText, transformationInstruction must NOT reveal the answer.
-2. contrast_pair: the wrong option must be the mistake a Dutch speaker would actually make — not a random word. options ids MUST equal their text (never "a"/"b").
-3. cloze_mcq: choose the blank deliberately; distractors are same-category words, never morphological variants of the answer; correctOptionId MUST be one of the 4 options.
+2. choose_correct_form_ex: the wrong option must be the mistake a Dutch speaker would actually make — not a random word. options ids MUST equal their text (never "a"/"b").
+3. choose_missing_word_ex: choose the blank deliberately; distractors are same-category words, never morphological variants of the answer; correctOptionId MUST be one of the 4 options.
 4. explanationText must teach the rule + contrast (the primary teaching moment shown after a wrong answer), not just confirm the answer.
 5. explanationText must be CONCISE — one or two short sentences (aim ≤160 characters). Teach the ONE rule at stake; do not lecture or restate the whole pattern.
 6. CEFR consistency — simple vocabulary + short sentences for A1.
@@ -207,7 +207,7 @@ Return ONLY a JSON array. No prose, no markdown fences. One object per candidate
 
 [
   {
-    "exercise_type": "cloze_mcq",
+    "exercise_type": "choose_missing_word_ex",
     "grammar_pattern_slug": "${pattern.slug}",
     "payload": { /* fields per the contract above */ }
   }

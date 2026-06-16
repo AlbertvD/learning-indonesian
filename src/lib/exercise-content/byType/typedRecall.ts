@@ -1,4 +1,4 @@
-// builder for exerciseType='typed_recall'.
+// builder for exerciseType='type_form_ex'.
 //
 // Item path: user sees the meaning, types the Indonesian form. Needs a
 // user-lang meaning (for the prompt) and answer_variants (for fuzzy-match
@@ -14,7 +14,7 @@ import type { BuilderInputFor, BuilderResult } from './types'
 import type { ExerciseItem } from '@/types/learning'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildTypedRecall(input: BuilderInputFor<'typed_recall'>): BuilderResult {
+export function buildTypedRecall(input: BuilderInputFor<'type_form_ex'>): BuilderResult {
   // word_form_pair_src path — input.affixedFormPair is populated; input.learningItem is null.
   if (input.affixedFormPair) {
     const { root, derived, direction, allomorphRule } = input.affixedFormPair
@@ -29,7 +29,7 @@ export function buildTypedRecall(input: BuilderInputFor<'typed_recall'>): Builde
       contexts: [],
       answerVariants: [],
       skillType: isRootToDerived ? 'form_recall' : 'recognition',
-      exerciseType: 'typed_recall',
+      exerciseType: 'type_form_ex',
       affixedFormPairData: {
         promptText,
         acceptedAnswer,
@@ -50,7 +50,7 @@ export function buildTypedRecall(input: BuilderInputFor<'typed_recall'>): Builde
     contexts: input.contexts,
     answerVariants: input.answerVariants,
     skillType: 'form_recall',
-    exerciseType: 'typed_recall',
+    exerciseType: 'type_form_ex',
   }
   return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }
 }

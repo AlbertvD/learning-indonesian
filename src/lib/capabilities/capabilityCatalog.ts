@@ -129,8 +129,8 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
     // Emitting [] both (a) stops the shared artifact builder from writing
     // pattern_explanation:l1/pattern_example (buildArtifactsForCapability maps
     // over requiredArtifacts), and (b) moves readiness off the legacy artifact
-    // bag onto renderContracts routing (contrast_grammar_pattern_cap → contrast_pair,
-    // recognise_grammar_pattern_cap → sentence_transformation/constrained_translation/cloze_mcq).
+    // bag onto renderContracts routing (contrast_grammar_pattern_cap → choose_correct_form_ex,
+    // recognise_grammar_pattern_cap → transform_sentence_ex/translate_sentence_ex/choose_missing_word_ex).
     const requiredArtifacts: ArtifactKind[] = []
     const recognitionCapability = createCapability({
       sourceKind: 'grammar_pattern_src',

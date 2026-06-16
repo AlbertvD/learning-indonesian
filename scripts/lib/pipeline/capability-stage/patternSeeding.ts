@@ -32,10 +32,10 @@ import type { GrammarExerciseType } from './loadFromDb'
 
 /** The exercise types a fully-seeded pattern must cover (the generator target). */
 export const REQUIRED_PATTERN_EXERCISE_TYPES: readonly GrammarExerciseType[] = [
-  'contrast_pair',
-  'sentence_transformation',
-  'constrained_translation',
-  'cloze_mcq',
+  'choose_correct_form_ex',
+  'transform_sentence_ex',
+  'translate_sentence_ex',
+  'choose_missing_word_ex',
 ]
 
 /**

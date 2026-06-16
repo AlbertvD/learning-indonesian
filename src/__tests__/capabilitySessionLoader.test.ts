@@ -81,7 +81,7 @@ function baseInput(overrides: Partial<Parameters<typeof loadCapabilitySessionPla
       activatedLessons: new Set<string>(),
     },
     capabilitiesByKey: new Map([[projection.canonicalKey, projection]]),
-    readinessByKey: new Map([[projection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }]]),
+    readinessByKey: new Map([[projection.canonicalKey, { status: 'ready', allowedExercises: ['type_meaning_ex'] }]]),
     ...overrides,
   }
 }
@@ -120,7 +120,7 @@ describe('capability session loader', () => {
       }),
       renderPlan: expect.objectContaining({
         capabilityKey: canonicalKey,
-        exerciseType: 'meaning_recall',
+        exerciseType: 'type_meaning_ex',
       }),
     }))
   })
@@ -282,7 +282,7 @@ describe('capability session loader', () => {
         selectedSourceRefs: selectedRefs,
       },
       capabilitiesByKey: new Map(projections.map(projection => [projection.canonicalKey, projection])),
-      readinessByKey: new Map(projections.map(projection => [projection.canonicalKey, { status: 'ready' as const, allowedExercises: ['meaning_recall' as const] }])),
+      readinessByKey: new Map(projections.map(projection => [projection.canonicalKey, { status: 'ready' as const, allowedExercises: ['type_meaning_ex' as const] }])),
       selectedLessonId: 'lesson-4',
       selectedSourceRefs: selectedRefs,
     }))
@@ -327,7 +327,7 @@ describe('capability session loader', () => {
         selectedSourceRefs: selectedRefs,
       },
       capabilitiesByKey: new Map(projections.map(projection => [projection.canonicalKey, projection])),
-      readinessByKey: new Map(projections.map(projection => [projection.canonicalKey, { status: 'ready' as const, allowedExercises: ['meaning_recall' as const] }])),
+      readinessByKey: new Map(projections.map(projection => [projection.canonicalKey, { status: 'ready' as const, allowedExercises: ['type_meaning_ex' as const] }])),
       selectedLessonId: 'lesson-4',
       selectedSourceRefs: selectedRefs,
     }))
@@ -412,8 +412,8 @@ describe('capability session loader', () => {
           [lesson2Projection.canonicalKey, lesson2Projection],
         ]),
         readinessByKey: new Map([
-          [lesson1Projection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }],
-          [lesson2Projection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }],
+          [lesson1Projection.canonicalKey, { status: 'ready', allowedExercises: ['type_meaning_ex'] }],
+          [lesson2Projection.canonicalKey, { status: 'ready', allowedExercises: ['type_meaning_ex'] }],
         ]),
       }))
 
@@ -505,7 +505,7 @@ describe('capability session loader', () => {
           activatedLessons: new Set<string>([lesson1Id, lesson2Id]),
         },
         capabilitiesByKey: new Map(projections.map(p => [p.canonicalKey, p])),
-        readinessByKey: new Map(projections.map(p => [p.canonicalKey, { status: 'ready' as const, allowedExercises: ['meaning_recall' as const] }])),
+        readinessByKey: new Map(projections.map(p => [p.canonicalKey, { status: 'ready' as const, allowedExercises: ['type_meaning_ex' as const] }])),
       }))
 
       const served = plan.blocks.map(b => b.canonicalKeySnapshot).sort()
@@ -547,7 +547,7 @@ describe('capability session loader', () => {
           activatedLessons: new Set<string>([currentLessonUuid]),
         },
         capabilitiesByKey: new Map([[otherLessonProjection.canonicalKey, otherLessonProjection]]),
-        readinessByKey: new Map([[otherLessonProjection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }]]),
+        readinessByKey: new Map([[otherLessonProjection.canonicalKey, { status: 'ready', allowedExercises: ['type_meaning_ex'] }]]),
         currentLessonId: currentLessonUuid,
         nextLessonNeedsExposure: true,
       })
@@ -614,7 +614,7 @@ describe('capability session loader', () => {
           activatedLessons: new Set<string>([currentLessonUuid]),
         },
         capabilitiesByKey: new Map([[currentLessonProjection.canonicalKey, currentLessonProjection]]),
-        readinessByKey: new Map([[currentLessonProjection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }]]),
+        readinessByKey: new Map([[currentLessonProjection.canonicalKey, { status: 'ready', allowedExercises: ['type_meaning_ex'] }]]),
         currentLessonId: currentLessonUuid,
         nextLessonNeedsExposure: true,
       }))
@@ -630,8 +630,8 @@ describe('capability session loader', () => {
     const projB = projectedCapability({ canonicalKey: keyB, capabilityType: 'recognise_meaning_from_text_cap', skillType: 'recognition' })
     const capabilitiesByKey = new Map([[keyA, projA], [keyB, projB]])
     const readinessByKey: Map<string, CapabilityReadiness> = new Map([
-      [keyA, { status: 'ready', allowedExercises: ['meaning_recall'] }],
-      [keyB, { status: 'ready', allowedExercises: ['recognition_mcq'] }],
+      [keyA, { status: 'ready', allowedExercises: ['type_meaning_ex'] }],
+      [keyB, { status: 'ready', allowedExercises: ['choose_meaning_ex'] }],
     ])
     // A is more overdue than B, so A wins the word's single slot.
     const stateA = activeState({ id: 'state-1', capabilityId: 'capability-1', canonicalKeySnapshot: keyA, nextDueAt: '2026-04-25T08:00:00.000Z' })

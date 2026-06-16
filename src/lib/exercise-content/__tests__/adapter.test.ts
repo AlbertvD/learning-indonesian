@@ -111,7 +111,7 @@ function makeBlockWithSourceRef(opts: { sourceKind: 'vocabulary_src' | 'dialogue
     renderPlan: {
       capabilityKey: key,
       sourceRef: opts.sourceRef,
-      exerciseType: 'cloze',
+      exerciseType: 'type_missing_word_ex',
       capabilityType: 'produce_form_from_context_cap',
       skillType: 'form_recall',
     },

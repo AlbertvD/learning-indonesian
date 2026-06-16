@@ -30,19 +30,19 @@ interface ExerciseVariant {
 // Mock candidates from extraction
 const mockCandidates: ExerciseCandidate[] = [
   {
-    exercise_type: 'contrast_pair',
+    exercise_type: 'choose_correct_form_ex',
     page_reference: 1,
     answer_key: ['0'],
     correctOptionId: '0',
     options: ['Option A', 'Option B'],
   },
   {
-    exercise_type: 'sentence_transformation',
+    exercise_type: 'transform_sentence_ex',
     page_reference: 2,
     answer_key: ['Answer 1', 'Answer 2'],
   },
   {
-    exercise_type: 'constrained_translation',
+    exercise_type: 'translate_sentence_ex',
     page_reference: 2,
     answer_key: ['Saya seorang insinyur'],
   },
@@ -59,13 +59,13 @@ console.log('Test 1: Exercise Types Available')
 console.log('═══════════════════════════════════════\n')
 
 const allTypes: ExerciseType[] = [
-  'recognition_mcq',
-  'typed_recall',
+  'choose_meaning_ex',
+  'type_form_ex',
   'cloze',
-  'cued_recall',
-  'contrast_pair',
-  'sentence_transformation',
-  'constrained_translation',
+  'choose_form_ex',
+  'choose_correct_form_ex',
+  'transform_sentence_ex',
+  'translate_sentence_ex',
   'speaking',
 ]
 
@@ -92,11 +92,11 @@ console.log(`  speaking: ${featureFlags.speaking}`)
 
 console.log('\nExercise type enabled status:')
 const typesToCheck = [
-  'recognition_mcq',
-  'cued_recall',
-  'contrast_pair',
-  'sentence_transformation',
-  'constrained_translation',
+  'choose_meaning_ex',
+  'choose_form_ex',
+  'choose_correct_form_ex',
+  'transform_sentence_ex',
+  'translate_sentence_ex',
   'speaking',
 ]
 
@@ -138,7 +138,7 @@ const mockVariants: ExerciseVariant[] = [
   {
     id: 'v1',
     context_id: 'ctx1',
-    exercise_type: 'contrast_pair',
+    exercise_type: 'choose_correct_form_ex',
     is_active: true,
     payload_json: {
       promptText: 'Which is correct?',
@@ -150,7 +150,7 @@ const mockVariants: ExerciseVariant[] = [
   {
     id: 'v2',
     context_id: 'ctx2',
-    exercise_type: 'sentence_transformation',
+    exercise_type: 'transform_sentence_ex',
     is_active: true,
     payload_json: {
       sourceSentence: 'Original',
@@ -161,7 +161,7 @@ const mockVariants: ExerciseVariant[] = [
   {
     id: 'v3',
     context_id: 'ctx3',
-    exercise_type: 'constrained_translation',
+    exercise_type: 'translate_sentence_ex',
     is_active: true,
     payload_json: {
       sourceLanguageSentence: 'English',

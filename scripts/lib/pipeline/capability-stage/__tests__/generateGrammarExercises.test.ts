@@ -45,9 +45,9 @@ const POOL: GrammarVocabPoolItem[] = [
   { indonesian_text: 'mahal', l1_translation: 'duur', item_type: 'word' },
 ]
 
-// A valid contrast_pair candidate (passes buildGrammarExerciseRow + Zod).
+// A valid choose_correct_form_ex candidate (passes buildGrammarExerciseRow + Zod).
 const VALID_CONTRAST: GrammarExerciseCandidate = {
-  exercise_type: 'contrast_pair',
+  exercise_type: 'choose_correct_form_ex',
   grammar_pattern_slug: 'l4-bukan-negatie',
   payload: {
     promptText: 'Je wijst naar een gebouw en zegt dat het geen huis is.',
@@ -62,7 +62,7 @@ const VALID_CONTRAST: GrammarExerciseCandidate = {
 }
 
 const VALID_CLOZE: GrammarExerciseCandidate = {
-  exercise_type: 'cloze_mcq',
+  exercise_type: 'choose_missing_word_ex',
   grammar_pattern_slug: 'l4-bukan-negatie',
   payload: {
     sentence: 'Ini ___ rumah.',
@@ -109,10 +109,10 @@ describe('buildPrompt', () => {
 
   it('lists all four exercise types and the pool-only sentence rule', () => {
     const prompt = buildPrompt(PATTERN_BUKAN, POOL)
-    expect(prompt).toContain('cloze_mcq')
-    expect(prompt).toContain('contrast_pair')
-    expect(prompt).toContain('sentence_transformation')
-    expect(prompt).toContain('constrained_translation')
+    expect(prompt).toContain('choose_missing_word_ex')
+    expect(prompt).toContain('choose_correct_form_ex')
+    expect(prompt).toContain('transform_sentence_ex')
+    expect(prompt).toContain('translate_sentence_ex')
     expect(prompt).toContain('ONLY words from this pool')
   })
 
@@ -141,8 +141,8 @@ describe('parseResponse', () => {
   it('parses a valid candidate array', () => {
     const result = parseResponse(candidateJson(VALID_CONTRAST, VALID_CLOZE))
     expect(result).toHaveLength(2)
-    expect(result[0].exercise_type).toBe('contrast_pair')
-    expect(result[1].exercise_type).toBe('cloze_mcq')
+    expect(result[0].exercise_type).toBe('choose_correct_form_ex')
+    expect(result[1].exercise_type).toBe('choose_missing_word_ex')
   })
 
   it('returns empty array for empty / malformed / non-array JSON', () => {
@@ -164,14 +164,14 @@ describe('parseResponse', () => {
     ])
     const result = parseResponse(raw)
     expect(result).toHaveLength(1)
-    expect(result[0].exercise_type).toBe('contrast_pair')
+    expect(result[0].exercise_type).toBe('choose_correct_form_ex')
   })
 
   it('drops candidates with a missing slug or non-object payload', () => {
     const raw = JSON.stringify([
-      { exercise_type: 'contrast_pair', payload: {} }, // no slug
-      { exercise_type: 'contrast_pair', grammar_pattern_slug: 'x', payload: 'nope' }, // payload not object
-      { exercise_type: 'contrast_pair', grammar_pattern_slug: 'x', payload: [] }, // payload array
+      { exercise_type: 'choose_correct_form_ex', payload: {} }, // no slug
+      { exercise_type: 'choose_correct_form_ex', grammar_pattern_slug: 'x', payload: 'nope' }, // payload not object
+      { exercise_type: 'choose_correct_form_ex', grammar_pattern_slug: 'x', payload: [] }, // payload array
     ])
     expect(parseResponse(raw)).toEqual([])
   })
@@ -187,15 +187,15 @@ describe('parseResponse', () => {
 // ---------------------------------------------------------------------------
 
 describe('validateCandidate', () => {
-  it('accepts a constraint-valid contrast_pair', () => {
+  it('accepts a constraint-valid choose_correct_form_ex', () => {
     expect(validateCandidate(VALID_CONTRAST)).toBe(true)
   })
 
-  it('accepts a constraint-valid cloze_mcq', () => {
+  it('accepts a constraint-valid choose_missing_word_ex', () => {
     expect(validateCandidate(VALID_CLOZE)).toBe(true)
   })
 
-  it('rejects contrast_pair whose correctOptionId matches no option', () => {
+  it('rejects choose_correct_form_ex whose correctOptionId matches no option', () => {
     const bad: GrammarExerciseCandidate = {
       ...VALID_CONTRAST,
       payload: { ...VALID_CONTRAST.payload, correctOptionId: 'nonexistent' },
@@ -203,7 +203,7 @@ describe('validateCandidate', () => {
     expect(validateCandidate(bad)).toBe(false)
   })
 
-  it('rejects cloze_mcq whose correctOptionId is not among the options', () => {
+  it('rejects choose_missing_word_ex whose correctOptionId is not among the options', () => {
     const bad: GrammarExerciseCandidate = {
       ...VALID_CLOZE,
       payload: { ...VALID_CLOZE.payload, correctOptionId: 'sudah' },
@@ -219,9 +219,9 @@ describe('validateCandidate', () => {
     expect(validateCandidate(bad)).toBe(false)
   })
 
-  it('rejects sentence_transformation with empty acceptableAnswers', () => {
+  it('rejects transform_sentence_ex with empty acceptableAnswers', () => {
     const bad: GrammarExerciseCandidate = {
-      exercise_type: 'sentence_transformation',
+      exercise_type: 'transform_sentence_ex',
       grammar_pattern_slug: 'l4-bukan-negatie',
       payload: {
         sourceSentence: 'Ini rumah.',
@@ -234,9 +234,9 @@ describe('validateCandidate', () => {
     expect(validateCandidate(bad)).toBe(false)
   })
 
-  it('accepts constrained_translation with empty disallowedShortcutForms', () => {
+  it('accepts translate_sentence_ex with empty disallowedShortcutForms', () => {
     const ok: GrammarExerciseCandidate = {
-      exercise_type: 'constrained_translation',
+      exercise_type: 'translate_sentence_ex',
       grammar_pattern_slug: 'l4-bukan-negatie',
       payload: {
         sourceLanguageSentence: 'Dit is geen huis.',
@@ -294,7 +294,7 @@ describe('generateGrammarExercises', () => {
     expect(result.droppedCount).toBe(1)
     const kept = result.candidatesByPatternSlug.get('l4-bukan-negatie')!
     expect(kept).toHaveLength(1)
-    expect(kept[0].exercise_type).toBe('cloze_mcq')
+    expect(kept[0].exercise_type).toBe('choose_missing_word_ex')
   })
 
   it('warn-and-skips a pattern that yields zero valid candidates', async () => {

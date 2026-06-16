@@ -7,10 +7,10 @@
  * idempotency, writes) is the thin shell around this.
  *
  * Capability → distractor-kind seam (grounded from runner.ts:620-694):
- *   recognise_meaning_from_text_cap  → meaning distractors (recognition_mcq: see ID, pick NL)
- *   recognise_meaning_from_audio_cap → meaning distractors (listening_mcq: hear, pick NL —
+ *   recognise_meaning_from_text_cap  → meaning distractors (choose_meaning_ex: see ID, pick NL)
+ *   recognise_meaning_from_audio_cap → meaning distractors (choose_meaning_from_audio_ex: hear, pick NL —
  *                       newly curated; had no curated path before, spec §4a)
- *   recognise_form_from_meaning_cap   → form distractors (cued_recall: see NL, pick ID)
+ *   recognise_form_from_meaning_cap   → form distractors (choose_form_ex: see NL, pick ID)
  *   everything else (meaning_recall, form_recall, dictation, produce_form_from_context_cap)
  *                     → no distractors (typed / typed-cloze, no MCQ options)
  */

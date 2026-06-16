@@ -1,4 +1,4 @@
-// builder for exerciseType='cloze' (typed cloze, not MCQ).
+// builder for exerciseType='type_missing_word_ex' (typed cloze, not MCQ).
 // User sees a sentence with `___` blank, types the missing word.
 //
 // Two source-kind paths post the 2026-05-21 lib/exercise-content fold PR-B:
@@ -14,7 +14,7 @@
 import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildCloze(input: BuilderInputFor<'cloze'>): BuilderResult {
+export function buildCloze(input: BuilderInputFor<'type_missing_word_ex'>): BuilderResult {
   // Dialogue-line path: input fields come from artifact payloads.
   if (input.dialogueLine) {
     if (!input.dialogueLine.sourceText.includes('___')) {
@@ -34,7 +34,7 @@ export function buildCloze(input: BuilderInputFor<'cloze'>): BuilderResult {
       contexts: input.contexts,
       answerVariants: input.answerVariants,
       skillType: 'form_recall' as const,
-      exerciseType: 'cloze' as const,
+      exerciseType: 'type_missing_word_ex' as const,
       clozeContext: {
         sentence: input.dialogueLine.sourceText,
         targetWord: input.dialogueLine.targetWord,
@@ -63,7 +63,7 @@ export function buildCloze(input: BuilderInputFor<'cloze'>): BuilderResult {
     contexts: input.contexts,
     answerVariants: input.answerVariants,
     skillType: 'form_recall' as const,
-    exerciseType: 'cloze' as const,
+    exerciseType: 'type_missing_word_ex' as const,
     clozeContext: {
       sentence: clozeContext.source_text,
       targetWord: learningItem.base_text,

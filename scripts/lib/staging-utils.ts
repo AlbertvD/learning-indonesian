@@ -167,10 +167,10 @@ export interface GrammarPattern {
 // ── Candidate type ────────────────────────────────────────────────────────────
 
 export type ExerciseType =
-  | 'contrast_pair'
-  | 'sentence_transformation'
-  | 'constrained_translation'
-  | 'cloze_mcq'
+  | 'choose_correct_form_ex'
+  | 'transform_sentence_ex'
+  | 'translate_sentence_ex'
+  | 'choose_missing_word_ex'
 
 export interface Candidate {
   exercise_type: ExerciseType

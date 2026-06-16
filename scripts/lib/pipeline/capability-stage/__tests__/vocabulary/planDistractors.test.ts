@@ -3,9 +3,9 @@
  *
  * Maps each item capability to the right distractor kind (the seam grounded from
  * runner.ts:620-694) and composes the pure selectors over Pool(N):
- *   recognise_meaning_from_text_cap  → meaning distractors (recognition_mcq)
- *   recognise_meaning_from_audio_cap → meaning distractors (listening_mcq — newly curated)
- *   recognise_form_from_meaning_cap   → form distractors (cued_recall)
+ *   recognise_meaning_from_text_cap  → meaning distractors (choose_meaning_ex)
+ *   recognise_meaning_from_audio_cap → meaning distractors (choose_meaning_from_audio_ex — newly curated)
+ *   recognise_form_from_meaning_cap   → form distractors (choose_form_ex)
  *   meaning_recall / form_recall / dictation / produce_form_from_context_cap → none (typed/typed-cloze)
  * Returns the (capability_id, item_id) pointer rows the writer persists.
  */

@@ -7,10 +7,10 @@
  * into) candidates.ts.
  *
  * Generated exercise types per grammar pattern:
- *   - contrast_pair           — choose between two confusable forms
- *   - sentence_transformation — rewrite a sentence using a grammar rule
- *   - constrained_translation — translate using a required grammar target
- *   - cloze_mcq               — fill-in-the-blank multiple choice (4 options)
+ *   - choose_correct_form_ex           — choose between two confusable forms
+ *   - transform_sentence_ex — rewrite a sentence using a grammar rule
+ *   - translate_sentence_ex — translate using a required grammar target
+ *   - choose_missing_word_ex               — fill-in-the-blank multiple choice (4 options)
  *
  * Usage:
  *   bun scripts/generate-exercises.ts <lesson-number> [options]
@@ -18,7 +18,7 @@
  * Options:
  *   --pattern <slug>   Only generate for a specific grammar pattern slug
  *   --types <list>     Comma-separated list of exercise types to generate
- *                      (default: contrast_pair,sentence_transformation,constrained_translation,cloze_mcq)
+ *                      (default: choose_correct_form_ex,transform_sentence_ex,translate_sentence_ex,choose_missing_word_ex)
  *   --force            Overwrite existing candidates for the same pattern (skip if published)
  *   --dry-run          Print generated candidates without writing candidates.ts
  *
@@ -48,17 +48,17 @@ import {
 // ── Default exercise types ────────────────────────────────────────────────────
 
 const ALL_TYPES: ExerciseType[] = [
-  'contrast_pair',
-  'sentence_transformation',
-  'constrained_translation',
-  'cloze_mcq',
+  'choose_correct_form_ex',
+  'transform_sentence_ex',
+  'translate_sentence_ex',
+  'choose_missing_word_ex',
 ]
 
 // ── Prompt ────────────────────────────────────────────────────────────────────
 
 function buildSystemPrompt(exerciseTypes: ExerciseType[]): string {
   const typeDescriptions: Record<ExerciseType, string> = {
-    contrast_pair: `contrast_pair: Learner must choose between two confusable Indonesian forms.
+    choose_correct_form_ex: `choose_correct_form_ex: Learner must choose between two confusable Indonesian forms.
     Required payload fields:
     - promptText: Dutch instruction ("Pilih yang benar: ...")
     - targetMeaning: what the correct form means in Dutch
@@ -66,7 +66,7 @@ function buildSystemPrompt(exerciseTypes: ExerciseType[]): string {
     - correctOptionId: the id of the correct option
     - explanationText: Dutch explanation of WHY the correct form is right`,
 
-    sentence_transformation: `sentence_transformation: Learner rewrites a source sentence using the target grammar rule.
+    transform_sentence_ex: `transform_sentence_ex: Learner rewrites a source sentence using the target grammar rule.
     Required payload fields:
     - sourceSentence: the Dutch or Indonesian sentence to transform
     - transformationInstruction: Dutch instruction ("Schrijf de zin opnieuw met ...")
@@ -74,7 +74,7 @@ function buildSystemPrompt(exerciseTypes: ExerciseType[]): string {
     - hintText: optional Dutch hint (may be null)
     - explanationText: Dutch explanation of the transformation`,
 
-    constrained_translation: `constrained_translation: Learner translates a Dutch sentence into Indonesian using a required grammar pattern.
+    translate_sentence_ex: `translate_sentence_ex: Learner translates a Dutch sentence into Indonesian using a required grammar pattern.
     Required payload fields:
     - sourceLanguageSentence: the Dutch sentence to translate
     - requiredTargetPattern: short Dutch label for the required pattern (e.g. "gebruik yang")
@@ -82,7 +82,7 @@ function buildSystemPrompt(exerciseTypes: ExerciseType[]): string {
     - disallowedShortcutForms: optional array of Indonesian forms that bypass the grammar target (may be null)
     - explanationText: Dutch explanation`,
 
-    cloze_mcq: `cloze_mcq: Learner fills a blank in an Indonesian sentence by choosing from 4 options.
+    choose_missing_word_ex: `choose_missing_word_ex: Learner fills a blank in an Indonesian sentence by choosing from 4 options.
     Required payload fields:
     - sentence: Indonesian sentence with ___ or (___) for the blank
     - translation: Dutch translation of the full sentence
@@ -103,10 +103,10 @@ ${typeBlocks}
 Rules:
 1. All prompts and explanations are in Dutch (the learner's L1)
 2. Indonesian sentences should be at A1-A2 level — short, clear, using common vocabulary
-3. For contrast_pair: the two options must represent genuinely confusable patterns, not arbitrary choices
-4. For sentence_transformation and constrained_translation: provide 2–4 acceptable answers to account for natural variation
-5. option ids for contrast_pair must be unique within the exercise (e.g. "cp-a", "cp-b")
-6. cloze_mcq distractors should be plausible alternatives that a learner might confuse
+3. For choose_correct_form_ex: the two options must represent genuinely confusable patterns, not arbitrary choices
+4. For transform_sentence_ex and translate_sentence_ex: provide 2–4 acceptable answers to account for natural variation
+5. option ids for choose_correct_form_ex must be unique within the exercise (e.g. "cp-a", "cp-b")
+6. choose_missing_word_ex distractors should be plausible alternatives that a learner might confuse
 7. Use vocabulary from the lesson context when provided
 
 Respond with ONLY a valid JSON array of exercise objects — one per requested type — no prose, no markdown fences.

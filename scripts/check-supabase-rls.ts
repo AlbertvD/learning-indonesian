@@ -95,7 +95,7 @@ if (capErr || !someCap) {
       capability_id: someCap.id,
       capability_key: someCap.canonical_key,
       reason_code: 'rls_smoke_test',
-      exercise_type: 'recognition_mcq',
+      exercise_type: 'choose_meaning_ex',
       user_id: userId!,
       session_id: null,
       block_id: 'rls-smoke-test',

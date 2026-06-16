@@ -6,10 +6,10 @@ import type { ExerciseReviewRow, ReviewComment, ReviewCommentWithContext } from 
 // (PR 4a — vocab exercises are runtime-generated, never persisted). Order is
 // stable so the index lines up with the Promise.all result array below.
 const TYPED_TABLES = [
-  { table: 'contrast_pair_exercises', type: 'contrast_pair' },
-  { table: 'sentence_transformation_exercises', type: 'sentence_transformation' },
-  { table: 'constrained_translation_exercises', type: 'constrained_translation' },
-  { table: 'cloze_mcq_exercises', type: 'cloze_mcq' },
+  { table: 'contrast_pair_exercises', type: 'choose_correct_form_ex' },
+  { table: 'sentence_transformation_exercises', type: 'transform_sentence_ex' },
+  { table: 'constrained_translation_exercises', type: 'translate_sentence_ex' },
+  { table: 'cloze_mcq_exercises', type: 'choose_missing_word_ex' },
 ] as const
 
 /**
@@ -46,13 +46,13 @@ function mapComment(row: Record<string, unknown>): ReviewComment {
 export function getPromptSummary(row: ExerciseReviewRow): string {
   const raw = (() => {
     switch (row.exercise_type) {
-      case 'contrast_pair':
+      case 'choose_correct_form_ex':
         return row.prompt_text
-      case 'sentence_transformation':
+      case 'transform_sentence_ex':
         return row.source_sentence
-      case 'constrained_translation':
+      case 'translate_sentence_ex':
         return row.source_language_sentence
-      case 'cloze_mcq':
+      case 'choose_missing_word_ex':
         return row.sentence
     }
   })()

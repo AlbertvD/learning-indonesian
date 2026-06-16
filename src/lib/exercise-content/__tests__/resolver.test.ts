@@ -68,7 +68,7 @@ function makeMockClient(tables: Record<string, MockTable>) {
 function makeBlock(opts: { itemId?: string; exerciseType?: SessionBlock['renderPlan']['exerciseType']; sourceKind?: 'vocabulary_src' | 'grammar_pattern_src' } = {}): SessionBlock {
   const itemId = opts.itemId ?? 'item-1'
   const sourceKind = opts.sourceKind ?? 'vocabulary_src'
-  const exerciseType = opts.exerciseType ?? 'meaning_recall'
+  const exerciseType = opts.exerciseType ?? 'type_meaning_ex'
   const sourceRef = sourceKind === 'vocabulary_src' ? `learning_items/${itemId}` : `lesson-1/${itemId}`
   const key = buildCanonicalKey({
     sourceKind,
@@ -196,11 +196,11 @@ describe('resolver.resolveBlocks', () => {
       capability_resolution_failure_events: { rows: [], inserts: [] },
     }
     const service = createCapabilityContentService(makeMockClient(tables) as never)
-    const block = makeBlock({ exerciseType: 'meaning_recall' })
+    const block = makeBlock({ exerciseType: 'type_meaning_ex' })
     const map = await service.resolveBlocks([block], baseOptions)
     const ctx = map.get(block.id)!
     expect(ctx.exerciseItem).not.toBeNull()
-    expect(ctx.exerciseItem!.exerciseType).toBe('meaning_recall')
+    expect(ctx.exerciseItem!.exerciseType).toBe('type_meaning_ex')
     expect(ctx.audibleTexts.length).toBeGreaterThan(0)
     expect(ctx.diagnostic).toBeNull()
   })
@@ -314,7 +314,7 @@ describe('resolver.resolveBlocks — distractor pool chunking', () => {
     const client = { schema: () => ({ from: (table: string) => makeBuilder(table) }) }
 
     const service = createCapabilityContentService(client as never)
-    await service.resolveBlocks([makeBlock({ itemId: 'item-1', exerciseType: 'meaning_recall' })], baseOptions)
+    await service.resolveBlocks([makeBlock({ itemId: 'item-1', exerciseType: 'type_meaning_ex' })], baseOptions)
 
     // Decision R (PR 1): item_meanings is no longer fetched from DB. Only learning_items
     // is chunked. The distractor pool fetches 130 pool item rows via chunkedIn.
@@ -365,7 +365,7 @@ describe('resolver.resolveBlocks — URL-budget guard at production scale', () =
     const service = createCapabilityContentService(makeMockClient(tables) as never)
     // Must not throw — the guard would fire if any IN clause exceeded budget.
     await expect(
-      service.resolveBlocks([makeBlock({ itemId: 'item-1', exerciseType: 'meaning_recall' })], baseOptions),
+      service.resolveBlocks([makeBlock({ itemId: 'item-1', exerciseType: 'type_meaning_ex' })], baseOptions),
     ).resolves.toBeDefined()
   })
 })
@@ -383,7 +383,7 @@ describe('createCapabilityContentService — exported correctly', () => {
 function makeDialogueBlock(opts: { sourceRef?: string; capabilityId?: string; exerciseType?: SessionBlock['renderPlan']['exerciseType'] } = {}): SessionBlock {
   const sourceRef = opts.sourceRef ?? 'lesson-9/section-1/line-10'
   const capabilityId = opts.capabilityId ?? `cap-${sourceRef}`
-  const exerciseType = opts.exerciseType ?? 'cloze'
+  const exerciseType = opts.exerciseType ?? 'type_missing_word_ex'
   const key = buildCanonicalKey({
     sourceKind: 'dialogue_line_src',
     sourceRef,
@@ -442,7 +442,7 @@ describe('resolver.resolveBlocks — dialogue_line source kind', () => {
     const map = await service.resolveBlocks([block], baseOptions)
     const ctx = map.get(block.id)!
     expect(ctx.diagnostic).toBeNull()
-    expect(ctx.exerciseItem?.exerciseType).toBe('cloze')
+    expect(ctx.exerciseItem?.exerciseType).toBe('type_missing_word_ex')
     expect(ctx.exerciseItem?.learningItem).toBeNull()
     expect(ctx.exerciseItem?.clozeContext?.sentence).toBe('Aku tidak ___ tinggal di rumah terus')
     expect(ctx.exerciseItem?.clozeContext?.targetWord).toBe('suka')
@@ -497,8 +497,8 @@ describe('resolver.resolveBlocks — dialogue_line source kind', () => {
     expect(ctx.diagnostic?.reasonCode).toBe('dialogue_line_ref_unparseable')
   })
 
-  it('rejects dialogue_line block scheduled with exerciseType=cloze_mcq (cloze_mcq still item-only)', async () => {
-    const block = makeDialogueBlock({ exerciseType: 'cloze_mcq', capabilityId: 'cap-dl-mcq' })
+  it('rejects dialogue_line block scheduled with exerciseType=choose_missing_word_ex (choose_missing_word_ex still item-only)', async () => {
+    const block = makeDialogueBlock({ exerciseType: 'choose_missing_word_ex', capabilityId: 'cap-dl-mcq' })
     const tables: Record<string, MockTable> = {
       dialogue_clozes: { rows: [
         {
@@ -519,7 +519,7 @@ describe('resolver.resolveBlocks — dialogue_line source kind', () => {
     const map = await service.resolveBlocks([block], baseOptions)
     const ctx = map.get(block.id)!
     expect(ctx.exerciseItem).toBeNull()
-    // The projector emits item_not_found because cloze_mcq's contract input
+    // The projector emits item_not_found because choose_missing_word_ex's contract input
     // requires a non-null learningItem (no dialogueLine field in its shape).
     expect(ctx.diagnostic?.reasonCode).toBe('item_not_found')
   })

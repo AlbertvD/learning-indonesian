@@ -24,7 +24,7 @@ export function buildFeedbackInput(args: {
 
   let promptAudioUrl: string | undefined
   const exerciseType = block.renderPlan.exerciseType
-  if (exerciseType === 'listening_mcq' || exerciseType === 'dictation') {
+  if (exerciseType === 'choose_meaning_from_audio_ex' || exerciseType === 'type_form_from_audio_ex') {
     const baseText = item.learningItem?.base_text
     if (baseText) {
       promptAudioUrl = resolveSessionAudioUrl(audioMap, baseText, null)
@@ -38,7 +38,7 @@ export function buildFeedbackInput(args: {
  * Attach an audio clip to the feedback's correct-answer card when that answer
  * is Indonesian and a clip already exists for it (reuse — never synthesised
  * here). This is how the learner hears the correct pronunciation on the
- * feedback screen for recall/production exercises (cued_recall, cloze, etc.),
+ * feedback screen for recall/production exercises (choose_form_ex, cloze, etc.),
  * where playing the audio on the prompt would have leaked the answer.
  *
  * Indonesian-only and graceful: the L1 (Dutch) answer never gets audio, and a

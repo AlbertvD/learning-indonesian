@@ -14,22 +14,22 @@ interface ExerciseSummaryCardProps {
 
 function renderSummary(row: ExerciseReviewRow): { vraag: string; antwoord: string } {
   switch (row.exercise_type) {
-    case 'contrast_pair':
+    case 'choose_correct_form_ex':
       return {
         vraag: `${row.prompt_text}\nOpties: ${(row.options ?? []).map(o => o.text).join(' / ')}`,
         antwoord: `${row.options.find(o => o.id === row.correct_option_id)?.text ?? row.correct_option_id}${row.target_meaning ? ` — ${row.target_meaning}` : ''}`,
       }
-    case 'cloze_mcq':
+    case 'choose_missing_word_ex':
       return {
         vraag: `${row.sentence}\nOpties: ${(row.options ?? []).join(' / ')}`,
         antwoord: row.correct_option_id,
       }
-    case 'sentence_transformation':
+    case 'transform_sentence_ex':
       return {
         vraag: `${row.source_sentence}\n${row.transformation_instruction}`,
         antwoord: (row.acceptable_answers ?? [])[0] ?? '—',
       }
-    case 'constrained_translation':
+    case 'translate_sentence_ex':
       return {
         vraag: row.source_language_sentence,
         antwoord: (row.acceptable_answers ?? [])[0] ?? '—',

@@ -34,7 +34,7 @@ function validGrammarPattern() {
 
 function validCandidate() {
   return {
-    exercise_type: 'contrast_pair',
+    exercise_type: 'choose_correct_form_ex',
     review_status: 'approved',
     payload: {
       promptText: 'Choose the correct form',
@@ -210,7 +210,7 @@ describe('runCapabilityGatePreWrite', () => {
     it('emits CS3 error when payload is missing', () => {
       const findings = runCapabilityGatePreWrite(
         minimalPreWriteInput({
-          candidates: [{ exercise_type: 'contrast_pair', payload: null }],
+          candidates: [{ exercise_type: 'choose_correct_form_ex', payload: null }],
         }),
       )
       expect(findings.some((f) => f.gate === 'CS3' && f.severity === 'error')).toBe(true)
@@ -218,12 +218,12 @@ describe('runCapabilityGatePreWrite', () => {
   })
 
   describe('CS13 -- grammar exercise typed-row validator', () => {
-    it('emits CS13 error when contrast_pair options shape is wrong', () => {
+    it('emits CS13 error when choose_correct_form_ex options shape is wrong', () => {
       const findings = runCapabilityGatePreWrite(
         minimalPreWriteInput({
           candidates: [
             {
-              exercise_type: 'contrast_pair',
+              exercise_type: 'choose_correct_form_ex',
               review_status: 'approved',
               payload: {
                 // Missing required fields: prompt_text, target_meaning, explanation_text

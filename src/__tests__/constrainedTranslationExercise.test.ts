@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import type { ExerciseItem } from '@/types/learning'
 
 describe('ConstrainedTranslationExercise types', () => {
-  it('compiles ExerciseItem with constrained_translation data', () => {
+  it('compiles ExerciseItem with translate_sentence_ex data', () => {
     const exerciseItem: ExerciseItem = {
       learningItem: {
         id: 'item-1',
@@ -27,7 +27,7 @@ describe('ConstrainedTranslationExercise types', () => {
       contexts: [],
       answerVariants: [],
       skillType: 'meaning_recall',
-      exerciseType: 'constrained_translation',
+      exerciseType: 'translate_sentence_ex',
       constrainedTranslationData: {
         sourceLanguageSentence: 'I eat rice using chopsticks',
         requiredTargetPattern: 'Use -dengan (with) for the instrument',
@@ -38,7 +38,7 @@ describe('ConstrainedTranslationExercise types', () => {
       },
     }
 
-    expect(exerciseItem.exerciseType).toBe('constrained_translation')
+    expect(exerciseItem.exerciseType).toBe('translate_sentence_ex')
     expect(exerciseItem.constrainedTranslationData?.acceptableAnswers.length).toBeGreaterThan(0)
     expect(exerciseItem.constrainedTranslationData?.disallowedShortcutForms?.length).toBeGreaterThan(0)
   })

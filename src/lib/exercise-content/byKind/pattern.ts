@@ -3,10 +3,10 @@
 // First-ever live rendering of grammar (pattern) capabilities. Switches the 4
 // grammar exercise types from the legacy `exercise_variants.payload_json` blob
 // to the typed grammar-exercise tables (target plan Decision B + G):
-//   contrast_pair           → contrast_pair_exercises
-//   sentence_transformation → sentence_transformation_exercises
-//   constrained_translation → constrained_translation_exercises
-//   cloze_mcq (pattern)     → cloze_mcq_exercises
+//   choose_correct_form_ex           → contrast_pair_exercises
+//   transform_sentence_ex → sentence_transformation_exercises
+//   translate_sentence_ex → constrained_translation_exercises
+//   choose_missing_word_ex (pattern)     → cloze_mcq_exercises
 //
 // Structural difference from the other source kinds: these tables are keyed by
 // `grammar_pattern_id` (NOT capability_id), with MANY rows per pattern. A
@@ -20,7 +20,7 @@
 // FAIL-LOUD per §1.5: a ready pattern cap whose typed table has no row for the
 // resolver-chosen exercise_type surfaces `pattern_typed_row_missing` rather than
 // skipping silently. This also catches the per-type coverage gap (a pattern with
-// cloze_mcq rows but no sentence_transformation row, say) — readiness is
+// choose_missing_word_ex rows but no transform_sentence_ex row, say) — readiness is
 // structural (renderContracts + NOT NULL columns), not data-existence (Decision R).
 
 import {
@@ -35,10 +35,10 @@ import { patternSlugFromSourceRef } from '@/lib/capabilities'
 // exercise_type → typed table. The 4 grammar types this fetcher serves; any
 // other exerciseType on a pattern block is a planner bug (surfaced as a fail).
 const TABLE_BY_TYPE = {
-  contrast_pair: 'contrast_pair_exercises',
-  sentence_transformation: 'sentence_transformation_exercises',
-  constrained_translation: 'constrained_translation_exercises',
-  cloze_mcq: 'cloze_mcq_exercises',
+  choose_correct_form_ex: 'contrast_pair_exercises',
+  transform_sentence_ex: 'sentence_transformation_exercises',
+  translate_sentence_ex: 'constrained_translation_exercises',
+  choose_missing_word_ex: 'cloze_mcq_exercises',
 } as const
 type GrammarExerciseType = keyof typeof TABLE_BY_TYPE
 

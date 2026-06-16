@@ -26,7 +26,7 @@ function makeExerciseItem(overrides: Partial<ExerciseItem['clozeContext']> = {})
     contexts: [],
     answerVariants: [],
     skillType: 'form_recall',
-    exerciseType: 'cloze',
+    exerciseType: 'type_missing_word_ex',
     clozeContext: {
       sentence: 'Aku tidak ___ tinggal di rumah terus',
       targetWord: 'suka',

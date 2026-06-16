@@ -207,7 +207,7 @@ describe('upsertItemDistractors', () => {
       {
         capability_id: 'cap-1',
         recognition: ['eten', 'drinken', 'slapen'],
-        cued_recall: ['makan', 'minum', 'tidur'],
+        choose_form_ex: ['makan', 'minum', 'tidur'],
         cloze: ['jalan', 'duduk', 'berdiri'],
       },
     ]
@@ -238,7 +238,7 @@ describe('upsertItemDistractors', () => {
       {
         capability_id: 'cap-1',
         recognition: ['eten', 'drinken', 'slapen'],
-        cued_recall: ['makan', 'minum', 'tidur'],
+        choose_form_ex: ['makan', 'minum', 'tidur'],
         cloze: ['jalan', 'duduk', 'berdiri'],
       },
     ]
@@ -256,13 +256,13 @@ describe('upsertItemDistractors', () => {
       {
         capability_id: 'cap-1', // existing -> skip
         recognition: ['A', 'B', 'C'],
-        cued_recall: ['D', 'E', 'F'],
+        choose_form_ex: ['D', 'E', 'F'],
         cloze: ['G', 'H', 'I'],
       },
       {
         capability_id: 'cap-2', // new -> write
         recognition: ['J', 'K', 'L'],
-        cued_recall: ['M', 'N', 'O'],
+        choose_form_ex: ['M', 'N', 'O'],
         cloze: ['P', 'Q', 'R'],
       },
     ]

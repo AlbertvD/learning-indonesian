@@ -8,7 +8,7 @@ import type { CapabilityReviewSessionContext, SessionPlan } from '@/lib/session-
 const renderPlan = (sourceRef: string, capabilityKey: string): ExerciseRenderPlan => ({
   capabilityKey,
   sourceRef,
-  exerciseType: 'recognition_mcq',
+  exerciseType: 'choose_meaning_ex',
   capabilityType: 'recognise_meaning_from_text_cap',
   skillType: 'recognition',
 })

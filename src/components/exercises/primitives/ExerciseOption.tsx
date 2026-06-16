@@ -17,7 +17,7 @@ export interface ExerciseOptionProps {
   state: OptionState
   variant: OptionVariant
   onClick: () => void
-  /** Row-attached decorative audio button (contrast_pair). */
+  /** Row-attached decorative audio button (choose_correct_form_ex). */
   audio?: { url: string; onPlay?: () => void }
 }
 

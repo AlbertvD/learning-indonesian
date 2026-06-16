@@ -58,7 +58,7 @@ function makeItemBlocks(blockId: string, capId: string): ItemBucketEntry[] {
         renderPlan: {
           capabilityKey: 'cap:v1:vocabulary_src:learning_items/test-item:recognise_meaning_from_text_cap:id_to_l1:text:nl',
           sourceRef: 'learning_items/test-item',
-          exerciseType: 'recognition_mcq',
+          exerciseType: 'choose_meaning_ex',
           capabilityType: 'recognise_meaning_from_text_cap',
           skillType: 'recognition',
         },

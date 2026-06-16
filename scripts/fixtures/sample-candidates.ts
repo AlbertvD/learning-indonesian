@@ -5,7 +5,7 @@
 
 export const sampleCandidates = [
   {
-    exercise_type: 'contrast_pair',
+    exercise_type: 'choose_correct_form_ex',
     grammar_pattern_slug: 'yang-relative-pronoun',
     source_page: 5,
     review_status: 'published',
@@ -22,7 +22,7 @@ export const sampleCandidates = [
     },
   },
   {
-    exercise_type: 'sentence_transformation',
+    exercise_type: 'transform_sentence_ex',
     grammar_pattern_slug: 'yang-relative-pronoun',
     source_page: 5,
     review_status: 'pending_review',
@@ -36,7 +36,7 @@ export const sampleCandidates = [
     },
   },
   {
-    exercise_type: 'cloze_mcq',
+    exercise_type: 'choose_missing_word_ex',
     grammar_pattern_slug: 'yang-single-adjective-emphasis',
     source_page: 5,
     review_status: 'approved',

@@ -14,9 +14,9 @@
 // no live reader consumes them. The final cleanup PR drops the legacy
 // writes + tables.
 //
-// cloze_mcq remains item-only (its distractor pool is lesson-anchored and
+// choose_missing_word_ex remains item-only (its distractor pool is lesson-anchored and
 // extending it to dialogue_line is a follow-up). dialogue_line blocks
-// scheduled with exerciseType=cloze_mcq would be a planner bug —
+// scheduled with exerciseType=choose_missing_word_ex would be a planner bug —
 // defensively we still emit them with their typed-row data, but the
 // projector will reject the input shape with item_not_found.
 

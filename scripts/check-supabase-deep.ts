@@ -244,8 +244,8 @@ for (const table of EXPECTED_TABLES) {
   }
 }
 
-// ── Check: listening_mcq + dictation registered in exercise_type_availability ──
-for (const exerciseType of ['listening_mcq', 'dictation']) {
+// ── Check: choose_meaning_from_audio_ex + dictation registered in exercise_type_availability ──
+for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audio_ex']) {
   const { data: availRow, error: availErr } = await supabase
     .schema('indonesian')
     .from('exercise_type_availability')
@@ -992,10 +992,10 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 //        whose chosen exercise_type has no row for its pattern — HC19/HC20 are
 //        the structural no-orphan mirrors.
 //
-//        HC19: every contrast_grammar_pattern_cap cap's pattern has ≥1 contrast_pair row.
+//        HC19: every contrast_grammar_pattern_cap cap's pattern has ≥1 choose_correct_form_ex row.
 //        HC20: every recognise_grammar_pattern_cap cap's pattern has ≥1 row in at least
-//              ONE of (sentence_transformation / constrained_translation /
-//              cloze_mcq). Per-type coverage gaps remain possible (readiness is
+//              ONE of (transform_sentence_ex / translate_sentence_ex /
+//              choose_missing_word_ex). Per-type coverage gaps remain possible (readiness is
 //              structural, not data-existence — Decision R) and surface as a
 //              fail-loud reader diagnostic if the resolver picks an empty type.
 //
@@ -1009,12 +1009,12 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     .eq('source_kind', 'grammar_pattern_src')
     .is('retired_at', null)
   if (capsError) {
-    fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4)', capsError.message)
+    fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a choose_correct_form_ex row (PR 4)', capsError.message)
     fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4)', capsError.message)
   } else {
     const caps = (capRows ?? []) as CapForSatelliteCheck[]
     if (caps.length === 0) {
-      pass('HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4) (no pattern caps in DB; vacuously green)')
+      pass('HC19 every active contrast_grammar_pattern_cap cap resolves to a choose_correct_form_ex row (PR 4) (no pattern caps in DB; vacuously green)')
       pass('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4) (no pattern caps in DB; vacuously green)')
     } else {
       try {
@@ -1034,10 +1034,10 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         const contrastCaps = caps.filter((c) => c.capability_type === 'contrast_grammar_pattern_cap')
         const contrastOffenders = offenders.filter((c) => c.capability_type === 'contrast_grammar_pattern_cap')
         if (contrastOffenders.length === 0) {
-          pass(`HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4) (${contrastCaps.length} cap(s) checked)`)
+          pass(`HC19 every active contrast_grammar_pattern_cap cap resolves to a choose_correct_form_ex row (PR 4) (${contrastCaps.length} cap(s) checked)`)
         } else {
-          fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4)',
-            `${contrastOffenders.length}+ contrast_grammar_pattern_cap caps with no contrast_pair row for their pattern. ${reportFmt(contrastOffenders)}`)
+          fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a choose_correct_form_ex row (PR 4)',
+            `${contrastOffenders.length}+ contrast_grammar_pattern_cap caps with no choose_correct_form_ex row for their pattern. ${reportFmt(contrastOffenders)}`)
         }
 
         // HC20 — recognise_grammar_pattern_cap (union of the 3 recognition tables)
@@ -1047,10 +1047,10 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
           pass(`HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4) (${recognitionCaps.length} cap(s) checked)`)
         } else {
           fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4)',
-            `${recognitionOffenders.length}+ recognise_grammar_pattern_cap caps with no sentence_transformation/constrained_translation/cloze_mcq row for their pattern. ${reportFmt(recognitionOffenders)}`)
+            `${recognitionOffenders.length}+ recognise_grammar_pattern_cap caps with no transform_sentence_ex/translate_sentence_ex/choose_missing_word_ex row for their pattern. ${reportFmt(recognitionOffenders)}`)
         }
       } catch (err) {
-        fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4)', (err as Error).message)
+        fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a choose_correct_form_ex row (PR 4)', (err as Error).message)
         fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4)', (err as Error).message)
       }
     }

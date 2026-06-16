@@ -27,7 +27,7 @@ import {
 // ---------------------------------------------------------------------------
 
 const CONTRAST: GrammarExerciseCandidateInput = {
-  exercise_type: 'contrast_pair',
+  exercise_type: 'choose_correct_form_ex',
   payload: {
     promptText: 'Wijs naar het gebouw.',
     targetMeaning: 'bukan — geen',
@@ -41,7 +41,7 @@ const CONTRAST: GrammarExerciseCandidateInput = {
 }
 
 const CLOZE: GrammarExerciseCandidateInput = {
-  exercise_type: 'cloze_mcq',
+  exercise_type: 'choose_missing_word_ex',
   payload: {
     sentence: 'Ini ___ rumah.',
     translation: 'Dit is geen huis.',
@@ -139,8 +139,8 @@ describe('writeGrammarExercisesForPattern', () => {
     const { client, inserted } = buildWriteClient()
     const result = await writeGrammarExercisesForPattern(client, 'pat-1', 'lesson-1', [CONTRAST, CLOZE])
     expect(result.written).toBe(2)
-    expect(result.byType.contrast_pair).toBe(1)
-    expect(result.byType.cloze_mcq).toBe(1)
+    expect(result.byType.choose_correct_form_ex).toBe(1)
+    expect(result.byType.choose_missing_word_ex).toBe(1)
     expect(inserted['contrast_pair_exercises']).toHaveLength(1)
     expect(inserted['cloze_mcq_exercises']).toHaveLength(1)
     // keys + is_active injected on the row

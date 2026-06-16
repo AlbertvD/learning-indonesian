@@ -6,8 +6,8 @@
  *
  * Two sub-checks:
  *   1. Candidate has `payload` field (warning in legacy at 600–604, error here).
- *   2. Exercise type is recognized — grammar set (contrast_pair,
- *      sentence_transformation, constrained_translation, cloze_mcq) or vocab
+ *   2. Exercise type is recognized — grammar set (choose_correct_form_ex,
+ *      transform_sentence_ex, translate_sentence_ex, choose_missing_word_ex) or vocab
  *      family. Unknown types fail.
  *
  * `extractAnswerKey` returns the answer_key_json that the projector / adapter
@@ -18,16 +18,16 @@
 import type { ValidationFinding } from '../model'
 
 export const GRAMMAR_EXERCISE_TYPES = new Set([
-  'contrast_pair',
-  'sentence_transformation',
-  'constrained_translation',
-  'cloze_mcq',
+  'choose_correct_form_ex',
+  'transform_sentence_ex',
+  'translate_sentence_ex',
+  'choose_missing_word_ex',
 ])
 
 const VOCAB_EXERCISE_TYPES = new Set([
   'cloze',
-  'recognition_mcq',
-  'cued_recall',
+  'choose_meaning_ex',
+  'choose_form_ex',
 ])
 
 export interface CandidateLike {
@@ -89,12 +89,12 @@ export function extractAnswerKey(
   exerciseType: string,
   payload: Record<string, unknown>,
 ): Record<string, unknown> {
-  if (exerciseType === 'contrast_pair' || exerciseType === 'cloze_mcq') {
+  if (exerciseType === 'choose_correct_form_ex' || exerciseType === 'choose_missing_word_ex') {
     return { correctOptionId: payload.correctOptionId }
   }
   if (
-    exerciseType === 'sentence_transformation' ||
-    exerciseType === 'constrained_translation'
+    exerciseType === 'transform_sentence_ex' ||
+    exerciseType === 'translate_sentence_ex'
   ) {
     return { acceptableAnswers: payload.acceptableAnswers ?? [] }
   }

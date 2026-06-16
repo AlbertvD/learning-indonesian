@@ -28,8 +28,8 @@ export type ResolutionReasonCode =
   // byKind/affixedFormPair.ts.
   | 'affixed_form_pair_typed_row_missing'
   // PR 4: pattern source_kind has no fetcher → ref unparseable, or the typed
-  // grammar-exercise table (contrast_pair/sentence_transformation/
-  // constrained_translation/cloze_mcq_exercises) returns no row for a ready
+  // grammar-exercise table (choose_correct_form_ex/transform_sentence_ex/
+  // translate_sentence_ex/cloze_mcq_exercises) returns no row for a ready
   // pattern cap. Mirrors dialogue_line/word_form_pair_src: the per-source-kind
   // code names which byKind/* fetcher broke without parsing the canonical_key.
   | 'pattern_ref_unparseable'

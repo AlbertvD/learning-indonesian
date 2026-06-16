@@ -20,7 +20,7 @@ function renderOverlay(props: { capabilityId: string | null; exerciseType?: stri
     <MantineProvider>
       <AdminFlagOverlay
         capabilityId={props.capabilityId}
-        exerciseType={(props.exerciseType ?? 'recognition_mcq') as any}
+        exerciseType={(props.exerciseType ?? 'choose_meaning_ex') as any}
       />
     </MantineProvider>,
   )
@@ -44,7 +44,7 @@ describe('AdminFlagOverlay', () => {
     renderOverlay({ capabilityId: 'cap-1' })
     expect(await screen.findByRole('button', { name: 'Markeer voor review' })).toBeInTheDocument()
     await waitFor(() =>
-      expect(contentFlagService.getFlagForCapability).toHaveBeenCalledWith('admin-1', 'cap-1', 'recognition_mcq'),
+      expect(contentFlagService.getFlagForCapability).toHaveBeenCalledWith('admin-1', 'cap-1', 'choose_meaning_ex'),
     )
   })
 

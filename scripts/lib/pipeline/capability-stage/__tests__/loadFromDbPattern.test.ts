@@ -139,9 +139,9 @@ const PATTERN_CAPS = [
 ]
 
 // Exercise rows define the per-pattern coverage:
-//   gp-1 → contrast_pair (1 active) + cloze_mcq (1 active)  → {contrast_pair, cloze_mcq}
-//   gp-2 → sentence_transformation (1 active)               → {sentence_transformation}
-//   gp-2 has an INACTIVE constrained_translation row        → excluded from coverage
+//   gp-1 → choose_correct_form_ex (1 active) + choose_missing_word_ex (1 active)  → {choose_correct_form_ex, choose_missing_word_ex}
+//   gp-2 → transform_sentence_ex (1 active)               → {transform_sentence_ex}
+//   gp-2 has an INACTIVE translate_sentence_ex row        → excluded from coverage
 const CONTRAST_ROWS = [{ grammar_pattern_id: 'gp-1', is_active: true }]
 const SENTENCE_TRANSFORM_ROWS = [{ grammar_pattern_id: 'gp-2', is_active: true }]
 const CONSTRAINED_TRANSLATION_ROWS = [{ grammar_pattern_id: 'gp-2', is_active: false }]
@@ -268,17 +268,17 @@ describe('fetchPatternCapabilityState', () => {
     const state = await fetchPatternCapabilityState(buildFixtureMock() as never)
     const gp1 = state.exerciseCoverageByPatternId.get('gp-1')
     expect(gp1).toBeDefined()
-    expect([...gp1!].sort()).toEqual(['cloze_mcq', 'contrast_pair'])
+    expect([...gp1!].sort()).toEqual(['choose_correct_form_ex', 'choose_missing_word_ex'])
     const gp2 = state.exerciseCoverageByPatternId.get('gp-2')
     expect(gp2).toBeDefined()
-    expect([...gp2!]).toEqual(['sentence_transformation'])
+    expect([...gp2!]).toEqual(['transform_sentence_ex'])
   })
 
   it('excludes inactive exercise rows from coverage', async () => {
     const state = await fetchPatternCapabilityState(buildFixtureMock() as never)
-    // gp-2's only constrained_translation row is is_active=false → not covered
+    // gp-2's only translate_sentence_ex row is is_active=false → not covered
     const gp2 = state.exerciseCoverageByPatternId.get('gp-2')!
-    expect(gp2.has('constrained_translation')).toBe(false)
+    expect(gp2.has('translate_sentence_ex')).toBe(false)
   })
 
   it('omits patterns with no active exercise rows from the coverage map', async () => {
@@ -311,9 +311,9 @@ describe('fetchPatternCapabilityState', () => {
       cloze_mcq_exercises: { rows: [] },
     })
     const state = await fetchPatternCapabilityState(mock as never)
-    expect(state.exerciseCoverageByPatternId.get('gp-bulk')!.has('contrast_pair')).toBe(true)
+    expect(state.exerciseCoverageByPatternId.get('gp-bulk')!.has('choose_correct_form_ex')).toBe(true)
     // the row on the 2nd page would be lost without pagination:
-    expect(state.exerciseCoverageByPatternId.get('gp-tail')!.has('contrast_pair')).toBe(true)
+    expect(state.exerciseCoverageByPatternId.get('gp-tail')!.has('choose_correct_form_ex')).toBe(true)
   })
 
   it('throws when a coverage query errors', async () => {
@@ -362,7 +362,7 @@ describe('loadPatternFromDb', () => {
   it('coverage map types are well-formed GrammarExerciseType values', async () => {
     const result = await loadPatternFromDb(buildFixtureMock() as never, { lessonId: LESSON_ID })
     const valid: GrammarExerciseType[] = [
-      'contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq',
+      'choose_correct_form_ex', 'transform_sentence_ex', 'translate_sentence_ex', 'choose_missing_word_ex',
     ]
     for (const set of result.patternState.exerciseCoverageByPatternId.values()) {
       for (const type of set) expect(valid).toContain(type)

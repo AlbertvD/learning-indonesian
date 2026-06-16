@@ -66,7 +66,7 @@ function makeDialogueBlock(capabilityId: string, sourceRef: string): SessionBloc
     renderPlan: {
       capabilityKey: key,
       sourceRef,
-      exerciseType: 'cloze',
+      exerciseType: 'type_missing_word_ex',
       capabilityType: 'produce_form_from_context_cap',
       skillType: 'form_recall',
     },

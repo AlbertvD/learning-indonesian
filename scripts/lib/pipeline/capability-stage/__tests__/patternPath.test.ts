@@ -203,16 +203,16 @@ function fullGenerateFn(): (prompt: string) => Promise<string> {
     const slugMatch = prompt.match(/pattern slug: (\S+)/)
     const slug = slugMatch?.[1] ?? 'unknown'
     const cands: GrammarExerciseCandidate[] = [
-      { exercise_type: 'contrast_pair', grammar_pattern_slug: slug, payload: { promptText: 'p', targetMeaning: 'm', options: [{ id: 'bukan', text: 'bukan' }, { id: 'tidak', text: 'tidak' }], correctOptionId: 'bukan', explanationText: 'e' } },
-      { exercise_type: 'sentence_transformation', grammar_pattern_slug: slug, payload: { sourceSentence: 's', transformationInstruction: 'i', hintText: null, acceptableAnswers: ['a'], explanationText: 'e' } },
-      { exercise_type: 'constrained_translation', grammar_pattern_slug: slug, payload: { sourceLanguageSentence: 's', requiredTargetPattern: slug, disallowedShortcutForms: [], acceptableAnswers: ['a'], explanationText: 'e' } },
-      { exercise_type: 'cloze_mcq', grammar_pattern_slug: slug, payload: { sentence: 'Ini ___ rumah.', translation: 't', options: ['bukan', 'tidak', 'belum', 'jangan'], correctOptionId: 'bukan', explanationText: 'e' } },
+      { exercise_type: 'choose_correct_form_ex', grammar_pattern_slug: slug, payload: { promptText: 'p', targetMeaning: 'm', options: [{ id: 'bukan', text: 'bukan' }, { id: 'tidak', text: 'tidak' }], correctOptionId: 'bukan', explanationText: 'e' } },
+      { exercise_type: 'transform_sentence_ex', grammar_pattern_slug: slug, payload: { sourceSentence: 's', transformationInstruction: 'i', hintText: null, acceptableAnswers: ['a'], explanationText: 'e' } },
+      { exercise_type: 'translate_sentence_ex', grammar_pattern_slug: slug, payload: { sourceLanguageSentence: 's', requiredTargetPattern: slug, disallowedShortcutForms: [], acceptableAnswers: ['a'], explanationText: 'e' } },
+      { exercise_type: 'choose_missing_word_ex', grammar_pattern_slug: slug, payload: { sentence: 'Ini ___ rumah.', translation: 't', options: ['bukan', 'tidak', 'belum', 'jangan'], correctOptionId: 'bukan', explanationText: 'e' } },
     ]
     return JSON.stringify(cands)
   }
 }
 
-const ALL_TYPES: GrammarExerciseType[] = ['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq']
+const ALL_TYPES: GrammarExerciseType[] = ['choose_correct_form_ex', 'transform_sentence_ex', 'translate_sentence_ex', 'choose_missing_word_ex']
 
 function baseInput(state: ExistingPatternState, regenerateSlug: string | null = null): WritePatternPathInput {
   const projection = projectPatternsFromCategories({ categories: CATEGORIES, lessonNumber: 6, lessonId: 'lesson-6' })
@@ -286,7 +286,7 @@ describe('writePatternPath', () => {
       exerciseVariants: [{ id: 'oldev', grammar_pattern_id: 'pat-A' }],
     })
     const coverage = new Map<string, Set<GrammarExerciseType>>([
-      ['pat-A', new Set<GrammarExerciseType>(['contrast_pair', 'sentence_transformation'])], // partial
+      ['pat-A', new Set<GrammarExerciseType>(['choose_correct_form_ex', 'transform_sentence_ex'])], // partial
       ['pat-B', new Set(ALL_TYPES)], // seeded
     ])
     const result = await writePatternPath(

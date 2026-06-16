@@ -59,19 +59,19 @@ export type LazyExercise = LazyExoticComponent<ComponentType<ExerciseComponentPr
 export const exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>> = {
   // PR #4a — Tier 1 (simplest)
   speaking:        lazy(() => import('./implementations/SpeakingExercise')),
-  contrast_pair:   lazy(() => import('./implementations/ContrastPairExercise')),
-  recognition_mcq: lazy(() => import('./implementations/RecognitionMCQ')),
-  cued_recall:     lazy(() => import('./implementations/CuedRecallExercise')),
+  choose_correct_form_ex:   lazy(() => import('./implementations/ContrastPairExercise')),
+  choose_meaning_ex: lazy(() => import('./implementations/RecognitionMCQ')),
+  choose_form_ex:     lazy(() => import('./implementations/CuedRecallExercise')),
   // PR #4b — Tier 2 (typed + audio MCQ)
-  typed_recall:    lazy(() => import('./implementations/TypedRecall')),
-  meaning_recall:  lazy(() => import('./implementations/MeaningRecall')),
-  listening_mcq:   lazy(() => import('./implementations/ListeningMCQ')),
-  cloze_mcq:       lazy(() => import('./implementations/ClozeMcq')),
+  type_form_ex:    lazy(() => import('./implementations/TypedRecall')),
+  type_meaning_ex:  lazy(() => import('./implementations/MeaningRecall')),
+  choose_meaning_from_audio_ex:   lazy(() => import('./implementations/ListeningMCQ')),
+  choose_missing_word_ex:       lazy(() => import('./implementations/ClozeMcq')),
   // PR #4c — Tier 3 (complex configs)
-  cloze:                   lazy(() => import('./implementations/Cloze')),
-  sentence_transformation: lazy(() => import('./implementations/SentenceTransformationExercise')),
-  constrained_translation: lazy(() => import('./implementations/ConstrainedTranslationExercise')),
-  dictation:               lazy(() => import('./implementations/Dictation')),
+  type_missing_word_ex:                   lazy(() => import('./implementations/Cloze')),
+  transform_sentence_ex: lazy(() => import('./implementations/SentenceTransformationExercise')),
+  translate_sentence_ex: lazy(() => import('./implementations/ConstrainedTranslationExercise')),
+  type_form_from_audio_ex:               lazy(() => import('./implementations/Dictation')),
 }
 
 /**
@@ -79,17 +79,17 @@ export const exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>> = {
  * loading. Prevents layout shift when the real exercise mounts.
  */
 export const exerciseSkeletonVariant: Record<ExerciseType, 'word' | 'sentence' | 'audio'> = {
-  recognition_mcq:         'word',
-  cued_recall:             'word',
-  typed_recall:            'word',
-  meaning_recall:          'word',
-  cloze:                   'sentence',
-  cloze_mcq:               'sentence',
-  contrast_pair:           'word',
-  sentence_transformation: 'sentence',
-  constrained_translation: 'sentence',
-  listening_mcq:           'audio',
-  dictation:               'audio',
+  choose_meaning_ex:         'word',
+  choose_form_ex:             'word',
+  type_form_ex:            'word',
+  type_meaning_ex:          'word',
+  type_missing_word_ex:                   'sentence',
+  choose_missing_word_ex:               'sentence',
+  choose_correct_form_ex:           'word',
+  transform_sentence_ex: 'sentence',
+  translate_sentence_ex: 'sentence',
+  choose_meaning_from_audio_ex:           'audio',
+  type_form_from_audio_ex:               'audio',
   speaking:                'word',
 }
 

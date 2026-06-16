@@ -686,10 +686,10 @@ export async function writeGrammarExercisesForPattern(
   candidates: GrammarExerciseCandidateInput[],
 ): Promise<WriteGrammarExercisesResult> {
   const byType: Record<GrammarExerciseType, number> = {
-    contrast_pair: 0,
-    sentence_transformation: 0,
-    constrained_translation: 0,
-    cloze_mcq: 0,
+    choose_correct_form_ex: 0,
+    transform_sentence_ex: 0,
+    translate_sentence_ex: 0,
+    choose_missing_word_ex: 0,
   }
   let written = 0
   for (const candidate of candidates) {
@@ -878,10 +878,10 @@ export function lookupAudioClip(
 
 export interface ItemDistractorRow {
   capability_id: string
-  /** Distractor texts for recognition_mcq (L1→L2 MCQ wrong choices) */
+  /** Distractor texts for choose_meaning_ex (L1→L2 MCQ wrong choices) */
   recognition: string[]
-  /** Distractor texts for cued_recall (L2→L1 MCQ wrong choices) */
-  cued_recall: string[]
+  /** Distractor texts for choose_form_ex (L2→L1 MCQ wrong choices) */
+  choose_form_ex: string[]
   /** Distractor texts for cloze_mcq_item (in-sentence MCQ wrong choices) */
   cloze: string[]
 }
@@ -896,7 +896,7 @@ type DistractorTable = typeof DISTRACTOR_TABLES[number]
 
 function distractorPayload(table: DistractorTable, rows: ItemDistractorRow[]): Array<{ capability_id: string; distractors: string[] }> {
   if (table === 'recognition_mcq_distractors') return rows.map((r) => ({ capability_id: r.capability_id, distractors: r.recognition }))
-  if (table === 'cued_recall_distractors') return rows.map((r) => ({ capability_id: r.capability_id, distractors: r.cued_recall }))
+  if (table === 'cued_recall_distractors') return rows.map((r) => ({ capability_id: r.capability_id, distractors: r.choose_form_ex }))
   return rows.map((r) => ({ capability_id: r.capability_id, distractors: r.cloze }))
 }
 
@@ -953,7 +953,7 @@ export async function upsertItemDistractors(
  *
  * Only writes to `recognition_mcq_distractors`. Each row carries one
  * capability_id (must be a recognise_meaning_from_text_cap cap) and its `recognition`
- * distractor array. The `cued_recall` and `cloze` fields on ItemDistractorRow
+ * distractor array. The `choose_form_ex` and `cloze` fields on ItemDistractorRow
  * are ignored by this function.
  *
  * Returns the count of newly-inserted rows (skipped = existing rows untouched).

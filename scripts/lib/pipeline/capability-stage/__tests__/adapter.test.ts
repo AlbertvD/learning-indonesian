@@ -178,12 +178,12 @@ describe('capability-stage adapter — retireOrphanedCapabilities', () => {
     const { client, updateCalls, stateClearCalls } = buildRetireClient([
       { id: 'cap-a', canonical_key: 'item:halo:recognition' },     // re-emitted → keep
       { id: 'cap-b', canonical_key: 'item:gone:recognition' },     // orphan    → retire
-      { id: 'cap-c', canonical_key: 'item:halo:cued_recall' },     // re-emitted → keep
+      { id: 'cap-c', canonical_key: 'item:halo:choose_form_ex' },     // re-emitted → keep
       { id: 'cap-d', canonical_key: 'dialogue_line:old-text:cl' }, // orphan    → retire
     ])
     const result = await retireOrphanedCapabilities(client, {
       lessonId: 'lesson-uuid-1',
-      emittedKeys: ['item:halo:recognition', 'item:halo:cued_recall', 'item:new:recognition'],
+      emittedKeys: ['item:halo:recognition', 'item:halo:choose_form_ex', 'item:new:recognition'],
     })
     expect(result.retiredCount).toBe(2)
     expect(result.retiredKeys.sort()).toEqual([
@@ -206,7 +206,7 @@ describe('capability-stage adapter — retireOrphanedCapabilities', () => {
     ])
     const result = await retireOrphanedCapabilities(client, {
       lessonId: 'lesson-uuid-1',
-      emittedKeys: ['item:halo:recognition', 'item:halo:cued_recall'],
+      emittedKeys: ['item:halo:recognition', 'item:halo:choose_form_ex'],
     })
     expect(result.retiredCount).toBe(0)
     expect(result.retiredKeys).toEqual([])
@@ -226,7 +226,7 @@ describe('capability-stage adapter — retireOrphanedCapabilities', () => {
   it('retires every active cap when the emit set is empty (mass retire)', async () => {
     const { client, updateCalls } = buildRetireClient([
       { id: 'cap-a', canonical_key: 'item:halo:recognition' },
-      { id: 'cap-b', canonical_key: 'item:halo:cued_recall' },
+      { id: 'cap-b', canonical_key: 'item:halo:choose_form_ex' },
     ])
     const result = await retireOrphanedCapabilities(client, {
       lessonId: 'lesson-uuid-1',

@@ -1,4 +1,4 @@
-// builder for exerciseType='contrast_pair' (pattern source kind).
+// builder for exerciseType='choose_correct_form_ex' (pattern source kind).
 // PR 4: reads the typed contrast_pair_exercises row (input.exercise) instead of
 // exercise_variants.payload_json. Contract guarantees `exercise` is non-null
 // (projector). No learningItem — pattern caps are not item-rooted.
@@ -6,7 +6,7 @@
 import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildContrastPair(input: BuilderInputFor<'contrast_pair'>): BuilderResult {
+export function buildContrastPair(input: BuilderInputFor<'choose_correct_form_ex'>): BuilderResult {
   const ex = input.exercise
 
   // options is jsonb [{id, text}, ...] (audit I2). ContrastPairExercise compares
@@ -17,7 +17,7 @@ export function buildContrastPair(input: BuilderInputFor<'contrast_pair'>): Buil
     return {
       kind: 'fail',
       reasonCode: 'malformed_payload',
-      message: `contrast_pair exercise ${ex.id} expects 2 options, got ${optionTexts.length}`,
+      message: `choose_correct_form_ex exercise ${ex.id} expects 2 options, got ${optionTexts.length}`,
       payloadSnapshot: { exerciseId: ex.id, optionCount: optionTexts.length },
     }
   }
@@ -30,7 +30,7 @@ export function buildContrastPair(input: BuilderInputFor<'contrast_pair'>): Buil
     contexts: input.contexts,
     answerVariants: [],
     skillType: 'recognition' as const,
-    exerciseType: 'contrast_pair' as const,
+    exerciseType: 'choose_correct_form_ex' as const,
     contrastPairData: {
       promptText: ex.prompt_text,
       targetMeaning: ex.target_meaning,

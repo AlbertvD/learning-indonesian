@@ -6,7 +6,7 @@ vi.mock('@/lib/supabase')
 const baseRow = {
   id: 'flag-1', user_id: 'user-1',
   capability_id: 'cap-1',
-  exercise_type: 'recognition_mcq', exercise_variant_id: null,
+  exercise_type: 'choose_meaning_ex', exercise_variant_id: null,
   flag_type: 'wrong_translation', comment: 'test', status: 'open',
   created_at: '2026-01-01', updated_at: '2026-01-01',
 }
@@ -23,7 +23,7 @@ describe('contentFlagService', () => {
     const result = await contentFlagService.upsertFlag({
       userId: 'user-1',
       capabilityId: 'cap-1',
-      exerciseType: 'recognition_mcq',
+      exerciseType: 'choose_meaning_ex',
       exerciseVariantId: null,
       flagType: 'wrong_translation',
       comment: 'test',
@@ -47,7 +47,7 @@ describe('contentFlagService', () => {
     const result = await contentFlagService.upsertFlag({
       userId: 'user-1',
       capabilityId: 'cap-dlg-9',
-      exerciseType: 'cloze',
+      exerciseType: 'type_missing_word_ex',
       exerciseVariantId: null,
       flagType: 'confusing',
       comment: null,
@@ -70,7 +70,7 @@ describe('contentFlagService', () => {
     }
     vi.mocked(supabase.schema).mockReturnValue({ from: vi.fn().mockReturnValue(mockChain) } as any)
 
-    const result = await contentFlagService.getFlagForCapability('user-1', 'cap-1', 'recognition_mcq')
+    const result = await contentFlagService.getFlagForCapability('user-1', 'cap-1', 'choose_meaning_ex')
     expect(result).toBeNull()
   })
 
@@ -84,7 +84,7 @@ describe('contentFlagService', () => {
     }
     vi.mocked(supabase.schema).mockReturnValue({ from: vi.fn().mockReturnValue(mockChain) } as any)
 
-    const result = await contentFlagService.getFlagForCapability('user-1', 'cap-1', 'recognition_mcq')
+    const result = await contentFlagService.getFlagForCapability('user-1', 'cap-1', 'choose_meaning_ex')
     expect(result?.capabilityId).toBe('cap-1')
   })
 

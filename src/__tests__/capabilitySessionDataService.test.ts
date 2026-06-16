@@ -217,7 +217,7 @@ describe('capability session data service', () => {
 
     expect(snapshot.readinessByKey.get('cap:v1:vocabulary_src:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl')).toEqual({
       status: 'ready',
-      allowedExercises: ['cued_recall'],
+      allowedExercises: ['choose_form_ex'],
     })
     expect(snapshot.plannerInput.readyCapabilities).toEqual(expect.arrayContaining([
       expect.objectContaining({

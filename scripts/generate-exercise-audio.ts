@@ -85,7 +85,7 @@ function collectFromExerciseVariants(variants: any[], primaryVoice: string): Tex
       })
     }
 
-    if (type === 'cloze_mcq') {
+    if (type === 'choose_missing_word_ex') {
       // sentence with blank filled in
       if (payload.sentence && payload.correctOptionId) {
         const filled = (payload.sentence as string).replace('___', payload.correctOptionId)
@@ -98,20 +98,20 @@ function collectFromExerciseVariants(variants: any[], primaryVoice: string): Tex
           addText(optText, 'option')
         }
       }
-    } else if (type === 'contrast_pair') {
+    } else if (type === 'choose_correct_form_ex') {
       if (Array.isArray(payload.options)) {
         for (const option of payload.options) {
           addText(option?.text, 'option')
         }
       }
-    } else if (type === 'sentence_transformation') {
+    } else if (type === 'transform_sentence_ex') {
       addText(payload.sourceSentence, 'sourceSentence')
       if (Array.isArray(payload.acceptableAnswers)) {
         for (const answer of payload.acceptableAnswers) {
           addText(answer, 'acceptableAnswer')
         }
       }
-    } else if (type === 'constrained_translation') {
+    } else if (type === 'translate_sentence_ex') {
       if (Array.isArray(payload.acceptableAnswers)) {
         for (const answer of payload.acceptableAnswers) {
           addText(answer, 'acceptableAnswer')

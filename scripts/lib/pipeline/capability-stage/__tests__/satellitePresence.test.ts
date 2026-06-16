@@ -103,11 +103,11 @@ describe('findCapsMissingSatellite', () => {
     expect(missing.map((m) => m.id)).toEqual(['y'])
   })
 
-  it('flags contrast_grammar_pattern_cap caps with no contrast_pair row (HC19 mirror)', async () => {
+  it('flags contrast_grammar_pattern_cap caps with no choose_correct_form_ex row (HC19 mirror)', async () => {
     const caps = [patternCap('p1', 'meN', 'contrast_grammar_pattern_cap'), patternCap('p2', 'di', 'contrast_grammar_pattern_cap')]
     const client = buildSatelliteClient({
       grammar_patterns: [{ id: 'gp-men', slug: 'meN' }, { id: 'gp-di', slug: 'di' }],
-      // only the meN pattern has a contrast_pair row; di is the offender.
+      // only the meN pattern has a choose_correct_form_ex row; di is the offender.
       contrast_pair_exercises: [{ grammar_pattern_id: 'gp-men' }],
       sentence_transformation_exercises: [],
       constrained_translation_exercises: [],
@@ -119,8 +119,8 @@ describe('findCapsMissingSatellite', () => {
 
   it('treats recognise_grammar_pattern_cap as covered by ANY of the 3 recognition tables (HC20 mirror)', async () => {
     const caps = [
-      patternCap('r1', 'meN', 'recognise_grammar_pattern_cap'), // covered by cloze_mcq
-      patternCap('r2', 'di', 'recognise_grammar_pattern_cap'), // covered by sentence_transformation
+      patternCap('r1', 'meN', 'recognise_grammar_pattern_cap'), // covered by choose_missing_word_ex
+      patternCap('r2', 'di', 'recognise_grammar_pattern_cap'), // covered by transform_sentence_ex
       patternCap('r3', 'ber', 'recognise_grammar_pattern_cap'), // no recognition row → offender
     ]
     const client = buildSatelliteClient({

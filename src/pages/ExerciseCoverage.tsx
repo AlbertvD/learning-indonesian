@@ -36,7 +36,7 @@ const ROWS: RowDef[] = [
     getValue: c => ({ ok: c.hasMeanings }),
   },
   {
-    label: 'recognition / typed_recall / cued_recall',
+    label: 'recognition / type_form_ex / choose_form_ex',
     getValue: c => ({ ok: c.learningItems > 0 && c.hasMeanings }),
   },
   {
@@ -44,7 +44,7 @@ const ROWS: RowDef[] = [
     getValue: c => ({ ok: c.clozeContexts > 0, count: c.clozeContexts }),
   },
   {
-    label: 'cloze / cloze_mcq (vocabulary)',
+    label: 'cloze / choose_missing_word_ex (vocabulary)',
     getValue: c => ({ ok: c.clozeContexts > 0 }),
   },
   {
@@ -59,18 +59,18 @@ const ROWS: RowDef[] = [
     },
   },
   {
-    label: 'contrast_pair / sentence_transformation / constrained_translation',
+    label: 'choose_correct_form_ex / transform_sentence_ex / translate_sentence_ex',
     getValue: c => ({
-      ok: (c.exerciseVariants['contrast_pair'] ?? 0) > 0
-        || (c.exerciseVariants['sentence_transformation'] ?? 0) > 0
-        || (c.exerciseVariants['constrained_translation'] ?? 0) > 0,
+      ok: (c.exerciseVariants['choose_correct_form_ex'] ?? 0) > 0
+        || (c.exerciseVariants['transform_sentence_ex'] ?? 0) > 0
+        || (c.exerciseVariants['translate_sentence_ex'] ?? 0) > 0,
     }),
   },
   {
-    label: 'cloze_mcq (grammar)',
+    label: 'choose_missing_word_ex (grammar)',
     getValue: c => ({
-      ok: (c.exerciseVariants['cloze_mcq'] ?? 0) > 0,
-      count: c.exerciseVariants['cloze_mcq'] ?? 0,
+      ok: (c.exerciseVariants['choose_missing_word_ex'] ?? 0) > 0,
+      count: c.exerciseVariants['choose_missing_word_ex'] ?? 0,
     }),
   },
 ]

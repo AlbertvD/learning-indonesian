@@ -294,10 +294,10 @@ function fullGrammarGenerateFn(): (prompt: string) => Promise<string> {
   return async (prompt: string) => {
     const slug = prompt.match(/pattern slug: (\S+)/)?.[1] ?? 'unknown'
     return JSON.stringify([
-      { exercise_type: 'contrast_pair', grammar_pattern_slug: slug, payload: { promptText: 'p', targetMeaning: 'm', options: [{ id: 'bukan', text: 'bukan' }, { id: 'tidak', text: 'tidak' }], correctOptionId: 'bukan', explanationText: 'e' } },
-      { exercise_type: 'sentence_transformation', grammar_pattern_slug: slug, payload: { sourceSentence: 's', transformationInstruction: 'i', hintText: null, acceptableAnswers: ['a'], explanationText: 'e' } },
-      { exercise_type: 'constrained_translation', grammar_pattern_slug: slug, payload: { sourceLanguageSentence: 's', requiredTargetPattern: slug, disallowedShortcutForms: [], acceptableAnswers: ['a'], explanationText: 'e' } },
-      { exercise_type: 'cloze_mcq', grammar_pattern_slug: slug, payload: { sentence: 'Ini ___ rumah.', translation: 't', options: ['bukan', 'tidak', 'belum', 'jangan'], correctOptionId: 'bukan', explanationText: 'e' } },
+      { exercise_type: 'choose_correct_form_ex', grammar_pattern_slug: slug, payload: { promptText: 'p', targetMeaning: 'm', options: [{ id: 'bukan', text: 'bukan' }, { id: 'tidak', text: 'tidak' }], correctOptionId: 'bukan', explanationText: 'e' } },
+      { exercise_type: 'transform_sentence_ex', grammar_pattern_slug: slug, payload: { sourceSentence: 's', transformationInstruction: 'i', hintText: null, acceptableAnswers: ['a'], explanationText: 'e' } },
+      { exercise_type: 'translate_sentence_ex', grammar_pattern_slug: slug, payload: { sourceLanguageSentence: 's', requiredTargetPattern: slug, disallowedShortcutForms: [], acceptableAnswers: ['a'], explanationText: 'e' } },
+      { exercise_type: 'choose_missing_word_ex', grammar_pattern_slug: slug, payload: { sentence: 'Ini ___ rumah.', translation: 't', options: ['bukan', 'tidak', 'belum', 'jangan'], correctOptionId: 'bukan', explanationText: 'e' } },
     ])
   }
 }

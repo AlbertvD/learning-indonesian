@@ -86,7 +86,7 @@ const dormantReviewContext: CapabilityReviewSessionContext = {
   capabilityPublicationStatus: 'published',
 }
 
-function makeBlock(id: string, kind: 'due_review' | 'new_introduction', exerciseType = 'meaning_recall'): SessionBlock {
+function makeBlock(id: string, kind: 'due_review' | 'new_introduction', exerciseType = 'type_meaning_ex'): SessionBlock {
   return {
     id,
     kind,
@@ -112,7 +112,7 @@ function makeBlock(id: string, kind: 'due_review' | 'new_introduction', exercise
   }
 }
 
-function makeExerciseItem(exerciseType = 'meaning_recall'): ExerciseItem {
+function makeExerciseItem(exerciseType = 'type_meaning_ex'): ExerciseItem {
   return {
     learningItem: {
       id: 'item-1', item_type: 'word', base_text: 'makan', normalized_text: 'makan',
@@ -233,8 +233,8 @@ describe('ExperiencePlayer — stepwise shell', () => {
     vi.mocked(resolveExerciseComponent).mockImplementation(() => CountingStub as never)
 
     const blocks = [
-      makeBlock('b1', 'due_review', 'recognition_mcq'),
-      makeBlock('b2', 'new_introduction', 'recognition_mcq'),
+      makeBlock('b1', 'due_review', 'choose_meaning_ex'),
+      makeBlock('b2', 'new_introduction', 'choose_meaning_ex'),
     ]
     const p = makePlan(blocks)
     const contexts = new Map(blocks.map(b => [b.id, makeOk(b)]))
@@ -432,9 +432,9 @@ describe('ExperiencePlayer — stepwise shell', () => {
   it('9b. Registry-missing blocks are silent-filtered', async () => {
     const { resolveExerciseComponent } = await import('@/components/exercises/registry')
     const blocks = [
-      makeBlock('b1', 'due_review', 'meaning_recall'),
+      makeBlock('b1', 'due_review', 'type_meaning_ex'),
       makeBlock('b2', 'new_introduction', 'unknown_type_xyz' as never),
-      makeBlock('b3', 'due_review', 'meaning_recall'),
+      makeBlock('b3', 'due_review', 'type_meaning_ex'),
     ]
     const p = makePlan(blocks)
     const contexts = new Map(blocks.map(b => [b.id, makeOk(b)]))

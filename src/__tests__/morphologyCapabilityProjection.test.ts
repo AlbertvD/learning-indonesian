@@ -59,21 +59,21 @@ describe('morphology capability projection', () => {
     }))
   })
 
-  it('marks morphology produce_derived_form_cap ready via typed_recall with NO capability_artifacts (PR 3 slice: structure lives in the typed affixed_form_pairs table + validateAffixedFormPairs + HC17)', () => {
+  it('marks morphology produce_derived_form_cap ready via type_form_ex with NO capability_artifacts (PR 3 slice: structure lives in the typed affixed_form_pairs table + validateAffixedFormPairs + HC17)', () => {
     const recall = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'produce_derived_form_cap')!
     const readiness = validateCapability({ capability: recall })
     expect(readiness.status).toBe('ready')
     if (readiness.status === 'ready') {
-      expect(readiness.allowedExercises).toEqual(['typed_recall'])
+      expect(readiness.allowedExercises).toEqual(['type_form_ex'])
     }
   })
 
-  it('marks morphology recognise_word_form_link_cap ready via typed_recall with NO capability_artifacts (PR 3 slice)', () => {
+  it('marks morphology recognise_word_form_link_cap ready via type_form_ex with NO capability_artifacts (PR 3 slice)', () => {
     const recognition = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'recognise_word_form_link_cap')!
     const readiness = validateCapability({ capability: recognition })
     expect(readiness.status).toBe('ready')
     if (readiness.status === 'ready') {
-      expect(readiness.allowedExercises).toEqual(['typed_recall'])
+      expect(readiness.allowedExercises).toEqual(['type_form_ex'])
     }
   })
 

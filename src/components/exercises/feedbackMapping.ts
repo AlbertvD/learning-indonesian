@@ -19,7 +19,7 @@ export interface FeedbackMapInput {
   response: string | null
   outcome: 'correct' | 'fuzzy' | 'wrong'
   userLanguage: 'en' | 'nl'
-  /** Whether this is a grammar-pattern exercise. `cloze_mcq` uses this to pick
+  /** Whether this is a grammar-pattern exercise. `choose_missing_word_ex` uses this to pick
    *  between vocab-pair (vocab context) and grammar-reveal (grammar pattern). */
   isGrammar?: boolean
   /** Optional list of accepted answer variants beyond the canonical one. */
@@ -34,8 +34,8 @@ export type FeedbackProps = Omit<ExerciseFeedbackProps, 'onContinue' | 'continue
 
 /**
  * Build feedback-screen props from an ExerciseItem + commit state.
- * Dispatches on exerciseType. Grammar-tagged cloze_mcq routes to
- * grammar-reveal; vocab cloze_mcq uses vocab-pair.
+ * Dispatches on exerciseType. Grammar-tagged choose_missing_word_ex routes to
+ * grammar-reveal; vocab choose_missing_word_ex uses vocab-pair.
  */
 export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
   const { item, response, outcome, userLanguage, isGrammar, acceptedVariants, promptAudioUrl, commitFailed } = input
@@ -45,7 +45,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
   const L1Text = primaryMeaning?.translation_text ?? ''
 
   switch (item.exerciseType) {
-    case 'recognition_mcq': {
+    case 'choose_meaning_ex': {
       // ID → L1 MCQ
       const base = item.learningItem?.base_text ?? ''
       return {
@@ -60,7 +60,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'cued_recall': {
+    case 'choose_form_ex': {
       // L1 cue → ID
       const prompt = item.cuedRecallData?.promptMeaningText ?? ''
       const correct = item.cuedRecallData?.correctOptionId ?? ''
@@ -76,7 +76,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'typed_recall': {
+    case 'type_form_ex': {
       // word_form_pair_src sub-branch — morphology drills. Renders in the
       // grammar-reveal layout so the allomorph rule surfaces as the
       // explanation card (ExerciseFeedback.tsx:274 only renders `explanation`
@@ -110,7 +110,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'meaning_recall': {
+    case 'type_meaning_ex': {
       // ID → L1 typed
       const base = item.learningItem?.base_text ?? ''
       return {
@@ -125,7 +125,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'listening_mcq': {
+    case 'choose_meaning_from_audio_ex': {
       // audio → L1
       const base = item.learningItem?.base_text ?? ''
       return {
@@ -140,7 +140,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'dictation': {
+    case 'type_form_from_audio_ex': {
       // audio → ID typed
       const base = item.learningItem?.base_text ?? ''
       return {
@@ -156,7 +156,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'cloze': {
+    case 'type_missing_word_ex': {
       // Sentence with blank; ID → ID typed
       const target = item.clozeContext?.targetWord ?? ''
       const sentence = item.clozeContext?.sentence ?? ''
@@ -173,7 +173,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'cloze_mcq': {
+    case 'choose_missing_word_ex': {
       // Sentence with blank, MCQ — vocab (no grammar pattern) vs grammar
       const sentence = item.clozeMcqData?.sentence ?? ''
       const correct = item.clozeMcqData?.correctOptionId ?? ''
@@ -192,7 +192,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'contrast_pair': {
+    case 'choose_correct_form_ex': {
       const correct = item.contrastPairData?.correctOptionId ?? ''
       return {
         outcome,
@@ -207,7 +207,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'sentence_transformation': {
+    case 'transform_sentence_ex': {
       const target = item.sentenceTransformationData?.acceptableAnswers[0] ?? ''
       return {
         outcome,
@@ -222,7 +222,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
-    case 'constrained_translation': {
+    case 'translate_sentence_ex': {
       const data = item.constrainedTranslationData
       const isCloze = !!data?.targetSentenceWithBlank && !!data?.blankAcceptableAnswers?.length
       const acceptable = isCloze ? (data?.blankAcceptableAnswers ?? []) : (data?.acceptableAnswers ?? [])

@@ -24,7 +24,7 @@ function projection(): ProjectedCapability {
 }
 
 function readiness(): CapabilityReadiness {
-  return { status: 'ready', allowedExercises: ['meaning_recall'] }
+  return { status: 'ready', allowedExercises: ['type_meaning_ex'] }
 }
 
 function context(): CapabilityReviewSessionContext {
@@ -54,7 +54,7 @@ describe('resolveCandidate', () => {
     if ('renderPlan' in outcome) {
       expect(outcome.renderPlan).toEqual(expect.objectContaining({
         capabilityKey: canonicalKey,
-        exerciseType: 'meaning_recall',
+        exerciseType: 'type_meaning_ex',
       }))
     }
   })

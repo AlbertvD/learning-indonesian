@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import type { ExerciseItem } from '@/types/learning'
 
 describe('CuedRecallExercise types', () => {
-  it('compiles ExerciseItem with cued_recall data', () => {
+  it('compiles ExerciseItem with choose_form_ex data', () => {
     const exerciseItem: ExerciseItem = {
       learningItem: {
         id: 'item-1',
@@ -50,7 +50,7 @@ describe('CuedRecallExercise types', () => {
       ],
       answerVariants: [],
       skillType: 'meaning_recall',
-      exerciseType: 'cued_recall',
+      exerciseType: 'choose_form_ex',
       cuedRecallData: {
         promptMeaningText: 'to eat',
         cueText: 'action word',
@@ -60,13 +60,13 @@ describe('CuedRecallExercise types', () => {
       },
     }
 
-    expect(exerciseItem.exerciseType).toBe('cued_recall')
+    expect(exerciseItem.exerciseType).toBe('choose_form_ex')
     expect(exerciseItem.cuedRecallData?.promptMeaningText).toBe('to eat')
     expect(exerciseItem.cuedRecallData?.options.length).toBe(4)
   })
 
-  it('allows cued_recall exercise type', () => {
-    const type: ExerciseItem['exerciseType'] = 'cued_recall'
-    expect(type).toBe('cued_recall')
+  it('allows choose_form_ex exercise type', () => {
+    const type: ExerciseItem['exerciseType'] = 'choose_form_ex'
+    expect(type).toBe('choose_form_ex')
   })
 })

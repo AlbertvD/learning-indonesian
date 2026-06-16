@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import type { ExerciseItem } from '@/types/learning'
 
 describe('ContrastPairExercise types', () => {
-  it('compiles ExerciseItem with contrast_pair data', () => {
+  it('compiles ExerciseItem with choose_correct_form_ex data', () => {
     const exerciseItem: ExerciseItem = {
       learningItem: {
         id: 'item-1',
@@ -27,7 +27,7 @@ describe('ContrastPairExercise types', () => {
       contexts: [],
       answerVariants: [],
       skillType: 'recognition',
-      exerciseType: 'contrast_pair',
+      exerciseType: 'choose_correct_form_ex',
       contrastPairData: {
         promptText: 'Choose the locative preposition',
         targetMeaning: 'at/in',
@@ -37,7 +37,7 @@ describe('ContrastPairExercise types', () => {
       },
     }
 
-    expect(exerciseItem.exerciseType).toBe('contrast_pair')
+    expect(exerciseItem.exerciseType).toBe('choose_correct_form_ex')
     expect(exerciseItem.contrastPairData?.options.length).toBe(2)
   })
 })

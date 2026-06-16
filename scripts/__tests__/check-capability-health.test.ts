@@ -54,7 +54,7 @@ describe('capability health exit code planning', () => {
     })
   })
 
-  it('keeps a ready form_recall capability eligible for runtime health (resolves via typed_recall)', () => {
+  it('keeps a ready form_recall capability eligible for runtime health (resolves via type_form_ex)', () => {
     const capabilityKey = 'cap:v1:vocabulary_src:learning_items/makan:produce_form_from_meaning_cap:l1_to_id:text:nl'
     const report = checkCapabilityHealthSnapshot({
       capabilities: [{
@@ -139,13 +139,13 @@ describe('capability health exit code planning', () => {
     expect(pattern?.examples).toEqual(expect.arrayContaining(['Saya tidak mau datang']))
   })
 
-  it('marks staged morphology pairs as ready via typed_recall when both artifacts are approved (2026-05-21 affixed-form-pair widening)', async () => {
-    // Post the 2026-05-21 affixed-form-pair widening: typed_recall accepts
+  it('marks staged morphology pairs as ready via type_form_ex when both artifacts are approved (2026-05-21 affixed-form-pair widening)', async () => {
+    // Post the 2026-05-21 affixed-form-pair widening: type_form_ex accepts
     // word_form_pair_src source kind with requiredArtifacts
     // {root_derived_pair, allomorph_rule}. Both are emitted by the existing
     // publish pipeline at scripts/lib/content-pipeline-output.ts:430-441 so
-    // L9's 4 morphology caps register as ready with typed_recall as the
-    // only allowed exercise (cued_recall stays item-only per D4).
+    // L9's 4 morphology caps register as ready with type_form_ex as the
+    // only allowed exercise (choose_form_ex stays item-only per D4).
     const report = await buildCapabilityHealthReport('scripts/data/staging/lesson-9')
 
     expect(report.results.map(result => result.canonicalKey)).toEqual(expect.arrayContaining([
@@ -157,7 +157,7 @@ describe('capability health exit code planning', () => {
     for (const result of morphologyResults) {
       expect(result.readiness.status).toBe('ready')
       if (result.readiness.status === 'ready') {
-        expect(result.readiness.allowedExercises).toEqual(['typed_recall'])
+        expect(result.readiness.allowedExercises).toEqual(['type_form_ex'])
       }
     }
   })
