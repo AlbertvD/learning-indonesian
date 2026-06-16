@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { planLearningPath, prioritizeCandidates, capabilityFamily, type PlannerCapability } from '@/lib/session-builder/pedagogy'
+import { planLearningPath, prioritizeCandidates, capabilityFamily, capabilityPhase, type PlannerCapability } from '@/lib/session-builder/pedagogy'
+
+describe('capabilityPhase grammar taxonomy (ADR 0017)', () => {
+  it('classifies produce_grammar_pattern_cap as Phase 4', () => {
+    expect(capabilityPhase('produce_grammar_pattern_cap')).toBe(4)
+  })
+  it('classifies recognise_grammar_pattern_cap as Phase 3 (with contrast)', () => {
+    expect(capabilityPhase('recognise_grammar_pattern_cap')).toBe(3)
+    expect(capabilityPhase('contrast_grammar_pattern_cap')).toBe(3)
+  })
+})
 
 function capability(overrides: Partial<PlannerCapability> = {}): PlannerCapability {
   return {
@@ -562,8 +572,8 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
   })
 
   it('exempts pattern (grammar) from the staging gate', () => {
-    // Grammar has no Phase 1/2 ladder — its only two types (contrast_grammar_pattern_cap,
-    // recognise_grammar_pattern_cap) are both productive and share the pattern's own
+    // Grammar has no Phase 1/2 ladder — its three types (recognise/contrast/
+    // produce_grammar_pattern_cap, ADR 0017) all share the pattern's own
     // source_ref, so `unlockedSourceRefs` never contains it. The staging gate
     // used to orphan-suppress pattern on the now-expired premise that pattern
     // types were inert at runtime; Slice 2 (#100) made them renderable. The
