@@ -153,6 +153,9 @@ function dimensionForCapability(type: CapabilityType): MasteryDimension {
     case 'recognise_grammar_pattern_cap':
       return 'recognise_grammar_pattern_cap'
     case 'contrast_grammar_pattern_cap':
+    // ADR 0017: produce folds into pattern_use (no new MasteryDimension) — the
+    // pattern_use rung is weakest-wins across contrast + produce.
+    case 'produce_grammar_pattern_cap':
       return 'pattern_use'
     case 'produce_form_from_context_cap':
       return 'produce_form_from_context_cap'
@@ -519,6 +522,9 @@ export interface GrammarTopicLabel {
   /** `contrast_grammar_pattern_cap` caps — distinguishing from a contrasting pattern (also a
    *  receptive facet per CONTEXT capability types); null if the pattern has none. */
   contrast: GrammarDimensionProgress | null
+  /** `produce_grammar_pattern_cap` caps (ADR 0017) — applying the rule to build a
+   *  sentence (transform/translate); null if the pattern has none. */
+  produce: GrammarDimensionProgress | null
 }
 
 export interface GrammarTopic extends GrammarTopicLabel {
@@ -545,10 +551,10 @@ function dimensionProgress(
 }
 
 // Named grammar topics (source_kind 'pattern' only — affixed_form_pairs are not
-// named grammar_patterns). Each pattern splits into its two (both receptive,
-// per CONTEXT capability types) dimensions — `recognise` (recognise_grammar_pattern_cap)
-// and `contrast` (contrast_grammar_pattern_cap) — plus a weakest-wins overall rung (what the
-// lesson funnel tallies) and total reviews.
+// named grammar_patterns). Each pattern splits into its three facets (ADR 0017):
+// `recognise` (recognise_grammar_pattern_cap), `contrast` (contrast_grammar_pattern_cap),
+// and `produce` (produce_grammar_pattern_cap) — plus a weakest-wins overall rung
+// (what the lesson funnel tallies) and total reviews.
 // Sorted by introducing lesson then slug (the learning order the UI groups on).
 // Used by the voortgang grammar-topics drill-down (#209).
 export function deriveGrammarTopics(input: {
@@ -569,6 +575,7 @@ export function deriveGrammarTopics(input: {
       reviewCount: caps.reduce((sum, cap) => sum + cap.reviewCount, 0),
       recognise: dimensionProgress(caps.filter((c) => c.capabilityType === 'recognise_grammar_pattern_cap'), now),
       contrast: dimensionProgress(caps.filter((c) => c.capabilityType === 'contrast_grammar_pattern_cap'), now),
+      produce: dimensionProgress(caps.filter((c) => c.capabilityType === 'produce_grammar_pattern_cap'), now),
     }))
     .sort((a, b) => {
       const la = a.lessonNumber ?? Number.POSITIVE_INFINITY
