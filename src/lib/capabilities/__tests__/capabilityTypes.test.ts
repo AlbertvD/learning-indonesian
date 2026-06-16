@@ -1,5 +1,15 @@
 import { describe, it, expect } from 'vitest'
-import { deriveSkillTypeFromCapabilityType } from '../capabilityTypes'
+import { CAPABILITY_TYPES, deriveSkillTypeFromCapabilityType } from '../capabilityTypes'
+
+describe('produce_grammar_pattern_cap (ADR 0017)', () => {
+  it('is registered in CAPABILITY_TYPES', () => {
+    expect(CAPABILITY_TYPES).toContain('produce_grammar_pattern_cap')
+  })
+
+  it('maps to the produce_mode skill', () => {
+    expect(deriveSkillTypeFromCapabilityType('produce_grammar_pattern_cap')).toBe('produce_mode')
+  })
+})
 
 describe('deriveSkillTypeFromCapabilityType', () => {
   // Slice 1 (cap-v2) identity fix: recognise_form_from_meaning_cap is "pick the Indonesian word

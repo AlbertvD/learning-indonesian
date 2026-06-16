@@ -40,6 +40,7 @@ export type CapabilityType =
   | 'recognise_gist_from_audio_cap'
   | 'recognise_grammar_pattern_cap'
   | 'contrast_grammar_pattern_cap'
+  | 'produce_grammar_pattern_cap'
   | 'recognise_word_form_link_cap'
   | 'produce_derived_form_cap'
 
@@ -54,6 +55,7 @@ export const CAPABILITY_TYPES = [
   'recognise_gist_from_audio_cap',
   'recognise_grammar_pattern_cap',
   'contrast_grammar_pattern_cap',
+  'produce_grammar_pattern_cap',
   'recognise_word_form_link_cap',
   'produce_derived_form_cap',
 ] as const satisfies readonly CapabilityType[]
@@ -250,6 +252,7 @@ export function deriveSkillTypeFromCapabilityType(capabilityType: CapabilityType
     case 'produce_form_from_audio_cap':
     case 'produce_derived_form_cap':
     case 'produce_form_from_context_cap':
+    case 'produce_grammar_pattern_cap':
       return 'produce_mode'
   }
 }
