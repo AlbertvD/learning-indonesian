@@ -3387,27 +3387,38 @@ grant all on indonesian.lesson_section_affixed_pairs to service_role;
 comment on table indonesian.lesson_section_affixed_pairs is
   'Lesson-side typed rows for root->derived morphology pairs. DB form of scripts/data/staging/lesson-N/morphology-patterns.ts. DISTINCT from capability-side affixed_form_pairs (PR 3) — that table is keyed by capability_id; this one is keyed by lesson_id + source_ref and is the Capability Stage INPUT for affixed_form_pair cap generation. section_id nullable: morphology-patterns.ts has no corresponding lesson.ts section. affix derived by the writer from sourceRef. Populated by PR 6 (lesson-stage writer).';
 
--- ── Morphology phase-b: affix application-tier payload (both affixed tables) ──
--- docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md §1.
+-- ── Morphology phase-b: affix application-tier payload ───────────────────────
+-- docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md §1 + §4
+-- (corrected 2026-06-16 by a data-architect re-ruling — see ADR-context note below).
 -- Adds the discriminator + payload columns the generative application tier
 -- (decompose / build-confix / pick-affix / pick-allomorph drills) reads, on BOTH
 -- the lesson-side SOURCE table (lesson_section_affixed_pairs) and the capability-
--- side PROJECTION table (affixed_form_pairs). Purely additive DDL — no data
--- UPDATE — so `make migrate-idempotent-check` stays trivially green.
+-- side PROJECTION table (affixed_form_pairs).
 --
--- PRECONDITION for the SET NOT NULL tail below: both tables must be EMPTY or
--- fully repopulated with the new columns. The build-stage cutover truncates them
--- first, then re-publishes (CLAUDE.md "build the target and re-publish", no SQL
--- backfill). NOTE: truncating learning_capabilities CASCADE empties
--- affixed_form_pairs (capability_id FK is ON DELETE CASCADE) but NOT
--- lesson_section_affixed_pairs (keyed by lesson_id) — the cutover must truncate
--- that one explicitly. The TRUNCATE lives in the one-off cutover script (the
--- destructive-op pre-commit guard blocks committing TRUNCATE here), mirroring the
--- §8-rename cutover. Running `make migrate` against un-truncated legacy rows
--- (NULL new columns) would fail at SET NOT NULL — truncate first.
+-- WHERE grammar_pattern_id IS RESOLVED (corrected): the CAPABILITY stage, NOT the
+-- lesson stage. grammar_patterns rows are written by the Capability Stage
+-- (patternPath.ts:138), so they do NOT exist when the Lesson Stage writes
+-- lesson_section_affixed_pairs. The Capability-Stage projector
+-- (projectAffixedFormPairs) has patternResult.patternIdsBySlug in scope
+-- (runner.ts:396) and resolves the pair's authored grammar-pattern slug
+-- (carried by lesson_section_affixed_pairs.pattern_source_ref) -> grammar_pattern_id.
+-- Therefore:
+--   * affixed_form_pairs (PROJECTION) gets grammar_pattern_id FK + NOT NULL.
+--   * lesson_section_affixed_pairs (SOURCE) KEEPS its pattern_source_ref text slug
+--     (NOT dropped) and gets NO grammar_pattern_id column — the lesson stage has
+--     no id to write. (This reverses the earlier M1 ruling; M1 assumed the lesson
+--     stage had the slug->id map, which the code disproves.)
+--
+-- PRECONDITION for the SET NOT NULL tail: affixed_form_pairs must be EMPTY or
+-- fully repopulated. The build-stage cutover truncates learning_capabilities
+-- CASCADE, which empties affixed_form_pairs (capability_id FK is ON DELETE
+-- CASCADE), then re-publishes. lesson_section_affixed_pairs needs NO truncation —
+-- it has no SET NOT NULL here and its CHECKs pass on NULL; re-publish repopulates
+-- its new columns. Purely additive DDL (no data UPDATE) → `make
+-- migrate-idempotent-check` stays green once affixed_form_pairs is empty/correct.
 
--- 1. Additive columns (nullable) — on BOTH tables. `affix` is added only on the
---    projection table; the source table already has `affix text not null` (:3364).
+-- 1. Additive columns (nullable). PROJECTION table — full payload incl. the FK
+--    (`affix` added only here; the source table already has `affix text not null`).
 alter table indonesian.affixed_form_pairs
   add column if not exists affix             text,
   add column if not exists affix_type        text,
@@ -3418,26 +3429,21 @@ alter table indonesian.affixed_form_pairs
   add column if not exists productive        boolean,
   add column if not exists grammar_pattern_id uuid references indonesian.grammar_patterns(id) on delete restrict;
 
+--    SOURCE table — authored payload only; NO grammar_pattern_id (resolved later,
+--    in the cap stage), and pattern_source_ref is RETAINED to carry the authored
+--    grammar-pattern slug the cap stage resolves against.
 alter table indonesian.lesson_section_affixed_pairs
   add column if not exists affix_type        text,
   add column if not exists affix_gloss       text,
   add column if not exists allomorph_class   text,
   add column if not exists circumfix_left    text,
   add column if not exists circumfix_right   text,
-  add column if not exists productive        boolean,
-  add column if not exists grammar_pattern_id uuid references indonesian.grammar_patterns(id) on delete restrict;
+  add column if not exists productive        boolean;
 
--- 2. grammar_pattern_id REPLACES the old text slug pattern_source_ref on the
---    source table (omission test: a slug + FK pair would create a sync
---    obligation). The Lesson-Stage writer resolves slug -> FK at write time
---    (data-architect M1); the projector copies the FK blindly.
-alter table indonesian.lesson_section_affixed_pairs
-  drop column if exists pattern_source_ref;
-
--- 3. Guarded CHECK constraints on BOTH tables (drop-if-exists + add = idempotent;
+-- 2. Guarded CHECK constraints on BOTH tables (drop-if-exists + add = idempotent;
 --    each passes on NULL columns, so they hold during the nullable-add phase too).
---    The CHECK lives on the source table as well so a Lesson-Stage bug fails one
---    stage earlier (data-architect m2).
+--    The CHECK lives on the source table as well so a Lesson-Stage bug writing a
+--    bad non-null value fails one stage earlier (data-architect m2).
 alter table indonesian.affixed_form_pairs
   drop constraint if exists affixed_form_pairs_affix_type_check;
 alter table indonesian.affixed_form_pairs
@@ -3460,13 +3466,11 @@ alter table indonesian.lesson_section_affixed_pairs
   add constraint lesson_section_affixed_pairs_confix_boundary_check
     check (affix_type <> 'confix' or (circumfix_left is not null and circumfix_right is not null));
 
--- 4. Mandatory-field NOT NULL (precondition above). SET NOT NULL is idempotent on
---    non-null / empty tables, so re-applying is a no-op (idempotent-check green).
+-- 3. Mandatory-field NOT NULL — PROJECTION table only (the cap stage populates all
+--    three; the source-table equivalents are enforced by the Layer-2 pre-write
+--    validator, §6, not the DDL). SET NOT NULL is idempotent on non-null / empty
+--    tables, so re-applying is a no-op (idempotent-check green).
 alter table indonesian.affixed_form_pairs
-  alter column grammar_pattern_id set not null,
-  alter column affix_type         set not null,
-  alter column productive         set not null;
-alter table indonesian.lesson_section_affixed_pairs
   alter column grammar_pattern_id set not null,
   alter column affix_type         set not null,
   alter column productive         set not null;
@@ -3476,7 +3480,7 @@ comment on column indonesian.affixed_form_pairs.affix_type is
 comment on column indonesian.affixed_form_pairs.allomorph_class is
   'Nasalization/allomorph class; non-null only for meN-/peN-. Drives the pick-allomorph drill (recognise_allomorph_from_root_cap).';
 comment on column indonesian.affixed_form_pairs.grammar_pattern_id is
-  'FK to the affix RULE pattern. Resolved at Lesson Stage from the slug; copied blindly by the projector. The rule->application prerequisite (ADR 0018) is built from this.';
+  'FK to the affix RULE pattern. Resolved by the CAPABILITY stage (projectAffixedFormPairs) from the authored slug in lesson_section_affixed_pairs.pattern_source_ref via patternIdsBySlug. The rule->application prerequisite (ADR 0018) is built from this.';
 
 -- ── PR 6: ALTER lesson_sections — section_kind + source_section_ref ──────────
 -- section_kind: the canonical content.type value (scripts/lib/pipeline/lesson-stage/
