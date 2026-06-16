@@ -2,7 +2,7 @@
 status: shipped
 reviewed_by: [architect, data-architect]   # architect APPROVE 2026-06-16; data-architect APPROVE 2026-06-16 (CRITICAL-1 + MAJOR-1 folded in)
 adr: 0017
-implementation: PR #pending
+implementation: PR #254
 merged_at: 2026-06-16
 implementation_paths:
   - src/lib/capabilities/capabilityTypes.ts
