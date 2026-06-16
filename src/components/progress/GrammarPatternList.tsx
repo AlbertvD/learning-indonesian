@@ -1,10 +1,11 @@
 // src/components/progress/GrammarPatternList.tsx
 //
 // The per-pattern detail for ONE lesson, shown under the Grammatica funnel when a
-// specific lesson is selected. Each pattern shows its two (both receptive)
-// dimensions — Herkennen (recognise the rule) and Onderscheiden (distinguish it
-// from a contrasting pattern) — as colored rung chips (status, not counts), plus
-// how often it's been practised. The funnel +
+// specific lesson is selected. Each pattern shows its three dimensions (ADR 0017)
+// — Herkennen (recognise the rule), Onderscheiden (distinguish it from a
+// contrasting pattern), and Produceren (apply the rule to build a sentence) — as
+// colored rung chips (status, not counts), plus how often it's been practised.
+// The funnel +
 // lesson filter live in MasteryFunnelPanel; this is just the list.
 import { useEffect, useState } from 'react'
 import { notifications } from '@mantine/notifications'
@@ -68,6 +69,7 @@ export function GrammarPatternList({ userId, lessonNumber }: GrammarPatternListP
           <div className={classes.dims}>
             <DimChip label={T.progress.grammarRecognise} dim={topic.recognise} rungLabel={rungLabel} />
             <DimChip label={T.progress.grammarContrast} dim={topic.contrast} rungLabel={rungLabel} />
+            <DimChip label={T.progress.grammarProduce} dim={topic.produce} rungLabel={rungLabel} />
           </div>
         </li>
       ))}
