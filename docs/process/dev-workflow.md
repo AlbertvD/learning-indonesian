@@ -24,8 +24,11 @@ and capture.
    you stay in control of when to move to the next phase. The skills live in
    `~/.claude/vendor/mattpocock-skills/skills/engineering/` and are available as Skill-tool
    skills.
-2. **Agents** = the four generic dev agents — `architect`, `data-architect`, `engineer`
-   (`developer`), `tester` — engaged at design / build / review / test.
+2. **Agents** = the generic dev agents — `staff-engineer` (premise / simplicity / reuse),
+   `architect`, `data-architect`, `engineer` (`developer`), `tester` — engaged at
+   design / build / review / test. `staff-engineer` is the **first read** at DESIGN and
+   REVIEW: "is this even the right idea, and the simplest sound one that reuses what the
+   app already has?" — the lens architect/data-architect rigor structurally under-weights.
 3. **OpenBrain** = searchable lessons: **recalled** going into grill / build / review,
    **captured** coming out of grill / review / test / finish.
 
@@ -51,12 +54,12 @@ flowchart TD
     IDEA(["feature idea"]) --> G
     BUG(["bug report"]) --> TR
 
-    G["DESIGN · grill-with-docs<br/>resolve design tree, sharpen terms,<br/>update CONTEXT.md/ADRs<br/>agents: architect (+ data-architect*)"]
+    G["DESIGN · grill-with-docs<br/>resolve design tree, sharpen terms,<br/>update CONTEXT.md/ADRs<br/>agents: staff-engineer (premise/simplicity/reuse) + architect (+ data-architect*)"]
     P["PRD · to-prd<br/>synthesize → issue (needs-triage)"]
     SL["SLICE · to-issues<br/>vertical tracer-bullet slices (needs-triage)"]
     TR{"TRIAGE · triage<br/>state machine: ready-for-agent /<br/>ready-for-human / needs-info / wontfix<br/>(reproduces bugs; calls grill if thin)"}
     BD["BUILD · tdd<br/>red→green per slice (vertical)<br/>agent: engineer"]
-    RV["REVIEW · requesting-code-review<br/>agents: architect + data-architect*"]
+    RV["REVIEW · requesting-code-review<br/>agents: staff-engineer + architect + data-architect*"]
     TS["TEST · coverage + diagnose<br/>agent: tester"]
     FN["FINISH · finishing-a-development-branch<br/>→ PR → merge → plan shipped"]
 
@@ -106,15 +109,17 @@ minimal-diff A/B forks).
 
 | # | Check | Enforced by | Grounded in |
 |---|-------|-------------|-------------|
+| 0 | **Simplest sound shape — reuses what exists** — before validating the mechanism, ask "does an existing module / session mode / scope / definition already do this?" No new parallel engine, table, or second definition for a capability the app already provides; boring reuse over clever new build | staff-engineer | OpenBrain `4ea07f4d` (rigor launders a wrong premise) |
 | 1 | **Durable / lasting** — solves the real problem at the right seam, not a band-aid that resurfaces | architect | `feedback_target_state_over_minimal_diff` |
 | 2 | **Fits the target architecture** — names the `docs/target-architecture.md` seam it lands at; no adding to a fold-slated file; no shallow-module drift | architect | CLAUDE.md plan-grounding rule |
 | 3 | **Deep modules** — small interface, deep implementation; passes the deletion test; the interface is the test surface | architect | `improve-codebase-architecture` |
 | 4 | **Scalable + performant data model** — additive migrations, indexes, pagination on wide reads, server-side counters, no shape drift, no N+1 | data-architect | the OpenBrain outage/bug classes |
 
-> These four are exactly where the worst OpenBrain lessons came from (half-shipped
-> migrations, RLS wipes, 1000-row truncation, JS-side counters) — so the gate is enforced
-> by the same architect + data-architect review that already exists, now with explicit
-> pass/fail criteria.
+> Criteria 1–4 are exactly where the worst OpenBrain lessons came from (half-shipped
+> migrations, RLS wipes, 1000-row truncation, JS-side counters); criterion 0 is the
+> premise/reuse check that the rigor lenses structurally miss (a parallel mechanism, deeply
+> verified, still looks settled). The gate is enforced by `staff-engineer` (premise/simplicity)
+> + `architect` + `data-architect` review, now with explicit pass/fail criteria.
 
 The gate block lives verbatim, as its own `## Durability Gate` section, in
 `.claude/agents/architect.md` and `.claude/agents/data-architect.md` (the two enforcers).

@@ -128,7 +128,7 @@ Affix-bearing grammar patterns that are **LIVE** (rule tier), by lesson:
    - **`register` CUT** (architect WARNING + data-architect m3): failed the omission test — no consumer,
      no cap keys on it. Re-add in its own slice if a formal/colloquial drill is ever specified.
    - Reduplication + confixes are `affix_type`-tagged rows in the SAME table. **One** new capability type
-     `recognise_allomorph_cap` (its full triangle is enumerated in §9). ~5 new exercise types
+     `recognise_allomorph_from_root_cap` (its full triangle is enumerated in §9). ~5 new exercise types
      (Root Race CUT — see Decision 1).
 4. **§8 naming rename — SPLIT OUT of this build (REVISED per architect CRITICAL #4).** Originally
    bundled here on a "key-touching forcing function" argument. Rejected on review: (a) the rename's
@@ -143,7 +143,7 @@ Affix-bearing grammar patterns that are **LIVE** (rule tier), by lesson:
    - **Level-purity IS adopted (non-negotiable, settled §7)** — independent of the rename: a capability
      is keyed by (source × direction × modality × level); an exercise varies format ONLY within a level.
      This resolves the nasalization-MCQ question: `choose_allomorph_ex` is its OWN recognition-level
-     `recognise_allomorph_cap`, NOT an MCQ skin on the produce cap. The ONE genuine remaining cross-level
+     `recognise_allomorph_from_root_cap`, NOT an MCQ skin on the produce cap. The ONE genuine remaining cross-level
      offender (`pattern_recognition` rendered by `sentence_transformation`/`constrained_translation`,
      model §3b) is a small render-restriction fix that can ride its own micro-PR.
 5. **Scope of the morphology upgrade** — the refining principle: **"contains a morphological process"
@@ -169,11 +169,24 @@ Affix-bearing grammar patterns that are **LIVE** (rule tier), by lesson:
 | New exercise (`_ex`) | Level | Serves capability (`_cap`) | Reads |
 |---|---|---|---|
 | `decompose_word_ex` (derived → root+affix+meaning) | recognise | `recognise_word_form_link_cap` | affixed_form_pairs |
-| `choose_affix_ex` (root+meaning → which affix) | recognise | `recognise_word_form_link_cap` | affixed_form_pairs |
-| `choose_allomorph_ex` (root → pick meN-/peN- form) | recognise | **`recognise_allomorph_cap`** (NEW) | `allomorph_class` |
+| ~~`choose_affix_ex`~~ → `cued_recall` (root+meaning → which affix) | recognise | `recognise_word_form_link_cap` | affixed_form_pairs |
+| ~~`choose_allomorph_ex`~~ → `cued_recall` (root → pick meN-/peN- form) | recognise | **`recognise_allomorph_from_root_cap`** (NEW cap; rendered via widened `cued_recall`) | `allomorph_class` |
 | `produce_derived_form_ex` (root+affix → type derived) | produce | `produce_derived_form_cap` | affixed_form_pairs |
 | `build_confix_ex` (root → type confixed form) | produce | `produce_derived_form_cap` | affixed_form_pairs (confix rows, circumfix_left/right) |
 | ~~`produce_word_family_ex` (Root Race)~~ | — | — | **CUT — deferred to its own spec (review)** |
+
+> **Reconciliation with the phase-(b) impl spec (§8-naming alignment, 2026-06-15).** This table is the
+> program-level illustration; the authoritative names + structure live in
+> `docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md` (now fully in §8 target names). Two
+> reconciliations: (1) the new cap is `recognise_allomorph_from_root_cap` (rule-correct
+> `operation_object_from_stimulus`), not the earlier `recognise_allomorph_cap` shorthand — fixed above
+> and added to model-doc §8; (2) `produce_derived_form_ex` is shown here for symmetry, but the impl spec
+> **reuses the existing `type_form_ex`** for plain derived-form production (no new exercise) — so the four
+> genuinely-new `_ex` types. **✅ ADOPTED (phase-b revision 2026-06-16): TWO new, not four** —
+> `decompose_word_ex` + `build_confix_ex`. The two MCQ caps (`choose_affix_ex`/`choose_allomorph_ex` in
+> the table above) are **CUT**; their caps render via the existing `cued_recall` (widened to
+> `word_form_pair_src`), distractors catalog-derived (staff-engineer). The table above is the original
+> illustration; **phase-b §3 is authoritative** for the exercise roster.
 
 ## 7. Where it lives (target architecture)
 
@@ -186,8 +199,12 @@ that deferred spec. Lands on the planned seam, not a bolt-on.
 1. **Architect + data-architect review** — mandatory (data-model plan; enforced by plan-review-gate).
 2. ~~Live-cap verification~~ ✅ DONE (§4): live DB confirms 97 grammar_patterns → 194 pattern caps;
    meN-/BER-/DI- rule tier is LIVE; only the application tier (4 caps, L9) is empty.
-3. **Root-vocab prerequisite** (research open Q): hard-block application caps until root mastered, or
-   deprioritize? Research leans single-unknown → hard-block. CONFIRM.
+3. **Root-vocab prerequisite** — ✅ **RESOLVED (2026-06-16): HARD-BLOCK** (application caps don't schedule
+   until the root is mastered). Single-unknown-card rule [research Q1]; and — load-bearing — it is the
+   **SOLE** enforcement of morphology learning-order, because the receptive-before-productive Phase gate is
+   carved out for `affixed_form_pair` (`pedagogy.ts:337-339,361`). Shapes the phase-b projector contract:
+   `projectAffixedCapabilities` emits the root-vocab cap's canonical_key as a `prerequisiteKey` (resolved
+   via `itemSlug()`). Confirmed in the capstone §7-Q1 + item B; lands in the phase-b re-review.
 4. **Modal-verb semantics** (bisa/boleh/harus) — the one residual grammar gap NOT in book 2; small,
    addable. (Aspect sudah/telah IS covered by Bab 2.)
 5. **Ingestion order** — sequence the 14 new chapters as new lessons; decide numbering vs the existing 16.
@@ -202,7 +219,7 @@ that deferred spec. Lands on the planned seam, not a bolt-on.
   `productive bool`, `register text`, `grammar_pattern_id uuid REFERENCES grammar_patterns(id)`.
 - §8 rename rewrites `learning_capabilities.capability_type` + `canonical_key` (FSRS identity) — a
   migration, not a doc edit; build-stage truncation keeps it cheap.
-- New `capability_type` value behind `recognise_allomorph_cap`; new `ExerciseType` values for the ~6 drills.
+- New `capability_type` value behind `recognise_allomorph_from_root_cap`; new `ExerciseType` values for the ~6 drills.
 - RLS/grants: additive columns are covered by existing table policies; verify after migrate.
 
 ### homelab-configs changes
@@ -228,11 +245,12 @@ APPROVE-WITH-CHANGES.** Both lenses mandatory (data-model plan). Resolutions:
   `grammar_pattern_id` → NOT NULL; `productive` semantics defined; Root Race CUT (Decision 3 + §6 + §1).
 
 **Obligations the phase-(b) IMPLEMENTATION spec MUST carry (flagged not-draft-blocking by both):**
-- **`recognise_allomorph_cap` full triangle, atomic in one PR** (data-architect C1): the 6 corners —
+- **`recognise_allomorph_from_root_cap` full triangle, atomic in one PR** (data-architect C1): the 6 corners —
   (1) projector that emits it (`projectors/morphology.ts` / `affixedCapabilities.ts`); (2) `byKind/
   affixedFormPair.ts` SELECT widened to `allomorph_class` + threaded through `AffixedFormPairInput`
-  (`renderContracts.ts:303-320`); (3) `RENDER_CONTRACTS` entry for `choose_allomorph_ex`
-  (`renderContracts.ts:56` — module-load guardrail `:167,189` refuses boot if missing); (4)
+  (`renderContracts.ts:303-320`); (3) `RENDER_CONTRACTS` — **widen the existing `cued_recall`** entry to
+  serve `recognise_allomorph_from_root_cap` over `word_form_pair_src` (NOT a bespoke `choose_allomorph_ex`;
+  cut 2026-06-16) (`renderContracts.ts:56` — module-load guardrail `:167,189` refuses boot if missing); (4)
   `CapabilityType`/`CAPABILITY_TYPES` union (`capabilityTypes.ts:32,46`); (5)
   `deriveSkillTypeFromCapabilityType` case (`:233`); (6) `masteryModel.ts:dimensionForCapability`
   (`:139-170`). Plus `ExerciseType` union + ~5 registry components, and the admin

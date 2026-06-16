@@ -212,6 +212,13 @@ There is **no "artifact" layer.** "Artifact" was a generic umbrella the system d
 | `root_derived_recognition` | `recognise_word_form_link_cap` |
 | `root_derived_recall` | `produce_derived_form_cap` |
 | `podcast_gist` | `recognise_gist_from_audio_cap` |
+| — (new — morphology build) | `recognise_allomorph_from_root_cap` |
+
+> **Morphology application tier (added by the morphology build).** `recognise_allomorph_from_root_cap`
+> is net-new — it has no prior "Live" name; the morphology phase-(b) spec mints it directly in this
+> convention (`operation_object_from_stimulus`: recognise the correct allomorph of an affix from a root,
+> e.g. *baca → membaca* vs. *tulis → menulis*). Source kind `word_form_pair_src`, mode `recognise_mode`.
+> See `docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md` §2.
 
 ### Exercise — `_ex` (`verb_what`)
 | Live | Target |
@@ -228,6 +235,18 @@ There is **no "artifact" layer.** "Artifact" was a generic umbrella the system d
 | `sentence_transformation` | `transform_sentence_ex` |
 | `constrained_translation` | `translate_sentence_ex` |
 | `speaking` | *(dropped — dead surface)* |
+| — (new — morphology build) | `decompose_word_ex` |
+| — (new — morphology build) | `build_confix_ex` |
+
+> **Morphology application drills (added by the morphology build).** **TWO** net-new exercises (no prior
+> "Live" name), minted in the `_ex` convention (`verb_what`) over `word_form_pair_src`: `decompose_word_ex`
+> (derived → root + affix, the genuinely-new "segment" interaction) and `build_confix_ex`
+> (`produce_derived_form_cap`, "assemble two boundaries"). The two MCQ caps —
+> `recognise_word_form_link_cap` ("pick the affix") and `recognise_allomorph_from_root_cap` ("pick the
+> allomorph") — **reuse the existing `cued_recall`** (widened to `word_form_pair_src`; staff-engineer cut
+> of the bespoke `choose_affix_ex`/`choose_allomorph_ex`, 2026-06-16), distractors catalog-derived. Plain
+> derived-form production reuses the existing `type_form_ex`. See
+> `docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md` §0a + §3.
 
 ### Typed content concepts (named directly — **not** a layer)
 The materials an exercise consumes, each its own typed concept (ADR 0009):

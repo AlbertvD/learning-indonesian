@@ -13,11 +13,17 @@ The fixed set of `source_kind` discriminators a capability carries (the type uni
 - **`item`** — A single lexical unit: a word or short reusable phrase being learned. Source table: `learning_items`. (See **Learning Item**.)
 - **`dialogue_line`** — One complete utterance from a lesson dialogue, used as the carrier for a contextual cloze. Source table: `lesson_dialogue_lines`.
 - **`pattern`** — A metalinguistic grammar or number-formation rule drilled as a skill (e.g. the `meN-` prefix, the `belas`-numbers rule). Source table: `grammar_patterns`.
-- **`affixed_form_pair`** — A root↔derived morphology pair (e.g. `baca` ↔ `membaca`). Source table: `affixed_form_pairs`.
+- **`affixed_form_pair`** — A root↔derived morphology pair (e.g. `baca` ↔ `membaca`). Source table: `affixed_form_pairs`. (Grouped under an **Affix** — see below.)
 - **`podcast_segment`** — A bounded audio span of a podcast, consumed by listening for gist. Source table: `podcasts` (segment rows). Not yet live (0 capabilities).
 - **`podcast_phrase`** — A timecoded phrase *within* a podcast segment (finer-grained than a segment).
 
 _Flagged ambiguity: `podcast_phrase` is latent — no capability type maps to it and it has 0 rows. It is a candidate for removal from the union unless a phrase-level podcast capability is planned. `podcast_segment` is likewise defined but not live (only `podcast_gist` would consume it)._
+
+## Affix
+
+The **organizing unit of the morphology / affix-trainer surface** — a single Indonesian affix (e.g. `meN-`, `-kan`, `ke-…-an`) under which its rule and all its derivations are gathered. An Affix is a *higher* grouping than either of its data homes: one Affix spans **several `grammar_pattern`s** (the rule tier — e.g. `meN-` carries separate nasalization sub-rule patterns) and **many `affixed_form_pair`s** (the application tier — one per root↔derived instance).
+
+There is no `affixes` table. An Affix's identity is the **`affix` value** carried on each `affixed_form_pair` (added by the morphology phase-b work), constrained to a **controlled vocabulary** — the canonical catalog constant in `lib/capabilities/affixCatalog.ts` (sequence rank, gloss, CEFR level, allomorph reference; placed in `lib/capabilities` because both the pipeline validator and the runtime read it — the sole pipeline↔runtime shared seam). Every authored `affix` value MUST be a catalog member; the phase-b validator **and** a live-DB health check assert `affix ∈ catalog` (the three-layer-gate habit), so the catalog grouping cannot silently split one affix across spelling variants (`meN-` vs `me-` vs `meng-`). Concrete once phase-b + the affix trainer ship; see `docs/plans/2026-06-15-affix-trainer-capstone-design.md` §4-A and `docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md`.
 
 ## Content Unit
 

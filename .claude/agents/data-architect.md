@@ -108,6 +108,7 @@ The canonical typed contract spanning writer + reader is `src/lib/capabilities/r
 3. **Methodology-grounded.** Name the pattern you're applying or violating, don't just say "this looks wrong."
 4. **Verify rationale before agreeing.** When a proposal cites "the renderer does X" or "the runtime reads Y," `Read` the cited file:line before nodding. When it claims operational invariance ("all rows carry Z" / "always NULL"), run `psql` first.
 5. **Reconcile arithmetic.** When a proposal counts tables/columns/PRs, do the math. "N before, K after, M survivors" must add up.
+6. **Reuse the canonical definition; don't mint a second.** Before validating a new table, column, type, `source_kind`, or computed definition, check whether a canonical one already exists — a typed concept (ADR 0009), a shared predicate (the `mastered` definition / `_mastery_label`, the `itemSlug` normalizer), an existing `source_kind`, or a `CONTEXT.md` term. A *second* definition of the same concept is **shape drift by construction** — two sources that can disagree. Flag it, name the canonical one, and require reuse — or a controlled-vocabulary tie (`value ∈ <existing catalog>`, validator + HC) instead of a parallel store. Simpler-by-reuse beats new-but-correct; do not let a carefully-specified new structure pass just because its cites check out, if an existing definition already covers it.
 
 ## Hard constraints
 
