@@ -138,14 +138,17 @@ export const RENDER_CONTRACTS = {
     requiredArtifacts: { grammar_pattern_src: [] },
   },
   transform_sentence_ex: {
-    // PR 4 (Decision G): recognise_grammar_pattern_cap → sentence_transformation_exercises.
-    capabilityTypes: ['recognise_grammar_pattern_cap'],
+    // ADR 0017: production exercise → produce_grammar_pattern_cap (was
+    // recognise_grammar_pattern_cap under PR 4; split out so production is
+    // scheduled as a produce-level skill).
+    capabilityTypes: ['produce_grammar_pattern_cap'],
     supportedSourceKinds: ['grammar_pattern_src'],
     requiredArtifacts: { grammar_pattern_src: [] },
   },
   translate_sentence_ex: {
-    // PR 4 (Decision G): recognise_grammar_pattern_cap → constrained_translation_exercises.
-    capabilityTypes: ['recognise_grammar_pattern_cap'],
+    // ADR 0017: production exercise → produce_grammar_pattern_cap (was
+    // recognise_grammar_pattern_cap under PR 4).
+    capabilityTypes: ['produce_grammar_pattern_cap'],
     supportedSourceKinds: ['grammar_pattern_src'],
     requiredArtifacts: { grammar_pattern_src: [] },
   },

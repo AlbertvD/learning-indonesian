@@ -10,6 +10,25 @@
 import { describe, expect, it } from 'vitest'
 import type { ProjectedCapability, CapabilityType, CapabilitySourceKind, ArtifactKind } from '@/lib/capabilities/capabilityTypes'
 import { validateCapability } from '@/lib/capabilities/capabilityContracts'
+import { exerciseTypesForCapability } from '@/lib/capabilities/renderContracts'
+
+// ADR 0017: the three grammar capabilities route to three honestly-levelled
+// exercise sets. recognise → cloze only; contrast → choose_correct_form_ex;
+// produce → the two production exercises.
+describe('grammar capability routing (ADR 0017)', () => {
+  it('routes recognise_grammar_pattern_cap to cloze only', () => {
+    expect([...exerciseTypesForCapability('recognise_grammar_pattern_cap')]).toEqual(['choose_missing_word_ex'])
+  })
+  it('routes produce_grammar_pattern_cap to the two production exercises', () => {
+    expect([...exerciseTypesForCapability('produce_grammar_pattern_cap')]).toEqual([
+      'transform_sentence_ex',
+      'translate_sentence_ex',
+    ])
+  })
+  it('keeps contrast_grammar_pattern_cap on choose_correct_form_ex', () => {
+    expect([...exerciseTypesForCapability('contrast_grammar_pattern_cap')]).toEqual(['choose_correct_form_ex'])
+  })
+})
 
 // Slice 4b: readiness is decided purely by cap_type × source_kind routing
 // (RENDER_CONTRACTS), not the retired capability_artifacts bag. `requiredArtifacts`
@@ -67,16 +86,25 @@ const matrix: MatrixRow[] = [
   //     exercise tables; no required artifacts (structure guaranteed by NOT
   //     NULL columns + validateGrammarExercises + HC19/HC20). ──
   {
+    // ADR 0017: recognise now routes to cloze ONLY — production moved to the
+    // new produce_grammar_pattern_cap.
     capabilityType: 'recognise_grammar_pattern_cap',
     sourceKind: 'grammar_pattern_src',
     requiredArtifacts: [],
-    expected: { status: 'ready', allowedExercises: ['choose_missing_word_ex', 'transform_sentence_ex', 'translate_sentence_ex'] },
+    expected: { status: 'ready', allowedExercises: ['choose_missing_word_ex'] },
   },
   {
     capabilityType: 'contrast_grammar_pattern_cap',
     sourceKind: 'grammar_pattern_src',
     requiredArtifacts: [],
     expected: { status: 'ready', allowedExercises: ['choose_correct_form_ex'] },
+  },
+  {
+    // ADR 0017: the two production exercises route to produce.
+    capabilityType: 'produce_grammar_pattern_cap',
+    sourceKind: 'grammar_pattern_src',
+    requiredArtifacts: [],
+    expected: { status: 'ready', allowedExercises: ['transform_sentence_ex', 'translate_sentence_ex'] },
   },
   {
     // Post 2026-05-21 lib/exercise-content fold PR-B: cloze accepts
