@@ -81,13 +81,13 @@ export function isExerciseTypeEnabled(exerciseType: string): boolean {
       return featureFlags.speaking
     case 'choose_meaning_from_audio_ex':
       return featureFlags.listeningMcq
-    case 'dictation':
+    case 'type_form_from_audio_ex':
       return featureFlags.dictation
     // Core types cannot be disabled via feature flags
     case 'choose_meaning_ex':
     case 'type_form_ex':
-    case 'cloze':
-    case 'meaning_recall':
+    case 'type_missing_word_ex':
+    case 'type_meaning_ex':
       return true
     default:
       return false
