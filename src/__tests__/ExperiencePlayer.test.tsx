@@ -106,7 +106,7 @@ function makeBlock(id: string, kind: 'due_review' | 'new_introduction', exercise
       capabilityKey: `item:x:${exerciseType}:id_to_l1`,
       sourceRef: 'learning_items/x',
       exerciseType: exerciseType as ExerciseItem['exerciseType'],
-      capabilityType: 'meaning_recall',
+      capabilityType: 'recall_meaning_from_text_cap',
       skillType: 'meaning_recall',
     },
   }

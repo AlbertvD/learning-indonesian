@@ -16,10 +16,10 @@
  * prevents — project_three_layer_invariant_gates).
  *
  * Per source_kind / capability_type, the required satellite row is:
- *   dialogue_line / contextual_cloze     → a dialogue_clozes row     (by capability_id, HC15)
- *   affixed_form_pair / root_derived_*   → an affixed_form_pairs row  (by capability_id, HC17)
- *   pattern / pattern_contrast           → a contrast_pair_exercises row for the cap's pattern (HC19)
- *   pattern / pattern_recognition        → ≥1 row across the 3 recognition exercise
+ *   dialogue_line / produce_form_from_context_cap     → a dialogue_clozes row     (by capability_id, HC15)
+ *   word_form_pair_src / root_derived_*   → an affixed_form_pairs row  (by capability_id, HC17)
+ *   pattern / contrast_grammar_pattern_cap           → a contrast_pair_exercises row for the cap's pattern (HC19)
+ *   pattern / recognise_grammar_pattern_cap        → ≥1 row across the 3 recognition exercise
  *                                          tables for the cap's pattern (HC20)
  *   item / *                             → N/A — no per-cap satellite row to key on
  *                                          (§2c); item caps are never offenders.
@@ -93,8 +93,8 @@ async function fetchActivePatternIds(
  * exercise row keyed by grammar_pattern_id (NOT capability_id). The link is:
  *   source_ref (lesson-N/pattern-<slug>) → slug → grammar_patterns.id →
  *   <typed table>.grammar_pattern_id.
- *   - pattern_contrast    → needs a contrast_pair_exercises row.
- *   - pattern_recognition → needs ≥1 row in the union of the 3 recognition tables.
+ *   - contrast_grammar_pattern_cap    → needs a contrast_pair_exercises row.
+ *   - recognise_grammar_pattern_cap → needs ≥1 row in the union of the 3 recognition tables.
  * Other pattern capability_types have no satellite predicate and are never offenders.
  */
 async function findPatternCapsMissing(
@@ -121,9 +121,9 @@ async function findPatternCapsMissing(
   const missing: CapForSatelliteCheck[] = []
   for (const c of patternCaps) {
     const pid = patternIdBySlug.get(patternSlugOf(c.source_ref))
-    if (c.capability_type === 'pattern_contrast') {
+    if (c.capability_type === 'contrast_grammar_pattern_cap') {
       if (!pid || !contrastSet.has(pid)) missing.push(c)
-    } else if (c.capability_type === 'pattern_recognition') {
+    } else if (c.capability_type === 'recognise_grammar_pattern_cap') {
       if (!pid || !recognitionUnion.has(pid)) missing.push(c)
     }
     // Any other pattern capability_type: no satellite predicate → not an offender.
@@ -146,21 +146,21 @@ export async function findCapsMissingSatellite(
   const missing: CapForSatelliteCheck[] = []
 
   // dialogue_line → dialogue_clozes (HC15)
-  const dialogueCaps = caps.filter((c) => c.source_kind === 'dialogue_line')
+  const dialogueCaps = caps.filter((c) => c.source_kind === 'dialogue_line_src')
   if (dialogueCaps.length > 0) {
     const present = await fetchPresentCapIds(supabase, 'dialogue_clozes', dialogueCaps.map((c) => c.id))
     for (const c of dialogueCaps) if (!present.has(c.id)) missing.push(c)
   }
 
-  // affixed_form_pair → affixed_form_pairs (HC17)
-  const affixedCaps = caps.filter((c) => c.source_kind === 'affixed_form_pair')
+  // word_form_pair_src → affixed_form_pairs (HC17)
+  const affixedCaps = caps.filter((c) => c.source_kind === 'word_form_pair_src')
   if (affixedCaps.length > 0) {
     const present = await fetchPresentCapIds(supabase, 'affixed_form_pairs', affixedCaps.map((c) => c.id))
     for (const c of affixedCaps) if (!present.has(c.id)) missing.push(c)
   }
 
   // pattern → typed grammar-exercise rows (HC19 + HC20)
-  const patternCaps = caps.filter((c) => c.source_kind === 'pattern')
+  const patternCaps = caps.filter((c) => c.source_kind === 'grammar_pattern_src')
   if (patternCaps.length > 0) {
     missing.push(...(await findPatternCapsMissing(supabase, patternCaps)))
   }

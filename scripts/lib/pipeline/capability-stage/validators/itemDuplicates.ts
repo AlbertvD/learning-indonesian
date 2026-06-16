@@ -106,7 +106,7 @@ export async function validateItemDuplicates(
       .schema('indonesian')
       .from('learning_capabilities')
       .select('source_ref, lesson_id')
-      .eq('source_kind', 'item')
+      .eq('source_kind', 'vocabulary_src')
       .in('source_ref', slice)
       .not('lesson_id', 'is', null)
 

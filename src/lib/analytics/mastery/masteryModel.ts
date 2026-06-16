@@ -19,15 +19,15 @@ export type MasteryLabel =
 export type MasteryConfidence = 'none' | 'low' | 'medium' | 'high'
 
 export type MasteryDimension =
-  | 'text_recognition'
+  | 'recognise_meaning_from_text_cap'
   | 'meaning_recall'
-  | 'l1_to_id_choice'
+  | 'recognise_form_from_meaning_cap'
   | 'form_recall'
   | 'listening'
   | 'dictation'
-  | 'pattern_recognition'
+  | 'recognise_grammar_pattern_cap'
   | 'pattern_use'
-  | 'contextual_cloze'
+  | 'produce_form_from_context_cap'
   | 'morphology'
   | 'exposure'
 
@@ -138,28 +138,28 @@ function uniq<T>(values: T[]): T[] {
 
 function dimensionForCapability(type: CapabilityType): MasteryDimension {
   switch (type) {
-    case 'text_recognition':
-      return 'text_recognition'
-    case 'meaning_recall':
+    case 'recognise_meaning_from_text_cap':
+      return 'recognise_meaning_from_text_cap'
+    case 'recall_meaning_from_text_cap':
       return 'meaning_recall'
-    case 'l1_to_id_choice':
-      return 'l1_to_id_choice'
-    case 'form_recall':
+    case 'recognise_form_from_meaning_cap':
+      return 'recognise_form_from_meaning_cap'
+    case 'produce_form_from_meaning_cap':
       return 'form_recall'
-    case 'audio_recognition':
+    case 'recognise_meaning_from_audio_cap':
       return 'listening'
-    case 'dictation':
+    case 'produce_form_from_audio_cap':
       return 'dictation'
-    case 'pattern_recognition':
-      return 'pattern_recognition'
-    case 'pattern_contrast':
+    case 'recognise_grammar_pattern_cap':
+      return 'recognise_grammar_pattern_cap'
+    case 'contrast_grammar_pattern_cap':
       return 'pattern_use'
-    case 'contextual_cloze':
-      return 'contextual_cloze'
-    case 'root_derived_recognition':
-    case 'root_derived_recall':
+    case 'produce_form_from_context_cap':
+      return 'produce_form_from_context_cap'
+    case 'recognise_word_form_link_cap':
+    case 'produce_derived_form_cap':
       return 'morphology'
-    case 'podcast_gist':
+    case 'recognise_gist_from_audio_cap':
       return 'exposure'
     default: {
       // Exhaustiveness guard: adding a new CapabilityType without a matching
@@ -335,7 +335,7 @@ export function derivePatternMastery(input: {
 }): PatternMastery {
   const dimensions = ensureDimensions(
     deriveMasteryDimensions(input.evidence, input.now),
-    ['pattern_recognition', 'pattern_use'],
+    ['recognise_grammar_pattern_cap', 'pattern_use'],
   )
   const weakest = weakestLabel(dimensions.map(dimension => dimension.label))
   return {
@@ -385,7 +385,7 @@ export interface MasteryFunnels {
   grammar: MasteryFunnel
 }
 
-const GRAMMAR_SOURCE_KINDS = new Set(['pattern', 'affixed_form_pair'])
+const GRAMMAR_SOURCE_KINDS = new Set(['grammar_pattern_src', 'word_form_pair_src'])
 
 /**
  * The single source of truth for the vocab/grammar split shared by EVERY
@@ -398,7 +398,7 @@ const GRAMMAR_SOURCE_KINDS = new Set(['pattern', 'affixed_form_pair'])
  * here and every TS surface follows in one edit.
  */
 export function funnelBucket(sourceKind: CapabilitySourceKind): 'vocab' | 'grammar' | null {
-  if (sourceKind === 'item') return 'vocab'
+  if (sourceKind === 'vocabulary_src') return 'vocab'
   if (GRAMMAR_SOURCE_KINDS.has(sourceKind)) return 'grammar'
   return null
 }
@@ -514,9 +514,9 @@ export interface GrammarTopicLabel {
   label: MasteryLabel
   /** Total reviews across the pattern's capabilities ("N× geoefend"). */
   reviewCount: number
-  /** `pattern_recognition` caps; null if the pattern has none. */
+  /** `recognise_grammar_pattern_cap` caps; null if the pattern has none. */
   recognise: GrammarDimensionProgress | null
-  /** `pattern_contrast` caps — distinguishing from a contrasting pattern (also a
+  /** `contrast_grammar_pattern_cap` caps — distinguishing from a contrasting pattern (also a
    *  receptive facet per CONTEXT capability types); null if the pattern has none. */
   contrast: GrammarDimensionProgress | null
 }
@@ -546,8 +546,8 @@ function dimensionProgress(
 
 // Named grammar topics (source_kind 'pattern' only — affixed_form_pairs are not
 // named grammar_patterns). Each pattern splits into its two (both receptive,
-// per CONTEXT capability types) dimensions — `recognise` (pattern_recognition)
-// and `contrast` (pattern_contrast) — plus a weakest-wins overall rung (what the
+// per CONTEXT capability types) dimensions — `recognise` (recognise_grammar_pattern_cap)
+// and `contrast` (contrast_grammar_pattern_cap) — plus a weakest-wins overall rung (what the
 // lesson funnel tallies) and total reviews.
 // Sorted by introducing lesson then slug (the learning order the UI groups on).
 // Used by the voortgang grammar-topics drill-down (#209).
@@ -558,7 +558,7 @@ export function deriveGrammarTopics(input: {
   const now = input.now ?? new Date()
   const bySlug = new Map<string, CapabilityMasteryEvidence[]>()
   for (const e of input.evidence) {
-    if (e.sourceKind !== 'pattern') continue
+    if (e.sourceKind !== 'grammar_pattern_src') continue
     bySlug.set(e.sourceRef, [...(bySlug.get(e.sourceRef) ?? []), e])
   }
   return [...bySlug.entries()]
@@ -567,8 +567,8 @@ export function deriveGrammarTopics(input: {
       lessonNumber: lessonNumberFromSourceRef(slug),
       label: weakestLabel(caps.map((cap) => labelForCapability(cap, now))),
       reviewCount: caps.reduce((sum, cap) => sum + cap.reviewCount, 0),
-      recognise: dimensionProgress(caps.filter((c) => c.capabilityType === 'pattern_recognition'), now),
-      contrast: dimensionProgress(caps.filter((c) => c.capabilityType === 'pattern_contrast'), now),
+      recognise: dimensionProgress(caps.filter((c) => c.capabilityType === 'recognise_grammar_pattern_cap'), now),
+      contrast: dimensionProgress(caps.filter((c) => c.capabilityType === 'contrast_grammar_pattern_cap'), now),
     }))
     .sort((a, b) => {
       const la = a.lessonNumber ?? Number.POSITIVE_INFINITY
@@ -607,13 +607,13 @@ export interface SkillModeGap {
 // Item (vocabulary) capability types → skill mode. Grammar/morphology types are
 // not item-sourced and never reach here.
 const ITEM_TYPE_MODE: Partial<Record<CapabilityType, SkillMode>> = {
-  text_recognition: 'recognise',
-  meaning_recall: 'recognise',
-  l1_to_id_choice: 'recognise',
-  form_recall: 'produce',
-  contextual_cloze: 'produce',
-  audio_recognition: 'listen',
-  dictation: 'listen',
+  recognise_meaning_from_text_cap: 'recognise',
+  recall_meaning_from_text_cap: 'recognise',
+  recognise_form_from_meaning_cap: 'recognise',
+  produce_form_from_meaning_cap: 'produce',
+  produce_form_from_context_cap: 'produce',
+  recognise_meaning_from_audio_cap: 'listen',
+  produce_form_from_audio_cap: 'listen',
 }
 
 // Already the receptive→productive→aural progression order; the card numbers the
@@ -632,7 +632,7 @@ export function deriveSkillModeGaps(input: {
     SKILL_MODES.map((m) => [m, new Map<string, boolean>()]),
   )
   for (const cap of input.evidence) {
-    if (cap.sourceKind !== 'item') continue
+    if (cap.sourceKind !== 'vocabulary_src') continue
     const mode = ITEM_TYPE_MODE[cap.capabilityType]
     if (!mode) continue
     const words = byMode.get(mode)!
@@ -678,7 +678,7 @@ export interface WeeklyReviewEvent {
   // several capabilities; per-cap counts overstate and can exceed words in play).
   sourceRef: string
   // Buckets movement into the SAME two groups as the funnel: vocab ('item') vs
-  // grammar ('pattern' + 'affixed_form_pair'). Other kinds (dialogue_line,
+  // grammar ('pattern' + 'word_form_pair_src'). Other kinds (dialogue_line,
   // podcast) are excluded — they aren't in the funnel either.
   sourceKind: CapabilitySourceKind
   before: MovementState
@@ -688,7 +688,7 @@ export interface WeeklyReviewEvent {
 export interface WeeklyMovement {
   /** Distinct vocabulary words (source_kind 'item') that advanced a rung. */
   advancedVocab: number
-  /** Distinct grammar topics (pattern + affixed_form_pair) that advanced a rung. */
+  /** Distinct grammar topics (pattern + word_form_pair_src) that advanced a rung. */
   advancedGrammar: number
   reachedMastered: number
   slipped: number
@@ -710,9 +710,9 @@ function labelFromState(state: MovementState, now: Date): MasteryLabel {
     {
       capabilityId: '',
       canonicalKey: '',
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef: '',
-      capabilityType: 'text_recognition',
+      capabilityType: 'recognise_meaning_from_text_cap',
       modality: 'text',
       readinessStatus: 'ready',
       publicationStatus: 'published',
@@ -767,7 +767,7 @@ function toEvidence(input: {
   return input.capabilities.map(capability => {
     const state = stateByCapabilityId.get(capability.id)
     // Per ADR 0006 (Decision 3b), the only capabilities with NULL lesson_id
-    // are podcast source kinds (`podcast_segment`, `podcast_phrase`); they
+    // are podcast source kinds (`podcast_segment_src`, `podcast_phrase_src`); they
     // are always treated as activated because they are not lesson-scoped.
     // Every other source kind has a non-null lesson_id enforced by the schema
     // CHECK constraint `learning_capabilities_lesson_id_required_for_lessons`
@@ -878,7 +878,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       const { data, error } = await db()
         .from('learning_capabilities')
         .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id')
-        .eq('source_kind', 'pattern')
+        .eq('source_kind', 'grammar_pattern_src')
         .eq('source_ref', patternId)
         .is('retired_at', null)
       if (error) throw error

@@ -28,7 +28,7 @@ const POOL: PoolItemInput[] = [
 
 const CAP_A_TEXT: SeedCapInput = {
   capabilityId: 'cap-a-text',
-  capabilityType: 'text_recognition',
+  capabilityType: 'recognise_meaning_from_text_cap',
   item: { itemId: 'i-a', form: 'mahal', meaning: 'duur', pos: 'adjective' },
 }
 
@@ -83,7 +83,7 @@ function makeFakes(opts?: {
 }
 
 describe('seedDistractors', () => {
-  it('writes meaning-distractor pointer rows for a text_recognition cap', async () => {
+  it('writes meaning-distractor pointer rows for a recognise_meaning_from_text_cap cap', async () => {
     const { store, embedder, state } = makeFakes()
 
     await seedDistractors({ lessonId: 'L', lessonNumber: 1 }, store, embedder, { k: 2 })

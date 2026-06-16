@@ -510,7 +510,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     .select('id, source_kind, canonical_key')
     .is('lesson_id', null)
     .is('retired_at', null)
-    .not('source_kind', 'in', '("podcast_segment","podcast_phrase")')
+    .not('source_kind', 'in', '("podcast_segment_src","podcast_phrase_src")')
   if (error) {
     fail('HC8 learning_capabilities.lesson_id non-null for non-podcast caps (ADR 0006)', error.message)
   } else {
@@ -554,7 +554,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         .schema('indonesian')
         .from('learning_capabilities')
         .select('canonical_key, source_ref')
-        .eq('source_kind', 'item')
+        .eq('source_kind', 'vocabulary_src')
         .like('source_ref', 'learning_items/%')
         .is('retired_at', null)
         .range(offset, offset + pageSize - 1)
@@ -631,7 +631,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         .schema('indonesian')
         .from('learning_capabilities')
         .select('source_ref, capability_type, lesson_id')
-        .eq('source_kind', 'item')
+        .eq('source_kind', 'vocabulary_src')
         .like('source_ref', 'learning_items/%')
         .is('retired_at', null)
         .range(offset, offset + pageSize - 1)
@@ -702,11 +702,11 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 //        now; structural well-formedness is the table's NOT NULL columns +
 //        the pre-write validateDialogueClozes gate.
 
-// ── HC12 retired (PR 3 slice): affixed_form_pair readiness no longer depends
+// ── HC12 retired (PR 3 slice): word_form_pair_src readiness no longer depends
 //        on capability_artifacts. The legacy two-artifact check (root_derived_pair
-//        / allomorph_rule) was removed when affixed_form_pair moved fully onto the
+//        / allomorph_rule) was removed when word_form_pair_src moved fully onto the
 //        typed `affixed_form_pairs` table. HC17 below ("every active
-//        affixed_form_pair cap has an affixed_form_pairs row") is the live-DB
+//        word_form_pair_src cap has an affixed_form_pairs row") is the live-DB
 //        invariant now; structural well-formedness is the table's NOT NULL
 //        columns + the pre-write validateAffixedFormPairs gate.
 
@@ -732,7 +732,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         .schema('indonesian')
         .from('learning_capabilities')
         .select('canonical_key, source_ref, lesson_id')
-        .eq('source_kind', 'item')
+        .eq('source_kind', 'vocabulary_src')
         .like('source_ref', 'learning_items/%')
         .is('retired_at', null)
         .range(offset, offset + pageSize - 1)
@@ -866,7 +866,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     .schema('indonesian')
     .from('learning_capabilities')
     .select('id, canonical_key, source_ref, source_kind, capability_type')
-    .eq('source_kind', 'dialogue_line')
+    .eq('source_kind', 'dialogue_line_src')
     .is('retired_at', null)
   if (capsError) {
     fail('HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2)', capsError.message)
@@ -927,7 +927,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 }
 
 // ── HC17 (PR 3 of 2026-05-22-data-model-migration.md): every active
-//        affixed_form_pair capability has exactly one `affixed_form_pairs` row.
+//        word_form_pair_src capability has exactly one `affixed_form_pairs` row.
 //        The fail-loud reader at src/lib/exercise-content/byKind/affixedFormPair.ts
 //        surfaces `affixed_form_pair_typed_row_missing` for any cap that fails
 //        this invariant — HC17 is the structural mirror (replacing the retired
@@ -949,24 +949,24 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     .schema('indonesian')
     .from('learning_capabilities')
     .select('id, canonical_key, source_ref, source_kind, capability_type')
-    .eq('source_kind', 'affixed_form_pair')
+    .eq('source_kind', 'word_form_pair_src')
     .is('retired_at', null)
   if (capsError) {
-    fail('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3)', capsError.message)
+    fail('HC17 every active word_form_pair_src cap has an affixed_form_pairs row (PR 3)', capsError.message)
   } else {
     const activeCaps = (capRows ?? []) as CapForSatelliteCheck[]
     if (activeCaps.length === 0) {
-      pass('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3) (no affixed_form_pair caps in DB; vacuously green)')
+      pass('HC17 every active word_form_pair_src cap has an affixed_form_pairs row (PR 3) (no word_form_pair_src caps in DB; vacuously green)')
     } else {
       try {
         const offenders = await findCapsMissingSatellite(supabase, activeCaps)
         if (offenders.length === 0) {
-          pass(`HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3) (${activeCaps.length} cap(s) checked)`)
+          pass(`HC17 every active word_form_pair_src cap has an affixed_form_pairs row (PR 3) (${activeCaps.length} cap(s) checked)`)
         } else {
           const sample = offenders.slice(0, 5).map((o) => `${o.canonical_key} (${o.source_ref})`).join(', ')
           fail(
-            'HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3)',
-            `${offenders.length}+ active affixed_form_pair caps with no affixed_form_pairs row. ` +
+            'HC17 every active word_form_pair_src cap has an affixed_form_pairs row (PR 3)',
+            `${offenders.length}+ active word_form_pair_src caps with no affixed_form_pairs row. ` +
             `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
             `   → Either re-publish the affected lessons (Stage B writes affixed_form_pairs via the ` +
             `morphology projector) or run scripts/migrate-typed-tables-pr3-affixed-form-pair.ts to ` +
@@ -974,7 +974,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
           )
         }
       } catch (err) {
-        fail('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3)', (err as Error).message)
+        fail('HC17 every active word_form_pair_src cap has an affixed_form_pairs row (PR 3)', (err as Error).message)
       }
     }
   }
@@ -992,8 +992,8 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 //        whose chosen exercise_type has no row for its pattern — HC19/HC20 are
 //        the structural no-orphan mirrors.
 //
-//        HC19: every pattern_contrast cap's pattern has ≥1 contrast_pair row.
-//        HC20: every pattern_recognition cap's pattern has ≥1 row in at least
+//        HC19: every contrast_grammar_pattern_cap cap's pattern has ≥1 contrast_pair row.
+//        HC20: every recognise_grammar_pattern_cap cap's pattern has ≥1 row in at least
 //              ONE of (sentence_transformation / constrained_translation /
 //              cloze_mcq). Per-type coverage gaps remain possible (readiness is
 //              structural, not data-existence — Decision R) and surface as a
@@ -1006,16 +1006,16 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     .schema('indonesian')
     .from('learning_capabilities')
     .select('id, canonical_key, source_ref, source_kind, capability_type')
-    .eq('source_kind', 'pattern')
+    .eq('source_kind', 'grammar_pattern_src')
     .is('retired_at', null)
   if (capsError) {
-    fail('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4)', capsError.message)
-    fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)', capsError.message)
+    fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4)', capsError.message)
+    fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4)', capsError.message)
   } else {
     const caps = (capRows ?? []) as CapForSatelliteCheck[]
     if (caps.length === 0) {
-      pass('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4) (no pattern caps in DB; vacuously green)')
-      pass('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4) (no pattern caps in DB; vacuously green)')
+      pass('HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4) (no pattern caps in DB; vacuously green)')
+      pass('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4) (no pattern caps in DB; vacuously green)')
     } else {
       try {
         // The shared predicate returns every pattern cap missing its satellite
@@ -1030,28 +1030,28 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
             `or re-publish (Stage B dual-writes the typed rows for not-yet-published candidates).`
         }
 
-        // HC19 — pattern_contrast
-        const contrastCaps = caps.filter((c) => c.capability_type === 'pattern_contrast')
-        const contrastOffenders = offenders.filter((c) => c.capability_type === 'pattern_contrast')
+        // HC19 — contrast_grammar_pattern_cap
+        const contrastCaps = caps.filter((c) => c.capability_type === 'contrast_grammar_pattern_cap')
+        const contrastOffenders = offenders.filter((c) => c.capability_type === 'contrast_grammar_pattern_cap')
         if (contrastOffenders.length === 0) {
-          pass(`HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4) (${contrastCaps.length} cap(s) checked)`)
+          pass(`HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4) (${contrastCaps.length} cap(s) checked)`)
         } else {
-          fail('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4)',
-            `${contrastOffenders.length}+ pattern_contrast caps with no contrast_pair row for their pattern. ${reportFmt(contrastOffenders)}`)
+          fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4)',
+            `${contrastOffenders.length}+ contrast_grammar_pattern_cap caps with no contrast_pair row for their pattern. ${reportFmt(contrastOffenders)}`)
         }
 
-        // HC20 — pattern_recognition (union of the 3 recognition tables)
-        const recognitionCaps = caps.filter((c) => c.capability_type === 'pattern_recognition')
-        const recognitionOffenders = offenders.filter((c) => c.capability_type === 'pattern_recognition')
+        // HC20 — recognise_grammar_pattern_cap (union of the 3 recognition tables)
+        const recognitionCaps = caps.filter((c) => c.capability_type === 'recognise_grammar_pattern_cap')
+        const recognitionOffenders = offenders.filter((c) => c.capability_type === 'recognise_grammar_pattern_cap')
         if (recognitionOffenders.length === 0) {
-          pass(`HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4) (${recognitionCaps.length} cap(s) checked)`)
+          pass(`HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4) (${recognitionCaps.length} cap(s) checked)`)
         } else {
-          fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)',
-            `${recognitionOffenders.length}+ pattern_recognition caps with no sentence_transformation/constrained_translation/cloze_mcq row for their pattern. ${reportFmt(recognitionOffenders)}`)
+          fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4)',
+            `${recognitionOffenders.length}+ recognise_grammar_pattern_cap caps with no sentence_transformation/constrained_translation/cloze_mcq row for their pattern. ${reportFmt(recognitionOffenders)}`)
         }
       } catch (err) {
-        fail('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4)', (err as Error).message)
-        fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)', (err as Error).message)
+        fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a contrast_pair row (PR 4)', (err as Error).message)
+        fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4)', (err as Error).message)
       }
     }
   }
@@ -1296,8 +1296,8 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 
 // ── HC26 (cap-v2 F1): no MCQ capability renders a DUPLICATE distractor option,
 //        nor a distractor equal to the answer. Distractors are item-id pointers
-//        (distractors.item_id) RENDERED as the item's gloss (text/audio_recognition
-//        → translation_nl) or form (l1_to_id_choice → base_text). Two DISTINCT
+//        (distractors.item_id) RENDERED as the item's gloss (text/recognise_meaning_from_audio_cap
+//        → translation_nl) or form (recognise_form_from_meaning_cap → base_text). Two DISTINCT
 //        item_ids can share a rendered string (e.g. two items glossed "rood"), so
 //        the deterministic dedup (selectDistractors.dedupeByRendered) is the
 //        writer-side guarantee and HC26 is the independent live-DB backstop — the
@@ -1305,13 +1305,13 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 //        vacuous given the single deterministic writer).
 //        EXPECTED RED until affected lessons are re-seeded (F5): a routine
 //        re-publish skips seeded distractors (ADR 0011 seed-once), so the
-//        legacy duplicates (5/43 L7 text_recognition caps at build time) persist
+//        legacy duplicates (5/43 L7 recognise_meaning_from_text_cap caps at build time) persist
 //        until an explicit `--regenerate-distractors <lesson>`.
 {
   type DeepItem = { id: string; normalized_text: string; base_text: string; translation_nl: string | null }
   type DeepCap = { id: string; capability_type: string; source_ref: string; retired_at: string | null }
-  const MEANING_CAPS = new Set(['text_recognition', 'audio_recognition'])
-  const FORM_CAPS = new Set(['l1_to_id_choice'])
+  const MEANING_CAPS = new Set(['recognise_meaning_from_text_cap', 'recognise_meaning_from_audio_cap'])
+  const FORM_CAPS = new Set(['recognise_form_from_meaning_cap'])
   async function fetchAllDeep<T>(table: string, select: string): Promise<T[]> {
     const out: T[] = []
     for (let from = 0; ; from += 1000) {
@@ -1469,7 +1469,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     const mondayOffset = (now.getUTCDay() + 6) % 7
     const weekStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - mondayOffset))
     // Dedup on SOURCE_REF (the word / grammar topic), NOT capability_id, and SPLIT
-    // into vocab ('item') vs grammar ('pattern' + 'affixed_form_pair') — the same
+    // into vocab ('item') vs grammar ('pattern' + 'word_form_pair_src') — the same
     // two buckets + scope as the funnel. Other source kinds (dialogue_line,
     // podcast) are excluded. Mirrors get_weekly_movement's distinct-source_ref,
     // bucketed counts (the join carries source_kind).

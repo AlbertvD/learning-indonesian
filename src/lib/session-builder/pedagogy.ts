@@ -34,23 +34,23 @@ export interface PlannerCapability {
 
 // Family axis for the within-lesson round-robin in `prioritizeCandidates`. Keyed
 // on source_kind ALONE — capability_type is the wrong axis because
-// `contextual_cloze` attaches to both `item` and `dialogue_line` (different
+// `produce_form_from_context_cap` attaches to both `item` and `dialogue_line` (different
 // content sources, same type). Exhaustive over CapabilitySourceKind: a new
 // source kind fails compilation here.
 export type CapabilityFamily = 'vocab' | 'cloze' | 'grammar' | 'morphology' | 'podcast'
 
 export function capabilityFamily(sourceKind: CapabilitySourceKind): CapabilityFamily {
   switch (sourceKind) {
-    case 'item':
+    case 'vocabulary_src':
       return 'vocab'
-    case 'dialogue_line':
+    case 'dialogue_line_src':
       return 'cloze'
-    case 'pattern':
+    case 'grammar_pattern_src':
       return 'grammar'
-    case 'affixed_form_pair':
+    case 'word_form_pair_src':
       return 'morphology'
-    case 'podcast_segment':
-    case 'podcast_phrase':
+    case 'podcast_segment_src':
+    case 'podcast_phrase_src':
       return 'podcast'
   }
 }
@@ -153,27 +153,28 @@ export interface PedagogyInput {
 
 function isPattern(capability: PlannerCapability): boolean {
   return (
-    capability.sourceKind === 'pattern'
-    || capability.sourceKind === 'affixed_form_pair'
+    capability.sourceKind === 'grammar_pattern_src'
+    || capability.sourceKind === 'word_form_pair_src'
     || capability.capabilityType.includes('pattern')
-    || capability.capabilityType.startsWith('root_derived_')
+    || capability.capabilityType === 'recognise_word_form_link_cap'
+    || capability.capabilityType === 'produce_derived_form_cap'
   )
 }
 
 function isNewProductionTask(capability: PlannerCapability): boolean {
   return (
-    capability.capabilityType === 'form_recall'
-    || capability.capabilityType === 'dictation'
-    || capability.capabilityType === 'contextual_cloze'
-    || capability.capabilityType === 'root_derived_recall'
+    capability.capabilityType === 'produce_form_from_meaning_cap'
+    || capability.capabilityType === 'produce_form_from_audio_cap'
+    || capability.capabilityType === 'produce_form_from_context_cap'
+    || capability.capabilityType === 'produce_derived_form_cap'
   )
 }
 
 function isHiddenAudioTask(capability: PlannerCapability): boolean {
   return (
-    capability.capabilityType === 'audio_recognition'
-    || capability.capabilityType === 'dictation'
-    || capability.capabilityType === 'podcast_gist'
+    capability.capabilityType === 'recognise_meaning_from_audio_cap'
+    || capability.capabilityType === 'produce_form_from_audio_cap'
+    || capability.capabilityType === 'recognise_gist_from_audio_cap'
   )
 }
 
@@ -192,10 +193,10 @@ function hasRecentFailureFatigue(input: {
 }
 
 function isAllowedInSessionMode(capability: PlannerCapability): boolean {
-  // podcast_phrase capabilities have no live session mode today; the only
+  // podcast_phrase_src capabilities have no live session mode today; the only
   // mode that admitted them was the unwired 'podcast' mode (retired with the
   // posture system). Suppress them everywhere until a podcast surface ships.
-  return capability.sourceKind !== 'podcast_phrase'
+  return capability.sourceKind !== 'podcast_phrase_src'
 }
 
 // Receptive-before-productive staging. Phase 3+4 capabilities require a
@@ -206,21 +207,21 @@ function isAllowedInSessionMode(capability: PlannerCapability): boolean {
 // any new type added to capabilityTypes.ts will fail compilation here.
 function capabilityPhase(type: CapabilityType): 1 | 2 | 3 | 4 {
   switch (type) {
-    case 'text_recognition':
-    case 'audio_recognition':
-    case 'podcast_gist':
+    case 'recognise_meaning_from_text_cap':
+    case 'recognise_meaning_from_audio_cap':
+    case 'recognise_gist_from_audio_cap':
       return 1
-    case 'meaning_recall':
+    case 'recall_meaning_from_text_cap':
       return 2
-    case 'l1_to_id_choice':
-    case 'pattern_contrast':
+    case 'recognise_form_from_meaning_cap':
+    case 'contrast_grammar_pattern_cap':
       return 3
-    case 'form_recall':
-    case 'contextual_cloze':
-    case 'dictation':
-    case 'root_derived_recognition':
-    case 'root_derived_recall':
-    case 'pattern_recognition':
+    case 'produce_form_from_meaning_cap':
+    case 'produce_form_from_context_cap':
+    case 'produce_form_from_audio_cap':
+    case 'recognise_word_form_link_cap':
+    case 'produce_derived_form_cap':
+    case 'recognise_grammar_pattern_cap':
       return 4
   }
 }
@@ -334,11 +335,11 @@ function gateCandidates(
     //
     // Carve-outs for source kinds that have no Phase 1/2 sibling at the
     // same source_ref:
-    //   - affixed_form_pair: both root_derived_recognition + root_derived_recall
+    //   - word_form_pair_src: both recognise_word_form_link_cap + produce_derived_form_cap
     //     are productive; their own prerequisite chain (encoded in
     //     prerequisiteKeys) already enforces a within-pattern learning order.
     //   - dialogue_line: each dialogue line has exactly one productive
-    //     contextual_cloze cap; the source_ref `lesson-N/section-M/line-K`
+    //     produce_form_from_context_cap cap; the source_ref `lesson-N/section-M/line-K`
     //     is unique to that line. Receptive items on the same lesson live at
     //     different source_refs (`learning_items/<slug>`), so they would not
     //     unlock under the source_ref-keyed gate even if the dialogue line's
@@ -346,7 +347,7 @@ function gateCandidates(
     //     (Decision 3b / ADR 0006) is the actual readiness lever for
     //     dialogue lines.
     //   - pattern: grammar has no Phase 1/2 ladder — its only two types
-    //     (pattern_contrast = Phase 3, pattern_recognition = Phase 4) are both
+    //     (contrast_grammar_pattern_cap = Phase 3, recognise_grammar_pattern_cap = Phase 4) are both
     //     productive and share the pattern's own source_ref, so nothing ever
     //     populates `unlockedSourceRefs` for it. The staging gate originally
     //     excluded pattern on the premise that "pattern types are inert at
@@ -358,9 +359,9 @@ function gateCandidates(
     //   Without these carve-outs, every cap of these kinds is permanently
     //   orphan-suppressed.
     if (
-      capability.sourceKind !== 'affixed_form_pair'
-      && capability.sourceKind !== 'dialogue_line'
-      && capability.sourceKind !== 'pattern'
+      capability.sourceKind !== 'word_form_pair_src'
+      && capability.sourceKind !== 'dialogue_line_src'
+      && capability.sourceKind !== 'grammar_pattern_src'
       && capabilityPhase(capability.capabilityType) >= 3
       && !ctx.unlockedSourceRefs.has(capability.sourceRef)
     ) {
@@ -375,7 +376,7 @@ function gateCandidates(
     // capability has a non-null lessonId; the schema CHECK constraint
     // `learning_capabilities_lesson_id_required_for_lessons` (scripts/migration.sql)
     // enforces this. The `!= null` test below is retained only because podcast
-    // source kinds (`podcast_segment`, `podcast_phrase`) are the documented
+    // source kinds (`podcast_segment_src`, `podcast_phrase_src`) are the documented
     // carve-out and remain null-lesson by design — they bypass this gate and
     // rely on `isAllowedInSessionMode` above to gate them by mode. For every
     // other source kind, the schema guarantees lessonId is non-null and the

@@ -8,7 +8,7 @@ A source of learning material, such as a textbook lesson, dialogue line, podcast
 
 ### Content Source kinds
 
-The fixed set of `source_kind` discriminators a capability carries (the type union in `src/lib/capabilities/capabilityTypes.ts`; the `source_kind` column on `learning_capabilities`). Each names *what kind* of content source a capability reaches via `source_ref`, and resolves to one typed table (ADR 0009). A capability's learned content is frequently *not* a **Learning Item** — only the `item` kind is lexical.
+The fixed set of `source_kind` discriminators a capability carries (the type union in `src/lib/capabilities/capabilityTypes.ts`; the `source_kind` column on `learning_capabilities`). Each names *what kind* of content source a capability reaches via `source_ref`, and resolves to one typed table (ADR 0009). A capability's learned content is frequently *not* a **Learning Item** — only the `vocabulary_src` kind (formerly `item`) is lexical.
 
 - **`item`** — A single lexical unit: a word or short reusable phrase being learned. Source table: `learning_items`. (See **Learning Item**.)
 - **`dialogue_line`** — One complete utterance from a lesson dialogue, used as the carrier for a contextual cloze. Source table: `lesson_dialogue_lines`.
@@ -43,24 +43,26 @@ One of the 12 *kinds* of skill facet through which a content source can be pract
 
 The **mode** column is the pedagogically meaningful axis (receptive → productive, ADR 0007) — the `SkillType` each type maps to via `deriveSkillTypeFromCapabilityType`: **recognise** (receptive; pick/know the answer), **recall meaning** (state what it means), **produce form** (write the Indonesian unaided). "L1" = the learner's language (Dutch or English); "id" = Indonesian. Definitions consolidated from `capabilityTypes.ts` + `docs/current-system/human-product-and-learning-guide.md` §7–8 + `docs/current-system/content-pipeline-and-quality-gates.md` §8–9.
 
+**Names below are the §8 Phase-A live names** (the readable `_cap`/`_src` convention, shipped 2026-06-16; the parenthetical *(was …)* is the former name, still found in historical changelog entries and in not-yet-migrated `_ex`/`_mode` surfaces). See `docs/current-system/capability-and-exercise-model.md` §8.
+
 | Capability type | Source kind | Mode | Human definition |
 |---|---|---|---|
-| `text_recognition` | item | recognise | See the written Indonesian word → know its meaning in the learner's language. (`makan` seen → "eten".) |
-| `audio_recognition` | item | recognise | Hear the spoken Indonesian word → know its meaning. (hear `makan` → "eten".) |
-| `meaning_recall` | item | recall meaning | Given the Indonesian word, recall its meaning *unaided* (state it, not choose from options). |
-| `l1_to_id_choice` | item | recognise | Given the meaning in the learner's language, **choose** the correct Indonesian word from options — a receptive multiple-choice recognition. (cap-v2 #161: corrected from the legacy `meaning_recall` mis-level; `deriveSkillTypeFromCapabilityType` now returns `recognition`, the receptive-before-productive sequencing key per ADR 0007.) |
-| `form_recall` | item | produce form | Given the meaning in the learner's language, **type** the Indonesian written form unaided. ("eten" → type `makan`.) |
-| `dictation` | item | produce form | Hear the spoken Indonesian word → **type** its written form. (hear `makan` → type `makan`.) |
-| `contextual_cloze` | item + dialogue_line | produce form | Fill the blanked word in a sentence or dialogue line — produce the correct form from context. |
-| `pattern_recognition` | pattern | recognise | Recognise a grammar pattern in use and understand its function (e.g. the role of the `meN-` prefix). |
-| `pattern_contrast` | pattern | recognise | Distinguish a grammar pattern from a contrasting one (e.g. `belum` vs `tidak`, `meN-` vs `di-`). |
-| `root_derived_recognition` | affixed_form_pair | recognise | Recognise the link between a root and its affixed/derived form (e.g. `baca` → `membaca`), or the meaning of the derived form. |
-| `root_derived_recall` | affixed_form_pair | produce form | Produce the derived (affixed) form from the root, or the root from the derived form. |
-| `podcast_gist` | podcast_segment | recognise | Listen to a podcast segment and grasp its overall gist (exposure-oriented; feature not yet live — 0 rows). |
+| `recognise_meaning_from_text_cap` *(was `text_recognition`)* | `vocabulary_src` *(was `item`)* | recognise | See the written Indonesian word → know its meaning in the learner's language. (`makan` seen → "eten".) |
+| `recognise_meaning_from_audio_cap` *(was `audio_recognition`)* | `vocabulary_src` | recognise | Hear the spoken Indonesian word → know its meaning. (hear `makan` → "eten".) |
+| `recall_meaning_from_text_cap` *(was `meaning_recall`)* | `vocabulary_src` | recall meaning | Given the Indonesian word, recall its meaning *unaided* (state it, not choose from options). |
+| `recognise_form_from_meaning_cap` *(was `l1_to_id_choice`)* | `vocabulary_src` | recognise | Given the meaning in the learner's language, **choose** the correct Indonesian word from options — a receptive multiple-choice recognition. (cap-v2 #161: corrected from the legacy `meaning_recall` mis-level; `deriveSkillTypeFromCapabilityType` returns `recognition`, the receptive-before-productive sequencing key per ADR 0007.) |
+| `produce_form_from_meaning_cap` *(was `form_recall`)* | `vocabulary_src` | produce form | Given the meaning in the learner's language, **type** the Indonesian written form unaided. ("eten" → type `makan`.) |
+| `produce_form_from_audio_cap` *(was `dictation`)* | `vocabulary_src` | produce form | Hear the spoken Indonesian word → **type** its written form. (hear `makan` → type `makan`.) |
+| `produce_form_from_context_cap` *(was `contextual_cloze`)* | `vocabulary_src` + `dialogue_line_src` | produce form | Fill the blanked word in a sentence or dialogue line — produce the correct form from context. |
+| `recognise_grammar_pattern_cap` *(was `pattern_recognition`)* | `grammar_pattern_src` *(was `pattern`)* | recognise | Recognise a grammar pattern in use and understand its function (e.g. the role of the `meN-` prefix). |
+| `contrast_grammar_pattern_cap` *(was `pattern_contrast`)* | `grammar_pattern_src` | recognise | Distinguish a grammar pattern from a contrasting one (e.g. `belum` vs `tidak`, `meN-` vs `di-`). |
+| `recognise_word_form_link_cap` *(was `root_derived_recognition`)* | `word_form_pair_src` *(was `affixed_form_pair`)* | recognise | Recognise the link between a root and its affixed/derived form (e.g. `baca` → `membaca`), or the meaning of the derived form. |
+| `produce_derived_form_cap` *(was `root_derived_recall`)* | `word_form_pair_src` | produce form | Produce the derived (affixed) form from the root, or the root from the derived form. |
+| `recognise_gist_from_audio_cap` *(was `podcast_gist`)* | `podcast_segment_src` *(was `podcast_segment`)* | recognise | Listen to a podcast segment and grasp its overall gist (exposure-oriented; feature not yet live — 0 rows). |
 
-One vocabulary item typically produces ~6 capabilities (the `item`-source rows above that its content supports — e.g. an item with audio gets `audio_recognition` + `dictation`, one without does not). See **Learning Capability** for the (source × type) pairing this enumerates the *type* half of.
+One vocabulary item typically produces ~6 capabilities (the `vocabulary_src`-source rows above that its content supports — e.g. an item with audio gets `recognise_meaning_from_audio_cap` + `produce_form_from_audio_cap`, one without does not). See **Learning Capability** for the (source × type) pairing this enumerates the *type* half of.
 
-For the full model — the (source × capability × exercise) map, live counts, the known naming debt, and the **target readable naming convention** (four layers `_src`/`_mode`/`_cap`/`_ex` + typed content concepts, no "artifact" umbrella) — see [`docs/current-system/capability-and-exercise-model.md`](docs/current-system/capability-and-exercise-model.md). The convention there is a documented *target*; the live enum names in the table above are still authoritative until an architect + data-architect migration adopts it (it rewrites `canonical_key`).
+For the full model — the (source × capability × exercise) map, live counts, the known naming debt, and the **readable naming convention** (four layers `_src`/`_mode`/`_cap`/`_ex` + typed content concepts, no "artifact" umbrella) — see [`docs/current-system/capability-and-exercise-model.md`](docs/current-system/capability-and-exercise-model.md). **Phase A of that convention is now live** (`_src` + `_cap`, shipped 2026-06-16); `_ex` (`ExerciseType`) and `_mode` (`SkillType`) still use the former names pending Phases B/C of `docs/plans/2026-06-15-capability-naming-rename-plan.md`.
 
 ## Learning Capability
 
@@ -104,7 +106,7 @@ The module that composes a learning session from due active capabilities, Pedago
 
 ## Sibling Capabilities
 
-Two or more **Learning Capabilities** that share the same `source_ref` — i.e. different **capability types** of the *same* content source. A typical vocabulary word has ~6 siblings (`text_recognition`, `audio_recognition`, `meaning_recall`, `l1_to_id_choice`, `form_recall`, `dictation`, all under one `learning_items/<slug>` ref); a `pattern` or `affixed_form_pair` has 2; a `dialogue_line` has 1 (it is its own only sibling). The sibling key is `source_ref` (non-null on every projected capability). Siblings share meaning, so practising two of them close together lets one **prime** the other (interference) — making recall artificially easy rather than a genuine retrieval.
+Two or more **Learning Capabilities** that share the same `source_ref` — i.e. different **capability types** of the *same* content source. A typical vocabulary word has ~6 siblings (`recognise_meaning_from_text_cap`, `recognise_meaning_from_audio_cap`, `recall_meaning_from_text_cap`, `recognise_form_from_meaning_cap`, `produce_form_from_meaning_cap`, `produce_form_from_audio_cap`, all under one `learning_items/<slug>` ref); a `grammar_pattern_src` or `word_form_pair_src` cap has 2; a `dialogue_line_src` has 1 (it is its own only sibling). The sibling key is `source_ref` (non-null on every projected capability). Siblings share meaning, so practising two of them close together lets one **prime** the other (interference) — making recall artificially easy rather than a genuine retrieval.
 
 ## Sibling Burying
 

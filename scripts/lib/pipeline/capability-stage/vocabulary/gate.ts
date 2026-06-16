@@ -76,7 +76,7 @@ export function validateAudioCoverage(items: VocabAudioCoverageItem[]): Validati
         severity: 'warning',
         message:
           `Item "${i.normalizedText}" has no audio clip — its audio capabilities ` +
-          `(audio_recognition/dictation) will not render until the Lesson Stage voices ` +
+          `(recognise_meaning_from_audio_cap/dictation) will not render until the Lesson Stage voices ` +
           `it. The hard Stage-A enforcement is tracked in #165.`,
         context: { itemSlug: i.normalizedText },
       })

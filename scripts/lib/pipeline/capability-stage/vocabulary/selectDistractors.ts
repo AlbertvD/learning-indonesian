@@ -27,7 +27,7 @@ import { stripAffixes } from '../../../affix'
  * first (best-ranked) of each. Distractors are stored as item-id pointers, so two
  * DISTINCT learning_items can share a rendered string (e.g. two items glossed
  * "rood") and both survive selection — producing an unfair "rood | rood" MCQ
- * (F1, verified live: 5/43 L7 text_recognition caps). Dedup must run BEFORE the
+ * (F1, verified live: 5/43 L7 recognise_meaning_from_text_cap caps). Dedup must run BEFORE the
  * top-k slice so a collision is replaced by the next distinct option, not dropped
  * to under-k.
  */

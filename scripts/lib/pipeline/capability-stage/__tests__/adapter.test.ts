@@ -112,7 +112,7 @@ describe('capability-stage adapter — upsertCapabilities un-retires on re-emiss
     const { client, captured } = buildCapabilityUpsertCapturer()
     const input: CapabilityInput = {
       canonicalKey: 'item:halo:recognition:l1-l2:visual',
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef: 'learning_items/halo',
       capabilityType: 'recognition',
       direction: 'l1-l2',
@@ -274,10 +274,10 @@ function buildScopedRetireClient(
 describe('retireOrphanedCapabilities — source-kind scoping (cap-v2 #161 landmine 8a)', () => {
   // One lesson with both item caps (vocab module's) and non-item caps (runner's).
   const allActive = [
-    { id: 'item-keep', canonical_key: 'item:halo:recognition', source_kind: 'item' },
-    { id: 'item-orphan', canonical_key: 'item:gone:recognition', source_kind: 'item' },
-    { id: 'pat-keep', canonical_key: 'pattern:meN:recognition', source_kind: 'pattern' },
-    { id: 'dlg-orphan', canonical_key: 'dialogue_line:old:cl', source_kind: 'dialogue_line' },
+    { id: 'item-keep', canonical_key: 'item:halo:recognition', source_kind: 'vocabulary_src' },
+    { id: 'item-orphan', canonical_key: 'item:gone:recognition', source_kind: 'vocabulary_src' },
+    { id: 'pat-keep', canonical_key: 'pattern:meN:recognition', source_kind: 'grammar_pattern_src' },
+    { id: 'dlg-orphan', canonical_key: 'dialogue_line:old:cl', source_kind: 'dialogue_line_src' },
   ]
 
   it("the runner's non-item sweep never retires item caps", async () => {
@@ -285,7 +285,7 @@ describe('retireOrphanedCapabilities — source-kind scoping (cap-v2 #161 landmi
     const result = await retireOrphanedCapabilities(client, {
       lessonId: 'L',
       emittedKeys: ['pattern:meN:recognition'], // runner re-emitted the pattern; dialogue is an orphan
-      sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
+      sourceKinds: ['dialogue_line_src', 'grammar_pattern_src', 'word_form_pair_src'],
     })
     // Only the dialogue orphan is retired; NEITHER item cap is touched.
     expect(result.retiredKeys).toEqual(['dialogue_line:old:cl'])
@@ -299,7 +299,7 @@ describe('retireOrphanedCapabilities — source-kind scoping (cap-v2 #161 landmi
     const result = await retireOrphanedCapabilities(client, {
       lessonId: 'L',
       emittedKeys: ['item:halo:recognition'], // vocab re-emitted halo; gone is an orphan
-      sourceKinds: ['item'],
+      sourceKinds: ['vocabulary_src'],
     })
     // Only the item orphan is retired; NEITHER non-item cap is touched.
     expect(result.retiredKeys).toEqual(['item:gone:recognition'])
@@ -362,10 +362,10 @@ function buildReconcileClient(
 describe('capability-stage adapter — reconcileArtifactPresence', () => {
   const dlgCap = (id: string) => ({
     id,
-    canonical_key: `dialogue_line:${id}:contextual_cloze`,
-    source_kind: 'dialogue_line',
+    canonical_key: `dialogue_line:${id}:produce_form_from_context_cap`,
+    source_kind: 'dialogue_line_src',
     source_ref: `lesson-1/section-3/line-${id}`,
-    capability_type: 'contextual_cloze',
+    capability_type: 'produce_form_from_context_cap',
   })
 
   it('soft-retires a ready+published dialogue cap whose dialogue_clozes row vanished, and clears next_due_at', async () => {
@@ -375,9 +375,9 @@ describe('capability-stage adapter — reconcileArtifactPresence', () => {
     )
     const result = await reconcileArtifactPresence(client, {
       lessonId: 'L1',
-      sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
+      sourceKinds: ['dialogue_line_src', 'grammar_pattern_src', 'word_form_pair_src'],
     })
-    expect(result.retiredKeys).toEqual(['dialogue_line:orphan:contextual_cloze'])
+    expect(result.retiredKeys).toEqual(['dialogue_line:orphan:produce_form_from_context_cap'])
     expect(retireUpdate).toHaveLength(1)
     expect(retireUpdate[0].ids).toEqual(['orphan'])
     expect(retireUpdate[0].payload.retired_at).toEqual(expect.any(String))
@@ -394,7 +394,7 @@ describe('capability-stage adapter — reconcileArtifactPresence', () => {
     )
     const result = await reconcileArtifactPresence(client, {
       lessonId: 'L1',
-      sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
+      sourceKinds: ['dialogue_line_src', 'grammar_pattern_src', 'word_form_pair_src'],
     })
     expect(result.retiredCount).toBe(0)
     expect(retireUpdate).toHaveLength(0)
@@ -404,10 +404,10 @@ describe('capability-stage adapter — reconcileArtifactPresence', () => {
   it('is a no-op for the item scope — item caps have no satellite predicate (§2c)', async () => {
     const itemCap = {
       id: 'i1', canonical_key: 'item:halo:recognition',
-      source_kind: 'item', source_ref: 'learning_items/halo', capability_type: 'recognition',
+      source_kind: 'vocabulary_src', source_ref: 'learning_items/halo', capability_type: 'recognition',
     }
     const { client, retireUpdate } = buildReconcileClient([itemCap], {})
-    const result = await reconcileArtifactPresence(client, { lessonId: 'L1', sourceKinds: ['item'] })
+    const result = await reconcileArtifactPresence(client, { lessonId: 'L1', sourceKinds: ['vocabulary_src'] })
     expect(result.retiredCount).toBe(0)
     expect(retireUpdate).toHaveLength(0)
   })

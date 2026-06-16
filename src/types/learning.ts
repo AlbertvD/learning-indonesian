@@ -221,7 +221,7 @@ export interface ExerciseItem {
     correctOptionId: string
     explanationText?: string
   }
-  /** For typed_recall on affixed_form_pair source kind (morphology drills).
+  /** For typed_recall on word_form_pair_src source kind (morphology drills).
    *  Set by the byType typed_recall builder when input.affixedFormPair is
    *  populated; null for item-sourced typed_recall (existing path). The UI
    *  branches on this field's presence. */

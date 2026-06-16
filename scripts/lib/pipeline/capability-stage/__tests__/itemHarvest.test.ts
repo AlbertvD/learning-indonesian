@@ -52,46 +52,46 @@ describe('isOverHarvestedItemCap', () => {
 
   it('flags an item cap whose source resolves to a sentence', () => {
     expect(isOverHarvestedItemCap(
-      { sourceKind: 'item', sourceRef: 'learning_items/ada yang dari negeri belanda' },
+      { sourceKind: 'vocabulary_src', sourceRef: 'learning_items/ada yang dari negeri belanda' },
       itemTypeBySlug,
     )).toBe(true)
   })
 
   it('flags an item cap whose source resolves to a dialogue_chunk', () => {
     expect(isOverHarvestedItemCap(
-      { sourceKind: 'item', sourceRef: 'learning_items/selamat pagi, apa kabar' },
+      { sourceKind: 'vocabulary_src', sourceRef: 'learning_items/selamat pagi, apa kabar' },
       itemTypeBySlug,
     )).toBe(true)
   })
 
   it('keeps an item cap whose source resolves to a word', () => {
     expect(isOverHarvestedItemCap(
-      { sourceKind: 'item', sourceRef: 'learning_items/buku' },
+      { sourceKind: 'vocabulary_src', sourceRef: 'learning_items/buku' },
       itemTypeBySlug,
     )).toBe(false)
   })
 
   it('keeps an item cap whose source resolves to a phrase', () => {
     expect(isOverHarvestedItemCap(
-      { sourceKind: 'item', sourceRef: 'learning_items/terima kasih kembali' },
+      { sourceKind: 'vocabulary_src', sourceRef: 'learning_items/terima kasih kembali' },
       itemTypeBySlug,
     )).toBe(false)
   })
 
   it('keeps a cap whose source resolves to NO item row (non-item cap)', () => {
     expect(isOverHarvestedItemCap(
-      { sourceKind: 'item', sourceRef: 'learning_items/unknown-slug' },
+      { sourceKind: 'vocabulary_src', sourceRef: 'learning_items/unknown-slug' },
       itemTypeBySlug,
     )).toBe(false)
   })
 
   it('keeps a dialogue_line / pattern source-kind cap (sourceRef not an item ref)', () => {
     expect(isOverHarvestedItemCap(
-      { sourceKind: 'dialogue_line', sourceRef: 'lesson_dialogue_lines/l1-s2-3' },
+      { sourceKind: 'dialogue_line_src', sourceRef: 'lesson_dialogue_lines/l1-s2-3' },
       itemTypeBySlug,
     )).toBe(false)
     expect(isOverHarvestedItemCap(
-      { sourceKind: 'pattern', sourceRef: 'grammar_patterns/me-verb' },
+      { sourceKind: 'grammar_pattern_src', sourceRef: 'grammar_patterns/me-verb' },
       itemTypeBySlug,
     )).toBe(false)
   })

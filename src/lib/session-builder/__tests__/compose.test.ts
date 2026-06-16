@@ -9,7 +9,7 @@ const renderPlan = (sourceRef: string, capabilityKey: string): ExerciseRenderPla
   capabilityKey,
   sourceRef,
   exerciseType: 'recognition_mcq',
-  capabilityType: 'text_recognition',
+  capabilityType: 'recognise_meaning_from_text_cap',
   skillType: 'recognition',
 })
 

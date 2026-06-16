@@ -3,10 +3,10 @@
  *
  * `projectItemsFromTypedRows` maps typed `lesson_section_item_rows` (loaded from
  * the DB) into per-item write plans (learning_items upsert + anchor context + the
- * 4 base caps, plus audio_recognition/dictation when an audio_clip exists).
+ * 4 base caps, plus recognise_meaning_from_audio_cap/dictation when an audio_clip exists).
  *
  * The legacy staging projector (`projectVocab` / `selectPublishableItems` + the
- * `contextual_cloze` dialogue emission) was retired in Slice 5b (#147): the runner
+ * `produce_form_from_context_cap` dialogue emission) was retired in Slice 5b (#147): the runner
  * is DB-only and dialogue clozes are generated in-stage (projectors/dialogueCloze.ts).
  */
 
@@ -64,7 +64,7 @@ export interface TypedItemProjectionInput {
   /**
    * DB audio coverage map from loadStageAOutputsFromDb, keyed by
    * normalizeTtsText(base_text). Items whose normalized_text is present in this
-   * map get 2 extra audio caps (audio_recognition + dictation) in addition to
+   * map get 2 extra audio caps (recognise_meaning_from_audio_cap + dictation) in addition to
    * the 4 base text caps. Items absent from the map get only 4 base caps.
    * Optional for backward compatibility (omitting = empty map = no audio caps).
    */
@@ -92,8 +92,8 @@ export interface TypedItemProjectionOutput {
  *
  * Each item emits 4 base capabilities (no audio — audio enrichment is a
  * separate pass that reads audio_clips from DB; not needed in this pure projector):
- *   1. text_recognition  (id_to_l1)
- *   2. l1_to_id_choice   (l1_to_id)
+ *   1. recognise_meaning_from_text_cap  (id_to_l1)
+ *   2. recognise_form_from_meaning_cap   (l1_to_id)
  *   3. meaning_recall    (id_to_l1)
  *   4. form_recall       (l1_to_id)
  *
@@ -149,9 +149,9 @@ export function projectItemsFromTypedRows(
     const learnerLanguage = 'nl'
 
     const textRecognitionDraft = {
-      sourceKind: 'item' as const,
+      sourceKind: 'vocabulary_src' as const,
       sourceRef,
-      capabilityType: 'text_recognition' as const,
+      capabilityType: 'recognise_meaning_from_text_cap' as const,
       direction: 'id_to_l1' as const,
       modality: 'text' as const,
       learnerLanguage: learnerLanguage as const,
@@ -159,9 +159,9 @@ export function projectItemsFromTypedRows(
     const textRecognitionKey = buildCanonicalKey(textRecognitionDraft)
 
     const l1ToIdChoiceDraft = {
-      sourceKind: 'item' as const,
+      sourceKind: 'vocabulary_src' as const,
       sourceRef,
-      capabilityType: 'l1_to_id_choice' as const,
+      capabilityType: 'recognise_form_from_meaning_cap' as const,
       direction: 'l1_to_id' as const,
       modality: 'text' as const,
       learnerLanguage: learnerLanguage as const,
@@ -171,9 +171,9 @@ export function projectItemsFromTypedRows(
     const capabilities: CapabilityInput[] = [
       {
         canonicalKey: textRecognitionKey,
-        sourceKind: 'item',
+        sourceKind: 'vocabulary_src',
         sourceRef,
-        capabilityType: 'text_recognition',
+        capabilityType: 'recognise_meaning_from_text_cap',
         direction: 'id_to_l1',
         modality: 'text',
         learnerLanguage,
@@ -184,9 +184,9 @@ export function projectItemsFromTypedRows(
       },
       {
         canonicalKey: l1ToIdChoiceKey,
-        sourceKind: 'item',
+        sourceKind: 'vocabulary_src',
         sourceRef,
-        capabilityType: 'l1_to_id_choice',
+        capabilityType: 'recognise_form_from_meaning_cap',
         direction: 'l1_to_id',
         modality: 'text',
         learnerLanguage,
@@ -197,16 +197,16 @@ export function projectItemsFromTypedRows(
       },
       {
         canonicalKey: buildCanonicalKey({
-          sourceKind: 'item',
+          sourceKind: 'vocabulary_src',
           sourceRef,
-          capabilityType: 'meaning_recall',
+          capabilityType: 'recall_meaning_from_text_cap',
           direction: 'id_to_l1',
           modality: 'text',
           learnerLanguage,
         }),
-        sourceKind: 'item',
+        sourceKind: 'vocabulary_src',
         sourceRef,
-        capabilityType: 'meaning_recall',
+        capabilityType: 'recall_meaning_from_text_cap',
         direction: 'id_to_l1',
         modality: 'text',
         learnerLanguage,
@@ -217,16 +217,16 @@ export function projectItemsFromTypedRows(
       },
       {
         canonicalKey: buildCanonicalKey({
-          sourceKind: 'item',
+          sourceKind: 'vocabulary_src',
           sourceRef,
-          capabilityType: 'form_recall',
+          capabilityType: 'produce_form_from_meaning_cap',
           direction: 'l1_to_id',
           modality: 'text',
           learnerLanguage,
         }),
-        sourceKind: 'item',
+        sourceKind: 'vocabulary_src',
         sourceRef,
-        capabilityType: 'form_recall',
+        capabilityType: 'produce_form_from_meaning_cap',
         direction: 'l1_to_id',
         modality: 'text',
         learnerLanguage,
@@ -244,20 +244,20 @@ export function projectItemsFromTypedRows(
     // here; it is flagged by the vocab gate's CS23 audio-coverage check, and the
     // hard Stage-A enforcement is #165. (The clip-existence gate that used to wrap
     // this block is removed.)
-    //   audio_recognition: direction=audio_to_l1, learnerLanguage=<meaning lang>
+    //   recognise_meaning_from_audio_cap: direction=audio_to_l1, learnerLanguage=<meaning lang>
     //   dictation:         direction=audio_to_id, learnerLanguage='none'
     capabilities.push({
       canonicalKey: buildCanonicalKey({
-        sourceKind: 'item',
+        sourceKind: 'vocabulary_src',
         sourceRef,
-        capabilityType: 'audio_recognition',
+        capabilityType: 'recognise_meaning_from_audio_cap',
         direction: 'audio_to_l1',
         modality: 'audio',
         learnerLanguage,
       }),
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef,
-      capabilityType: 'audio_recognition',
+      capabilityType: 'recognise_meaning_from_audio_cap',
       direction: 'audio_to_l1',
       modality: 'audio',
       learnerLanguage,
@@ -268,16 +268,16 @@ export function projectItemsFromTypedRows(
     })
     capabilities.push({
       canonicalKey: buildCanonicalKey({
-        sourceKind: 'item',
+        sourceKind: 'vocabulary_src',
         sourceRef,
-        capabilityType: 'dictation',
+        capabilityType: 'produce_form_from_audio_cap',
         direction: 'audio_to_id',
         modality: 'audio',
         learnerLanguage: 'none',
       }),
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef,
-      capabilityType: 'dictation',
+      capabilityType: 'produce_form_from_audio_cap',
       direction: 'audio_to_id',
       modality: 'audio',
       learnerLanguage: 'none',

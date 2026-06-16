@@ -3,12 +3,12 @@ import type { SkillType } from '../../types/learning'
 export const CAPABILITY_PROJECTION_VERSION = 'capability-v3' as const
 
 export type CapabilitySourceKind =
-  | 'item'
-  | 'pattern'
-  | 'dialogue_line'
-  | 'podcast_segment'
-  | 'podcast_phrase'
-  | 'affixed_form_pair'
+  | 'vocabulary_src'
+  | 'grammar_pattern_src'
+  | 'dialogue_line_src'
+  | 'podcast_segment_src'
+  | 'podcast_phrase_src'
+  | 'word_form_pair_src'
 
 /**
  * Runtime list of every CapabilitySourceKind. The `as const satisfies` clause
@@ -21,41 +21,41 @@ export type CapabilitySourceKind =
  * adds a new kind.
  */
 export const CAPABILITY_SOURCE_KINDS = [
-  'item',
-  'pattern',
-  'dialogue_line',
-  'podcast_segment',
-  'podcast_phrase',
-  'affixed_form_pair',
+  'vocabulary_src',
+  'grammar_pattern_src',
+  'dialogue_line_src',
+  'podcast_segment_src',
+  'podcast_phrase_src',
+  'word_form_pair_src',
 ] as const satisfies readonly CapabilitySourceKind[]
 
 export type CapabilityType =
-  | 'text_recognition'
-  | 'meaning_recall'
-  | 'l1_to_id_choice'
-  | 'form_recall'
-  | 'contextual_cloze'
-  | 'audio_recognition'
-  | 'dictation'
-  | 'podcast_gist'
-  | 'pattern_recognition'
-  | 'pattern_contrast'
-  | 'root_derived_recognition'
-  | 'root_derived_recall'
+  | 'recognise_meaning_from_text_cap'
+  | 'recall_meaning_from_text_cap'
+  | 'recognise_form_from_meaning_cap'
+  | 'produce_form_from_meaning_cap'
+  | 'produce_form_from_context_cap'
+  | 'recognise_meaning_from_audio_cap'
+  | 'produce_form_from_audio_cap'
+  | 'recognise_gist_from_audio_cap'
+  | 'recognise_grammar_pattern_cap'
+  | 'contrast_grammar_pattern_cap'
+  | 'recognise_word_form_link_cap'
+  | 'produce_derived_form_cap'
 
 export const CAPABILITY_TYPES = [
-  'text_recognition',
-  'meaning_recall',
-  'l1_to_id_choice',
-  'form_recall',
-  'contextual_cloze',
-  'audio_recognition',
-  'dictation',
-  'podcast_gist',
-  'pattern_recognition',
-  'pattern_contrast',
-  'root_derived_recognition',
-  'root_derived_recall',
+  'recognise_meaning_from_text_cap',
+  'recall_meaning_from_text_cap',
+  'recognise_form_from_meaning_cap',
+  'produce_form_from_meaning_cap',
+  'produce_form_from_context_cap',
+  'recognise_meaning_from_audio_cap',
+  'produce_form_from_audio_cap',
+  'recognise_gist_from_audio_cap',
+  'recognise_grammar_pattern_cap',
+  'contrast_grammar_pattern_cap',
+  'recognise_word_form_link_cap',
+  'produce_derived_form_cap',
 ] as const satisfies readonly CapabilityType[]
 
 export type CapabilityDirection =
@@ -231,25 +231,25 @@ export interface LearningCapabilityRow {
 // derived at read-time per Decision F. Closed mapping — TS exhaustiveness
 // catches any new capability_type that needs a skill assignment.
 export function deriveSkillTypeFromCapabilityType(capabilityType: CapabilityType): SkillType {
-  // Slice 1 (cap-v2) mis-level fix: l1_to_id_choice ("pick the Indonesian word
+  // Slice 1 (cap-v2) mis-level fix: recognise_form_from_meaning_cap ("pick the Indonesian word
   // from the L1 meaning") is a receptive multiple-choice RECOGNITION, not a
   // recall. It was mis-grouped under meaning_recall. Receptive-before-productive
   // sequencing (ADR 0007) keys off this derived level.
   switch (capabilityType) {
-    case 'text_recognition':
-    case 'audio_recognition':
-    case 'pattern_recognition':
-    case 'pattern_contrast':
-    case 'root_derived_recognition':
-    case 'podcast_gist':
-    case 'l1_to_id_choice':
+    case 'recognise_meaning_from_text_cap':
+    case 'recognise_meaning_from_audio_cap':
+    case 'recognise_grammar_pattern_cap':
+    case 'contrast_grammar_pattern_cap':
+    case 'recognise_word_form_link_cap':
+    case 'recognise_gist_from_audio_cap':
+    case 'recognise_form_from_meaning_cap':
       return 'recognition'
-    case 'meaning_recall':
+    case 'recall_meaning_from_text_cap':
       return 'meaning_recall'
-    case 'form_recall':
-    case 'dictation':
-    case 'root_derived_recall':
-    case 'contextual_cloze':
+    case 'produce_form_from_meaning_cap':
+    case 'produce_form_from_audio_cap':
+    case 'produce_derived_form_cap':
+    case 'produce_form_from_context_cap':
       return 'form_recall'
   }
 }

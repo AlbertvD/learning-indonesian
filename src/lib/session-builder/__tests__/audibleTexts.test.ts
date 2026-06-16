@@ -1,6 +1,6 @@
 // Tests for the audibleTextFieldsOf TTS harvest helper.
 //
-// Coverage focus is on the affixed_form_pair slot added 2026-05-21 (PR 1 of
+// Coverage focus is on the word_form_pair_src slot added 2026-05-21 (PR 1 of
 // docs/plans/2026-05-21-affixed-form-pair-runtime.md). Three sanity rows
 // cover existing slots (item base_text, clozeContext, clozeMcqData) to make
 // this file a proper unit of coverage for the helper.
@@ -30,7 +30,7 @@ function baseExerciseItem(overrides: Partial<ExerciseItem> = {}): ExerciseItem {
   }
 }
 
-describe('audibleTextFieldsOf — affixed_form_pair', () => {
+describe('audibleTextFieldsOf — word_form_pair_src', () => {
   it('includes both root and derived from affixedFormPairData', () => {
     const item = baseExerciseItem({
       affixedFormPairData: {

@@ -14,7 +14,7 @@
  *   - loadDialogueFromDb composes them
  *
  * Affixed seam asserts the analogous shape against lesson_section_affixed_pairs,
- * affixed_form_pairs (seededAffixedCapIds), and affixed_form_pair caps.
+ * affixed_form_pairs (seededAffixedCapIds), and word_form_pair_src caps.
  */
 
 import { describe, it, expect } from 'vitest'
@@ -137,10 +137,10 @@ const DIALOGUE_CLOZES = [
 ]
 
 const DIALOGUE_CAPS = [
-  { id: 'dcap-1', canonical_key: 'dialogue_line:lesson-5/dialogue/line-0:cloze:none', source_kind: 'dialogue_line' },
-  { id: 'dcap-2', canonical_key: 'dialogue_line:lesson-5/dialogue/line-1:cloze:none', source_kind: 'dialogue_line' },
+  { id: 'dcap-1', canonical_key: 'dialogue_line:lesson-5/dialogue/line-0:cloze:none', source_kind: 'dialogue_line_src' },
+  { id: 'dcap-2', canonical_key: 'dialogue_line:lesson-5/dialogue/line-1:cloze:none', source_kind: 'dialogue_line_src' },
   // a non-dialogue cap that must be excluded by source_kind filter
-  { id: 'icap-x', canonical_key: 'item:buku:recognition:nl', source_kind: 'item' },
+  { id: 'icap-x', canonical_key: 'item:buku:recognition:nl', source_kind: 'vocabulary_src' },
 ]
 
 const AFFIXED_PAIRS = [
@@ -186,9 +186,9 @@ const AFFIXED_FORM_PAIRS = [
 ]
 
 const AFFIXED_CAPS = [
-  { id: 'acap-1', canonical_key: 'affixed_form_pair:lesson-5/affixed/ber-jalan:root_derived_recognition:none', source_kind: 'affixed_form_pair' },
-  { id: 'acap-2', canonical_key: 'affixed_form_pair:lesson-5/affixed/me-masak:root_derived_recognition:none', source_kind: 'affixed_form_pair' },
-  { id: 'pcap-x', canonical_key: 'pattern:belum-sudah:recognition:none', source_kind: 'pattern' },
+  { id: 'acap-1', canonical_key: 'word_form_pair_src:lesson-5/affixed/ber-jalan:recognise_word_form_link_cap:none', source_kind: 'word_form_pair_src' },
+  { id: 'acap-2', canonical_key: 'word_form_pair_src:lesson-5/affixed/me-masak:recognise_word_form_link_cap:none', source_kind: 'word_form_pair_src' },
+  { id: 'pcap-x', canonical_key: 'pattern:belum-sudah:recognition:none', source_kind: 'grammar_pattern_src' },
 ]
 
 function buildFixtureMock() {
@@ -380,10 +380,10 @@ describe('fetchAffixedPairsFromDb', () => {
 })
 
 describe('fetchAffixedCapabilityState', () => {
-  it('returns only affixed_form_pair caps keyed by canonical_key (excludes other source_kinds)', async () => {
+  it('returns only word_form_pair_src caps keyed by canonical_key (excludes other source_kinds)', async () => {
     const state = await fetchAffixedCapabilityState(buildFixtureMock() as never)
-    expect(state.existingAffixedCapsByCanonicalKey.has('affixed_form_pair:lesson-5/affixed/ber-jalan:root_derived_recognition:none')).toBe(true)
-    expect(state.existingAffixedCapsByCanonicalKey.has('affixed_form_pair:lesson-5/affixed/me-masak:root_derived_recognition:none')).toBe(true)
+    expect(state.existingAffixedCapsByCanonicalKey.has('word_form_pair_src:lesson-5/affixed/ber-jalan:recognise_word_form_link_cap:none')).toBe(true)
+    expect(state.existingAffixedCapsByCanonicalKey.has('word_form_pair_src:lesson-5/affixed/me-masak:recognise_word_form_link_cap:none')).toBe(true)
     expect(state.existingAffixedCapsByCanonicalKey.has('pattern:belum-sudah:recognition:none')).toBe(false)
   })
 

@@ -187,7 +187,7 @@ export function buildContentUnitsFromDb(
       }),
       source_ref: pair.source_ref,
       source_section_ref: `${lessonSourceRef}/section-morphology`,
-      unit_kind: 'affixed_form_pair',
+      unit_kind: 'word_form_pair_src',
       unit_slug: `morphology-${slug}`,
       display_order: 3000 + index,
       payload_json: {},

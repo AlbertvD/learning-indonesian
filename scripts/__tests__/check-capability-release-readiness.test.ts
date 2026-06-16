@@ -19,18 +19,18 @@ describe('capability release readiness planning', () => {
   it('derives lesson capability keys from learning_capabilities scoped by lesson_id (ADR 0006)', () => {
     const keys = collectLessonCapabilityKeys({
       capabilities: [
-        { canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl' },
-        { canonical_key: 'cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl' },
-        { canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl' },
-        { canonical_key: 'cap:v1:item:learning_items/apa kabar:text_recognition:id_to_l1:text:nl' },
+        { canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl' },
+        { canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recognise_meaning_from_text_cap:id_to_l1:text:nl' },
+        { canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl' },
+        { canonical_key: 'cap:v1:vocabulary_src:learning_items/apa kabar:recognise_meaning_from_text_cap:id_to_l1:text:nl' },
       ],
     })
 
     // Dedupes by canonical_key
     expect(keys).toEqual([
-      'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
-      'cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl',
-      'cap:v1:item:learning_items/apa kabar:text_recognition:id_to_l1:text:nl',
+      'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
+      'cap:v1:vocabulary_src:learning_items/akhir:recognise_meaning_from_text_cap:id_to_l1:text:nl',
+      'cap:v1:vocabulary_src:learning_items/apa kabar:recognise_meaning_from_text_cap:id_to_l1:text:nl',
     ])
   })
 
@@ -39,10 +39,10 @@ describe('capability release readiness planning', () => {
       sourceRef: 'lesson-1',
       contentUnits: 12,
       readyPublishedCapabilityCount: 8,
-      scopedCapabilityKeys: ['cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl'],
+      scopedCapabilityKeys: ['cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl'],
       capabilities: [
         {
-          canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+          canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
           readiness_status: 'unknown',
           publication_status: 'draft',
         },
@@ -60,10 +60,10 @@ describe('capability release readiness planning', () => {
       sourceRef: 'lesson-10',
       contentUnits: 12,
       readyPublishedCapabilityCount: 0,
-      scopedCapabilityKeys: ['cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl'],
+      scopedCapabilityKeys: ['cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl'],
       capabilities: [
         {
-          canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+          canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
           readiness_status: 'ready',
           publication_status: 'published',
         },
@@ -82,12 +82,12 @@ describe('capability release readiness planning', () => {
       contentUnits: 12,
       readyPublishedCapabilityCount: 8,
       scopedCapabilityKeys: [
-        'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
-        'cap:v1:item:learning_items/missing:text_recognition:id_to_l1:text:nl',
+        'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
+        'cap:v1:vocabulary_src:learning_items/missing:recognise_meaning_from_text_cap:id_to_l1:text:nl',
       ],
       capabilities: [
         {
-          canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+          canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
           readiness_status: 'ready',
           publication_status: 'published',
         },
@@ -97,7 +97,7 @@ describe('capability release readiness planning', () => {
     })
 
     expect(report.releaseReady).toBe(false)
-    expect(report.blockers).toContain('Missing capability rows for lesson-scoped keys: cap:v1:item:learning_items/missing:text_recognition:id_to_l1:text:nl')
+    expect(report.blockers).toContain('Missing capability rows for lesson-scoped keys: cap:v1:vocabulary_src:learning_items/missing:recognise_meaning_from_text_cap:id_to_l1:text:nl')
   })
 
   it('passes the core runtime gate when reader rows and scoped ready capabilities exist', () => {
@@ -105,10 +105,10 @@ describe('capability release readiness planning', () => {
       sourceRef: 'lesson-1',
       contentUnits: 12,
       readyPublishedCapabilityCount: 8,
-      scopedCapabilityKeys: ['cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl'],
+      scopedCapabilityKeys: ['cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl'],
       capabilities: [
         {
-          canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+          canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
           readiness_status: 'ready',
           publication_status: 'published',
         },
@@ -125,10 +125,10 @@ describe('capability release readiness planning', () => {
     const report = summarizeCapabilityReleaseReadiness({
       sourceRef: 'lesson-1',
       contentUnits: 1,
-      scopedCapabilityKeys: ['cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl'],
+      scopedCapabilityKeys: ['cap:v1:vocabulary_src:learning_items/akhir:recognise_meaning_from_text_cap:id_to_l1:text:nl'],
       capabilities: [
         {
-          canonical_key: 'cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl',
+          canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recognise_meaning_from_text_cap:id_to_l1:text:nl',
           readiness_status: 'ready',
           publication_status: 'published',
         },
@@ -137,7 +137,7 @@ describe('capability release readiness planning', () => {
       capabilityContentUnitRelationships: 1,
     })
 
-    expect(report.blockers).not.toContain('Missing capability rows for lesson-scoped keys: cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl')
+    expect(report.blockers).not.toContain('Missing capability rows for lesson-scoped keys: cap:v1:vocabulary_src:learning_items/akhir:recognise_meaning_from_text_cap:id_to_l1:text:nl')
     expect(report.releaseReady).toBe(true)
   })
 })

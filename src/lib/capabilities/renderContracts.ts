@@ -34,7 +34,7 @@ import type { SessionBlock } from '@/lib/session-builder'
  * `requiredArtifacts`. This shape lets the same exercise (e.g. typed_recall)
  * declare different artifact dependencies under different source kinds —
  * item-sourced typed_recall reads base_text + meaning:l1 + accepted_answers:id;
- * affixed_form_pair-sourced typed_recall reads root_derived_pair +
+ * word_form_pair_src-sourced typed_recall reads root_derived_pair +
  * allomorph_rule. Enforced via a runtime exhaustiveness assertion at module
  * load time (see ASSERT_REQUIRED_ARTIFACTS_COMPLETE below).
  */
@@ -42,9 +42,9 @@ export interface RenderContract {
   /** Which capability types this exercise serves. */
   capabilityTypes: readonly CapabilityType[]
   /** Which source kinds the exercise can render from. `cloze` accepts
-   *  ['item', 'dialogue_line'] post the 2026-05-21 lib/exercise-content fold
-   *  (PR-B); `typed_recall` accepts ['item', 'affixed_form_pair'] post the
-   *  affixed-form-pair PR (today); every other entry remains ['item'] until
+   *  ['vocabulary_src', 'dialogue_line_src'] post the 2026-05-21 lib/exercise-content fold
+   *  (PR-B); `typed_recall` accepts ['vocabulary_src', 'word_form_pair_src'] post the
+   *  affixed-form-pair PR (today); every other entry remains ['vocabulary_src'] until
    *  its source-kind fetcher lands in lib/exercise-content/byKind. */
   supportedSourceKinds: readonly CapabilitySourceKind[]
   /** Artifacts that must be present + approved for the exercise to render
@@ -58,101 +58,101 @@ export const RENDER_CONTRACTS = {
     // Decision R (PR 1): item translations read from learning_items.translation_{nl,en}
     // directly. No capability_artifacts required for item caps. requiredArtifacts.item=[]
     // so validateCapability passes without artifact rows.
-    capabilityTypes: ['text_recognition'],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    capabilityTypes: ['recognise_meaning_from_text_cap'],
+    supportedSourceKinds: ['vocabulary_src'],
+    requiredArtifacts: { vocabulary_src: [] },
   },
   cued_recall: {
     // cued_recall serves root_derived_* cap types but its
-    // supportedSourceKinds stays ['item'] — affixed_form_pair extension
+    // supportedSourceKinds stays ['vocabulary_src'] — word_form_pair_src extension
     // requires authored distractors, deferred to a follow-up plan (D3/D4
     // of the affixed-form-pair plan).
-    capabilityTypes: ['l1_to_id_choice', 'form_recall', 'root_derived_recognition', 'root_derived_recall'],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    capabilityTypes: ['recognise_form_from_meaning_cap', 'produce_form_from_meaning_cap', 'recognise_word_form_link_cap', 'produce_derived_form_cap'],
+    supportedSourceKinds: ['vocabulary_src'],
+    requiredArtifacts: { vocabulary_src: [] },
   },
   typed_recall: {
-    capabilityTypes: ['form_recall', 'root_derived_recognition', 'root_derived_recall'],
-    supportedSourceKinds: ['item', 'affixed_form_pair'],
+    capabilityTypes: ['produce_form_from_meaning_cap', 'recognise_word_form_link_cap', 'produce_derived_form_cap'],
+    supportedSourceKinds: ['vocabulary_src', 'word_form_pair_src'],
     requiredArtifacts: {
       // Decision R (PR 1): item data from learning_items directly; no artifact bag needed.
-      item: [],
-      // PR 3 slice: affixed_form_pair renders from the typed `affixed_form_pairs`
+      vocabulary_src: [],
+      // PR 3 slice: word_form_pair_src renders from the typed `affixed_form_pairs`
       // table (byKind/affixedFormPair.ts). Structure is guaranteed by that
       // table's NOT NULL columns (root_text/derived_text/allomorph_rule) + the
       // pre-write validateAffixedFormPairs gate + HC17 — not by
       // capability_artifacts. Readiness needs no artifact bag, mirroring item +
       // dialogue_line (Decision R).
-      affixed_form_pair: [],
+      word_form_pair_src: [],
     },
   },
   meaning_recall: {
-    capabilityTypes: ['meaning_recall'],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    capabilityTypes: ['recall_meaning_from_text_cap'],
+    supportedSourceKinds: ['vocabulary_src'],
+    requiredArtifacts: { vocabulary_src: [] },
   },
   listening_mcq: {
     // Decision Q (PR 1): audio read via capability_audio_refs + audio_clips.
     // The artifact bag no longer holds the audio_clip reference for item caps.
-    capabilityTypes: ['audio_recognition', 'podcast_gist'],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    capabilityTypes: ['recognise_meaning_from_audio_cap', 'recognise_gist_from_audio_cap'],
+    supportedSourceKinds: ['vocabulary_src'],
+    requiredArtifacts: { vocabulary_src: [] },
   },
   dictation: {
-    capabilityTypes: ['dictation'],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    capabilityTypes: ['produce_form_from_audio_cap'],
+    supportedSourceKinds: ['vocabulary_src'],
+    requiredArtifacts: { vocabulary_src: [] },
   },
   cloze: {
-    capabilityTypes: ['contextual_cloze'],
-    supportedSourceKinds: ['item', 'dialogue_line'],
+    capabilityTypes: ['produce_form_from_context_cap'],
+    supportedSourceKinds: ['vocabulary_src', 'dialogue_line_src'],
     requiredArtifacts: {
       // Decision R (PR 1): item cloze data from item_contexts directly.
-      item: [],
+      vocabulary_src: [],
       // PR 2 slice: dialogue_line renders from the typed `dialogue_clozes` table
       // (byKind/dialogueLine.ts). Structure is guaranteed by that table's NOT NULL
       // columns + the pre-write validateDialogueClozes gate + HC15 — not by
       // capability_artifacts. Readiness needs no artifact bag, mirroring item.
-      dialogue_line: [],
+      dialogue_line_src: [],
     },
   },
   cloze_mcq: {
     // cap-v2 #161: cloze_mcq is now PATTERN-ONLY. Item cloze is typed-only — an
-    // item contextual_cloze cap routes solely to the `cloze` builder (the typed
+    // item produce_form_from_context_cap cap routes solely to the `cloze` builder (the typed
     // item_contexts carrier), never to an MCQ. The former item-sourced
-    // contextual_cloze leg (runtime cascade pool from item_contexts.source_lesson_id)
+    // produce_form_from_context_cap leg (runtime cascade pool from item_contexts.source_lesson_id)
     // is removed with the runner item-branch amputation. cloze_mcq serves only
-    // pattern_recognition (authored typed row from cloze_mcq_exercises — byKind/pattern.ts).
-    capabilityTypes: ['pattern_recognition'],
-    supportedSourceKinds: ['pattern'],
-    // pattern: [] — readiness is guaranteed by the cloze_mcq_exercises NOT NULL
+    // recognise_grammar_pattern_cap (authored typed row from cloze_mcq_exercises — byKind/pattern.ts).
+    capabilityTypes: ['recognise_grammar_pattern_cap'],
+    supportedSourceKinds: ['grammar_pattern_src'],
+    // grammar_pattern_src: [] — readiness is guaranteed by the cloze_mcq_exercises NOT NULL
     // columns + validateGrammarExercises + HC20, not capability_artifacts.
-    requiredArtifacts: { pattern: [] },
+    requiredArtifacts: { grammar_pattern_src: [] },
   },
   contrast_pair: {
-    // PR 4 (Decision G): pattern_contrast routes here, rendering from the typed
+    // PR 4 (Decision G): contrast_grammar_pattern_cap routes here, rendering from the typed
     // contrast_pair_exercises table (byKind/pattern.ts). requiredArtifacts.pattern=[]
     // — structure guaranteed by NOT NULL columns + validateGrammarExercises + HC19.
-    capabilityTypes: ['pattern_contrast'],
-    supportedSourceKinds: ['pattern'],
-    requiredArtifacts: { pattern: [] },
+    capabilityTypes: ['contrast_grammar_pattern_cap'],
+    supportedSourceKinds: ['grammar_pattern_src'],
+    requiredArtifacts: { grammar_pattern_src: [] },
   },
   sentence_transformation: {
-    // PR 4 (Decision G): pattern_recognition → sentence_transformation_exercises.
-    capabilityTypes: ['pattern_recognition'],
-    supportedSourceKinds: ['pattern'],
-    requiredArtifacts: { pattern: [] },
+    // PR 4 (Decision G): recognise_grammar_pattern_cap → sentence_transformation_exercises.
+    capabilityTypes: ['recognise_grammar_pattern_cap'],
+    supportedSourceKinds: ['grammar_pattern_src'],
+    requiredArtifacts: { grammar_pattern_src: [] },
   },
   constrained_translation: {
-    // PR 4 (Decision G): pattern_recognition → constrained_translation_exercises.
-    capabilityTypes: ['pattern_recognition'],
-    supportedSourceKinds: ['pattern'],
-    requiredArtifacts: { pattern: [] },
+    // PR 4 (Decision G): recognise_grammar_pattern_cap → constrained_translation_exercises.
+    capabilityTypes: ['recognise_grammar_pattern_cap'],
+    supportedSourceKinds: ['grammar_pattern_src'],
+    requiredArtifacts: { grammar_pattern_src: [] },
   },
   speaking: {
     capabilityTypes: [],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    supportedSourceKinds: ['vocabulary_src'],
+    requiredArtifacts: { vocabulary_src: [] },
   },
 } as const satisfies Record<ExerciseType, RenderContract>
 
@@ -245,7 +245,7 @@ export function requiredArtifactsFor(
 
 export function supportsSourceKind(exerciseType: ExerciseType, sourceKind: CapabilitySourceKind): boolean {
   // Widen the literal-tuple type from `as const` so `.includes` accepts the
-  // union argument without complaining that 'pattern' isn't 'item'.
+  // union argument without complaining that 'grammar_pattern_src' isn't 'vocabulary_src'.
   // Defensive null-check: an exerciseType not in the contract table (e.g. a
   // synthetic future type passed by tests via `as never`) returns false
   // rather than throwing — the dispatcher will then surface the failure as
@@ -259,7 +259,7 @@ export function supportsSourceKind(exerciseType: ExerciseType, sourceKind: Capab
 // ─── Compile-time builder input shapes ─────────────────────────────────────
 
 /**
- * Per-block input for a `dialogue_line:contextual_cloze` capability. The
+ * Per-block input for a `dialogue_line:produce_form_from_context_cap` capability. The
  * lib/exercise-content adapter assembles this from the three artifact rows
  * the publish pipeline writes (cloze_context + cloze_answer + translation:l1).
  *
@@ -291,7 +291,7 @@ export interface DialogueLineInput {
 }
 
 /**
- * Per-block input for an `affixed_form_pair:root_derived_*` capability. The
+ * Per-block input for an `word_form_pair_src:root_derived_*` capability. The
  * lib/exercise-content adapter assembles this from the two artifact rows the
  * publish pipeline writes (root_derived_pair + allomorph_rule), plus the
  * cap's `direction` field decoded from the canonical-key tail.
@@ -308,7 +308,7 @@ export interface AffixedFormPairInput {
    *  (e.g. "membaca"). */
   derived: string
   /** The cap row's `direction`. `root_to_derived` → recall (form_recall);
-   *  `derived_to_root` → recognition (root_derived_recognition). Decoded
+   *  `derived_to_root` → recognition (recognise_word_form_link_cap). Decoded
    *  from the canonical-key tail by the adapter. */
   direction: 'root_to_derived' | 'derived_to_root'
   /** The allomorph rule from `allomorph_rule.payload_json.rule`
@@ -354,7 +354,7 @@ export interface RawProjectorInput {
   /** Set when the resolved block's sourceKind is `dialogue_line`. Mutually
    *  exclusive with `learningItem` (bucketing invariant). */
   dialogueLine: DialogueLineInput | null
-  /** Set when the resolved block's sourceKind is `affixed_form_pair`.
+  /** Set when the resolved block's sourceKind is `word_form_pair_src`.
    *  Mutually exclusive with `learningItem` (bucketing invariant). */
   affixedFormPair: AffixedFormPairInput | null
   /** Set when the resolved block's sourceKind is `pattern` (PR 4). Mutually
@@ -398,7 +398,7 @@ interface BuilderBase {
  * `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK` below).
  *
  * cloze accepts two source kinds (`item` and `dialogue_line`). cloze_mcq (PR 4)
- * accepts `item` (contextual_cloze) OR `pattern` (pattern_recognition): the item
+ * accepts `item` (produce_form_from_context_cap) OR `pattern` (recognise_grammar_pattern_cap): the item
  * path needs a non-null learningItem + (clozeContext OR distractor pool); the
  * pattern path needs a non-null `exercise` (cloze_mcq_exercises row) and a null
  * learningItem. For cloze the shape encodes "exactly one of learningItem or
@@ -452,14 +452,14 @@ export function projectBuilderInput<T extends ExerciseType>(
   raw: RawProjectorInput,
 ): ProjectorResult<T> {
   // Source-kind acceptance is keyed off RENDER_CONTRACTS[et].supportedSourceKinds.
-  //   cloze        — accepts ['item', 'dialogue_line']
-  //   typed_recall — accepts ['item', 'affixed_form_pair']
-  //   cloze_mcq    — accepts ['item', 'pattern']  (PR 4)
-  //   contrast_pair / sentence_transformation / constrained_translation — ['pattern'] (PR 4)
-  //   every other  — ['item']
-  const acceptsDialogueLine = supportsSourceKind(exerciseType, 'dialogue_line')
-  const acceptsAffixedFormPair = supportsSourceKind(exerciseType, 'affixed_form_pair')
-  const acceptsPattern = supportsSourceKind(exerciseType, 'pattern')
+  //   cloze        — accepts ['vocabulary_src', 'dialogue_line_src']
+  //   typed_recall — accepts ['vocabulary_src', 'word_form_pair_src']
+  //   cloze_mcq    — accepts ['vocabulary_src', 'grammar_pattern_src']  (PR 4)
+  //   contrast_pair / sentence_transformation / constrained_translation — ['grammar_pattern_src'] (PR 4)
+  //   every other  — ['vocabulary_src']
+  const acceptsDialogueLine = supportsSourceKind(exerciseType, 'dialogue_line_src')
+  const acceptsAffixedFormPair = supportsSourceKind(exerciseType, 'word_form_pair_src')
+  const acceptsPattern = supportsSourceKind(exerciseType, 'grammar_pattern_src')
 
   // A pattern-source block carries its typed grammar-exercise row, tagged with
   // the exercise_type the resolver chose. The slot is only valid when it
@@ -513,7 +513,7 @@ export function projectBuilderInput<T extends ExerciseType>(
   const learningItem = raw.learningItem  // may be null when dialogueLine / affixedFormPair / patternExercise path is active
 
   // Builders that need a user-language meaning. For typed_recall the
-  // affixed_form_pair path skips this lookup — the prompt comes from the
+  // word_form_pair_src path skips this lookup — the prompt comes from the
   // pair's root/derived, not from a translation. Item path for typed_recall
   // still needs a meaning. recognition_mcq / cued_recall / meaning_recall /
   // listening_mcq all stay item-only and always need primaryMeaning.
@@ -523,7 +523,7 @@ export function projectBuilderInput<T extends ExerciseType>(
   let primaryMeaning: ItemMeaning | undefined
   if (needsPrimaryMeaning.has(exerciseType)) {
     if (exerciseType === 'typed_recall' && raw.affixedFormPair) {
-      // affixed_form_pair path — no learningItem, no meanings. Skip lookup.
+      // word_form_pair_src path — no learningItem, no meanings. Skip lookup.
     } else {
       primaryMeaning = raw.meanings.find(m => m.translation_language === raw.userLanguage && m.is_primary)
         ?? raw.meanings.find(m => m.translation_language === raw.userLanguage)
@@ -614,7 +614,7 @@ export function projectBuilderInput<T extends ExerciseType>(
     case 'speaking':
       return { ok: true, input: { ...base, learningItem: learningItem! } as BuilderInputFor<T> }
     case 'typed_recall':
-      // typed_recall accepts item OR affixed_form_pair. The projector has
+      // typed_recall accepts item OR word_form_pair_src. The projector has
       // proven that exactly one is populated. The byType packager branches
       // on which.
       return { ok: true, input: {

@@ -7,7 +7,7 @@
  * check: a distractor-bearing capability must reach the runtime floor, else it
  * is flagged `insufficient_distractor_pool` (the capability stays schedulable via
  * its typed exercises; only that one MCQ render is skipped). Typed capabilities
- * (meaning_recall/form_recall/dictation/contextual_cloze) are never flagged.
+ * (meaning_recall/form_recall/dictation/produce_form_from_context_cap) are never flagged.
  */
 
 import { describe, it, expect } from 'vitest'
@@ -17,8 +17,8 @@ describe('validateDistractorCoverage', () => {
   it('flags a distractor-bearing capability below the floor; passes one that meets it', () => {
     const findings = validateDistractorCoverage(
       [
-        { capabilityId: 'cap-text', capabilityType: 'text_recognition', distractorCount: 3 },
-        { capabilityId: 'cap-cued', capabilityType: 'l1_to_id_choice', distractorCount: 1 },
+        { capabilityId: 'cap-text', capabilityType: 'recognise_meaning_from_text_cap', distractorCount: 3 },
+        { capabilityId: 'cap-cued', capabilityType: 'recognise_form_from_meaning_cap', distractorCount: 1 },
       ],
       2,
     )
@@ -32,9 +32,9 @@ describe('validateDistractorCoverage', () => {
   it('never flags typed capabilities (they carry no distractors by design)', () => {
     const findings = validateDistractorCoverage(
       [
-        { capabilityId: 'cap-mr', capabilityType: 'meaning_recall', distractorCount: 0 },
-        { capabilityId: 'cap-fr', capabilityType: 'form_recall', distractorCount: 0 },
-        { capabilityId: 'cap-dict', capabilityType: 'dictation', distractorCount: 0 },
+        { capabilityId: 'cap-mr', capabilityType: 'recall_meaning_from_text_cap', distractorCount: 0 },
+        { capabilityId: 'cap-fr', capabilityType: 'produce_form_from_meaning_cap', distractorCount: 0 },
+        { capabilityId: 'cap-dict', capabilityType: 'produce_form_from_audio_cap', distractorCount: 0 },
       ],
       2,
     )
@@ -45,8 +45,8 @@ describe('validateDistractorCoverage', () => {
   it('passes when every distractor-bearing capability meets the floor', () => {
     const findings = validateDistractorCoverage(
       [
-        { capabilityId: 'cap-text', capabilityType: 'text_recognition', distractorCount: 3 },
-        { capabilityId: 'cap-audio', capabilityType: 'audio_recognition', distractorCount: 2 },
+        { capabilityId: 'cap-text', capabilityType: 'recognise_meaning_from_text_cap', distractorCount: 3 },
+        { capabilityId: 'cap-audio', capabilityType: 'recognise_meaning_from_audio_cap', distractorCount: 2 },
       ],
       2,
     )

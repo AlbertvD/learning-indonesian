@@ -1,4 +1,4 @@
-// lib/exercise-content/byKind/affixedFormPair — affixed_form_pair-source-kind
+// lib/exercise-content/byKind/affixedFormPair — word_form_pair_src-source-kind
 // fetcher.
 //
 // PR 3 (2026-05-23): switched from the legacy `capability_artifacts` reader
@@ -15,11 +15,11 @@
 // which is pair-stable across both caps of a linguistic pair.
 //
 // No capability_artifacts are read: the legacy morphology artifact writes were
-// removed in this PR (renderContracts: typed_recall/affixed_form_pair → []).
+// removed in this PR (renderContracts: typed_recall/word_form_pair_src → []).
 //
 // cued_recall remains item-only (its distractor pool requires authored
-// distractors per affixed_form_pair; deferred to a future plan). cued_recall
-// blocks scheduled for affixed_form_pair would be a planner bug — the projector
+// distractors per word_form_pair_src; deferred to a future plan). cued_recall
+// blocks scheduled for word_form_pair_src would be a planner bug — the projector
 // rejects the input shape with item_not_found.
 
 import {
@@ -64,7 +64,7 @@ export async function fetchForAffixedFormPairBlocks(
   for (const { block, sourceRef, direction } of affixedBlocks) {
     const row = rowByCapability.get(block.capabilityId)
     if (!row) {
-      // Fail-loud: a ready affixed_form_pair cap with no typed row means the
+      // Fail-loud: a ready word_form_pair_src cap with no typed row means the
       // typed-row writer (projectors/morphology.ts) failed or did not run for
       // this lesson, or the cap was promoted before the row landed. Surface,
       // do not skip silently.
@@ -72,7 +72,7 @@ export async function fetchForAffixedFormPairBlocks(
         kind: 'fail',
         block,
         context: makeFailContext(block, 'affixed_form_pair_typed_row_missing',
-          `affixed_form_pair cap ${block.capabilityId} has no affixed_form_pairs row — typed-row writer failed or did not run for this lesson`,
+          `word_form_pair_src cap ${block.capabilityId} has no affixed_form_pairs row — typed-row writer failed or did not run for this lesson`,
           { capabilityId: block.capabilityId, sourceRef }),
       })
       continue

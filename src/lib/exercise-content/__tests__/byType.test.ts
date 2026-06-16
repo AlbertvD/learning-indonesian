@@ -51,12 +51,12 @@ function makeAnswerVariant(text: string): ItemAnswerVariant {
 function makeBlock(): SessionBlock {
   return {
     id: 'block-1', kind: 'due_review',
-    capabilityId: 'cap-1', canonicalKeySnapshot: 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl',
+    capabilityId: 'cap-1', canonicalKeySnapshot: 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl',
     renderPlan: {
-      capabilityKey: 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl',
+      capabilityKey: 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl',
       sourceRef: 'learning_items/item-1',
       exerciseType: 'recognition_mcq',
-      capabilityType: 'text_recognition',
+      capabilityType: 'recognise_meaning_from_text_cap',
       skillType: 'recognition',
     },
     reviewContext: {
@@ -599,15 +599,15 @@ describe('buildCloze — dialogue_line source kind', () => {
   })
 })
 
-// ─── affixed_form_pair typed_recall ───
+// ─── word_form_pair_src typed_recall ───
 //
 // The affixed-form-pair PR (2026-05-21) extends typed_recall to accept the
-// affixed_form_pair source kind: the input carries an AffixedFormPairInput
+// word_form_pair_src source kind: the input carries an AffixedFormPairInput
 // instead of a LearningItem + ItemMeaning, the builder branches on which
 // field is populated, and the exerciseItem grows an `affixedFormPairData`
 // slot the UI reads. cued_recall stays item-only per D4.
 
-describe('buildTypedRecall — affixed_form_pair source kind', () => {
+describe('buildTypedRecall — word_form_pair_src source kind', () => {
   function affixedInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInput {
     return baseInput({
       learningItem: null,
@@ -670,7 +670,7 @@ describe('buildTypedRecall — affixed_form_pair source kind', () => {
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
   })
 
-  it('dictation rejects affixed_form_pair input (typed_recall is the only exercise that accepts it)', () => {
+  it('dictation rejects word_form_pair_src input (typed_recall is the only exercise that accepts it)', () => {
     const r = buildForExerciseType('dictation', affixedInput())
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')

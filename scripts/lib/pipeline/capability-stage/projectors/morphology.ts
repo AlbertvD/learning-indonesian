@@ -1,7 +1,7 @@
 /**
  * projectors/morphology.ts — Decision 3.
  *
- * Morphology capabilities (`affixed_form_pair` source kind) come pre-built
+ * Morphology capabilities (`word_form_pair_src` source kind) come pre-built
  * in the staging `capabilities.ts` file via `materialize-capabilities.ts`
  * upstream. The legacy publish flow upserted them as-is.
  *
@@ -12,7 +12,7 @@
  *
  * The hardcoded slug set below (fold §11 #1) gates whether the stamping
  * applies. Lessons whose `grammar_patterns` set includes any of these slugs
- * are morphology-introducing lessons; their `affixed_form_pair` capability
+ * are morphology-introducing lessons; their `word_form_pair_src` capability
  * rows get `lesson_id = <this lesson>`. Lessons 1–8 without these slugs do
  * not introduce morphology and skip the stamping.
  */
@@ -34,12 +34,12 @@ export function lessonIntroducesMorphology(patternSlugs: string[]): boolean {
 // ───────────────────────── PR 3: affixed_form_pairs typed rows ──────────────
 //
 // projectAffixedFormPairs emits the typed `affixed_form_pairs` row that makes an
-// affixed_form_pair:root_derived_* capability renderable — one row per cap (2
+// word_form_pair_src:root_derived_* capability renderable — one row per cap (2
 // per linguistic pair: recognition + recall). It replaces the legacy two
 // capability_artifacts rows (root_derived_pair + allomorph_rule); those writes
 // are no longer emitted (capabilityCatalog sets requiredArtifacts: []).
 //
-// The row is the SOLE persisted representation for affixed_form_pair caps (PR 3
+// The row is the SOLE persisted representation for word_form_pair_src caps (PR 3
 // slice). The runtime reader (byKind/affixedFormPair.ts) reads the typed table;
 // structure is guaranteed by its NOT NULL columns + validateAffixedFormPairs +
 // HC17, and readiness requires no artifact bag (renderContracts: [] — mirror of
@@ -57,7 +57,7 @@ export interface AffixedPairSource {
 
 export interface AffixedFormPairsProjectionInput {
   /** Every capability in the lesson's emit set (the projector filters to
-   *  sourceKind='affixed_form_pair' itself). */
+   *  sourceKind='word_form_pair_src' itself). */
   capabilities: ReadonlyArray<{ canonicalKey: string; sourceKind: string; sourceRef: string }>
   /** canonical_key → DB capability id (from upsertCapabilities). */
   capabilityIdsByKey: ReadonlyMap<string, string>
@@ -75,7 +75,7 @@ export interface AffixedFormPairsProjectionOutput {
 }
 
 /**
- * Pure projection: map each affixed_form_pair cap to one typed row. Fails loud
+ * Pure projection: map each word_form_pair_src cap to one typed row. Fails loud
  * (CS12 finding) when a ready cap has no resolvable id or no source pair, or
  * when a required field is empty — mirroring §1.5 (the reader never has to
  * defend against a missing/empty row at runtime).
@@ -86,7 +86,7 @@ export function projectAffixedFormPairs(
   const rows: AffixedFormPairRowInput[] = []
   const findings: ValidationFinding[] = []
 
-  const affixedCaps = input.capabilities.filter((c) => c.sourceKind === 'affixed_form_pair')
+  const affixedCaps = input.capabilities.filter((c) => c.sourceKind === 'word_form_pair_src')
 
   for (const cap of affixedCaps) {
     const capabilityId = input.capabilityIdsByKey.get(cap.canonicalKey)
@@ -94,7 +94,7 @@ export function projectAffixedFormPairs(
       findings.push({
         gate: 'CS12',
         severity: 'error',
-        message: `affixed_form_pair cap "${cap.canonicalKey}" has no upserted capability id — cannot write affixed_form_pairs row`,
+        message: `word_form_pair_src cap "${cap.canonicalKey}" has no upserted capability id — cannot write affixed_form_pairs row`,
         context: { capabilityKey: cap.canonicalKey },
       })
       continue
@@ -105,7 +105,7 @@ export function projectAffixedFormPairs(
       findings.push({
         gate: 'CS12',
         severity: 'error',
-        message: `affixed_form_pair cap "${cap.canonicalKey}" has no source pair for source_ref "${cap.sourceRef}" — staging morphology-patterns.ts is missing this pair`,
+        message: `word_form_pair_src cap "${cap.canonicalKey}" has no source pair for source_ref "${cap.sourceRef}" — staging morphology-patterns.ts is missing this pair`,
         context: { capabilityKey: cap.canonicalKey },
       })
       continue
@@ -119,7 +119,7 @@ export function projectAffixedFormPairs(
         gate: 'CS12',
         severity: 'error',
         message:
-          `affixed_form_pair cap "${cap.canonicalKey}" has empty field(s): ` +
+          `word_form_pair_src cap "${cap.canonicalKey}" has empty field(s): ` +
           `${!root ? 'root ' : ''}${!derived ? 'derived ' : ''}${!rule ? 'allomorphRule' : ''}`.trim() +
           ` (affixed_form_pairs columns are NOT NULL)`,
         context: { capabilityKey: cap.canonicalKey },

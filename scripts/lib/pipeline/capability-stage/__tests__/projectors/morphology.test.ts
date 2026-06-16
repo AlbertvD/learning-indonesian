@@ -24,23 +24,23 @@ describe('lessonIntroducesMorphology — Decision 3 gate', () => {
   })
 })
 
-// PR 3 slice: projectAffixedFormPairs maps each affixed_form_pair cap to ONE
+// PR 3 slice: projectAffixedFormPairs maps each word_form_pair_src cap to ONE
 // typed `affixed_form_pairs` row (capability_id, source_ref, lesson_id,
 // root_text, derived_text, allomorph_rule). It is the sole persisted
 // representation; no capability_artifacts are emitted. Fail-loud (CS12 finding)
 // when a ready cap has no id / no source pair / an empty required field.
 
 const recallKey =
-  'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recall:root_to_derived:text:none'
+  'cap:v1:word_form_pair_src:lesson-9/morphology/meN-baca-membaca:produce_derived_form_cap:root_to_derived:text:none'
 const recognitionKey =
-  'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recognition:derived_to_root:text:none'
+  'cap:v1:word_form_pair_src:lesson-9/morphology/meN-baca-membaca:recognise_word_form_link_cap:derived_to_root:text:none'
 const afpSourceRef = 'lesson-9/morphology/meN-baca-membaca'
 
 function baseInput(overrides: Partial<AffixedFormPairsProjectionInput> = {}): AffixedFormPairsProjectionInput {
   return {
     capabilities: [
-      { canonicalKey: recallKey, sourceKind: 'affixed_form_pair', sourceRef: afpSourceRef },
-      { canonicalKey: recognitionKey, sourceKind: 'affixed_form_pair', sourceRef: afpSourceRef },
+      { canonicalKey: recallKey, sourceKind: 'word_form_pair_src', sourceRef: afpSourceRef },
+      { canonicalKey: recognitionKey, sourceKind: 'word_form_pair_src', sourceRef: afpSourceRef },
     ],
     capabilityIdsByKey: new Map([
       [recallKey, 'cap-recall-id'],
@@ -55,7 +55,7 @@ function baseInput(overrides: Partial<AffixedFormPairsProjectionInput> = {}): Af
 }
 
 describe('projectAffixedFormPairs — happy path', () => {
-  it('emits one row per affixed_form_pair cap (2 caps per linguistic pair share root/derived/rule)', () => {
+  it('emits one row per word_form_pair_src cap (2 caps per linguistic pair share root/derived/rule)', () => {
     const out = projectAffixedFormPairs(baseInput())
     expect(out.findings).toEqual([])
     expect(out.rows).toEqual([
@@ -78,11 +78,11 @@ describe('projectAffixedFormPairs — happy path', () => {
     ])
   })
 
-  it('ignores non-affixed_form_pair capabilities', () => {
+  it('ignores non-word_form_pair_src capabilities', () => {
     const out = projectAffixedFormPairs(baseInput({
       capabilities: [
-        { canonicalKey: 'cap:v1:item:learning_items/baca:text_recognition:id_to_l1:text:nl', sourceKind: 'item', sourceRef: 'learning_items/baca' },
-        { canonicalKey: recallKey, sourceKind: 'affixed_form_pair', sourceRef: afpSourceRef },
+        { canonicalKey: 'cap:v1:vocabulary_src:learning_items/baca:recognise_meaning_from_text_cap:id_to_l1:text:nl', sourceKind: 'vocabulary_src', sourceRef: 'learning_items/baca' },
+        { canonicalKey: recallKey, sourceKind: 'word_form_pair_src', sourceRef: afpSourceRef },
       ],
     }))
     expect(out.findings).toEqual([])
@@ -92,7 +92,7 @@ describe('projectAffixedFormPairs — happy path', () => {
 
   it('trims surrounding whitespace on each field', () => {
     const out = projectAffixedFormPairs(baseInput({
-      capabilities: [{ canonicalKey: recallKey, sourceKind: 'affixed_form_pair', sourceRef: afpSourceRef }],
+      capabilities: [{ canonicalKey: recallKey, sourceKind: 'word_form_pair_src', sourceRef: afpSourceRef }],
       pairsBySourceRef: new Map([[afpSourceRef, { root: '  baca ', derived: ' membaca  ', allomorphRule: '  rule.  ' }]]),
     }))
     expect(out.findings).toEqual([])
@@ -121,7 +121,7 @@ describe('projectAffixedFormPairs — fail-loud (CS12) error cases', () => {
 
   it('emits CS12 and skips the row when a required field is empty (NOT NULL columns)', () => {
     const out = projectAffixedFormPairs(baseInput({
-      capabilities: [{ canonicalKey: recallKey, sourceKind: 'affixed_form_pair', sourceRef: afpSourceRef }],
+      capabilities: [{ canonicalKey: recallKey, sourceKind: 'word_form_pair_src', sourceRef: afpSourceRef }],
       pairsBySourceRef: new Map([[afpSourceRef, { root: 'baca', derived: 'membaca', allomorphRule: '' }]]),
     }))
     expect(out.rows).toEqual([])
@@ -130,7 +130,7 @@ describe('projectAffixedFormPairs — fail-loud (CS12) error cases', () => {
     expect(out.findings[0].message).toContain('allomorphRule')
   })
 
-  it('returns empty output when there are no affixed_form_pair caps', () => {
+  it('returns empty output when there are no word_form_pair_src caps', () => {
     const out = projectAffixedFormPairs(baseInput({ capabilities: [] }))
     expect(out.rows).toEqual([])
     expect(out.findings).toEqual([])

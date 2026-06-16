@@ -13,10 +13,10 @@ const now = new Date('2026-04-25T12:00:00.000Z')
 function evidence(overrides: Partial<CapabilityMasteryEvidence>): CapabilityMasteryEvidence {
   return {
     capabilityId: 'cap-1',
-    canonicalKey: 'item:makan:text_recognition:id_to_l1',
-    sourceKind: 'item',
+    canonicalKey: 'item:makan:recognise_meaning_from_text_cap:id_to_l1',
+    sourceKind: 'vocabulary_src',
     sourceRef: 'learning_items/makan',
-    capabilityType: 'text_recognition',
+    capabilityType: 'recognise_meaning_from_text_cap',
     modality: 'text',
     readinessStatus: 'ready',
     publicationStatus: 'published',
@@ -87,7 +87,7 @@ describe('mastery model derivation', () => {
       evidence: [
         evidence({
           capabilityId: 'cap-recognition',
-          capabilityType: 'text_recognition',
+          capabilityType: 'recognise_meaning_from_text_cap',
           reviewCount: 5,
           stability: 20,
           lastReviewedAt: '2026-04-20T12:00:00.000Z',
@@ -95,15 +95,15 @@ describe('mastery model derivation', () => {
         evidence({
           capabilityId: 'cap-form',
           canonicalKey: 'item:makan:form_recall:l1_to_id',
-          capabilityType: 'form_recall',
+          capabilityType: 'produce_form_from_meaning_cap',
           reviewCount: 1,
           stability: 1,
           lastReviewedAt: '2026-04-20T12:00:00.000Z',
         }),
         evidence({
           capabilityId: 'cap-choice',
-          canonicalKey: 'item:makan:l1_to_id_choice:l1_to_id',
-          capabilityType: 'l1_to_id_choice' as any,
+          canonicalKey: 'item:makan:recognise_form_from_meaning_cap:l1_to_id',
+          capabilityType: 'recognise_form_from_meaning_cap' as any,
           reviewCount: 3,
           stability: 6,
           lastReviewedAt: '2026-04-20T12:00:00.000Z',
@@ -112,8 +112,8 @@ describe('mastery model derivation', () => {
     })
 
     expect(result.dimensions).toEqual(expect.arrayContaining([
-      expect.objectContaining({ dimension: 'text_recognition', label: 'mastered' }),
-      expect.objectContaining({ dimension: 'l1_to_id_choice', label: 'strengthening' }),
+      expect.objectContaining({ dimension: 'recognise_meaning_from_text_cap', label: 'mastered' }),
+      expect.objectContaining({ dimension: 'recognise_form_from_meaning_cap', label: 'strengthening' }),
       expect.objectContaining({ dimension: 'form_recall', label: 'learning' }),
     ]))
     expect(result.label).toBe('learning')
@@ -127,20 +127,20 @@ describe('mastery model derivation', () => {
       evidence: [
         evidence({
           capabilityId: 'cap-pattern-recognition',
-          canonicalKey: 'pattern:belum-vs-tidak:pattern_recognition:none',
-          sourceKind: 'pattern',
+          canonicalKey: 'pattern:belum-vs-tidak:recognise_grammar_pattern_cap:none',
+          sourceKind: 'grammar_pattern_src',
           sourceRef: 'lesson-1/pattern-belum-vs-tidak',
-          capabilityType: 'pattern_recognition',
+          capabilityType: 'recognise_grammar_pattern_cap',
           reviewCount: 5,
           stability: 18,
           lastReviewedAt: '2026-04-21T12:00:00.000Z',
         }),
         evidence({
           capabilityId: 'cap-pattern-use',
-          canonicalKey: 'pattern:belum-vs-tidak:pattern_contrast:none',
-          sourceKind: 'pattern',
+          canonicalKey: 'pattern:belum-vs-tidak:contrast_grammar_pattern_cap:none',
+          sourceKind: 'grammar_pattern_src',
           sourceRef: 'lesson-1/pattern-belum-vs-tidak',
-          capabilityType: 'pattern_contrast',
+          capabilityType: 'contrast_grammar_pattern_cap',
           reviewCount: 3,
           lapseCount: 1,
           consecutiveFailureCount: 1,
@@ -154,12 +154,12 @@ describe('mastery model derivation', () => {
     expect(result.weakestDimension).toBe('pattern_use')
   })
 
-  it('routes root_derived_recall capabilities into the morphology dimension', () => {
+  it('routes produce_derived_form_cap capabilities into the morphology dimension', () => {
     const dimensions = deriveMasteryDimensions([
       evidence({
         capabilityId: 'cap-morph-recall',
-        canonicalKey: 'item:berjalan:root_derived_recall:derived_to_root',
-        capabilityType: 'root_derived_recall',
+        canonicalKey: 'item:berjalan:produce_derived_form_cap:derived_to_root',
+        capabilityType: 'produce_derived_form_cap',
         reviewCount: 3,
         stability: 5,
         lastReviewedAt: '2026-04-21T12:00:00.000Z',
@@ -171,9 +171,9 @@ describe('mastery model derivation', () => {
 
   it('does not silently route any current CapabilityType through the exposure default', () => {
     // Guard against future capability types being added to the union without a
-    // matching case in dimensionForCapability. podcast_gist is the only type
+    // matching case in dimensionForCapability. recognise_gist_from_audio_cap is the only type
     // intentionally mapped to 'exposure' (comprehensible-input listening).
-    const intentionallyExposure = new Set(['podcast_gist'])
+    const intentionallyExposure = new Set(['recognise_gist_from_audio_cap'])
     for (const type of CAPABILITY_TYPES) {
       const [dimension] = deriveMasteryDimensions([evidence({ capabilityType: type })], now)
       if (intentionallyExposure.has(type)) {
@@ -192,10 +192,10 @@ describe('mastery model derivation', () => {
       evidence: [
         evidence({
           capabilityId: 'cap-pattern-recognition',
-          canonicalKey: 'pattern:zero-copula:pattern_recognition:none',
-          sourceKind: 'pattern',
+          canonicalKey: 'pattern:zero-copula:recognise_grammar_pattern_cap:none',
+          sourceKind: 'grammar_pattern_src',
           sourceRef: 'lesson-1/pattern-zero-copula',
-          capabilityType: 'pattern_recognition',
+          capabilityType: 'recognise_grammar_pattern_cap',
           reviewCount: 6,
           stability: 30,
           lastReviewedAt: '2026-04-24T12:00:00.000Z',
@@ -204,7 +204,7 @@ describe('mastery model derivation', () => {
     })
 
     expect(result.dimensions).toEqual(expect.arrayContaining([
-      expect.objectContaining({ dimension: 'pattern_recognition', label: 'mastered' }),
+      expect.objectContaining({ dimension: 'recognise_grammar_pattern_cap', label: 'mastered' }),
       expect.objectContaining({ dimension: 'pattern_use', label: 'not_assessed', confidence: 'none' }),
     ]))
     expect(result.label).toBe('not_assessed')
@@ -221,10 +221,10 @@ describe('mastery model data access', () => {
       learning_capabilities: [
         {
           id: 'cap-1',
-          canonical_key: 'item:makan:text_recognition:id_to_l1',
+          canonical_key: 'item:makan:recognise_meaning_from_text_cap:id_to_l1',
           source_kind: 'item',
           source_ref: 'learning_items/makan',
-          capability_type: 'text_recognition',
+          capability_type: 'recognise_meaning_from_text_cap',
           modality: 'text',
           readiness_status: 'ready',
           publication_status: 'published',
@@ -232,10 +232,10 @@ describe('mastery model data access', () => {
         },
         {
           id: 'cap-unlinked',
-          canonical_key: 'item:minum:text_recognition:id_to_l1',
+          canonical_key: 'item:minum:recognise_meaning_from_text_cap:id_to_l1',
           source_kind: 'item',
           source_ref: 'learning_items/minum',
-          capability_type: 'text_recognition',
+          capability_type: 'recognise_meaning_from_text_cap',
           modality: 'text',
           readiness_status: 'ready',
           publication_status: 'published',
@@ -262,7 +262,7 @@ describe('mastery model data access', () => {
 
     expect(result.totalCapabilityCount).toBe(1)
     expect(result.dimensions).toEqual(expect.arrayContaining([
-      expect.objectContaining({ dimension: 'text_recognition', reviewedCapabilityCount: 1 }),
+      expect.objectContaining({ dimension: 'recognise_meaning_from_text_cap', reviewedCapabilityCount: 1 }),
     ]))
   })
 })

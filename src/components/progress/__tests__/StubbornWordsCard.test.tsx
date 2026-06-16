@@ -28,9 +28,9 @@ describe('StubbornWordsCard', () => {
 
   it('lists unique words (deduped across skills) with the change-strategy tips', async () => {
     vi.mocked(getStubbornWords).mockResolvedValue([
-      { sourceRef: 'learning_items/pintar', sourceKind: 'item', capabilityType: 'dictation', consecutiveFailures: 5 },
-      { sourceRef: 'learning_items/pintar', sourceKind: 'item', capabilityType: 'meaning_recall', consecutiveFailures: 4 },
-      { sourceRef: 'learning_items/becak', sourceKind: 'item', capabilityType: 'text_recognition', consecutiveFailures: 4 },
+      { sourceRef: 'learning_items/pintar', sourceKind: 'vocabulary_src', capabilityType: 'produce_form_from_audio_cap', consecutiveFailures: 5 },
+      { sourceRef: 'learning_items/pintar', sourceKind: 'vocabulary_src', capabilityType: 'recall_meaning_from_text_cap', consecutiveFailures: 4 },
+      { sourceRef: 'learning_items/becak', sourceKind: 'vocabulary_src', capabilityType: 'recognise_meaning_from_text_cap', consecutiveFailures: 4 },
     ])
     renderCard()
 

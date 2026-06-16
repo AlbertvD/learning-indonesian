@@ -38,11 +38,11 @@ describe('capability session composer', () => {
           capabilityReadinessStatus: 'ready',
           capabilityPublicationStatus: 'published',
         },
-        renderPlan: { capabilityKey: 'due-key', sourceRef: 'source-1', exerciseType: 'meaning_recall', capabilityType: 'meaning_recall', skillType: 'meaning_recall' },
+        renderPlan: { capabilityKey: 'due-key', sourceRef: 'source-1', exerciseType: 'meaning_recall', capabilityType: 'recall_meaning_from_text_cap', skillType: 'meaning_recall' },
       }],
       eligibleNewCapabilities: [{
         capability: { id: 'capability-new', canonicalKey: 'new-key' },
-        renderPlan: { capabilityKey: 'new-key', sourceRef: 'source-2', exerciseType: 'recognition_mcq', capabilityType: 'text_recognition', skillType: 'recognition' },
+        renderPlan: { capabilityKey: 'new-key', sourceRef: 'source-2', exerciseType: 'recognition_mcq', capabilityType: 'recognise_meaning_from_text_cap', skillType: 'recognition' },
         activationRequest: { reason: 'eligible_new_capability' },
         reviewContext: {
           schedulerSnapshot: dormantSnapshot,
@@ -103,7 +103,7 @@ describe('capability session composer', () => {
       dueCapabilities: [],
       eligibleNewCapabilities: [{
         capability: { id: 'capability-new', canonicalKey: 'new-key' },
-        renderPlan: { capabilityKey: 'new-key', sourceRef: 'source-2', exerciseType: 'recognition_mcq', capabilityType: 'text_recognition', skillType: 'recognition' },
+        renderPlan: { capabilityKey: 'new-key', sourceRef: 'source-2', exerciseType: 'recognition_mcq', capabilityType: 'recognise_meaning_from_text_cap', skillType: 'recognition' },
         activationRequest: { reason: 'eligible_new_capability' },
         reviewContext: {
           schedulerSnapshot: dormantSnapshot,
@@ -155,11 +155,11 @@ describe('capability session composer', () => {
           capabilityReadinessStatus: 'ready',
           capabilityPublicationStatus: 'published',
         },
-        renderPlan: { capabilityKey: 'due-key', sourceRef: 'lesson-4/due', exerciseType: 'meaning_recall', capabilityType: 'meaning_recall', skillType: 'meaning_recall' },
+        renderPlan: { capabilityKey: 'due-key', sourceRef: 'lesson-4/due', exerciseType: 'meaning_recall', capabilityType: 'recall_meaning_from_text_cap', skillType: 'meaning_recall' },
       }],
       eligibleNewCapabilities: [{
         capability: { id: 'capability-new', canonicalKey: 'new-key' },
-        renderPlan: { capabilityKey: 'new-key', sourceRef: 'lesson-4/new', exerciseType: 'recognition_mcq', capabilityType: 'text_recognition', skillType: 'recognition' },
+        renderPlan: { capabilityKey: 'new-key', sourceRef: 'lesson-4/new', exerciseType: 'recognition_mcq', capabilityType: 'recognise_meaning_from_text_cap', skillType: 'recognition' },
         activationRequest: { reason: 'eligible_new_capability' },
         reviewContext: {
           schedulerSnapshot: dormantSnapshot,
@@ -180,7 +180,7 @@ describe('capability session composer', () => {
           capabilityReadinessStatus: 'ready',
           capabilityPublicationStatus: 'published',
         },
-        renderPlan: { capabilityKey: 'active-key', sourceRef: 'lesson-4/active', exerciseType: 'meaning_recall', capabilityType: 'meaning_recall', skillType: 'meaning_recall' },
+        renderPlan: { capabilityKey: 'active-key', sourceRef: 'lesson-4/active', exerciseType: 'meaning_recall', capabilityType: 'recall_meaning_from_text_cap', skillType: 'meaning_recall' },
       }],
       limit: 5,
     })
@@ -210,11 +210,11 @@ describe('capability session composer', () => {
           capabilityReadinessStatus: 'ready',
           capabilityPublicationStatus: 'published',
         },
-        renderPlan: { capabilityKey: 'due-key', sourceRef: 'lesson-4/due', exerciseType: 'meaning_recall', capabilityType: 'meaning_recall', skillType: 'meaning_recall' },
+        renderPlan: { capabilityKey: 'due-key', sourceRef: 'lesson-4/due', exerciseType: 'meaning_recall', capabilityType: 'recall_meaning_from_text_cap', skillType: 'meaning_recall' },
       }],
       eligibleNewCapabilities: [{
         capability: { id: 'capability-new', canonicalKey: 'new-key' },
-        renderPlan: { capabilityKey: 'new-key', sourceRef: 'lesson-4/new', exerciseType: 'recognition_mcq', capabilityType: 'text_recognition', skillType: 'recognition' },
+        renderPlan: { capabilityKey: 'new-key', sourceRef: 'lesson-4/new', exerciseType: 'recognition_mcq', capabilityType: 'recognise_meaning_from_text_cap', skillType: 'recognition' },
         activationRequest: { reason: 'eligible_new_capability' },
         reviewContext: {
           schedulerSnapshot: dormantSnapshot,
@@ -235,7 +235,7 @@ describe('capability session composer', () => {
           capabilityReadinessStatus: 'ready',
           capabilityPublicationStatus: 'published',
         },
-        renderPlan: { capabilityKey: 'active-key', sourceRef: 'lesson-4/active', exerciseType: 'meaning_recall', capabilityType: 'meaning_recall', skillType: 'meaning_recall' },
+        renderPlan: { capabilityKey: 'active-key', sourceRef: 'lesson-4/active', exerciseType: 'meaning_recall', capabilityType: 'recall_meaning_from_text_cap', skillType: 'meaning_recall' },
       }],
       limit: 5,
     })

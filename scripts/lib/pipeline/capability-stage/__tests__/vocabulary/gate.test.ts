@@ -73,7 +73,7 @@ describe('runVocabGatePostWrite', () => {
   it('composes POS (CS14 warn on null), coverage (CS15 warn below floor), and audio (CS23 warn)', async () => {
     const findings = await runVocabGatePostWrite(fakeSupabase, {
       posItems: [{ normalized_text: 'makan', item_type: 'word', pos: null }],
-      coverage: [{ capabilityId: 'cap-1', capabilityType: 'text_recognition', distractorCount: 0 }],
+      coverage: [{ capabilityId: 'cap-1', capabilityType: 'recognise_meaning_from_text_cap', distractorCount: 0 }],
       audio: [{ normalizedText: 'makan', itemType: 'word', hasAudioClip: false }],
       duplicates: { lessonId: 'L11', lessonNumber: 11, writtenNormalizedTexts: ['makan'] },
     })

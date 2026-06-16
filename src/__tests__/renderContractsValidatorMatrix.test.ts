@@ -27,39 +27,39 @@ interface MatrixRow {
 const matrix: MatrixRow[] = [
   // ─── Item source kinds (current happy path) ──────────────────────────
   {
-    capabilityType: 'text_recognition',
-    sourceKind: 'item',
+    capabilityType: 'recognise_meaning_from_text_cap',
+    sourceKind: 'vocabulary_src',
     requiredArtifacts: ['base_text', 'meaning:l1'],
     expected: { status: 'ready', allowedExercises: ['recognition_mcq'] },
   },
   {
-    capabilityType: 'l1_to_id_choice',
-    sourceKind: 'item',
+    capabilityType: 'recognise_form_from_meaning_cap',
+    sourceKind: 'vocabulary_src',
     requiredArtifacts: ['meaning:l1', 'base_text'],
     expected: { status: 'ready', allowedExercises: ['cued_recall'] },
   },
   {
-    capabilityType: 'meaning_recall',
-    sourceKind: 'item',
+    capabilityType: 'recall_meaning_from_text_cap',
+    sourceKind: 'vocabulary_src',
     requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
     expected: { status: 'ready', allowedExercises: ['meaning_recall'] },
   },
   {
-    capabilityType: 'form_recall',
-    sourceKind: 'item',
+    capabilityType: 'produce_form_from_meaning_cap',
+    sourceKind: 'vocabulary_src',
     requiredArtifacts: ['meaning:l1', 'base_text', 'accepted_answers:id'],
     // form_recall is served by BOTH cued_recall AND typed_recall — both pass.
     expected: { status: 'ready', allowedExercises: ['cued_recall', 'typed_recall'] },
   },
   {
-    capabilityType: 'audio_recognition',
-    sourceKind: 'item',
+    capabilityType: 'recognise_meaning_from_audio_cap',
+    sourceKind: 'vocabulary_src',
     requiredArtifacts: ['audio_clip', 'meaning:l1'],
     expected: { status: 'ready', allowedExercises: ['listening_mcq'] },
   },
   {
-    capabilityType: 'dictation',
-    sourceKind: 'item',
+    capabilityType: 'produce_form_from_audio_cap',
+    sourceKind: 'vocabulary_src',
     requiredArtifacts: ['audio_clip', 'base_text', 'accepted_answers:id'],
     expected: { status: 'ready', allowedExercises: ['dictation'] },
   },
@@ -67,14 +67,14 @@ const matrix: MatrixRow[] = [
   //     exercise tables; no required artifacts (structure guaranteed by NOT
   //     NULL columns + validateGrammarExercises + HC19/HC20). ──
   {
-    capabilityType: 'pattern_recognition',
-    sourceKind: 'pattern',
+    capabilityType: 'recognise_grammar_pattern_cap',
+    sourceKind: 'grammar_pattern_src',
     requiredArtifacts: [],
     expected: { status: 'ready', allowedExercises: ['cloze_mcq', 'sentence_transformation', 'constrained_translation'] },
   },
   {
-    capabilityType: 'pattern_contrast',
-    sourceKind: 'pattern',
+    capabilityType: 'contrast_grammar_pattern_cap',
+    sourceKind: 'grammar_pattern_src',
     requiredArtifacts: [],
     expected: { status: 'ready', allowedExercises: ['contrast_pair'] },
   },
@@ -82,32 +82,32 @@ const matrix: MatrixRow[] = [
     // Post 2026-05-21 lib/exercise-content fold PR-B: cloze accepts
     // dialogue_line. cloze_mcq stays item-only (lesson-pool distractor
     // follow-up), so allowedExercises is ['cloze'] only.
-    capabilityType: 'contextual_cloze',
-    sourceKind: 'dialogue_line',
+    capabilityType: 'produce_form_from_context_cap',
+    sourceKind: 'dialogue_line_src',
     requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
     expected: { status: 'ready', allowedExercises: ['cloze'] },
   },
   {
     // Post 2026-05-21 affixed-form-pair PR: typed_recall accepts
-    // affixed_form_pair source kind with requiredArtifacts
+    // word_form_pair_src source kind with requiredArtifacts
     // {root_derived_pair, allomorph_rule}. cued_recall stays item-only
     // (distractor authoring deferred per D3/D4), so allowedExercises is
     // ['typed_recall'] only.
-    capabilityType: 'root_derived_recognition',
-    sourceKind: 'affixed_form_pair',
+    capabilityType: 'recognise_word_form_link_cap',
+    sourceKind: 'word_form_pair_src',
     requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
     expected: { status: 'ready', allowedExercises: ['typed_recall'] },
   },
   {
-    capabilityType: 'root_derived_recall',
-    sourceKind: 'affixed_form_pair',
+    capabilityType: 'produce_derived_form_cap',
+    sourceKind: 'word_form_pair_src',
     requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
     expected: { status: 'ready', allowedExercises: ['typed_recall'] },
   },
   // ─── Exposure-only (short-circuits before source-kind check) ─────────
   {
-    capabilityType: 'podcast_gist',
-    sourceKind: 'podcast_segment',
+    capabilityType: 'recognise_gist_from_audio_cap',
+    sourceKind: 'podcast_segment_src',
     requiredArtifacts: ['audio_segment', 'transcript_segment'],
     expected: { status: 'exposure_only' },
   },

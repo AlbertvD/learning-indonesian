@@ -3,7 +3,7 @@
  *
  * The plan's required NO-DOUBLE-WRITE assertion, at the runner level:
  *   When the lesson HAS typed grammar categories (usePatternPath), the regenerated
- *   staging bundle's `sourceKind: 'pattern'` caps (LEGACY slugs) are EXCLUDED from
+ *   staging bundle's `sourceKind: 'grammar_pattern_src'` caps (LEGACY slugs) are EXCLUDED from
  *   the legacy upsertCapabilities path — the new pattern path owns them — while the
  *   NEW pattern caps (new slugs) are written via skip-if-exists. This is the
  *   sourceKind filter that replaces the plan's broken exact-key filter (OQ2-5 made
@@ -137,7 +137,7 @@ function makeLesson(stagingDir: string): LoadedLesson {
     staging: {
       stagingDir,
       learningItems: [],
-      // A legacy grammar pattern → the regenerated bundle emits sourceKind:'pattern'
+      // A legacy grammar pattern → the regenerated bundle emits sourceKind:'grammar_pattern_src'
       // caps (LEGACY slug). These are what the cutover must exclude.
       grammarPatterns: [
         { slug: 'bukan-negation', pattern_name: 'Bukan negation', description: 'legacy', example: 'x', complexity_score: 2 },
@@ -224,7 +224,7 @@ describe('runner pattern cutover (Task 6)', () => {
     )
     expect(['ok', 'partial']).toContain(result.status)
 
-    // Legacy upserts (no ignoreDuplicates) must contain NO sourceKind:'pattern' cap.
+    // Legacy upserts (no ignoreDuplicates) must contain NO sourceKind:'grammar_pattern_src' cap.
     const legacyCapUpserts = ops.filter(
       (op) => op.table === 'learning_capabilities' && op.op === 'upsert' && !(op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates,
     )
@@ -238,8 +238,8 @@ describe('runner pattern cutover (Task 6)', () => {
       (op) => op.table === 'learning_capabilities' && op.op === 'upsert' && (op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates === true,
     )
     const patternCapRows = skipIfExists.flatMap((op) => (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>]))
-      .filter((r) => r?.source_kind === 'pattern')
-    expect(patternCapRows.length).toBe(2) // pattern_recognition + pattern_contrast
+      .filter((r) => r?.source_kind === 'grammar_pattern_src')
+    expect(patternCapRows.length).toBe(2) // recognise_grammar_pattern_cap + contrast_grammar_pattern_cap
     expect(patternCapRows.every((r) => String(r.source_ref).includes('pattern-l1-bukan-negatie'))).toBe(true)
   })
 
@@ -327,7 +327,7 @@ describe('runner pattern cutover (Task 6)', () => {
       (op) => op.table === 'learning_capabilities' && op.op === 'upsert' && !(op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates,
     )
     const anyPattern = legacyCapUpserts.flatMap((op) => (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>]))
-      .some((r) => r?.source_kind === 'pattern')
+      .some((r) => r?.source_kind === 'grammar_pattern_src')
     expect(anyPattern).toBe(false)
   })
 })

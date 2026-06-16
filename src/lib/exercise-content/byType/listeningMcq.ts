@@ -11,7 +11,7 @@ export function buildListeningMCQ(input: BuilderInputFor<'listening_mcq'>): Buil
   // learningItem and primaryMeaning are non-null by contract (projector narrows).
   const correctAnswer = input.primaryMeaning.translation_text
 
-  // Prefer curated distractors (cap-v2): audio_recognition caps carry meaning
+  // Prefer curated distractors (cap-v2): recognise_meaning_from_audio_cap caps carry meaning
   // distractors in the same map as recognition_mcq. Fall back to the pool
   // cascade when a cap has no curated row (rare — undersupplied Pool(N)).
   const capabilityId = input.block?.capabilityId

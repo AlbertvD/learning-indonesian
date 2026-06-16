@@ -3,7 +3,7 @@
  *
  * Defensive guard against authoring or projector regressions: every
  * lesson-derived capability must carry the projecting lesson's id. Podcast
- * source kinds (`podcast_segment`, `podcast_phrase`) are explicitly carved
+ * source kinds (`podcast_segment_src`, `podcast_phrase_src`) are explicitly carved
  * out — the schema's CHECK constraint admits null lesson_id only for them.
  *
  * This validator throws synchronously before `upsertCapabilities` writes to
@@ -15,7 +15,7 @@
 
 import type { CapabilityInput } from '../adapter'
 
-const PODCAST_SOURCE_KINDS = new Set(['podcast_segment', 'podcast_phrase'])
+const PODCAST_SOURCE_KINDS = new Set(['podcast_segment_src', 'podcast_phrase_src'])
 
 export function validateLessonIdPresence(capabilities: CapabilityInput[]): void {
   const violations = capabilities.filter(

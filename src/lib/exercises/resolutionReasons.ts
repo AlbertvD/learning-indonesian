@@ -20,7 +20,7 @@ export type ResolutionReasonCode =
   | 'dialogue_line_typed_row_missing'
   | 'affixed_form_pair_ref_unparseable'
   | 'affixed_form_pair_artifact_missing'
-  // PR 3: typed-table fetch returns no row for a ready affixed_form_pair cap.
+  // PR 3: typed-table fetch returns no row for a ready word_form_pair_src cap.
   // Mirrors `dialogue_line_typed_row_missing` — the reader switched from the
   // legacy capability_artifacts (root_derived_pair/allomorph_rule) to the typed
   // `affixed_form_pairs` table. `affixed_form_pair_artifact_missing` above is
@@ -30,7 +30,7 @@ export type ResolutionReasonCode =
   // PR 4: pattern source_kind has no fetcher → ref unparseable, or the typed
   // grammar-exercise table (contrast_pair/sentence_transformation/
   // constrained_translation/cloze_mcq_exercises) returns no row for a ready
-  // pattern cap. Mirrors dialogue_line/affixed_form_pair: the per-source-kind
+  // pattern cap. Mirrors dialogue_line/word_form_pair_src: the per-source-kind
   // code names which byKind/* fetcher broke without parsing the canonical_key.
   | 'pattern_ref_unparseable'
   | 'pattern_typed_row_missing'

@@ -1319,7 +1319,7 @@ drop table if exists indonesian.learner_analytics_events cascade;
 create table if not exists indonesian.learning_capabilities (
   id uuid primary key default gen_random_uuid(),
   canonical_key text unique not null,
-  source_kind text not null check (source_kind in ('item','pattern','dialogue_line','podcast_segment','podcast_phrase','affixed_form_pair')),
+  source_kind text not null check (source_kind in ('vocabulary_src','grammar_pattern_src','dialogue_line_src','podcast_segment_src','podcast_phrase_src','word_form_pair_src')),
   source_ref text not null,
   capability_type text not null,
   direction text not null,
@@ -1345,6 +1345,18 @@ create index if not exists learning_capabilities_readiness_publication_idx
 -- writer-bug guard a malformed canonical_key can't slip past.
 create unique index if not exists learning_capabilities_source_ref_type_uidx
   on indonesian.learning_capabilities(source_ref, capability_type);
+
+-- §8 capability-naming rename (docs/plans/2026-06-15-capability-naming-rename-plan.md):
+-- the inline source_kind CHECK above is created with the new _src names on a
+-- fresh install, but an existing DB still carries the auto-named constraint with
+-- the old values ('item','pattern',…). Guarded drop+recreate rewrites it to the
+-- renamed values. (capability_type stays bare text — no CHECK. Build-stage
+-- truncate-and-regen re-emits every cap under the new canonical_key.)
+alter table indonesian.learning_capabilities
+  drop constraint if exists learning_capabilities_source_kind_check;
+alter table indonesian.learning_capabilities
+  add constraint learning_capabilities_source_kind_check
+    check (source_kind in ('vocabulary_src','grammar_pattern_src','dialogue_line_src','podcast_segment_src','podcast_phrase_src','word_form_pair_src'));
 
 create table if not exists indonesian.capability_aliases (
   id uuid primary key default gen_random_uuid(),
@@ -2329,8 +2341,8 @@ returns json language sql stable security invoker as $$
     select
       c.source_ref,
       case
-        when c.source_kind = 'item' then 'vocab'
-        when c.source_kind in ('pattern', 'affixed_form_pair') then 'grammar'
+        when c.source_kind = 'vocabulary_src' then 'vocab'
+        when c.source_kind in ('grammar_pattern_src', 'word_form_pair_src') then 'grammar'
         else null
       end as bucket,
       indonesian._mastery_label(
@@ -2670,7 +2682,7 @@ alter table indonesian.learning_capabilities
 alter table indonesian.learning_capabilities
   add constraint learning_capabilities_lesson_id_required_for_lessons
     check (
-      source_kind in ('podcast_segment', 'podcast_phrase')
+      source_kind in ('podcast_segment_src', 'podcast_phrase_src')
       or lesson_id is not null
     );
 
@@ -3608,7 +3620,7 @@ language sql stable security invoker as $$
                from indonesian.learning_capabilities c2
                join indonesian.learner_lesson_activation lla
                  on lla.lesson_id = c2.lesson_id and lla.user_id = p_user_id
-               where c2.source_kind = 'item'
+               where c2.source_kind = 'vocabulary_src'
                  and c2.source_ref = 'learning_items/' || li.normalized_text
                  and c2.readiness_status = 'ready'
                  and c2.publication_status = 'published'
@@ -3625,8 +3637,8 @@ language sql stable security invoker as $$
     from indonesian.collection_items ci
     join indonesian.learning_items li on li.id = ci.learning_item_id
     left join indonesian.learning_capabilities c
-      on c.source_kind = 'item'
-      and c.capability_type = 'text_recognition'
+      on c.source_kind = 'vocabulary_src'
+      and c.capability_type = 'recognise_meaning_from_text_cap'
       and c.source_ref = 'learning_items/' || li.normalized_text
     left join indonesian.learner_capability_state s
       on s.capability_id = c.id and s.user_id = p_user_id

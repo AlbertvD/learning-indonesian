@@ -132,10 +132,10 @@ const GRAMMAR_PATTERNS = [
 ]
 
 const PATTERN_CAPS = [
-  { id: 'pcap-1', canonical_key: 'pattern:belum-sudah:recognition:none', source_kind: 'pattern' },
-  { id: 'pcap-2', canonical_key: 'pattern:belum-sudah:contrast:none', source_kind: 'pattern' },
+  { id: 'pcap-1', canonical_key: 'pattern:belum-sudah:recognition:none', source_kind: 'grammar_pattern_src' },
+  { id: 'pcap-2', canonical_key: 'pattern:belum-sudah:contrast:none', source_kind: 'grammar_pattern_src' },
   // a non-pattern cap that must be excluded by source_kind filter
-  { id: 'icap-x', canonical_key: 'item:buku:recognition:nl', source_kind: 'item' },
+  { id: 'icap-x', canonical_key: 'item:buku:recognition:nl', source_kind: 'vocabulary_src' },
 ]
 
 // Exercise rows define the per-pattern coverage:

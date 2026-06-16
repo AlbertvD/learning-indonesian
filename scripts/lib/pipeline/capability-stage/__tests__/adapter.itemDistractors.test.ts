@@ -396,7 +396,7 @@ describe('upsertCapabilitiesSkipIfExists', () => {
     const { client, upsertCalls } = buildCapabilityUpsertClient()
     const cap: CapabilityInput = {
       canonicalKey: 'item:makan:recognition:l1-l2:visual',
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef: 'learning_items/makan',
       capabilityType: 'recognition',
       direction: 'l1-l2',
@@ -423,7 +423,7 @@ describe('upsertCapabilitiesSkipIfExists', () => {
     const { client } = buildCapabilityUpsertClient(new Set([existingKey]))
     const cap: CapabilityInput = {
       canonicalKey: existingKey,
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef: 'learning_items/makan',
       capabilityType: 'recognition',
       direction: 'l1-l2',
@@ -443,7 +443,7 @@ describe('upsertCapabilitiesSkipIfExists', () => {
     const { client, upsertCalls } = buildCapabilityUpsertClient()
     const cap: CapabilityInput = {
       canonicalKey: 'item:makan:recognition:l1-l2:visual',
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef: 'learning_items/makan',
       capabilityType: 'recognition',
       direction: 'l1-l2',

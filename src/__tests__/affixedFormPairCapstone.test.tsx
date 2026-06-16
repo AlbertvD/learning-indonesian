@@ -1,6 +1,6 @@
-// Capstone integration test for the affixed_form_pair:root_derived_* flow.
+// Capstone integration test for the word_form_pair_src:root_derived_* flow.
 //
-// Walks the full runtime read-path: a SessionBlock for an affixed_form_pair
+// Walks the full runtime read-path: a SessionBlock for an word_form_pair_src
 // cap → the lib/exercise-content resolver (with a mocked Supabase client) →
 // the resulting CapabilityRenderContext → the TypedRecall React component →
 // a simulated correct answer → the onAnswer callback.
@@ -57,10 +57,10 @@ function makeAffixedBlock(opts: {
   capabilityId: string
   sourceRef: string
   direction: 'root_to_derived' | 'derived_to_root'
-  capabilityType: 'root_derived_recall' | 'root_derived_recognition'
+  capabilityType: 'produce_derived_form_cap' | 'recognise_word_form_link_cap'
 }): SessionBlock {
   const key = buildCanonicalKey({
-    sourceKind: 'affixed_form_pair',
+    sourceKind: 'word_form_pair_src',
     sourceRef: opts.sourceRef,
     capabilityType: opts.capabilityType,
     direction: opts.direction,
@@ -89,7 +89,7 @@ function makeAffixedBlock(opts: {
   }
 }
 
-describe('affixed_form_pair:root_derived_* — end-to-end capstone', () => {
+describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
   it('resolves a root→derived (recall) block, renders TypedRecall, answering correctly fires onAnswer; audibleTexts harvest contains root + derived', async () => {
     const capabilityId = 'cap-l9-membaca-recall'
     const sourceRef = 'lesson-9/morphology/meN-baca-membaca'
@@ -115,7 +115,7 @@ describe('affixed_form_pair:root_derived_* — end-to-end capstone', () => {
       capabilityId,
       sourceRef,
       direction: 'root_to_derived',
-      capabilityType: 'root_derived_recall',
+      capabilityType: 'produce_derived_form_cap',
     })
     const result = await service.resolveBlocks([block], {
       userId: 'user-1',
@@ -195,7 +195,7 @@ describe('affixed_form_pair:root_derived_* — end-to-end capstone', () => {
       capabilityId,
       sourceRef,
       direction: 'derived_to_root',
-      capabilityType: 'root_derived_recognition',
+      capabilityType: 'recognise_word_form_link_cap',
     })
     const result = await service.resolveBlocks([block], {
       userId: 'user-1',
@@ -254,7 +254,7 @@ describe('affixed_form_pair:root_derived_* — end-to-end capstone', () => {
       capabilityId,
       sourceRef: 'lesson-9/morphology/meN-baca-membaca',
       direction: 'root_to_derived',
-      capabilityType: 'root_derived_recall',
+      capabilityType: 'produce_derived_form_cap',
     })
     const result = await service.resolveBlocks([block], {
       userId: 'user-1',

@@ -42,7 +42,7 @@ export interface PatternPlan {
   slug: string
   sourceRef: string
   grammarPatternInput: GrammarPatternInput
-  /** pattern_recognition + pattern_contrast (contrast prereq = recognition). */
+  /** recognise_grammar_pattern_cap + contrast_grammar_pattern_cap (contrast prereq = recognition). */
   capabilities: CapabilityInput[]
 }
 
@@ -73,7 +73,7 @@ export interface PatternProjectionOutput {
  *   - grammar_patterns NOT-NULL columns: name=title, short_explanation=rules
  *     joined (falls back to title so the NOT NULL write never fails),
  *     complexity_score=1, confusion_group=null, introduced_by_lesson_id=lessonId.
- *   - Each category → 2 caps: pattern_recognition + a pattern_contrast sibling
+ *   - Each category → 2 caps: recognise_grammar_pattern_cap + a contrast_grammar_pattern_cap sibling
  *     whose prerequisite is the recognition key.
  *
  * Idempotency: the projector EMITS all patterns + caps; the writer decides
@@ -119,9 +119,9 @@ export function projectPatternsFromCategories(
     }
 
     const recognitionDraft = {
-      sourceKind: 'pattern' as const,
+      sourceKind: 'grammar_pattern_src' as const,
       sourceRef,
-      capabilityType: 'pattern_recognition' as const,
+      capabilityType: 'recognise_grammar_pattern_cap' as const,
       direction: 'none' as const,
       modality: 'text' as const,
       learnerLanguage: 'none' as const,
@@ -129,15 +129,15 @@ export function projectPatternsFromCategories(
     const recognitionKey = buildCanonicalKey(recognitionDraft)
     const contrastKey = buildCanonicalKey({
       ...recognitionDraft,
-      capabilityType: 'pattern_contrast' as const,
+      capabilityType: 'contrast_grammar_pattern_cap' as const,
     })
 
     const capabilities: CapabilityInput[] = [
       {
         canonicalKey: recognitionKey,
-        sourceKind: 'pattern',
+        sourceKind: 'grammar_pattern_src',
         sourceRef,
-        capabilityType: 'pattern_recognition',
+        capabilityType: 'recognise_grammar_pattern_cap',
         direction: 'none',
         modality: 'text',
         learnerLanguage: 'none',
@@ -148,9 +148,9 @@ export function projectPatternsFromCategories(
       },
       {
         canonicalKey: contrastKey,
-        sourceKind: 'pattern',
+        sourceKind: 'grammar_pattern_src',
         sourceRef,
-        capabilityType: 'pattern_contrast',
+        capabilityType: 'contrast_grammar_pattern_cap',
         direction: 'none',
         modality: 'text',
         learnerLanguage: 'none',

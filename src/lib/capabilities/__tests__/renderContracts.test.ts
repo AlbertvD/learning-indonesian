@@ -114,20 +114,20 @@ describe('RENDER_CONTRACTS table', () => {
     }
   })
 
-  it('pattern_recognition routes to the 3 recognition grammar exercises (PR 4 Decision G)', () => {
-    expect(RENDER_CONTRACTS.sentence_transformation.capabilityTypes).toContain('pattern_recognition')
-    expect(RENDER_CONTRACTS.constrained_translation.capabilityTypes).toContain('pattern_recognition')
-    expect(RENDER_CONTRACTS.cloze_mcq.capabilityTypes).toContain('pattern_recognition')
+  it('recognise_grammar_pattern_cap routes to the 3 recognition grammar exercises (PR 4 Decision G)', () => {
+    expect(RENDER_CONTRACTS.sentence_transformation.capabilityTypes).toContain('recognise_grammar_pattern_cap')
+    expect(RENDER_CONTRACTS.constrained_translation.capabilityTypes).toContain('recognise_grammar_pattern_cap')
+    expect(RENDER_CONTRACTS.cloze_mcq.capabilityTypes).toContain('recognise_grammar_pattern_cap')
   })
 
-  it('pattern_contrast routes to contrast_pair (PR 4 Decision G)', () => {
-    expect(RENDER_CONTRACTS.contrast_pair.capabilityTypes).toEqual(['pattern_contrast'])
+  it('contrast_grammar_pattern_cap routes to contrast_pair (PR 4 Decision G)', () => {
+    expect(RENDER_CONTRACTS.contrast_pair.capabilityTypes).toEqual(['contrast_grammar_pattern_cap'])
   })
 
   it('the 4 grammar exercises support the pattern source kind with no required artifacts', () => {
     for (const et of ['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq'] as const) {
-      expect(RENDER_CONTRACTS[et].supportedSourceKinds).toContain('pattern')
-      expect(requiredArtifactsFor(et, 'pattern')).toEqual([])
+      expect(RENDER_CONTRACTS[et].supportedSourceKinds).toContain('grammar_pattern_src')
+      expect(requiredArtifactsFor(et, 'grammar_pattern_src')).toEqual([])
     }
   })
 })
@@ -135,27 +135,27 @@ describe('RENDER_CONTRACTS table', () => {
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
 describe('exerciseTypesForCapability', () => {
-  it('returns ["recognition_mcq"] for text_recognition', () => {
-    expect(exerciseTypesForCapability('text_recognition')).toEqual(['recognition_mcq'])
+  it('returns ["recognition_mcq"] for recognise_meaning_from_text_cap', () => {
+    expect(exerciseTypesForCapability('recognise_meaning_from_text_cap')).toEqual(['recognition_mcq'])
   })
 
-  it('returns the 3 recognition grammar exercises for pattern_recognition (PR 4)', () => {
-    expect(exerciseTypesForCapability('pattern_recognition')).toEqual(
+  it('returns the 3 recognition grammar exercises for recognise_grammar_pattern_cap (PR 4)', () => {
+    expect(exerciseTypesForCapability('recognise_grammar_pattern_cap')).toEqual(
       expect.arrayContaining(['sentence_transformation', 'constrained_translation', 'cloze_mcq']),
     )
   })
 
-  it('returns ["contrast_pair"] for pattern_contrast (PR 4)', () => {
-    expect(exerciseTypesForCapability('pattern_contrast')).toEqual(['contrast_pair'])
+  it('returns ["contrast_pair"] for contrast_grammar_pattern_cap (PR 4)', () => {
+    expect(exerciseTypesForCapability('contrast_grammar_pattern_cap')).toEqual(['contrast_pair'])
   })
 
-  it('returns only cloze for contextual_cloze (cap-v2 #161: item cloze is typed-only, not cloze_mcq)', () => {
-    expect(exerciseTypesForCapability('contextual_cloze')).toEqual(['cloze'])
+  it('returns only cloze for produce_form_from_context_cap (cap-v2 #161: item cloze is typed-only, not cloze_mcq)', () => {
+    expect(exerciseTypesForCapability('produce_form_from_context_cap')).toEqual(['cloze'])
   })
 
-  it('returns listening_mcq for audio_recognition AND podcast_gist', () => {
-    expect(exerciseTypesForCapability('audio_recognition')).toEqual(['listening_mcq'])
-    expect(exerciseTypesForCapability('podcast_gist')).toEqual(['listening_mcq'])
+  it('returns listening_mcq for recognise_meaning_from_audio_cap AND recognise_gist_from_audio_cap', () => {
+    expect(exerciseTypesForCapability('recognise_meaning_from_audio_cap')).toEqual(['listening_mcq'])
+    expect(exerciseTypesForCapability('recognise_gist_from_audio_cap')).toEqual(['listening_mcq'])
   })
 })
 
@@ -166,28 +166,28 @@ describe('supportsSourceKind', () => {
     // `cloze` builder), so cloze_mcq dropped 'item' from supportedSourceKinds.
     const patternOnly = new Set(['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq'])
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
-      expect(supportsSourceKind(et, 'item')).toBe(!patternOnly.has(et))
+      expect(supportsSourceKind(et, 'vocabulary_src')).toBe(!patternOnly.has(et))
     }
   })
 
   it('only the 4 grammar exercises support pattern source kind (PR 4 Decision G)', () => {
     const grammar = new Set(['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq'])
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
-      expect(supportsSourceKind(et, 'pattern')).toBe(grammar.has(et))
+      expect(supportsSourceKind(et, 'grammar_pattern_src')).toBe(grammar.has(et))
     }
   })
 
   it('only cloze supports dialogue_line source kind (PR-B of lib/exercise-content fold); cloze_mcq is item-only until lesson-pool distractors land', () => {
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
       const expected = et === 'cloze'
-      expect(supportsSourceKind(et, 'dialogue_line')).toBe(expected)
+      expect(supportsSourceKind(et, 'dialogue_line_src')).toBe(expected)
     }
   })
 
-  it('only typed_recall supports affixed_form_pair source kind (added 2026-05-21); cued_recall is item-only until distractor authoring lands', () => {
+  it('only typed_recall supports word_form_pair_src source kind (added 2026-05-21); cued_recall is item-only until distractor authoring lands', () => {
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
       const expected = et === 'typed_recall'
-      expect(supportsSourceKind(et, 'affixed_form_pair')).toBe(expected)
+      expect(supportsSourceKind(et, 'word_form_pair_src')).toBe(expected)
     }
   })
 })
@@ -196,36 +196,36 @@ describe('requiredArtifactsFor', () => {
   // Decision R (PR 1): item-sourced caps no longer require capability_artifacts.
   // Translations come from learning_items.translation_{nl,en} inline columns.
   it('cloze item-source requires [] (Decision R: no artifact check for item caps)', () => {
-    expect(requiredArtifactsFor('cloze', 'item')).toEqual([])
+    expect(requiredArtifactsFor('cloze', 'vocabulary_src')).toEqual([])
   })
 
   it('cloze dialogue_line-source requires [] (PR 2 slice: structure guaranteed by the typed dialogue_clozes table + validateDialogueClozes + HC15, not capability_artifacts)', () => {
-    expect(requiredArtifactsFor('cloze', 'dialogue_line')).toEqual([])
+    expect(requiredArtifactsFor('cloze', 'dialogue_line_src')).toEqual([])
   })
 
   // Decision Q (PR 1): audio for item caps is resolved via capability_audio_refs,
   // not capability_artifacts. requiredArtifacts.item = [] for audio exercise types.
   it('listening_mcq item-source requires [] (Decision Q: audio via capability_audio_refs)', () => {
-    expect(requiredArtifactsFor('listening_mcq', 'item')).toEqual([])
+    expect(requiredArtifactsFor('listening_mcq', 'vocabulary_src')).toEqual([])
   })
 
   it('dictation item-source requires [] (Decision Q: audio via capability_audio_refs)', () => {
-    expect(requiredArtifactsFor('dictation', 'item')).toEqual([])
+    expect(requiredArtifactsFor('dictation', 'vocabulary_src')).toEqual([])
   })
 
   it('recognition_mcq item-source requires [] (Decision R: translation from inline columns)', () => {
-    expect(requiredArtifactsFor('recognition_mcq', 'item')).toEqual([])
+    expect(requiredArtifactsFor('recognition_mcq', 'vocabulary_src')).toEqual([])
   })
 
-  it('typed_recall affixed_form_pair-source requires [] (PR 3 slice: structure guaranteed by the typed affixed_form_pairs table + validateAffixedFormPairs + HC17, not capability_artifacts)', () => {
-    expect(requiredArtifactsFor('typed_recall', 'affixed_form_pair')).toEqual([])
+  it('typed_recall word_form_pair_src-source requires [] (PR 3 slice: structure guaranteed by the typed affixed_form_pairs table + validateAffixedFormPairs + HC17, not capability_artifacts)', () => {
+    expect(requiredArtifactsFor('typed_recall', 'word_form_pair_src')).toEqual([])
   })
 
   it('returns [] for an exercise/source-kind combination the contract does not declare', () => {
-    // recognition_mcq does not support affixed_form_pair.
-    expect(requiredArtifactsFor('recognition_mcq', 'affixed_form_pair')).toEqual([])
-    // cued_recall does not support affixed_form_pair (deferred per D3/D4).
-    expect(requiredArtifactsFor('cued_recall', 'affixed_form_pair')).toEqual([])
+    // recognition_mcq does not support word_form_pair_src.
+    expect(requiredArtifactsFor('recognition_mcq', 'word_form_pair_src')).toEqual([])
+    // cued_recall does not support word_form_pair_src (deferred per D3/D4).
+    expect(requiredArtifactsFor('cued_recall', 'word_form_pair_src')).toEqual([])
   })
 })
 
@@ -247,7 +247,7 @@ describe('projectBuilderInput — common failures', () => {
   })
 })
 
-describe('projectBuilderInput — affixed_form_pair (typed_recall path)', () => {
+describe('projectBuilderInput — word_form_pair_src (typed_recall path)', () => {
   const AFFIXED_FIXTURE = {
     root: 'baca',
     derived: 'membaca',
@@ -281,7 +281,7 @@ describe('projectBuilderInput — affixed_form_pair (typed_recall path)', () => 
     }
   })
 
-  it('rejects dictation when only affixedFormPair is populated (dictation does not accept affixed_form_pair)', () => {
+  it('rejects dictation when only affixedFormPair is populated (dictation does not accept word_form_pair_src)', () => {
     const raw = makeRawInput({ learningItem: null, affixedFormPair: AFFIXED_FIXTURE })
     const result = projectBuilderInput('dictation', raw)
     expect(result.ok).toBe(false)

@@ -58,12 +58,12 @@ const ITEMS: ItemRow[] = [
 
 function caps(): CapRow[] {
   return [
-    { id: 'c-word', source_kind: 'item', source_ref: 'learning_items/buku', retired_at: null },
-    { id: 'c-phrase', source_kind: 'item', source_ref: 'learning_items/terima kasih kembali', retired_at: null },
-    { id: 'c-sentence', source_kind: 'item', source_ref: 'learning_items/ada yang dari negeri belanda', retired_at: null },
-    { id: 'c-dialchunk', source_kind: 'item', source_ref: 'learning_items/selamat pagi, apa kabar', retired_at: null },
+    { id: 'c-word', source_kind: 'vocabulary_src', source_ref: 'learning_items/buku', retired_at: null },
+    { id: 'c-phrase', source_kind: 'vocabulary_src', source_ref: 'learning_items/terima kasih kembali', retired_at: null },
+    { id: 'c-sentence', source_kind: 'vocabulary_src', source_ref: 'learning_items/ada yang dari negeri belanda', retired_at: null },
+    { id: 'c-dialchunk', source_kind: 'vocabulary_src', source_ref: 'learning_items/selamat pagi, apa kabar', retired_at: null },
     // dialogue_line cloze cap — NOT an item cap; must be excluded.
-    { id: 'c-dialline', source_kind: 'dialogue_line', source_ref: 'lesson_dialogue_lines/l1-s2-3', retired_at: null },
+    { id: 'c-dialline', source_kind: 'dialogue_line_src', source_ref: 'lesson_dialogue_lines/l1-s2-3', retired_at: null },
   ]
 }
 

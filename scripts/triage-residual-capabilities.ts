@@ -18,7 +18,7 @@
  *
  * After processing, asserts that `select count(*) from
  * indonesian.learning_capabilities where lesson_id is null and source_kind
- * not in ('podcast_segment', 'podcast_phrase')` returns 0. Throws if not.
+ * not in ('podcast_segment_src', 'podcast_phrase_src')` returns 0. Throws if not.
  *
  * Usage:
  *   bun scripts/triage-residual-capabilities.ts --dry-run
@@ -69,7 +69,7 @@ export function classifyResidue(input: {
 }): ClassifiedAction[] {
   const out: ClassifiedAction[] = []
   for (const cap of input.residueCaps) {
-    if (cap.source_kind === 'item') {
+    if (cap.source_kind === 'vocabulary_src') {
       if (!cap.source_ref.startsWith(LEARNING_ITEMS_PREFIX)) {
         throw new Error(
           `Unexpected source_ref shape for source_kind=item: ${cap.source_ref} (cap ${cap.id}) — ` +
@@ -88,7 +88,7 @@ export function classifyResidue(input: {
         out.push({ kind: 'default_assign', capId: cap.id, note: NOTE_CROSS_CORPUS })
       }
     } else {
-      // dialogue_line, pattern, affixed_form_pair, etc. We don't delete these
+      // dialogue_line, pattern, word_form_pair_src, etc. We don't delete these
       // because we can't safely classify them as orphan from source_ref alone.
       out.push({ kind: 'default_assign', capId: cap.id, note: NOTE_CROSS_CORPUS })
     }
@@ -165,7 +165,7 @@ export async function assertNoResidueRemains(supabase: SupabaseLike): Promise<vo
     .schema('indonesian').from('learning_capabilities')
     .select('id', { count: 'exact', head: true })
     .is('lesson_id', null)
-    .not('source_kind', 'in', '("podcast_segment","podcast_phrase")')
+    .not('source_kind', 'in', '("podcast_segment_src","podcast_phrase_src")')
   if (error) throw error
   if ((count ?? 0) > 0) {
     throw new Error(
@@ -197,7 +197,7 @@ async function loadResidueAndContext(supabase: SupabaseLike): Promise<{
     .schema('indonesian').from('learning_capabilities')
     .select('id, source_kind, source_ref')
     .is('lesson_id', null)
-    .not('source_kind', 'in', '("podcast_segment","podcast_phrase")')
+    .not('source_kind', 'in', '("podcast_segment_src","podcast_phrase_src")')
   if (capErr) throw capErr
   const residueCaps = (capsRaw ?? []) as ResidueCap[]
 

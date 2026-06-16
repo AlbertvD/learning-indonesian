@@ -7,7 +7,7 @@
  * it post-drop returns a PGRST205 "table not found" runtime error. Retained as a
  * paper-trail record of the PR 3 migration only.
  *
- * One-shot bridge for PR 3 — moves affixed_form_pair content from the legacy
+ * One-shot bridge for PR 3 — moves word_form_pair_src content from the legacy
  * 2-artifact shape (`capability_artifacts` rows for `root_derived_pair` +
  * `allomorph_rule`) into the typed satellite table `affixed_form_pairs`.
  *
@@ -24,16 +24,16 @@
  *
  * The reader switches over on this PR's deploy. Re-publish covers any lesson the
  * pipeline can publish — currently only L9 (the only lesson with
- * affixed_form_pair caps). But the typed table starts empty (PR 0 created it
+ * word_form_pair_src caps). But the typed table starts empty (PR 0 created it
  * only). Without this bridge, a deploy without an immediate re-publish would
  * surface the new fail-loud reader's diagnostic for every active
- * affixed_form_pair cap. This bridge populates the typed rows from the existing
+ * word_form_pair_src cap. This bridge populates the typed rows from the existing
  * artifacts so the deploy + re-publish sequence stays safe, and so any lesson
  * the re-publish does not reach keeps a valid row.
  *
  * WHAT THIS DOES
  * --------------
- * For every active `affixed_form_pair` capability:
+ * For every active `word_form_pair_src` capability:
  *   1. Read its two `capability_artifacts` rows (`root_derived_pair` →
  *      {root, derived}; `allomorph_rule` → {rule}).
  *   2. Insert one `affixed_form_pairs` row keyed by UNIQUE(capability_id):
@@ -52,7 +52,7 @@
  *
  * WHAT THIS DOES NOT DO
  * ---------------------
- * - Lessons with no affixed_form_pair caps. Nothing to bridge.
+ * - Lessons with no word_form_pair_src caps. Nothing to bridge.
  * - Caps missing root_derived_pair or allomorph_rule, or with empty fields.
  *   Logged as a CRITICAL anomaly; script aborts (the typed columns are NOT NULL).
  *
@@ -114,22 +114,22 @@ async function main() {
   }
   const supabase: SupabaseClient = createClient(url, key)
 
-  console.log(`PR 3 affixed_form_pair typed-table bridge — dry-run=${DRY_RUN}`)
+  console.log(`PR 3 word_form_pair_src typed-table bridge — dry-run=${DRY_RUN}`)
   console.log('Surface: affixed_form_pairs ← capability_artifacts(root_derived_pair/allomorph_rule)\n')
 
   const before = await count(supabase)
   console.log(`BEFORE: affixed_form_pairs=${before}`)
 
-  // ── 1. Active affixed_form_pair capabilities ─────────────────────────────
+  // ── 1. Active word_form_pair_src capabilities ─────────────────────────────
   const { data: capsData, error: capsError } = await supabase
     .schema('indonesian')
     .from('learning_capabilities')
     .select('id, canonical_key, source_ref, lesson_id')
-    .eq('source_kind', 'affixed_form_pair')
+    .eq('source_kind', 'word_form_pair_src')
     .is('retired_at', null)
   if (capsError) throw new Error(capsError.message)
   const caps = (capsData ?? []) as CapabilityRow[]
-  console.log(`Found ${caps.length} active affixed_form_pair capabilit${caps.length === 1 ? 'y' : 'ies'}.`)
+  console.log(`Found ${caps.length} active word_form_pair_src capabilit${caps.length === 1 ? 'y' : 'ies'}.`)
   if (caps.length === 0) {
     console.log('Nothing to do.')
     return

@@ -13,8 +13,8 @@ import {
  * the load-bearing signal.
  */
 export function isExposureOnly(capability: Pick<ProjectedCapability, 'sourceKind'>): boolean {
-  return capability.sourceKind === 'podcast_segment'
-    || capability.sourceKind === 'podcast_phrase'
+  return capability.sourceKind === 'podcast_segment_src'
+    || capability.sourceKind === 'podcast_phrase_src'
 }
 
 export type ExerciseKind = ExerciseType
@@ -68,7 +68,7 @@ export function validateCapability(input: CapabilityValidationInput): Capability
   // exercise is now guaranteed by the typed satellite tables + their pre-write
   // validators + the live health checks (HC15/HC17/HC19/HC20), not an artifact
   // bag. `cloze` accepts item + dialogue_line; `typed_recall` accepts item +
-  // affixed_form_pair; the 4 grammar exercises + cloze_mcq accept pattern.
+  // word_form_pair_src; the 4 grammar exercises + cloze_mcq accept pattern.
   const candidateExercises = exerciseTypesForCapability(input.capability.capabilityType)
     .filter(et => supportsSourceKind(et, input.capability.sourceKind))
 

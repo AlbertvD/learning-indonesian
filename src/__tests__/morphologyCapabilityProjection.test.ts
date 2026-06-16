@@ -38,15 +38,15 @@ function asPlannerCapability(capability: ProjectedCapability): PlannerCapability
 describe('morphology capability projection', () => {
   it('projects meN pairs as recognition and root-to-derived recall facets', () => {
     const projection = projectCapabilities(snapshot)
-    const recognition = projection.capabilities.find(capability => capability.capabilityType === 'root_derived_recognition')!
-    const recall = projection.capabilities.find(capability => capability.capabilityType === 'root_derived_recall')!
+    const recognition = projection.capabilities.find(capability => capability.capabilityType === 'recognise_word_form_link_cap')!
+    const recall = projection.capabilities.find(capability => capability.capabilityType === 'produce_derived_form_cap')!
 
     expect(recognition).toEqual(expect.objectContaining({
-      sourceKind: 'affixed_form_pair',
+      sourceKind: 'word_form_pair_src',
       sourceRef: pairSourceRef,
       direction: 'derived_to_root',
       skillType: 'recognition',
-      // PR 3 slice: affixed_form_pair caps render from the typed
+      // PR 3 slice: word_form_pair_src caps render from the typed
       // `affixed_form_pairs` table; readiness no longer depends on
       // capability_artifacts (mirror of item + dialogue_line, Decision R).
       requiredArtifacts: [],
@@ -59,8 +59,8 @@ describe('morphology capability projection', () => {
     }))
   })
 
-  it('marks morphology root_derived_recall ready via typed_recall with NO capability_artifacts (PR 3 slice: structure lives in the typed affixed_form_pairs table + validateAffixedFormPairs + HC17)', () => {
-    const recall = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'root_derived_recall')!
+  it('marks morphology produce_derived_form_cap ready via typed_recall with NO capability_artifacts (PR 3 slice: structure lives in the typed affixed_form_pairs table + validateAffixedFormPairs + HC17)', () => {
+    const recall = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'produce_derived_form_cap')!
     const readiness = validateCapability({ capability: recall })
     expect(readiness.status).toBe('ready')
     if (readiness.status === 'ready') {
@@ -68,8 +68,8 @@ describe('morphology capability projection', () => {
     }
   })
 
-  it('marks morphology root_derived_recognition ready via typed_recall with NO capability_artifacts (PR 3 slice)', () => {
-    const recognition = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'root_derived_recognition')!
+  it('marks morphology recognise_word_form_link_cap ready via typed_recall with NO capability_artifacts (PR 3 slice)', () => {
+    const recognition = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'recognise_word_form_link_cap')!
     const readiness = validateCapability({ capability: recognition })
     expect(readiness.status).toBe('ready')
     if (readiness.status === 'ready') {
@@ -79,8 +79,8 @@ describe('morphology capability projection', () => {
 
   it('requires pattern noticing and recognition success before root-to-derived practice enters the queue', () => {
     const projection = projectCapabilities(snapshot)
-    const recognition = projection.capabilities.find(capability => capability.capabilityType === 'root_derived_recognition')!
-    const recall = projection.capabilities.find(capability => capability.capabilityType === 'root_derived_recall')!
+    const recognition = projection.capabilities.find(capability => capability.capabilityType === 'recognise_word_form_link_cap')!
+    const recall = projection.capabilities.find(capability => capability.capabilityType === 'produce_derived_form_cap')!
     const baseInput = {
       userId: 'user-1',
       mode: 'standard' as const,

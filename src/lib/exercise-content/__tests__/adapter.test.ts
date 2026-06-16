@@ -10,11 +10,11 @@ describe('decodeCanonicalKey', () => {
   // between the encoder and decoder mechanically.
   for (const sourceKind of CAPABILITY_SOURCE_KINDS) {
     it(`round-trips sourceKind='${sourceKind}'`, () => {
-      const sourceRef = sourceKind === 'item' ? 'learning_items/abc-123' : `${sourceKind}-source-id`
+      const sourceRef = sourceKind === 'vocabulary_src' ? 'learning_items/abc-123' : `${sourceKind}-source-id`
       const key = buildCanonicalKey({
         sourceKind,
         sourceRef,
-        capabilityType: 'text_recognition',
+        capabilityType: 'recognise_meaning_from_text_cap',
         direction: 'id_to_l1',
         modality: 'text',
         learnerLanguage: 'nl',
@@ -37,7 +37,7 @@ describe('decodeCanonicalKey', () => {
   })
 
   it('returns malformed for wrong version', () => {
-    expect(decodeCanonicalKey('cap:v2:item:learning_items/abc:text_recognition:id_to_l1:text:nl').kind).toBe('malformed')
+    expect(decodeCanonicalKey('cap:v2:item:learning_items/abc:recognise_meaning_from_text_cap:id_to_l1:text:nl').kind).toBe('malformed')
   })
 
   it('returns malformed for unknown sourceKind', () => {
@@ -48,9 +48,9 @@ describe('decodeCanonicalKey', () => {
 
   it('preserves slashes in sourceRef (encodeSegment does not encode /)', () => {
     const decoded = decodeCanonicalKey(buildCanonicalKey({
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef: 'learning_items/abc/def',  // hypothetical nested path
-      capabilityType: 'text_recognition',
+      capabilityType: 'recognise_meaning_from_text_cap',
       direction: 'id_to_l1',
       modality: 'text',
       learnerLanguage: 'nl',
@@ -63,9 +63,9 @@ describe('decodeCanonicalKey', () => {
     // encodeSegment maps `:` → `%3A` so the split-on-`:` doesn't corrupt
     // sourceRefs that contain a colon. Verify the inverse.
     const decoded = decodeCanonicalKey(buildCanonicalKey({
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef: 'learning_items/has:colon',
-      capabilityType: 'text_recognition',
+      capabilityType: 'recognise_meaning_from_text_cap',
       direction: 'id_to_l1',
       modality: 'text',
       learnerLanguage: 'nl',
@@ -94,11 +94,11 @@ describe('extractItemKey', () => {
 
 // ─── bucketByDecodedSourceKind ──────────────────────────────────────────────
 
-function makeBlockWithSourceRef(opts: { sourceKind: 'item' | 'dialogue_line' | 'pattern' | 'affixed_form_pair'; sourceRef: string }): SessionBlock {
+function makeBlockWithSourceRef(opts: { sourceKind: 'vocabulary_src' | 'dialogue_line_src' | 'grammar_pattern_src' | 'word_form_pair_src'; sourceRef: string }): SessionBlock {
   const key = buildCanonicalKey({
     sourceKind: opts.sourceKind,
     sourceRef: opts.sourceRef,
-    capabilityType: 'contextual_cloze',
+    capabilityType: 'produce_form_from_context_cap',
     direction: 'id_to_l1',
     modality: 'text',
     learnerLanguage: 'nl',
@@ -112,7 +112,7 @@ function makeBlockWithSourceRef(opts: { sourceKind: 'item' | 'dialogue_line' | '
       capabilityKey: key,
       sourceRef: opts.sourceRef,
       exerciseType: 'cloze',
-      capabilityType: 'contextual_cloze',
+      capabilityType: 'produce_form_from_context_cap',
       skillType: 'form_recall',
     },
     reviewContext: {
@@ -127,7 +127,7 @@ function makeBlockWithSourceRef(opts: { sourceKind: 'item' | 'dialogue_line' | '
 
 describe('bucketByDecodedSourceKind', () => {
   it('places item blocks in the item bucket with their slug extracted', () => {
-    const block = makeBlockWithSourceRef({ sourceKind: 'item', sourceRef: 'learning_items/apa' })
+    const block = makeBlockWithSourceRef({ sourceKind: 'vocabulary_src', sourceRef: 'learning_items/apa' })
     const { buckets, failures } = bucketByDecodedSourceKind([block])
     expect(failures.size).toBe(0)
     expect(buckets.item).toEqual([{ block, itemKey: 'apa' }])
@@ -135,7 +135,7 @@ describe('bucketByDecodedSourceKind', () => {
   })
 
   it('places dialogue_line blocks in the dialogue_line bucket', () => {
-    const block = makeBlockWithSourceRef({ sourceKind: 'dialogue_line', sourceRef: 'lesson-9/section-1/line-10' })
+    const block = makeBlockWithSourceRef({ sourceKind: 'dialogue_line_src', sourceRef: 'lesson-9/section-1/line-10' })
     const { buckets, failures } = bucketByDecodedSourceKind([block])
     expect(failures.size).toBe(0)
     expect(buckets.dialogue_line).toEqual([{ block, sourceRef: 'lesson-9/section-1/line-10' }])
@@ -143,7 +143,7 @@ describe('bucketByDecodedSourceKind', () => {
   })
 
   it('fails dialogue_line_ref_unparseable when the sourceRef does not match lesson-N/section-M/line-K', () => {
-    const block = makeBlockWithSourceRef({ sourceKind: 'dialogue_line', sourceRef: 'lesson-9/section-1' })
+    const block = makeBlockWithSourceRef({ sourceKind: 'dialogue_line_src', sourceRef: 'lesson-9/section-1' })
     const { buckets, failures } = bucketByDecodedSourceKind([block])
     expect(buckets.dialogue_line).toEqual([])
     expect(failures.size).toBe(1)
@@ -152,29 +152,29 @@ describe('bucketByDecodedSourceKind', () => {
   })
 
   it('places pattern blocks in the pattern bucket post 2026-05-24 (PR 4 fetcher landed)', () => {
-    const blockPattern = makeBlockWithSourceRef({ sourceKind: 'pattern', sourceRef: 'lesson-9/pattern-1' })
+    const blockPattern = makeBlockWithSourceRef({ sourceKind: 'grammar_pattern_src', sourceRef: 'lesson-9/pattern-1' })
     const { buckets, failures } = bucketByDecodedSourceKind([blockPattern])
     expect(buckets.item).toEqual([])
     expect(buckets.dialogue_line).toEqual([])
-    expect(buckets.affixed_form_pair).toEqual([])
+    expect(buckets.word_form_pair_src).toEqual([])
     expect(failures.size).toBe(0)
     expect(buckets.pattern).toEqual([{ block: blockPattern, sourceRef: 'lesson-9/pattern-1' }])
   })
 
   it('fails pattern_ref_unparseable for a pattern block whose ref lacks the /pattern- segment', () => {
-    const blockPattern = makeBlockWithSourceRef({ sourceKind: 'pattern', sourceRef: 'lesson-9/morphology-1' })
+    const blockPattern = makeBlockWithSourceRef({ sourceKind: 'grammar_pattern_src', sourceRef: 'lesson-9/morphology-1' })
     const { buckets, failures } = bucketByDecodedSourceKind([blockPattern])
     expect(buckets.pattern).toEqual([])
     expect(failures.size).toBe(1)
     expect(failures.get(blockPattern.id)?.diagnostic?.reasonCode).toBe('pattern_ref_unparseable')
   })
 
-  it('places affixed_form_pair blocks in the affixed_form_pair bucket with direction parsed from canonical-key tail', () => {
-    const block = makeBlockWithSourceRef({ sourceKind: 'affixed_form_pair', sourceRef: 'lesson-9/morphology/meN-baca-membaca' })
+  it('places word_form_pair_src blocks in the word_form_pair_src bucket with direction parsed from canonical-key tail', () => {
+    const block = makeBlockWithSourceRef({ sourceKind: 'word_form_pair_src', sourceRef: 'lesson-9/morphology/meN-baca-membaca' })
     const { buckets, failures } = bucketByDecodedSourceKind([block])
     expect(failures.size).toBe(0)
-    expect(buckets.affixed_form_pair).toHaveLength(1)
-    const entry = buckets.affixed_form_pair[0]
+    expect(buckets.word_form_pair_src).toHaveLength(1)
+    const entry = buckets.word_form_pair_src[0]
     expect(entry.sourceRef).toBe('lesson-9/morphology/meN-baca-membaca')
     // The test's makeBlockWithSourceRef builds the canonical key with
     // direction='id_to_l1' (a synthetic value used across this test file);
@@ -184,32 +184,32 @@ describe('bucketByDecodedSourceKind', () => {
   })
 
   it('fails affixed_form_pair_ref_unparseable when the sourceRef does not match lesson-N/morphology/<slug>', () => {
-    const block = makeBlockWithSourceRef({ sourceKind: 'affixed_form_pair', sourceRef: 'garbage/path' })
+    const block = makeBlockWithSourceRef({ sourceKind: 'word_form_pair_src', sourceRef: 'garbage/path' })
     const { buckets, failures } = bucketByDecodedSourceKind([block])
-    expect(buckets.affixed_form_pair).toEqual([])
+    expect(buckets.word_form_pair_src).toEqual([])
     expect(failures.size).toBe(1)
     const ctx = failures.get(block.id)!
     expect(ctx.diagnostic?.reasonCode).toBe('affixed_form_pair_ref_unparseable')
   })
 
-  it('mixes item + dialogue_line + affixed_form_pair in one call without crosstalk', () => {
-    const itemBlock = makeBlockWithSourceRef({ sourceKind: 'item', sourceRef: 'learning_items/apa' })
-    const dialogueBlock = makeBlockWithSourceRef({ sourceKind: 'dialogue_line', sourceRef: 'lesson-9/section-1/line-10' })
-    const affixedBlock = makeBlockWithSourceRef({ sourceKind: 'affixed_form_pair', sourceRef: 'lesson-9/morphology/meN-baca-membaca' })
+  it('mixes item + dialogue_line + word_form_pair_src in one call without crosstalk', () => {
+    const itemBlock = makeBlockWithSourceRef({ sourceKind: 'vocabulary_src', sourceRef: 'learning_items/apa' })
+    const dialogueBlock = makeBlockWithSourceRef({ sourceKind: 'dialogue_line_src', sourceRef: 'lesson-9/section-1/line-10' })
+    const affixedBlock = makeBlockWithSourceRef({ sourceKind: 'word_form_pair_src', sourceRef: 'lesson-9/morphology/meN-baca-membaca' })
     const { buckets, failures } = bucketByDecodedSourceKind([itemBlock, dialogueBlock, affixedBlock])
     expect(failures.size).toBe(0)
     expect(buckets.item).toHaveLength(1)
     expect(buckets.dialogue_line).toHaveLength(1)
-    expect(buckets.affixed_form_pair).toHaveLength(1)
+    expect(buckets.word_form_pair_src).toHaveLength(1)
   })
 })
 
 describe('decodeCanonicalKey — tail parsing', () => {
   it('returns tail components when canonical key has all 8 parts', () => {
     const key = buildCanonicalKey({
-      sourceKind: 'affixed_form_pair',
+      sourceKind: 'word_form_pair_src',
       sourceRef: 'lesson-9/morphology/meN-baca-membaca',
-      capabilityType: 'root_derived_recall',
+      capabilityType: 'produce_derived_form_cap',
       direction: 'root_to_derived',
       modality: 'text',
       learnerLanguage: 'none',
@@ -218,7 +218,7 @@ describe('decodeCanonicalKey — tail parsing', () => {
     expect(decoded.kind).toBe('ok')
     if (decoded.kind === 'ok') {
       expect(decoded.tail).toEqual({
-        capabilityType: 'root_derived_recall',
+        capabilityType: 'produce_derived_form_cap',
         direction: 'root_to_derived',
         modality: 'text',
         learnerLanguage: 'none',
@@ -228,7 +228,7 @@ describe('decodeCanonicalKey — tail parsing', () => {
 
   it('returns tail=null when canonical key has fewer than 8 parts but is otherwise valid', () => {
     // 4-part key passes the leading guard; tail is null.
-    const decoded = decodeCanonicalKey('cap:v1:item:learning_items/abc')
+    const decoded = decodeCanonicalKey('cap:v1:vocabulary_src:learning_items/abc')
     expect(decoded.kind).toBe('ok')
     if (decoded.kind === 'ok') {
       expect(decoded.tail).toBeNull()

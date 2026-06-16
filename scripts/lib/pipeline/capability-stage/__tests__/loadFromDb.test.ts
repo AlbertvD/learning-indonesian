@@ -158,12 +158,12 @@ const EXISTING_ITEM_CAPS = [
   {
     id: 'cap-1',
     canonical_key: 'item:buku:recognition:nl',
-    source_kind: 'item',
+    source_kind: 'vocabulary_src',
   },
   {
     id: 'cap-2',
     canonical_key: 'item:meja:recognition:nl',
-    source_kind: 'item',
+    source_kind: 'vocabulary_src',
   },
 ]
 
@@ -354,7 +354,7 @@ describe('fetchItemCapabilityState', () => {
     const manyCaps = Array.from({ length: PAGE_SIZE + 5 }, (_, i) => ({
       id: `cap-${i}`,
       canonical_key: `item:word-${i}:recognition:nl`,
-      source_kind: 'item',
+      source_kind: 'vocabulary_src',
     }))
     const bigMock = buildMockSupabase({
       learning_items: { rows: manyItems },

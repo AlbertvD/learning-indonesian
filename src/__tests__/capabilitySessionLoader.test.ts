@@ -12,9 +12,9 @@ const canonicalKey = 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:
 function projectedCapability(overrides: Partial<ProjectedCapability> = {}): ProjectedCapability {
   return {
     canonicalKey,
-    sourceKind: 'item',
+    sourceKind: 'vocabulary_src',
     sourceRef,
-    capabilityType: 'meaning_recall',
+    capabilityType: 'recall_meaning_from_text_cap',
     skillType: 'meaning_recall',
     direction: 'id_to_l1',
     modality: 'text',
@@ -433,13 +433,13 @@ describe('capability session loader', () => {
       // out earlier (as exposure-only, capabilityContracts.ts:13) before they
       // reach `loadCapabilitySessionPlan`, so this is the layer where the
       // null-bypass actually has to hold.
-      const podcastKey = 'cap:v1:podcast_segment:podcasts/warung/seg-01:audio_recognition:l1_to_id:audio:nl'
+      const podcastKey = 'cap:v1:podcast_segment_src:podcasts/warung/seg-01:recognise_meaning_from_audio_cap:l1_to_id:audio:nl'
       const podcastCap: PlannerCapability = {
         id: 'podcast-cap',
         canonicalKey: podcastKey,
-        sourceKind: 'podcast_segment',
+        sourceKind: 'podcast_segment_src',
         sourceRef: 'podcasts/warung/seg-01',
-        capabilityType: 'audio_recognition',
+        capabilityType: 'recognise_meaning_from_audio_cap',
         skillType: 'recognition',
         readinessStatus: 'ready',
         publicationStatus: 'published',
@@ -625,9 +625,9 @@ describe('capability session loader', () => {
   describe('sibling burying — one capability per source_ref per build', () => {
     const ref = 'learning_items/item-1' // the shared default sourceRef
     const keyA = 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl'
-    const keyB = 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl'
-    const projA = projectedCapability({ canonicalKey: keyA, capabilityType: 'meaning_recall', skillType: 'meaning_recall' })
-    const projB = projectedCapability({ canonicalKey: keyB, capabilityType: 'text_recognition', skillType: 'recognition' })
+    const keyB = 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl'
+    const projA = projectedCapability({ canonicalKey: keyA, capabilityType: 'recall_meaning_from_text_cap', skillType: 'meaning_recall' })
+    const projB = projectedCapability({ canonicalKey: keyB, capabilityType: 'recognise_meaning_from_text_cap', skillType: 'recognition' })
     const capabilitiesByKey = new Map([[keyA, projA], [keyB, projB]])
     const readinessByKey: Map<string, CapabilityReadiness> = new Map([
       [keyA, { status: 'ready', allowedExercises: ['meaning_recall'] }],
@@ -661,13 +661,13 @@ describe('capability session loader', () => {
     // Cross-pass regression for the 2026-06-09 bury-before-allocate move: the
     // due pass's claimed refs must still reach the planner (via usedSourceRefs),
     // so a word served as a due review this build is NOT also introduced.
-    // keyB (text_recognition) is a DORMANT new-intro candidate for the SAME word.
+    // keyB (recognise_meaning_from_text_cap) is a DORMANT new-intro candidate for the SAME word.
     const newIntroPlannerInput = {
       userId: 'user-1',
       preferredSessionSize: 15,
       dueCount: 0,
       readyCapabilities: [plannerCapability({
-        id: 'capability-2', canonicalKey: keyB, sourceRef: ref, capabilityType: 'text_recognition', lessonId: null,
+        id: 'capability-2', canonicalKey: keyB, sourceRef: ref, capabilityType: 'recognise_meaning_from_text_cap', lessonId: null,
       })],
       learnerCapabilityStates: [],
       activatedLessons: new Set<string>(),

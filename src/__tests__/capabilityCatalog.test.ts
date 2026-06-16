@@ -47,15 +47,15 @@ describe('capability catalog projection', () => {
     const projection = projectCapabilities(snapshot)
 
     expect(projection.capabilities.map(capability => capability.capabilityType)).toEqual(
-      expect.arrayContaining(['text_recognition', 'meaning_recall', 'l1_to_id_choice', 'form_recall', 'audio_recognition', 'dictation']),
+      expect.arrayContaining(['recognise_meaning_from_text_cap', 'recall_meaning_from_text_cap', 'recognise_form_from_meaning_cap', 'produce_form_from_meaning_cap', 'recognise_meaning_from_audio_cap', 'produce_form_from_audio_cap']),
     )
     expect(projection.capabilities.every(capability => capability.projectionVersion === 'capability-v3')).toBe(true)
   })
 
   it('requires learner-language meaning for text recognition and accepted answers for dictation', () => {
     const projection = projectCapabilities(snapshot)
-    const textRecognition = projection.capabilities.find(capability => capability.capabilityType === 'text_recognition')
-    const dictation = projection.capabilities.find(capability => capability.capabilityType === 'dictation')
+    const textRecognition = projection.capabilities.find(capability => capability.capabilityType === 'recognise_meaning_from_text_cap')
+    const dictation = projection.capabilities.find(capability => capability.capabilityType === 'produce_form_from_audio_cap')
 
     expect(textRecognition?.learnerLanguage).toBe('nl')
     expect(textRecognition?.requiredArtifacts).toEqual(expect.arrayContaining(['base_text', 'meaning:l1']))
@@ -65,16 +65,16 @@ describe('capability catalog projection', () => {
 
   it('chains prerequisites for vocabulary and audio capabilities', () => {
     const projection = projectCapabilities(snapshot)
-    const textRecognition = projection.capabilities.find(capability => capability.capabilityType === 'text_recognition')
-    const choiceBridge = projection.capabilities.find(capability => capability.capabilityType === 'l1_to_id_choice')
-    const formRecall = projection.capabilities.find(capability => capability.capabilityType === 'form_recall')
-    const audioCapability = projection.capabilities.find(capability => capability.sourceKind === 'item' && capability.capabilityType === 'audio_recognition')
+    const textRecognition = projection.capabilities.find(capability => capability.capabilityType === 'recognise_meaning_from_text_cap')
+    const choiceBridge = projection.capabilities.find(capability => capability.capabilityType === 'recognise_form_from_meaning_cap')
+    const formRecall = projection.capabilities.find(capability => capability.capabilityType === 'produce_form_from_meaning_cap')
+    const audioCapability = projection.capabilities.find(capability => capability.sourceKind === 'vocabulary_src' && capability.capabilityType === 'recognise_meaning_from_audio_cap')
 
     expect(textRecognition?.sourceRef).toBe('learning_items/item-1')
     expect(choiceBridge).toEqual(expect.objectContaining({
       direction: 'l1_to_id',
       modality: 'text',
-      // cap-v2 Slice 1 mis-level fix: l1_to_id_choice is recognition, not recall.
+      // cap-v2 Slice 1 mis-level fix: recognise_form_from_meaning_cap is recognition, not recall.
       skillType: 'recognition',
       requiredArtifacts: expect.arrayContaining(['meaning:l1', 'base_text']),
       prerequisiteKeys: [textRecognition?.canonicalKey],
@@ -85,7 +85,7 @@ describe('capability catalog projection', () => {
 
   it('normalizes staged lesson source refs for grammar patterns', () => {
     const projection = projectCapabilities(snapshot)
-    const pattern = projection.capabilities.find(capability => capability.sourceKind === 'pattern')
+    const pattern = projection.capabilities.find(capability => capability.sourceKind === 'grammar_pattern_src')
 
     expect(pattern?.sourceRef).toBe('lesson-1/pattern-meN')
     // PR 4 (Decision R): pattern caps render from typed grammar-exercise tables;
@@ -98,28 +98,28 @@ describe('capability catalog projection', () => {
   })
 
   it('projects non-vocabulary source kinds (post Decision 4 + 5b)', () => {
-    // Decision 4: podcast_segment + podcast_phrase moved to
+    // Decision 4: podcast_segment_src + podcast_phrase_src moved to
     // scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts.
-    // Decision 5b: dialogue_line contextual_cloze moved to
+    // Decision 5b: dialogue_line produce_form_from_context_cap moved to
     // capability-stage/projectors/vocab.ts (driven by clozeContexts).
     // The shared catalog now emits only `pattern` (grammar) and
-    // `affixed_form_pair` (morphology) source kinds in addition to `item`.
+    // `word_form_pair_src` (morphology) source kinds in addition to `item`.
     const sourceKinds = projectCapabilities(snapshot).capabilities.map(capability => capability.sourceKind)
 
     expect(sourceKinds).toEqual(expect.arrayContaining([
-      'item',
-      'pattern',
-      'affixed_form_pair',
+      'vocabulary_src',
+      'grammar_pattern_src',
+      'word_form_pair_src',
     ]))
-    expect(sourceKinds).not.toContain('dialogue_line')
-    expect(sourceKinds).not.toContain('podcast_segment')
-    expect(sourceKinds).not.toContain('podcast_phrase')
+    expect(sourceKinds).not.toContain('dialogue_line_src')
+    expect(sourceKinds).not.toContain('podcast_segment_src')
+    expect(sourceKinds).not.toContain('podcast_phrase_src')
   })
 
-  it('Decision 5a: pattern_recognition has a sibling pattern_contrast capability', () => {
+  it('Decision 5a: recognise_grammar_pattern_cap has a sibling contrast_grammar_pattern_cap capability', () => {
     const projection = projectCapabilities(snapshot)
-    const recognition = projection.capabilities.find(c => c.capabilityType === 'pattern_recognition')
-    const contrast = projection.capabilities.find(c => c.capabilityType === 'pattern_contrast')
+    const recognition = projection.capabilities.find(c => c.capabilityType === 'recognise_grammar_pattern_cap')
+    const contrast = projection.capabilities.find(c => c.capabilityType === 'contrast_grammar_pattern_cap')
 
     expect(recognition).toBeDefined()
     expect(contrast).toBeDefined()

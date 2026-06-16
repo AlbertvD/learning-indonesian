@@ -10,16 +10,16 @@ describe('capability promotion planner', () => {
   it('promotes only capabilities with ready contracts and allowed exercises', () => {
     const plan = planCapabilityPromotion({
       capabilities: [
-        { id: 'cap-ready', canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl' },
-        { id: 'cap-blocked', canonical_key: 'cap:v1:item:learning_items/x:dictation:id_audio_to_text:audio:nl' },
+        { id: 'cap-ready', canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl' },
+        { id: 'cap-blocked', canonical_key: 'cap:v1:vocabulary_src:learning_items/x:produce_form_from_audio_cap:id_audio_to_text:audio:nl' },
       ],
       healthResults: [
         {
-          canonicalKey: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+          canonicalKey: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
           readiness: { status: 'ready', allowedExercises: ['meaning_recall'] },
         },
         {
-          canonicalKey: 'cap:v1:item:learning_items/x:dictation:id_audio_to_text:audio:nl',
+          canonicalKey: 'cap:v1:vocabulary_src:learning_items/x:produce_form_from_audio_cap:id_audio_to_text:audio:nl',
           readiness: { status: 'blocked', missingArtifacts: ['audio_clip'], reason: 'missing audio_clip' },
         },
       ],
@@ -28,7 +28,7 @@ describe('capability promotion planner', () => {
     expect(plan.promotions).toEqual([
       {
         capabilityId: 'cap-ready',
-        canonicalKey: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+        canonicalKey: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
         readinessStatus: 'ready',
         publicationStatus: 'published',
         allowedExercises: ['meaning_recall'],
@@ -37,7 +37,7 @@ describe('capability promotion planner', () => {
     expect(plan.blocked).toEqual([
       {
         capabilityId: 'cap-blocked',
-        canonicalKey: 'cap:v1:item:learning_items/x:dictation:id_audio_to_text:audio:nl',
+        canonicalKey: 'cap:v1:vocabulary_src:learning_items/x:produce_form_from_audio_cap:id_audio_to_text:audio:nl',
         readinessStatus: 'blocked',
         reason: 'missing audio_clip',
       },
@@ -47,11 +47,11 @@ describe('capability promotion planner', () => {
   it('promotes Dutch-to-Indonesian choice when health exposes the cued recall path', () => {
     const plan = planCapabilityPromotion({
       capabilities: [
-        { id: 'choice-cap', canonical_key: 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl' },
+        { id: 'choice-cap', canonical_key: 'cap:v1:vocabulary_src:learning_items/makan:recognise_form_from_meaning_cap:l1_to_id:text:nl' },
       ],
       healthResults: [
         {
-          canonicalKey: 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl',
+          canonicalKey: 'cap:v1:vocabulary_src:learning_items/makan:recognise_form_from_meaning_cap:l1_to_id:text:nl',
           readiness: { status: 'ready', allowedExercises: ['cued_recall'] },
         },
       ],
@@ -59,7 +59,7 @@ describe('capability promotion planner', () => {
 
     expect(plan.promotions).toEqual([{
       capabilityId: 'choice-cap',
-      canonicalKey: 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl',
+      canonicalKey: 'cap:v1:vocabulary_src:learning_items/makan:recognise_form_from_meaning_cap:l1_to_id:text:nl',
       readinessStatus: 'ready',
       publicationStatus: 'published',
       allowedExercises: ['cued_recall'],
@@ -69,11 +69,11 @@ describe('capability promotion planner', () => {
   it('blocks ready health rows with no exercise path', () => {
     const plan = planCapabilityPromotion({
       capabilities: [
-        { id: 'cap-no-exercise', canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl' },
+        { id: 'cap-no-exercise', canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl' },
       ],
       healthResults: [
         {
-          canonicalKey: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+          canonicalKey: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
           readiness: { status: 'ready', allowedExercises: [] },
         },
       ],
@@ -83,7 +83,7 @@ describe('capability promotion planner', () => {
     expect(plan.blocked).toEqual([
       {
         capabilityId: 'cap-no-exercise',
-        canonicalKey: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+        canonicalKey: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
         readinessStatus: 'blocked',
         reason: 'No allowed exercise path for ready capability.',
       },
@@ -93,15 +93,15 @@ describe('capability promotion planner', () => {
   it('blocks scoped capability keys that have no matching capability row', () => {
     const plan = planCapabilityPromotion({
       scopedCapabilityKeys: [
-        'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
-        'cap:v1:item:learning_items/missing:text_recognition:id_to_l1:text:nl',
+        'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
+        'cap:v1:vocabulary_src:learning_items/missing:recognise_meaning_from_text_cap:id_to_l1:text:nl',
       ],
       capabilities: [
-        { id: 'cap-ready', canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl' },
+        { id: 'cap-ready', canonical_key: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl' },
       ],
       healthResults: [
         {
-          canonicalKey: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+          canonicalKey: 'cap:v1:vocabulary_src:learning_items/akhir:recall_meaning_from_text_cap:id_to_l1:text:nl',
           readiness: { status: 'ready', allowedExercises: ['meaning_recall'] },
         },
       ],
@@ -110,7 +110,7 @@ describe('capability promotion planner', () => {
     expect(plan.promotions).toHaveLength(1)
     expect(plan.blocked).toContainEqual({
       capabilityId: null,
-      canonicalKey: 'cap:v1:item:learning_items/missing:text_recognition:id_to_l1:text:nl',
+      canonicalKey: 'cap:v1:vocabulary_src:learning_items/missing:recognise_meaning_from_text_cap:id_to_l1:text:nl',
       readinessStatus: 'unknown',
       reason: 'Lesson references a capability key that does not exist in learning_capabilities.',
     })

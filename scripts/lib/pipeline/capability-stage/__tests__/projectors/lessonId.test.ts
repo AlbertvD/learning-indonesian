@@ -5,10 +5,10 @@ import type { CapabilityInput } from '../../adapter'
 
 function makeCapability(overrides: Partial<CapabilityInput>): CapabilityInput {
   return {
-    canonicalKey: 'item:halo::text_recognition::id_to_l1::text::none',
-    sourceKind: 'item',
+    canonicalKey: 'item:halo::recognise_meaning_from_text_cap::id_to_l1::text::none',
+    sourceKind: 'vocabulary_src',
     sourceRef: 'item-halo',
-    capabilityType: 'text_recognition',
+    capabilityType: 'recognise_meaning_from_text_cap',
     direction: 'id_to_l1',
     modality: 'text',
     learnerLanguage: 'none',
@@ -30,17 +30,17 @@ function makeCapability(overrides: Partial<CapabilityInput>): CapabilityInput {
 describe('validateLessonIdPresence — Decision 3b / ADR 0006 defensive gate', () => {
   it('passes when every lesson-derived capability has lessonId set', () => {
     const caps: CapabilityInput[] = [
-      makeCapability({ sourceKind: 'item', lessonId: 'lesson-1-uuid' }),
-      makeCapability({ sourceKind: 'pattern', lessonId: 'lesson-2-uuid' }),
-      makeCapability({ sourceKind: 'dialogue_line', lessonId: 'lesson-3-uuid' }),
-      makeCapability({ sourceKind: 'affixed_form_pair', lessonId: 'lesson-9-uuid' }),
+      makeCapability({ sourceKind: 'vocabulary_src', lessonId: 'lesson-1-uuid' }),
+      makeCapability({ sourceKind: 'grammar_pattern_src', lessonId: 'lesson-2-uuid' }),
+      makeCapability({ sourceKind: 'dialogue_line_src', lessonId: 'lesson-3-uuid' }),
+      makeCapability({ sourceKind: 'word_form_pair_src', lessonId: 'lesson-9-uuid' }),
     ]
     expect(() => validateLessonIdPresence(caps)).not.toThrow()
   })
 
   it('throws when a non-podcast capability has null lessonId', () => {
     const caps: CapabilityInput[] = [
-      makeCapability({ sourceKind: 'item', lessonId: null, canonicalKey: 'item:ada::text_recognition::id_to_l1::text::none' }),
+      makeCapability({ sourceKind: 'vocabulary_src', lessonId: null, canonicalKey: 'item:ada::recognise_meaning_from_text_cap::id_to_l1::text::none' }),
     ]
     expect(() => validateLessonIdPresence(caps)).toThrow(/null lessonId/i)
   })
@@ -48,31 +48,31 @@ describe('validateLessonIdPresence — Decision 3b / ADR 0006 defensive gate', (
   it('error message names the violating canonical_key', () => {
     const caps: CapabilityInput[] = [
       makeCapability({
-        sourceKind: 'item',
+        sourceKind: 'vocabulary_src',
         lessonId: null,
-        canonicalKey: 'item:bad::text_recognition::id_to_l1::text::none',
+        canonicalKey: 'item:bad::recognise_meaning_from_text_cap::id_to_l1::text::none',
       }),
     ]
     expect(() => validateLessonIdPresence(caps)).toThrow(/item:bad/)
   })
 
-  it('passes when a podcast_segment capability has null lessonId', () => {
+  it('passes when a podcast_segment_src capability has null lessonId', () => {
     const caps: CapabilityInput[] = [
       makeCapability({
-        sourceKind: 'podcast_segment',
+        sourceKind: 'podcast_segment_src',
         lessonId: null,
-        canonicalKey: 'podcast_segment:warung-1::audio_recognition::audio_to_l1::audio::none',
+        canonicalKey: 'podcast_segment_src:warung-1::recognise_meaning_from_audio_cap::audio_to_l1::audio::none',
       }),
     ]
     expect(() => validateLessonIdPresence(caps)).not.toThrow()
   })
 
-  it('passes when a podcast_phrase capability has null lessonId', () => {
+  it('passes when a podcast_phrase_src capability has null lessonId', () => {
     const caps: CapabilityInput[] = [
       makeCapability({
-        sourceKind: 'podcast_phrase',
+        sourceKind: 'podcast_phrase_src',
         lessonId: null,
-        canonicalKey: 'podcast_phrase:warung-1-phrase-3::meaning_recall::id_to_l1::audio::none',
+        canonicalKey: 'podcast_phrase_src:warung-1-phrase-3::meaning_recall::id_to_l1::audio::none',
       }),
     ]
     expect(() => validateLessonIdPresence(caps)).not.toThrow()
@@ -84,9 +84,9 @@ describe('validateLessonIdPresence — Decision 3b / ADR 0006 defensive gate', (
 
   it('counts and samples multiple violations in the thrown message', () => {
     const caps: CapabilityInput[] = [
-      makeCapability({ sourceKind: 'item', lessonId: null, canonicalKey: 'item:one' }),
-      makeCapability({ sourceKind: 'item', lessonId: null, canonicalKey: 'item:two' }),
-      makeCapability({ sourceKind: 'item', lessonId: null, canonicalKey: 'item:three' }),
+      makeCapability({ sourceKind: 'vocabulary_src', lessonId: null, canonicalKey: 'item:one' }),
+      makeCapability({ sourceKind: 'vocabulary_src', lessonId: null, canonicalKey: 'item:two' }),
+      makeCapability({ sourceKind: 'vocabulary_src', lessonId: null, canonicalKey: 'item:three' }),
     ]
     expect(() => validateLessonIdPresence(caps)).toThrow(/3 capability\/ies/)
   })

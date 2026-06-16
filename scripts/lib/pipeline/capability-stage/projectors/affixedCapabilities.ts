@@ -36,11 +36,11 @@ export interface AffixedCapabilitiesInput {
 /**
  * Pure emitter: 2 CapabilityInput rows per pair.
  *
- *   1. `root_derived_recognition`  direction=derived_to_root  (recognition first)
- *   2. `root_derived_recall`       direction=root_to_derived  (recall prereqs recognition)
+ *   1. `recognise_word_form_link_cap`  direction=derived_to_root  (recognition first)
+ *   2. `produce_derived_form_cap`       direction=root_to_derived  (recall prereqs recognition)
  *
  * Matches capabilityCatalog.ts:179-201 exactly:
- *   - sourceKind='affixed_form_pair'
+ *   - sourceKind='word_form_pair_src'
  *   - modality='text', learnerLanguage='none' (morphology is language-agnostic)
  *   - requiredArtifacts=[] (render from typed affixed_form_pairs table, Decision R)
  *   - recall.prerequisiteKeys=[recognition.canonicalKey]
@@ -54,9 +54,9 @@ export function projectAffixedCapabilities(
     const sourceRef = pair.source_ref
 
     const recognitionDraft = {
-      sourceKind: 'affixed_form_pair' as const,
+      sourceKind: 'word_form_pair_src' as const,
       sourceRef,
-      capabilityType: 'root_derived_recognition' as const,
+      capabilityType: 'recognise_word_form_link_cap' as const,
       direction: 'derived_to_root' as const,
       modality: 'text' as const,
       learnerLanguage: 'none' as const,
@@ -65,9 +65,9 @@ export function projectAffixedCapabilities(
 
     caps.push({
       canonicalKey: recognitionKey,
-      sourceKind: 'affixed_form_pair',
+      sourceKind: 'word_form_pair_src',
       sourceRef,
-      capabilityType: 'root_derived_recognition',
+      capabilityType: 'recognise_word_form_link_cap',
       direction: 'derived_to_root',
       modality: 'text',
       learnerLanguage: 'none',
@@ -79,16 +79,16 @@ export function projectAffixedCapabilities(
 
     caps.push({
       canonicalKey: buildCanonicalKey({
-        sourceKind: 'affixed_form_pair',
+        sourceKind: 'word_form_pair_src',
         sourceRef,
-        capabilityType: 'root_derived_recall',
+        capabilityType: 'produce_derived_form_cap',
         direction: 'root_to_derived',
         modality: 'text',
         learnerLanguage: 'none',
       }),
-      sourceKind: 'affixed_form_pair',
+      sourceKind: 'word_form_pair_src',
       sourceRef,
-      capabilityType: 'root_derived_recall',
+      capabilityType: 'produce_derived_form_cap',
       direction: 'root_to_derived',
       modality: 'text',
       learnerLanguage: 'none',

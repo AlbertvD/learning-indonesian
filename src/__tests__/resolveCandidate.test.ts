@@ -10,9 +10,9 @@ const sourceRef = 'learning_items/item-1'
 function projection(): ProjectedCapability {
   return {
     canonicalKey,
-    sourceKind: 'item',
+    sourceKind: 'vocabulary_src',
     sourceRef,
-    capabilityType: 'meaning_recall',
+    capabilityType: 'recall_meaning_from_text_cap',
     skillType: 'meaning_recall',
     direction: 'id_to_l1',
     modality: 'text',

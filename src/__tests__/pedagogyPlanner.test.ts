@@ -4,10 +4,10 @@ import { planLearningPath, prioritizeCandidates, capabilityFamily, type PlannerC
 function capability(overrides: Partial<PlannerCapability> = {}): PlannerCapability {
   return {
     id: 'capability-1',
-    canonicalKey: 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl',
-    sourceKind: 'item',
+    canonicalKey: 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl',
+    sourceKind: 'vocabulary_src',
     sourceRef: 'learning_items/item-1',
-    capabilityType: 'text_recognition',
+    capabilityType: 'recognise_meaning_from_text_cap',
     skillType: 'recognition',
     readinessStatus: 'ready',
     publicationStatus: 'published',
@@ -143,7 +143,7 @@ describe('pedagogy planner', () => {
   })
 
   it('requires successful prerequisite evidence rather than any review attempt', () => {
-    const prerequisite = 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl'
+    const prerequisite = 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl'
     const plan = planLearningPath({
       userId: 'user-1',
       mode: 'standard',
@@ -152,7 +152,7 @@ describe('pedagogy planner', () => {
       dueCount: 0,
       readyCapabilities: [capability({
         canonicalKey: 'form-capability',
-        capabilityType: 'form_recall',
+        capabilityType: 'produce_form_from_meaning_cap',
         prerequisiteKeys: [prerequisite],
       })],
       learnerCapabilityStates: [{
@@ -173,7 +173,7 @@ describe('pedagogy planner', () => {
   })
 
   it('fails closed if prerequisite success evidence is omitted', () => {
-    const prerequisite = 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl'
+    const prerequisite = 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl'
     const plan = planLearningPath({
       userId: 'user-1',
       mode: 'standard',
@@ -182,7 +182,7 @@ describe('pedagogy planner', () => {
       dueCount: 0,
       readyCapabilities: [capability({
         canonicalKey: 'form-capability',
-        capabilityType: 'form_recall',
+        capabilityType: 'produce_form_from_meaning_cap',
         prerequisiteKeys: [prerequisite],
       })],
       learnerCapabilityStates: [{
@@ -271,7 +271,7 @@ describe('pedagogy planner', () => {
 
     expect(plan.eligibleNewCapabilities).toEqual([])
     expect(plan.suppressedCapabilities[0]).toEqual({
-      canonicalKey: 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl',
+      canonicalKey: 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl',
       reason: 'wrong_session_mode',
     })
   })
@@ -292,7 +292,7 @@ describe('pedagogy planner', () => {
 
     expect(plan.eligibleNewCapabilities).toEqual([])
     expect(plan.suppressedCapabilities[0]).toEqual({
-      canonicalKey: 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl',
+      canonicalKey: 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl',
       reason: 'load_budget_exhausted',
     })
   })
@@ -315,14 +315,14 @@ describe('pedagogy planner', () => {
         capability({
           id: 'meaning-cap',
           canonicalKey: 'meaning-cap',
-          capabilityType: 'meaning_recall',
+          capabilityType: 'recall_meaning_from_text_cap',
           skillType: 'meaning_recall',
         }),
         capability({
           id: 'recognition-cap',
           canonicalKey: 'recognition-cap',
           sourceRef: 'learning_items/item-2',
-          capabilityType: 'text_recognition',
+          capabilityType: 'recognise_meaning_from_text_cap',
           skillType: 'recognition',
         }),
       ],
@@ -343,7 +343,7 @@ describe('pedagogy planner', () => {
       id: `cap-${index}`,
       canonicalKey: `cap-${index}`,
       sourceRef: `learning_items/item-${index}`,
-      capabilityType: 'meaning_recall',
+      capabilityType: 'recall_meaning_from_text_cap',
       skillType: 'meaning_recall',
     }))
 
@@ -373,7 +373,7 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
   const productive = (overrides: Partial<PlannerCapability> = {}): PlannerCapability => capability({
     id: 'productive-cap',
     canonicalKey: 'cap:productive',
-    capabilityType: 'form_recall',
+    capabilityType: 'produce_form_from_meaning_cap',
     skillType: 'meaning_recall',
     sourceRef: sharedSourceRef,
     ...overrides,
@@ -438,7 +438,7 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     const receptive = capability({
       id: 'receptive-cap',
       canonicalKey: 'cap:receptive',
-      capabilityType: 'text_recognition',
+      capabilityType: 'recognise_meaning_from_text_cap',
       sourceRef: sharedSourceRef,
     })
     const plan = planLearningPath({
@@ -463,7 +463,7 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     const receptive = capability({
       id: 'receptive-cap',
       canonicalKey: 'cap:receptive',
-      capabilityType: 'text_recognition',
+      capabilityType: 'recognise_meaning_from_text_cap',
       sourceRef: sharedSourceRef,
     })
     const plan = planLearningPath({
@@ -485,13 +485,13 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     const receptive = capability({
       id: 'receptive-cap',
       canonicalKey: 'cap:receptive',
-      capabilityType: 'text_recognition',
+      capabilityType: 'recognise_meaning_from_text_cap',
       sourceRef: sharedSourceRef,
     })
     const productiveMcq = capability({
       id: 'mcq-cap',
       canonicalKey: 'cap:mcq',
-      capabilityType: 'l1_to_id_choice',
+      capabilityType: 'recognise_form_from_meaning_cap',
       sourceRef: sharedSourceRef,
     })
     const plan = planLearningPath({
@@ -513,7 +513,7 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     const newReceptive = capability({
       id: 'new-receptive',
       canonicalKey: 'cap:new-receptive',
-      capabilityType: 'text_recognition',
+      capabilityType: 'recognise_meaning_from_text_cap',
       sourceRef: 'learning_items/other-item',
     })
     const plan = planLearningPath({
@@ -529,7 +529,7 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     const newMeaning = capability({
       id: 'new-meaning',
       canonicalKey: 'cap:new-meaning',
-      capabilityType: 'meaning_recall',
+      capabilityType: 'recall_meaning_from_text_cap',
       sourceRef: 'learning_items/other-item',
     })
     const plan = planLearningPath({
@@ -548,8 +548,8 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     const orphan = capability({
       id: 'orphan-cap',
       canonicalKey: 'cap:orphan',
-      sourceKind: 'item',
-      capabilityType: 'form_recall',
+      sourceKind: 'vocabulary_src',
+      capabilityType: 'produce_form_from_meaning_cap',
       sourceRef: 'learning_items/orphan-item',
     })
     const plan = planLearningPath({
@@ -562,8 +562,8 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
   })
 
   it('exempts pattern (grammar) from the staging gate', () => {
-    // Grammar has no Phase 1/2 ladder — its only two types (pattern_contrast,
-    // pattern_recognition) are both productive and share the pattern's own
+    // Grammar has no Phase 1/2 ladder — its only two types (contrast_grammar_pattern_cap,
+    // recognise_grammar_pattern_cap) are both productive and share the pattern's own
     // source_ref, so `unlockedSourceRefs` never contains it. The staging gate
     // used to orphan-suppress pattern on the now-expired premise that pattern
     // types were inert at runtime; Slice 2 (#100) made them renderable. The
@@ -571,8 +571,8 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     const patternRecognition = capability({
       id: 'pattern-recognition',
       canonicalKey: 'cap:pattern:recognition',
-      sourceKind: 'pattern',
-      capabilityType: 'pattern_recognition',
+      sourceKind: 'grammar_pattern_src',
+      capabilityType: 'recognise_grammar_pattern_cap',
       sourceRef: 'patterns/test-pattern',
     })
     const plan = planLearningPath({
@@ -583,15 +583,15 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toContain('cap:pattern:recognition')
   })
 
-  it('exempts affixed_form_pair (morphology) from the staging gate', () => {
+  it('exempts word_form_pair_src (morphology) from the staging gate', () => {
     // Morphology has no Phase 1/2 ladder — every cap is productive
-    // (root_derived_recognition + root_derived_recall). The carve-out keeps
+    // (recognise_word_form_link_cap + produce_derived_form_cap). The carve-out keeps
     // the within-pattern prerequisite chain as the sequencing mechanism.
     const morphologyRecognition = capability({
       id: 'morph-recognition',
       canonicalKey: 'cap:morph:recognition',
-      sourceKind: 'affixed_form_pair',
-      capabilityType: 'root_derived_recognition',
+      sourceKind: 'word_form_pair_src',
+      capabilityType: 'recognise_word_form_link_cap',
       sourceRef: 'morphology/test-pattern',
     })
     const plan = planLearningPath({
@@ -605,7 +605,7 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
   })
 
   it('exempts dialogue_line from the staging gate (PR-C of lib/exercise-content fold)', () => {
-    // Each dialogue line has exactly one productive cap (contextual_cloze)
+    // Each dialogue line has exactly one productive cap (produce_form_from_context_cap)
     // and no Phase 1/2 sibling at the same source_ref. Receptive items on
     // the same lesson live at different source_refs (learning_items/<slug>),
     // so the staging gate's source_ref-keyed sibling lookup never matches.
@@ -615,8 +615,8 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     const dialogueCloze = capability({
       id: 'dialogue-cloze-1',
       canonicalKey: 'cap:dialogue:l9-s1-l10',
-      sourceKind: 'dialogue_line',
-      capabilityType: 'contextual_cloze',
+      sourceKind: 'dialogue_line_src',
+      capabilityType: 'produce_form_from_context_cap',
       sourceRef: 'lesson-9/section-1/line-10',
       lessonId: 'lesson-9-uuid',
     })
@@ -636,12 +636,12 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
 // or no-op `prioritize`. These are the load-bearing ordering tests.
 describe('capabilityFamily — source-kind-keyed taxonomy', () => {
   it('maps every source kind to exactly one family', () => {
-    expect(capabilityFamily('item')).toBe('vocab')
-    expect(capabilityFamily('dialogue_line')).toBe('cloze')
-    expect(capabilityFamily('pattern')).toBe('grammar')
-    expect(capabilityFamily('affixed_form_pair')).toBe('morphology')
-    expect(capabilityFamily('podcast_segment')).toBe('podcast')
-    expect(capabilityFamily('podcast_phrase')).toBe('podcast')
+    expect(capabilityFamily('vocabulary_src')).toBe('vocab')
+    expect(capabilityFamily('dialogue_line_src')).toBe('cloze')
+    expect(capabilityFamily('grammar_pattern_src')).toBe('grammar')
+    expect(capabilityFamily('word_form_pair_src')).toBe('morphology')
+    expect(capabilityFamily('podcast_segment_src')).toBe('podcast')
+    expect(capabilityFamily('podcast_phrase_src')).toBe('podcast')
   })
 })
 
@@ -663,27 +663,27 @@ describe('prioritizeCandidates — lesson-major + within-lesson family round-rob
     // L1: 3 vocab (item) + 2 grammar (pattern). Rank within each family is by
     // canonicalKey; the sort then emits rank0 of each family, then rank1, …
     const out = prioritizeCandidates([
-      cap({ canonicalKey: 'cap:vocab:3', lessonOrder: 1, sourceKind: 'item' }),
-      cap({ canonicalKey: 'cap:gram:2', lessonOrder: 1, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
-      cap({ canonicalKey: 'cap:vocab:1', lessonOrder: 1, sourceKind: 'item' }),
-      cap({ canonicalKey: 'cap:gram:1', lessonOrder: 1, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
-      cap({ canonicalKey: 'cap:vocab:2', lessonOrder: 1, sourceKind: 'item' }),
+      cap({ canonicalKey: 'cap:vocab:3', lessonOrder: 1, sourceKind: 'vocabulary_src' }),
+      cap({ canonicalKey: 'cap:gram:2', lessonOrder: 1, sourceKind: 'grammar_pattern_src', capabilityType: 'contrast_grammar_pattern_cap' }),
+      cap({ canonicalKey: 'cap:vocab:1', lessonOrder: 1, sourceKind: 'vocabulary_src' }),
+      cap({ canonicalKey: 'cap:gram:1', lessonOrder: 1, sourceKind: 'grammar_pattern_src', capabilityType: 'contrast_grammar_pattern_cap' }),
+      cap({ canonicalKey: 'cap:vocab:2', lessonOrder: 1, sourceKind: 'vocabulary_src' }),
     ])
     expect(keys(out)).toEqual(['cap:vocab:1', 'cap:gram:1', 'cap:vocab:2', 'cap:gram:2', 'cap:vocab:3'])
   })
 
   it('keeps lesson priority above family interleave (all L1 before any L2)', () => {
     const out = prioritizeCandidates([
-      cap({ canonicalKey: 'l2:gram', lessonOrder: 2, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
-      cap({ canonicalKey: 'l1:vocab', lessonOrder: 1, sourceKind: 'item' }),
-      cap({ canonicalKey: 'l1:gram', lessonOrder: 1, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
+      cap({ canonicalKey: 'l2:gram', lessonOrder: 2, sourceKind: 'grammar_pattern_src', capabilityType: 'contrast_grammar_pattern_cap' }),
+      cap({ canonicalKey: 'l1:vocab', lessonOrder: 1, sourceKind: 'vocabulary_src' }),
+      cap({ canonicalKey: 'l1:gram', lessonOrder: 1, sourceKind: 'grammar_pattern_src', capabilityType: 'contrast_grammar_pattern_cap' }),
     ])
     expect(keys(out)).toEqual(['l1:vocab', 'l1:gram', 'l2:gram'])
   })
 
   it('sorts null-lessonOrder caps last', () => {
     const out = prioritizeCandidates([
-      cap({ canonicalKey: 'no-lesson', lessonOrder: null, sourceKind: 'podcast_segment', capabilityType: 'audio_recognition' }),
+      cap({ canonicalKey: 'no-lesson', lessonOrder: null, sourceKind: 'podcast_segment_src', capabilityType: 'recognise_meaning_from_audio_cap' }),
       cap({ canonicalKey: 'l1', lessonOrder: 1 }),
     ])
     expect(keys(out)).toEqual(['l1', 'no-lesson'])
@@ -691,10 +691,10 @@ describe('prioritizeCandidates — lesson-major + within-lesson family round-rob
 
   it('is deterministic — output is independent of input array order', () => {
     const input = [
-      cap({ canonicalKey: 'cap:vocab:1', lessonOrder: 1, sourceKind: 'item' }),
-      cap({ canonicalKey: 'cap:gram:1', lessonOrder: 1, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
-      cap({ canonicalKey: 'cap:vocab:2', lessonOrder: 1, sourceKind: 'item' }),
-      cap({ canonicalKey: 'l2', lessonOrder: 2, sourceKind: 'item' }),
+      cap({ canonicalKey: 'cap:vocab:1', lessonOrder: 1, sourceKind: 'vocabulary_src' }),
+      cap({ canonicalKey: 'cap:gram:1', lessonOrder: 1, sourceKind: 'grammar_pattern_src', capabilityType: 'contrast_grammar_pattern_cap' }),
+      cap({ canonicalKey: 'cap:vocab:2', lessonOrder: 1, sourceKind: 'vocabulary_src' }),
+      cap({ canonicalKey: 'l2', lessonOrder: 2, sourceKind: 'vocabulary_src' }),
     ]
     const forward = keys(prioritizeCandidates(input))
     const reversed = keys(prioritizeCandidates([...input].reverse()))

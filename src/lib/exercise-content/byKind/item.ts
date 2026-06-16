@@ -63,8 +63,8 @@ function meaningsFromItem(item: LearningItem): ItemMeaning[] {
 /**
  * Resolve curated distractor pointer rows into the two `capability_id → string[]`
  * maps the builders consume (cap-v2). A pointer's string form depends on the
- * capability type: meaning MCQs (text_recognition, audio_recognition) render the
- * distractor item's L1 gloss (userLanguage); cued_recall (l1_to_id_choice)
+ * capability type: meaning MCQs (recognise_meaning_from_text_cap, recognise_meaning_from_audio_cap) render the
+ * distractor item's L1 gloss (userLanguage); cued_recall (recognise_form_from_meaning_cap)
  * renders its Indonesian form. Pure — no I/O; the fetcher supplies the looked-up
  * rows so this stays unit-testable.
  */
@@ -85,10 +85,10 @@ export function resolveDistractorMaps(
     const type = capTypeById.get(capability_id)
     const item = itemById.get(item_id)
     if (!type || !item) continue
-    if (type === 'text_recognition' || type === 'audio_recognition') {
+    if (type === 'recognise_meaning_from_text_cap' || type === 'recognise_meaning_from_audio_cap') {
       const meaning = (userLanguage === 'nl' ? item.translation_nl : item.translation_en)?.trim()
       if (meaning) push(curatedRecognitionDistractors, capability_id, meaning)
-    } else if (type === 'l1_to_id_choice') {
+    } else if (type === 'recognise_form_from_meaning_cap') {
       const form = item.base_text?.trim()
       if (form) push(curatedCuedRecallDistractors, capability_id, form)
     }
@@ -145,8 +145,8 @@ export async function fetchForItemBlocks(
   // Curated distractors (cap-v2): read the `distractors` pointer table and the
   // capability types, then resolve each item_id pointer to the wrong-option
   // string the builder renders — the L1 gloss for meaning MCQs
-  // (text_recognition + audio_recognition) or the Indonesian form for cued_recall
-  // (l1_to_id_choice). Replaces the old text-array tables
+  // (recognise_meaning_from_text_cap + recognise_meaning_from_audio_cap) or the Indonesian form for cued_recall
+  // (recognise_form_from_meaning_cap). Replaces the old text-array tables
   // (recognition_mcq_distractors / cued_recall_distractors), dropped in the
   // vocabulary cutover. Chunked through chunkedIn (Kong 8 KB request-line guard).
   async function fetchDistractorPointerRows(capabilityIds: string[]): Promise<Array<{capability_id: string; item_id: string}>> {

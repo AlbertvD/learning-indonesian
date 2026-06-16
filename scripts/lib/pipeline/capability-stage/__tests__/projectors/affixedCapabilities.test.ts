@@ -31,36 +31,36 @@ const pair2: TypedAffixedPair = {
 // Pre-computed canonical keys (pin literal values so any silent change in the
 // key formula fails the test immediately — same pattern as vocab.test.ts).
 const RECOGNITION_KEY_1 = buildCanonicalKey({
-  sourceKind: 'affixed_form_pair',
+  sourceKind: 'word_form_pair_src',
   sourceRef: pair1.source_ref,
-  capabilityType: 'root_derived_recognition',
+  capabilityType: 'recognise_word_form_link_cap',
   direction: 'derived_to_root',
   modality: 'text',
   learnerLanguage: 'none',
 })
 
 const RECALL_KEY_1 = buildCanonicalKey({
-  sourceKind: 'affixed_form_pair',
+  sourceKind: 'word_form_pair_src',
   sourceRef: pair1.source_ref,
-  capabilityType: 'root_derived_recall',
+  capabilityType: 'produce_derived_form_cap',
   direction: 'root_to_derived',
   modality: 'text',
   learnerLanguage: 'none',
 })
 
 const RECOGNITION_KEY_2 = buildCanonicalKey({
-  sourceKind: 'affixed_form_pair',
+  sourceKind: 'word_form_pair_src',
   sourceRef: pair2.source_ref,
-  capabilityType: 'root_derived_recognition',
+  capabilityType: 'recognise_word_form_link_cap',
   direction: 'derived_to_root',
   modality: 'text',
   learnerLanguage: 'none',
 })
 
 const RECALL_KEY_2 = buildCanonicalKey({
-  sourceKind: 'affixed_form_pair',
+  sourceKind: 'word_form_pair_src',
   sourceRef: pair2.source_ref,
-  capabilityType: 'root_derived_recall',
+  capabilityType: 'produce_derived_form_cap',
   direction: 'root_to_derived',
   modality: 'text',
   learnerLanguage: 'none',
@@ -75,22 +75,22 @@ describe('projectAffixedCapabilities', () => {
     expect(caps).toHaveLength(4)
   })
 
-  it('emits root_derived_recognition cap with exact canonical key and fields', () => {
+  it('emits recognise_word_form_link_cap cap with exact canonical key and fields', () => {
     const caps = projectAffixedCapabilities({
       pairs: [pair1],
       lessonId: 'lesson-9-uuid',
     })
 
-    const recognition = caps.find((c) => c.capabilityType === 'root_derived_recognition')
+    const recognition = caps.find((c) => c.capabilityType === 'recognise_word_form_link_cap')
     expect(recognition).toBeDefined()
     expect(recognition!.canonicalKey).toBe(RECOGNITION_KEY_1)
     // Literal pin — any key-formula change will fail here.
     // encodeSegment (canonicalKey.ts) only encodes '%' → '%25' and ':' → '%3A';
     // '/' is NOT percent-encoded, so source_ref path separators appear literally.
     expect(RECOGNITION_KEY_1).toBe(
-      'cap:v1:affixed_form_pair:lesson-9/morphology/membaca-baca:root_derived_recognition:derived_to_root:text:none',
+      'cap:v1:word_form_pair_src:lesson-9/morphology/membaca-baca:recognise_word_form_link_cap:derived_to_root:text:none',
     )
-    expect(recognition!.sourceKind).toBe('affixed_form_pair')
+    expect(recognition!.sourceKind).toBe('word_form_pair_src')
     expect(recognition!.sourceRef).toBe(pair1.source_ref)
     expect(recognition!.direction).toBe('derived_to_root')
     expect(recognition!.modality).toBe('text')
@@ -101,20 +101,20 @@ describe('projectAffixedCapabilities', () => {
     expect(recognition!.prerequisiteKeys).toEqual([])
   })
 
-  it('emits root_derived_recall cap with exact canonical key and fields', () => {
+  it('emits produce_derived_form_cap cap with exact canonical key and fields', () => {
     const caps = projectAffixedCapabilities({
       pairs: [pair1],
       lessonId: 'lesson-9-uuid',
     })
 
-    const recall = caps.find((c) => c.capabilityType === 'root_derived_recall')
+    const recall = caps.find((c) => c.capabilityType === 'produce_derived_form_cap')
     expect(recall).toBeDefined()
     expect(recall!.canonicalKey).toBe(RECALL_KEY_1)
     // Literal pin — encodeSegment does not encode '/'
     expect(RECALL_KEY_1).toBe(
-      'cap:v1:affixed_form_pair:lesson-9/morphology/membaca-baca:root_derived_recall:root_to_derived:text:none',
+      'cap:v1:word_form_pair_src:lesson-9/morphology/membaca-baca:produce_derived_form_cap:root_to_derived:text:none',
     )
-    expect(recall!.sourceKind).toBe('affixed_form_pair')
+    expect(recall!.sourceKind).toBe('word_form_pair_src')
     expect(recall!.sourceRef).toBe(pair1.source_ref)
     expect(recall!.direction).toBe('root_to_derived')
     expect(recall!.modality).toBe('text')
@@ -133,10 +133,10 @@ describe('projectAffixedCapabilities', () => {
     })
 
     const recall1 = caps.find(
-      (c) => c.capabilityType === 'root_derived_recall' && c.sourceRef === pair1.source_ref,
+      (c) => c.capabilityType === 'produce_derived_form_cap' && c.sourceRef === pair1.source_ref,
     )
     const recall2 = caps.find(
-      (c) => c.capabilityType === 'root_derived_recall' && c.sourceRef === pair2.source_ref,
+      (c) => c.capabilityType === 'produce_derived_form_cap' && c.sourceRef === pair2.source_ref,
     )
 
     expect(recall1!.prerequisiteKeys).toEqual([RECOGNITION_KEY_1])

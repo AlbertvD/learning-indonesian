@@ -334,7 +334,7 @@ describe('runner residual cutover (5a.5 / #147)', () => {
   // ---------------------------------------------------------------------------
   it('AFFIXED-GUARD: fetchAffixedPairsFromDb result produces non-zero affixed_form_pairs inserts (step 7c second-consumer guard)', async () => {
     // Landmine #1 regression guard: if the step 5a (affixed) append to allCapabilities
-    // is removed, step 7c finds no affixed_form_pair source-kind caps in allCapabilities
+    // is removed, step 7c finds no word_form_pair_src source-kind caps in allCapabilities
     // → projectAffixedFormPairs emits zero rows → affixed_form_pairs table gets zero
     // inserts. This test catches that silent regression.
     //
@@ -364,7 +364,7 @@ describe('runner residual cutover (5a.5 / #147)', () => {
     expect(affixedRows.every((r) => typeof r.capability_id === 'string')).toBe(true)
 
     // No double-write: staging.affixedFormPairs is empty, so the legacy
-    // upsertCapabilities bundle has NO affixed_form_pair source_kind cap
+    // upsertCapabilities bundle has NO word_form_pair_src source_kind cap
     // (newPathEmittedKeys excluded the staging-derived ones, and newAffixedCaps
     // carries only DB-native pairs). Verify by checking there's no duplicate
     // affixed cap with the same source_ref in the legacy upserts.
@@ -377,7 +377,7 @@ describe('runner residual cutover (5a.5 / #147)', () => {
     // Count unique affixed cap canonical_keys across all legacy writes.
     const legacyAffixedKeys = legacyCapUpserts.flatMap((op) =>
       (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>])
-        .filter((r) => r?.source_kind === 'affixed_form_pair')
+        .filter((r) => r?.source_kind === 'word_form_pair_src')
         .map((r) => r?.canonical_key as string),
     )
     // Each affixed cap key appears at most once (no double-write).
@@ -411,10 +411,10 @@ describe('runner residual cutover (5a.5 / #147)', () => {
     )
     const legacyAffixedKeys = legacyCapUpserts.flatMap((op) =>
       (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>])
-        .filter((r) => r?.source_kind === 'affixed_form_pair')
+        .filter((r) => r?.source_kind === 'word_form_pair_src')
         .map((r) => r?.canonical_key as string),
     )
-    // 2 caps per affixed pair (root_derived_recognition + root_derived_recall)
+    // 2 caps per affixed pair (recognise_word_form_link_cap + produce_derived_form_cap)
     expect(legacyAffixedKeys.length).toBe(2)
   })
 

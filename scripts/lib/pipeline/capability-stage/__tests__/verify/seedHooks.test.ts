@@ -190,7 +190,7 @@ describe('CS8 contentNonEmpty — required field presence checks per #22', () =>
     const supabase = buildMockSupabase({
       learning_capabilities: {
         rows: [
-          { id: 'cap-1', canonical_key: '', capability_type: 'text_recognition', source_ref: 'learning_items/halo' },
+          { id: 'cap-1', canonical_key: '', capability_type: 'recognise_meaning_from_text_cap', source_ref: 'learning_items/halo' },
         ],
       },
     })

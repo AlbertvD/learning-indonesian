@@ -124,7 +124,7 @@ function runtimeFinding(
 function toProjectedCapability(capability: RuntimeHealthCapability): ProjectedCapability {
   return {
     canonicalKey: capability.canonicalKey,
-    sourceKind: capability.sourceKind ?? 'item',
+    sourceKind: capability.sourceKind ?? 'vocabulary_src',
     sourceRef: capability.sourceRef,
     capabilityType: capability.capabilityType,
     skillType: capability.skillType,

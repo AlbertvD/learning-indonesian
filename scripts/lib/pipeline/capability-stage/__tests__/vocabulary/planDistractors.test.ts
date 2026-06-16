@@ -3,10 +3,10 @@
  *
  * Maps each item capability to the right distractor kind (the seam grounded from
  * runner.ts:620-694) and composes the pure selectors over Pool(N):
- *   text_recognition  → meaning distractors (recognition_mcq)
- *   audio_recognition → meaning distractors (listening_mcq — newly curated)
- *   l1_to_id_choice   → form distractors (cued_recall)
- *   meaning_recall / form_recall / dictation / contextual_cloze → none (typed/typed-cloze)
+ *   recognise_meaning_from_text_cap  → meaning distractors (recognition_mcq)
+ *   recognise_meaning_from_audio_cap → meaning distractors (listening_mcq — newly curated)
+ *   recognise_form_from_meaning_cap   → form distractors (cued_recall)
+ *   meaning_recall / form_recall / dictation / produce_form_from_context_cap → none (typed/typed-cloze)
  * Returns the (capability_id, item_id) pointer rows the writer persists.
  */
 
@@ -31,19 +31,19 @@ function capOf(capabilityType: string): SeedCap {
 }
 
 describe('planDistractorWrites', () => {
-  it('emits meaning-distractor pointers for text_recognition and form-distractor pointers for l1_to_id_choice', () => {
-    const caps = [capOf('text_recognition'), capOf('l1_to_id_choice')]
+  it('emits meaning-distractor pointers for recognise_meaning_from_text_cap and form-distractor pointers for recognise_form_from_meaning_cap', () => {
+    const caps = [capOf('recognise_meaning_from_text_cap'), capOf('recognise_form_from_meaning_cap')]
 
     const rows = planDistractorWrites(caps, pool, { k: 2, synonymThreshold: 0.99 })
 
-    // text_recognition → meaning distractors, ranked by gloss-embedding closeness
+    // recognise_meaning_from_text_cap → meaning distractors, ranked by gloss-embedding closeness
     // to "duur": goedkoop (cos .8) then gratis (cos .5); marah (cos 0) is farthest.
-    const meaning = rows.filter((r) => r.capabilityId === 'cap-text_recognition').map((r) => r.itemId)
+    const meaning = rows.filter((r) => r.capabilityId === 'cap-recognise_meaning_from_text_cap').map((r) => r.itemId)
     expect(meaning).toEqual(['i-goedkoop', 'i-gratis'])
 
-    // l1_to_id_choice → form distractors, orthographic look-alikes of "mahal":
+    // recognise_form_from_meaning_cap → form distractors, orthographic look-alikes of "mahal":
     // marah (dist 2) and murah (dist 1) — closest first.
-    const form = rows.filter((r) => r.capabilityId === 'cap-l1_to_id_choice').map((r) => r.itemId).sort()
+    const form = rows.filter((r) => r.capabilityId === 'cap-recognise_form_from_meaning_cap').map((r) => r.itemId).sort()
     expect(form).toEqual(['i-goedkoop', 'i-marah']) // murah=i-goedkoop, marah=i-marah
   })
 
@@ -54,7 +54,7 @@ describe('planDistractorWrites', () => {
   })
 
   it('never points a distractor at the answer item itself', () => {
-    const caps = [capOf('text_recognition'), capOf('l1_to_id_choice')]
+    const caps = [capOf('recognise_meaning_from_text_cap'), capOf('recognise_form_from_meaning_cap')]
     const rows = planDistractorWrites(caps, pool, { k: 3, synonymThreshold: 0.99 })
     expect(rows.every((r) => r.itemId !== answer.itemId)).toBe(true)
   })

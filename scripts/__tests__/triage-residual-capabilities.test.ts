@@ -14,7 +14,7 @@ describe('classifyResidue', () => {
   it('deletes an orphan item cap with no review history', () => {
     const cap: ResidueCap = {
       id: 'cap-orphan',
-      source_kind: 'item',
+      source_kind: 'vocabulary_src',
       source_ref: 'learning_items/ghost-word',
     }
     const out = classifyResidue({
@@ -30,7 +30,7 @@ describe('classifyResidue', () => {
   it('default-assigns an orphan item cap that has review history (preserve learner state)', () => {
     const cap: ResidueCap = {
       id: 'cap-orphan-historic',
-      source_kind: 'item',
+      source_kind: 'vocabulary_src',
       source_ref: 'learning_items/ghost-word',
     }
     const out = classifyResidue({
@@ -50,7 +50,7 @@ describe('classifyResidue', () => {
   it('default-assigns a non-orphan item cap (slug matches a learning_item) with the cross-corpus note', () => {
     const cap: ResidueCap = {
       id: 'cap-cross-corpus',
-      source_kind: 'item',
+      source_kind: 'vocabulary_src',
       source_ref: 'learning_items/dan',
     }
     const out = classifyResidue({
@@ -67,11 +67,11 @@ describe('classifyResidue', () => {
     ])
   })
 
-  it('default-assigns non-item source kinds (dialogue_line, pattern, affixed_form_pair) with the cross-corpus note', () => {
+  it('default-assigns non-item source kinds (dialogue_line, pattern, word_form_pair_src) with the cross-corpus note', () => {
     const caps: ResidueCap[] = [
-      { id: 'cap-dialogue', source_kind: 'dialogue_line', source_ref: 'lesson-3/section-1/dialogue/foo' },
-      { id: 'cap-pattern', source_kind: 'pattern', source_ref: 'lesson-3/pattern-bar' },
-      { id: 'cap-affix', source_kind: 'affixed_form_pair', source_ref: 'lesson-3/morphology/baz' },
+      { id: 'cap-dialogue', source_kind: 'dialogue_line_src', source_ref: 'lesson-3/section-1/dialogue/foo' },
+      { id: 'cap-pattern', source_kind: 'grammar_pattern_src', source_ref: 'lesson-3/pattern-bar' },
+      { id: 'cap-affix', source_kind: 'word_form_pair_src', source_ref: 'lesson-3/morphology/baz' },
     ]
     const out = classifyResidue({
       residueCaps: caps,
@@ -88,10 +88,10 @@ describe('classifyResidue', () => {
   it('handles a mixed batch in one call', () => {
     const out = classifyResidue({
       residueCaps: [
-        { id: 'a', source_kind: 'item', source_ref: 'learning_items/missing' },
-        { id: 'b', source_kind: 'item', source_ref: 'learning_items/missing-with-history' },
-        { id: 'c', source_kind: 'item', source_ref: 'learning_items/dan' },
-        { id: 'd', source_kind: 'dialogue_line', source_ref: 'lesson-3/section-1/dialogue/foo' },
+        { id: 'a', source_kind: 'vocabulary_src', source_ref: 'learning_items/missing' },
+        { id: 'b', source_kind: 'vocabulary_src', source_ref: 'learning_items/missing-with-history' },
+        { id: 'c', source_kind: 'vocabulary_src', source_ref: 'learning_items/dan' },
+        { id: 'd', source_kind: 'dialogue_line_src', source_ref: 'lesson-3/section-1/dialogue/foo' },
       ],
       learningItemSlugs: new Set(['dan']),
       capsWithReviewEvents: new Set(['b']),
@@ -107,7 +107,7 @@ describe('classifyResidue', () => {
   it('throws on item source_ref that does not start with learning_items/ (signals a bug in the loader)', () => {
     const cap: ResidueCap = {
       id: 'cap-bad',
-      source_kind: 'item',
+      source_kind: 'vocabulary_src',
       source_ref: 'lesson-3/item-without-prefix',
     }
     expect(() =>

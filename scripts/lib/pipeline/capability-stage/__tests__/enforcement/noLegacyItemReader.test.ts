@@ -54,12 +54,12 @@ function makeItemBlocks(blockId: string, capId: string): ItemBucketEntry[] {
         id: blockId,
         kind: 'due_review',
         capabilityId: capId,
-        canonicalKeySnapshot: 'cap:v1:item:learning_items/test-item:text_recognition:id_to_l1:text:nl',
+        canonicalKeySnapshot: 'cap:v1:vocabulary_src:learning_items/test-item:recognise_meaning_from_text_cap:id_to_l1:text:nl',
         renderPlan: {
-          capabilityKey: 'cap:v1:item:learning_items/test-item:text_recognition:id_to_l1:text:nl',
+          capabilityKey: 'cap:v1:vocabulary_src:learning_items/test-item:recognise_meaning_from_text_cap:id_to_l1:text:nl',
           sourceRef: 'learning_items/test-item',
           exerciseType: 'recognition_mcq',
-          capabilityType: 'text_recognition',
+          capabilityType: 'recognise_meaning_from_text_cap',
           skillType: 'recognition',
         },
         reviewContext: {

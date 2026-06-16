@@ -7,11 +7,11 @@
  * idempotency, writes) is the thin shell around this.
  *
  * Capability → distractor-kind seam (grounded from runner.ts:620-694):
- *   text_recognition  → meaning distractors (recognition_mcq: see ID, pick NL)
- *   audio_recognition → meaning distractors (listening_mcq: hear, pick NL —
+ *   recognise_meaning_from_text_cap  → meaning distractors (recognition_mcq: see ID, pick NL)
+ *   recognise_meaning_from_audio_cap → meaning distractors (listening_mcq: hear, pick NL —
  *                       newly curated; had no curated path before, spec §4a)
- *   l1_to_id_choice   → form distractors (cued_recall: see NL, pick ID)
- *   everything else (meaning_recall, form_recall, dictation, contextual_cloze)
+ *   recognise_form_from_meaning_cap   → form distractors (cued_recall: see NL, pick ID)
+ *   everything else (meaning_recall, form_recall, dictation, produce_form_from_context_cap)
  *                     → no distractors (typed / typed-cloze, no MCQ options)
  */
 
@@ -25,9 +25,9 @@ import {
 } from './selectDistractors'
 
 /** Capability types whose MCQ options are L1 glosses (ranked by meaning). */
-const MEANING_DISTRACTOR_TYPES = new Set(['text_recognition', 'audio_recognition'])
+const MEANING_DISTRACTOR_TYPES = new Set(['recognise_meaning_from_text_cap', 'recognise_meaning_from_audio_cap'])
 /** Capability types whose MCQ options are Indonesian forms (ranked orthographically). */
-const FORM_DISTRACTOR_TYPES = new Set(['l1_to_id_choice'])
+const FORM_DISTRACTOR_TYPES = new Set(['recognise_form_from_meaning_cap'])
 
 /** Whether a capability type carries curated MCQ distractors (vs typed/recall).
  *  The single source of the seam — coverage validation reuses it so the two

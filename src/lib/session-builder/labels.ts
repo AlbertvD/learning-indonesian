@@ -18,60 +18,60 @@ export interface CapabilityDisplay {
 //   - `afgeleide vorm` is the standard term for the affixed/derived form.
 //   - `voorvoegsel` / `achtervoegsel` for prefix / suffix.
 export const CAPABILITY_DISPLAY = {
-  text_recognition: {
+  recognise_meaning_from_text_cap: {
     label: 'Betekenis herkennen',
     description: 'Lees een Indonesisch woord of zin en kies de juiste Nederlandse betekenis.',
     example: 'makan → eten',
   },
-  meaning_recall: {
+  recall_meaning_from_text_cap: {
     label: 'Betekenis ophalen',
     description: 'Lees een Indonesisch woord of zin en typ de Nederlandse betekenis.',
     example: "makan → typ 'eten'",
   },
-  l1_to_id_choice: {
+  recognise_form_from_meaning_cap: {
     label: 'Indonesisch kiezen',
     description: 'Lees een Nederlands woord of zin en kies de juiste Indonesische vertaling.',
     example: "eten → kies 'makan'",
   },
-  form_recall: {
+  produce_form_from_meaning_cap: {
     label: 'Indonesisch ophalen',
     description: 'Lees een Nederlands woord of zin en typ de juiste Indonesische vertaling.',
     example: "eten → typ 'makan'",
   },
-  contextual_cloze: {
+  produce_form_from_context_cap: {
     label: 'Zin aanvullen',
     description: 'Maak een Indonesische zin compleet met het juiste woord.',
     example: 'Saya ___ nasi → makan',
   },
-  audio_recognition: {
+  recognise_meaning_from_audio_cap: {
     label: 'Luisterherkenning',
     description: 'Luister naar een Indonesisch woord of zin en kies de juiste Nederlandse betekenis.',
     example: "hoor 'makan' → eten",
   },
-  dictation: {
+  produce_form_from_audio_cap: {
     label: 'Dictee',
     description: 'Luister naar een Indonesisch woord of zin en typ het na.',
     example: "hoor 'makan' → typ 'makan'",
   },
-  podcast_gist: {
+  recognise_gist_from_audio_cap: {
     label: 'Hoofdlijn herkennen',
     description: 'Luister naar een Indonesisch podcastfragment en herken waar het over gaat.',
   },
-  pattern_recognition: {
+  recognise_grammar_pattern_cap: {
     label: 'Patroon herkennen',
     description: 'Vul een Indonesische zin aan volgens het juiste grammaticale patroon.',
   },
-  pattern_contrast: {
+  contrast_grammar_pattern_cap: {
     label: 'Patronen onderscheiden',
     description: 'Kies welke van twee bijna-gelijke Indonesische vormen past in de zin.',
     example: 'menulis vs ditulis → kies de actieve vorm',
   },
-  root_derived_recognition: {
+  recognise_word_form_link_cap: {
     label: 'Stamwoord herkennen',
     description: 'Lees een afgeleide Indonesische vorm en typ het stamwoord.',
     example: "menulis → typ 'tulis'",
   },
-  root_derived_recall: {
+  produce_derived_form_cap: {
     label: 'Afgeleide vorm maken',
     description: 'Lees een Indonesisch stamwoord en typ de juiste afgeleide vorm.',
     example: "tulis + meN- → typ 'menulis'",

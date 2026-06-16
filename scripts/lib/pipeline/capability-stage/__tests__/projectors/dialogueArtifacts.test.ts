@@ -11,10 +11,10 @@ import type { CapabilityInput } from '../../adapter'
 // capability_artifacts are emitted; line_text + speaker live in
 // lesson_dialogue_lines (written by Stage A) and are joined at read time.
 const baseCap = (overrides: Partial<CapabilityInput>): CapabilityInput => ({
-  canonicalKey: 'dialogue_line:lesson-9/section-1/line-3:contextual_cloze:id_to_l1:text:none',
-  sourceKind: 'dialogue_line',
+  canonicalKey: 'dialogue_line:lesson-9/section-1/line-3:produce_form_from_context_cap:id_to_l1:text:none',
+  sourceKind: 'dialogue_line_src',
   sourceRef: 'lesson-9/section-1/line-3',
-  capabilityType: 'contextual_cloze',
+  capabilityType: 'produce_form_from_context_cap',
   direction: 'id_to_l1',
   modality: 'text',
   learnerLanguage: 'none',
@@ -363,9 +363,9 @@ describe('projectDialogueArtifacts — input shape edge cases', () => {
 
   it('ignores non-dialogue_line caps in the input (defense-in-depth)', () => {
     const itemCap = baseCap({
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef: 'learning_items/halo',
-      canonicalKey: 'item:halo:text_recognition:id_to_l1:text:none',
+      canonicalKey: 'item:halo:recognise_meaning_from_text_cap:id_to_l1:text:none',
     })
     const out = projectDialogueArtifacts({
       contextualClozeCapabilities: [itemCap],

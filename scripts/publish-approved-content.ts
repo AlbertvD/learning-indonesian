@@ -115,7 +115,7 @@ async function main() {
   // runner.ts:134). We already short-circuit above on stageA.status !== 'ok',
   // so a non-empty lessonId is guaranteed here (required by Stage B dry-run too).
   // Stage B — capability-stage runner: the NON-ITEM kinds (dialogue_line, pattern,
-  // affixed_form_pair). cap-v2 #161 amputated its item branch into the vocab module.
+  // word_form_pair_src). cap-v2 #161 amputated its item branch into the vocab module.
   const stageB = await runCapabilityStage({
     lessonNumber,
     lessonId: stageA.lesson.id,
@@ -138,7 +138,7 @@ async function main() {
 
   // Stage Vocabulary (cap-v2 #161) — the new vocab module owns the item slice
   // end-to-end: item caps + learning_items + POS + anchor contexts + item
-  // content_units + junction + item contextual_cloze + curated distractors.
+  // content_units + junction + item produce_form_from_context_cap + curated distractors.
   // Runs AFTER the runner (runner-first, §5a). Handles dryRun internally (returns
   // before writes). Idempotent (seed-once, ADR 0011).
   const stageVoc = await publishVocabulary({

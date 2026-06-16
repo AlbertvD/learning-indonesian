@@ -24,9 +24,9 @@ describe('capability session data service', () => {
             return query([{
               id: 'capability-1',
               canonical_key: 'capability-key',
-              source_kind: 'item',
+              source_kind: 'vocabulary_src',
               source_ref: 'learning_items/item-1',
-              capability_type: 'text_recognition',
+              capability_type: 'recognise_meaning_from_text_cap',
               direction: 'id_to_l1',
               modality: 'text',
               learner_language: 'nl',
@@ -38,9 +38,9 @@ describe('capability session data service', () => {
             }, {
               id: 'capability-2',
               canonical_key: 'blocked-key',
-              source_kind: 'item',
+              source_kind: 'vocabulary_src',
               source_ref: 'learning_items/item-2',
-              capability_type: 'text_recognition',
+              capability_type: 'recognise_meaning_from_text_cap',
               direction: 'id_to_l1',
               modality: 'text',
               learner_language: 'nl',
@@ -121,9 +121,9 @@ describe('capability session data service', () => {
             return query([{
               id: 'capability-1',
               canonical_key: 'capability-key',
-              source_kind: 'item',
+              source_kind: 'vocabulary_src',
               source_ref: 'learning_items/item-1',
-              capability_type: 'text_recognition',
+              capability_type: 'recognise_meaning_from_text_cap',
               direction: 'id_to_l1',
               modality: 'text',
               learner_language: 'nl',
@@ -186,10 +186,10 @@ describe('capability session data service', () => {
           if (table === 'learning_capabilities') {
             return query([{
               id: 'choice-capability',
-              canonical_key: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
-              source_kind: 'item',
+              canonical_key: 'cap:v1:vocabulary_src:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl',
+              source_kind: 'vocabulary_src',
               source_ref: 'learning_items/item-1',
-              capability_type: 'l1_to_id_choice',
+              capability_type: 'recognise_form_from_meaning_cap',
               direction: 'l1_to_id',
               modality: 'text',
               learner_language: 'nl',
@@ -215,15 +215,15 @@ describe('capability session data service', () => {
       preferredSessionSize: 15,
     })
 
-    expect(snapshot.readinessByKey.get('cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl')).toEqual({
+    expect(snapshot.readinessByKey.get('cap:v1:vocabulary_src:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl')).toEqual({
       status: 'ready',
       allowedExercises: ['cued_recall'],
     })
     expect(snapshot.plannerInput.readyCapabilities).toEqual(expect.arrayContaining([
       expect.objectContaining({
-        canonicalKey: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
-        capabilityType: 'l1_to_id_choice',
-        // cap-v2 Slice 1 mis-level fix: l1_to_id_choice is recognition, not recall.
+        canonicalKey: 'cap:v1:vocabulary_src:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl',
+        capabilityType: 'recognise_form_from_meaning_cap',
+        // cap-v2 Slice 1 mis-level fix: recognise_form_from_meaning_cap is recognition, not recall.
         skillType: 'recognition',
       }),
     ]))
@@ -284,9 +284,9 @@ describe('capability session data service', () => {
             return query([{
               id: 'capability-1',
               canonical_key: 'capability-key',
-              source_kind: 'item',
+              source_kind: 'vocabulary_src',
               source_ref: 'learning_items/paman',
-              capability_type: 'text_recognition',
+              capability_type: 'recognise_meaning_from_text_cap',
               direction: 'id_to_l1',
               modality: 'text',
               learner_language: 'nl',

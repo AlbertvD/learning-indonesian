@@ -6,9 +6,9 @@ function ev(p: Partial<CapabilityMasteryEvidence>): CapabilityMasteryEvidence {
   return {
     capabilityId: p.capabilityId ?? 'cap',
     canonicalKey: p.canonicalKey ?? 'k',
-    sourceKind: p.sourceKind ?? 'item',
+    sourceKind: p.sourceKind ?? 'vocabulary_src',
     sourceRef: p.sourceRef ?? 'ref',
-    capabilityType: p.capabilityType ?? 'text_recognition',
+    capabilityType: p.capabilityType ?? 'recognise_meaning_from_text_cap',
     modality: p.modality ?? 'text',
     readinessStatus: 'ready',
     publicationStatus: 'published',
@@ -42,12 +42,12 @@ describe('isStubborn / deriveStubbornWords', () => {
   it('lists stubborn caps hardest-first, naming the specific failing skill', () => {
     const words = deriveStubbornWords({
       evidence: [
-        ev({ sourceRef: 'a', capabilityType: 'text_recognition', lapseCount: 0, reviewCount: 4, consecutiveFailureCount: 4 }),
-        ev({ sourceRef: 'b', capabilityType: 'dictation', lapseCount: 0, reviewCount: 6, consecutiveFailureCount: 6 }),
+        ev({ sourceRef: 'a', capabilityType: 'recognise_meaning_from_text_cap', lapseCount: 0, reviewCount: 4, consecutiveFailureCount: 4 }),
+        ev({ sourceRef: 'b', capabilityType: 'produce_form_from_audio_cap', lapseCount: 0, reviewCount: 6, consecutiveFailureCount: 6 }),
         ev({ sourceRef: 'c', lapseCount: 0, reviewCount: 1, consecutiveFailureCount: 1 }), // below threshold → excluded
       ],
     })
     expect(words.map(w => w.sourceRef)).toEqual(['b', 'a'])
-    expect(words[0]).toMatchObject({ sourceRef: 'b', capabilityType: 'dictation', consecutiveFailures: 6 })
+    expect(words[0]).toMatchObject({ sourceRef: 'b', capabilityType: 'produce_form_from_audio_cap', consecutiveFailures: 6 })
   })
 })

@@ -55,7 +55,7 @@ export interface ContentUnitInput {
   content_unit_key: string
   source_ref: string
   source_section_ref: string
-  unit_kind: 'lesson_section' | 'learning_item' | 'grammar_pattern' | 'affixed_form_pair'
+  unit_kind: 'lesson_section' | 'learning_item' | 'grammar_pattern' | 'word_form_pair_src'
   unit_slug: string
   display_order: number
   payload_json: Record<string, unknown>
@@ -952,7 +952,7 @@ export async function upsertItemDistractors(
  * Per-cap-1:1 variant: write recognition_mcq_distractors rows.
  *
  * Only writes to `recognition_mcq_distractors`. Each row carries one
- * capability_id (must be a text_recognition cap) and its `recognition`
+ * capability_id (must be a recognise_meaning_from_text_cap cap) and its `recognition`
  * distractor array. The `cued_recall` and `cloze` fields on ItemDistractorRow
  * are ignored by this function.
  *
@@ -980,7 +980,7 @@ export async function upsertRecognitionDistractors(
  * Per-cap-1:1 variant: write cued_recall_distractors rows.
  *
  * Only writes to `cued_recall_distractors`. Each row carries one capability_id
- * (must be an l1_to_id_choice cap) and its `distractors` array. Returns the
+ * (must be an recognise_form_from_meaning_cap cap) and its `distractors` array. Returns the
  * count of newly-inserted rows.
  */
 export async function upsertCuedRecallDistractors(

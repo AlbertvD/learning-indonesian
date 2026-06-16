@@ -21,10 +21,10 @@ describe('buryThinSiblings', () => {
     const used = new Set<string>(['learning_items/paman'])
     const candidates: Cand[] = [
       { key: 'paman:meaning_recall', ref: 'learning_items/paman' },
-      { key: 'makan:text_recognition', ref: 'learning_items/makan' },
+      { key: 'makan:recognise_meaning_from_text_cap', ref: 'learning_items/makan' },
     ]
     const kept = buryThinSiblings(candidates, refOf, used)
-    expect(kept.map(c => c.key)).toEqual(['makan:text_recognition'])
+    expect(kept.map(c => c.key)).toEqual(['makan:recognise_meaning_from_text_cap'])
   })
 
   it('keeps candidates with distinct source_refs and preserves order', () => {

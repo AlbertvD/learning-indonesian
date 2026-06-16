@@ -62,7 +62,7 @@ export async function retireOverharvestedCaps(
       .schema('indonesian')
       .from('learning_capabilities')
       .select('id, source_kind, source_ref')
-      .eq('source_kind', 'item')
+      .eq('source_kind', 'vocabulary_src')
       .is('retired_at', null)
       .range(offset, offset + PAGE_SIZE - 1)
     if (error) throw error

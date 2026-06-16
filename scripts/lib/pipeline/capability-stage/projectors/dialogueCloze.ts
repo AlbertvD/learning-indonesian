@@ -6,10 +6,10 @@
  * vocab.ts:173-209 + projectDialogueArtifacts) with two functions driven by the
  * in-stage Mode-2 generator output (GeneratedDialogueCloze[]):
  *
- *   - projectDialogueClozeCapabilities → the dialogue_line:contextual_cloze caps
+ *   - projectDialogueClozeCapabilities → the dialogue_line:produce_form_from_context_cap caps
  *     to upsert, one per generated cloze. The canonical_key is minted from the
  *     line's source_line_ref via the SAME recipe the legacy path used
- *     (sourceKind=dialogue_line, contextual_cloze, id_to_l1, text, none) — and
+ *     (sourceKind=dialogue_line, produce_form_from_context_cap, id_to_l1, text, none) — and
  *     the live-DB cap source_ref is byte-identical to lesson_dialogue_lines.
  *     source_line_ref, so existing FSRS state is preserved (no canonical-key
  *     churn). requiredArtifacts:[] (Decision R — the typed dialogue_clozes row +
@@ -34,7 +34,7 @@ import type { ValidationFinding } from '../model'
 import type { GeneratedDialogueCloze } from '../generateClozeContexts'
 
 /**
- * One dialogue_line:contextual_cloze capability per generated cloze. The
+ * One dialogue_line:produce_form_from_context_cap capability per generated cloze. The
  * canonical_key + source_ref match the legacy emission exactly so learner FSRS
  * state on the existing 43 caps is preserved.
  */
@@ -45,18 +45,18 @@ export function projectDialogueClozeCapabilities(
   return clozes.map((cloze) => {
     const sourceRef = normalizeLessonSourceRef(cloze.sourceLineRef)
     const canonicalKey = buildCanonicalKey({
-      sourceKind: 'dialogue_line',
+      sourceKind: 'dialogue_line_src',
       sourceRef,
-      capabilityType: 'contextual_cloze',
+      capabilityType: 'produce_form_from_context_cap',
       direction: 'id_to_l1',
       modality: 'text',
       learnerLanguage: 'none',
     })
     return {
       canonicalKey,
-      sourceKind: 'dialogue_line',
+      sourceKind: 'dialogue_line_src',
       sourceRef,
-      capabilityType: 'contextual_cloze',
+      capabilityType: 'produce_form_from_context_cap',
       direction: 'id_to_l1',
       modality: 'text',
       learnerLanguage: 'none',
@@ -86,9 +86,9 @@ export function projectDialogueClozeRows(
   for (const cloze of clozes) {
     const sourceRef = normalizeLessonSourceRef(cloze.sourceLineRef)
     const canonicalKey = buildCanonicalKey({
-      sourceKind: 'dialogue_line',
+      sourceKind: 'dialogue_line_src',
       sourceRef,
-      capabilityType: 'contextual_cloze',
+      capabilityType: 'produce_form_from_context_cap',
       direction: 'id_to_l1',
       modality: 'text',
       learnerLanguage: 'none',

@@ -6,9 +6,9 @@
  * the vocab gate). The vocab module OWNS the item slice; the runner loses it
  * (cutover, Task 8). They share only DB tables.
  *
- * Item contextual_cloze is intentionally NOT emitted — WON'T-BUILD (decided
+ * Item produce_form_from_context_cap is intentionally NOT emitted — WON'T-BUILD (decided
  * 2026-06-09). It would have to be a full first-class capability (one exercise
- * per capability type; renderContracts binds `cloze` to `contextual_cloze` only,
+ * per capability type; renderContracts binds `cloze` to `produce_form_from_context_cap` only,
  * so there is no lightweight render-variant), and the literature makes it low
  * yield: contextual cloze is no better than decontextualised recall for
  * form-meaning (Webb/Nation), and the real lever — number of retrievals
@@ -95,7 +95,7 @@ export interface PublishVocabularyHooks {
 }
 
 const RELATIONSHIP_KIND = (capabilityType: string): CapabilityContentUnitInput['relationship_kind'] =>
-  capabilityType === 'l1_to_id_choice' ? 'introduced_by'
+  capabilityType === 'recognise_form_from_meaning_cap' ? 'introduced_by'
   : capabilityType.includes('recognition') ? 'introduced_by'
   : 'practiced_by'
 
@@ -192,7 +192,7 @@ export async function publishVocabulary(
   }
 
   // ---- 5. Write item caps (skip-if-exists; FSRS-safe). ------------------
-  // Item contextual_cloze is intentionally NOT emitted — won't-build (2026-06-09,
+  // Item produce_form_from_context_cap is intentionally NOT emitted — won't-build (2026-06-09,
   // low yield; see header comment + module spec §4). Cloze stays dialogue-only.
   const capsToWrite: CapabilityInput[] = allItemCaps
   const newCapIdsByKey = await upsertCapabilitiesSkipIfExists(supabase, capsToWrite)
@@ -234,7 +234,7 @@ export async function publishVocabulary(
   await retireOrphanedCapabilities(supabase, {
     lessonId: input.lessonId,
     emittedKeys: [...capIdsByKey.keys()],
-    sourceKinds: ['item'],
+    sourceKinds: ['vocabulary_src'],
   })
 
   // ---- 8. Seed distractors (absorbs the old Stage C). --------------------
@@ -261,7 +261,7 @@ export async function publishVocabulary(
   // for item caps. After the seed, before promotion.
   const reconciled = await reconcileArtifactPresence(supabase, {
     lessonId: input.lessonId,
-    sourceKinds: ['item'],
+    sourceKinds: ['vocabulary_src'],
   })
   if (reconciled.retiredCount > 0) {
     console.log(`   ✓ Soft-retired ${reconciled.retiredCount} item cap(s) for missing artifact`)

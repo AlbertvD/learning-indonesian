@@ -3,7 +3,7 @@
  * cloze path (DB→DB).
  *
  * Asserts the cutover:
- *   - dialogue_line:contextual_cloze caps come from the in-stage GENERATOR output
+ *   - dialogue_line:produce_form_from_context_cap caps come from the in-stage GENERATOR output
  *     (loadDialogueFromDb + fetchClozePool + generateClozeFn), NOT from
  *     staging.clozeContexts — even when staging HAS a (legacy) cloze context, no
  *     dialogue cap is minted from it (no double-write).
@@ -109,7 +109,7 @@ let tmpDir: string
 
 const LINE_TEXT = 'Saya benar benar jatuh dari sebuah pohon.'
 const LINE_REF = 'lesson-1/section-0/line-0'
-const DIALOGUE_CANONICAL_KEY = `cap:v1:dialogue_line:${LINE_REF}:contextual_cloze:id_to_l1:text:none`
+const DIALOGUE_CANONICAL_KEY = `cap:v1:dialogue_line_src:${LINE_REF}:produce_form_from_context_cap:id_to_l1:text:none`
 
 function makeLesson(stagingDir: string): LoadedLesson {
   return {
@@ -182,7 +182,7 @@ function dialogueCapsUpserted(ops: RecordedOp[]): Array<Record<string, unknown>>
   return ops
     .filter((op) => op.table === 'learning_capabilities' && op.op === 'upsert')
     .flatMap((op) => (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>]))
-    .filter((r) => r?.source_kind === 'dialogue_line' && r?.capability_type === 'contextual_cloze')
+    .filter((r) => r?.source_kind === 'dialogue_line_src' && r?.capability_type === 'produce_form_from_context_cap')
 }
 
 describe('runner dialogue cutover (Task 7)', () => {

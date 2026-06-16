@@ -4,7 +4,7 @@
 // user-lang meaning (for the prompt) and answer_variants (for fuzzy-match
 // acceptance).
 //
-// affixed_form_pair path (added 2026-05-21 per
+// word_form_pair_src path (added 2026-05-21 per
 // docs/plans/2026-05-21-affixed-form-pair-runtime.md): user sees one side
 // of the pair (root or derived per the cap's direction), types the other.
 // No meaning lookup; no answer_variants. The allomorph rule is carried on
@@ -15,7 +15,7 @@ import type { ExerciseItem } from '@/types/learning'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
 export function buildTypedRecall(input: BuilderInputFor<'typed_recall'>): BuilderResult {
-  // affixed_form_pair path — input.affixedFormPair is populated; input.learningItem is null.
+  // word_form_pair_src path — input.affixedFormPair is populated; input.learningItem is null.
   if (input.affixedFormPair) {
     const { root, derived, direction, allomorphRule } = input.affixedFormPair
     const isRootToDerived = direction === 'root_to_derived'
@@ -43,7 +43,7 @@ export function buildTypedRecall(input: BuilderInputFor<'typed_recall'>): Builde
   }
 
   // Item path — learningItem and primaryMeaning are non-null by contract
-  // (the projector narrows when the affixed_form_pair path is not active).
+  // (the projector narrows when the word_form_pair_src path is not active).
   const exerciseItem: ExerciseItem = {
     learningItem: input.learningItem!,
     meanings: input.meanings,

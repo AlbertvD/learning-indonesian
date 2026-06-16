@@ -3,7 +3,7 @@
  *
  * Repoints the dialogue path off staging.clozeContexts onto the Mode-2 generator
  * output (GeneratedDialogueCloze[]). Two pure functions:
- *   - projectDialogueClozeCapabilities: one dialogue_line:contextual_cloze cap
+ *   - projectDialogueClozeCapabilities: one dialogue_line:produce_form_from_context_cap cap
  *     per generated cloze, canonical_key minted from the line's source_line_ref
  *     IDENTICALLY to the legacy emission (FSRS-key stability — verified against
  *     the live DB: cap source_ref === lesson_dialogue_lines.source_line_ref).
@@ -46,12 +46,12 @@ const CLOZES: GeneratedDialogueCloze[] = [
 // ---------------------------------------------------------------------------
 
 describe('projectDialogueClozeCapabilities', () => {
-  it('emits one dialogue_line:contextual_cloze cap per generated cloze', () => {
+  it('emits one dialogue_line:produce_form_from_context_cap cap per generated cloze', () => {
     const caps = projectDialogueClozeCapabilities(CLOZES, LESSON_ID)
     expect(caps).toHaveLength(2)
     for (const cap of caps) {
-      expect(cap.sourceKind).toBe('dialogue_line')
-      expect(cap.capabilityType).toBe('contextual_cloze')
+      expect(cap.sourceKind).toBe('dialogue_line_src')
+      expect(cap.capabilityType).toBe('produce_form_from_context_cap')
       expect(cap.direction).toBe('id_to_l1')
       expect(cap.modality).toBe('text')
       expect(cap.learnerLanguage).toBe('none')
@@ -63,9 +63,9 @@ describe('projectDialogueClozeCapabilities', () => {
 
   it('mints the canonical_key IDENTICALLY to the legacy emission (FSRS-key stability)', () => {
     const caps = projectDialogueClozeCapabilities(CLOZES, LESSON_ID)
-    // Verified live-DB format: cap:v1:dialogue_line:<source_ref>:contextual_cloze:id_to_l1:text:none
+    // Verified live-DB format: cap:v1:dialogue_line_src:<source_ref>:produce_form_from_context_cap:id_to_l1:text:none
     expect(caps[0].canonicalKey).toBe(
-      'cap:v1:dialogue_line:lesson-5/section-3/line-0:contextual_cloze:id_to_l1:text:none',
+      'cap:v1:dialogue_line_src:lesson-5/section-3/line-0:produce_form_from_context_cap:id_to_l1:text:none',
     )
     expect(caps[0].sourceRef).toBe('lesson-5/section-3/line-0')
   })

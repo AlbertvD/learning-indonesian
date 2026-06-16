@@ -48,24 +48,24 @@ function buildSatelliteClient(
 
 const dialogueCap = (id: string): CapForSatelliteCheck => ({
   id,
-  canonical_key: `dialogue_line:${id}:contextual_cloze`,
-  source_kind: 'dialogue_line',
+  canonical_key: `dialogue_line:${id}:produce_form_from_context_cap`,
+  source_kind: 'dialogue_line_src',
   source_ref: `lesson-1/section-3/line-${id}`,
-  capability_type: 'contextual_cloze',
+  capability_type: 'produce_form_from_context_cap',
 })
 
 const affixedCap = (id: string): CapForSatelliteCheck => ({
   id,
-  canonical_key: `affixed_form_pair:${id}:root_derived_recognition`,
-  source_kind: 'affixed_form_pair',
+  canonical_key: `word_form_pair_src:${id}:recognise_word_form_link_cap`,
+  source_kind: 'word_form_pair_src',
   source_ref: `lesson-2/affixed-${id}`,
-  capability_type: 'root_derived_recognition',
+  capability_type: 'recognise_word_form_link_cap',
 })
 
 const patternCap = (id: string, slug: string, type: string): CapForSatelliteCheck => ({
   id,
   canonical_key: `pattern:${slug}:${type}`,
-  source_kind: 'pattern',
+  source_kind: 'grammar_pattern_src',
   source_ref: `lesson-3/pattern-${slug}`,
   capability_type: type,
 })
@@ -94,7 +94,7 @@ describe('findCapsMissingSatellite', () => {
     expect(await findCapsMissingSatellite(client, caps)).toEqual([])
   })
 
-  it('flags affixed_form_pair caps with no affixed_form_pairs row (HC17 mirror)', async () => {
+  it('flags word_form_pair_src caps with no affixed_form_pairs row (HC17 mirror)', async () => {
     const caps = [affixedCap('x'), affixedCap('y')]
     const client = buildSatelliteClient({
       affixed_form_pairs: [{ capability_id: 'x' }],
@@ -103,8 +103,8 @@ describe('findCapsMissingSatellite', () => {
     expect(missing.map((m) => m.id)).toEqual(['y'])
   })
 
-  it('flags pattern_contrast caps with no contrast_pair row (HC19 mirror)', async () => {
-    const caps = [patternCap('p1', 'meN', 'pattern_contrast'), patternCap('p2', 'di', 'pattern_contrast')]
+  it('flags contrast_grammar_pattern_cap caps with no contrast_pair row (HC19 mirror)', async () => {
+    const caps = [patternCap('p1', 'meN', 'contrast_grammar_pattern_cap'), patternCap('p2', 'di', 'contrast_grammar_pattern_cap')]
     const client = buildSatelliteClient({
       grammar_patterns: [{ id: 'gp-men', slug: 'meN' }, { id: 'gp-di', slug: 'di' }],
       // only the meN pattern has a contrast_pair row; di is the offender.
@@ -117,11 +117,11 @@ describe('findCapsMissingSatellite', () => {
     expect(missing.map((m) => m.id)).toEqual(['p2'])
   })
 
-  it('treats pattern_recognition as covered by ANY of the 3 recognition tables (HC20 mirror)', async () => {
+  it('treats recognise_grammar_pattern_cap as covered by ANY of the 3 recognition tables (HC20 mirror)', async () => {
     const caps = [
-      patternCap('r1', 'meN', 'pattern_recognition'), // covered by cloze_mcq
-      patternCap('r2', 'di', 'pattern_recognition'), // covered by sentence_transformation
-      patternCap('r3', 'ber', 'pattern_recognition'), // no recognition row → offender
+      patternCap('r1', 'meN', 'recognise_grammar_pattern_cap'), // covered by cloze_mcq
+      patternCap('r2', 'di', 'recognise_grammar_pattern_cap'), // covered by sentence_transformation
+      patternCap('r3', 'ber', 'recognise_grammar_pattern_cap'), // no recognition row → offender
     ]
     const client = buildSatelliteClient({
       grammar_patterns: [
@@ -139,7 +139,7 @@ describe('findCapsMissingSatellite', () => {
   })
 
   it('flags a pattern cap whose slug does not resolve to a grammar_pattern row', async () => {
-    const caps = [patternCap('p1', 'ghost', 'pattern_contrast')]
+    const caps = [patternCap('p1', 'ghost', 'contrast_grammar_pattern_cap')]
     const client = buildSatelliteClient({
       grammar_patterns: [], // slug 'ghost' resolves to nothing
       contrast_pair_exercises: [],
@@ -153,7 +153,7 @@ describe('findCapsMissingSatellite', () => {
 
   it('never flags item caps — no per-cap satellite predicate (§2c)', async () => {
     const itemCaps: CapForSatelliteCheck[] = [
-      { id: 'i1', canonical_key: 'item:halo:recognition', source_kind: 'item', source_ref: 'learning_items/halo', capability_type: 'recognition' },
+      { id: 'i1', canonical_key: 'item:halo:recognition', source_kind: 'vocabulary_src', source_ref: 'learning_items/halo', capability_type: 'recognition' },
     ]
     const client = buildSatelliteClient({})
     expect(await findCapsMissingSatellite(client, itemCaps)).toEqual([])
@@ -164,7 +164,7 @@ describe('findCapsMissingSatellite', () => {
       dialogueCap('d-ok'),
       dialogueCap('d-bad'),
       affixedCap('a-bad'),
-      patternCap('pc-bad', 'meN', 'pattern_contrast'),
+      patternCap('pc-bad', 'meN', 'contrast_grammar_pattern_cap'),
     ]
     const client = buildSatelliteClient({
       dialogue_clozes: [{ capability_id: 'd-ok' }],

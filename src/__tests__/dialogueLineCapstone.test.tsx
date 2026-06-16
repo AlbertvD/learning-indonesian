@@ -1,4 +1,4 @@
-// Capstone integration test for the dialogue_line:contextual_cloze flow.
+// Capstone integration test for the dialogue_line:produce_form_from_context_cap flow.
 //
 // Walks the full runtime read-path: a SessionBlock for a dialogue_line cap →
 // the lib/exercise-content resolver (with a mocked Supabase client) →
@@ -51,9 +51,9 @@ function makeMockClient(tables: Record<string, MockTable>) {
 
 function makeDialogueBlock(capabilityId: string, sourceRef: string): SessionBlock {
   const key = buildCanonicalKey({
-    sourceKind: 'dialogue_line',
+    sourceKind: 'dialogue_line_src',
     sourceRef,
-    capabilityType: 'contextual_cloze',
+    capabilityType: 'produce_form_from_context_cap',
     direction: 'id_to_l1',
     modality: 'text',
     learnerLanguage: 'nl',
@@ -67,7 +67,7 @@ function makeDialogueBlock(capabilityId: string, sourceRef: string): SessionBloc
       capabilityKey: key,
       sourceRef,
       exerciseType: 'cloze',
-      capabilityType: 'contextual_cloze',
+      capabilityType: 'produce_form_from_context_cap',
       skillType: 'form_recall',
     },
     reviewContext: {
@@ -80,7 +80,7 @@ function makeDialogueBlock(capabilityId: string, sourceRef: string): SessionBloc
   }
 }
 
-describe('dialogue_line:contextual_cloze — end-to-end capstone', () => {
+describe('dialogue_line:produce_form_from_context_cap — end-to-end capstone', () => {
   it('resolves a dialogue_line block → renders Cloze with speaker prefix → answering correctly fires onAnswer', async () => {
     const capabilityId = 'cap-l9-dialogue-1'
     const sourceRef = 'lesson-9/section-1/line-10'

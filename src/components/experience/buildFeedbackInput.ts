@@ -4,7 +4,7 @@ import type { SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/lib/capabilities'
 import type { SessionAudioMap } from '@/services/audioService'
 
-const GRAMMAR_CAPABILITY_TYPES = new Set(['pattern_recognition', 'pattern_contrast'])
+const GRAMMAR_CAPABILITY_TYPES = new Set(['recognise_grammar_pattern_cap', 'contrast_grammar_pattern_cap'])
 
 export function buildFeedbackInput(args: {
   block: SessionBlock

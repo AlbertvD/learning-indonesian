@@ -153,7 +153,7 @@ async function main() {
     .schema('indonesian')
     .from('learning_capabilities')
     .select('id, canonical_key, source_ref, lesson_id')
-    .eq('source_kind', 'dialogue_line')
+    .eq('source_kind', 'dialogue_line_src')
     .is('retired_at', null)
   if (capsError) throw new Error(capsError.message)
   const caps = (capsData ?? []) as CapabilityRow[]

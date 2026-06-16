@@ -205,7 +205,7 @@ export async function fetchItemCapabilityState(
       .schema('indonesian')
       .from('learning_capabilities')
       .select('id, canonical_key')
-      .eq('source_kind', 'item')
+      .eq('source_kind', 'vocabulary_src')
       .range(capOffset, capOffset + PAGE_SIZE - 1)
 
     if (capError) {
@@ -556,7 +556,7 @@ export async function fetchPatternCapabilityState(
       .schema('indonesian')
       .from('learning_capabilities')
       .select('id, canonical_key')
-      .eq('source_kind', 'pattern')
+      .eq('source_kind', 'grammar_pattern_src')
       .range(capOffset, capOffset + PAGE_SIZE - 1)
     if (error) {
       throw new Error(`Failed to fetch existing pattern learning_capabilities: ${error.message}`)
@@ -747,7 +747,7 @@ export async function fetchDialogueClozeState(
       .schema('indonesian')
       .from('learning_capabilities')
       .select('id, canonical_key')
-      .eq('source_kind', 'dialogue_line')
+      .eq('source_kind', 'dialogue_line_src')
       .range(capOffset, capOffset + PAGE_SIZE - 1)
     if (error) {
       throw new Error(`Failed to fetch existing dialogue_line learning_capabilities: ${error.message}`)
@@ -805,7 +805,7 @@ export async function loadDialogueFromDb(
 }
 
 // ===========================================================================
-// Slice 3 — affixed_form_pair source kind (morphology repoint)
+// Slice 3 — word_form_pair_src source kind (morphology repoint)
 // ===========================================================================
 //
 // Affixed is a REPOINT (not a generation step): read lesson_section_affixed_pairs
@@ -840,7 +840,7 @@ export interface ExistingAffixedCap {
 
 /** The affixed-path idempotency-delta state from the DB. */
 export interface ExistingAffixedState {
-  /** `affixed_form_pair`-kind `learning_capabilities`, keyed by canonical_key. */
+  /** `word_form_pair_src`-kind `learning_capabilities`, keyed by canonical_key. */
   existingAffixedCapsByCanonicalKey: Map<string, ExistingAffixedCap>
   /** `affixed_form_pairs.capability_id` values — caps that already have a row. */
   seededAffixedCapIds: Set<string>
@@ -894,13 +894,13 @@ export async function fetchAffixedPairsFromDb(
 
 /**
  * Read the affixed-path idempotency-delta state, GLOBALLY (paginated):
- *   - `affixed_form_pair`-kind `learning_capabilities` by canonical_key
+ *   - `word_form_pair_src`-kind `learning_capabilities` by canonical_key
  *   - `affixed_form_pairs.capability_id` → the seeded-cap set
  */
 export async function fetchAffixedCapabilityState(
   supabase: CapabilitySupabaseClient,
 ): Promise<ExistingAffixedState> {
-  // --- affixed_form_pair-kind learning_capabilities by canonical_key ---
+  // --- word_form_pair_src-kind learning_capabilities by canonical_key ---
   const existingAffixedCapsByCanonicalKey = new Map<string, ExistingAffixedCap>()
   let capOffset = 0
   while (true) {
@@ -908,10 +908,10 @@ export async function fetchAffixedCapabilityState(
       .schema('indonesian')
       .from('learning_capabilities')
       .select('id, canonical_key')
-      .eq('source_kind', 'affixed_form_pair')
+      .eq('source_kind', 'word_form_pair_src')
       .range(capOffset, capOffset + PAGE_SIZE - 1)
     if (error) {
-      throw new Error(`Failed to fetch existing affixed_form_pair learning_capabilities: ${error.message}`)
+      throw new Error(`Failed to fetch existing word_form_pair_src learning_capabilities: ${error.message}`)
     }
     for (const row of (page ?? []) as Array<{ id: string; canonical_key: string }>) {
       existingAffixedCapsByCanonicalKey.set(row.canonical_key, {

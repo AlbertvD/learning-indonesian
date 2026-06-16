@@ -4,13 +4,13 @@ import { buildCanonicalKey, normalizeLessonSourceRef } from '@/lib/capabilities/
 describe('canonical capability keys', () => {
   it('percent-encodes reserved separators', () => {
     expect(buildCanonicalKey({
-      sourceKind: 'item',
+      sourceKind: 'vocabulary_src',
       sourceRef: 'learning_items/id:with%reserved',
-      capabilityType: 'meaning_recall',
+      capabilityType: 'recall_meaning_from_text_cap',
       direction: 'id_to_l1',
       modality: 'text',
       learnerLanguage: 'nl',
-    })).toBe('cap:v1:item:learning_items/id%3Awith%25reserved:meaning_recall:id_to_l1:text:nl')
+    })).toBe('cap:v1:vocabulary_src:learning_items/id%3Awith%25reserved:recall_meaning_from_text_cap:id_to_l1:text:nl')
   })
 
   it.each([
@@ -23,17 +23,17 @@ describe('canonical capability keys', () => {
   })
 
   it.each([
-    'dialogue_line',
-    'podcast_segment',
-    'podcast_phrase',
-    'affixed_form_pair',
+    'dialogue_line_src',
+    'podcast_segment_src',
+    'podcast_phrase_src',
+    'word_form_pair_src',
   ] as const)('supports %s source kind', sourceKind => {
     expect(buildCanonicalKey({
       sourceKind,
       sourceRef: `${sourceKind}/example`,
-      capabilityType: sourceKind === 'affixed_form_pair' ? 'root_derived_recognition' : 'audio_recognition',
-      direction: sourceKind === 'affixed_form_pair' ? 'derived_to_root' : 'id_to_l1',
-      modality: sourceKind === 'podcast_segment' ? 'audio' : 'text',
+      capabilityType: sourceKind === 'word_form_pair_src' ? 'recognise_word_form_link_cap' : 'recognise_meaning_from_audio_cap',
+      direction: sourceKind === 'word_form_pair_src' ? 'derived_to_root' : 'id_to_l1',
+      modality: sourceKind === 'podcast_segment_src' ? 'audio' : 'text',
       learnerLanguage: 'none',
     })).toContain(`cap:v1:${sourceKind}:`)
   })

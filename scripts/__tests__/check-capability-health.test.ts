@@ -55,12 +55,12 @@ describe('capability health exit code planning', () => {
   })
 
   it('keeps a ready form_recall capability eligible for runtime health (resolves via typed_recall)', () => {
-    const capabilityKey = 'cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl'
+    const capabilityKey = 'cap:v1:vocabulary_src:learning_items/makan:produce_form_from_meaning_cap:l1_to_id:text:nl'
     const report = checkCapabilityHealthSnapshot({
       capabilities: [{
         canonicalKey: capabilityKey,
         sourceRef: 'learning_items/makan',
-        capabilityType: 'form_recall',
+        capabilityType: 'produce_form_from_meaning_cap',
         skillType: 'form_recall',
         readinessStatus: 'ready',
         publicationStatus: 'published',
@@ -71,12 +71,12 @@ describe('capability health exit code planning', () => {
   })
 
   it('accepts ready Dutch-to-Indonesian choice capabilities with a cued recall render path', () => {
-    const capabilityKey = 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl'
+    const capabilityKey = 'cap:v1:vocabulary_src:learning_items/makan:recognise_form_from_meaning_cap:l1_to_id:text:nl'
     const report = checkCapabilityHealthSnapshot({
       capabilities: [{
         canonicalKey: capabilityKey,
         sourceRef: 'learning_items/makan',
-        capabilityType: 'l1_to_id_choice',
+        capabilityType: 'recognise_form_from_meaning_cap',
         skillType: 'meaning_recall',
         readinessStatus: 'ready',
         publicationStatus: 'published',
@@ -96,9 +96,9 @@ describe('capability health exit code planning', () => {
     // on every lesson-derived cap, replacing the validation purpose.
     const report = checkCapabilityHealthSnapshot({
       capabilities: [{
-        canonicalKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
+        canonicalKey: 'cap:v1:vocabulary_src:learning_items/minum:recognise_meaning_from_text_cap:id_to_l1:text:nl',
         sourceRef: 'learning_items/minum',
-        capabilityType: 'text_recognition',
+        capabilityType: 'recognise_meaning_from_text_cap',
         skillType: 'recognition',
         readinessStatus: 'ready',
         publicationStatus: 'published',
@@ -113,9 +113,9 @@ describe('capability health exit code planning', () => {
   it('reports draft/unknown capabilities as warnings instead of blockers', () => {
     const report = checkCapabilityHealthSnapshot({
       capabilities: [{
-        canonicalKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
+        canonicalKey: 'cap:v1:vocabulary_src:learning_items/makan:recall_meaning_from_text_cap:id_to_l1:text:nl',
         sourceRef: 'learning_items/makan',
-        capabilityType: 'meaning_recall',
+        capabilityType: 'recall_meaning_from_text_cap',
         skillType: 'meaning_recall',
         readinessStatus: 'unknown',
         publicationStatus: 'draft',
@@ -141,7 +141,7 @@ describe('capability health exit code planning', () => {
 
   it('marks staged morphology pairs as ready via typed_recall when both artifacts are approved (2026-05-21 affixed-form-pair widening)', async () => {
     // Post the 2026-05-21 affixed-form-pair widening: typed_recall accepts
-    // affixed_form_pair source kind with requiredArtifacts
+    // word_form_pair_src source kind with requiredArtifacts
     // {root_derived_pair, allomorph_rule}. Both are emitted by the existing
     // publish pipeline at scripts/lib/content-pipeline-output.ts:430-441 so
     // L9's 4 morphology caps register as ready with typed_recall as the
@@ -149,10 +149,10 @@ describe('capability health exit code planning', () => {
     const report = await buildCapabilityHealthReport('scripts/data/staging/lesson-9')
 
     expect(report.results.map(result => result.canonicalKey)).toEqual(expect.arrayContaining([
-      'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recognition:derived_to_root:text:none',
-      'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recall:root_to_derived:text:none',
+      'cap:v1:word_form_pair_src:lesson-9/morphology/meN-baca-membaca:recognise_word_form_link_cap:derived_to_root:text:none',
+      'cap:v1:word_form_pair_src:lesson-9/morphology/meN-baca-membaca:produce_derived_form_cap:root_to_derived:text:none',
     ]))
-    const morphologyResults = report.results.filter(r => r.canonicalKey.startsWith('cap:v1:affixed_form_pair:'))
+    const morphologyResults = report.results.filter(r => r.canonicalKey.startsWith('cap:v1:word_form_pair_src:'))
     expect(morphologyResults.length).toBeGreaterThan(0)
     for (const result of morphologyResults) {
       expect(result.readiness.status).toBe('ready')

@@ -21,7 +21,7 @@
  *      separate-uuid dual-write is gone — the 4 typed tables are the sole store.)
  *
  * The caller (runner) is responsible for the no-double-write filter (excluding
- * `sourceKind === 'pattern'` caps from the legacy staging bundle) and for
+ * `sourceKind === 'grammar_pattern_src'` caps from the legacy staging bundle) and for
  * merging the returned cap-id map into the retire emit set BEFORE the orphan
  * sweep so the new pattern caps are not soft-retired.
  *

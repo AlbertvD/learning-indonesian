@@ -8,9 +8,9 @@ function ev(p: Partial<CapabilityMasteryEvidence>): CapabilityMasteryEvidence {
   return {
     capabilityId: p.capabilityId ?? Math.random().toString(36),
     canonicalKey: p.canonicalKey ?? 'k',
-    sourceKind: p.sourceKind ?? 'item',
+    sourceKind: p.sourceKind ?? 'vocabulary_src',
     sourceRef: p.sourceRef ?? 'ref',
-    capabilityType: p.capabilityType ?? 'text_recognition',
+    capabilityType: p.capabilityType ?? 'recognise_meaning_from_text_cap',
     modality: p.modality ?? 'text',
     readinessStatus: 'ready',
     publicationStatus: 'published',
@@ -28,10 +28,10 @@ describe('deriveMasteryFunnel', () => {
   it('rolls each word up weakest-wins and counts words per rung in the vocabulary funnel', () => {
     const evidence = [
       // word "makan": one mastered cap + one learning cap → weakest-wins = learning
-      ev({ sourceKind: 'item', sourceRef: 'makan', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
-      ev({ sourceKind: 'item', sourceRef: 'makan', reviewCount: 1, stability: 1 }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'makan', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'makan', reviewCount: 1, stability: 1 }),
       // word "minum": single cap, never reviewed, lesson active → introduced
-      ev({ sourceKind: 'item', sourceRef: 'minum', reviewCount: 0, lessonActivated: true }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'minum', reviewCount: 0, lessonActivated: true }),
     ]
 
     const funnel = deriveMasteryFunnel({ evidence, now: NOW })
@@ -43,8 +43,8 @@ describe('deriveMasteryFunnel', () => {
 
   it('counts grammar patterns + morphology in the grammar funnel, not vocabulary', () => {
     const evidence = [
-      ev({ sourceKind: 'pattern', sourceRef: 'meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
-      ev({ sourceKind: 'affixed_form_pair', sourceRef: 'baca-membaca', reviewCount: 1, stability: 1 }),
+      ev({ sourceKind: 'grammar_pattern_src', sourceRef: 'meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'word_form_pair_src', sourceRef: 'baca-membaca', reviewCount: 1, stability: 1 }),
     ]
 
     const funnel = deriveMasteryFunnel({ evidence, now: NOW })
@@ -57,9 +57,9 @@ describe('deriveMasteryFunnel', () => {
 
   it('marks a word at_risk when any of its caps has genuinely lapsed (failing AND lapsed)', () => {
     const evidence = [
-      ev({ sourceKind: 'item', sourceRef: 'pergi', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'pergi', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
       // a cap that had been learned (lapseCount > 0) and is now failing → a real lapse
-      ev({ sourceKind: 'item', sourceRef: 'pergi', reviewCount: 4, lapseCount: 1, consecutiveFailureCount: 1 }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'pergi', reviewCount: 4, lapseCount: 1, consecutiveFailureCount: 1 }),
     ]
 
     const funnel = deriveMasteryFunnel({ evidence, now: NOW })
@@ -71,7 +71,7 @@ describe('deriveMasteryFunnel', () => {
   it('a never-learned word that is currently failing is introduced, not at_risk', () => {
     const evidence = [
       // failing on first acquisition (lapseCount 0) — never learned yet
-      ev({ sourceKind: 'item', sourceRef: 'becak', reviewCount: 2, lapseCount: 0, consecutiveFailureCount: 2 }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'becak', reviewCount: 2, lapseCount: 0, consecutiveFailureCount: 2 }),
     ]
 
     const funnel = deriveMasteryFunnel({ evidence, now: NOW })
@@ -85,13 +85,13 @@ describe('deriveMasteryFunnelByLesson', () => {
   it('splits the vocab/grammar funnels per introducing lesson, skipping caps with no lessonNumber', () => {
     const evidence = [
       // lesson 2 vocab: makan mastered, minum introduced
-      ev({ sourceKind: 'item', sourceRef: 'makan', lessonNumber: 2, reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
-      ev({ sourceKind: 'item', sourceRef: 'minum', lessonNumber: 2, reviewCount: 0, lessonActivated: true }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'makan', lessonNumber: 2, reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'minum', lessonNumber: 2, reviewCount: 0, lessonActivated: true }),
       // lesson 3 vocab: pagi learning + a grammar pattern introduced
-      ev({ sourceKind: 'item', sourceRef: 'pagi', lessonNumber: 3, reviewCount: 1, stability: 1 }),
-      ev({ sourceKind: 'pattern', capabilityType: 'pattern_recognition', sourceRef: 'lesson-3/pattern-x', lessonNumber: 3, reviewCount: 0, lessonActivated: true }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'pagi', lessonNumber: 3, reviewCount: 1, stability: 1 }),
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'recognise_grammar_pattern_cap', sourceRef: 'lesson-3/pattern-x', lessonNumber: 3, reviewCount: 0, lessonActivated: true }),
       // no lessonNumber → excluded from every bucket
-      ev({ sourceKind: 'item', sourceRef: 'orphan', lessonNumber: null, reviewCount: 3 }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'orphan', lessonNumber: null, reviewCount: 3 }),
     ]
 
     const byLesson = deriveMasteryFunnelByLesson({ evidence, now: NOW })
@@ -109,12 +109,12 @@ describe('deriveGrammarTopics', () => {
   it('splits each pattern into recognise/use dimensions, rolls up weakest-wins, sums reviews, sorts by lesson', () => {
     const evidence = [
       // meN-prefix: recognition mastered, use still learning → overall learning
-      ev({ sourceKind: 'pattern', capabilityType: 'pattern_recognition', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
-      ev({ sourceKind: 'pattern', capabilityType: 'pattern_contrast', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 1, stability: 1 }),
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'recognise_grammar_pattern_cap', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'contrast_grammar_pattern_cap', sourceRef: 'lesson-3/pattern-l3-meN-prefix', reviewCount: 1, stability: 1 }),
       // ber-prefix: only a recognition cap, never reviewed → introduced, no use dimension
-      ev({ sourceKind: 'pattern', capabilityType: 'pattern_recognition', sourceRef: 'lesson-4/pattern-l4-ber-prefix', reviewCount: 0, lessonActivated: true }),
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'recognise_grammar_pattern_cap', sourceRef: 'lesson-4/pattern-l4-ber-prefix', reviewCount: 0, lessonActivated: true }),
       // not a grammar pattern → excluded
-      ev({ sourceKind: 'item', sourceRef: 'makan', reviewCount: 5, stability: 20 }),
+      ev({ sourceKind: 'vocabulary_src', sourceRef: 'makan', reviewCount: 5, stability: 20 }),
     ]
 
     const topics = deriveGrammarTopics({ evidence, now: NOW })

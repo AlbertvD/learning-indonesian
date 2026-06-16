@@ -32,11 +32,11 @@ const snapshot: CurrentContentSnapshot = {
 describe('podcast capability projection', () => {
   it('projects guided transcript segments as exposure-only via source kind', () => {
     const capabilities = projectPodcastCapabilities(snapshot)
-    const segment = capabilities.find(capability => capability.sourceKind === 'podcast_segment')
+    const segment = capabilities.find(capability => capability.sourceKind === 'podcast_segment_src')
 
     expect(segment).toEqual(expect.objectContaining({
       sourceRef: segmentSourceRef,
-      capabilityType: 'podcast_gist',
+      capabilityType: 'recognise_gist_from_audio_cap',
       direction: 'audio_to_l1',
       modality: 'audio',
       requiredArtifacts: ['audio_segment', 'transcript_segment', 'podcast_gist_prompt'],
@@ -49,11 +49,11 @@ describe('podcast capability projection', () => {
 
   it('projects mined phrases with meaning-recall metadata, but treats them as exposure-only', () => {
     const capabilities = projectPodcastCapabilities(snapshot)
-    const phrase = capabilities.find(capability => capability.sourceKind === 'podcast_phrase')!
+    const phrase = capabilities.find(capability => capability.sourceKind === 'podcast_phrase_src')!
 
     expect(phrase).toEqual(expect.objectContaining({
       sourceRef: phraseSourceRef,
-      capabilityType: 'meaning_recall',
+      capabilityType: 'recall_meaning_from_text_cap',
       modality: 'mixed',
       requiredArtifacts: ['timecoded_phrase', 'translation:l1'],
     }))

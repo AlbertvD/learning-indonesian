@@ -9,9 +9,9 @@ import { validateCapabilities, validateCapability } from '@/lib/capabilities/cap
 // for the (Slice-5-owned) legacy staging regeneration but is NOT consulted here.
 const baseCapability: ProjectedCapability = {
   canonicalKey: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
-  sourceKind: 'item',
+  sourceKind: 'vocabulary_src',
   sourceRef: 'learning_items/item-1',
-  capabilityType: 'meaning_recall',
+  capabilityType: 'recall_meaning_from_text_cap',
   skillType: 'meaning_recall',
   direction: 'id_to_l1',
   modality: 'text',
@@ -32,8 +32,8 @@ describe('capability contract validation (post-4b: readiness off the typed contr
   it('maps Dutch-to-Indonesian choice to cued recall', () => {
     const bridgeCapability = {
       ...baseCapability,
-      canonicalKey: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
-      capabilityType: 'l1_to_id_choice' as const,
+      canonicalKey: 'cap:v1:item:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl',
+      capabilityType: 'recognise_form_from_meaning_cap' as const,
       direction: 'l1_to_id' as const,
     }
 
@@ -52,8 +52,8 @@ describe('capability contract validation (post-4b: readiness off the typed contr
     expect(validateCapability({
       capability: {
         ...baseCapability,
-        canonicalKey: 'cap:v1:item:learning_items/item-1:audio_recognition:audio_to_l1:audio:nl',
-        capabilityType: 'audio_recognition',
+        canonicalKey: 'cap:v1:item:learning_items/item-1:recognise_meaning_from_audio_cap:audio_to_l1:audio:nl',
+        capabilityType: 'recognise_meaning_from_audio_cap',
         direction: 'audio_to_l1',
         modality: 'audio',
         requiredArtifacts: ['audio_clip', 'meaning:l1'],
@@ -64,14 +64,14 @@ describe('capability contract validation (post-4b: readiness off the typed contr
     })
   })
 
-  it('readies a dialogue_line contextual_cloze cap (structure lives in the typed dialogue_clozes table)', () => {
+  it('readies a dialogue_line produce_form_from_context_cap cap (structure lives in the typed dialogue_clozes table)', () => {
     expect(validateCapability({
       capability: {
         ...baseCapability,
-        canonicalKey: 'cap:v1:dialogue_line:lesson-9/section-1/line-3:contextual_cloze:id_to_l1:text:none',
-        sourceKind: 'dialogue_line',
+        canonicalKey: 'cap:v1:dialogue_line:lesson-9/section-1/line-3:produce_form_from_context_cap:id_to_l1:text:none',
+        sourceKind: 'dialogue_line_src',
         sourceRef: 'lesson-9/section-1/line-3',
-        capabilityType: 'contextual_cloze',
+        capabilityType: 'produce_form_from_context_cap',
         requiredArtifacts: [],
       },
     })).toEqual({
@@ -84,7 +84,7 @@ describe('capability contract validation (post-4b: readiness off the typed contr
     // meaning_recall is served only by the item-only `meaning_recall` exercise;
     // a meaning_recall cap on a non-item source kind has no compatible exercise.
     const result = validateCapability({
-      capability: { ...baseCapability, sourceKind: 'pattern' },
+      capability: { ...baseCapability, sourceKind: 'grammar_pattern_src' },
     })
 
     expect(result).toEqual({
@@ -96,7 +96,7 @@ describe('capability contract validation (post-4b: readiness off the typed contr
 
   it('treats podcast source kinds as exposure-only', () => {
     expect(validateCapability({
-      capability: { ...baseCapability, sourceKind: 'podcast_segment', capabilityType: 'podcast_gist' },
+      capability: { ...baseCapability, sourceKind: 'podcast_segment_src', capabilityType: 'recognise_gist_from_audio_cap' },
     }).status).toBe('exposure_only')
   })
 
@@ -115,7 +115,7 @@ describe('capability contract validation (post-4b: readiness off the typed contr
     const report = validateCapabilities({
       projection: {
         projectionVersion: 'capability-v3',
-        capabilities: [{ ...baseCapability, sourceKind: 'pattern' }],
+        capabilities: [{ ...baseCapability, sourceKind: 'grammar_pattern_src' }],
         aliases: [],
         diagnostics: [],
       },

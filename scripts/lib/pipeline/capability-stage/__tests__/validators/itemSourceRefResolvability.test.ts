@@ -9,8 +9,8 @@ type CapStub = {
 
 function cap(overrides: Partial<CapStub>): CapStub {
   return {
-    canonicalKey: 'cap:v1:item:learning_items/foo:meaning_recall:id_to_l1:text:nl',
-    sourceKind: 'item',
+    canonicalKey: 'cap:v1:vocabulary_src:learning_items/foo:recall_meaning_from_text_cap:id_to_l1:text:nl',
+    sourceKind: 'vocabulary_src',
     sourceRef: 'learning_items/foo',
     ...overrides,
   }
@@ -57,8 +57,8 @@ describe('validateItemSourceRefResolvability (#59)', () => {
     }
   })
 
-  it('ignores non-item source kinds (pattern, affixed_form_pair)', () => {
-    for (const kind of ['pattern', 'affixed_form_pair']) {
+  it('ignores non-item source kinds (pattern, word_form_pair_src)', () => {
+    for (const kind of ['pattern', 'word_form_pair_src']) {
       expect(() =>
         validateItemSourceRefResolvability(
           [cap({ sourceKind: kind, sourceRef: 'lesson-1/pattern-foo' })],
@@ -69,7 +69,7 @@ describe('validateItemSourceRefResolvability (#59)', () => {
   })
 
   it('ignores podcast source kinds', () => {
-    for (const kind of ['podcast_segment', 'podcast_phrase']) {
+    for (const kind of ['podcast_segment_src', 'podcast_phrase_src']) {
       expect(() =>
         validateItemSourceRefResolvability(
           [cap({ sourceKind: kind, sourceRef: 'podcasts/foo' })],
@@ -83,7 +83,7 @@ describe('validateItemSourceRefResolvability (#59)', () => {
     expect(() =>
       validateItemSourceRefResolvability(
         [cap({
-          sourceKind: 'dialogue_line',
+          sourceKind: 'dialogue_line_src',
           sourceRef: 'lesson-1/section-1/line-0',
         })],
         [],

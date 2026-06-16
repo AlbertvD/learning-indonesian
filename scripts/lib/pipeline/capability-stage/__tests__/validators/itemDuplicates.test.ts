@@ -6,7 +6,7 @@ import type { ItemDuplicatesInput } from '../../validators/itemDuplicates'
  * Mock shape mirrors the actual DB query in validateItemDuplicates:
  *   .schema('indonesian').from('learning_capabilities')
  *   .select('source_ref, lesson_id')
- *   .eq('source_kind', 'item')
+ *   .eq('source_kind', 'vocabulary_src')
  *   .in('source_ref', sourceRefs)
  *   .not('lesson_id', 'is', null)
  *

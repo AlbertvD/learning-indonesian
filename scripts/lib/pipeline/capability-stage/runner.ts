@@ -21,7 +21,7 @@
  *        anchor_contexts → exercise_variants → cloze_contexts.
  *      Decision 3 stamps `lesson_id` on morphology capability rows when this
  *      lesson introduces a morphology pattern.
- *      Decision 5b appends `contextual_cloze` capabilities for dialogue lines
+ *      Decision 5b appends `produce_form_from_context_cap` capabilities for dialogue lines
  *      whose slug matches a staged cloze context.
  *   6. Run seed hooks (CS7 countParity → CS8 contentNonEmpty → CS9 seedIntegrity).
  *      Per §11 #23 hooks fire AFTER all projector writes complete; per-hook
@@ -241,7 +241,7 @@ export async function runCapabilityStage(
   // on every lesson-derived capability — the runner is invoked per lesson, so the
   // projecting lesson IS the introducing lesson by construction. Decision 3's
   // morphology tie-break is preserved: only morphology-introducing lessons emit
-  // affixed_form_pair capabilities, so those rows get the rule-introducing
+  // word_form_pair_src capabilities, so those rows get the rule-introducing
   // lesson's id. Podcasts are not projected here; they're carved out from the
   // lesson_id invariant.
   //
@@ -351,16 +351,16 @@ export async function runCapabilityStage(
   //   - pattern caps           → writePatternPath (step 5d), merged into
   //     capabilityIdsByKey there (so the orphan sweep sees them)
   //   - dialogue_line cloze    → dialogueClozeCaps (above)
-  //   - affixed_form_pair      → newAffixedCaps (above)
+  //   - word_form_pair_src      → newAffixedCaps (above)
   // allCapabilities (written via upsertCapabilities) is therefore EXACTLY the
   // non-item, non-pattern typed caps. Item caps are deliberately NOT included here
   // — routing them through upsertCapabilities would re-write existing rows and
   // disturb FSRS state; they ride the skip-if-exists path instead.
   const allCapabilities: CapabilityInput[] = [
-    // dialogue_line:contextual_cloze caps (DB→DB generator output, Slice 3).
+    // dialogue_line:produce_form_from_context_cap caps (DB→DB generator output, Slice 3).
     ...dialogueClozeCaps,
     // DB-native affixed caps — LOAD-BEARING: step 7c (projectAffixedFormPairs)
-    // filters allCapabilities for sourceKind==='affixed_form_pair'; without this
+    // filters allCapabilities for sourceKind==='word_form_pair_src'; without this
     // append it emits zero affixed_form_pairs rows (landmine #1).
     ...newAffixedCaps,
   ]
@@ -435,7 +435,7 @@ export async function runCapabilityStage(
   const retired = await retireOrphanedCapabilities(supabase, {
     lessonId: input.lessonId,
     emittedKeys: [...capabilityIdsByKey.keys()],
-    sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
+    sourceKinds: ['dialogue_line_src', 'grammar_pattern_src', 'word_form_pair_src'],
   })
   if (retired.retiredCount > 0) {
     const previewKeys = retired.retiredKeys.slice(0, 5).join(', ')
@@ -448,13 +448,13 @@ export async function runCapabilityStage(
   // staging `capabilities[].contentUnitSlugs` metadata is retired. Each cap links
   // to the content_unit that shares its `source_ref`:
   //   item  cap (incl. audio) → learning_item    unit (learning_items/<nt>)
-  //   affixed cap             → affixed_form_pair unit
+  //   affixed cap             → word_form_pair_src unit
   //   pattern cap             → grammar_pattern   unit (Decision E source_ref align)
   // dialogue_line cloze caps have NO content_unit (none shares their line source_ref)
   // and produce no junction — matching the live DB (0 dialogue_line junctions).
   // relationship_kind rule (content-pipeline-output.ts:578-581):
-  //   capabilityType === 'l1_to_id_choice'   → 'introduced_by'
-  //   capabilityType.includes('recognition') → 'introduced_by'  (incl. audio_recognition)
+  //   capabilityType === 'recognise_form_from_meaning_cap'   → 'introduced_by'
+  //   capabilityType.includes('recognition') → 'introduced_by'  (incl. recognise_meaning_from_audio_cap)
   //   else                                   → 'practiced_by'
   const unitIdBySourceRef = new Map<string, string>()
   for (const unit of dbContentUnits) {
@@ -478,7 +478,7 @@ export async function runCapabilityStage(
       continue
     }
     const relationship_kind: CapabilityContentUnitInput['relationship_kind'] =
-      cap.capabilityType === 'l1_to_id_choice' ? 'introduced_by'
+      cap.capabilityType === 'recognise_form_from_meaning_cap' ? 'introduced_by'
       : cap.capabilityType.includes('recognition') ? 'introduced_by'
       : 'practiced_by'
     junctionInputs.push({ capability_id: capId, content_unit_id: unitId, relationship_kind })
@@ -526,7 +526,7 @@ export async function runCapabilityStage(
   }
 
   // ---- 7c. Affixed-form-pair typed rows (Decision A / PR 3 slice). ------
-  // affixed_form_pair caps render from the typed `affixed_form_pairs` row — the
+  // word_form_pair_src caps render from the typed `affixed_form_pairs` row — the
   // SOLE persisted representation. No capability_artifacts are emitted for them
   // (capabilityCatalog sets requiredArtifacts: [] → buildArtifactsForCapability
   // produces none); structure is guaranteed by the typed table's NOT NULL
@@ -597,7 +597,7 @@ export async function runCapabilityStage(
   // kinds — the vocab module reconciles ['item'] for the same lesson (architect C1).
   const reconciled = await reconcileArtifactPresence(supabase, {
     lessonId: input.lessonId,
-    sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
+    sourceKinds: ['dialogue_line_src', 'grammar_pattern_src', 'word_form_pair_src'],
   })
   if (reconciled.retiredCount > 0) {
     const previewKeys = reconciled.retiredKeys.slice(0, 5).join(', ')

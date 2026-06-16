@@ -93,8 +93,8 @@ describe('16. buildFeedbackInput adapter', () => {
     }
   })
 
-  it('isGrammar=true for pattern_recognition and pattern_contrast capability types', () => {
-    for (const capType of ['pattern_recognition', 'pattern_contrast'] as const) {
+  it('isGrammar=true for recognise_grammar_pattern_cap and contrast_grammar_pattern_cap capability types', () => {
+    for (const capType of ['recognise_grammar_pattern_cap', 'contrast_grammar_pattern_cap'] as const) {
       const result = buildFeedbackInput({
         block: makeBlock('cloze_mcq', capType),
         context: makeContext('cloze_mcq'),

@@ -3,7 +3,7 @@
  * (Slice 2 Task 3, the pure pattern projector).
  *
  * Verifies the OQ2-5 model: one grammar category = one pattern, lesson-prefixed
- * slug (global uniqueness), the cap shape (pattern_recognition + pattern_contrast),
+ * slug (global uniqueness), the cap shape (recognise_grammar_pattern_cap + contrast_grammar_pattern_cap),
  * canonical-key formula, NOT-NULL derivations, collision handling, and purity.
  * NO grammar_pattern_examples (OQ2-4) — the projector never touches examples.
  */
@@ -41,7 +41,7 @@ describe('projectPatternsFromCategories', () => {
     expect(out.patternPlans).toHaveLength(2)
     for (const plan of out.patternPlans) {
       expect(plan.capabilities).toHaveLength(2)
-      expect(plan.capabilities.map((c) => c.capabilityType).sort()).toEqual(['pattern_contrast', 'pattern_recognition'])
+      expect(plan.capabilities.map((c) => c.capabilityType).sort()).toEqual(['contrast_grammar_pattern_cap', 'recognise_grammar_pattern_cap'])
     }
   })
 
@@ -62,10 +62,10 @@ describe('projectPatternsFromCategories', () => {
     })
     const plan = out.patternPlans[0]
     expect(plan.sourceRef).toBe('lesson-6/pattern-l6-jangan-verbod')
-    const rec = plan.capabilities.find((c) => c.capabilityType === 'pattern_recognition')!
-    const con = plan.capabilities.find((c) => c.capabilityType === 'pattern_contrast')!
-    expect(rec.canonicalKey).toBe('cap:v1:pattern:lesson-6/pattern-l6-jangan-verbod:pattern_recognition:none:text:none')
-    expect(con.canonicalKey).toBe('cap:v1:pattern:lesson-6/pattern-l6-jangan-verbod:pattern_contrast:none:text:none')
+    const rec = plan.capabilities.find((c) => c.capabilityType === 'recognise_grammar_pattern_cap')!
+    const con = plan.capabilities.find((c) => c.capabilityType === 'contrast_grammar_pattern_cap')!
+    expect(rec.canonicalKey).toBe('cap:v1:grammar_pattern_src:lesson-6/pattern-l6-jangan-verbod:recognise_grammar_pattern_cap:none:text:none')
+    expect(con.canonicalKey).toBe('cap:v1:grammar_pattern_src:lesson-6/pattern-l6-jangan-verbod:contrast_grammar_pattern_cap:none:text:none')
   })
 
   it('the contrast cap has the recognition cap as its prerequisite', () => {
@@ -75,8 +75,8 @@ describe('projectPatternsFromCategories', () => {
       lessonId: LESSON_ID,
     })
     const plan = out.patternPlans[0]
-    const rec = plan.capabilities.find((c) => c.capabilityType === 'pattern_recognition')!
-    const con = plan.capabilities.find((c) => c.capabilityType === 'pattern_contrast')!
+    const rec = plan.capabilities.find((c) => c.capabilityType === 'recognise_grammar_pattern_cap')!
+    const con = plan.capabilities.find((c) => c.capabilityType === 'contrast_grammar_pattern_cap')!
     expect(rec.prerequisiteKeys).toEqual([])
     expect(con.prerequisiteKeys).toEqual([rec.canonicalKey])
   })
@@ -88,7 +88,7 @@ describe('projectPatternsFromCategories', () => {
       lessonId: LESSON_ID,
     })
     for (const c of out.patternPlans[0].capabilities) {
-      expect(c.sourceKind).toBe('pattern')
+      expect(c.sourceKind).toBe('grammar_pattern_src')
       expect(c.direction).toBe('none')
       expect(c.modality).toBe('text')
       expect(c.learnerLanguage).toBe('none')

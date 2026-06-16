@@ -51,7 +51,7 @@ function createCapability(draft: CapabilityDraft): ProjectedCapability {
  * Pure rule function. Reads only `podcastSegments` + `podcastPhrases` from
  * the shared `CurrentContentSnapshot`; everything else is ignored. Returns
  * a stable-ordered list of ProjectedCapability rows for podcast segments
- * (podcast_gist) + podcast phrases (meaning_recall).
+ * (recognise_gist_from_audio_cap) + podcast phrases (meaning_recall).
  */
 export function projectPodcastCapabilities(
   input: Pick<CurrentContentSnapshot, 'podcastSegments' | 'podcastPhrases'>,
@@ -60,9 +60,9 @@ export function projectPodcastCapabilities(
 
   for (const segment of input.podcastSegments ?? []) {
     capabilities.push(createCapability({
-      sourceKind: 'podcast_segment',
+      sourceKind: 'podcast_segment_src',
       sourceRef: segment.sourceRef,
-      capabilityType: 'podcast_gist',
+      capabilityType: 'recognise_gist_from_audio_cap',
       skillType: 'recognition',
       direction: 'audio_to_l1',
       modality: 'audio',
@@ -73,9 +73,9 @@ export function projectPodcastCapabilities(
 
   for (const phrase of input.podcastPhrases ?? []) {
     capabilities.push(createCapability({
-      sourceKind: 'podcast_phrase',
+      sourceKind: 'podcast_phrase_src',
       sourceRef: phrase.sourceRef,
-      capabilityType: 'meaning_recall',
+      capabilityType: 'recall_meaning_from_text_cap',
       skillType: 'meaning_recall',
       direction: 'id_to_l1',
       modality: 'mixed',

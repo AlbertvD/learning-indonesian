@@ -9,9 +9,9 @@ import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 function capability(overrides: Partial<ProjectedCapability> = {}): ProjectedCapability {
   return {
     canonicalKey: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
-    sourceKind: 'item',
+    sourceKind: 'vocabulary_src',
     sourceRef: 'learning_items/item-1',
-    capabilityType: 'meaning_recall',
+    capabilityType: 'recall_meaning_from_text_cap',
     skillType: 'meaning_recall',
     direction: 'id_to_l1',
     modality: 'text',
@@ -50,8 +50,8 @@ describe('exercise resolver', () => {
   it('resolves Dutch-to-Indonesian choice through cued recall', () => {
     expect(resolveExercise({
       capability: capability({
-        canonicalKey: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
-        capabilityType: 'l1_to_id_choice' as any,
+        canonicalKey: 'cap:v1:item:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl',
+        capabilityType: 'recognise_form_from_meaning_cap' as any,
         skillType: 'meaning_recall',
         direction: 'l1_to_id',
       }),
@@ -60,7 +60,7 @@ describe('exercise resolver', () => {
       status: 'resolved',
       plan: expect.objectContaining({
         exerciseType: 'cued_recall',
-        capabilityType: 'l1_to_id_choice',
+        capabilityType: 'recognise_form_from_meaning_cap',
         skillType: 'meaning_recall',
       }),
     })
@@ -68,7 +68,7 @@ describe('exercise resolver', () => {
 
   it('fails closed when no supported family exists', () => {
     expect(resolveExercise({
-      capability: capability({ capabilityType: 'pattern_contrast', requiredArtifacts: [] }),
+      capability: capability({ capabilityType: 'contrast_grammar_pattern_cap', requiredArtifacts: [] }),
       readiness: { status: 'ready', allowedExercises: [] },
     })).toEqual(expect.objectContaining({
       status: 'failed',
@@ -79,7 +79,7 @@ describe('exercise resolver', () => {
   it('fails closed when readiness allows an exercise for a different capability trace', () => {
     expect(resolveExercise({
       capability: capability({
-        capabilityType: 'audio_recognition',
+        capabilityType: 'recognise_meaning_from_audio_cap',
         skillType: 'recognition',
         direction: 'audio_to_l1',
         modality: 'audio',
@@ -93,20 +93,20 @@ describe('exercise resolver', () => {
 
   it('resolves podcast gist and morphology recall through the same compatibility table', () => {
     const podcast = capability({
-      canonicalKey: 'cap:v1:podcast_segment:podcast-warung/segment-1:podcast_gist:audio_to_l1:audio:none',
-      sourceKind: 'podcast_segment',
+      canonicalKey: 'cap:v1:podcast_segment_src:podcast-warung/segment-1:recognise_gist_from_audio_cap:audio_to_l1:audio:none',
+      sourceKind: 'podcast_segment_src',
       sourceRef: 'podcast-warung/segment-1',
-      capabilityType: 'podcast_gist',
+      capabilityType: 'recognise_gist_from_audio_cap',
       skillType: 'recognition',
       direction: 'audio_to_l1',
       modality: 'audio',
       learnerLanguage: 'none',
     })
     const morphology = capability({
-      canonicalKey: 'cap:v1:affixed_form_pair:lesson-9/morphology/men-baca:root_derived_recall:root_to_derived:text:none',
-      sourceKind: 'affixed_form_pair',
+      canonicalKey: 'cap:v1:word_form_pair_src:lesson-9/morphology/men-baca:produce_derived_form_cap:root_to_derived:text:none',
+      sourceKind: 'word_form_pair_src',
       sourceRef: 'lesson-9/morphology/men-baca',
-      capabilityType: 'root_derived_recall',
+      capabilityType: 'produce_derived_form_cap',
       skillType: 'form_recall',
       direction: 'root_to_derived',
       modality: 'text',

@@ -65,15 +65,15 @@ function makeMockClient(tables: Record<string, MockTable>) {
   }
 }
 
-function makeBlock(opts: { itemId?: string; exerciseType?: SessionBlock['renderPlan']['exerciseType']; sourceKind?: 'item' | 'pattern' } = {}): SessionBlock {
+function makeBlock(opts: { itemId?: string; exerciseType?: SessionBlock['renderPlan']['exerciseType']; sourceKind?: 'vocabulary_src' | 'grammar_pattern_src' } = {}): SessionBlock {
   const itemId = opts.itemId ?? 'item-1'
-  const sourceKind = opts.sourceKind ?? 'item'
+  const sourceKind = opts.sourceKind ?? 'vocabulary_src'
   const exerciseType = opts.exerciseType ?? 'meaning_recall'
-  const sourceRef = sourceKind === 'item' ? `learning_items/${itemId}` : `lesson-1/${itemId}`
+  const sourceRef = sourceKind === 'vocabulary_src' ? `learning_items/${itemId}` : `lesson-1/${itemId}`
   const key = buildCanonicalKey({
     sourceKind,
     sourceRef,
-    capabilityType: 'text_recognition',
+    capabilityType: 'recognise_meaning_from_text_cap',
     direction: 'id_to_l1',
     modality: 'text',
     learnerLanguage: 'nl',
@@ -87,7 +87,7 @@ function makeBlock(opts: { itemId?: string; exerciseType?: SessionBlock['renderP
       capabilityKey: key,
       sourceRef,
       exerciseType,
-      capabilityType: 'text_recognition',
+      capabilityType: 'recognise_meaning_from_text_cap',
       skillType: 'recognition',
     },
     reviewContext: {
@@ -118,7 +118,7 @@ describe('resolver.resolveBlocks', () => {
     // so it fails ref parsing rather than reaching the fetcher.
     const tables: Record<string, MockTable> = {}
     const service = createCapabilityContentService(makeMockClient(tables) as never)
-    const block = makeBlock({ sourceKind: 'pattern' })
+    const block = makeBlock({ sourceKind: 'grammar_pattern_src' })
     const map = await service.resolveBlocks([block], baseOptions)
     expect(map.size).toBe(1)
     const ctx = map.get(block.id)!
@@ -243,7 +243,7 @@ describe('resolver.resolveBlocks', () => {
     const service = createCapabilityContentService(makeMockClient(tables) as never)
     const blocks = [
       makeBlock({ itemId: 'item-1' }),
-      makeBlock({ itemId: 'item-2', sourceKind: 'pattern' }),
+      makeBlock({ itemId: 'item-2', sourceKind: 'grammar_pattern_src' }),
       { ...makeBlock({ itemId: 'item-3' }), canonicalKeySnapshot: 'garbage' },
     ]
     const map = await service.resolveBlocks(blocks, baseOptions)
@@ -385,9 +385,9 @@ function makeDialogueBlock(opts: { sourceRef?: string; capabilityId?: string; ex
   const capabilityId = opts.capabilityId ?? `cap-${sourceRef}`
   const exerciseType = opts.exerciseType ?? 'cloze'
   const key = buildCanonicalKey({
-    sourceKind: 'dialogue_line',
+    sourceKind: 'dialogue_line_src',
     sourceRef,
-    capabilityType: 'contextual_cloze',
+    capabilityType: 'produce_form_from_context_cap',
     direction: 'id_to_l1',
     modality: 'text',
     learnerLanguage: 'nl',
@@ -401,7 +401,7 @@ function makeDialogueBlock(opts: { sourceRef?: string; capabilityId?: string; ex
       capabilityKey: key,
       sourceRef,
       exerciseType,
-      capabilityType: 'contextual_cloze',
+      capabilityType: 'produce_form_from_context_cap',
       skillType: 'form_recall',
     },
     reviewContext: {

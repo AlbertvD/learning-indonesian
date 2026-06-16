@@ -9,9 +9,9 @@ function ev(p: Partial<CapabilityMasteryEvidence>): CapabilityMasteryEvidence {
   return {
     capabilityId: p.capabilityId ?? Math.random().toString(36),
     canonicalKey: 'k',
-    sourceKind: p.sourceKind ?? 'item',
+    sourceKind: p.sourceKind ?? 'vocabulary_src',
     sourceRef: p.sourceRef ?? 'ref',
-    capabilityType: p.capabilityType ?? 'text_recognition',
+    capabilityType: p.capabilityType ?? 'recognise_meaning_from_text_cap',
     modality: 'text',
     readinessStatus: 'ready',
     publicationStatus: 'published',
@@ -32,13 +32,13 @@ describe('deriveSkillModeGaps (vocabulary skill profile)', () => {
   it('counts DISTINCT WORDS per mode (a word with several caps counts once), known if any cap is solid', () => {
     const evidence = [
       // word A, recognise: two caps, both solid → 1 known word
-      ev({ sourceRef: 'A', capabilityType: 'text_recognition', ...mastered }),
-      ev({ sourceRef: 'A', capabilityType: 'meaning_recall', ...mastered }),
+      ev({ sourceRef: 'A', capabilityType: 'recognise_meaning_from_text_cap', ...mastered }),
+      ev({ sourceRef: 'A', capabilityType: 'recall_meaning_from_text_cap', ...mastered }),
       // word B, recognise: one solid cap, one weak cap → still 1 known word (any-cap-solid)
-      ev({ sourceRef: 'B', capabilityType: 'text_recognition', ...mastered }),
-      ev({ sourceRef: 'B', capabilityType: 'meaning_recall', ...learning }),
+      ev({ sourceRef: 'B', capabilityType: 'recognise_meaning_from_text_cap', ...mastered }),
+      ev({ sourceRef: 'B', capabilityType: 'recall_meaning_from_text_cap', ...learning }),
       // word C, recognise: only a weak cap → practised but not known
-      ev({ sourceRef: 'C', capabilityType: 'l1_to_id_choice', ...learning }),
+      ev({ sourceRef: 'C', capabilityType: 'recognise_form_from_meaning_cap', ...learning }),
     ]
 
     const recognise = deriveSkillModeGaps({ evidence, now: NOW }).find((g) => g.mode === 'recognise')!
@@ -50,13 +50,13 @@ describe('deriveSkillModeGaps (vocabulary skill profile)', () => {
   it('reports the receptive→productive→aural gap as word counts (never weakest-wins)', () => {
     const evidence = [
       // recognise: 2 known words
-      ev({ sourceRef: 'A', capabilityType: 'text_recognition', ...mastered }),
-      ev({ sourceRef: 'B', capabilityType: 'meaning_recall', ...mastered }),
+      ev({ sourceRef: 'A', capabilityType: 'recognise_meaning_from_text_cap', ...mastered }),
+      ev({ sourceRef: 'B', capabilityType: 'recall_meaning_from_text_cap', ...mastered }),
       // produce: 1 known word
-      ev({ sourceRef: 'A', capabilityType: 'form_recall', ...mastered }),
-      ev({ sourceRef: 'B', capabilityType: 'form_recall', ...learning }),
+      ev({ sourceRef: 'A', capabilityType: 'produce_form_from_meaning_cap', ...mastered }),
+      ev({ sourceRef: 'B', capabilityType: 'produce_form_from_meaning_cap', ...learning }),
       // listen: 0 known words
-      ev({ sourceRef: 'A', capabilityType: 'audio_recognition', ...learning }),
+      ev({ sourceRef: 'A', capabilityType: 'recognise_meaning_from_audio_cap', ...learning }),
     ]
     const byMode = Object.fromEntries(
       deriveSkillModeGaps({ evidence, now: NOW }).map((g) => [g.mode, g]),
@@ -68,15 +68,15 @@ describe('deriveSkillModeGaps (vocabulary skill profile)', () => {
 
   it('only counts vocabulary (item) capabilities — grammar/pattern caps are excluded', () => {
     const evidence = [
-      ev({ capabilityType: 'text_recognition', ...mastered }),
-      ev({ sourceKind: 'pattern', capabilityType: 'pattern_recognition', ...mastered }),
+      ev({ capabilityType: 'recognise_meaning_from_text_cap', ...mastered }),
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'recognise_grammar_pattern_cap', ...mastered }),
     ]
     const recognise = deriveSkillModeGaps({ evidence, now: NOW }).find((g) => g.mode === 'recognise')!
     expect(recognise.practisedWords).toBe(1)
   })
 
   it('gates a mode with no words as confidence none, and uses WORD counts for the thresholds', () => {
-    const evidence = [ev({ capabilityType: 'text_recognition', ...mastered })]
+    const evidence = [ev({ capabilityType: 'recognise_meaning_from_text_cap', ...mastered })]
     const gaps = deriveSkillModeGaps({ evidence, now: NOW })
     const listen = gaps.find((g) => g.mode === 'listen')!
     expect(listen.confidence).toBe('none')

@@ -4,7 +4,7 @@
 // (sentence + options string[] + correct_option_id). The former item-sourced
 // runtime path (build a cloze from an item_contexts carrier + cascade distractors)
 // is removed — item cloze is now typed-only (it routes to the `cloze` builder, not
-// cloze_mcq). cloze_mcq serves only pattern_recognition.
+// cloze_mcq). cloze_mcq serves only recognise_grammar_pattern_cap.
 
 import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'

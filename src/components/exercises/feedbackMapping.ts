@@ -77,7 +77,7 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
     }
 
     case 'typed_recall': {
-      // affixed_form_pair sub-branch — morphology drills. Renders in the
+      // word_form_pair_src sub-branch — morphology drills. Renders in the
       // grammar-reveal layout so the allomorph rule surfaces as the
       // explanation card (ExerciseFeedback.tsx:274 only renders `explanation`
       // under grammar-reveal). Added 2026-05-21 per

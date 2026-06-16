@@ -54,9 +54,9 @@ describe('mastery model — capability fetch chunking', () => {
       {
         id: 'cap-1',
         canonical_key: 'k',
-        source_kind: 'pattern',
+        source_kind: 'grammar_pattern_src',
         source_ref: 'lesson-2/pattern-l2-ini-itu-demonstrative',
-        capability_type: 'pattern_recognition',
+        capability_type: 'recognise_grammar_pattern_cap',
         modality: 'text',
         readiness_status: 'ready',
         publication_status: 'published',

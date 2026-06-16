@@ -65,7 +65,7 @@ export function isOverHarvestedItemCap(
   cap: { sourceKind: string; sourceRef: string },
   itemTypeBySlug: ReadonlyMap<string, string>,
 ): boolean {
-  if (cap.sourceKind !== 'item') return false
+  if (cap.sourceKind !== 'vocabulary_src') return false
   const slug = extractItemSlug(cap.sourceRef)
   if (slug == null) return false
   const itemType = itemTypeBySlug.get(slug)

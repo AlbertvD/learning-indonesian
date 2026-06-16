@@ -81,7 +81,7 @@ export function validateItemSourceRefResolvability(
   const slugList = [...itemSlugs]
   const violations: { sourceRef: string; slug: string; closest: string | null }[] = []
   for (const c of capabilities) {
-    if (c.sourceKind !== 'item') continue
+    if (c.sourceKind !== 'vocabulary_src') continue
     const slug = extractItemSlug(c.sourceRef)
     if (slug == null) continue
     if (itemSlugs.has(slug)) continue

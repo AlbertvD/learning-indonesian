@@ -1,6 +1,6 @@
 /**
  * projectors/dialogueArtifacts.ts — emit the typed `dialogue_clozes` row that
- * makes a dialogue_line:contextual_cloze capability renderable.
+ * makes a dialogue_line:produce_form_from_context_cap capability renderable.
  *
  * Decision 5b in projectors/vocab.ts emits the capability ROW for every
  * dialogue line whose slug matches an authored cloze context; this projector
@@ -25,7 +25,7 @@ import type { VocabStagingClozeContext } from './vocab'
 export interface DialogueArtifactsInput {
   /**
    * The `contextualClozeCapabilities` returned by `projectVocab`. Only caps
-   * with `sourceKind === 'dialogue_line'` are processed — the helper is a
+   * with `sourceKind === 'dialogue_line_src'` are processed — the helper is a
    * no-op on any other shape so callers can pass the whole list safely.
    */
   contextualClozeCapabilities: ReadonlyArray<CapabilityInput>
@@ -129,7 +129,7 @@ export function projectDialogueArtifacts(input: DialogueArtifactsInput): Dialogu
   const findings: ValidationFinding[] = []
 
   const dialogueCaps = input.contextualClozeCapabilities.filter(
-    (cap) => cap.sourceKind === 'dialogue_line' && cap.capabilityType === 'contextual_cloze',
+    (cap) => cap.sourceKind === 'dialogue_line_src' && cap.capabilityType === 'produce_form_from_context_cap',
   )
   if (dialogueCaps.length === 0) {
     return { dialogueClozes, findings }

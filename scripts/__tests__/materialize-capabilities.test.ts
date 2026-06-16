@@ -4,10 +4,10 @@ import type { ProjectedCapability } from '@/lib/capabilities'
 
 function capability(overrides: Partial<ProjectedCapability> = {}): ProjectedCapability {
   return {
-    canonicalKey: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
-    sourceKind: 'item',
+    canonicalKey: 'cap:v1:vocabulary_src:learning_items/item-1:recall_meaning_from_text_cap:id_to_l1:text:nl',
+    sourceKind: 'vocabulary_src',
     sourceRef: 'learning_items/item-1',
-    capabilityType: 'meaning_recall',
+    capabilityType: 'recall_meaning_from_text_cap',
     skillType: 'meaning_recall',
     direction: 'id_to_l1',
     modality: 'text',
@@ -31,7 +31,7 @@ describe('capability materialization planning', () => {
       aliases: [],
       applyBackfill: false,
       readinessByCanonicalKey: new Map([[
-        'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
+        'cap:v1:vocabulary_src:learning_items/item-1:recall_meaning_from_text_cap:id_to_l1:text:nl',
         'ready',
       ]]),
     })
@@ -55,12 +55,12 @@ describe('capability materialization planning', () => {
 
   it('materializes Dutch-to-Indonesian choice metadata without rewriting learner state', () => {
     const bridge = capability({
-      canonicalKey: 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl',
-      capabilityType: 'l1_to_id_choice',
+      canonicalKey: 'cap:v1:vocabulary_src:learning_items/makan:recognise_form_from_meaning_cap:l1_to_id:text:nl',
+      capabilityType: 'recognise_form_from_meaning_cap',
       skillType: 'meaning_recall',
       direction: 'l1_to_id',
       requiredArtifacts: ['meaning:l1', 'base_text'],
-      prerequisiteKeys: ['cap:v1:item:learning_items/makan:text_recognition:id_to_l1:text:nl'],
+      prerequisiteKeys: ['cap:v1:vocabulary_src:learning_items/makan:recognise_meaning_from_text_cap:id_to_l1:text:nl'],
       difficultyLevel: 2,
     })
     const plan = planCapabilityMaterialization({
@@ -77,7 +77,7 @@ describe('capability materialization planning', () => {
       metadataJson: expect.objectContaining({
         skillType: 'meaning_recall',
         requiredArtifacts: ['meaning:l1', 'base_text'],
-        prerequisiteKeys: ['cap:v1:item:learning_items/makan:text_recognition:id_to_l1:text:nl'],
+        prerequisiteKeys: ['cap:v1:vocabulary_src:learning_items/makan:recognise_meaning_from_text_cap:id_to_l1:text:nl'],
       }),
     }))
     expect(plan.backfillWrites).toEqual([])
@@ -86,7 +86,7 @@ describe('capability materialization planning', () => {
   it('supports split aliases and refuses inferred auto-backfill', () => {
     const plan = planCapabilityMaterialization({
       capabilities: [capability()],
-      existingCanonicalKeys: new Set(['cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl']),
+      existingCanonicalKeys: new Set(['cap:v1:vocabulary_src:learning_items/item-1:recall_meaning_from_text_cap:id_to_l1:text:nl']),
       aliases: [{
         oldCanonicalKey: 'old-key',
         newCanonicalKey: 'new-key-a',
@@ -136,7 +136,7 @@ describe('capability materialization planning', () => {
       learnerBackfillCandidates: [{
         userId: 'user-1',
         capabilityId: 'capability-1',
-        canonicalKey: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
+        canonicalKey: 'cap:v1:vocabulary_src:learning_items/item-1:recall_meaning_from_text_cap:id_to_l1:text:nl',
         readinessStatus: 'ready',
         publicationStatus: 'published',
       }],
@@ -145,7 +145,7 @@ describe('capability materialization planning', () => {
     expect(plan.backfillWrites).toEqual([{
       userId: 'user-1',
       capabilityId: 'capability-1',
-      canonicalKeySnapshot: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
+      canonicalKeySnapshot: 'cap:v1:vocabulary_src:learning_items/item-1:recall_meaning_from_text_cap:id_to_l1:text:nl',
       activationSource: 'admin_backfill',
     }])
   })
@@ -159,13 +159,13 @@ describe('capability materialization planning', () => {
       learnerBackfillCandidates: [{
         userId: 'user-1',
         capabilityId: 'capability-1',
-        canonicalKey: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
+        canonicalKey: 'cap:v1:vocabulary_src:learning_items/item-1:recall_meaning_from_text_cap:id_to_l1:text:nl',
         readinessStatus: 'blocked',
         publicationStatus: 'published',
       }, {
         userId: 'user-1',
         capabilityId: 'capability-2',
-        canonicalKey: 'cap:v1:item:learning_items/item-2:meaning_recall:id_to_l1:text:nl',
+        canonicalKey: 'cap:v1:vocabulary_src:learning_items/item-2:recall_meaning_from_text_cap:id_to_l1:text:nl',
         readinessStatus: 'ready',
         publicationStatus: 'draft',
       }],

@@ -9,7 +9,7 @@ function evt(
   sourceRef: string,
   before: Partial<WeeklyReviewEvent['before']>,
   after: Partial<WeeklyReviewEvent['after']>,
-  sourceKind: CapabilitySourceKind = 'item',
+  sourceKind: CapabilitySourceKind = 'vocabulary_src',
 ): WeeklyReviewEvent {
   const base = { reviewCount: 0, lapseCount: 0, consecutiveFailureCount: 0, stability: null, lastReviewedAt: null }
   return { sourceRef, sourceKind, before: { ...base, ...before }, after: { ...base, ...after } }
@@ -30,8 +30,8 @@ describe('deriveWeeklyMovement', () => {
 
   it('counts grammar advances in the grammar bucket', () => {
     const events = [
-      evt('lesson-1/pattern-ber', { reviewCount: 1, stability: 1 }, { reviewCount: 3, stability: 6 }, 'pattern'),
-      evt('makan', { reviewCount: 1, stability: 1 }, { reviewCount: 3, stability: 6 }, 'item'),
+      evt('lesson-1/pattern-ber', { reviewCount: 1, stability: 1 }, { reviewCount: 3, stability: 6 }, 'grammar_pattern_src'),
+      evt('makan', { reviewCount: 1, stability: 1 }, { reviewCount: 3, stability: 6 }, 'vocabulary_src'),
     ]
     expect(deriveWeeklyMovement({ events, now: NOW })).toEqual({
       advancedVocab: 1,
@@ -43,7 +43,7 @@ describe('deriveWeeklyMovement', () => {
 
   it('excludes non-funnel source kinds (dialogue_line) from movement', () => {
     const events = [
-      evt('lesson-1/section-1/line-2', { reviewCount: 1, stability: 1 }, { reviewCount: 3, stability: 6 }, 'dialogue_line'),
+      evt('lesson-1/section-1/line-2', { reviewCount: 1, stability: 1 }, { reviewCount: 3, stability: 6 }, 'dialogue_line_src'),
     ]
     expect(deriveWeeklyMovement({ events, now: NOW })).toEqual({
       advancedVocab: 0,

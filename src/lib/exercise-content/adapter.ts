@@ -138,13 +138,13 @@ export interface PatternBucketEntry {
 }
 
 export interface BucketingResult {
-  /** Per-source-kind buckets. `item`, `dialogue_line`, `affixed_form_pair`, and
+  /** Per-source-kind buckets. `item`, `dialogue_line`, `word_form_pair_src`, and
    *  `pattern` are populated today; future source kinds (podcast_*) add their
    *  own bucket entries here without touching the resolver. */
   buckets: {
     item: ItemBucketEntry[]
     dialogue_line: DialogueLineBucketEntry[]
-    affixed_form_pair: AffixedFormPairBucketEntry[]
+    word_form_pair_src: AffixedFormPairBucketEntry[]
     pattern: PatternBucketEntry[]
   }
   /** Blocks whose canonical key was malformed or whose source kind has no
@@ -174,7 +174,7 @@ const PATTERN_REF_RE = /^lesson-\d+\/pattern-.+$/u
  * `pattern_ref_unparseable`.
  */
 export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResult {
-  const buckets: BucketingResult['buckets'] = { item: [], dialogue_line: [], affixed_form_pair: [], pattern: [] }
+  const buckets: BucketingResult['buckets'] = { item: [], dialogue_line: [], word_form_pair_src: [], pattern: [] }
   const failures = new Map<string, CapabilityRenderContext>()
 
   for (const block of blocks) {
@@ -186,7 +186,7 @@ export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResu
       continue
     }
 
-    if (decoded.sourceKind === 'item') {
+    if (decoded.sourceKind === 'vocabulary_src') {
       const itemKey = extractItemKey(decoded.sourceRef)
       if (!itemKey) {
         failures.set(block.id, makeFailContext(block, 'sourceref_unparseable',
@@ -198,7 +198,7 @@ export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResu
       continue
     }
 
-    if (decoded.sourceKind === 'dialogue_line') {
+    if (decoded.sourceKind === 'dialogue_line_src') {
       if (!DIALOGUE_LINE_REF_RE.test(decoded.sourceRef)) {
         failures.set(block.id, makeFailContext(block, 'dialogue_line_ref_unparseable',
           `dialogue_line sourceRef "${decoded.sourceRef}" does not match lesson-N/section-M/line-K`,
@@ -209,14 +209,14 @@ export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResu
       continue
     }
 
-    if (decoded.sourceKind === 'affixed_form_pair') {
+    if (decoded.sourceKind === 'word_form_pair_src') {
       if (!AFFIXED_FORM_PAIR_REF_RE.test(decoded.sourceRef)) {
         failures.set(block.id, makeFailContext(block, 'affixed_form_pair_ref_unparseable',
-          `affixed_form_pair sourceRef "${decoded.sourceRef}" does not match lesson-N/morphology/<slug>`,
+          `word_form_pair_src sourceRef "${decoded.sourceRef}" does not match lesson-N/morphology/<slug>`,
           { sourceRef: decoded.sourceRef }))
         continue
       }
-      buckets.affixed_form_pair.push({
+      buckets.word_form_pair_src.push({
         block,
         sourceRef: decoded.sourceRef,
         direction: decoded.tail?.direction ?? null,
@@ -224,7 +224,7 @@ export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResu
       continue
     }
 
-    if (decoded.sourceKind === 'pattern') {
+    if (decoded.sourceKind === 'grammar_pattern_src') {
       if (!PATTERN_REF_RE.test(decoded.sourceRef)) {
         failures.set(block.id, makeFailContext(block, 'pattern_ref_unparseable',
           `pattern sourceRef "${decoded.sourceRef}" does not match lesson-N/pattern-<slug>`,
@@ -235,7 +235,7 @@ export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResu
       continue
     }
 
-    // Other source kinds (podcast_segment, podcast_phrase) have no fetcher yet.
+    // Other source kinds (podcast_segment_src, podcast_phrase_src) have no fetcher yet.
     // Caps with these source kinds should already be marked blocked by
     // validateCapability — this is a belt-and-braces guard in case a stale
     // block reaches the resolver.
@@ -328,11 +328,11 @@ export function createAdapter(client: SupabaseSchemaClient): Adapter {
     async loadBlockData(buckets, options) {
       const result = new Map<string, BlockResolutionData>()
       // Per-source-kind fetchers run in parallel. item + dialogue_line +
-      // affixed_form_pair + pattern populated today; podcasts follow.
+      // word_form_pair_src + pattern populated today; podcasts follow.
       await Promise.all([
         fetchForItemBlocks(client, buckets.item, options.userLanguage, result),
         fetchForDialogueLineBlocks(client, buckets.dialogue_line, options.userLanguage, result),
-        fetchForAffixedFormPairBlocks(client, buckets.affixed_form_pair, options.userLanguage, result),
+        fetchForAffixedFormPairBlocks(client, buckets.word_form_pair_src, options.userLanguage, result),
         fetchForPatternBlocks(client, buckets.pattern, options.userLanguage, result),
       ])
       return result

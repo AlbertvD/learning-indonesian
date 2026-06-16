@@ -26,7 +26,7 @@ export default function TypedRecall({
   const { learningItem, meanings, answerVariants, affixedFormPairData } = exerciseItem
 
   // Resolve prompt + accepted answer + variants from whichever source path is
-  // active. The affixed_form_pair path has no learningItem / meanings /
+  // active. The word_form_pair_src path has no learningItem / meanings /
   // variants; the item path has them.
   let promptText: string
   let acceptedAnswer: string
