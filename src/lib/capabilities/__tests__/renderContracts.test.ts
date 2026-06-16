@@ -114,10 +114,10 @@ describe('RENDER_CONTRACTS table', () => {
     }
   })
 
-  it('recognise_grammar_pattern_cap routes to the 3 recognition grammar exercises (PR 4 Decision G)', () => {
-    expect(RENDER_CONTRACTS.transform_sentence_ex.capabilityTypes).toContain('recognise_grammar_pattern_cap')
-    expect(RENDER_CONTRACTS.translate_sentence_ex.capabilityTypes).toContain('recognise_grammar_pattern_cap')
-    expect(RENDER_CONTRACTS.choose_missing_word_ex.capabilityTypes).toContain('recognise_grammar_pattern_cap')
+  it('grammar caps route by level: recognise→cloze, contrast→choose_correct_form, produce→transform/translate (ADR 0017)', () => {
+    expect(RENDER_CONTRACTS.choose_missing_word_ex.capabilityTypes).toEqual(['recognise_grammar_pattern_cap'])
+    expect(RENDER_CONTRACTS.transform_sentence_ex.capabilityTypes).toEqual(['produce_grammar_pattern_cap'])
+    expect(RENDER_CONTRACTS.translate_sentence_ex.capabilityTypes).toEqual(['produce_grammar_pattern_cap'])
   })
 
   it('contrast_grammar_pattern_cap routes to choose_correct_form_ex (PR 4 Decision G)', () => {
@@ -139,10 +139,15 @@ describe('exerciseTypesForCapability', () => {
     expect(exerciseTypesForCapability('recognise_meaning_from_text_cap')).toEqual(['choose_meaning_ex'])
   })
 
-  it('returns the 3 recognition grammar exercises for recognise_grammar_pattern_cap (PR 4)', () => {
-    expect(exerciseTypesForCapability('recognise_grammar_pattern_cap')).toEqual(
-      expect.arrayContaining(['transform_sentence_ex', 'translate_sentence_ex', 'choose_missing_word_ex']),
-    )
+  it('returns only cloze for recognise_grammar_pattern_cap (ADR 0017)', () => {
+    expect(exerciseTypesForCapability('recognise_grammar_pattern_cap')).toEqual(['choose_missing_word_ex'])
+  })
+
+  it('returns the two production exercises for produce_grammar_pattern_cap (ADR 0017)', () => {
+    expect(exerciseTypesForCapability('produce_grammar_pattern_cap')).toEqual([
+      'transform_sentence_ex',
+      'translate_sentence_ex',
+    ])
   })
 
   it('returns ["choose_correct_form_ex"] for contrast_grammar_pattern_cap (PR 4)', () => {

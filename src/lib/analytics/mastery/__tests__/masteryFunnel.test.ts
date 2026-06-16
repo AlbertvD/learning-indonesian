@@ -127,6 +127,7 @@ describe('deriveGrammarTopics', () => {
         reviewCount: 6,
         recognise: { label: 'mastered', reviewCount: 5 },
         contrast: { label: 'learning', reviewCount: 1 },
+        produce: null,
       },
       {
         slug: 'lesson-4/pattern-l4-ber-prefix',
@@ -135,7 +136,49 @@ describe('deriveGrammarTopics', () => {
         reviewCount: 0,
         recognise: { label: 'introduced', reviewCount: 0 },
         contrast: null,
+        produce: null,
       },
     ])
+  })
+
+  it('ADR 0017: exposes a produce facet and lowers the overall rung to the weakest of three', () => {
+    const evidence = [
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'recognise_grammar_pattern_cap', sourceRef: 'lesson-5/pattern-l5-x', reviewCount: 6, stability: 30, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'contrast_grammar_pattern_cap', sourceRef: 'lesson-5/pattern-l5-x', reviewCount: 6, stability: 30, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      // produce only strengthening → drags the overall rung below mastered
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'produce_grammar_pattern_cap', sourceRef: 'lesson-5/pattern-l5-x', reviewCount: 2, stability: 8, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+    ]
+
+    const [topic] = deriveGrammarTopics({ evidence, now: NOW })
+
+    expect(topic.recognise?.label).toBe('mastered')
+    expect(topic.contrast?.label).toBe('mastered')
+    expect(topic.produce?.label).toBe('strengthening')
+    expect(topic.produce?.reviewCount).toBe(2)
+    // weakest-wins overall is no longer mastered, because produce isn't
+    expect(topic.label).toBe('strengthening')
+  })
+})
+
+describe('grammar funnel counts the produce rung (ADR 0017)', () => {
+  it('a pattern is mastered only once its produce cap is too', () => {
+    // recognise + contrast mastered, produce still strengthening → NOT mastered
+    const notYet = [
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'recognise_grammar_pattern_cap', sourceRef: 'lesson-6/pattern-p', reviewCount: 6, stability: 30, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'contrast_grammar_pattern_cap', sourceRef: 'lesson-6/pattern-p', reviewCount: 6, stability: 30, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+      ev({ sourceKind: 'grammar_pattern_src', capabilityType: 'produce_grammar_pattern_cap', sourceRef: 'lesson-6/pattern-p', reviewCount: 2, stability: 8, lastReviewedAt: '2026-06-09T12:00:00Z' }),
+    ]
+    const f1 = deriveMasteryFunnel({ evidence: notYet, now: NOW })
+    expect(f1.grammar.mastered).toBe(0)
+    expect(f1.grammar.strengthening).toBe(1)
+
+    // all three mastered → the pattern counts as mastered
+    const allMastered = notYet.map((e) =>
+      e.capabilityType === 'produce_grammar_pattern_cap'
+        ? { ...e, reviewCount: 6, stability: 30 }
+        : e,
+    )
+    const f2 = deriveMasteryFunnel({ evidence: allMastered, now: NOW })
+    expect(f2.grammar.mastered).toBe(1)
   })
 })

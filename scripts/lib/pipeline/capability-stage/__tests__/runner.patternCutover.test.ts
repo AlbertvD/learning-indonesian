@@ -239,7 +239,7 @@ describe('runner pattern cutover (Task 6)', () => {
     )
     const patternCapRows = skipIfExists.flatMap((op) => (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>]))
       .filter((r) => r?.source_kind === 'grammar_pattern_src')
-    expect(patternCapRows.length).toBe(2) // recognise_grammar_pattern_cap + contrast_grammar_pattern_cap
+    expect(patternCapRows.length).toBe(3) // ADR 0017: recognise + contrast + produce
     expect(patternCapRows.every((r) => String(r.source_ref).includes('pattern-l1-bukan-negatie'))).toBe(true)
   })
 

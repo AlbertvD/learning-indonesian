@@ -117,11 +117,11 @@ describe('findCapsMissingSatellite', () => {
     expect(missing.map((m) => m.id)).toEqual(['p2'])
   })
 
-  it('treats recognise_grammar_pattern_cap as covered by ANY of the 3 recognition tables (HC20 mirror)', async () => {
+  it('treats recognise_grammar_pattern_cap as covered ONLY by a cloze row (ADR 0017; HC20 mirror)', async () => {
     const caps = [
-      patternCap('r1', 'meN', 'recognise_grammar_pattern_cap'), // covered by choose_missing_word_ex
-      patternCap('r2', 'di', 'recognise_grammar_pattern_cap'), // covered by transform_sentence_ex
-      patternCap('r3', 'ber', 'recognise_grammar_pattern_cap'), // no recognition row → offender
+      patternCap('r1', 'meN', 'recognise_grammar_pattern_cap'), // covered by cloze_mcq → ok
+      patternCap('r2', 'di', 'recognise_grammar_pattern_cap'),  // ONLY transform → offender (no cloze)
+      patternCap('r3', 'ber', 'recognise_grammar_pattern_cap'), // no row at all → offender
     ]
     const client = buildSatelliteClient({
       grammar_patterns: [
@@ -135,7 +135,30 @@ describe('findCapsMissingSatellite', () => {
       cloze_mcq_exercises: [{ grammar_pattern_id: 'gp-men' }],
     })
     const missing = await findCapsMissingSatellite(client, caps)
-    expect(missing.map((m) => m.id)).toEqual(['r3'])
+    expect(missing.map((m) => m.id).sort()).toEqual(['r2', 'r3'])
+  })
+
+  it('treats produce_grammar_pattern_cap as covered by transform OR translate (ADR 0017)', async () => {
+    const caps = [
+      patternCap('q1', 'meN', 'produce_grammar_pattern_cap'), // covered by transform → ok
+      patternCap('q2', 'di', 'produce_grammar_pattern_cap'),  // covered by translate → ok
+      patternCap('q3', 'ber', 'produce_grammar_pattern_cap'), // only a cloze row → offender
+      patternCap('q4', 'ke', 'produce_grammar_pattern_cap'),  // no row at all → offender
+    ]
+    const client = buildSatelliteClient({
+      grammar_patterns: [
+        { id: 'gp-men', slug: 'meN' },
+        { id: 'gp-di', slug: 'di' },
+        { id: 'gp-ber', slug: 'ber' },
+        { id: 'gp-ke', slug: 'ke' },
+      ],
+      contrast_pair_exercises: [],
+      sentence_transformation_exercises: [{ grammar_pattern_id: 'gp-men' }],
+      constrained_translation_exercises: [{ grammar_pattern_id: 'gp-di' }],
+      cloze_mcq_exercises: [{ grammar_pattern_id: 'gp-ber' }],
+    })
+    const missing = await findCapsMissingSatellite(client, caps)
+    expect(missing.map((m) => m.id).sort()).toEqual(['q3', 'q4'])
   })
 
   it('flags a pattern cap whose slug does not resolve to a grammar_pattern row', async () => {

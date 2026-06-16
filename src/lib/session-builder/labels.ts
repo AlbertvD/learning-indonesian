@@ -66,6 +66,11 @@ export const CAPABILITY_DISPLAY = {
     description: 'Kies welke van twee bijna-gelijke Indonesische vormen past in de zin.',
     example: 'menulis vs ditulis → kies de actieve vorm',
   },
+  produce_grammar_pattern_cap: {
+    label: 'Patroon toepassen',
+    description: 'Pas het grammaticale patroon toe om zelf een Indonesische zin te maken.',
+    example: 'bouw de zin om naar de passieve vorm',
+  },
   recognise_word_form_link_cap: {
     label: 'Stamwoord herkennen',
     description: 'Lees een afgeleide Indonesische vorm en typ het stamwoord.',

@@ -39,7 +39,7 @@ A single atomic piece of **lexical** content to be learned — a **word or a sho
 
 ## Capability Type
 
-One of the 12 *kinds* of skill facet through which a content source can be practised, fixed in code (`src/lib/capabilities/capabilityTypes.ts` — `CAPABILITY_TYPES`). A capability type is the *how* of knowing, not a thing in itself.
+One of the 13 *kinds* of skill facet through which a content source can be practised, fixed in code (`src/lib/capabilities/capabilityTypes.ts` — `CAPABILITY_TYPES`). A capability type is the *how* of knowing, not a thing in itself.
 
 The **mode** column is the pedagogically meaningful axis (receptive → productive, ADR 0007) — the `SkillType` each type maps to via `deriveSkillTypeFromCapabilityType`: **recognise** (receptive; pick/know the answer), **recall meaning** (state what it means), **produce form** (write the Indonesian unaided). "L1" = the learner's language (Dutch or English); "id" = Indonesian. Definitions consolidated from `capabilityTypes.ts` + `docs/current-system/human-product-and-learning-guide.md` §7–8 + `docs/current-system/content-pipeline-and-quality-gates.md` §8–9.
 
@@ -56,6 +56,7 @@ The **mode** column is the pedagogically meaningful axis (receptive → producti
 | `produce_form_from_context_cap` *(was `contextual_cloze`)* | `vocabulary_src` + `dialogue_line_src` | produce form | Fill the blanked word in a sentence or dialogue line — produce the correct form from context. |
 | `recognise_grammar_pattern_cap` *(was `pattern_recognition`)* | `grammar_pattern_src` *(was `pattern`)* | recognise | Recognise a grammar pattern in use and understand its function (e.g. the role of the `meN-` prefix). |
 | `contrast_grammar_pattern_cap` *(was `pattern_contrast`)* | `grammar_pattern_src` | recognise | Distinguish a grammar pattern from a contrasting one (e.g. `belum` vs `tidak`, `meN-` vs `di-`). |
+| `produce_grammar_pattern_cap` *(new — §7.6 level-purity split, 2026-06-16)* | `grammar_pattern_src` | produce form | **Deploy** a grammar pattern to build or transform a whole sentence (rendered by `transform_sentence_ex` + `translate_sentence_ex`). Distinct from vocab production: it is *rule application / composition over open content*, not lexical recall of one stored form. Gated **after** `contrast` (prereq chain `recognise → contrast → produce`, ADR 0007). |
 | `recognise_word_form_link_cap` *(was `root_derived_recognition`)* | `word_form_pair_src` *(was `affixed_form_pair`)* | recognise | Recognise the link between a root and its affixed/derived form (e.g. `baca` → `membaca`), or the meaning of the derived form. |
 | `produce_derived_form_cap` *(was `root_derived_recall`)* | `word_form_pair_src` | produce form | Produce the derived (affixed) form from the root, or the root from the derived form. |
 | `recognise_gist_from_audio_cap` *(was `podcast_gist`)* | `podcast_segment_src` *(was `podcast_segment`)* | recognise | Listen to a podcast segment and grasp its overall gist (exposure-oriented; feature not yet live — 0 rows). |
@@ -106,7 +107,7 @@ The module that composes a learning session from due active capabilities, Pedago
 
 ## Sibling Capabilities
 
-Two or more **Learning Capabilities** that share the same `source_ref` — i.e. different **capability types** of the *same* content source. A typical vocabulary word has ~6 siblings (`recognise_meaning_from_text_cap`, `recognise_meaning_from_audio_cap`, `recall_meaning_from_text_cap`, `recognise_form_from_meaning_cap`, `produce_form_from_meaning_cap`, `produce_form_from_audio_cap`, all under one `learning_items/<slug>` ref); a `grammar_pattern_src` or `word_form_pair_src` cap has 2; a `dialogue_line_src` has 1 (it is its own only sibling). The sibling key is `source_ref` (non-null on every projected capability). Siblings share meaning, so practising two of them close together lets one **prime** the other (interference) — making recall artificially easy rather than a genuine retrieval.
+Two or more **Learning Capabilities** that share the same `source_ref` — i.e. different **capability types** of the *same* content source. A typical vocabulary word has ~6 siblings (`recognise_meaning_from_text_cap`, `recognise_meaning_from_audio_cap`, `recall_meaning_from_text_cap`, `recognise_form_from_meaning_cap`, `produce_form_from_meaning_cap`, `produce_form_from_audio_cap`, all under one `learning_items/<slug>` ref); a `grammar_pattern_src` cap has 3 (`recognise` → `contrast` → `produce`, the §7.6 split); a `word_form_pair_src` cap has 2; a `dialogue_line_src` has 1 (it is its own only sibling). The sibling key is `source_ref` (non-null on every projected capability). Siblings share meaning, so practising two of them close together lets one **prime** the other (interference) — making recall artificially easy rather than a genuine retrieval.
 
 ## Sibling Burying
 

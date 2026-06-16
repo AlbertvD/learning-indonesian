@@ -154,6 +154,23 @@ describe('mastery model derivation', () => {
     expect(result.weakestDimension).toBe('pattern_use')
   })
 
+  it('ADR 0017: routes produce_grammar_pattern_cap into the pattern_use dimension (folded, no new dimension)', () => {
+    const dimensions = deriveMasteryDimensions([
+      evidence({
+        capabilityId: 'cap-grammar-produce',
+        canonicalKey: 'pattern:meN:produce_grammar_pattern_cap:none',
+        sourceKind: 'grammar_pattern_src',
+        sourceRef: 'lesson-3/pattern-meN',
+        capabilityType: 'produce_grammar_pattern_cap',
+        reviewCount: 3,
+        stability: 5,
+        lastReviewedAt: '2026-04-21T12:00:00.000Z',
+      }),
+    ], now)
+
+    expect(dimensions).toEqual([expect.objectContaining({ dimension: 'pattern_use', capabilityCount: 1 })])
+  })
+
   it('routes produce_derived_form_cap capabilities into the morphology dimension', () => {
     const dimensions = deriveMasteryDimensions([
       evidence({

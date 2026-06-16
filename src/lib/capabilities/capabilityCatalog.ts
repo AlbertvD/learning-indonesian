@@ -129,8 +129,9 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
     // Emitting [] both (a) stops the shared artifact builder from writing
     // pattern_explanation:l1/pattern_example (buildArtifactsForCapability maps
     // over requiredArtifacts), and (b) moves readiness off the legacy artifact
-    // bag onto renderContracts routing (contrast_grammar_pattern_cap → choose_correct_form_ex,
-    // recognise_grammar_pattern_cap → transform_sentence_ex/translate_sentence_ex/choose_missing_word_ex).
+    // bag onto renderContracts routing (ADR 0017: recognise_grammar_pattern_cap →
+    // choose_missing_word_ex; contrast_grammar_pattern_cap → choose_correct_form_ex;
+    // produce_grammar_pattern_cap → transform_sentence_ex/translate_sentence_ex).
     const requiredArtifacts: ArtifactKind[] = []
     const recognitionCapability = createCapability({
       sourceKind: 'grammar_pattern_src',
@@ -146,7 +147,7 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
     // Decision 5a — every recognise_grammar_pattern_cap capability has a sibling
     // contrast_grammar_pattern_cap capability. Mirrors the recognition rule's source_ref
     // so the runtime can render contrast exercises against the same examples.
-    capabilities.push(createCapability({
+    const contrastCapability = createCapability({
       sourceKind: 'grammar_pattern_src',
       sourceRef,
       capabilityType: 'contrast_grammar_pattern_cap',
@@ -156,6 +157,24 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: 'none',
       requiredArtifacts,
       prerequisiteKeys: [recognitionCapability.canonicalKey],
+    })
+    capabilities.push(contrastCapability)
+    // ADR 0017 — every pattern also emits a produce_grammar_pattern_cap, gated
+    // after contrast (linear recognise → contrast → produce chain). It carries
+    // the two production exercises (transform_sentence_ex, translate_sentence_ex)
+    // per renderContracts, so production is scheduled as a produce-level skill.
+    // skillType is passed explicitly so the catalog matches
+    // deriveSkillTypeFromCapabilityType's mapping.
+    capabilities.push(createCapability({
+      sourceKind: 'grammar_pattern_src',
+      sourceRef,
+      capabilityType: 'produce_grammar_pattern_cap',
+      skillType: 'produce_mode',
+      direction: 'none',
+      modality: 'text',
+      learnerLanguage: 'none',
+      requiredArtifacts,
+      prerequisiteKeys: [contrastCapability.canonicalKey],
     }))
   }
 

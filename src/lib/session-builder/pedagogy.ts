@@ -205,7 +205,7 @@ function isAllowedInSessionMode(capability: PlannerCapability): boolean {
 // types that *can* render as Phase 4 are classified at Phase 4 even when an
 // MCQ resolution is possible. The switch is exhaustive over CapabilityType so
 // any new type added to capabilityTypes.ts will fail compilation here.
-function capabilityPhase(type: CapabilityType): 1 | 2 | 3 | 4 {
+export function capabilityPhase(type: CapabilityType): 1 | 2 | 3 | 4 {
   switch (type) {
     case 'recognise_meaning_from_text_cap':
     case 'recognise_meaning_from_audio_cap':
@@ -215,13 +215,18 @@ function capabilityPhase(type: CapabilityType): 1 | 2 | 3 | 4 {
       return 2
     case 'recognise_form_from_meaning_cap':
     case 'contrast_grammar_pattern_cap':
+    case 'recognise_grammar_pattern_cap':
+      // ADR 0017: recognise_grammar_pattern_cap sits with contrast at Phase 3.
+      // For grammar this is coherence only — the actual recognise → contrast →
+      // produce sequencing is carried by prerequisiteKeys, and grammar is exempt
+      // from the source_ref-keyed staging gate (no Phase 1/2 ladder).
       return 3
     case 'produce_form_from_meaning_cap':
     case 'produce_form_from_context_cap':
     case 'produce_form_from_audio_cap':
     case 'recognise_word_form_link_cap':
     case 'produce_derived_form_cap':
-    case 'recognise_grammar_pattern_cap':
+    case 'produce_grammar_pattern_cap':
       return 4
   }
 }

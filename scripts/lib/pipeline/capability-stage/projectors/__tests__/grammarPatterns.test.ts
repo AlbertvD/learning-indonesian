@@ -29,7 +29,7 @@ const LESSON_ID = 'lesson-uuid-6'
 const LESSON_N = 6
 
 describe('projectPatternsFromCategories', () => {
-  it('emits one pattern per category, each with 2 capabilities', () => {
+  it('emits one pattern per category, each with 3 capabilities (ADR 0017)', () => {
     const out = projectPatternsFromCategories({
       categories: [
         cat({ title: 'Bukan — ontkenning', display_order: 1 }),
@@ -40,9 +40,27 @@ describe('projectPatternsFromCategories', () => {
     })
     expect(out.patternPlans).toHaveLength(2)
     for (const plan of out.patternPlans) {
-      expect(plan.capabilities).toHaveLength(2)
-      expect(plan.capabilities.map((c) => c.capabilityType).sort()).toEqual(['contrast_grammar_pattern_cap', 'recognise_grammar_pattern_cap'])
+      expect(plan.capabilities).toHaveLength(3)
+      expect(plan.capabilities.map((c) => c.capabilityType).sort()).toEqual([
+        'contrast_grammar_pattern_cap',
+        'produce_grammar_pattern_cap',
+        'recognise_grammar_pattern_cap',
+      ])
     }
+  })
+
+  it('ADR 0017: the produce cap is gated after contrast, with a distinct canonical key', () => {
+    const out = projectPatternsFromCategories({
+      categories: [cat({ title: 'Belum sudah', display_order: 1 })],
+      lessonNumber: LESSON_N,
+      lessonId: LESSON_ID,
+    })
+    const caps = out.patternPlans[0].capabilities
+    const rec = caps.find((c) => c.capabilityType === 'recognise_grammar_pattern_cap')!
+    const con = caps.find((c) => c.capabilityType === 'contrast_grammar_pattern_cap')!
+    const prod = caps.find((c) => c.capabilityType === 'produce_grammar_pattern_cap')!
+    expect(prod.prerequisiteKeys).toEqual([con.canonicalKey])
+    expect(new Set([rec.canonicalKey, con.canonicalKey, prod.canonicalKey]).size).toBe(3)
   })
 
   it('derives a lesson-prefixed slug from stableSlug(title)', () => {
@@ -128,7 +146,7 @@ describe('projectPatternsFromCategories', () => {
       lessonId: LESSON_ID,
     })
     expect(out.patternPlans).toHaveLength(1)
-    expect(out.patternPlans[0].capabilities).toHaveLength(2)
+    expect(out.patternPlans[0].capabilities).toHaveLength(3)
   })
 
   it('disambiguates two categories that slugify identically using display_order', () => {

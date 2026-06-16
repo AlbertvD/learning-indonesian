@@ -126,4 +126,23 @@ describe('capability catalog projection', () => {
     expect(contrast?.sourceRef).toBe(recognition?.sourceRef)
     expect(contrast?.prerequisiteKeys).toEqual([recognition?.canonicalKey])
   })
+
+  it('ADR 0017: each pattern emits a produce_grammar_pattern_cap gated after contrast', () => {
+    const projection = projectCapabilities(snapshot)
+    const grammarCaps = projection.capabilities.filter(c => c.sourceKind === 'grammar_pattern_src')
+    const recognition = grammarCaps.find(c => c.capabilityType === 'recognise_grammar_pattern_cap')
+    const contrast = grammarCaps.find(c => c.capabilityType === 'contrast_grammar_pattern_cap')
+    const produce = grammarCaps.find(c => c.capabilityType === 'produce_grammar_pattern_cap')
+
+    // exactly three caps per pattern (recognise → contrast → produce)
+    expect(grammarCaps).toHaveLength(3)
+    expect(produce).toBeDefined()
+    expect(produce?.skillType).toBe('produce_mode')
+    expect(produce?.sourceRef).toBe(recognition?.sourceRef)
+    // linear prereq chain: produce gated after contrast
+    expect(produce?.prerequisiteKeys).toEqual([contrast?.canonicalKey])
+    // distinct canonical keys across the three rungs
+    const keys = [recognition!.canonicalKey, contrast!.canonicalKey, produce!.canonicalKey]
+    expect(new Set(keys).size).toBe(3)
+  })
 })
