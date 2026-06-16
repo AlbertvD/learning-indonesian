@@ -19,8 +19,9 @@
  *   dialogue_line / produce_form_from_context_cap     → a dialogue_clozes row     (by capability_id, HC15)
  *   word_form_pair_src / root_derived_*   → an affixed_form_pairs row  (by capability_id, HC17)
  *   pattern / contrast_grammar_pattern_cap           → a contrast_pair_exercises row for the cap's pattern (HC19)
- *   pattern / recognise_grammar_pattern_cap        → ≥1 row across the 3 recognition exercise
- *                                          tables for the cap's pattern (HC20)
+ *   pattern / recognise_grammar_pattern_cap        → a cloze_mcq_exercises row for the cap's pattern (HC20)
+ *   pattern / produce_grammar_pattern_cap          → ≥1 row across sentence_transformation_exercises
+ *                                          ∪ constrained_translation_exercises (ADR 0017; produce HC)
  *   item / *                             → N/A — no per-cap satellite row to key on
  *                                          (§2c); item caps are never offenders.
  *
@@ -93,8 +94,9 @@ async function fetchActivePatternIds(
  * exercise row keyed by grammar_pattern_id (NOT capability_id). The link is:
  *   source_ref (lesson-N/pattern-<slug>) → slug → grammar_patterns.id →
  *   <typed table>.grammar_pattern_id.
- *   - contrast_grammar_pattern_cap    → needs a contrast_pair_exercises row.
- *   - recognise_grammar_pattern_cap → needs ≥1 row in the union of the 3 recognition tables.
+ *   - contrast_grammar_pattern_cap    → needs a contrast_pair_exercises row (HC19).
+ *   - recognise_grammar_pattern_cap → needs a cloze_mcq_exercises row (ADR 0017; HC20).
+ *   - produce_grammar_pattern_cap   → needs ≥1 row in transform ∪ translate (ADR 0017).
  * Other pattern capability_types have no satellite predicate and are never offenders.
  */
 async function findPatternCapsMissing(
@@ -116,7 +118,8 @@ async function findPatternCapsMissing(
   const stSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.transform_sentence_ex)
   const ctSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.translate_sentence_ex)
   const cmSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.choose_missing_word_ex)
-  const recognitionUnion = new Set<string>([...stSet, ...ctSet, ...cmSet])
+  // ADR 0017: produce renders from transform_sentence_ex ∪ translate_sentence_ex.
+  const produceSatelliteUnion = new Set<string>([...stSet, ...ctSet])
 
   const missing: CapForSatelliteCheck[] = []
   for (const c of patternCaps) {
@@ -124,7 +127,10 @@ async function findPatternCapsMissing(
     if (c.capability_type === 'contrast_grammar_pattern_cap') {
       if (!pid || !contrastSet.has(pid)) missing.push(c)
     } else if (c.capability_type === 'recognise_grammar_pattern_cap') {
-      if (!pid || !recognitionUnion.has(pid)) missing.push(c)
+      // ADR 0017: recognise renders from the cloze (choose_missing_word_ex) row ONLY.
+      if (!pid || !cmSet.has(pid)) missing.push(c)
+    } else if (c.capability_type === 'produce_grammar_pattern_cap') {
+      if (!pid || !produceSatelliteUnion.has(pid)) missing.push(c)
     }
     // Any other pattern capability_type: no satellite predicate → not an offender.
   }
