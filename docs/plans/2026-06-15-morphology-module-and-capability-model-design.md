@@ -169,8 +169,8 @@ Affix-bearing grammar patterns that are **LIVE** (rule tier), by lesson:
 | New exercise (`_ex`) | Level | Serves capability (`_cap`) | Reads |
 |---|---|---|---|
 | `decompose_word_ex` (derived → root+affix+meaning) | recognise | `recognise_word_form_link_cap` | affixed_form_pairs |
-| `choose_affix_ex` (root+meaning → which affix) | recognise | `recognise_word_form_link_cap` | affixed_form_pairs |
-| `choose_allomorph_ex` (root → pick meN-/peN- form) | recognise | **`recognise_allomorph_from_root_cap`** (NEW) | `allomorph_class` |
+| ~~`choose_affix_ex`~~ → `cued_recall` (root+meaning → which affix) | recognise | `recognise_word_form_link_cap` | affixed_form_pairs |
+| ~~`choose_allomorph_ex`~~ → `cued_recall` (root → pick meN-/peN- form) | recognise | **`recognise_allomorph_from_root_cap`** (NEW cap; rendered via widened `cued_recall`) | `allomorph_class` |
 | `produce_derived_form_ex` (root+affix → type derived) | produce | `produce_derived_form_cap` | affixed_form_pairs |
 | `build_confix_ex` (root → type confixed form) | produce | `produce_derived_form_cap` | affixed_form_pairs (confix rows, circumfix_left/right) |
 | ~~`produce_word_family_ex` (Root Race)~~ | — | — | **CUT — deferred to its own spec (review)** |
@@ -182,10 +182,11 @@ Affix-bearing grammar patterns that are **LIVE** (rule tier), by lesson:
 > `operation_object_from_stimulus`), not the earlier `recognise_allomorph_cap` shorthand — fixed above
 > and added to model-doc §8; (2) `produce_derived_form_ex` is shown here for symmetry, but the impl spec
 > **reuses the existing `type_form_ex`** for plain derived-form production (no new exercise) — so the four
-> genuinely-new `_ex` types are `decompose_word_ex`, `choose_affix_ex`, `choose_allomorph_ex`,
-> `build_confix_ex`. **⚠️ Now likely TWO, not four:** the phase-b §0a re-review (2026-06-16) proposes
-> cutting `choose_affix_ex` + `choose_allomorph_ex` (they're the existing `cued_recall` MCQ screen),
-> leaving only `decompose_word_ex` + `build_confix_ex`. Provisional until that re-review decides.
+> genuinely-new `_ex` types. **✅ ADOPTED (phase-b revision 2026-06-16): TWO new, not four** —
+> `decompose_word_ex` + `build_confix_ex`. The two MCQ caps (`choose_affix_ex`/`choose_allomorph_ex` in
+> the table above) are **CUT**; their caps render via the existing `cued_recall` (widened to
+> `word_form_pair_src`), distractors catalog-derived (staff-engineer). The table above is the original
+> illustration; **phase-b §3 is authoritative** for the exercise roster.
 
 ## 7. Where it lives (target architecture)
 
@@ -247,8 +248,9 @@ APPROVE-WITH-CHANGES.** Both lenses mandatory (data-model plan). Resolutions:
 - **`recognise_allomorph_from_root_cap` full triangle, atomic in one PR** (data-architect C1): the 6 corners —
   (1) projector that emits it (`projectors/morphology.ts` / `affixedCapabilities.ts`); (2) `byKind/
   affixedFormPair.ts` SELECT widened to `allomorph_class` + threaded through `AffixedFormPairInput`
-  (`renderContracts.ts:303-320`); (3) `RENDER_CONTRACTS` entry for `choose_allomorph_ex`
-  (`renderContracts.ts:56` — module-load guardrail `:167,189` refuses boot if missing); (4)
+  (`renderContracts.ts:303-320`); (3) `RENDER_CONTRACTS` — **widen the existing `cued_recall`** entry to
+  serve `recognise_allomorph_from_root_cap` over `word_form_pair_src` (NOT a bespoke `choose_allomorph_ex`;
+  cut 2026-06-16) (`renderContracts.ts:56` — module-load guardrail `:167,189` refuses boot if missing); (4)
   `CapabilityType`/`CAPABILITY_TYPES` union (`capabilityTypes.ts:32,46`); (5)
   `deriveSkillTypeFromCapabilityType` case (`:233`); (6) `masteryModel.ts:dimensionForCapability`
   (`:139-170`). Plus `ExerciseType` union + ~5 registry components, and the admin

@@ -236,18 +236,16 @@ There is **no "artifact" layer.** "Artifact" was a generic umbrella the system d
 | `constrained_translation` | `translate_sentence_ex` |
 | `speaking` | *(dropped — dead surface)* |
 | — (new — morphology build) | `decompose_word_ex` |
-| — (new — morphology build) | `choose_affix_ex` |
-| — (new — morphology build) | `choose_allomorph_ex` |
 | — (new — morphology build) | `build_confix_ex` |
 
-> **Morphology application drills (added by the morphology build).** Four net-new exercises (no prior
-> "Live" name), all minted in the `_ex` convention (`verb_what`) over `word_form_pair_src`:
-> `decompose_word_ex` (derived → root + affix) and `choose_affix_ex` serve `recognise_word_form_link_cap`;
-> `choose_allomorph_ex` serves the new `recognise_allomorph_from_root_cap`; `build_confix_ex` serves
-> `produce_derived_form_cap`. Plain derived-form production reuses the existing `type_form_ex` (no new
-> exercise). **⚠️ `choose_affix_ex` + `choose_allomorph_ex` are PROVISIONAL** — the phase-b §0a re-review
-> (2026-06-16) proposes cutting them and rendering those caps through the existing `cued_recall` MCQ
-> exercise instead (widened to `word_form_pair_src`); if adopted, strike both rows here. See
+> **Morphology application drills (added by the morphology build).** **TWO** net-new exercises (no prior
+> "Live" name), minted in the `_ex` convention (`verb_what`) over `word_form_pair_src`: `decompose_word_ex`
+> (derived → root + affix, the genuinely-new "segment" interaction) and `build_confix_ex`
+> (`produce_derived_form_cap`, "assemble two boundaries"). The two MCQ caps —
+> `recognise_word_form_link_cap` ("pick the affix") and `recognise_allomorph_from_root_cap` ("pick the
+> allomorph") — **reuse the existing `cued_recall`** (widened to `word_form_pair_src`; staff-engineer cut
+> of the bespoke `choose_affix_ex`/`choose_allomorph_ex`, 2026-06-16), distractors catalog-derived. Plain
+> derived-form production reuses the existing `type_form_ex`. See
 > `docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md` §0a + §3.
 
 ### Typed content concepts (named directly — **not** a layer)

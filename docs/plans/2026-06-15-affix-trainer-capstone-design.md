@@ -186,15 +186,17 @@ adds work *above* it, not rewrites of it.** The items:
   The catalog + rule card need per-affix sequence rank, CEFR level, gloss, and the canonical allomorph
   reference (all six meN- classes even before each has example pairs). phase-b stores these *per pair*.
   This is *curated curriculum metadata* — fixed, ~15–20 entries, no per-learner state — so by
-  minimum-mechanism it is a **NEW code constant in `lib/morphology`** (in the *spirit* of the pipeline's
-  `MORPHOLOGY_PATTERN_SLUGS` at `scripts/lib/pipeline/capability-stage/projectors/morphology.ts:20`, but
-  a separate runtime constant — not an extension of that pipeline file; staff-engineer DRIFT fix), **not a
-  new DB table.** It doubles as the
-  **controlled vocabulary for the `affix` column**: an "Affix" (CONTEXT.md glossary) IS a catalog member,
-  so phase-b's validator **and** the live-DB HC assert `affix ∈ catalog` (three-layer-gate habit) — else
-  the catalog grouping silently splits one affix across spelling variants (`meN-`/`me-`/`meng-`). The
-  constant lives capstone-side; the `affix ∈ catalog` assertion is a small phase-b addition → **fold it
-  into the same phase-b re-review as item B.**
+  minimum-mechanism it is a **NEW code constant in `lib/capabilities/affixCatalog.ts`** (in the *spirit* of
+  the pipeline's `MORPHOLOGY_PATTERN_SLUGS` at `scripts/lib/pipeline/capability-stage/projectors/morphology.ts:20`,
+  but a separate constant — not an extension of that pipeline file; staff-engineer DRIFT fix), **not a new
+  DB table.** **PLACEMENT corrected (architect CRITICAL, 2026-06-16): it lives in `lib/capabilities/`, NOT
+  `lib/morphology`** — the phase-b *pipeline* validator + HC must read it, and the pipeline may import only
+  from `lib/capabilities` (target-architecture.md:1159, the sole pipeline↔runtime shared seam); both the
+  `cuedRecall.ts` packager and the `lib/morphology` trainer then import it as runtime→runtime. It doubles
+  as the **controlled vocabulary for the `affix` column**: an "Affix" (CONTEXT.md glossary) IS a catalog
+  member, so phase-b's validator **and** the live-DB HC assert `affix ∈ catalog` (three-layer-gate habit)
+  — else the catalog grouping silently splits one affix across spelling variants (`meN-`/`me-`/`meng-`).
+  The `affix ∈ catalog` assertion is a phase-b addition → **folded into the phase-b re-review with item B.**
 - **B. Root-vocab prerequisite — the one item that reaches *back* into phase-b.** The explorer + research
   open-Q1 ("don't drill *menulis* until *tulis* is known") need a `root_text` → `learning_items` link.
   The join **MUST use the canonical `itemSlug()` normalizer** (`src/lib/capabilities/itemSlug.ts:23-25`),

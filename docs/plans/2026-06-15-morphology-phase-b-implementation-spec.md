@@ -6,11 +6,14 @@
 > Parent/program doc: `docs/plans/2026-06-15-morphology-module-and-capability-model-design.md`.
 
 ---
-status: approved
-reviewed_by: [architect, data-architect]   # round 3, 2026-06-15: data-architect APPROVE; architect
-                                           # APPROVE-WITH-CHANGES — the one prescribed change (drop the
-                                           # backfill+drop dance → build-and-re-publish, §1/§9 task 2)
-                                           # applied. Both round-2 CRITICALs + all warnings resolved.
+status: approved   # round 4 (2026-06-16): reopened from the 2026-06-15 approval to adopt three downstream
+                   # findings (grill + staff-engineer + seam audit): (1) item B root-vocab prerequisite
+                   # (hard-block); (2) `affix ∈ catalog` writer gate (catalog → lib/capabilities, architect
+                   # CRITICAL); (3) the cut — drop choose_affix_ex/choose_allomorph_ex, render via widened
+                   # `cued_recall` (4 contract edits + catalog-derived distractors). Re-reviewed clean:
+                   # architect APPROVE + data-architect APPROVE (the rework round was clean — catalog
+                   # placement, cued_recall enumeration, 6-arg root-vocab key recipe all verified vs code).
+reviewed_by: [architect, data-architect]
 supersedes: []
 related:
   - docs/plans/2026-06-15-morphology-module-and-capability-model-design.md   # program doc + §9 obligations
@@ -21,12 +24,15 @@ related:
 ---
 
 **Goal:** Add the generative morphology *application tier* — extended `affixed_form_pairs` payload +
-one new capability type + ~4 new exercise types — on top of the already-live rule tier, so the
-follow-up book's affix chapters land as real generative drills, not generic grammar exercises.
+one new capability type + **2 new exercise types** (the two MCQ drills reuse the existing `cued_recall`) —
+on top of the already-live rule tier, so the follow-up book's affix chapters land as real generative
+drills, not generic grammar exercises.
 
 **Architecture:** One content table (`affixed_form_pairs`) gains discriminator + payload columns; the
-new caps reuse `source_kind='word_form_pair_src'`; the affix's existing grammar-pattern capability becomes the
-FSRS prerequisite via a new `grammar_pattern_id` FK. No new spine, no new source_kind.
+new caps reuse `source_kind='word_form_pair_src'`. Two FSRS prerequisites gate each application cap (both
+cross-source-kind, both hard-block): the affix's existing **grammar-pattern** capability (via a new
+`grammar_pattern_id` FK) AND the derived form's **root vocabulary** capability (the root must be known
+before its affixed form is drilled — item B). No new spine, no new source_kind, no new distractor table.
 
 **Tech stack:** Supabase/Postgres (additive migration in `scripts/migration.sql`), capability-stage
 projectors (`scripts/lib/pipeline/capability-stage/`), exercise-content readers (`src/lib/exercise-content/`),
@@ -35,30 +41,25 @@ Vitest.
 
 ---
 
-## 0a. Staff-engineer review (2026-06-16) — two findings to FOLD INTO the phase-b re-review
+## 0a. Revision 2026-06-16 — three adopted changes (this spec now bakes them in)
 
-A simplicity/reuse pass (the lens `architect` + `data-architect` structurally miss) found two items on
-this approved spec. Both fold into the **phase-b re-review** the capstone already schedules (with item B +
-`affix ∈ catalog`). Do not build verbatim without resolving them:
+A grill + a per-doc staff-engineer pass + a cross-plan seam audit produced three changes, **now adopted
+in the body below** (this is no longer a margin note — the spec describes the revised target):
 
-1. **[OVERBUILT] Cut `choose_affix_ex` + `choose_allomorph_ex` as new exercise types — reuse `cued_recall`.**
-   Both are an MCQ "prompt + tappable options" screen identical to the existing `cued_recall`
-   (`CuedRecallExercise.tsx:43-64`), which already serves `root_derived_*` caps (`renderContracts.ts:70`).
-   Widen `cued_recall`'s `supportedSourceKinds` to include `word_form_pair_src` (mirroring how `typed_recall`
-   was widened, `renderContracts.ts:74-88`) and render `recognise_word_form_link_cap` /
-   `recognise_allomorph_from_root_cap` through it. Net: **2 new exercise types, not 4** — keep only the
-   genuinely-distinct interactions `decompose_word_ex` (segment a word) + `build_confix_ex` (assemble two
-   boundaries). The new *cap* `recognise_allomorph_from_root_cap` still earns its keep; only its bespoke
-   exercise type is cut. (Ripples into model-doc §8's `_ex` table + program-doc §6, which list
-   `choose_affix_ex`/`choose_allomorph_ex` — update those when the re-review adopts the cut. The capstone
-   is unaffected: its practice is a scoped-session launch and names no exercise types.)
-2. **[UNDERBUILT] Specify affix-distractor sourcing.** The MCQ drills need a distractor set (wrong
-   affix/allomorph options). The affixed-distractor table isn't built (only `cued_recall_distractors` for
-   items, `migration.sql:2869`) and §3 hand-waves "a distractor affix set." Name the source — author an
-   affix-distractor set, or derive deterministically from the catalog's allomorph classes — or the MCQ
-   drills can't render.
-
-The substrate columns + the one new cap are right-sized; keep them.
+1. **The cut (staff-engineer OVERBUILT).** `choose_affix_ex` + `choose_allomorph_ex` were the existing
+   `cued_recall` MCQ screen ("prompt + tappable options", `CuedRecallExercise.tsx:43-64`). **Adopted:**
+   widen `cued_recall`'s `supportedSourceKinds` to `word_form_pair_src` (mirroring how `typed_recall` was
+   widened, `renderContracts.ts:74-88`) and render `recognise_word_form_link_cap` +
+   `recognise_allomorph_from_root_cap` through it. **2 new exercise types, not 4** — only the
+   genuinely-distinct `decompose_word_ex` (segment) + `build_confix_ex` (assemble) remain. The new *cap*
+   stays; only its bespoke exercise type is cut. (§8 model doc + program §6 to be struck in lockstep.)
+2. **Distractor sourcing (staff-engineer UNDERBUILT).** **Adopted:** the `cued_recall` packager derives
+   affix/allomorph distractors **deterministically from the catalog constant** (other affixes for the
+   link cap; other allomorph classes of the same affix for the allomorph cap) — no new distractor table,
+   no authored set (deterministic-selection-over-LLM default). Detailed in §3.
+3. **Item B — root-vocab prerequisite (grill, decided hard-block) + `affix ∈ catalog` (seam audit).**
+   **Adopted:** each application cap gets a SECOND prerequisite — the derived form's root vocabulary cap
+   (§7); and the writer asserts `affix ∈ catalog` (§6). Both baked into the writer + gate below.
 
 ---
 
@@ -74,7 +75,8 @@ the morphology vertical is never built-then-renamed.
 | source kind | `word_form_pair_src` | `affixed_form_pair` |
 | new capability type | `recognise_allomorph_from_root_cap` (new — minted by this build, added to §8) | ~~`allomorph_recognition`~~ |
 | existing app caps | `recognise_word_form_link_cap`, `produce_derived_form_cap` (per §8) | `root_derived_recognition`, `root_derived_recall` |
-| new exercise types | `decompose_word_ex`, `choose_affix_ex`, `choose_allomorph_ex`, `build_confix_ex` (new — added to §8) | ~~`decompose_word`, `choose_affix`, `choose_allomorph`, `build_confix`~~ |
+| new exercise types | `decompose_word_ex`, `build_confix_ex` (2 new — added to §8) | ~~`decompose_word`, `build_confix`~~ |
+| the two MCQ caps reuse | `cued_recall` (existing — widened to `word_form_pair_src`; `choose_affix_ex`/`choose_allomorph_ex` CUT) | — |
 | plain produce reuses | `type_form_ex` (existing — no new exercise) | `typed_recall` |
 | modes (level refs) | `recognise_mode`, `produce_mode` | `recognition`, `form_recall` |
 
@@ -147,37 +149,39 @@ All six MUST land in the same commit or the app won't boot (module-load assertio
 
 1. **Union + array** — `src/lib/capabilities/capabilityTypes.ts:32` (`CapabilityType`) + `:46` (`CAPABILITY_TYPES`): add `'recognise_allomorph_from_root_cap'`. (`as const satisfies` flags incompleteness.)
 2. **Skill level** — `capabilityTypes.ts:233` `deriveSkillTypeFromCapabilityType`: add `case 'recognise_allomorph_from_root_cap': return 'recognise_mode'` (it's recognise-level — the level-purity resolution).
-3. **Render contract** — `src/lib/capabilities/renderContracts.ts:56` `RENDER_CONTRACTS`: the new `choose_allomorph_ex` exercise entry lists `capabilityTypes: ['recognise_allomorph_from_root_cap']`, `supportedSourceKinds: ['word_form_pair_src']`, `requiredArtifacts: { word_form_pair_src: [] }`. (Module-load assertion `:167` refuses boot if a supportedSourceKind lacks a requiredArtifacts key; `assertCapabilityTypesRenderable` refuses boot if `recognise_allomorph_from_root_cap` is in no contract.)
-4. **Mastery dimension** — `src/lib/analytics/mastery/masteryModel.ts:~139` `dimensionForCapability`: add the `recognise_allomorph_from_root_cap` case (exhaustive `never` guard at `:164` is a compile error otherwise). Group with grammar/morphology dimension.
+3. **Render contract** — `src/lib/capabilities/renderContracts.ts:56` `RENDER_CONTRACTS`: **widen the existing `cued_recall` entry** to add `recognise_allomorph_from_root_cap` to its `capabilityTypes` and `word_form_pair_src` to its `supportedSourceKinds` (+ `requiredArtifacts: { word_form_pair_src: [] }` — distractors are catalog-derived, not a stored artifact). No bespoke `choose_allomorph_ex`. (Module-load assertion `:167` refuses boot if a supportedSourceKind lacks a requiredArtifacts key; `assertCapabilityTypesRenderable` refuses boot if `recognise_allomorph_from_root_cap` is in no contract — `cued_recall` satisfies it.)
+4. **Mastery dimension** — `src/lib/analytics/mastery/masteryModel.ts:~139` `dimensionForCapability`: add the `recognise_allomorph_from_root_cap` case (exhaustive `never` guard at `:167` is a compile error otherwise). Group with grammar/morphology dimension.
 5. **Writer** — capability emitter (`projectors/affixedCapabilities.ts`): emit a 3rd cap per meN-/peN- pair (`recognise_allomorph_from_root_cap`, **`direction='root_to_derived'`** — REUSE the existing enum value, no new direction; the distinct `capability_type` already makes the canonical key unique vs `recognise_word_form_link_cap`, so no key collision — data-architect key-axis decision; `modality='text'`, `learnerLanguage='none'`), gated on `allomorph_class IS NOT NULL`. Prereq = the pair's `recognise_word_form_link_cap` key.
-6. **Reader** — `byKind/affixedFormPair.ts` SELECT widened + `AffixedFormPairInput` (`renderContracts.ts:303`) gains `allomorphClass` + `affix`; `byType` packager for `choose_allomorph_ex` reads it.
+6. **Reader** — `byKind/affixedFormPair.ts` SELECT widened + `AffixedFormPairInput` (`renderContracts.ts:303`) gains `allomorphClass` + `affix`; the **widened `cued_recall` packager** (`byType/cuedRecall.ts`) reads it for `word_form_pair_src` caps and builds catalog-derived distractors (§3).
 
-## 3. New exercise types (target `_ex` naming)
+## 3. New exercise types (2 new) + the `cued_recall` widening
 
-> **⚠️ PROVISIONAL pending the §0a re-review decision (seam audit 2026-06-16).** Two of the rows below —
-> **`choose_affix_ex`** and **`choose_allomorph_ex`** — are flagged in §0a for CUTTING (they are the
-> existing `cued_recall` MCQ screen; widen `cued_recall` to `word_form_pair_src` instead). **Do NOT build
-> them until the phase-b re-review adopts or rejects the §0a cut.** If adopted, only `decompose_word_ex` +
-> `build_confix_ex` remain genuinely new, and the §2.3/§5/§9 references + §8-model-doc + program-doc §6
-> must be struck in lockstep. §2 corner 3/6's `choose_allomorph_ex` references are likewise provisional.
-
-Add to `ExerciseType` union (`src/types/learning.ts`) + `RENDER_CONTRACTS` (`renderContracts.ts:56`) + `ContractInputShapes` (`renderContracts.ts:~414`, compile-enforced) + `projectBuilderInput` switch (`renderContracts.ts:~599`) + the registry (`src/components/exercises/registry.ts`) + `implementations/`:
+**Two genuinely-new exercise types** — add each to `ExerciseType` union (`src/types/learning.ts`) + `RENDER_CONTRACTS` (`renderContracts.ts:56`) + `ContractInputShapes` (`renderContracts.ts:~414`, compile-enforced) + `projectBuilderInput` switch (`renderContracts.ts:~599`) + the registry (`src/components/exercises/registry.ts`) + `implementations/`:
 
 | Exercise type | Level (`_mode`) → cap | supportedSourceKinds | reads |
 |---|---|---|---|
 | `decompose_word_ex` | `recognise_mode` → `recognise_word_form_link_cap` | `['word_form_pair_src']` | root/derived/affix/circumfix |
-| `choose_affix_ex` | `recognise_mode` → `recognise_word_form_link_cap` | `['word_form_pair_src']` | affix + a distractor affix set |
-| `choose_allomorph_ex` | `recognise_mode` → `recognise_allomorph_from_root_cap` | `['word_form_pair_src']` | `allomorph_class` |
 | `build_confix_ex` | `produce_mode` → `produce_derived_form_cap` | `['word_form_pair_src']` | root + circumfix_left/right |
 
-Plain produce reuses the EXISTING `type_form_ex` (already serves `produce_derived_form_cap` on `word_form_pair_src`, `renderContracts.ts:74-88`) — no new type needed for plain produce. **Root Race CUT.** Each new component composes `exercises/primitives/` and renders the `adminOverlay` slot (the flag fix from earlier this session).
+**The two MCQ caps reuse the existing `cued_recall`** (staff-engineer — identical prompt+options screen, `CuedRecallExercise.tsx:43-64`): widen `cued_recall`'s `supportedSourceKinds` to include `word_form_pair_src` (mirroring how `typed_recall` was widened, `renderContracts.ts:74-88`), serving:
+- `recognise_word_form_link_cap` → "root + meaning → pick the affix" (the cut `choose_affix_ex`);
+- `recognise_allomorph_from_root_cap` → "root → pick the correct allomorph form" (the cut `choose_allomorph_ex`).
 
-**Atomic-boot constraint (exercise side too, architect WARNING):** each new `ExerciseType` must land
-WITH its `ContractInputShapes` entry (`renderContracts.ts:~414`, `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK`
-at `:431`) AND its `projectBuilderInput` switch branch (the `never` exhaustiveness at `:635`) in the
-SAME commit — both are compile-time gates that fail the build otherwise.
+**The `cued_recall` widening needs the SAME 4 edits `typed_recall`+`word_form_pair_src` required — it is NOT just array-growth (architect re-review 2026-06-16):**
+1. **`ContractInputShapes.cued_recall`** (`renderContracts.ts:416`) — make `learningItem`/`primaryMeaning` nullable + add the word-form-pair input slot, mirroring `typed_recall:417`.
+2. **Split the `cued_recall` projector branch** out of the shared item-group (`renderContracts.ts:627-630`, which returns non-null `learningItem!/primaryMeaning!`) into its own branch passing the word-form-pair input + nullable meaning, mirroring `typed_recall:616-625`.
+3. **`needsPrimaryMeaning`** (`renderContracts.ts:520-522`) — add the `&& raw.affixedFormPair`-style carve-out `typed_recall` has at `:525-526`.
+4. **`buildCuedRecall`** (`byType/cuedRecall.ts`, currently wholly item-rooted — `:13/:51/:62/:73`; the byKind header `affixedFormPair.ts:20-23` declares cued_recall item-only by construction) — add a `word_form_pair_src` branch from scratch.
 
-**Level↔phase note (architect WARNING):** `decompose_word_ex`/`choose_affix_ex` route through
+**Bucketing guard (architect):** a `word_form_pair_src` block must NEVER carry a `learningItem` — mirror the `affixedFormPair` guard at `renderContracts.ts:496-503`.
+
+**Distractors are catalog-derived + deterministic — no new table, no authored set** (staff-engineer; the deterministic-selection-over-LLM/authored default): the new `buildCuedRecall` `word_form_pair_src` branch builds wrong options from the **shared affix catalog** (`lib/capabilities/affixCatalog.ts` — see §6 for the placement decision) — for the link cap, K other affixes (prefer same `affix_type`); for the allomorph cap, the other allomorph classes of the same affix. Item caps keep their existing `cued_recall_distractors` path (`migration.sql:2869`); the packager branches on `source_kind`. The `cued_recall` *component* is unchanged — a prompt + options, regardless of where the options came from.
+
+Plain produce reuses the EXISTING `type_form_ex` (already serves `produce_derived_form_cap` on `word_form_pair_src`, `renderContracts.ts:74-88`) — no new type. **Root Race CUT.** Each new component (`decompose_word_ex`, `build_confix_ex`) composes `exercises/primitives/` and renders the `adminOverlay` slot.
+
+**Atomic-boot constraint (architect WARNING):** each new `ExerciseType` (`decompose_word_ex`, `build_confix_ex`) must land WITH its `ContractInputShapes` entry (`renderContracts.ts:~414`, `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK` at `:431`) AND its `projectBuilderInput` switch branch (the `never` exhaustiveness at `:635`) in the SAME commit — both are compile-time gates. The `cued_recall` widening adds no new `ExerciseType` (so no exhaustiveness branch), but it DOES require the four contract/projector/packager edits enumerated above — those are the real cost, not array-growth.
+
+**Level↔phase note (architect WARNING):** `decompose_word_ex` + the widened `cued_recall` route through
 `recognise_word_form_link_cap`, which `deriveSkillTypeFromCapabilityType` returns as `recognise_mode`
 (`capabilityTypes.ts:243`) but ADR 0007:40 classifies at Phase 4 (productive). This is INTENTIONAL and
 inert — `word_form_pair_src` is exempt from the staging phase gate (ADR 0007:44). Do NOT "fix" the phase
@@ -214,7 +218,7 @@ The capability stage reads ONLY the DB (`runner.ts:9`, ADR 0011/0012); `morpholo
 
 - `byKind/affixedFormPair.ts:~54` SELECT: add the new columns.
 - `AffixedFormPairInput` (`renderContracts.ts:303`): add `affix`, `affixType`, `affixGloss`, `allomorphClass?`, `circumfixLeft?`, `circumfixRight?`.
-- `byType` packagers: extend `typedRecall.ts` (`build_confix_ex` path) + add packagers for `decompose_word_ex`/`choose_affix_ex`/`choose_allomorph_ex`.
+- `byType` packagers: extend `typedRecall.ts` (`build_confix_ex` path), add a packager for `decompose_word_ex`, and **widen `cuedRecall.ts`** to build catalog-derived distractors for `word_form_pair_src` caps (§3) — no `choose_affix_ex`/`choose_allomorph_ex` packagers (cut).
 
 ## 6. Three-layer invariant gate (all three layers — program doc §9)
 
@@ -223,20 +227,54 @@ The capability stage reads ONLY the DB (`runner.ts:9`, ADR 0011/0012); `morpholo
   (`validators/affixedFormPairs.ts`)** to check the new required fields (data-architect m1): `affix_type`
   non-null + in the enum; `grammar_pattern_id` non-null; `productive` non-null; `allomorph_class` non-null
   when `affix IN ('meN-','peN-')`; `circumfix_left/right` non-null when `affix_type='confix'`; **`affix ∈
-  the `lib/morphology` catalog constant** (the controlled-vocabulary tie the capstone item A requires — the
-  writer-side obligation, missing here until now; seam audit 2026-06-16). **Also widen the source_ref
-  regex** (`^lesson-\d+\/morphology\/.+$`) for the non-`lesson-N` authoring units the §8 harvest introduces
-  (e.g. `staging/lesson-999`) — load-bearing, not optional (architect WARNING).
+  the shared affix catalog** (`lib/capabilities/affixCatalog.ts` — the controlled-vocabulary tie the
+  capstone item A requires). **PLACEMENT (architect CRITICAL, 2026-06-16): the catalog constant lives in
+  `lib/capabilities/`, NOT `lib/morphology`** — this Layer-2 validator (pipeline) + the Layer-3 HC (script)
+  + the runtime `cuedRecall.ts` packager + the `lib/morphology` trainer all read it, and the pipeline may
+  import ONLY from `lib/capabilities` (target-architecture.md:1159, the sole pipeline↔runtime shared seam);
+  a pipeline→`lib/morphology` import is forbidden. Capstone item A is corrected to match. **And `root_text`
+  resolves to a live `learning_items` row**
+  (via `itemSlug` — else item B's root-vocab prerequisite is unsatisfiable and the drill is orphan-suppressed,
+  §7). **Also widen the source_ref regex** (`^lesson-\d+\/morphology\/.+$`) for the non-`lesson-N` authoring
+  units the §8 harvest introduces (e.g. `staging/lesson-999`) — load-bearing, not optional (architect WARNING).
 - **Layer 3** — `scripts/check-supabase-deep.ts` HC (after HC17): live-DB assertion of the same invariant,
   **including `affix ∈ catalog`** (every live `affix` value is a catalog member — else the trainer's
   catalog grouping silently splits one affix across spelling variants).
 
-## 7. ADR addendum (program doc §9 / architect CRITICAL)
+## 7. Prerequisites — TWO cross-source-kind gates (ADR addendum; program doc §9 / architect CRITICAL)
 
-The rule→pair prerequisite is **cross-source-kind** (`grammar_pattern_src` rule cap → `word_form_pair_src` application cap). ADR 0007:44 currently EXEMPTS `word_form_pair_src` from the staging gate and the `prerequisiteKeys` chain is only WITHIN a pair.
-- **The planner half ALREADY works** (verified, both reviewers): `satisfiedKeys` is a flat source-kind-agnostic `canonical_key` set (`src/lib/session-builder/pedagogy.ts:518-520`) and the prereq test (`:320`) is mechanical — it resolves a cross-source-kind key with no change. So only TWO things need building:
-  1. **Projector emit:** `projectAffixedCapabilities` (`affixedCapabilities.ts:77/98`) currently sets `prerequisiteKeys: []`/`[recognitionKey]` — add the affix's grammar-pattern (`grammar_pattern_src`) cap canonical_key to the application caps' `prerequisiteKeys`.
-  2. **ADR addendum/new ADR** documenting the rule→application gating axis (supersede 0007:44's "morphology has no siblings, exempt" note). **Sequence this as an EARLY task** (data-architect i1) — it gates the projector-emit task, not task 9.
+Each application cap has **two hard-block prerequisites, both cross-source-kind** (the `prerequisiteKeys`
+chain was previously only WITHIN a pair; ADR 0007:44 EXEMPTS `word_form_pair_src` from the staging gate):
+- **(i) the affix RULE** — the affix's `grammar_pattern` cap (`grammar_pattern_src`). "Don't drill the
+  forms before the rule is met."
+- **(ii) the derived form's ROOT vocabulary (item B, hard-block, decided 2026-06-16)** — the root's
+  `vocabulary_src` recognition cap. "Don't drill *menulis* before *tulis* is known." **Load-bearing:** it
+  is the SOLE enforcement of morphology learning-order, because the receptive-before-productive Phase gate
+  is carved out for `word_form_pair_src` (ADR 0007:44; `pedagogy.ts:337-339,361`).
+
+- **The planner half ALREADY works for both** (verified, both reviewers): `satisfiedKeys` is a flat
+  source-kind-agnostic `canonical_key` set (`pedagogy.ts:518-520`) and the prereq test (`:320`) is
+  mechanical — it resolves any cross-source-kind key with no change. So only TWO things need building:
+  1. **Projector emit:** `projectAffixedCapabilities` (`affixedCapabilities.ts:77/98`) currently sets
+     `prerequisiteKeys: []`/`[recognitionKey]` — add BOTH keys to every application cap's
+     `prerequisiteKeys`:
+     - the affix's grammar-pattern (`grammar_pattern_src`) cap canonical_key (from `grammar_pattern_id`);
+     - the **root-vocab** cap canonical_key — built deterministically, no DB query, via `buildCanonicalKey`
+       (`canonicalKey.ts:42`) with **all SIX args** (architect + data-architect — a mismatched key is
+       silently unsatisfiable → permanently-orphaned drill): `sourceKind='vocabulary_src'`,
+       `sourceRef=sourceRefForLearningItem(root_text)` (reuse the helper, `content-pipeline-output.ts:111`
+       — it applies `itemSlug`, data-architect M1; NOT bare `.trim()`), `capabilityType='recognise_meaning_from_text_cap'`,
+       `direction='id_to_l1'`, `modality='text'`, **`learnerLanguage='nl'`** (the live vocab recognition cap
+       hardcodes `'nl'`, `vocab.ts:149/157/179`, NOT `'none'`). Mirror `vocab.ts:149-158` exactly; this
+       couples to the all-NL corpus — state it.
+  2. **ADR addendum/new ADR** documenting BOTH gating axes (rule→application AND root→application),
+     superseding 0007:44's "morphology has no siblings, exempt" note. **Sequence this EARLY** (data-architect
+     i1) — it gates the projector-emit task, not task 9.
+
+**Guard against an unsatisfiable root prereq:** if a pair's root is not a `learning_item`, its root-vocab
+key never enters `satisfiedKeys` → the drill is permanently orphan-suppressed (a content defect, not a
+feature). The §8 harvest pulls roots FROM existing `learning_items`, so this should not occur; the §6
+Layer-2 validator asserts it (every `root_text` resolves to a live `learning_items` row via `itemSlug`).
 
 ## 8. Pipeline emission / harvest
 
@@ -254,14 +292,21 @@ The linguist agents emit `morphology-patterns.ts` for the affix-introducing less
    resolves `grammarPatternSlug`→`grammar_pattern_id` + writes `lesson_section_affixed_pairs` + unit tests.
 4. **DB-read + cap-stage copy** (§4.2-4): widen `TypedAffixedPair`/`fetchAffixedPairsFromDb` SELECT +
    `AffixedPairSource` + `projectAffixedFormPairs` blind copy into `AffixedFormPairRowInput` + CS12 guard tests.
-5. **`recognise_allomorph_from_root_cap` triangle — ONE ATOMIC COMMIT** (data-architect C1): the 6 caps-side corners
-   (§2) + the `choose_allomorph_ex` exercise's `ExerciseType`/`RENDER_CONTRACTS`/`ContractInputShapes`/
-   `projectBuilderInput`/component **+ the reader SELECT widen + `AffixedFormPairInput` threading** — all
-   together, else it boots blank. Boot test (module-load assertions pass) + render test (non-undefined `allomorphClass`).
-6. Each REMAINING new exercise type (`decompose_word_ex`, `choose_affix_ex`, `build_confix_ex`): union + RENDER_CONTRACTS
-   + input shape + projectBuilderInput case + byType packager + component + test — each its own atomic commit.
-7. `productive=false` skip-produce-cap branch (`affixedCapabilities.ts`) + projector-emit of the
-   cross-source-kind prereq key + test.
+5. **`recognise_allomorph_from_root_cap` triangle + the `cued_recall` widening — ONE ATOMIC COMMIT**
+   (data-architect C1): the 6 caps-side corners (§2) + **widen `cued_recall`** (`RENDER_CONTRACTS`
+   `capabilityTypes` + `supportedSourceKinds` arrays for `word_form_pair_src`, serving both
+   `recognise_word_form_link_cap` + `recognise_allomorph_from_root_cap`; the `cuedRecall.ts` packager's
+   catalog-derived-distractor branch, §3) **+ the reader SELECT widen + `AffixedFormPairInput` threading**
+   — all together, else it boots blank. **No new `ExerciseType`, but the `cued_recall` widening's FOUR
+   contract/projector/packager edits (§3) are required** — under-building them yields a runtime
+   `item_not_found` for every allomorph drill (architect). Boot test (module-load assertions) + render test
+   (`cued_recall` renders an allomorph cap with non-undefined catalog-derived options).
+6. Each of the **2 genuinely-new** exercise types (`decompose_word_ex`, `build_confix_ex`): union +
+   RENDER_CONTRACTS + input shape + projectBuilderInput case + byType packager + component + test — each
+   its own atomic commit.
+7. `productive=false` skip-produce-cap branch (`affixedCapabilities.ts`) + projector-emit of **BOTH**
+   cross-source-kind prereq keys (rule `grammar_pattern_src` + root-vocab `vocabulary_src` via `itemSlug`,
+   §7) + test.
 8. Three-layer gate: extend `validateAffixedFormPairs` (§6) + the HC + tests.
 9. Author + publish ONE pilot affix lesson (e.g. L13 meN-) end-to-end; verify live caps + render in-app
    (query the live DB, not staging); THEN the rest + the 14 chapters.
@@ -272,7 +317,7 @@ Grounded in round-2 review (now load-bearing in §1/§4, no longer "residual"): 
 DDL (`affix` NOT NULL `:3341`, `pattern_source_ref` `:3340`); `TypedAffixedPair` (`loadFromDb.ts:822`,
 carries `affix:828`) + `fetchAffixedPairsFromDb` (`:870`); runner map build (`runner.ts:540`).
 Still verify before editing: `validators/affixedFormPairs.ts` exact CS12 shape; `masteryModel.ts:
-dimensionForCapability` (`:139-170`, exhaustive `never` guard `:164`); the exercise registry/implementations
+dimensionForCapability` (`:139-170`, exhaustive `never` guard `:167`); the exercise registry/implementations
 roster pattern.
 
 ## Supabase Requirements
@@ -280,12 +325,13 @@ roster pattern.
 ### Schema changes
 - Additive columns on `lesson_section_affixed_pairs` + `affixed_form_pairs` (§1); guarded CHECKs; `grammar_pattern_id` FK → `grammar_patterns`.
 - New `capability_type` value `recognise_allomorph_from_root_cap` (no DB CHECK on `learning_capabilities.capability_type` today — `migration.sql:1324` — so no constraint migration; the unique index on `(source_ref, capability_type)` enforces after regen).
-- New `ExerciseType` values (frontend union only; not a DB enum).
+- New `ExerciseType` values: **2** (`decompose_word_ex`, `build_confix_ex`; frontend union only, not a DB
+  enum). The two MCQ caps reuse `cued_recall` (widened to `word_form_pair_src`) — no new type.
 - RLS/grants: additive — covered by existing table policies; verify after migrate.
 
 ### homelab-configs changes
 - [ ] N/A — no schema exposure / CORS / GoTrue / bucket changes.
 
 ### Health check additions
-- HC (Layer 3, §6): every `affixed_form_pairs` row has `grammar_pattern_id` + `affix_type`; meN-/peN- rows have `allomorph_class`; confix rows have both circumfix columns.
+- HC (Layer 3, §6): every `affixed_form_pairs` row has `grammar_pattern_id` + `affix_type`; meN-/peN- rows have `allomorph_class`; confix rows have both circumfix columns; **`affix ∈ catalog`; `root_text` resolves to a live `learning_items` row** (item B).
 - Gate before merge: `make migrate-idempotent-check` + `make pre-deploy`.
