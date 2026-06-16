@@ -27,7 +27,7 @@ function makeBlock(exerciseType: ExerciseType, capabilityType = 'meaning_recall'
       sourceRef: 'learning_items/x',
       exerciseType,
       capabilityType: capabilityType as never,
-      skillType: 'meaning_recall',
+      skillType: 'recall_mode',
     },
   }
 }
@@ -48,7 +48,7 @@ function makeItem(exerciseType: ExerciseType): ExerciseItem {
       { id: 'v1', learning_item_id: 'i1', variant_text: 'eetje', variant_type: 'informal', language: 'nl', is_accepted: true, notes: null },
       { id: 'v2', learning_item_id: 'i1', variant_text: 'verboden', variant_type: 'alternative_translation', language: 'nl', is_accepted: false, notes: null },
     ],
-    skillType: 'meaning_recall',
+    skillType: 'recall_mode',
     exerciseType,
     cuedRecallData: exerciseType === 'choose_form_ex' ? { promptMeaningText: 'eten', options: ['makan', 'minum'], correctOptionId: 'makan' } : undefined,
     clozeMcqData: exerciseType === 'choose_missing_word_ex' ? { sentence: 'Saya ___ nasi', translation: 'I eat rice', options: ['makan', 'minum'], correctOptionId: 'makan' } : undefined,

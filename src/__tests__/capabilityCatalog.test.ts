@@ -75,7 +75,7 @@ describe('capability catalog projection', () => {
       direction: 'l1_to_id',
       modality: 'text',
       // cap-v2 Slice 1 mis-level fix: recognise_form_from_meaning_cap is recognition, not recall.
-      skillType: 'recognition',
+      skillType: 'recognise_mode',
       requiredArtifacts: expect.arrayContaining(['meaning:l1', 'base_text']),
       prerequisiteKeys: [textRecognition?.canonicalKey],
     }))

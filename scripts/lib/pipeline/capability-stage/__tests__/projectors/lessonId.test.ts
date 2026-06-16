@@ -17,7 +17,7 @@ function makeCapability(overrides: Partial<CapabilityInput>): CapabilityInput {
     artifactFingerprint: 'fp-artifact',
     lessonId: 'lesson-1-uuid',
     metadata: {
-      skillType: 'recognition',
+      skillType: 'recognise_mode',
       requiredArtifacts: ['base_text', 'meaning:l1'],
       prerequisiteKeys: [],
       difficultyLevel: 1,

@@ -13,7 +13,7 @@ export function buildDictation(input: BuilderInputFor<'type_form_from_audio_ex'>
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,
-    skillType: 'form_recall' as const,
+    skillType: 'produce_mode' as const,
     exerciseType: 'type_form_from_audio_ex' as const,
   }
   return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }

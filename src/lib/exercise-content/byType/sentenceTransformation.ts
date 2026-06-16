@@ -24,7 +24,7 @@ export function buildSentenceTransformation(input: BuilderInputFor<'transform_se
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: [],
-    skillType: 'form_recall' as const,
+    skillType: 'produce_mode' as const,
     exerciseType: 'transform_sentence_ex' as const,
     sentenceTransformationData: {
       sourceSentence: ex.source_sentence,

@@ -23,7 +23,7 @@ const baseCap = (overrides: Partial<CapabilityInput>): CapabilityInput => ({
   artifactFingerprint: null,
   lessonId: 'lesson-9-uuid',
   metadata: {
-    skillType: 'form_recall',
+    skillType: 'produce_mode',
     // dialogue_line caps require no capability_artifacts (renderContracts: []).
     requiredArtifacts: [],
     prerequisiteKeys: [],

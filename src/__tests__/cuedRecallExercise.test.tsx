@@ -49,7 +49,7 @@ describe('CuedRecallExercise types', () => {
         },
       ],
       answerVariants: [],
-      skillType: 'meaning_recall',
+      skillType: 'recall_mode',
       exerciseType: 'choose_form_ex',
       cuedRecallData: {
         promptMeaningText: 'to eat',

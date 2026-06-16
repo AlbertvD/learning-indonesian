@@ -63,7 +63,7 @@ export function buildRecognitionMCQ(input: BuilderInputFor<'choose_meaning_ex'>)
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,
-    skillType: 'recognition' as const,
+    skillType: 'recognise_mode' as const,
     exerciseType: 'choose_meaning_ex' as const,
     distractors,
   }

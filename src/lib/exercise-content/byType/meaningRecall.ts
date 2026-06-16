@@ -10,7 +10,7 @@ export function buildMeaningRecall(input: BuilderInputFor<'type_meaning_ex'>): B
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,
-    skillType: 'meaning_recall' as const,
+    skillType: 'recall_mode' as const,
     exerciseType: 'type_meaning_ex' as const,
   }
   return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }

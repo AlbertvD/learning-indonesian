@@ -62,7 +62,7 @@ export function buildListeningMCQ(input: BuilderInputFor<'choose_meaning_from_au
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,
-    skillType: 'recognition' as const,
+    skillType: 'recognise_mode' as const,
     exerciseType: 'choose_meaning_from_audio_ex' as const,
     distractors,
   }

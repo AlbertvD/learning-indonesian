@@ -215,7 +215,7 @@ describe('applyClassification', () => {
 
   it('apply mode: default_assign branch updates lesson_id and merges metadata_json.note', async () => {
     const { client, calls } = buildRecordingSupabase({
-      capRow: { id: 'cap-Y', metadata_json: { skillType: 'meaning_recall' } },
+      capRow: { id: 'cap-Y', metadata_json: { skillType: 'recall_mode' } },
     })
     await applyClassification(client, {
       lesson1Id: 'lesson-1-uuid',
@@ -228,14 +228,14 @@ describe('applyClassification', () => {
     expect(updates[0].filterVal).toBe('cap-Y')
     expect(updates[0].payload?.lesson_id).toBe('lesson-1-uuid')
     expect(updates[0].payload?.metadata_json).toEqual({
-      skillType: 'meaning_recall',
+      skillType: 'recall_mode',
       note: 'cross-corpus, defaulted to lesson 1',
     })
   })
 
   it('apply mode: default_assign preserves an existing metadata_json.note if it differs (appends, never overwrites)', async () => {
     const { client, calls } = buildRecordingSupabase({
-      capRow: { id: 'cap-Z', metadata_json: { skillType: 'meaning_recall', note: 'earlier note' } },
+      capRow: { id: 'cap-Z', metadata_json: { skillType: 'recall_mode', note: 'earlier note' } },
     })
     await applyClassification(client, {
       lesson1Id: 'lesson-1-uuid',
@@ -245,7 +245,7 @@ describe('applyClassification', () => {
     const updates = calls.filter((c) => c.op === 'update' && c.table === 'learning_capabilities')
     expect(updates).toHaveLength(1)
     expect(updates[0].payload?.metadata_json).toEqual({
-      skillType: 'meaning_recall',
+      skillType: 'recall_mode',
       note: 'earlier note; orphan source_ref preserved for history',
     })
   })

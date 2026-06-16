@@ -24,7 +24,7 @@ function baseExerciseItem(overrides: Partial<ExerciseItem> = {}): ExerciseItem {
     meanings: [],
     contexts: [],
     answerVariants: [],
-    skillType: 'form_recall',
+    skillType: 'produce_mode',
     exerciseType: 'type_form_ex',
     ...overrides,
   }

@@ -26,7 +26,7 @@ describe('ConstrainedTranslationExercise types', () => {
       meanings: [],
       contexts: [],
       answerVariants: [],
-      skillType: 'meaning_recall',
+      skillType: 'recall_mode',
       exerciseType: 'translate_sentence_ex',
       constrainedTranslationData: {
         sourceLanguageSentence: 'I eat rice using chopsticks',

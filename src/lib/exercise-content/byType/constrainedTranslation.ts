@@ -24,7 +24,7 @@ export function buildConstrainedTranslation(input: BuilderInputFor<'translate_se
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: [],
-    skillType: 'meaning_recall' as const,
+    skillType: 'recall_mode' as const,
     exerciseType: 'translate_sentence_ex' as const,
     constrainedTranslationData: {
       sourceLanguageSentence: ex.source_language_sentence,

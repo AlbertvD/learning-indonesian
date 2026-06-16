@@ -45,7 +45,7 @@ describe('morphology capability projection', () => {
       sourceKind: 'word_form_pair_src',
       sourceRef: pairSourceRef,
       direction: 'derived_to_root',
-      skillType: 'recognition',
+      skillType: 'recognise_mode',
       // PR 3 slice: word_form_pair_src caps render from the typed
       // `affixed_form_pairs` table; readiness no longer depends on
       // capability_artifacts (mirror of item + dialogue_line, Decision R).
@@ -53,7 +53,7 @@ describe('morphology capability projection', () => {
     }))
     expect(recall).toEqual(expect.objectContaining({
       direction: 'root_to_derived',
-      skillType: 'form_recall',
+      skillType: 'produce_mode',
       requiredArtifacts: [],
       prerequisiteKeys: [recognition.canonicalKey],
     }))

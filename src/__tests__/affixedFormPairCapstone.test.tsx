@@ -77,7 +77,7 @@ function makeAffixedBlock(opts: {
       sourceRef: opts.sourceRef,
       exerciseType: 'type_form_ex',
       capabilityType: opts.capabilityType,
-      skillType: opts.direction === 'root_to_derived' ? 'form_recall' : 'recognition',
+      skillType: opts.direction === 'root_to_derived' ? 'produce_mode' : 'recognise_mode',
     },
     reviewContext: {
       schedulerSnapshot: {} as never,

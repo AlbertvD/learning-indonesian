@@ -74,7 +74,7 @@ export interface ItemAnswerVariant {
 // === Learner state types ===
 
 export type LearnerStage = 'new' | 'anchoring' | 'retrieving' | 'productive' | 'maintenance'
-export type SkillType = 'recognition' | 'form_recall' | 'meaning_recall' | 'spoken_production'
+export type SkillType = 'recognise_mode' | 'produce_mode' | 'recall_mode' | 'spoken_production'
 
 export interface LearnerItemState {
   id: string

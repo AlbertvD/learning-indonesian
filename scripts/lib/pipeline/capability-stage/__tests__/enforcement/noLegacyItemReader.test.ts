@@ -60,7 +60,7 @@ function makeItemBlocks(blockId: string, capId: string): ItemBucketEntry[] {
           sourceRef: 'learning_items/test-item',
           exerciseType: 'choose_meaning_ex',
           capabilityType: 'recognise_meaning_from_text_cap',
-          skillType: 'recognition',
+          skillType: 'recognise_mode',
         },
         reviewContext: {
           schedulerSnapshot: {} as never,

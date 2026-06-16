@@ -107,7 +107,7 @@ function makeBlock(id: string, kind: 'due_review' | 'new_introduction', exercise
       sourceRef: 'learning_items/x',
       exerciseType: exerciseType as ExerciseItem['exerciseType'],
       capabilityType: 'recall_meaning_from_text_cap',
-      skillType: 'meaning_recall',
+      skillType: 'recall_mode',
     },
   }
 }
@@ -123,7 +123,7 @@ function makeExerciseItem(exerciseType = 'type_meaning_ex'): ExerciseItem {
     meanings: [{ id: 'm1', learning_item_id: 'item-1', translation_language: 'nl', translation_text: 'eten', sense_label: null, usage_note: null, is_primary: true }],
     contexts: [],
     answerVariants: [],
-    skillType: 'meaning_recall',
+    skillType: 'recall_mode',
     exerciseType: exerciseType as ExerciseItem['exerciseType'],
   }
 }

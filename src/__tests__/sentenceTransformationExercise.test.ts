@@ -26,7 +26,7 @@ describe('SentenceTransformationExercise types', () => {
       meanings: [],
       contexts: [],
       answerVariants: [],
-      skillType: 'form_recall',
+      skillType: 'produce_mode',
       exerciseType: 'transform_sentence_ex',
       sentenceTransformationData: {
         sourceSentence: 'Saya makan nasi',

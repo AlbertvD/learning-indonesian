@@ -13,7 +13,7 @@ function projection(): ProjectedCapability {
     sourceKind: 'vocabulary_src',
     sourceRef,
     capabilityType: 'recall_meaning_from_text_cap',
-    skillType: 'meaning_recall',
+    skillType: 'recall_mode',
     direction: 'id_to_l1',
     modality: 'text',
     learnerLanguage: 'nl',

@@ -8,7 +8,7 @@ function capability(overrides: Partial<ProjectedCapability> = {}): ProjectedCapa
     sourceKind: 'vocabulary_src',
     sourceRef: 'learning_items/item-1',
     capabilityType: 'recall_meaning_from_text_cap',
-    skillType: 'meaning_recall',
+    skillType: 'recall_mode',
     direction: 'id_to_l1',
     modality: 'text',
     learnerLanguage: 'nl',
@@ -57,7 +57,7 @@ describe('capability materialization planning', () => {
     const bridge = capability({
       canonicalKey: 'cap:v1:vocabulary_src:learning_items/makan:recognise_form_from_meaning_cap:l1_to_id:text:nl',
       capabilityType: 'recognise_form_from_meaning_cap',
-      skillType: 'meaning_recall',
+      skillType: 'recall_mode',
       direction: 'l1_to_id',
       requiredArtifacts: ['meaning:l1', 'base_text'],
       prerequisiteKeys: ['cap:v1:vocabulary_src:learning_items/makan:recognise_meaning_from_text_cap:id_to_l1:text:nl'],
@@ -75,7 +75,7 @@ describe('capability materialization planning', () => {
       readinessStatus: 'unknown',
       publicationStatus: 'draft',
       metadataJson: expect.objectContaining({
-        skillType: 'meaning_recall',
+        skillType: 'recall_mode',
         requiredArtifacts: ['meaning:l1', 'base_text'],
         prerequisiteKeys: ['cap:v1:vocabulary_src:learning_items/makan:recognise_meaning_from_text_cap:id_to_l1:text:nl'],
       }),

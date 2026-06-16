@@ -29,7 +29,7 @@ export function buildContrastPair(input: BuilderInputFor<'choose_correct_form_ex
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: [],
-    skillType: 'recognition' as const,
+    skillType: 'recognise_mode' as const,
     exerciseType: 'choose_correct_form_ex' as const,
     contrastPairData: {
       promptText: ex.prompt_text,

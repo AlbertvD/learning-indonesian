@@ -28,7 +28,7 @@ export function buildTypedRecall(input: BuilderInputFor<'type_form_ex'>): Builde
       meanings: [],
       contexts: [],
       answerVariants: [],
-      skillType: isRootToDerived ? 'form_recall' : 'recognition',
+      skillType: isRootToDerived ? 'produce_mode' : 'recognise_mode',
       exerciseType: 'type_form_ex',
       affixedFormPairData: {
         promptText,
@@ -49,7 +49,7 @@ export function buildTypedRecall(input: BuilderInputFor<'type_form_ex'>): Builde
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,
-    skillType: 'form_recall',
+    skillType: 'produce_mode',
     exerciseType: 'type_form_ex',
   }
   return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }

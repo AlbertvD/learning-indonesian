@@ -12,7 +12,7 @@ function capability(overrides: Partial<ProjectedCapability> = {}): ProjectedCapa
     sourceKind: 'vocabulary_src',
     sourceRef: 'learning_items/item-1',
     capabilityType: 'recall_meaning_from_text_cap',
-    skillType: 'meaning_recall',
+    skillType: 'recall_mode',
     direction: 'id_to_l1',
     modality: 'text',
     learnerLanguage: 'nl',
@@ -52,7 +52,7 @@ describe('exercise resolver', () => {
       capability: capability({
         canonicalKey: 'cap:v1:item:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl',
         capabilityType: 'recognise_form_from_meaning_cap' as any,
-        skillType: 'meaning_recall',
+        skillType: 'recall_mode',
         direction: 'l1_to_id',
       }),
       readiness: { status: 'ready', allowedExercises: ['choose_form_ex'] },
@@ -61,7 +61,7 @@ describe('exercise resolver', () => {
       plan: expect.objectContaining({
         exerciseType: 'choose_form_ex',
         capabilityType: 'recognise_form_from_meaning_cap',
-        skillType: 'meaning_recall',
+        skillType: 'recall_mode',
       }),
     })
   })
@@ -80,7 +80,7 @@ describe('exercise resolver', () => {
     expect(resolveExercise({
       capability: capability({
         capabilityType: 'recognise_meaning_from_audio_cap',
-        skillType: 'recognition',
+        skillType: 'recognise_mode',
         direction: 'audio_to_l1',
         modality: 'audio',
       }),
@@ -97,7 +97,7 @@ describe('exercise resolver', () => {
       sourceKind: 'podcast_segment_src',
       sourceRef: 'podcast-warung/segment-1',
       capabilityType: 'recognise_gist_from_audio_cap',
-      skillType: 'recognition',
+      skillType: 'recognise_mode',
       direction: 'audio_to_l1',
       modality: 'audio',
       learnerLanguage: 'none',
@@ -107,7 +107,7 @@ describe('exercise resolver', () => {
       sourceKind: 'word_form_pair_src',
       sourceRef: 'lesson-9/morphology/men-baca',
       capabilityType: 'produce_derived_form_cap',
-      skillType: 'form_recall',
+      skillType: 'produce_mode',
       direction: 'root_to_derived',
       modality: 'text',
       learnerLanguage: 'none',

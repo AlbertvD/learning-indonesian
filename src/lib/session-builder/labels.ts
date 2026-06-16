@@ -94,9 +94,9 @@ const exerciseLabels: Partial<Record<ExerciseType, string>> = {
 }
 
 const skillLabels: Partial<Record<SkillType, string>> = {
-  recognition: 'herkennen',
-  form_recall: 'vorm ophalen',
-  meaning_recall: 'betekenis ophalen',
+  recognise_mode: 'herkennen',
+  produce_mode: 'vorm ophalen',
+  recall_mode: 'betekenis ophalen',
   spoken_production: 'uitspreken',
 }
 

@@ -26,7 +26,7 @@ describe('ContrastPairExercise types', () => {
       meanings: [],
       contexts: [],
       answerVariants: [],
-      skillType: 'recognition',
+      skillType: 'recognise_mode',
       exerciseType: 'choose_correct_form_ex',
       contrastPairData: {
         promptText: 'Choose the locative preposition',

@@ -8,7 +8,7 @@ function capability(overrides: Partial<PlannerCapability> = {}): PlannerCapabili
     sourceKind: 'vocabulary_src',
     sourceRef: 'learning_items/item-1',
     capabilityType: 'recognise_meaning_from_text_cap',
-    skillType: 'recognition',
+    skillType: 'recognise_mode',
     readinessStatus: 'ready',
     publicationStatus: 'published',
     prerequisiteKeys: [],
@@ -316,14 +316,14 @@ describe('pedagogy planner', () => {
           id: 'meaning-cap',
           canonicalKey: 'meaning-cap',
           capabilityType: 'recall_meaning_from_text_cap',
-          skillType: 'meaning_recall',
+          skillType: 'recall_mode',
         }),
         capability({
           id: 'recognition-cap',
           canonicalKey: 'recognition-cap',
           sourceRef: 'learning_items/item-2',
           capabilityType: 'recognise_meaning_from_text_cap',
-          skillType: 'recognition',
+          skillType: 'recognise_mode',
         }),
       ],
       learnerCapabilityStates: [],
@@ -344,7 +344,7 @@ describe('pedagogy planner', () => {
       canonicalKey: `cap-${index}`,
       sourceRef: `learning_items/item-${index}`,
       capabilityType: 'recall_meaning_from_text_cap',
-      skillType: 'meaning_recall',
+      skillType: 'recall_mode',
     }))
 
     const plan = planLearningPath({
@@ -374,7 +374,7 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     id: 'productive-cap',
     canonicalKey: 'cap:productive',
     capabilityType: 'produce_form_from_meaning_cap',
-    skillType: 'meaning_recall',
+    skillType: 'recall_mode',
     sourceRef: sharedSourceRef,
     ...overrides,
   })

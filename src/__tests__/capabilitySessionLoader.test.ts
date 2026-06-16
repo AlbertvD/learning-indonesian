@@ -15,7 +15,7 @@ function projectedCapability(overrides: Partial<ProjectedCapability> = {}): Proj
     sourceKind: 'vocabulary_src',
     sourceRef,
     capabilityType: 'recall_meaning_from_text_cap',
-    skillType: 'meaning_recall',
+    skillType: 'recall_mode',
     direction: 'id_to_l1',
     modality: 'text',
     learnerLanguage: 'nl',
@@ -440,7 +440,7 @@ describe('capability session loader', () => {
         sourceKind: 'podcast_segment_src',
         sourceRef: 'podcasts/warung/seg-01',
         capabilityType: 'recognise_meaning_from_audio_cap',
-        skillType: 'recognition',
+        skillType: 'recognise_mode',
         readinessStatus: 'ready',
         publicationStatus: 'published',
         prerequisiteKeys: [],
@@ -626,8 +626,8 @@ describe('capability session loader', () => {
     const ref = 'learning_items/item-1' // the shared default sourceRef
     const keyA = 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl'
     const keyB = 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl'
-    const projA = projectedCapability({ canonicalKey: keyA, capabilityType: 'recall_meaning_from_text_cap', skillType: 'meaning_recall' })
-    const projB = projectedCapability({ canonicalKey: keyB, capabilityType: 'recognise_meaning_from_text_cap', skillType: 'recognition' })
+    const projA = projectedCapability({ canonicalKey: keyA, capabilityType: 'recall_meaning_from_text_cap', skillType: 'recall_mode' })
+    const projB = projectedCapability({ canonicalKey: keyB, capabilityType: 'recognise_meaning_from_text_cap', skillType: 'recognise_mode' })
     const capabilitiesByKey = new Map([[keyA, projA], [keyB, projB]])
     const readinessByKey: Map<string, CapabilityReadiness> = new Map([
       [keyA, { status: 'ready', allowedExercises: ['type_meaning_ex'] }],

@@ -224,7 +224,7 @@ describe('capability session data service', () => {
         canonicalKey: 'cap:v1:vocabulary_src:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl',
         capabilityType: 'recognise_form_from_meaning_cap',
         // cap-v2 Slice 1 mis-level fix: recognise_form_from_meaning_cap is recognition, not recall.
-        skillType: 'recognition',
+        skillType: 'recognise_mode',
       }),
     ]))
   })

@@ -356,7 +356,7 @@ function toRuntimeCapability(row: Record<string, unknown>): RuntimeHealthCapabil
     sourceKind: row.source_kind as RuntimeHealthCapability['sourceKind'],
     sourceRef: String(row.source_ref ?? ''),
     capabilityType: row.capability_type as RuntimeHealthCapability['capabilityType'],
-    skillType: String(metadata.skillType ?? row.capability_type ?? 'recognition') as RuntimeHealthCapability['skillType'],
+    skillType: String(metadata.skillType ?? row.capability_type ?? 'recognise_mode') as RuntimeHealthCapability['skillType'],
     direction: row.direction as RuntimeHealthCapability['direction'],
     modality: row.modality as RuntimeHealthCapability['modality'],
     learnerLanguage: row.learner_language as RuntimeHealthCapability['learnerLanguage'],

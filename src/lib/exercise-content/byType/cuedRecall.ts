@@ -65,7 +65,7 @@ export function buildCuedRecall(input: BuilderInputFor<'choose_form_ex'>): Build
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,
-    skillType: 'meaning_recall' as const,
+    skillType: 'recall_mode' as const,
     exerciseType: 'choose_form_ex' as const,
     cuedRecallData: {
       promptMeaningText,

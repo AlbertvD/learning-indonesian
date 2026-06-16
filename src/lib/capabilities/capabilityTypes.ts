@@ -243,13 +243,13 @@ export function deriveSkillTypeFromCapabilityType(capabilityType: CapabilityType
     case 'recognise_word_form_link_cap':
     case 'recognise_gist_from_audio_cap':
     case 'recognise_form_from_meaning_cap':
-      return 'recognition'
+      return 'recognise_mode'
     case 'recall_meaning_from_text_cap':
-      return 'meaning_recall'
+      return 'recall_mode'
     case 'produce_form_from_meaning_cap':
     case 'produce_form_from_audio_cap':
     case 'produce_derived_form_cap':
     case 'produce_form_from_context_cap':
-      return 'form_recall'
+      return 'produce_mode'
   }
 }

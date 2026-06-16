@@ -119,7 +119,7 @@ function fakeCapability(row: MatrixRow): ProjectedCapability {
     sourceKind: row.sourceKind,
     sourceRef: `fake/${row.capabilityType}`,
     capabilityType: row.capabilityType,
-    skillType: 'recognition',
+    skillType: 'recognise_mode',
     direction: 'none',
     modality: 'text',
     learnerLanguage: 'none',

@@ -27,7 +27,7 @@ export function buildClozeMcq(input: BuilderInputFor<'choose_missing_word_ex'>):
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,
-    skillType: 'recognition' as const,
+    skillType: 'recognise_mode' as const,
     exerciseType: 'choose_missing_word_ex' as const,
     clozeMcqData: {
       sentence: ex.sentence,

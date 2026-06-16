@@ -88,7 +88,7 @@ function makeBlock(opts: { itemId?: string; exerciseType?: SessionBlock['renderP
       sourceRef,
       exerciseType,
       capabilityType: 'recognise_meaning_from_text_cap',
-      skillType: 'recognition',
+      skillType: 'recognise_mode',
     },
     reviewContext: {
       schedulerSnapshot: {} as never,
@@ -402,7 +402,7 @@ function makeDialogueBlock(opts: { sourceRef?: string; capabilityId?: string; ex
       sourceRef,
       exerciseType,
       capabilityType: 'produce_form_from_context_cap',
-      skillType: 'form_recall',
+      skillType: 'produce_mode',
     },
     reviewContext: {
       schedulerSnapshot: {} as never,

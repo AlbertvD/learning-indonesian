@@ -57,7 +57,7 @@ function makeBlock(): SessionBlock {
       sourceRef: 'learning_items/item-1',
       exerciseType: 'choose_meaning_ex',
       capabilityType: 'recognise_meaning_from_text_cap',
-      skillType: 'recognition',
+      skillType: 'recognise_mode',
     },
     reviewContext: {
       schedulerSnapshot: {} as never,
@@ -156,7 +156,7 @@ describe('buildMeaningRecall', () => {
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.exerciseType).toBe('type_meaning_ex')
-      expect(r.exerciseItem.skillType).toBe('meaning_recall')
+      expect(r.exerciseItem.skillType).toBe('recall_mode')
       expect(r.audibleTexts).toContain(normalizeTtsText('akhir'))
     }
   })
@@ -197,7 +197,7 @@ describe('buildDictation', () => {
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.exerciseType).toBe('type_form_from_audio_ex')
-      expect(r.exerciseItem.skillType).toBe('form_recall')
+      expect(r.exerciseItem.skillType).toBe('produce_mode')
     }
   })
 
@@ -637,7 +637,7 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
       root: 'baca',
       derived: 'membaca',
     })
-    expect(r.exerciseItem.skillType).toBe('form_recall')
+    expect(r.exerciseItem.skillType).toBe('produce_mode')
   })
 
   it('flips prompt + answer for derived→root direction (recognition)', () => {
@@ -654,7 +654,7 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
     if (r.kind !== 'ok') return
     expect(r.exerciseItem.affixedFormPairData?.promptText).toBe('What is the root of: membaca')
     expect(r.exerciseItem.affixedFormPairData?.acceptedAnswer).toBe('baca')
-    expect(r.exerciseItem.skillType).toBe('recognition')
+    expect(r.exerciseItem.skillType).toBe('recognise_mode')
   })
 
   it('audibleTexts harvest includes both root and derived (Indonesian-language)', () => {

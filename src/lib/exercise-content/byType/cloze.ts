@@ -33,7 +33,7 @@ export function buildCloze(input: BuilderInputFor<'type_missing_word_ex'>): Buil
       meanings: input.meanings,
       contexts: input.contexts,
       answerVariants: input.answerVariants,
-      skillType: 'form_recall' as const,
+      skillType: 'produce_mode' as const,
       exerciseType: 'type_missing_word_ex' as const,
       clozeContext: {
         sentence: input.dialogueLine.sourceText,
@@ -62,7 +62,7 @@ export function buildCloze(input: BuilderInputFor<'type_missing_word_ex'>): Buil
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,
-    skillType: 'form_recall' as const,
+    skillType: 'produce_mode' as const,
     exerciseType: 'type_missing_word_ex' as const,
     clozeContext: {
       sentence: clozeContext.source_text,

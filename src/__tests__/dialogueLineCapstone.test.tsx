@@ -68,7 +68,7 @@ function makeDialogueBlock(capabilityId: string, sourceRef: string): SessionBloc
       sourceRef,
       exerciseType: 'type_missing_word_ex',
       capabilityType: 'produce_form_from_context_cap',
-      skillType: 'form_recall',
+      skillType: 'produce_mode',
     },
     reviewContext: {
       schedulerSnapshot: {} as never,
