@@ -78,3 +78,4 @@ All thresholds are constants in `pedagogy.ts` / `compose.ts`:
 - [ADR 0003: FSRS schedules capabilities, not content sources](./0003-fsrs-schedules-capabilities-not-content-sources.md) — the stability field this gate consumes
 - [ADR 0006: every lesson-derived capability has an introducing lesson](./0006-extend-lesson-id-to-all-capabilities.md) — the prior planner-gating mechanism that this rule layers on top of
 - [Plan: capability staging gate + session interleave](../plans/2026-05-18-capability-staging-gate.md) — the architect-approved design document
+- [ADR 0018: morphology application caps gate on two cross-source-kind prerequisites](./0018-morphology-application-cap-cross-source-kind-prerequisites.md) — amends the morphology carve-out above: the staging-gate exemption stands, but the within-pair `prerequisiteKeys` chain is no longer the sole sequencing mechanism (adds rule→application + root→application gates)
