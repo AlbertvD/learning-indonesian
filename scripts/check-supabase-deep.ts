@@ -993,11 +993,12 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 //        the structural no-orphan mirrors.
 //
 //        HC19: every contrast_grammar_pattern_cap cap's pattern has ≥1 choose_correct_form_ex row.
-//        HC20: every recognise_grammar_pattern_cap cap's pattern has ≥1 row in at least
-//              ONE of (transform_sentence_ex / translate_sentence_ex /
-//              choose_missing_word_ex). Per-type coverage gaps remain possible (readiness is
-//              structural, not data-existence — Decision R) and surface as a
-//              fail-loud reader diagnostic if the resolver picks an empty type.
+//        HC20 (ADR 0017): every recognise_grammar_pattern_cap cap's pattern has ≥1
+//              choose_missing_word_ex (cloze) row — recognise is cloze-only.
+//        HC30 (ADR 0017): every produce_grammar_pattern_cap cap's pattern has ≥1 row
+//              in transform_sentence_ex ∪ constrained_translation_exercises.
+//              All three ride the single findCapsMissingSatellite predicate so the
+//              three gates can never drift from the reconciliation step's definition.
 //
 //        Implementation note (same as HC15/HC17): PostgREST can't express the
 //        anti-join, so we fetch id sets and difference in code.
@@ -1010,12 +1011,14 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     .is('retired_at', null)
   if (capsError) {
     fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a choose_correct_form_ex row (PR 4)', capsError.message)
-    fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4)', capsError.message)
+    fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a cloze row (ADR 0017)', capsError.message)
+    fail('HC30 every active produce_grammar_pattern_cap cap resolves to a transform/translate row (ADR 0017)', capsError.message)
   } else {
     const caps = (capRows ?? []) as CapForSatelliteCheck[]
     if (caps.length === 0) {
       pass('HC19 every active contrast_grammar_pattern_cap cap resolves to a choose_correct_form_ex row (PR 4) (no pattern caps in DB; vacuously green)')
-      pass('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4) (no pattern caps in DB; vacuously green)')
+      pass('HC20 every active recognise_grammar_pattern_cap cap resolves to a cloze row (ADR 0017) (no pattern caps in DB; vacuously green)')
+      pass('HC30 every active produce_grammar_pattern_cap cap resolves to a transform/translate row (ADR 0017) (no pattern caps in DB; vacuously green)')
     } else {
       try {
         // The shared predicate returns every pattern cap missing its satellite
@@ -1040,18 +1043,29 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
             `${contrastOffenders.length}+ contrast_grammar_pattern_cap caps with no choose_correct_form_ex row for their pattern. ${reportFmt(contrastOffenders)}`)
         }
 
-        // HC20 — recognise_grammar_pattern_cap (union of the 3 recognition tables)
+        // HC20 — recognise_grammar_pattern_cap (cloze only, ADR 0017)
         const recognitionCaps = caps.filter((c) => c.capability_type === 'recognise_grammar_pattern_cap')
         const recognitionOffenders = offenders.filter((c) => c.capability_type === 'recognise_grammar_pattern_cap')
         if (recognitionOffenders.length === 0) {
-          pass(`HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4) (${recognitionCaps.length} cap(s) checked)`)
+          pass(`HC20 every active recognise_grammar_pattern_cap cap resolves to a cloze row (ADR 0017) (${recognitionCaps.length} cap(s) checked)`)
         } else {
-          fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4)',
-            `${recognitionOffenders.length}+ recognise_grammar_pattern_cap caps with no transform_sentence_ex/translate_sentence_ex/choose_missing_word_ex row for their pattern. ${reportFmt(recognitionOffenders)}`)
+          fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a cloze row (ADR 0017)',
+            `${recognitionOffenders.length}+ recognise_grammar_pattern_cap caps with no choose_missing_word_ex (cloze) row for their pattern. ${reportFmt(recognitionOffenders)}`)
+        }
+
+        // HC30 — produce_grammar_pattern_cap (transform ∪ translate, ADR 0017)
+        const produceCaps = caps.filter((c) => c.capability_type === 'produce_grammar_pattern_cap')
+        const produceOffenders = offenders.filter((c) => c.capability_type === 'produce_grammar_pattern_cap')
+        if (produceOffenders.length === 0) {
+          pass(`HC30 every active produce_grammar_pattern_cap cap resolves to a transform/translate row (ADR 0017) (${produceCaps.length} cap(s) checked)`)
+        } else {
+          fail('HC30 every active produce_grammar_pattern_cap cap resolves to a transform/translate row (ADR 0017)',
+            `${produceOffenders.length}+ produce_grammar_pattern_cap caps with no sentence_transformation_exercises/constrained_translation_exercises row for their pattern. ${reportFmt(produceOffenders)}`)
         }
       } catch (err) {
         fail('HC19 every active contrast_grammar_pattern_cap cap resolves to a choose_correct_form_ex row (PR 4)', (err as Error).message)
-        fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a recognition grammar row (PR 4)', (err as Error).message)
+        fail('HC20 every active recognise_grammar_pattern_cap cap resolves to a cloze row (ADR 0017)', (err as Error).message)
+        fail('HC30 every active produce_grammar_pattern_cap cap resolves to a transform/translate row (ADR 0017)', (err as Error).message)
       }
     }
   }
