@@ -153,9 +153,9 @@ function dimensionForCapability(type: CapabilityType): MasteryDimension {
     case 'recognise_grammar_pattern_cap':
       return 'recognise_grammar_pattern_cap'
     case 'contrast_grammar_pattern_cap':
-    // ADR 0017: produce folds into pattern_use (no new MasteryDimension) — the
-    // pattern_use rung is weakest-wins across contrast + produce.
     case 'produce_grammar_pattern_cap':
+      // ADR 0017: produce folds into pattern_use (no new MasteryDimension) — the
+      // pattern_use rung is weakest-wins across contrast + produce.
       return 'pattern_use'
     case 'produce_form_from_context_cap':
       return 'produce_form_from_context_cap'

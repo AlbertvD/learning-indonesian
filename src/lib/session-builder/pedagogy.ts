@@ -215,11 +215,11 @@ export function capabilityPhase(type: CapabilityType): 1 | 2 | 3 | 4 {
       return 2
     case 'recognise_form_from_meaning_cap':
     case 'contrast_grammar_pattern_cap':
-    // ADR 0017: recognise_grammar_pattern_cap sits with contrast at Phase 3.
-    // For grammar this is coherence only — the actual recognise → contrast →
-    // produce sequencing is carried by prerequisiteKeys, and grammar is exempt
-    // from the source_ref-keyed staging gate (no Phase 1/2 ladder).
     case 'recognise_grammar_pattern_cap':
+      // ADR 0017: recognise_grammar_pattern_cap sits with contrast at Phase 3.
+      // For grammar this is coherence only — the actual recognise → contrast →
+      // produce sequencing is carried by prerequisiteKeys, and grammar is exempt
+      // from the source_ref-keyed staging gate (no Phase 1/2 ladder).
       return 3
     case 'produce_form_from_meaning_cap':
     case 'produce_form_from_context_cap':
