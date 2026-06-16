@@ -196,8 +196,12 @@ that deferred spec. Lands on the planned seam, not a bolt-on.
 1. **Architect + data-architect review** — mandatory (data-model plan; enforced by plan-review-gate).
 2. ~~Live-cap verification~~ ✅ DONE (§4): live DB confirms 97 grammar_patterns → 194 pattern caps;
    meN-/BER-/DI- rule tier is LIVE; only the application tier (4 caps, L9) is empty.
-3. **Root-vocab prerequisite** (research open Q): hard-block application caps until root mastered, or
-   deprioritize? Research leans single-unknown → hard-block. CONFIRM.
+3. **Root-vocab prerequisite** — ✅ **RESOLVED (2026-06-16): HARD-BLOCK** (application caps don't schedule
+   until the root is mastered). Single-unknown-card rule [research Q1]; and — load-bearing — it is the
+   **SOLE** enforcement of morphology learning-order, because the receptive-before-productive Phase gate is
+   carved out for `affixed_form_pair` (`pedagogy.ts:337-339,361`). Shapes the phase-b projector contract:
+   `projectAffixedCapabilities` emits the root-vocab cap's canonical_key as a `prerequisiteKey` (resolved
+   via `itemSlug()`). Confirmed in the capstone §7-Q1 + item B; lands in the phase-b re-review.
 4. **Modal-verb semantics** (bisa/boleh/harus) — the one residual grammar gap NOT in book 2; small,
    addable. (Aspect sudah/telah IS covered by Bab 2.)
 5. **Ingestion order** — sequence the 14 new chapters as new lessons; decide numbering vs the existing 16.

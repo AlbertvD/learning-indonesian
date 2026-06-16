@@ -183,6 +183,13 @@ leaves §8 saying "not yet implemented" is incomplete.
 
 ## 7. Open questions for review
 
+> **✅ ALL THREE RESOLVED in §8 (review round 1); retained for context, NOT open (staff-engineer 2026-06-16
+> flagged that leaving them phrased as "open" on an approved plan invites drift).** Phase D = **OUT** (its
+> own future slice; not identity-bearing — if a table rename is ever wanted it gets its own plan).
+> `canonical_key` prefix stays **`cap:v1`** (truncate makes versioning moot). Direction/modality enums
+> **left as-is** (stored columns, not the confusing-overload set). The questions below are the original
+> framing only.
+
 1. **Phase D in or out?** (Recommend: out of this plan; its own slice if/when wanted.)
 2. **`canonical_key` version bump?** Keep `cap:v1` prefix (only the type/source segments change) or bump
    to `cap:v2` to make the regen unmistakable? (Lean: keep v1 — truncate makes versioning moot.)

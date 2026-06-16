@@ -186,8 +186,10 @@ adds work *above* it, not rewrites of it.** The items:
   The catalog + rule card need per-affix sequence rank, CEFR level, gloss, and the canonical allomorph
   reference (all six meN- classes even before each has example pairs). phase-b stores these *per pair*.
   This is *curated curriculum metadata* — fixed, ~15–20 entries, no per-learner state — so by
-  minimum-mechanism it is a **code constant in `lib/morphology`** (extending the existing
-  `MORPHOLOGY_PATTERN_SLUGS` idea, `morphology.ts:20`), **not a new DB table.** It doubles as the
+  minimum-mechanism it is a **NEW code constant in `lib/morphology`** (in the *spirit* of the pipeline's
+  `MORPHOLOGY_PATTERN_SLUGS` at `scripts/lib/pipeline/capability-stage/projectors/morphology.ts:20`, but
+  a separate runtime constant — not an extension of that pipeline file; staff-engineer DRIFT fix), **not a
+  new DB table.** It doubles as the
   **controlled vocabulary for the `affix` column**: an "Affix" (CONTEXT.md glossary) IS a catalog member,
   so phase-b's validator **and** the live-DB HC assert `affix ∈ catalog` (three-layer-gate habit) — else
   the catalog grouping silently splits one affix across spelling variants (`meN-`/`me-`/`meng-`). The
@@ -272,7 +274,11 @@ So the trainer cannot render a catalog or explorer until content exists. Build o
 3. **Re-author the affix lessons (L9–16) + ingest book-2's 14 chapters** → populates `affixed_form_pairs`
    broadly across affixes. *This is the trainer's content.*
 4. **The trainer surface** (`lib/morphology/` + `components/morphology/`) **+ the Voortgang axis (C)** —
-   this capstone.
+   this capstone. **Ship it as a thin first cut, not all at once (staff-engineer):** v1 = the affix
+   **catalog + rule card + per-affix funnel tile** (the highest-value, lowest-risk reuse of existing
+   patterns); **defer the word-family explorer (§2.2)** — the one genuinely-new, most-complex panel — to a
+   v2 once a **second** affix lesson is re-authored, since with one affix it renders "you know N of N" and
+   carries near-zero value. This cuts the riskiest panel out of v1 at almost no cost.
 
 This design is **design-ahead**: it is written now so steps 1–3 are built *toward* it (esp. item B,
 which must be decided before step 2), not toward a guess.

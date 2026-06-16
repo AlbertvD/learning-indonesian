@@ -35,6 +35,33 @@ Vitest.
 
 ---
 
+## 0a. Staff-engineer review (2026-06-16) — two findings to FOLD INTO the phase-b re-review
+
+A simplicity/reuse pass (the lens `architect` + `data-architect` structurally miss) found two items on
+this approved spec. Both fold into the **phase-b re-review** the capstone already schedules (with item B +
+`affix ∈ catalog`). Do not build verbatim without resolving them:
+
+1. **[OVERBUILT] Cut `choose_affix_ex` + `choose_allomorph_ex` as new exercise types — reuse `cued_recall`.**
+   Both are an MCQ "prompt + tappable options" screen identical to the existing `cued_recall`
+   (`CuedRecallExercise.tsx:43-64`), which already serves `root_derived_*` caps (`renderContracts.ts:70`).
+   Widen `cued_recall`'s `supportedSourceKinds` to include `word_form_pair_src` (mirroring how `typed_recall`
+   was widened, `renderContracts.ts:74-88`) and render `recognise_word_form_link_cap` /
+   `recognise_allomorph_from_root_cap` through it. Net: **2 new exercise types, not 4** — keep only the
+   genuinely-distinct interactions `decompose_word_ex` (segment a word) + `build_confix_ex` (assemble two
+   boundaries). The new *cap* `recognise_allomorph_from_root_cap` still earns its keep; only its bespoke
+   exercise type is cut. (Ripples into model-doc §8's `_ex` table + program-doc §6, which list
+   `choose_affix_ex`/`choose_allomorph_ex` — update those when the re-review adopts the cut. The capstone
+   is unaffected: its practice is a scoped-session launch and names no exercise types.)
+2. **[UNDERBUILT] Specify affix-distractor sourcing.** The MCQ drills need a distractor set (wrong
+   affix/allomorph options). The affixed-distractor table isn't built (only `cued_recall_distractors` for
+   items, `migration.sql:2869`) and §3 hand-waves "a distractor affix set." Name the source — author an
+   affix-distractor set, or derive deterministically from the catalog's allomorph classes — or the MCQ
+   drills can't render.
+
+The substrate columns + the one new cap are right-sized; keep them.
+
+---
+
 ## 0. NAMING — this spec uses the §8 TARGET names (`_src`/`_mode`/`_cap`/`_ex`)
 
 This spec is authored in the **§8 target naming convention** (the single source of truth is
