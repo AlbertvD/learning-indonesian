@@ -4,7 +4,9 @@ import type { SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/lib/capabilities'
 import type { SessionAudioMap } from '@/services/audioService'
 
-const GRAMMAR_CAPABILITY_TYPES = new Set(['recognise_grammar_pattern_cap', 'contrast_grammar_pattern_cap'])
+// ADR 0017: produce_grammar_pattern_cap (transform/translate exercises) is a
+// grammar cap too — it drives the grammar feedback flow like recognise/contrast.
+const GRAMMAR_CAPABILITY_TYPES = new Set(['recognise_grammar_pattern_cap', 'contrast_grammar_pattern_cap', 'produce_grammar_pattern_cap'])
 
 export function buildFeedbackInput(args: {
   block: SessionBlock

@@ -93,11 +93,11 @@ describe('16. buildFeedbackInput adapter', () => {
     }
   })
 
-  it('isGrammar=true for recognise_grammar_pattern_cap and contrast_grammar_pattern_cap capability types', () => {
-    for (const capType of ['recognise_grammar_pattern_cap', 'contrast_grammar_pattern_cap'] as const) {
+  it('isGrammar=true for recognise/contrast/produce grammar pattern capability types (ADR 0017)', () => {
+    for (const capType of ['recognise_grammar_pattern_cap', 'contrast_grammar_pattern_cap', 'produce_grammar_pattern_cap'] as const) {
       const result = buildFeedbackInput({
-        block: makeBlock('choose_missing_word_ex', capType),
-        context: makeContext('choose_missing_word_ex'),
+        block: makeBlock('transform_sentence_ex', capType),
+        context: makeContext('transform_sentence_ex'),
         response: 'makan',
         outcome: 'wrong',
         userLanguage: 'nl',
