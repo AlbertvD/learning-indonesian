@@ -83,8 +83,10 @@ All in `masteryModel.ts`:
 - **Grammar topics** (per-pattern drill-down): pure deriver
   `deriveGrammarTopics({evidence, now?})` → `GrammarTopicLabel[]` (per pattern:
   `lessonNumber`, weakest-wins `label`, total `reviewCount`, and `recognise` /
-  `contrast` `GrammarDimensionProgress` from the `pattern_recognition` /
-  `pattern_contrast` caps — both receptive facets per the capability-type table)
+  `contrast` / `produce` `GrammarDimensionProgress` from the
+  `recognise_grammar_pattern_cap` / `contrast_grammar_pattern_cap` /
+  `produce_grammar_pattern_cap` caps — ADR 0017, the produce facet folds into the
+  `pattern_use` dimension, no new `MasteryDimension`)
   + IO `getGrammarTopics` (joins `grammar_patterns` for
   name + explanation, resolving the cap source_ref via `patternSlugFromSourceRef`).
   TS-only.

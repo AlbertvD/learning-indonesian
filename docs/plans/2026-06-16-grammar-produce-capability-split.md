@@ -1,7 +1,21 @@
 ---
-status: approved
+status: shipped
 reviewed_by: [architect, data-architect]   # architect APPROVE 2026-06-16; data-architect APPROVE 2026-06-16 (CRITICAL-1 + MAJOR-1 folded in)
 adr: 0017
+implementation: PR #pending
+merged_at: 2026-06-16
+implementation_paths:
+  - src/lib/capabilities/capabilityTypes.ts
+  - src/lib/capabilities/renderContracts.ts
+  - src/lib/capabilities/capabilityCatalog.ts
+  - scripts/lib/pipeline/capability-stage/projectors/grammar.ts
+  - scripts/lib/pipeline/capability-stage/satellitePresence.ts
+  - src/lib/session-builder/pedagogy.ts
+  - src/lib/session-builder/labels.ts
+  - src/lib/analytics/mastery/masteryModel.ts
+  - src/components/progress/GrammarPatternList.tsx
+  - src/components/experience/buildFeedbackInput.ts
+  - scripts/check-supabase-deep.ts
 supersedes: []
 ---
 

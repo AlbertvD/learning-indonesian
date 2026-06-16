@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (2026-06-16). `architect` + `data-architect` both APPROVED `docs/plans/2026-06-16-grammar-produce-capability-split.md` (the implementation plan; `status: approved`). Not yet implemented — see that plan.
+Accepted (2026-06-16). `architect` + `data-architect` both APPROVED `docs/plans/2026-06-16-grammar-produce-capability-split.md` (the implementation plan). **Shipped 2026-06-16** — every grammar pattern now emits three capabilities (recognise → contrast → produce); the DB cutover republished all 16 grammar-bearing lessons additively (97 produce caps, junction 97, HC19/HC20/HC30 green).
 
 ## Context
 
