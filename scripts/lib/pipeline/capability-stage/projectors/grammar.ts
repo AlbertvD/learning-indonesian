@@ -42,7 +42,8 @@ export interface PatternPlan {
   slug: string
   sourceRef: string
   grammarPatternInput: GrammarPatternInput
-  /** recognise_grammar_pattern_cap + contrast_grammar_pattern_cap (contrast prereq = recognition). */
+  /** recognise → contrast → produce (ADR 0017): linear prereq chain
+   *  (contrast prereq = recognition; produce prereq = contrast). */
   capabilities: CapabilityInput[]
 }
 
@@ -73,8 +74,9 @@ export interface PatternProjectionOutput {
  *   - grammar_patterns NOT-NULL columns: name=title, short_explanation=rules
  *     joined (falls back to title so the NOT NULL write never fails),
  *     complexity_score=1, confusion_group=null, introduced_by_lesson_id=lessonId.
- *   - Each category → 2 caps: recognise_grammar_pattern_cap + a contrast_grammar_pattern_cap sibling
- *     whose prerequisite is the recognition key.
+ *   - Each category → 3 caps (ADR 0017): recognise_grammar_pattern_cap, a
+ *     contrast_grammar_pattern_cap sibling (prereq = recognition), and a
+ *     produce_grammar_pattern_cap (prereq = contrast).
  *
  * Idempotency: the projector EMITS all patterns + caps; the writer decides
  * skip-vs-regenerate against the DB seeded-check. Projector stays pure.
@@ -131,6 +133,10 @@ export function projectPatternsFromCategories(
       ...recognitionDraft,
       capabilityType: 'contrast_grammar_pattern_cap' as const,
     })
+    const produceKey = buildCanonicalKey({
+      ...recognitionDraft,
+      capabilityType: 'produce_grammar_pattern_cap' as const,
+    })
 
     const capabilities: CapabilityInput[] = [
       {
@@ -158,6 +164,23 @@ export function projectPatternsFromCategories(
         lessonId: input.lessonId,
         requiredArtifacts: [],
         prerequisiteKeys: [recognitionKey],
+      },
+      // ADR 0017 — produce_grammar_pattern_cap, gated after contrast (linear
+      // recognise → contrast → produce chain). Shares the recognise/contrast
+      // source_ref, so the runner junctions it to the same content_unit and
+      // it carries the two production exercises per renderContracts.
+      {
+        canonicalKey: produceKey,
+        sourceKind: 'grammar_pattern_src',
+        sourceRef,
+        capabilityType: 'produce_grammar_pattern_cap',
+        direction: 'none',
+        modality: 'text',
+        learnerLanguage: 'none',
+        projectionVersion: CAPABILITY_PROJECTION_VERSION,
+        lessonId: input.lessonId,
+        requiredArtifacts: [],
+        prerequisiteKeys: [contrastKey],
       },
     ]
 
