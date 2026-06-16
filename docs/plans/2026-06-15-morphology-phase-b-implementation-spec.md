@@ -154,6 +154,13 @@ All six MUST land in the same commit or the app won't boot (module-load assertio
 
 ## 3. New exercise types (target `_ex` naming)
 
+> **⚠️ PROVISIONAL pending the §0a re-review decision (seam audit 2026-06-16).** Two of the rows below —
+> **`choose_affix_ex`** and **`choose_allomorph_ex`** — are flagged in §0a for CUTTING (they are the
+> existing `cued_recall` MCQ screen; widen `cued_recall` to `word_form_pair_src` instead). **Do NOT build
+> them until the phase-b re-review adopts or rejects the §0a cut.** If adopted, only `decompose_word_ex` +
+> `build_confix_ex` remain genuinely new, and the §2.3/§5/§9 references + §8-model-doc + program-doc §6
+> must be struck in lockstep. §2 corner 3/6's `choose_allomorph_ex` references are likewise provisional.
+
 Add to `ExerciseType` union (`src/types/learning.ts`) + `RENDER_CONTRACTS` (`renderContracts.ts:56`) + `ContractInputShapes` (`renderContracts.ts:~414`, compile-enforced) + `projectBuilderInput` switch (`renderContracts.ts:~599`) + the registry (`src/components/exercises/registry.ts`) + `implementations/`:
 
 | Exercise type | Level (`_mode`) → cap | supportedSourceKinds | reads |
@@ -215,10 +222,14 @@ The capability stage reads ONLY the DB (`runner.ts:9`, ADR 0011/0012); `morpholo
 - **Layer 2** — pre-write in `runCapabilityStage`: **extend `validateAffixedFormPairs`
   (`validators/affixedFormPairs.ts`)** to check the new required fields (data-architect m1): `affix_type`
   non-null + in the enum; `grammar_pattern_id` non-null; `productive` non-null; `allomorph_class` non-null
-  when `affix IN ('meN-','peN-')`; `circumfix_left/right` non-null when `affix_type='confix'`. **Also widen
-  the source_ref regex** (`^lesson-\d+\/morphology\/.+$`) for the non-`lesson-N` authoring units the §8
-  harvest introduces (e.g. `staging/lesson-999`) — load-bearing, not optional (architect WARNING).
-- **Layer 3** — `scripts/check-supabase-deep.ts` HC (after HC17): live-DB assertion of the same invariant.
+  when `affix IN ('meN-','peN-')`; `circumfix_left/right` non-null when `affix_type='confix'`; **`affix ∈
+  the `lib/morphology` catalog constant** (the controlled-vocabulary tie the capstone item A requires — the
+  writer-side obligation, missing here until now; seam audit 2026-06-16). **Also widen the source_ref
+  regex** (`^lesson-\d+\/morphology\/.+$`) for the non-`lesson-N` authoring units the §8 harvest introduces
+  (e.g. `staging/lesson-999`) — load-bearing, not optional (architect WARNING).
+- **Layer 3** — `scripts/check-supabase-deep.ts` HC (after HC17): live-DB assertion of the same invariant,
+  **including `affix ∈ catalog`** (every live `affix` value is a catalog member — else the trainer's
+  catalog grouping silently splits one affix across spelling variants).
 
 ## 7. ADR addendum (program doc §9 / architect CRITICAL)
 

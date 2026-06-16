@@ -245,7 +245,10 @@ There is **no "artifact" layer.** "Artifact" was a generic umbrella the system d
 > `decompose_word_ex` (derived → root + affix) and `choose_affix_ex` serve `recognise_word_form_link_cap`;
 > `choose_allomorph_ex` serves the new `recognise_allomorph_from_root_cap`; `build_confix_ex` serves
 > `produce_derived_form_cap`. Plain derived-form production reuses the existing `type_form_ex` (no new
-> exercise). See `docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md` §3.
+> exercise). **⚠️ `choose_affix_ex` + `choose_allomorph_ex` are PROVISIONAL** — the phase-b §0a re-review
+> (2026-06-16) proposes cutting them and rendering those caps through the existing `cued_recall` MCQ
+> exercise instead (widened to `word_form_pair_src`); if adopted, strike both rows here. See
+> `docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md` §0a + §3.
 
 ### Typed content concepts (named directly — **not** a layer)
 The materials an exercise consumes, each its own typed concept (ADR 0009):

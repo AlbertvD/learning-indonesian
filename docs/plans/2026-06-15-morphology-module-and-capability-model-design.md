@@ -183,7 +183,9 @@ Affix-bearing grammar patterns that are **LIVE** (rule tier), by lesson:
 > and added to model-doc §8; (2) `produce_derived_form_ex` is shown here for symmetry, but the impl spec
 > **reuses the existing `type_form_ex`** for plain derived-form production (no new exercise) — so the four
 > genuinely-new `_ex` types are `decompose_word_ex`, `choose_affix_ex`, `choose_allomorph_ex`,
-> `build_confix_ex`.
+> `build_confix_ex`. **⚠️ Now likely TWO, not four:** the phase-b §0a re-review (2026-06-16) proposes
+> cutting `choose_affix_ex` + `choose_allomorph_ex` (they're the existing `cued_recall` MCQ screen),
+> leaving only `decompose_word_ex` + `build_confix_ex`. Provisional until that re-review decides.
 
 ## 7. Where it lives (target architecture)
 
