@@ -10,9 +10,9 @@ status: approved   # round 4 (2026-06-16): reopened from the 2026-06-15 approval
                    # findings (grill + staff-engineer + seam audit): (1) item B root-vocab prerequisite
                    # (hard-block); (2) `affix ∈ catalog` writer gate (catalog → lib/capabilities, architect
                    # CRITICAL); (3) the cut — drop choose_affix_ex/choose_allomorph_ex, render via widened
-                   # `cued_recall` (4 contract edits + catalog-derived distractors). Re-reviewed clean:
+                   # `choose_form_ex` (4 contract edits + catalog-derived distractors). Re-reviewed clean:
                    # architect APPROVE + data-architect APPROVE (the rework round was clean — catalog
-                   # placement, cued_recall enumeration, 6-arg root-vocab key recipe all verified vs code).
+                   # placement, choose_form_ex enumeration, 6-arg root-vocab key recipe all verified vs code).
 reviewed_by: [architect, data-architect]
 supersedes: []
 related:
@@ -24,7 +24,7 @@ related:
 ---
 
 **Goal:** Add the generative morphology *application tier* — extended `affixed_form_pairs` payload +
-one new capability type + **2 new exercise types** (the two MCQ drills reuse the existing `cued_recall`) —
+one new capability type + **2 new exercise types** (the two MCQ drills reuse the existing `choose_form_ex`) —
 on top of the already-live rule tier, so the follow-up book's affix chapters land as real generative
 drills, not generic grammar exercises.
 
@@ -47,13 +47,13 @@ A grill + a per-doc staff-engineer pass + a cross-plan seam audit produced three
 in the body below** (this is no longer a margin note — the spec describes the revised target):
 
 1. **The cut (staff-engineer OVERBUILT).** `choose_affix_ex` + `choose_allomorph_ex` were the existing
-   `cued_recall` MCQ screen ("prompt + tappable options", `CuedRecallExercise.tsx:43-64`). **Adopted:**
-   widen `cued_recall`'s `supportedSourceKinds` to `word_form_pair_src` (mirroring how `typed_recall` was
+   `choose_form_ex` MCQ screen ("prompt + tappable options", `CuedRecallExercise.tsx:43-64`). **Adopted:**
+   widen `choose_form_ex`'s `supportedSourceKinds` to `word_form_pair_src` (mirroring how `type_form_ex` was
    widened, `renderContracts.ts:74-88`) and render `recognise_word_form_link_cap` +
    `recognise_allomorph_from_root_cap` through it. **2 new exercise types, not 4** — only the
    genuinely-distinct `decompose_word_ex` (segment) + `build_confix_ex` (assemble) remain. The new *cap*
    stays; only its bespoke exercise type is cut. (§8 model doc + program §6 to be struck in lockstep.)
-2. **Distractor sourcing (staff-engineer UNDERBUILT).** **Adopted:** the `cued_recall` packager derives
+2. **Distractor sourcing (staff-engineer UNDERBUILT).** **Adopted:** the `choose_form_ex` packager derives
    affix/allomorph distractors **deterministically from the catalog constant** (other affixes for the
    link cap; other allomorph classes of the same affix for the allomorph cap) — no new distractor table,
    no authored set (deterministic-selection-over-LLM default). Detailed in §3.
@@ -76,7 +76,7 @@ the morphology vertical is never built-then-renamed.
 | new capability type | `recognise_allomorph_from_root_cap` (new — minted by this build, added to §8) | ~~`allomorph_recognition`~~ |
 | existing app caps | `recognise_word_form_link_cap`, `produce_derived_form_cap` (per §8) | `root_derived_recognition`, `root_derived_recall` |
 | new exercise types | `decompose_word_ex`, `build_confix_ex` (2 new — added to §8) | ~~`decompose_word`, `build_confix`~~ |
-| the two MCQ caps reuse | `cued_recall` (existing — widened to `word_form_pair_src`; `choose_affix_ex`/`choose_allomorph_ex` CUT) | — |
+| the two MCQ caps reuse | `choose_form_ex` (existing — widened to `word_form_pair_src`; `choose_affix_ex`/`choose_allomorph_ex` CUT) | — |
 | plain produce reuses | `type_form_ex` (existing — no new exercise) | `typed_recall` |
 | modes (level refs) | `recognise_mode`, `produce_mode` | `recognition`, `form_recall` |
 
@@ -88,6 +88,17 @@ the morphology vertical is never built-then-renamed.
 
 The program doc §6 used target names for illustration (its `recognise_allomorph_cap` shorthand is the
 rule-correct `recognise_allomorph_from_root_cap` here).
+
+> **Naming reconciliation (2026-06-16, at implementation start — naming-only, no design change, stays
+> `approved`).** This spec was authored before the §8 rename Phases B/C shipped (now on `main`,
+> `fdc2b36`) and used two pre-rename ExerciseType names. Corrected throughout to match shipped code:
+> `cued_recall` → **`choose_form_ex`** (the MCQ "prompt + tappable options" exercise the two MCQ caps
+> reuse) and `typed_recall` → **`type_form_ex`**. Phase B renamed the enum *values* only, **not** the
+> file/symbol names — so `byType/cuedRecall.ts`, `buildCuedRecall`, `CuedRecallExercise.tsx`, and the
+> `input.curatedCuedRecallDistractors` field keep their names; only the `ExerciseType` string and the
+> `RENDER_CONTRACTS`/`ContractInputShapes` keys are `choose_form_ex`. The §3 item-cap distractor cite was
+> also corrected (the `cued_recall_distractors` table was dropped in cap-v2 Slice 1; live path is
+> `curatedCuedRecallDistractors` + `pickDistractorCascade`).
 
 ## 1. Schema migration (additive; `scripts/migration.sql`)
 
@@ -149,12 +160,12 @@ All six MUST land in the same commit or the app won't boot (module-load assertio
 
 1. **Union + array** — `src/lib/capabilities/capabilityTypes.ts:32` (`CapabilityType`) + `:46` (`CAPABILITY_TYPES`): add `'recognise_allomorph_from_root_cap'`. (`as const satisfies` flags incompleteness.)
 2. **Skill level** — `capabilityTypes.ts:233` `deriveSkillTypeFromCapabilityType`: add `case 'recognise_allomorph_from_root_cap': return 'recognise_mode'` (it's recognise-level — the level-purity resolution).
-3. **Render contract** — `src/lib/capabilities/renderContracts.ts:56` `RENDER_CONTRACTS`: **widen the existing `cued_recall` entry** to add `recognise_allomorph_from_root_cap` to its `capabilityTypes` and `word_form_pair_src` to its `supportedSourceKinds` (+ `requiredArtifacts: { word_form_pair_src: [] }` — distractors are catalog-derived, not a stored artifact). No bespoke `choose_allomorph_ex`. (Module-load assertion `:167` refuses boot if a supportedSourceKind lacks a requiredArtifacts key; `assertCapabilityTypesRenderable` refuses boot if `recognise_allomorph_from_root_cap` is in no contract — `cued_recall` satisfies it.)
+3. **Render contract** — `src/lib/capabilities/renderContracts.ts:56` `RENDER_CONTRACTS`: **widen the existing `choose_form_ex` entry** to add `recognise_allomorph_from_root_cap` to its `capabilityTypes` and `word_form_pair_src` to its `supportedSourceKinds` (+ `requiredArtifacts: { word_form_pair_src: [] }` — distractors are catalog-derived, not a stored artifact). No bespoke `choose_allomorph_ex`. (Module-load assertion `:167` refuses boot if a supportedSourceKind lacks a requiredArtifacts key; `assertCapabilityTypesRenderable` refuses boot if `recognise_allomorph_from_root_cap` is in no contract — `choose_form_ex` satisfies it.)
 4. **Mastery dimension** — `src/lib/analytics/mastery/masteryModel.ts:~139` `dimensionForCapability`: add the `recognise_allomorph_from_root_cap` case (exhaustive `never` guard at `:167` is a compile error otherwise). Group with grammar/morphology dimension.
 5. **Writer** — capability emitter (`projectors/affixedCapabilities.ts`): emit a 3rd cap per meN-/peN- pair (`recognise_allomorph_from_root_cap`, **`direction='root_to_derived'`** — REUSE the existing enum value, no new direction; the distinct `capability_type` already makes the canonical key unique vs `recognise_word_form_link_cap`, so no key collision — data-architect key-axis decision; `modality='text'`, `learnerLanguage='none'`), gated on `allomorph_class IS NOT NULL`. Prereq = the pair's `recognise_word_form_link_cap` key.
-6. **Reader** — `byKind/affixedFormPair.ts` SELECT widened + `AffixedFormPairInput` (`renderContracts.ts:303`) gains `allomorphClass` + `affix`; the **widened `cued_recall` packager** (`byType/cuedRecall.ts`) reads it for `word_form_pair_src` caps and builds catalog-derived distractors (§3).
+6. **Reader** — `byKind/affixedFormPair.ts` SELECT widened + `AffixedFormPairInput` (`renderContracts.ts:303`) gains `allomorphClass` + `affix`; the **widened `choose_form_ex` packager** (`byType/cuedRecall.ts`) reads it for `word_form_pair_src` caps and builds catalog-derived distractors (§3).
 
-## 3. New exercise types (2 new) + the `cued_recall` widening
+## 3. New exercise types (2 new) + the `choose_form_ex` widening
 
 **Two genuinely-new exercise types** — add each to `ExerciseType` union (`src/types/learning.ts`) + `RENDER_CONTRACTS` (`renderContracts.ts:56`) + `ContractInputShapes` (`renderContracts.ts:~414`, compile-enforced) + `projectBuilderInput` switch (`renderContracts.ts:~599`) + the registry (`src/components/exercises/registry.ts`) + `implementations/`:
 
@@ -163,25 +174,25 @@ All six MUST land in the same commit or the app won't boot (module-load assertio
 | `decompose_word_ex` | `recognise_mode` → `recognise_word_form_link_cap` | `['word_form_pair_src']` | root/derived/affix/circumfix |
 | `build_confix_ex` | `produce_mode` → `produce_derived_form_cap` | `['word_form_pair_src']` | root + circumfix_left/right |
 
-**The two MCQ caps reuse the existing `cued_recall`** (staff-engineer — identical prompt+options screen, `CuedRecallExercise.tsx:43-64`): widen `cued_recall`'s `supportedSourceKinds` to include `word_form_pair_src` (mirroring how `typed_recall` was widened, `renderContracts.ts:74-88`), serving:
+**The two MCQ caps reuse the existing `choose_form_ex`** (staff-engineer — identical prompt+options screen, `CuedRecallExercise.tsx:43-64`): widen `choose_form_ex`'s `supportedSourceKinds` to include `word_form_pair_src` (mirroring how `type_form_ex` was widened, `renderContracts.ts:74-88`), serving:
 - `recognise_word_form_link_cap` → "root + meaning → pick the affix" (the cut `choose_affix_ex`);
 - `recognise_allomorph_from_root_cap` → "root → pick the correct allomorph form" (the cut `choose_allomorph_ex`).
 
-**The `cued_recall` widening needs the SAME 4 edits `typed_recall`+`word_form_pair_src` required — it is NOT just array-growth (architect re-review 2026-06-16):**
-1. **`ContractInputShapes.cued_recall`** (`renderContracts.ts:416`) — make `learningItem`/`primaryMeaning` nullable + add the word-form-pair input slot, mirroring `typed_recall:417`.
-2. **Split the `cued_recall` projector branch** out of the shared item-group (`renderContracts.ts:627-630`, which returns non-null `learningItem!/primaryMeaning!`) into its own branch passing the word-form-pair input + nullable meaning, mirroring `typed_recall:616-625`.
-3. **`needsPrimaryMeaning`** (`renderContracts.ts:520-522`) — add the `&& raw.affixedFormPair`-style carve-out `typed_recall` has at `:525-526`.
-4. **`buildCuedRecall`** (`byType/cuedRecall.ts`, currently wholly item-rooted — `:13/:51/:62/:73`; the byKind header `affixedFormPair.ts:20-23` declares cued_recall item-only by construction) — add a `word_form_pair_src` branch from scratch.
+**The `choose_form_ex` widening needs the SAME 4 edits `type_form_ex`+`word_form_pair_src` required — it is NOT just array-growth (architect re-review 2026-06-16):**
+1. **`ContractInputShapes.choose_form_ex`** (`renderContracts.ts:419`) — make `learningItem`/`primaryMeaning` nullable + add the word-form-pair input slot, mirroring `type_form_ex:420`.
+2. **Split the `choose_form_ex` projector branch** out of the shared item-group (`renderContracts.ts:627-630`, which returns non-null `learningItem!/primaryMeaning!`) into its own branch passing the word-form-pair input + nullable meaning, mirroring `type_form_ex:616-625`.
+3. **`needsPrimaryMeaning`** (`renderContracts.ts:521-524`) — add the `&& raw.affixedFormPair`-style carve-out `type_form_ex` has at `:525-526`.
+4. **`buildCuedRecall`** (`byType/cuedRecall.ts`, currently wholly item-rooted — `:13/:51/:62/:73`; the byKind header `affixedFormPair.ts:20-23` declares choose_form_ex item-only by construction) — add a `word_form_pair_src` branch from scratch.
 
 **Bucketing guard (architect):** a `word_form_pair_src` block must NEVER carry a `learningItem` — mirror the `affixedFormPair` guard at `renderContracts.ts:496-503`.
 
-**Distractors are catalog-derived + deterministic — no new table, no authored set** (staff-engineer; the deterministic-selection-over-LLM/authored default): the new `buildCuedRecall` `word_form_pair_src` branch builds wrong options from the **shared affix catalog** (`lib/capabilities/affixCatalog.ts` — see §6 for the placement decision) — for the link cap, K other affixes (prefer same `affix_type`); for the allomorph cap, the other allomorph classes of the same affix. Item caps keep their existing `cued_recall_distractors` path (`migration.sql:2869`); the packager branches on `source_kind`. The `cued_recall` *component* is unchanged — a prompt + options, regardless of where the options came from.
+**Distractors are catalog-derived + deterministic — no new table, no authored set** (staff-engineer; the deterministic-selection-over-LLM/authored default): the new `buildCuedRecall` `word_form_pair_src` branch builds wrong options from the **shared affix catalog** (`lib/capabilities/affixCatalog.ts` — see §6 for the placement decision) — for the link cap, K other affixes (prefer same `affix_type`); for the allomorph cap, the other allomorph classes of the same affix. Item caps keep their existing distractor path UNCHANGED — `buildCuedRecall` reads curated rows from `input.curatedCuedRecallDistractors` with a `pickDistractorCascade` pool fallback (`cuedRecall.ts:15-61`; NOTE — the old per-type `cued_recall_distractors` table was dropped in cap-v2 Slice 1, curated distractors now come via the unified `distractors` table + item fetcher, #161/#163/#164). The new branch adds catalog-derived options on the `word_form_pair_src` side only; the packager branches on `source_kind`. The `choose_form_ex` *component* is unchanged — a prompt + options, regardless of where the options came from.
 
 Plain produce reuses the EXISTING `type_form_ex` (already serves `produce_derived_form_cap` on `word_form_pair_src`, `renderContracts.ts:74-88`) — no new type. **Root Race CUT.** Each new component (`decompose_word_ex`, `build_confix_ex`) composes `exercises/primitives/` and renders the `adminOverlay` slot.
 
-**Atomic-boot constraint (architect WARNING):** each new `ExerciseType` (`decompose_word_ex`, `build_confix_ex`) must land WITH its `ContractInputShapes` entry (`renderContracts.ts:~414`, `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK` at `:431`) AND its `projectBuilderInput` switch branch (the `never` exhaustiveness at `:635`) in the SAME commit — both are compile-time gates. The `cued_recall` widening adds no new `ExerciseType` (so no exhaustiveness branch), but it DOES require the four contract/projector/packager edits enumerated above — those are the real cost, not array-growth.
+**Atomic-boot constraint (architect WARNING):** each new `ExerciseType` (`decompose_word_ex`, `build_confix_ex`) must land WITH its `ContractInputShapes` entry (`renderContracts.ts:~414`, `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK` at `:431`) AND its `projectBuilderInput` switch branch (the `never` exhaustiveness at `:635`) in the SAME commit — both are compile-time gates. The `choose_form_ex` widening adds no new `ExerciseType` (so no exhaustiveness branch), but it DOES require the four contract/projector/packager edits enumerated above — those are the real cost, not array-growth.
 
-**Level↔phase note (architect WARNING):** `decompose_word_ex` + the widened `cued_recall` route through
+**Level↔phase note (architect WARNING):** `decompose_word_ex` + the widened `choose_form_ex` route through
 `recognise_word_form_link_cap`, which `deriveSkillTypeFromCapabilityType` returns as `recognise_mode`
 (`capabilityTypes.ts:243`) but ADR 0007:40 classifies at Phase 4 (productive). This is INTENTIONAL and
 inert — `word_form_pair_src` is exempt from the staging phase gate (ADR 0007:44). Do NOT "fix" the phase
@@ -292,15 +303,15 @@ The linguist agents emit `morphology-patterns.ts` for the affix-introducing less
    resolves `grammarPatternSlug`→`grammar_pattern_id` + writes `lesson_section_affixed_pairs` + unit tests.
 4. **DB-read + cap-stage copy** (§4.2-4): widen `TypedAffixedPair`/`fetchAffixedPairsFromDb` SELECT +
    `AffixedPairSource` + `projectAffixedFormPairs` blind copy into `AffixedFormPairRowInput` + CS12 guard tests.
-5. **`recognise_allomorph_from_root_cap` triangle + the `cued_recall` widening — ONE ATOMIC COMMIT**
-   (data-architect C1): the 6 caps-side corners (§2) + **widen `cued_recall`** (`RENDER_CONTRACTS`
+5. **`recognise_allomorph_from_root_cap` triangle + the `choose_form_ex` widening — ONE ATOMIC COMMIT**
+   (data-architect C1): the 6 caps-side corners (§2) + **widen `choose_form_ex`** (`RENDER_CONTRACTS`
    `capabilityTypes` + `supportedSourceKinds` arrays for `word_form_pair_src`, serving both
    `recognise_word_form_link_cap` + `recognise_allomorph_from_root_cap`; the `cuedRecall.ts` packager's
    catalog-derived-distractor branch, §3) **+ the reader SELECT widen + `AffixedFormPairInput` threading**
-   — all together, else it boots blank. **No new `ExerciseType`, but the `cued_recall` widening's FOUR
+   — all together, else it boots blank. **No new `ExerciseType`, but the `choose_form_ex` widening's FOUR
    contract/projector/packager edits (§3) are required** — under-building them yields a runtime
    `item_not_found` for every allomorph drill (architect). Boot test (module-load assertions) + render test
-   (`cued_recall` renders an allomorph cap with non-undefined catalog-derived options).
+   (`choose_form_ex` renders an allomorph cap with non-undefined catalog-derived options).
 6. Each of the **2 genuinely-new** exercise types (`decompose_word_ex`, `build_confix_ex`): union +
    RENDER_CONTRACTS + input shape + projectBuilderInput case + byType packager + component + test — each
    its own atomic commit.
@@ -326,7 +337,7 @@ roster pattern.
 - Additive columns on `lesson_section_affixed_pairs` + `affixed_form_pairs` (§1); guarded CHECKs; `grammar_pattern_id` FK → `grammar_patterns`.
 - New `capability_type` value `recognise_allomorph_from_root_cap` (no DB CHECK on `learning_capabilities.capability_type` today — `migration.sql:1324` — so no constraint migration; the unique index on `(source_ref, capability_type)` enforces after regen).
 - New `ExerciseType` values: **2** (`decompose_word_ex`, `build_confix_ex`; frontend union only, not a DB
-  enum). The two MCQ caps reuse `cued_recall` (widened to `word_form_pair_src`) — no new type.
+  enum). The two MCQ caps reuse `choose_form_ex` (widened to `word_form_pair_src`) — no new type.
 - RLS/grants: additive — covered by existing table policies; verify after migrate.
 
 ### homelab-configs changes
