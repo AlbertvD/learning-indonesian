@@ -38,9 +38,9 @@ await cnt('  …by unit_kind = learning_item:', sb.schema('indonesian')
 await cnt('  …by unit_kind = grammar_pattern:', sb.schema('indonesian')
   .from('content_units').select('*', { count: 'exact', head: true })
   .ilike('source_ref', `%${lessonSourceRef}%`).eq('unit_kind', 'grammar_pattern'))
-await cnt('  …by unit_kind = word_form_pair_src:', sb.schema('indonesian')
+await cnt('  …by unit_kind = affixed_form_pair:', sb.schema('indonesian')
   .from('content_units').select('*', { count: 'exact', head: true })
-  .ilike('source_ref', `%${lessonSourceRef}%`).eq('unit_kind', 'word_form_pair_src'))
+  .ilike('source_ref', `%${lessonSourceRef}%`).eq('unit_kind', 'affixed_form_pair'))
 
 // learning_item content_units may use source_ref `learning_items/<slug>` not `lesson-4`
 await cnt('content_units (learning_items source_ref):', sb.schema('indonesian')

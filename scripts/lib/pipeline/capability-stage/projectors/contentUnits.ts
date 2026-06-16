@@ -187,7 +187,10 @@ export function buildContentUnitsFromDb(
       }),
       source_ref: pair.source_ref,
       source_section_ref: `${lessonSourceRef}/section-morphology`,
-      unit_kind: 'word_form_pair_src',
+      // unit_kind is the content_units taxonomy ('lesson_section'/'grammar_pattern'/
+      // 'affixed_form_pair'), NOT the capability source_kind — it keeps its own
+      // value through the §8 rename (the Phase-A sweep wrongly renamed it once).
+      unit_kind: 'affixed_form_pair',
       unit_slug: `morphology-${slug}`,
       display_order: 3000 + index,
       payload_json: {},

@@ -55,7 +55,7 @@ export interface ContentUnitInput {
   content_unit_key: string
   source_ref: string
   source_section_ref: string
-  unit_kind: 'lesson_section' | 'learning_item' | 'grammar_pattern' | 'word_form_pair_src'
+  unit_kind: 'lesson_section' | 'learning_item' | 'grammar_pattern' | 'affixed_form_pair'
   unit_slug: string
   display_order: number
   payload_json: Record<string, unknown>

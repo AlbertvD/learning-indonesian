@@ -299,7 +299,7 @@ describe('buildContentUnitsFromDb', () => {
         affixedPairs: [AFFIXED_PAIR],
       })
 
-      const pair = units.find((u) => u.unit_kind === 'word_form_pair_src')
+      const pair = units.find((u) => u.unit_kind === 'affixed_form_pair')
       expect(pair).toBeDefined()
       // source_ref = 'lesson-3/morphology/meN-baca-membaca'
       // slug from last segment after '/morphology/': stableSlug('meN-baca-membaca') = 'men-baca-membaca'
@@ -322,7 +322,7 @@ describe('buildContentUnitsFromDb', () => {
         patternPlans: [],
         affixedPairs: [AFFIXED_PAIR],
       })
-      const pair = units.find((u) => u.unit_kind === 'word_form_pair_src')
+      const pair = units.find((u) => u.unit_kind === 'affixed_form_pair')
       expect(pair?.unit_slug).toBe('morphology-men-baca-membaca')
     })
 
@@ -342,7 +342,7 @@ describe('buildContentUnitsFromDb', () => {
       })
 
       const pairs = units
-        .filter((u) => u.unit_kind === 'word_form_pair_src')
+        .filter((u) => u.unit_kind === 'affixed_form_pair')
         .sort((a, b) => a.display_order - b.display_order)
       expect(pairs[0]?.display_order).toBe(3000)
       expect(pairs[1]?.display_order).toBe(3001)
@@ -379,7 +379,7 @@ describe('buildContentUnitsFromDb', () => {
       expect(byKind('lesson_section')).toHaveLength(2)
       expect(byKind('learning_item')).toHaveLength(0) // moved to the vocab module
       expect(byKind('grammar_pattern')).toHaveLength(1)
-      expect(byKind('word_form_pair_src')).toHaveLength(1)
+      expect(byKind('affixed_form_pair')).toHaveLength(1)
     })
   })
 })
