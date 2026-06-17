@@ -23,6 +23,7 @@
  */
 
 import { buildCanonicalKey, CAPABILITY_PROJECTION_VERSION } from '@/lib/capabilities'
+import { sourceRefForLearningItem } from '../../../content-pipeline-output'
 import type { CapabilityInput } from '../adapter'
 import type { TypedAffixedPair } from '../loadFromDb'
 
@@ -31,6 +32,29 @@ export interface AffixedCapabilitiesInput {
   pairs: TypedAffixedPair[]
   /** The DB UUID of the introducing lesson (ADR 0006 — stamped on every cap). */
   lessonId: string
+  /** grammar_patterns.slug → the pattern's `recognise_grammar_pattern_cap` canonical_key.
+   *  The rule→application prerequisite (ADR 0018). Built by the runner from the
+   *  pattern projection; absent ⇒ the rule prereq is omitted (the projectAffixedFormPairs
+   *  CS12 fails the stage anyway when the slug resolves to no grammar_pattern_id). */
+  ruleCapKeyBySlug?: ReadonlyMap<string, string>
+}
+
+/**
+ * The root-vocabulary recognition cap canonical_key for a pair's root (ADR 0018
+ * prereq ii). Built deterministically — NO DB query — and must byte-match the live
+ * vocab recognition cap (vocab.ts:149-158): vocabulary_src / sourceRefForLearningItem
+ * (applies itemSlug) / recognise_meaning_from_text_cap / id_to_l1 / text / 'nl'.
+ * Couples to the all-NL corpus (learnerLanguage hardcoded 'nl').
+ */
+function rootVocabPrereqKey(rootText: string): string {
+  return buildCanonicalKey({
+    sourceKind: 'vocabulary_src',
+    sourceRef: sourceRefForLearningItem(rootText),
+    capabilityType: 'recognise_meaning_from_text_cap',
+    direction: 'id_to_l1',
+    modality: 'text',
+    learnerLanguage: 'nl',
+  })
 }
 
 /**
@@ -50,8 +74,21 @@ export function projectAffixedCapabilities(
 ): CapabilityInput[] {
   const caps: CapabilityInput[] = []
 
+  const ruleCapKeyBySlug = input.ruleCapKeyBySlug ?? new Map<string, string>()
+
   for (const pair of input.pairs) {
     const sourceRef = pair.source_ref
+
+    // ADR 0018 — the two cross-source-kind hard-block prerequisites every
+    // application cap carries: (i) the affix RULE (grammar-pattern recognise cap,
+    // resolved from the authored slug) and (ii) the derived form's ROOT vocabulary
+    // recognition cap. Both are flat canonical_keys the planner resolves
+    // source-kind-agnostically (pedagogy.ts:326,524-526).
+    const ruleCapKey = pair.pattern_source_ref
+      ? ruleCapKeyBySlug.get(pair.pattern_source_ref)
+      : undefined
+    const crossPrereqs = [ruleCapKey, rootVocabPrereqKey(pair.root_text)]
+      .filter((k): k is string => typeof k === 'string' && k.length > 0)
 
     const recognitionDraft = {
       sourceKind: 'word_form_pair_src' as const,
@@ -74,29 +111,34 @@ export function projectAffixedCapabilities(
       projectionVersion: CAPABILITY_PROJECTION_VERSION,
       lessonId: input.lessonId,
       requiredArtifacts: [],
-      prerequisiteKeys: [],
+      prerequisiteKeys: [...crossPrereqs],
     })
 
-    caps.push({
-      canonicalKey: buildCanonicalKey({
+    // produce_derived_form_cap — SKIPPED for lexicalised (productive=false) pairs:
+    // there is no point drilling a learner to "generate" a frozen form (data-architect i1).
+    // null/true ⇒ productive (emit); only an explicit false skips.
+    if (pair.productive !== false) {
+      caps.push({
+        canonicalKey: buildCanonicalKey({
+          sourceKind: 'word_form_pair_src',
+          sourceRef,
+          capabilityType: 'produce_derived_form_cap',
+          direction: 'root_to_derived',
+          modality: 'text',
+          learnerLanguage: 'none',
+        }),
         sourceKind: 'word_form_pair_src',
         sourceRef,
         capabilityType: 'produce_derived_form_cap',
         direction: 'root_to_derived',
         modality: 'text',
         learnerLanguage: 'none',
-      }),
-      sourceKind: 'word_form_pair_src',
-      sourceRef,
-      capabilityType: 'produce_derived_form_cap',
-      direction: 'root_to_derived',
-      modality: 'text',
-      learnerLanguage: 'none',
-      projectionVersion: CAPABILITY_PROJECTION_VERSION,
-      lessonId: input.lessonId,
-      requiredArtifacts: [],
-      prerequisiteKeys: [recognitionKey],
-    })
+        projectionVersion: CAPABILITY_PROJECTION_VERSION,
+        lessonId: input.lessonId,
+        requiredArtifacts: [],
+        prerequisiteKeys: [recognitionKey, ...crossPrereqs],
+      })
+    }
 
     // 3rd cap — recognise_allomorph_from_root_cap (morphology phase-b): ONLY for
     // pairs that carry an allomorph_class (meN-/peN- nasalisation). The
@@ -123,7 +165,7 @@ export function projectAffixedCapabilities(
         projectionVersion: CAPABILITY_PROJECTION_VERSION,
         lessonId: input.lessonId,
         requiredArtifacts: [],
-        prerequisiteKeys: [recognitionKey],
+        prerequisiteKeys: [recognitionKey, ...crossPrereqs],
       })
     }
   }

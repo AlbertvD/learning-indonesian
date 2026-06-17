@@ -269,9 +269,17 @@ export async function runCapabilityStage(
   // 7c can find affixed caps to join on. Emitting without appending = zero
   // affixed_form_pairs rows. Loading once here avoids a second DB round-trip at 7c.
   const affixedPairsFromDb = await fetchAffixedPairsFromDb(supabase, input.lessonId)
+  // ADR 0018 rule→application prereq: map each pattern slug to its recognise cap's
+  // canonical_key so the affixed emitter can gate application caps on the rule.
+  const ruleCapKeyBySlug = new Map<string, string>()
+  for (const plan of patternProjection.patternPlans) {
+    const recog = plan.capabilities.find((c) => c.capabilityType === 'recognise_grammar_pattern_cap')
+    if (recog) ruleCapKeyBySlug.set(plan.slug, recog.canonicalKey)
+  }
   const newAffixedCaps = projectAffixedCapabilities({
     pairs: affixedPairsFromDb,
     lessonId: input.lessonId,
+    ruleCapKeyBySlug,
   })
 
   // ---- 5a (dialogue). DB→DB dialogue cloze path (Slice 3). ----------------

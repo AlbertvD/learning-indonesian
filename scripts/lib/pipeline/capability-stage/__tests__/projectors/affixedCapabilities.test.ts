@@ -1,7 +1,23 @@
 import { describe, it, expect } from 'vitest'
 import { buildCanonicalKey, CAPABILITY_PROJECTION_VERSION } from '@/lib/capabilities'
+import { sourceRefForLearningItem } from '../../../../content-pipeline-output'
 import { projectAffixedCapabilities } from '../../projectors/affixedCapabilities'
 import type { TypedAffixedPair } from '../../loadFromDb'
+
+// ADR 0018 prereq (ii): the root-vocabulary recognition cap key, byte-matching
+// vocab.ts (vocabulary_src / recognise_meaning_from_text_cap / id_to_l1 / text / nl).
+function rootVocabKey(rootText: string): string {
+  return buildCanonicalKey({
+    sourceKind: 'vocabulary_src',
+    sourceRef: sourceRefForLearningItem(rootText),
+    capabilityType: 'recognise_meaning_from_text_cap',
+    direction: 'id_to_l1',
+    modality: 'text',
+    learnerLanguage: 'nl',
+  })
+}
+const ROOT_VOCAB_KEY_1 = rootVocabKey('baca')
+const ROOT_VOCAB_KEY_2 = rootVocabKey('tulis')
 
 // Two real-shaped pairs from lesson 9 (the morphology-introducing lesson).
 // source_ref is byte-identical to affixedFormPairSourceRef(lessonNumber, pair)
@@ -98,7 +114,9 @@ describe('projectAffixedCapabilities', () => {
     expect(recognition!.projectionVersion).toBe(CAPABILITY_PROJECTION_VERSION)
     expect(recognition!.lessonId).toBe('lesson-9-uuid')
     expect(recognition!.requiredArtifacts).toEqual([])
-    expect(recognition!.prerequisiteKeys).toEqual([])
+    // ADR 0018: the recognition cap gates on the root-vocab cap (the rule prereq is
+    // added only when ruleCapKeyBySlug is supplied — see the dedicated test below).
+    expect(recognition!.prerequisiteKeys).toEqual([ROOT_VOCAB_KEY_1])
   })
 
   it('emits produce_derived_form_cap cap with exact canonical key and fields', () => {
@@ -122,8 +140,9 @@ describe('projectAffixedCapabilities', () => {
     expect(recall!.projectionVersion).toBe(CAPABILITY_PROJECTION_VERSION)
     expect(recall!.lessonId).toBe('lesson-9-uuid')
     expect(recall!.requiredArtifacts).toEqual([])
-    // recall prerequisite is the sibling recognition cap
-    expect(recall!.prerequisiteKeys).toEqual([RECOGNITION_KEY_1])
+    // produce prereqs: the sibling recognition cap (within-pair) + the root-vocab
+    // cross-source-kind gate (ADR 0018).
+    expect(recall!.prerequisiteKeys).toEqual([RECOGNITION_KEY_1, ROOT_VOCAB_KEY_1])
   })
 
   it('recall prerequisiteKeys points to sibling recognition cap (per-pair)', () => {
@@ -139,8 +158,8 @@ describe('projectAffixedCapabilities', () => {
       (c) => c.capabilityType === 'produce_derived_form_cap' && c.sourceRef === pair2.source_ref,
     )
 
-    expect(recall1!.prerequisiteKeys).toEqual([RECOGNITION_KEY_1])
-    expect(recall2!.prerequisiteKeys).toEqual([RECOGNITION_KEY_2])
+    expect(recall1!.prerequisiteKeys).toEqual([RECOGNITION_KEY_1, ROOT_VOCAB_KEY_1])
+    expect(recall2!.prerequisiteKeys).toEqual([RECOGNITION_KEY_2, ROOT_VOCAB_KEY_2])
   })
 
   it('sourceRef is taken verbatim from TypedAffixedPair.source_ref (DB-native, not recomputed)', () => {
@@ -190,9 +209,31 @@ describe('projectAffixedCapabilities', () => {
     expect(allomorph.modality).toBe('text')
     expect(allomorph.learnerLanguage).toBe('none')
     expect(allomorph.lessonId).toBe('lesson-9-uuid')
-    // prereq is the pair's recognition cap (within-pair; the two cross-source-kind
-    // gates of ADR 0018 are layered on in Task 7).
-    expect(allomorph.prerequisiteKeys).toEqual([RECOGNITION_KEY_2])
+    // prereqs: within-pair recognition + the root-vocab cross-source-kind gate.
+    expect(allomorph.prerequisiteKeys).toEqual([RECOGNITION_KEY_2, ROOT_VOCAB_KEY_2])
+  })
+
+  it('skips produce_derived_form_cap for productive=false (lexicalised) pairs', () => {
+    const lexicalised = { ...pair1, productive: false } as TypedAffixedPair
+    const caps = projectAffixedCapabilities({ pairs: [lexicalised], lessonId: 'lesson-9-uuid' })
+    expect(caps.some((c) => c.capabilityType === 'produce_derived_form_cap')).toBe(false)
+    // the recognition cap is still emitted (recognition is always valid)
+    expect(caps.some((c) => c.capabilityType === 'recognise_word_form_link_cap')).toBe(true)
+  })
+
+  it('adds the rule→application prereq (the pattern recognise cap key) when ruleCapKeyBySlug is supplied (ADR 0018 prereq i)', () => {
+    const withSlug = { ...pair1, pattern_source_ref: 'l9-men-active' } as TypedAffixedPair
+    const RULE_KEY = 'cap:v1:grammar_pattern_src:lesson-9/pattern-l9-men-active:recognise_grammar_pattern_cap:none:text:none'
+    const caps = projectAffixedCapabilities({
+      pairs: [withSlug],
+      lessonId: 'lesson-9-uuid',
+      ruleCapKeyBySlug: new Map([['l9-men-active', RULE_KEY]]),
+    })
+    const recognition = caps.find((c) => c.capabilityType === 'recognise_word_form_link_cap')!
+    // both cross-source-kind gates present: rule first, then root-vocab.
+    expect(recognition.prerequisiteKeys).toEqual([RULE_KEY, ROOT_VOCAB_KEY_1])
+    const produce = caps.find((c) => c.capabilityType === 'produce_derived_form_cap')!
+    expect(produce.prerequisiteKeys).toEqual([RECOGNITION_KEY_1, RULE_KEY, ROOT_VOCAB_KEY_1])
   })
 
   it('returns empty array for empty pairs input', () => {
