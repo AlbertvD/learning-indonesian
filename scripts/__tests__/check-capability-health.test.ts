@@ -157,7 +157,13 @@ describe('capability health exit code planning', () => {
     for (const result of morphologyResults) {
       expect(result.readiness.status).toBe('ready')
       if (result.readiness.status === 'ready') {
-        expect(result.readiness.allowedExercises).toEqual(['type_form_ex'])
+        // Morphology phase-b: choose_form_ex widened to word_form_pair_src for the
+        // recognise-level link cap (MCQ), so it is allowed alongside type_form_ex.
+        // The produce cap stays typed-only.
+        const expected = result.canonicalKey.includes(':recognise_word_form_link_cap:')
+          ? ['choose_form_ex', 'type_form_ex']
+          : ['type_form_ex']
+        expect(result.readiness.allowedExercises).toEqual(expected)
       }
     }
   })

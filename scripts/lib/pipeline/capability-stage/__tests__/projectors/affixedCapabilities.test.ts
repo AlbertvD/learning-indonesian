@@ -165,6 +165,36 @@ describe('projectAffixedCapabilities', () => {
     }
   })
 
+  it('does NOT emit recognise_allomorph_from_root_cap when allomorph_class is absent', () => {
+    const caps = projectAffixedCapabilities({ pairs: [pair1], lessonId: 'lesson-9-uuid' })
+    expect(caps.some((c) => c.capabilityType === 'recognise_allomorph_from_root_cap')).toBe(false)
+  })
+
+  it('emits a 3rd recognise_allomorph_from_root_cap when allomorph_class is present (meN-/peN-)', () => {
+    const allomorphPair: TypedAffixedPair = {
+      ...pair2,
+      allomorph_class: 'men',
+    } as TypedAffixedPair
+    const caps = projectAffixedCapabilities({ pairs: [allomorphPair], lessonId: 'lesson-9-uuid' })
+    expect(caps).toHaveLength(3)
+
+    const allomorph = caps.find((c) => c.capabilityType === 'recognise_allomorph_from_root_cap')!
+    expect(allomorph).toBeDefined()
+    // root_to_derived reused; the distinct capability_type keeps the key unique
+    // vs produce_derived_form_cap (also root_to_derived).
+    expect(allomorph.canonicalKey).toBe(
+      'cap:v1:word_form_pair_src:lesson-9/morphology/menulis-tulis:recognise_allomorph_from_root_cap:root_to_derived:text:none',
+    )
+    expect(allomorph.canonicalKey).not.toBe(RECALL_KEY_2) // no collision with the produce cap
+    expect(allomorph.direction).toBe('root_to_derived')
+    expect(allomorph.modality).toBe('text')
+    expect(allomorph.learnerLanguage).toBe('none')
+    expect(allomorph.lessonId).toBe('lesson-9-uuid')
+    // prereq is the pair's recognition cap (within-pair; the two cross-source-kind
+    // gates of ADR 0018 are layered on in Task 7).
+    expect(allomorph.prerequisiteKeys).toEqual([RECOGNITION_KEY_2])
+  })
+
   it('returns empty array for empty pairs input', () => {
     const caps = projectAffixedCapabilities({
       pairs: [],

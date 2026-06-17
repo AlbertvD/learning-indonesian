@@ -116,17 +116,24 @@ const matrix: MatrixRow[] = [
     expected: { status: 'ready', allowedExercises: ['type_missing_word_ex'] },
   },
   {
-    // Post 2026-05-21 affixed-form-pair PR: type_form_ex accepts
-    // word_form_pair_src source kind with requiredArtifacts
-    // {root_derived_pair, allomorph_rule}. choose_form_ex stays item-only
-    // (distractor authoring deferred per D3/D4), so allowedExercises is
-    // ['type_form_ex'] only.
+    // Morphology phase-b: choose_form_ex was widened to word_form_pair_src to
+    // serve recognise_word_form_link_cap as an MCQ (catalog-derived distractors),
+    // so it is now allowed alongside type_form_ex.
     capabilityType: 'recognise_word_form_link_cap',
     sourceKind: 'word_form_pair_src',
     requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
-    expected: { status: 'ready', allowedExercises: ['type_form_ex'] },
+    expected: { status: 'ready', allowedExercises: ['choose_form_ex', 'type_form_ex'] },
   },
   {
+    // recognise_allomorph_from_root_cap is served ONLY by the widened choose_form_ex.
+    capabilityType: 'recognise_allomorph_from_root_cap',
+    sourceKind: 'word_form_pair_src',
+    requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
+    expected: { status: 'ready', allowedExercises: ['choose_form_ex'] },
+  },
+  {
+    // produce_derived_form_cap renders typed only — choose_form_ex dropped it
+    // (a produce cap is never an MCQ).
     capabilityType: 'produce_derived_form_cap',
     sourceKind: 'word_form_pair_src',
     requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],

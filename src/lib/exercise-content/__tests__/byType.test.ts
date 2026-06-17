@@ -664,10 +664,46 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
     expect(r.audibleTexts).toEqual(expect.arrayContaining(['baca', 'membaca']))
   })
 
-  it('choose_form_ex stays item-only (the affixed-form-pair widening did not extend to it per D4)', () => {
-    const r = buildForExerciseType('choose_form_ex', affixedInput())
+  it('choose_form_ex allomorph MCQ (root→derived): correct = derived, catalog-derived allomorph distractors', () => {
+    const r = buildForExerciseType('choose_form_ex', affixedInput({
+      affixedFormPair: {
+        root: 'baca', derived: 'membaca', direction: 'root_to_derived',
+        allomorphRule: 'meN- becomes mem- before b.', affix: 'meN-', allomorphClass: 'mem',
+        sourceRef: 'lesson-9/morphology/meN-baca-membaca',
+      },
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.exerciseType).toBe('choose_form_ex')
+    expect(r.exerciseItem.learningItem).toBeNull()
+    const data = r.exerciseItem.cuedRecallData!
+    expect(data.correctOptionId).toBe('membaca')
+    expect(data.options).toContain('membaca')
+    expect(data.options.length).toBe(4)
+    // every option is defined + distinct (no undefined leaks)
+    expect(new Set(data.options).size).toBe(4)
+  })
+
+  it('choose_form_ex link MCQ (derived→root): correct = the affix, catalog-derived affix distractors', () => {
+    const r = buildForExerciseType('choose_form_ex', affixedInput({
+      affixedFormPair: {
+        root: 'baca', derived: 'membaca', direction: 'derived_to_root',
+        allomorphRule: 'meN- becomes mem- before b.', affix: 'meN-', allomorphClass: 'mem',
+        sourceRef: 'lesson-9/morphology/meN-baca-membaca',
+      },
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    const data = r.exerciseItem.cuedRecallData!
+    expect(data.correctOptionId).toBe('meN-')
+    expect(data.options).toContain('meN-')
+    expect(data.options.length).toBe(4)
+  })
+
+  it('choose_form_ex fails loud when the pair carries no affix (catalog distractors impossible)', () => {
+    const r = buildForExerciseType('choose_form_ex', affixedInput())  // fixture has no affix
     expect(r.kind).toBe('fail')
-    if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
   })
 
   it('dictation rejects word_form_pair_src input (type_form_ex is the only exercise that accepts it)', () => {

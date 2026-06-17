@@ -189,10 +189,10 @@ describe('supportsSourceKind', () => {
     }
   })
 
-  it('only type_form_ex supports word_form_pair_src source kind (added 2026-05-21); choose_form_ex is item-only until distractor authoring lands', () => {
+  it('type_form_ex + choose_form_ex support word_form_pair_src (morphology phase-b widened choose_form_ex for the two recognise-level MCQ caps)', () => {
+    const supporting = new Set(['type_form_ex', 'choose_form_ex'])
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
-      const expected = et === 'type_form_ex'
-      expect(supportsSourceKind(et, 'word_form_pair_src')).toBe(expected)
+      expect(supportsSourceKind(et, 'word_form_pair_src')).toBe(supporting.has(et))
     }
   })
 })
@@ -295,12 +295,14 @@ describe('projectBuilderInput — word_form_pair_src (type_form_ex path)', () =>
     }
   })
 
-  it('rejects choose_form_ex when only affixedFormPair is populated (choose_form_ex stays item-only per D4)', () => {
+  it('accepts choose_form_ex when only affixedFormPair is populated (morphology phase-b widening — the two recognise-level MCQ caps)', () => {
     const raw = makeRawInput({ learningItem: null, affixedFormPair: AFFIXED_FIXTURE })
     const result = projectBuilderInput('choose_form_ex', raw)
-    expect(result.ok).toBe(false)
-    if (!result.ok) {
-      expect(result.reasonCode).toBe('item_not_found')
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      const input = result.input as { affixedFormPair: unknown; learningItem: unknown }
+      expect(input.affixedFormPair).toEqual(AFFIXED_FIXTURE)
+      expect(input.learningItem).toBeNull()
     }
   })
 })

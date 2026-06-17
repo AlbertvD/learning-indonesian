@@ -63,13 +63,18 @@ export const RENDER_CONTRACTS = {
     requiredArtifacts: { vocabulary_src: [] },
   },
   choose_form_ex: {
-    // choose_form_ex serves root_derived_* cap types but its
-    // supportedSourceKinds stays ['vocabulary_src'] — word_form_pair_src extension
-    // requires authored distractors, deferred to a follow-up plan (D3/D4
-    // of the affixed-form-pair plan).
-    capabilityTypes: ['recognise_form_from_meaning_cap', 'produce_form_from_meaning_cap', 'recognise_word_form_link_cap', 'produce_derived_form_cap'],
-    supportedSourceKinds: ['vocabulary_src'],
-    requiredArtifacts: { vocabulary_src: [] },
+    // Morphology phase-b: choose_form_ex (the "prompt + tappable options" MCQ) is
+    // widened to word_form_pair_src to serve the two recognise-level morphology MCQ
+    // caps — recognise_word_form_link_cap ("root + meaning → pick the affix") and
+    // recognise_allomorph_from_root_cap ("root → pick the correct allomorph form").
+    // Distractors are catalog-derived deterministically (buildCuedRecall's
+    // word_form_pair_src branch), not a stored artifact — so requiredArtifacts is [].
+    // produce_derived_form_cap is REMOVED — a produce cap renders typed (type_form_ex),
+    // never as an MCQ; over word_form_pair_src choose_form_ex serves ONLY the two
+    // recognise-level MCQ caps (link + allomorph).
+    capabilityTypes: ['recognise_form_from_meaning_cap', 'produce_form_from_meaning_cap', 'recognise_word_form_link_cap', 'recognise_allomorph_from_root_cap'],
+    supportedSourceKinds: ['vocabulary_src', 'word_form_pair_src'],
+    requiredArtifacts: { vocabulary_src: [], word_form_pair_src: [] },
   },
   type_form_ex: {
     capabilityTypes: ['produce_form_from_meaning_cap', 'recognise_word_form_link_cap', 'produce_derived_form_cap'],
@@ -317,6 +322,12 @@ export interface AffixedFormPairInput {
   /** The allomorph rule from `allomorph_rule.payload_json.rule`
    *  (e.g. "meN- becomes mem- before roots beginning with b: baca -> membaca."). */
   allomorphRule: string
+  /** The affix label (e.g. 'meN-'). Drives the choose_form_ex link-cap MCQ
+   *  ("pick the affix") via catalog-derived distractors. Null for legacy rows. */
+  affix?: string | null
+  /** The allomorph class (e.g. 'men'). Drives the choose_form_ex allomorph-cap MCQ
+   *  ("pick the correct form"). Non-null only for meN-/peN- pairs. */
+  allomorphClass?: string | null
   /** The cap's source_ref of shape `lesson-N/morphology/<slug>`. Carried for
    *  audit/debug; the builder does not parse it. */
   sourceRef: string
@@ -416,7 +427,7 @@ interface BuilderBase {
  */
 export interface ContractInputShapes {
   choose_meaning_ex: BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
-  choose_form_ex:     BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
+  choose_form_ex:     BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
   type_form_ex:    BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
   type_meaning_ex:  BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   choose_meaning_from_audio_ex:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
@@ -525,8 +536,10 @@ export function projectBuilderInput<T extends ExerciseType>(
   ])
   let primaryMeaning: ItemMeaning | undefined
   if (needsPrimaryMeaning.has(exerciseType)) {
-    if (exerciseType === 'type_form_ex' && raw.affixedFormPair) {
-      // word_form_pair_src path — no learningItem, no meanings. Skip lookup.
+    if ((exerciseType === 'type_form_ex' || exerciseType === 'choose_form_ex') && raw.affixedFormPair) {
+      // word_form_pair_src path — no learningItem, no item meanings. The morphology
+      // MCQ prompt/options come from the pair (root/derived/affix) + the affix
+      // catalog, not from a translation. Skip the item-meaning lookup.
     } else {
       primaryMeaning = raw.meanings.find(m => m.translation_language === raw.userLanguage && m.is_primary)
         ?? raw.meanings.find(m => m.translation_language === raw.userLanguage)
@@ -617,9 +630,10 @@ export function projectBuilderInput<T extends ExerciseType>(
     case 'speaking':
       return { ok: true, input: { ...base, learningItem: learningItem! } as BuilderInputFor<T> }
     case 'type_form_ex':
-      // type_form_ex accepts item OR word_form_pair_src. The projector has
-      // proven that exactly one is populated. The byType packager branches
-      // on which.
+    case 'choose_form_ex':
+      // type_form_ex + choose_form_ex accept item OR word_form_pair_src. The
+      // projector has proven that exactly one is populated. The byType packager
+      // (buildTypedRecall / buildCuedRecall) branches on which.
       return { ok: true, input: {
         ...base,
         learningItem,
@@ -627,7 +641,6 @@ export function projectBuilderInput<T extends ExerciseType>(
         affixedFormPair: raw.affixedFormPair,
       } as BuilderInputFor<T> }
     case 'choose_meaning_ex':
-    case 'choose_form_ex':
     case 'type_meaning_ex':
     case 'choose_meaning_from_audio_ex':
       return { ok: true, input: { ...base, learningItem: learningItem!, primaryMeaning: primaryMeaning! } as BuilderInputFor<T> }

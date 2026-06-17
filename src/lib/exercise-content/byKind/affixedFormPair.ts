@@ -17,10 +17,11 @@
 // No capability_artifacts are read: the legacy morphology artifact writes were
 // removed in this PR (renderContracts: type_form_ex/word_form_pair_src → []).
 //
-// choose_form_ex remains item-only (its distractor pool requires authored
-// distractors per word_form_pair_src; deferred to a future plan). choose_form_ex
-// blocks scheduled for word_form_pair_src would be a planner bug — the projector
-// rejects the input shape with item_not_found.
+// Morphology phase-b: choose_form_ex is now ALSO served over word_form_pair_src
+// (the two recognise-level MCQ caps — recognise_word_form_link_cap +
+// recognise_allomorph_from_root_cap). This reader supplies affix + allomorphClass
+// so buildCuedRecall can build catalog-derived distractors; the direction field
+// selects which MCQ (derived_to_root = link, root_to_derived = allomorph).
 
 import {
   type AffixedFormPairBucketEntry,
@@ -39,6 +40,8 @@ interface AffixedFormPairRow {
   root_text: string
   derived_text: string
   allomorph_rule: string
+  affix: string | null
+  allomorph_class: string | null
 }
 
 export async function fetchForAffixedFormPairBlocks(
@@ -52,7 +55,7 @@ export async function fetchForAffixedFormPairBlocks(
   const capabilityIds = [...new Set(affixedBlocks.map(b => b.block.capabilityId))]
   const { data, error } = await client.schema('indonesian')
     .from('affixed_form_pairs')
-    .select('capability_id, root_text, derived_text, allomorph_rule')
+    .select('capability_id, root_text, derived_text, allomorph_rule, affix, allomorph_class')
     .in('capability_id', capabilityIds)
   if (error) throw error
 
@@ -120,6 +123,8 @@ export async function fetchForAffixedFormPairBlocks(
           derived,
           direction: normalizedDirection,
           allomorphRule: rule,
+          affix: row.affix,
+          allomorphClass: row.allomorph_class,
           sourceRef,
         },
         meanings: [],

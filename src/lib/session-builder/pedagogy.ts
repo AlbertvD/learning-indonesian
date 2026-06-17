@@ -225,8 +225,13 @@ export function capabilityPhase(type: CapabilityType): 1 | 2 | 3 | 4 {
     case 'produce_form_from_context_cap':
     case 'produce_form_from_audio_cap':
     case 'recognise_word_form_link_cap':
+    case 'recognise_allomorph_from_root_cap':
     case 'produce_derived_form_cap':
     case 'produce_grammar_pattern_cap':
+      // recognise_allomorph_from_root_cap is recognise-level (recognise_mode) but
+      // placed here with recognise_word_form_link_cap — INTENTIONAL + inert:
+      // word_form_pair_src is exempt from the staging gate (ADR 0007:44 / 0018), so
+      // the phase value never gates it. Grouping keeps the morphology caps together.
       return 4
   }
 }
