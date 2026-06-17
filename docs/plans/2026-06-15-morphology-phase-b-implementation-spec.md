@@ -167,6 +167,11 @@ All six MUST land in the same commit or the app won't boot (module-load assertio
 
 ## 3. New exercise types (2 new) + the `choose_form_ex` widening
 
+> **⏸ DEFERRED (2026-06-17, user-agreed) — see §9 task 6.** The two new exercise types below are NOT
+> built in the meN- pilot phase (the pilot is fully renderable via `choose_form_ex` + `type_form_ex`);
+> they ship with the confix chapters that give them content. The rest of §3 (the `choose_form_ex`
+> widening) IS built — it is what makes the pilot renderable.
+
 **Two genuinely-new exercise types** — add each to `ExerciseType` union (`src/types/learning.ts`) + `RENDER_CONTRACTS` (`renderContracts.ts:56`) + `ContractInputShapes` (`renderContracts.ts:~414`, compile-enforced) + `projectBuilderInput` switch (`renderContracts.ts:~599`) + the registry (`src/components/exercises/registry.ts`) + `implementations/`:
 
 | Exercise type | Level (`_mode`) → cap | supportedSourceKinds | reads |
@@ -312,9 +317,16 @@ The linguist agents emit `morphology-patterns.ts` for the affix-introducing less
    contract/projector/packager edits (§3) are required** — under-building them yields a runtime
    `item_not_found` for every allomorph drill (architect). Boot test (module-load assertions) + render test
    (`choose_form_ex` renders an allomorph cap with non-undefined catalog-derived options).
-6. Each of the **2 genuinely-new** exercise types (`decompose_word_ex`, `build_confix_ex`): union +
-   RENDER_CONTRACTS + input shape + projectBuilderInput case + byType packager + component + test — each
-   its own atomic commit.
+6. **DEFERRED to the confix-chapter phase (decided 2026-06-17 — minimum mechanism, user-agreed).** The
+   2 new exercise types (`decompose_word_ex`, `build_confix_ex`) are NOT built in the meN- pilot phase.
+   The pilot's three caps are already fully renderable after Task 5: `recognise_word_form_link_cap` →
+   `choose_form_ex`+`type_form_ex`; `recognise_allomorph_from_root_cap` → `choose_form_ex`;
+   `produce_derived_form_cap` → `type_form_ex`. `build_confix_ex` has zero content until confixes are
+   ingested (Bab 9/11/13); `decompose_word_ex` is barely distinct from `type_form_ex` for prefixes (its
+   value is multi-morpheme segmentation = confixes). The `circumfix_left/right` columns + the affix
+   catalog already support both, so each is a clean isolated add when the first confix chapter lands —
+   sequenced with its content (like the 14 chapters). NOT goal-erosion: the drills still get built,
+   with the content that exercises them.
 7. `productive=false` skip-produce-cap branch (`affixedCapabilities.ts`) + projector-emit of **BOTH**
    cross-source-kind prereq keys (rule `grammar_pattern_src` + root-vocab `vocabulary_src` via `itemSlug`,
    §7) + test.
