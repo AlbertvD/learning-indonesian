@@ -54,6 +54,14 @@ export interface ProjectedAffixedPair {
   root_text: string
   derived_text: string
   allomorph_rule: string
+  // Morphology phase-b application-tier payload (authored; nullable on the source
+  // table — the cap-stage Layer-2 validator + projection NOT NULL enforce presence).
+  affix_type: string | null
+  affix_gloss: string | null
+  allomorph_class: string | null
+  circumfix_left: string | null
+  circumfix_right: string | null
+  productive: boolean | null
 }
 
 export interface SectionMeta {
@@ -64,10 +72,20 @@ export interface SectionMeta {
 
 export interface AffixedPairInput {
   sourceRef: string
+  /** The authored grammar-pattern slug the cap stage resolves to grammar_pattern_id
+   *  (must match the lesson's `l{N}-{title}` grammar_patterns.slug). */
   patternSourceRef?: string | null
   root: string
   derived: string
   allomorphRule?: string | null
+  // Morphology phase-b authored payload (optional at the type level; the cap-stage
+  // validator enforces the ones that are mandatory per affix_type).
+  affixType?: string | null
+  affixGloss?: string | null
+  allomorphClass?: string | null
+  circumfixLeft?: string | null
+  circumfixRight?: string | null
+  productive?: boolean | null
 }
 
 export interface ProjectSectionsInput {
@@ -224,6 +242,12 @@ export function projectSections(input: ProjectSectionsInput): ProjectSectionsOut
     root_text: (p.root ?? '').trim(),
     derived_text: (p.derived ?? '').trim(),
     allomorph_rule: (p.allomorphRule ?? '').trim(),
+    affix_type: p.affixType ?? null,
+    affix_gloss: p.affixGloss ?? null,
+    allomorph_class: p.allomorphClass ?? null,
+    circumfix_left: p.circumfixLeft ?? null,
+    circumfix_right: p.circumfixRight ?? null,
+    productive: p.productive ?? null,
   }))
 
   return { sectionMeta, itemRows, grammarCategories, grammarTopics, affixedPairs }

@@ -308,11 +308,20 @@ export interface AffixedPairRowInput {
   lesson_id: string
   section_id: string | null
   source_ref: string
+  /** Authored grammar-pattern slug; the cap stage resolves it to grammar_pattern_id
+   *  (no FK on this source table — grammar_patterns don't exist at lesson-stage time). */
   pattern_source_ref: string | null
   affix: string
   root_text: string
   derived_text: string
   allomorph_rule: string
+  // Morphology phase-b application-tier payload (nullable on the source table).
+  affix_type: string | null
+  affix_gloss: string | null
+  allomorph_class: string | null
+  circumfix_left: string | null
+  circumfix_right: string | null
+  productive: boolean | null
 }
 
 /**
