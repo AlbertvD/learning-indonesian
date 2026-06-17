@@ -1,5 +1,45 @@
+import { isCatalogAffix } from '@/lib/capabilities/affixCatalog'
 import type { AffixedFormPairRowInput } from '../adapter'
 import type { ValidationFinding } from '../model'
+
+const AFFIX_TYPES = new Set(['prefix', 'suffix', 'confix', 'reduplication'])
+const ALLOMORPHIC_AFFIXES = new Set(['meN-', 'peN-'])
+
+/**
+ * Layer-1 shared invariant helper (morphology phase-b, spec §6): the
+ * application-tier payload checks, on ONE projected row. Used by the Layer-2
+ * pre-write validator below; the Layer-3 HC (check-supabase-deep) asserts the
+ * SAME invariant against the live DB. Pure — unit-tested directly.
+ *
+ * Returns one finding per violation (empty = valid). Caller supplies the context.
+ */
+export function affixedPayloadFindings(row: AffixedFormPairRowInput): ValidationFinding[] {
+  const findings: ValidationFinding[] = []
+  const ctx = { capabilityKey: row.capability_id }
+  const where = `affixed_form_pairs row ${row.source_ref}`
+  const push = (message: string) => findings.push({ gate: 'CS12', severity: 'error' as const, message, context: ctx })
+
+  if (!row.grammar_pattern_id || !row.grammar_pattern_id.trim()) {
+    push(`${where} has no grammar_pattern_id (NOT NULL — the affix rule must resolve)`)
+  }
+  if (!row.affix_type || !AFFIX_TYPES.has(row.affix_type)) {
+    push(`${where} has invalid affix_type "${row.affix_type ?? '(null)'}" — expected prefix|suffix|confix|reduplication`)
+  }
+  if (row.productive == null) {
+    push(`${where} has null productive (NOT NULL)`)
+  }
+  if (!row.affix || !isCatalogAffix(row.affix)) {
+    push(`${where} has affix "${row.affix ?? '(null)'}" not in the affix catalog (lib/capabilities/affixCatalog.ts)`)
+  } else {
+    if (ALLOMORPHIC_AFFIXES.has(row.affix) && !(row.allomorph_class && row.allomorph_class.trim())) {
+      push(`${where} affix "${row.affix}" requires an allomorph_class (nasalising affix)`)
+    }
+  }
+  if (row.affix_type === 'confix' && !(row.circumfix_left?.trim() && row.circumfix_right?.trim())) {
+    push(`${where} is a confix but is missing circumfix_left/circumfix_right`)
+  }
+  return findings
+}
 
 /**
  * CS12 (PR 3) — typed `affixed_form_pairs` shape gate.
@@ -84,6 +124,9 @@ export function validateAffixedFormPairs(rows: AffixedFormPairRowInput[]): Valid
       continue
     }
     seenCapabilityIds.add(row.capability_id)
+
+    // Morphology phase-b application-tier payload invariants (Layer-1 helper).
+    findings.push(...affixedPayloadFindings(row))
   }
 
   return findings

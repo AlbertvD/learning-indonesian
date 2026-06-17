@@ -8,6 +8,8 @@ import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
 import { funnelBucket } from '@/lib/analytics/mastery/masteryModel'
 import { findCapsMissingSatellite, type CapForSatelliteCheck } from './lib/pipeline/capability-stage/satellitePresence'
+import { isCatalogAffix } from '@/lib/capabilities/affixCatalog'
+import { itemSlug } from '@/lib/capabilities/itemSlug'
 import { projectionViolations, type RankedItem } from './collections/projection'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
@@ -976,6 +978,79 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
       } catch (err) {
         fail('HC17 every active word_form_pair_src cap has an affixed_form_pairs row (PR 3)', (err as Error).message)
       }
+    }
+  }
+}
+
+// ── HC31 (morphology phase-b): every affixed_form_pairs row satisfies the
+//        application-tier payload invariant — the Layer-3 live-DB mirror of the
+//        Layer-2 validator (validators/affixedFormPairs.ts affixedPayloadFindings):
+//          - grammar_pattern_id non-null (the affix rule resolved)
+//          - affix_type ∈ {prefix,suffix,confix,reduplication}; productive non-null
+//          - affix ∈ the affix catalog (lib/capabilities/affixCatalog.ts)
+//          - allomorph_class non-null for meN-/peN-; circumfix_left/right for confix
+//          - root_text resolves to a live learning_items row — item-B's root-vocab
+//            prerequisite (ADR 0018) must be SATISFIABLE, else the drill is
+//            permanently orphan-suppressed (a content defect, not a feature).
+{
+  const HC31 = 'HC31 every affixed_form_pairs row satisfies the morphology payload invariant (phase-b)'
+  const { data: rows, error } = await supabase
+    .schema('indonesian')
+    .from('affixed_form_pairs')
+    .select('source_ref, grammar_pattern_id, affix, affix_type, allomorph_class, circumfix_left, circumfix_right, productive, root_text')
+  if (error) {
+    fail(HC31, error.message)
+  } else {
+    type AfpRow = {
+      source_ref: string; grammar_pattern_id: string | null; affix: string | null
+      affix_type: string | null; allomorph_class: string | null
+      circumfix_left: string | null; circumfix_right: string | null
+      productive: boolean | null; root_text: string | null
+    }
+    const afpRows = (rows ?? []) as AfpRow[]
+    if (afpRows.length === 0) {
+      pass(`${HC31} (no affixed_form_pairs rows; vacuously green)`)
+    } else try {
+      // Live learning_items.normalized_text set for the root-vocab satisfiability check.
+      const normalizedTexts = new Set<string>()
+      const pageSize = 1000
+      let offset = 0
+      for (;;) {
+        const { data: itemRows, error: itemErr } = await supabase
+          .schema('indonesian')
+          .from('learning_items')
+          .select('normalized_text')
+          .range(offset, offset + pageSize - 1)
+        if (itemErr) throw itemErr
+        const batch = (itemRows ?? []) as Array<{ normalized_text: string }>
+        for (const r of batch) normalizedTexts.add(r.normalized_text)
+        if (batch.length < pageSize) break
+        offset += pageSize
+      }
+
+      const AFFIX_TYPES = new Set(['prefix', 'suffix', 'confix', 'reduplication'])
+      const ALLOMORPHIC = new Set(['meN-', 'peN-'])
+      const offenders: string[] = []
+      for (const r of afpRows) {
+        const problems: string[] = []
+        if (!r.grammar_pattern_id) problems.push('no grammar_pattern_id')
+        if (!r.affix_type || !AFFIX_TYPES.has(r.affix_type)) problems.push(`bad affix_type=${r.affix_type ?? 'null'}`)
+        if (r.productive == null) problems.push('null productive')
+        if (!r.affix || !isCatalogAffix(r.affix)) problems.push(`affix not in catalog: ${r.affix ?? 'null'}`)
+        else if (ALLOMORPHIC.has(r.affix) && !r.allomorph_class) problems.push('missing allomorph_class')
+        if (r.affix_type === 'confix' && (!r.circumfix_left || !r.circumfix_right)) problems.push('confix missing circumfix')
+        if (!r.root_text || !normalizedTexts.has(itemSlug(r.root_text))) {
+          problems.push(`root "${r.root_text ?? 'null'}" not a live learning_item (root-vocab prereq unsatisfiable)`)
+        }
+        if (problems.length) offenders.push(`${r.source_ref}: ${problems.join('; ')}`)
+      }
+      if (offenders.length === 0) {
+        pass(`${HC31} (${afpRows.length} row(s) checked)`)
+      } else {
+        fail(HC31, `${offenders.length} offending row(s). Sample: ${offenders.slice(0, 5).join(' | ')}${offenders.length > 5 ? ' …' : ''}`)
+      }
+    } catch (err) {
+      fail(HC31, (err as Error).message)
     }
   }
 }
