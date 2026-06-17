@@ -125,13 +125,6 @@ const matrix: MatrixRow[] = [
     expected: { status: 'ready', allowedExercises: ['choose_form_ex', 'type_form_ex'] },
   },
   {
-    // recognise_allomorph_from_root_cap is served ONLY by the widened choose_form_ex.
-    capabilityType: 'recognise_allomorph_from_root_cap',
-    sourceKind: 'word_form_pair_src',
-    requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
-    expected: { status: 'ready', allowedExercises: ['choose_form_ex'] },
-  },
-  {
     // produce_derived_form_cap renders typed only — choose_form_ex dropped it
     // (a produce cap is never an MCQ).
     capabilityType: 'produce_derived_form_cap',

@@ -7,29 +7,12 @@
  *
  * Decision 3 stamps `learning_capabilities.lesson_id` on every morphology
  * row at publish time so the runtime knows which lesson INTRODUCES the
- * morphology rule (not which lesson the affixed form appears in, not the
- * lesson where the root word was first taught).
- *
- * The hardcoded slug set below (fold §11 #1) gates whether the stamping
- * applies. Lessons whose `grammar_patterns` set includes any of these slugs
- * are morphology-introducing lessons; their `word_form_pair_src` capability
- * rows get `lesson_id = <this lesson>`. Lessons 1–8 without these slugs do
- * not introduce morphology and skip the stamping.
+ * morphology rule. NOTE: the stamping is UNCONDITIONAL — the cap emitter
+ * (`affixedCapabilities.ts`) sets `lessonId: input.lessonId` on every emitted
+ * `word_form_pair_src` cap. The old `MORPHOLOGY_PATTERN_SLUGS` /
+ * `lessonIntroducesMorphology` gate was never wired into the runner (dead code)
+ * and was deleted in the 2026-06-17 cap-model fix.
  */
-
-export const MORPHOLOGY_PATTERN_SLUGS = new Set([
-  'men-active',     // meN- prefix (lesson 9)
-  'ber-prefix',
-  'di-passive',
-  'me-prefix',
-  'pe-nominalizer',
-  'ke-an-noun',
-  'pe-an-noun',
-])
-
-export function lessonIntroducesMorphology(patternSlugs: string[]): boolean {
-  return patternSlugs.some((slug) => MORPHOLOGY_PATTERN_SLUGS.has(slug))
-}
 
 // ───────────────────────── PR 3: affixed_form_pairs typed rows ──────────────
 //

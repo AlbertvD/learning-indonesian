@@ -76,11 +76,6 @@ export const CAPABILITY_DISPLAY = {
     description: 'Lees een afgeleide Indonesische vorm en typ het stamwoord.',
     example: "menulis → typ 'tulis'",
   },
-  recognise_allomorph_from_root_cap: {
-    label: 'Juiste vorm herkennen',
-    description: 'Kies de juiste klankvariant van het voorvoegsel bij dit stamwoord.',
-    example: 'tulis → menulis (men-, niet "mem-")',
-  },
   produce_derived_form_cap: {
     label: 'Afgeleide vorm maken',
     description: 'Lees een Indonesisch stamwoord en typ de juiste afgeleide vorm.',

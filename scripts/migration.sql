@@ -3478,7 +3478,7 @@ alter table indonesian.affixed_form_pairs
 comment on column indonesian.affixed_form_pairs.affix_type is
   'Discriminator: prefix | suffix | confix | reduplication. Drives renderability of decompose/build-confix drills (data-architect M1).';
 comment on column indonesian.affixed_form_pairs.allomorph_class is
-  'Nasalization/allomorph class; non-null only for meN-/peN-. Drives the pick-allomorph drill (recognise_allomorph_from_root_cap).';
+  'Nasalization/allomorph class; non-null only for meN-/peN-. Seeds the rule note shown on link/produce exercises. Nasalization is drilled at the rule tier (grammar_pattern_src, ADR 0017); this column spawns no per-pair capability (the recognise_allomorph_from_root_cap was retired 2026-06-17).';
 comment on column indonesian.affixed_form_pairs.grammar_pattern_id is
   'FK to the affix RULE pattern. Resolved by the CAPABILITY stage (projectAffixedFormPairs) from the authored slug in lesson_section_affixed_pairs.pattern_source_ref via patternIdsBySlug. The rule->application prerequisite (ADR 0018) is built from this.';
 

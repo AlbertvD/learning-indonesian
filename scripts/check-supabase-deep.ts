@@ -1055,6 +1055,43 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
 }
 
+// ── HC32 (2026-06-17 cap-model fix): the word_form_pair_src 2-sibling contract.
+//        Nasalization is taught at the rule tier (grammar_pattern_src, ADR 0017), so
+//        a pair carries EXACTLY two caps — recognise_word_form_link_cap +
+//        produce_derived_form_cap. Asserts (a) no live cap of the retired type
+//        recognise_allomorph_from_root_cap, and (b) ≤2 active caps per source_ref.
+//        Layer-3 mirror of the projector's 2-cap emission (affixedCapabilities.ts).
+{
+  const HC32 = 'HC32 word_form_pair_src caps obey the 2-sibling contract (no retired allomorph cap; ≤2 per source_ref)'
+  const { data: rows, error } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .select('source_ref, capability_type')
+    .eq('source_kind', 'word_form_pair_src')
+    .is('retired_at', null)
+  if (error) {
+    fail(HC32, error.message)
+  } else {
+    const capRows = (rows ?? []) as Array<{ source_ref: string; capability_type: string }>
+    if (capRows.length === 0) {
+      pass(`${HC32} (no word_form_pair_src caps in DB; vacuously green)`)
+    } else {
+      const retired = capRows.filter((r) => r.capability_type === 'recognise_allomorph_from_root_cap')
+      const bySourceRef = new Map<string, number>()
+      for (const r of capRows) bySourceRef.set(r.source_ref, (bySourceRef.get(r.source_ref) ?? 0) + 1)
+      const overCount = [...bySourceRef.entries()].filter(([, n]) => n > 2)
+      const problems: string[] = []
+      if (retired.length) problems.push(`${retired.length} live recognise_allomorph_from_root_cap row(s) (retired type — re-publish the affected lessons)`)
+      if (overCount.length) problems.push(`${overCount.length} source_ref(s) with >2 caps. Sample: ${overCount.slice(0, 5).map(([s, n]) => `${s}=${n}`).join(', ')}`)
+      if (problems.length === 0) {
+        pass(`${HC32} (${capRows.length} cap(s) across ${bySourceRef.size} pair(s) checked)`)
+      } else {
+        fail(HC32, problems.join(' | '))
+      }
+    }
+  }
+}
+
 // ── HC19 + HC20 (PR 4 of 2026-05-22-data-model-migration.md): every active
 //        pattern capability resolves to typed grammar-exercise rows.
 //

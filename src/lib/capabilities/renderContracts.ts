@@ -64,15 +64,15 @@ export const RENDER_CONTRACTS = {
   },
   choose_form_ex: {
     // Morphology phase-b: choose_form_ex (the "prompt + tappable options" MCQ) is
-    // widened to word_form_pair_src to serve the two recognise-level morphology MCQ
-    // caps — recognise_word_form_link_cap ("root + meaning → pick the affix") and
-    // recognise_allomorph_from_root_cap ("root → pick the correct allomorph form").
-    // Distractors are catalog-derived deterministically (buildCuedRecall's
-    // word_form_pair_src branch), not a stored artifact — so requiredArtifacts is [].
-    // produce_derived_form_cap is REMOVED — a produce cap renders typed (type_form_ex),
-    // never as an MCQ; over word_form_pair_src choose_form_ex serves ONLY the two
-    // recognise-level MCQ caps (link + allomorph).
-    capabilityTypes: ['recognise_form_from_meaning_cap', 'produce_form_from_meaning_cap', 'recognise_word_form_link_cap', 'recognise_allomorph_from_root_cap'],
+    // widened to word_form_pair_src to serve the recognise-level morphology MCQ cap
+    // recognise_word_form_link_cap ("root + meaning → pick the affix"). Distractors
+    // are catalog-derived deterministically (buildCuedRecall's word_form_pair_src
+    // branch), not a stored artifact — so requiredArtifacts is []. produce_derived_form_cap
+    // is REMOVED — a produce cap renders typed (type_form_ex), never as an MCQ. The
+    // per-pair allomorph MCQ was retired (2026-06-17 cap-model fix): nasalization is
+    // taught at the rule tier (grammar_pattern_src recognise/contrast/produce, ADR 0017),
+    // not per word_form_pair.
+    capabilityTypes: ['recognise_form_from_meaning_cap', 'produce_form_from_meaning_cap', 'recognise_word_form_link_cap'],
     supportedSourceKinds: ['vocabulary_src', 'word_form_pair_src'],
     requiredArtifacts: { vocabulary_src: [], word_form_pair_src: [] },
   },
@@ -325,9 +325,6 @@ export interface AffixedFormPairInput {
   /** The affix label (e.g. 'meN-'). Drives the choose_form_ex link-cap MCQ
    *  ("pick the affix") via catalog-derived distractors. Null for legacy rows. */
   affix?: string | null
-  /** The allomorph class (e.g. 'men'). Drives the choose_form_ex allomorph-cap MCQ
-   *  ("pick the correct form"). Non-null only for meN-/peN- pairs. */
-  allomorphClass?: string | null
   /** The cap's source_ref of shape `lesson-N/morphology/<slug>`. Carried for
    *  audit/debug; the builder does not parse it. */
   sourceRef: string

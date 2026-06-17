@@ -5,25 +5,35 @@
 // candidate's translation so the group filter still works even though we render
 // base_text.
 //
-// word_form_pair_src path (morphology phase-b): the two recognise-level MCQ caps.
-// Distractors are derived deterministically from the affix catalog (no stored
-// distractor row). Which MCQ is selected by the pair's direction:
-//   - derived_to_root → recognise_word_form_link_cap: "which affix formed this
-//     word?" — prompt = derived form, options = catalog affixes.
-//   - root_to_derived → recognise_allomorph_from_root_cap: "pick the correct form
-//     of this root" — prompt = root, options = the root under each allomorph class.
+// word_form_pair_src path (morphology phase-b): the recognise_word_form_link_cap
+// MCQ — "which affix formed this word?" (prompt = derived form, options = catalog
+// affixes, distractors derived deterministically from the affix catalog, no stored
+// row). The per-pair allomorph MCQ was retired (2026-06-17 cap-model fix):
+// nasalization is taught at the rule tier (grammar_pattern_src recognise/contrast/
+// produce, ADR 0017), not per word_form_pair.
 
 import type { BuilderInputFor, BuilderResult } from './types'
 import type { ExerciseItem } from '@/types/learning'
 import { shuffle } from './helpers'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
-import { distractorAffixes, allomorphClassesFor } from '@/lib/capabilities/affixCatalog'
+import { distractorAffixes } from '@/lib/capabilities/affixCatalog'
 
 export function buildCuedRecall(input: BuilderInputFor<'choose_form_ex'>): BuilderResult {
   // word_form_pair_src path — input.affixedFormPair is populated; learningItem null.
   if (input.affixedFormPair) {
-    const { root, derived, direction, affix, allomorphClass } = input.affixedFormPair
+    const { derived, direction, affix } = input.affixedFormPair
+    // Only recognise_word_form_link_cap (direction=derived_to_root) renders here;
+    // produce_derived_form_cap renders typed (type_form_ex). Fail loud on any other
+    // direction reaching this builder — the per-pair allomorph MCQ was retired.
+    if (direction !== 'derived_to_root') {
+      return {
+        kind: 'fail',
+        reasonCode: 'malformed_payload',
+        message: `choose_form_ex word_form_pair_src cap has unexpected direction "${direction}" — only derived_to_root (recognise_word_form_link_cap) renders here`,
+        payloadSnapshot: { sourceRef: input.affixedFormPair.sourceRef, direction },
+      }
+    }
     if (!affix) {
       return {
         kind: 'fail',
@@ -32,27 +42,10 @@ export function buildCuedRecall(input: BuilderInputFor<'choose_form_ex'>): Build
         payloadSnapshot: { sourceRef: input.affixedFormPair.sourceRef, direction },
       }
     }
-
-    let promptMeaningText: string
-    let correctOptionId: string
-    let distractors: string[]
-    if (direction === 'derived_to_root') {
-      // recognise_word_form_link_cap — "which affix formed this word?"
-      promptMeaningText = derived
-      correctOptionId = affix
-      distractors = distractorAffixes(affix).slice(0, 3)
-    } else {
-      // recognise_allomorph_from_root_cap — "pick the correct form of this root".
-      // Wrong options = the root under the OTHER allomorph classes (naive concat,
-      // which is exactly the un-applied sandhi the learner must reject).
-      promptMeaningText = root
-      correctOptionId = derived
-      const wrong = allomorphClassesFor(affix)
-        .filter((c) => c !== (allomorphClass ?? ''))
-        .map((c) => `${c}${root}`)
-        .filter((form) => form !== derived)
-      distractors = [...new Set(wrong)].slice(0, 3)
-    }
+    // recognise_word_form_link_cap — "which affix formed this word?"
+    const promptMeaningText = derived
+    const correctOptionId = affix
+    const distractors = distractorAffixes(affix).slice(0, 3)
 
     if (distractors.length === 0) {
       return {

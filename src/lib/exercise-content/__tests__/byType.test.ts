@@ -664,31 +664,14 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
     expect(r.audibleTexts).toEqual(expect.arrayContaining(['baca', 'membaca']))
   })
 
-  it('choose_form_ex allomorph MCQ (root→derived): correct = derived, catalog-derived allomorph distractors', () => {
-    const r = buildForExerciseType('choose_form_ex', affixedInput({
-      affixedFormPair: {
-        root: 'baca', derived: 'membaca', direction: 'root_to_derived',
-        allomorphRule: 'meN- becomes mem- before b.', affix: 'meN-', allomorphClass: 'mem',
-        sourceRef: 'lesson-9/morphology/meN-baca-membaca',
-      },
-    }))
-    expect(r.kind).toBe('ok')
-    if (r.kind !== 'ok') return
-    expect(r.exerciseItem.exerciseType).toBe('choose_form_ex')
-    expect(r.exerciseItem.learningItem).toBeNull()
-    const data = r.exerciseItem.cuedRecallData!
-    expect(data.correctOptionId).toBe('membaca')
-    expect(data.options).toContain('membaca')
-    expect(data.options.length).toBe(4)
-    // every option is defined + distinct (no undefined leaks)
-    expect(new Set(data.options).size).toBe(4)
-  })
-
+  // The per-pair allomorph MCQ (root→derived) was retired in the 2026-06-17 cap-model
+  // fix — nasalization is taught at the rule tier (grammar_pattern_src, ADR 0017).
+  // choose_form_ex over word_form_pair_src now serves ONLY the derived→root link MCQ.
   it('choose_form_ex link MCQ (derived→root): correct = the affix, catalog-derived affix distractors', () => {
     const r = buildForExerciseType('choose_form_ex', affixedInput({
       affixedFormPair: {
         root: 'baca', derived: 'membaca', direction: 'derived_to_root',
-        allomorphRule: 'meN- becomes mem- before b.', affix: 'meN-', allomorphClass: 'mem',
+        allomorphRule: 'meN- becomes mem- before b.', affix: 'meN-',
         sourceRef: 'lesson-9/morphology/meN-baca-membaca',
       },
     }))
@@ -700,8 +683,26 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
     expect(data.options.length).toBe(4)
   })
 
+  it('choose_form_ex fails loud on an unexpected direction (root→derived no longer renders here)', () => {
+    const r = buildForExerciseType('choose_form_ex', affixedInput({
+      affixedFormPair: {
+        root: 'baca', derived: 'membaca', direction: 'root_to_derived',
+        allomorphRule: 'meN- becomes mem- before b.', affix: 'meN-',
+        sourceRef: 'lesson-9/morphology/meN-baca-membaca',
+      },
+    }))
+    expect(r.kind).toBe('fail')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
+  })
+
   it('choose_form_ex fails loud when the pair carries no affix (catalog distractors impossible)', () => {
-    const r = buildForExerciseType('choose_form_ex', affixedInput())  // fixture has no affix
+    const r = buildForExerciseType('choose_form_ex', affixedInput({
+      affixedFormPair: {
+        root: 'baca', derived: 'membaca', direction: 'derived_to_root',
+        allomorphRule: 'meN- becomes mem- before b.', affix: null,
+        sourceRef: 'lesson-9/morphology/meN-baca-membaca',
+      },
+    }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
   })

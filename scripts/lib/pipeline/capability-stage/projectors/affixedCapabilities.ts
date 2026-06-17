@@ -140,34 +140,11 @@ export function projectAffixedCapabilities(
       })
     }
 
-    // 3rd cap — recognise_allomorph_from_root_cap (morphology phase-b): ONLY for
-    // pairs that carry an allomorph_class (meN-/peN- nasalisation). The
-    // nasalisation sub-rule is its own recognise-level capability (level-purity);
-    // it renders as an MCQ via the widened choose_form_ex. direction reuses
-    // root_to_derived — the distinct capability_type keeps the canonical key unique
-    // vs produce_derived_form_cap. Prereq = the pair's recognition cap.
-    if (pair.allomorph_class != null && pair.allomorph_class !== '') {
-      caps.push({
-        canonicalKey: buildCanonicalKey({
-          sourceKind: 'word_form_pair_src',
-          sourceRef,
-          capabilityType: 'recognise_allomorph_from_root_cap',
-          direction: 'root_to_derived',
-          modality: 'text',
-          learnerLanguage: 'none',
-        }),
-        sourceKind: 'word_form_pair_src',
-        sourceRef,
-        capabilityType: 'recognise_allomorph_from_root_cap',
-        direction: 'root_to_derived',
-        modality: 'text',
-        learnerLanguage: 'none',
-        projectionVersion: CAPABILITY_PROJECTION_VERSION,
-        lessonId: input.lessonId,
-        requiredArtifacts: [],
-        prerequisiteKeys: [recognitionKey, ...crossPrereqs],
-      })
-    }
+    // Each word_form_pair_src pair carries EXACTLY two caps: recognise_word_form_link_cap
+    // + produce_derived_form_cap (the contract CONTEXT.md documents). The per-pair
+    // recognise_allomorph_from_root_cap was retired in the 2026-06-17 cap-model fix:
+    // nasalization is taught at the rule tier (grammar_pattern_src recognise/contrast/
+    // produce, ADR 0017), so a per-word allomorph cap is redundant double-teaching.
   }
 
   return caps

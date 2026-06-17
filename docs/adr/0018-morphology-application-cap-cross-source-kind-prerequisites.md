@@ -6,9 +6,11 @@ Accepted
 
 Amends the morphology carve-out in [ADR 0007](./0007-receptive-before-productive-staging.md) §"Morphology carve-out" (the staging-gate exemption stands; this ADR adds the prerequisites that replace the within-pair chain as the sequencing mechanism). Implements the §7 obligation of `docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md`.
 
+**Amended 2026-06-17** (`docs/plans/2026-06-17-morphology-nasalization-cap-model-fix.md`): the per-pair `recognise_allomorph_from_root_cap` named below was **retired**. The application tier is now **two** capabilities per pair (`recognise_word_form_link_cap` + `produce_derived_form_cap`). Nasalization recognition lives at the **rule tier** (`grammar_pattern_src` recognise/contrast/produce, ADR 0017), not per word-form pair. The cross-source-kind prerequisites below are unchanged — they attach to both surviving caps; the retired cap was a leaf in the prerequisite graph, so nothing depended on it.
+
 ## Context
 
-The morphology **application tier** — `word_form_pair_src` capabilities (`recognise_word_form_link_cap`, the new `recognise_allomorph_from_root_cap`, and `produce_derived_form_cap`) — drills a learner on *affixed forms* (e.g. *menulis* from root *tulis* + meN-).
+The morphology **application tier** — `word_form_pair_src` capabilities (`recognise_word_form_link_cap` and `produce_derived_form_cap`; the per-pair `recognise_allomorph_from_root_cap` was retired 2026-06-17, see Status) — drills a learner on *affixed forms* (e.g. *menulis* from root *tulis* + meN-).
 
 ADR 0007's receptive-before-productive **staging gate** (Mechanism A) is **carved out** for `word_form_pair_src` (`pedagogy.ts:366-375`): all its cap types are productive (Phase ≥ 3), so there is no Phase 1/2 sibling at the same `source_ref` to unlock them, and applying the gate would permanently orphan-suppress every morphology cap. ADR 0007:44 named the within-pair `prerequisiteKeys` chain (recognise → produce) as the remaining sequencing mechanism.
 

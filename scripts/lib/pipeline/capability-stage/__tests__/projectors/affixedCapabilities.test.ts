@@ -184,33 +184,19 @@ describe('projectAffixedCapabilities', () => {
     }
   })
 
-  it('does NOT emit recognise_allomorph_from_root_cap when allomorph_class is absent', () => {
-    const caps = projectAffixedCapabilities({ pairs: [pair1], lessonId: 'lesson-9-uuid' })
-    expect(caps.some((c) => c.capabilityType === 'recognise_allomorph_from_root_cap')).toBe(false)
-  })
-
-  it('emits a 3rd recognise_allomorph_from_root_cap when allomorph_class is present (meN-/peN-)', () => {
+  it('emits EXACTLY 2 caps per pair regardless of allomorph_class (no per-pair allomorph cap — retired 2026-06-17)', () => {
+    // Nasalization is taught at the rule tier (grammar_pattern_src, ADR 0017), not per
+    // word_form_pair. allomorph_class is stored on the row but spawns no capability.
     const allomorphPair: TypedAffixedPair = {
       ...pair2,
       allomorph_class: 'men',
     } as TypedAffixedPair
     const caps = projectAffixedCapabilities({ pairs: [allomorphPair], lessonId: 'lesson-9-uuid' })
-    expect(caps).toHaveLength(3)
-
-    const allomorph = caps.find((c) => c.capabilityType === 'recognise_allomorph_from_root_cap')!
-    expect(allomorph).toBeDefined()
-    // root_to_derived reused; the distinct capability_type keeps the key unique
-    // vs produce_derived_form_cap (also root_to_derived).
-    expect(allomorph.canonicalKey).toBe(
-      'cap:v1:word_form_pair_src:lesson-9/morphology/menulis-tulis:recognise_allomorph_from_root_cap:root_to_derived:text:none',
+    expect(caps).toHaveLength(2)
+    expect(caps.map((c) => c.capabilityType).sort()).toEqual(
+      ['produce_derived_form_cap', 'recognise_word_form_link_cap'],
     )
-    expect(allomorph.canonicalKey).not.toBe(RECALL_KEY_2) // no collision with the produce cap
-    expect(allomorph.direction).toBe('root_to_derived')
-    expect(allomorph.modality).toBe('text')
-    expect(allomorph.learnerLanguage).toBe('none')
-    expect(allomorph.lessonId).toBe('lesson-9-uuid')
-    // prereqs: within-pair recognition + the root-vocab cross-source-kind gate.
-    expect(allomorph.prerequisiteKeys).toEqual([RECOGNITION_KEY_2, ROOT_VOCAB_KEY_2])
+    expect(caps.some((c) => c.capabilityType === 'recognise_allomorph_from_root_cap')).toBe(false)
   })
 
   it('skips produce_derived_form_cap for productive=false (lexicalised) pairs', () => {

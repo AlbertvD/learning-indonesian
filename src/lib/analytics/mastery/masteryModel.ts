@@ -160,7 +160,6 @@ function dimensionForCapability(type: CapabilityType): MasteryDimension {
     case 'produce_form_from_context_cap':
       return 'produce_form_from_context_cap'
     case 'recognise_word_form_link_cap':
-    case 'recognise_allomorph_from_root_cap':
     case 'produce_derived_form_cap':
       return 'morphology'
     case 'recognise_gist_from_audio_cap':

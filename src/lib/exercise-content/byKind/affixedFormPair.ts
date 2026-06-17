@@ -17,11 +17,11 @@
 // No capability_artifacts are read: the legacy morphology artifact writes were
 // removed in this PR (renderContracts: type_form_ex/word_form_pair_src → []).
 //
-// Morphology phase-b: choose_form_ex is now ALSO served over word_form_pair_src
-// (the two recognise-level MCQ caps — recognise_word_form_link_cap +
-// recognise_allomorph_from_root_cap). This reader supplies affix + allomorphClass
-// so buildCuedRecall can build catalog-derived distractors; the direction field
-// selects which MCQ (derived_to_root = link, root_to_derived = allomorph).
+// Morphology phase-b: choose_form_ex is ALSO served over word_form_pair_src for the
+// recognise_word_form_link_cap MCQ. This reader supplies affix so buildCuedRecall can
+// build catalog-derived distractors. (The per-pair allomorph MCQ was retired in the
+// 2026-06-17 cap-model fix — nasalization is taught at the rule tier, ADR 0017 — so
+// allomorph_class is no longer threaded to the render path; the column stays in the DB.)
 
 import {
   type AffixedFormPairBucketEntry,
@@ -41,7 +41,6 @@ interface AffixedFormPairRow {
   derived_text: string
   allomorph_rule: string
   affix: string | null
-  allomorph_class: string | null
 }
 
 export async function fetchForAffixedFormPairBlocks(
@@ -55,7 +54,7 @@ export async function fetchForAffixedFormPairBlocks(
   const capabilityIds = [...new Set(affixedBlocks.map(b => b.block.capabilityId))]
   const { data, error } = await client.schema('indonesian')
     .from('affixed_form_pairs')
-    .select('capability_id, root_text, derived_text, allomorph_rule, affix, allomorph_class')
+    .select('capability_id, root_text, derived_text, allomorph_rule, affix')
     .in('capability_id', capabilityIds)
   if (error) throw error
 
@@ -124,7 +123,6 @@ export async function fetchForAffixedFormPairBlocks(
           direction: normalizedDirection,
           allomorphRule: rule,
           affix: row.affix,
-          allomorphClass: row.allomorph_class,
           sourceRef,
         },
         meanings: [],

@@ -19,7 +19,8 @@ export interface AffixCatalogEntry {
   gloss: string
   /** Spelling variants of an allomorphic prefix (meN-/peN- nasalization). The
    *  prefix string that attaches to the root, e.g. ['me','mem','men','meny','meng','menge'].
-   *  Present ONLY for allomorphic affixes — drives recognise_allomorph_from_root_cap. */
+   *  Present ONLY for allomorphic affixes. Nasalization is drilled at the rule tier
+   *  (grammar_pattern_src, ADR 0017); this list also seeds the rule note + catalog HC. */
   allomorphClasses?: string[]
 }
 
