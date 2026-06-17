@@ -257,14 +257,37 @@ describe('runner dialogue cutover (Task 7)', () => {
       ] as never
       return l
     }
+    // The pair must reference a rule pattern produced in this publish so the
+    // cap-stage projector resolves grammar_pattern_id (NOT NULL). Give the lesson
+    // a ber- grammar pattern (slug l1-ber-werkwoorden) with full exercise coverage.
+    const berGrammarFn = async (prompt: string) => {
+      const slug = prompt.match(/pattern slug: (\S+)/)?.[1] ?? 'unknown'
+      return JSON.stringify([
+        { exercise_type: 'choose_correct_form_ex', grammar_pattern_slug: slug, payload: { promptText: 'p', targetMeaning: 'm', options: [{ id: 'a', text: 'a' }, { id: 'b', text: 'b' }], correctOptionId: 'a', explanationText: 'e' } },
+        { exercise_type: 'transform_sentence_ex', grammar_pattern_slug: slug, payload: { sourceSentence: 's', transformationInstruction: 'i', hintText: null, acceptableAnswers: ['a'], explanationText: 'e' } },
+        { exercise_type: 'translate_sentence_ex', grammar_pattern_slug: slug, payload: { sourceLanguageSentence: 's', requiredTargetPattern: slug, disallowedShortcutForms: [], acceptableAnswers: ['a'], explanationText: 'e' } },
+        { exercise_type: 'choose_missing_word_ex', grammar_pattern_slug: slug, payload: { sentence: 'Saya ___ jalan.', translation: 't', options: ['berjalan', 'jalan', 'berlari', 'lari'], correctOptionId: 'berjalan', explanationText: 'e' } },
+      ])
+    }
+    const berPatternDb = {
+      categories: [{
+        id: 'cat-ber', section_id: 'section-grammar', lesson_id: 'lesson-uuid', display_order: 0,
+        title: 'Ber-werkwoorden', title_en: null, rules: ['ber- + root -> intransitive verb'], rules_en: [],
+        examples: [{ indonesian: 'Saya berjalan.', dutch: 'Ik loop.', english: null }],
+      }],
+      topics: [],
+      patternState: { existingPatternsBySlug: new Map(), existingPatternCapsByCanonicalKey: new Map(), exerciseCoverageByPatternId: new Map() },
+    } as PatternDbResult
     await runCapabilityStage(
       { lessonNumber: 1, lessonId: 'lesson-uuid' },
       baseHooks(client, {
         loadLesson: async () => lessonWithAffixed(),
         loadDialogueFromDb: async () => dialogueDb(false),
+        loadPatternFromDb: async () => berPatternDb,
         generateClozeFn: goodClozeFn,
+        generateGrammarFn: berGrammarFn,
         fetchAffixedPairsFromDb: async () => [
-          { id: 'afp-1', lesson_id: 'lesson-uuid', section_id: null, source_ref: 'lesson-1/morphology/ber-jalan', affix: 'ber-', root_text: 'jalan', derived_text: 'berjalan', allomorph_rule: 'ber- + jalan -> berjalan' },
+          { id: 'afp-1', lesson_id: 'lesson-uuid', section_id: null, source_ref: 'lesson-1/morphology/ber-jalan', pattern_source_ref: 'l1-ber-werkwoorden', affix: 'ber-', root_text: 'jalan', derived_text: 'berjalan', allomorph_rule: 'ber- + jalan -> berjalan', affix_type: 'prefix', affix_gloss: null, allomorph_class: null, circumfix_left: null, circumfix_right: null, productive: true },
         ],
       }),
     )

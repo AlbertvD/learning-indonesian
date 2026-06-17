@@ -53,6 +53,16 @@ export interface AffixedPairSource {
   root: string
   derived: string
   allomorphRule?: string
+  // Morphology phase-b application-tier payload (from lesson_section_affixed_pairs).
+  affix?: string | null
+  /** Authored grammar-pattern slug; resolved to grammar_pattern_id via patternIdsBySlug. */
+  patternSourceRef?: string | null
+  affixType?: string | null
+  affixGloss?: string | null
+  allomorphClass?: string | null
+  circumfixLeft?: string | null
+  circumfixRight?: string | null
+  productive?: boolean | null
 }
 
 export interface AffixedFormPairsProjectionInput {
@@ -61,10 +71,15 @@ export interface AffixedFormPairsProjectionInput {
   capabilities: ReadonlyArray<{ canonicalKey: string; sourceKind: string; sourceRef: string }>
   /** canonical_key → DB capability id (from upsertCapabilities). */
   capabilityIdsByKey: ReadonlyMap<string, string>
-  /** source_ref → pair source data (root/derived/allomorphRule). The cap's
+  /** source_ref → pair source data (root/derived/allomorphRule + payload). The cap's
    *  source_ref and the pair's source_ref are the same value
    *  (affixedFormPairSourceRef in content-pipeline-output.ts). */
   pairsBySourceRef: ReadonlyMap<string, AffixedPairSource>
+  /** grammar_patterns.slug → grammar_pattern_id (from writePatternPath, runner.ts:396).
+   *  The projector resolves each pair's authored slug against this — grammar_patterns
+   *  are written by the CAPABILITY stage, so this is the ONLY place the id exists
+   *  (the lesson stage cannot resolve it; data-architect re-ruling 2026-06-16). */
+  patternIdsBySlug: ReadonlyMap<string, string>
   /** The introducing lesson id (ADR 0006). Denormalised onto every row. */
   lessonId: string
 }
@@ -127,6 +142,25 @@ export function projectAffixedFormPairs(
       continue
     }
 
+    // Resolve the rule's grammar_pattern_id from the authored slug. grammar_patterns
+    // are written by THIS (capability) stage, so patternIdsBySlug is the only source
+    // of the id. An unresolved slug = a content defect (the pair references a pattern
+    // that is not produced in this lesson's publish) → fail loud, not a null FK.
+    const slug = (pair.patternSourceRef ?? '').trim()
+    const grammarPatternId = slug ? input.patternIdsBySlug.get(slug) : undefined
+    if (!grammarPatternId) {
+      findings.push({
+        gate: 'CS12',
+        severity: 'error',
+        message:
+          `word_form_pair_src cap "${cap.canonicalKey}" could not resolve grammar_pattern_id from ` +
+          `pattern slug "${slug || '(none)'}" — the affix's grammar pattern must exist in this lesson's ` +
+          `publish (affixed_form_pairs.grammar_pattern_id is NOT NULL)`,
+        context: { capabilityKey: cap.canonicalKey, patternSlug: slug },
+      })
+      continue
+    }
+
     rows.push({
       capability_id: capabilityId,
       source_ref: cap.sourceRef,
@@ -134,6 +168,14 @@ export function projectAffixedFormPairs(
       root_text: root,
       derived_text: derived,
       allomorph_rule: rule,
+      grammar_pattern_id: grammarPatternId,
+      affix: ((pair.affix ?? '').trim()) || null,
+      affix_type: ((pair.affixType ?? '').trim()) || null,
+      affix_gloss: ((pair.affixGloss ?? '').trim()) || null,
+      allomorph_class: ((pair.allomorphClass ?? '').trim()) || null,
+      circumfix_left: ((pair.circumfixLeft ?? '').trim()) || null,
+      circumfix_right: ((pair.circumfixRight ?? '').trim()) || null,
+      productive: pair.productive ?? null,
     })
   }
 

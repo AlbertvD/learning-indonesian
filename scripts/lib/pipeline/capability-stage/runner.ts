@@ -540,13 +540,26 @@ export async function runCapabilityStage(
   const affixedPairsBySourceRef = new Map<string, AffixedPairSource>(
     affixedPairsFromDb.map((p) => [
       p.source_ref,
-      { root: p.root_text, derived: p.derived_text, allomorphRule: p.allomorph_rule },
+      {
+        root: p.root_text,
+        derived: p.derived_text,
+        allomorphRule: p.allomorph_rule,
+        affix: p.affix,
+        patternSourceRef: p.pattern_source_ref,
+        affixType: p.affix_type,
+        affixGloss: p.affix_gloss,
+        allomorphClass: p.allomorph_class,
+        circumfixLeft: p.circumfix_left,
+        circumfixRight: p.circumfix_right,
+        productive: p.productive,
+      },
     ]),
   )
   const affixedFormPairsResult = projectAffixedFormPairs({
     capabilities: allCapabilities,
     capabilityIdsByKey,
     pairsBySourceRef: affixedPairsBySourceRef,
+    patternIdsBySlug: patternResult?.patternIdsBySlug ?? new Map(),
     lessonId: input.lessonId,
   })
   findings.push(...affixedFormPairsResult.findings)

@@ -351,10 +351,18 @@ describe('fetchAffixedPairsFromDb', () => {
       lesson_id: LESSON_ID,
       section_id: SECTION_MORPH_ID,
       source_ref: 'lesson-5/affixed/ber-jalan',
+      pattern_source_ref: 'ber-active',
       affix: 'ber-',
       root_text: 'jalan',
       derived_text: 'berjalan',
       allomorph_rule: 'ber- attaches without sound change: jalan -> berjalan',
+      // Morphology phase-b columns — absent in this fixture row → mapped to null.
+      affix_type: null,
+      affix_gloss: null,
+      allomorph_class: null,
+      circumfix_left: null,
+      circumfix_right: null,
+      productive: null,
     })
     const me = pairs.find((p) => p.source_ref === 'lesson-5/affixed/me-masak')!
     expect(me.section_id).toBeNull()

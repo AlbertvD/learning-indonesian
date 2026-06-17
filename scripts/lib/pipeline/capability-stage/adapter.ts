@@ -444,6 +444,17 @@ export interface AffixedFormPairRowInput {
   root_text: string
   derived_text: string
   allomorph_rule: string
+  // Morphology phase-b application-tier payload (projection table NOT NULL on
+  // grammar_pattern_id / affix_type / productive; the projector + Layer-2 validator
+  // guarantee those are populated before this write).
+  grammar_pattern_id: string
+  affix: string | null
+  affix_type: string | null
+  affix_gloss: string | null
+  allomorph_class: string | null
+  circumfix_left: string | null
+  circumfix_right: string | null
+  productive: boolean | null
 }
 
 /**
@@ -482,6 +493,14 @@ export async function replaceAffixedFormPairs(
         root_text: r.root_text,
         derived_text: r.derived_text,
         allomorph_rule: r.allomorph_rule,
+        grammar_pattern_id: r.grammar_pattern_id,
+        affix: r.affix,
+        affix_type: r.affix_type,
+        affix_gloss: r.affix_gloss,
+        allomorph_class: r.allomorph_class,
+        circumfix_left: r.circumfix_left,
+        circumfix_right: r.circumfix_right,
+        productive: r.productive,
       })),
     )
   if (insertError) throw insertError

@@ -36,6 +36,22 @@ const recognitionKey =
   'cap:v1:word_form_pair_src:lesson-9/morphology/meN-baca-membaca:recognise_word_form_link_cap:derived_to_root:text:none'
 const afpSourceRef = 'lesson-9/morphology/meN-baca-membaca'
 
+function basePair() {
+  return {
+    root: 'baca',
+    derived: 'membaca',
+    allomorphRule: 'meN- becomes mem- before b.',
+    affix: 'meN-',
+    patternSourceRef: 'l9-men-active',
+    affixType: 'prefix',
+    affixGloss: 'active/agent verb-former',
+    allomorphClass: 'mem',
+    circumfixLeft: null,
+    circumfixRight: null,
+    productive: true,
+  }
+}
+
 function baseInput(overrides: Partial<AffixedFormPairsProjectionInput> = {}): AffixedFormPairsProjectionInput {
   return {
     capabilities: [
@@ -46,36 +62,42 @@ function baseInput(overrides: Partial<AffixedFormPairsProjectionInput> = {}): Af
       [recallKey, 'cap-recall-id'],
       [recognitionKey, 'cap-recognition-id'],
     ]),
-    pairsBySourceRef: new Map([
-      [afpSourceRef, { root: 'baca', derived: 'membaca', allomorphRule: 'meN- becomes mem- before b.' }],
-    ]),
+    pairsBySourceRef: new Map([[afpSourceRef, basePair()]]),
+    patternIdsBySlug: new Map([['l9-men-active', 'gp-men-id']]),
     lessonId: 'lesson-9-uuid',
     ...overrides,
   }
 }
 
+const afpFullRow = {
+  source_ref: afpSourceRef,
+  lesson_id: 'lesson-9-uuid',
+  root_text: 'baca',
+  derived_text: 'membaca',
+  allomorph_rule: 'meN- becomes mem- before b.',
+  grammar_pattern_id: 'gp-men-id',
+  affix: 'meN-',
+  affix_type: 'prefix',
+  affix_gloss: 'active/agent verb-former',
+  allomorph_class: 'mem',
+  circumfix_left: null,
+  circumfix_right: null,
+  productive: true,
+}
+
 describe('projectAffixedFormPairs — happy path', () => {
-  it('emits one row per word_form_pair_src cap (2 caps per linguistic pair share root/derived/rule)', () => {
+  it('emits one row per word_form_pair_src cap (2 caps per linguistic pair share the payload)', () => {
     const out = projectAffixedFormPairs(baseInput())
     expect(out.findings).toEqual([])
     expect(out.rows).toEqual([
-      {
-        capability_id: 'cap-recall-id',
-        source_ref: afpSourceRef,
-        lesson_id: 'lesson-9-uuid',
-        root_text: 'baca',
-        derived_text: 'membaca',
-        allomorph_rule: 'meN- becomes mem- before b.',
-      },
-      {
-        capability_id: 'cap-recognition-id',
-        source_ref: afpSourceRef,
-        lesson_id: 'lesson-9-uuid',
-        root_text: 'baca',
-        derived_text: 'membaca',
-        allomorph_rule: 'meN- becomes mem- before b.',
-      },
+      { ...afpFullRow, capability_id: 'cap-recall-id' },
+      { ...afpFullRow, capability_id: 'cap-recognition-id' },
     ])
+  })
+
+  it('resolves grammar_pattern_id from the authored slug via patternIdsBySlug', () => {
+    const out = projectAffixedFormPairs(baseInput())
+    expect(out.rows.every((r) => r.grammar_pattern_id === 'gp-men-id')).toBe(true)
   })
 
   it('ignores non-word_form_pair_src capabilities', () => {
@@ -93,7 +115,7 @@ describe('projectAffixedFormPairs — happy path', () => {
   it('trims surrounding whitespace on each field', () => {
     const out = projectAffixedFormPairs(baseInput({
       capabilities: [{ canonicalKey: recallKey, sourceKind: 'word_form_pair_src', sourceRef: afpSourceRef }],
-      pairsBySourceRef: new Map([[afpSourceRef, { root: '  baca ', derived: ' membaca  ', allomorphRule: '  rule.  ' }]]),
+      pairsBySourceRef: new Map([[afpSourceRef, { ...basePair(), root: '  baca ', derived: ' membaca  ', allomorphRule: '  rule.  ' }]]),
     }))
     expect(out.findings).toEqual([])
     expect(out.rows[0]).toMatchObject({ root_text: 'baca', derived_text: 'membaca', allomorph_rule: 'rule.' })
@@ -134,5 +156,27 @@ describe('projectAffixedFormPairs — fail-loud (CS12) error cases', () => {
     const out = projectAffixedFormPairs(baseInput({ capabilities: [] }))
     expect(out.rows).toEqual([])
     expect(out.findings).toEqual([])
+  })
+
+  it('emits CS12 and skips the row when the authored slug resolves to no grammar_pattern_id', () => {
+    const out = projectAffixedFormPairs(baseInput({
+      capabilities: [{ canonicalKey: recallKey, sourceKind: 'word_form_pair_src', sourceRef: afpSourceRef }],
+      patternIdsBySlug: new Map(), // 'l9-men-active' not present
+    }))
+    expect(out.rows).toEqual([])
+    expect(out.findings).toHaveLength(1)
+    expect(out.findings[0]).toMatchObject({ gate: 'CS12', severity: 'error' })
+    expect(out.findings[0].message).toContain('grammar_pattern_id')
+    expect(out.findings[0].message).toContain('l9-men-active')
+  })
+
+  it('emits CS12 when the pair carries no pattern slug at all', () => {
+    const out = projectAffixedFormPairs(baseInput({
+      capabilities: [{ canonicalKey: recallKey, sourceKind: 'word_form_pair_src', sourceRef: afpSourceRef }],
+      pairsBySourceRef: new Map([[afpSourceRef, { ...basePair(), patternSourceRef: null }]]),
+    }))
+    expect(out.rows).toEqual([])
+    expect(out.findings[0]).toMatchObject({ gate: 'CS12', severity: 'error' })
+    expect(out.findings[0].message).toContain('grammar_pattern_id')
   })
 })

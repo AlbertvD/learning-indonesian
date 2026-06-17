@@ -825,11 +825,21 @@ export interface TypedAffixedPair {
   /** Nullable — morphology pairs may have no owning section. */
   section_id: string | null
   source_ref: string
+  /** Authored grammar-pattern slug (was the old pattern_source_ref); the projector
+   *  resolves it to grammar_pattern_id via patternIdsBySlug. Nullable for legacy rows. */
+  pattern_source_ref: string | null
   affix: string
   root_text: string
   derived_text: string
   /** NOT NULL (OQ3-7): "no allomorphy" is a content value, never null. */
   allomorph_rule: string
+  // Morphology phase-b application-tier payload (nullable on the source table).
+  affix_type: string | null
+  affix_gloss: string | null
+  allomorph_class: string | null
+  circumfix_left: string | null
+  circumfix_right: string | null
+  productive: boolean | null
 }
 
 /** Entry in the existing affixed-caps map (keyed by canonical_key). */
@@ -867,7 +877,7 @@ export async function fetchAffixedPairsFromDb(
   const { data, error } = await supabase
     .schema('indonesian')
     .from('lesson_section_affixed_pairs')
-    .select('id, lesson_id, section_id, source_ref, affix, root_text, derived_text, allomorph_rule')
+    .select('id, lesson_id, section_id, source_ref, pattern_source_ref, affix, root_text, derived_text, allomorph_rule, affix_type, affix_gloss, allomorph_class, circumfix_left, circumfix_right, productive')
     .eq('lesson_id', lessonId)
 
   if (error) {
@@ -881,10 +891,17 @@ export async function fetchAffixedPairsFromDb(
     lesson_id: row['lesson_id'] as string,
     section_id: (row['section_id'] as string | null | undefined) ?? null,
     source_ref: row['source_ref'] as string,
+    pattern_source_ref: (row['pattern_source_ref'] as string | null | undefined) ?? null,
     affix: row['affix'] as string,
     root_text: row['root_text'] as string,
     derived_text: row['derived_text'] as string,
     allomorph_rule: row['allomorph_rule'] as string,
+    affix_type: (row['affix_type'] as string | null | undefined) ?? null,
+    affix_gloss: (row['affix_gloss'] as string | null | undefined) ?? null,
+    allomorph_class: (row['allomorph_class'] as string | null | undefined) ?? null,
+    circumfix_left: (row['circumfix_left'] as string | null | undefined) ?? null,
+    circumfix_right: (row['circumfix_right'] as string | null | undefined) ?? null,
+    productive: (row['productive'] as boolean | null | undefined) ?? null,
   }))
 }
 

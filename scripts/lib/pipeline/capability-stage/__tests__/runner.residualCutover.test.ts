@@ -275,17 +275,28 @@ const NO_ITEMS = {
   itemState: { existingItemsByNormalizedText: new Map(), existingItemCapsByCanonicalKey: new Map() },
 }
 
-// One DB-native affixed pair for lesson 1.
+// One DB-native affixed pair for lesson 1. pattern_source_ref points at the
+// lesson's grammar pattern slug (l1-{stableSlug('Bukan-negatie')}) so the
+// cap-stage projector resolves grammar_pattern_id — every pair MUST reference a
+// rule pattern produced in the same publish (affixed_form_pairs.grammar_pattern_id
+// is NOT NULL; phase-b data-architect ruling).
 const AFFIXED_PAIRS: TypedAffixedPair[] = [
   {
     id: 'afp-uuid-1',
     lesson_id: 'lesson-uuid',
     section_id: null,
     source_ref: 'lesson-1/morphology/ber-jalan',
+    pattern_source_ref: 'l1-bukan-negatie',
     affix: 'ber-',
     root_text: 'jalan',
     derived_text: 'berjalan',
     allomorph_rule: 'ber- + jalan -> berjalan',
+    affix_type: 'prefix',
+    affix_gloss: null,
+    allomorph_class: null,
+    circumfix_left: null,
+    circumfix_right: null,
+    productive: true,
   },
 ]
 
