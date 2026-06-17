@@ -6,13 +6,25 @@
 > Parent/program doc: `docs/plans/2026-06-15-morphology-module-and-capability-model-design.md`.
 
 ---
-status: approved   # round 4 (2026-06-16): reopened from the 2026-06-15 approval to adopt three downstream
-                   # findings (grill + staff-engineer + seam audit): (1) item B root-vocab prerequisite
-                   # (hard-block); (2) `affix ∈ catalog` writer gate (catalog → lib/capabilities, architect
-                   # CRITICAL); (3) the cut — drop choose_affix_ex/choose_allomorph_ex, render via widened
-                   # `choose_form_ex` (4 contract edits + catalog-derived distractors). Re-reviewed clean:
-                   # architect APPROVE + data-architect APPROVE (the rework round was clean — catalog
-                   # placement, choose_form_ex enumeration, 6-arg root-vocab key recipe all verified vs code).
+status: shipped
+implementation: main @ e903401 (direct cutover, no PR — build-stage)
+merged_at: 2026-06-17
+implementation_paths:
+  - scripts/migration.sql                                                   # affix payload columns (Task 2)
+  - scripts/lib/pipeline/lesson-stage/                                       # writer threads payload (Task 3)
+  - scripts/lib/pipeline/capability-stage/projectors/morphology.ts          # grammar_pattern_id resolution (Task 4)
+  - scripts/lib/pipeline/capability-stage/projectors/affixedCapabilities.ts # 3rd cap + prereqs (Tasks 5,7)
+  - src/lib/capabilities/affixCatalog.ts                                     # controlled vocab (Task 5)
+  - src/lib/capabilities/renderContracts.ts                                 # choose_form_ex widening (Task 5)
+  - src/lib/exercise-content/byType/cuedRecall.ts                           # word_form_pair_src MCQ branch (Task 5)
+  - scripts/lib/pipeline/capability-stage/validators/affixedFormPairs.ts    # Layer 1+2 gate (Task 8)
+  - scripts/check-supabase-deep.ts                                          # HC31 Layer 3 (Task 8)
+  - docs/adr/0018-morphology-application-cap-cross-source-kind-prerequisites.md  # ADR (Task 1)
+  - scripts/data/staging/lesson-13/morphology-patterns.ts                   # L13 pilot content (hand-authored)
+# SHIPPED 2026-06-17: migration live, L13 pilot live (42 caps — 14 link/14 allomorph/14 produce; all prereqs
+# resolve; HC31/HC17 green), image e903401 deployed (homelab container Running, site 307=healthy). Task 6
+# (decompose_word_ex/build_confix_ex) DEFERRED to the confix-chapter phase. Linguist affixed-pair authoring
+# is a scoped follow-on (memory: project_morphology_linguist_authoring_followon).
 reviewed_by: [architect, data-architect]
 supersedes: []
 related:
