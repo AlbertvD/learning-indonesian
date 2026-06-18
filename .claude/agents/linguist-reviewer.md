@@ -22,6 +22,7 @@ For lesson N, read all of these:
 - `scripts/data/staging/lesson-N/candidates.ts` — check every candidate payload
 - `scripts/data/staging/lesson-N/vocab-enrichments.ts` — check distractor quality and coverage (optional file — skip checks if absent)
 - `scripts/data/staging/lesson-N/cloze-contexts.ts` — check every cloze context
+- `scripts/data/staging/lesson-N/morphology-roots.ts` — systematic-affix lessons only; the lean authored input the engine derives from (optional file — skip §14 if absent)
 - `scripts/data/staging/lesson-*/grammar-patterns.ts` — check for slug duplication across lessons
 - Live DB via OpenBrain: `SELECT slug FROM indonesian.grammar_patterns` — check for slug duplication in DB
 
@@ -322,6 +323,17 @@ This check is not lintable; it requires LLM language judgment.
   - `below_6_token_threshold` → confirm the line has <6 tokens. CRITICAL if actually ≥6.
   - `no_current_or_prior_vocab_in_line` → scan content words in the line against current + prior lessons' `learning-items.ts`. If any content word IS present as a vocab item, reject the skip (the creator should have written a cloze for it). CRITICAL.
   - `no_same_pos_distractors_in_pool` → for each content word in the line that is a vocab item, verify the POS pool has <2 same-POS siblings. If any word passes the distractor rule, reject the skip. CRITICAL.
+
+### 14. morphology-roots.ts (skip if file absent)
+
+Systematic-affix lessons (meN-/peN-/ber-/di-) carry a lean `morphology-roots.ts` — `(root, affix, illustratesCategory)` entries the deterministic engine (`src/lib/capabilities/affixDerivation.ts`) + `scripts/generate-morphology-patterns.ts` turn into `morphology-patterns.ts`. Review the **judgment** the agent owns; the engine owns the rule-governed surface and the generation script HARD-FAILS the publish on the structural violations below (so they are belt-and-braces here, not the only gate).
+
+- **affix ∈ catalog** — every `affix` is a canonical label from `src/lib/capabilities/affixCatalog.ts` (`meN-`, `peN-`, `ber-`, `di-`). Suffixes/confixes/reduplication are not supported this pass; flag any as CRITICAL (the generation script rejects them).
+- **root ∈ learning_items** — every `root` exists as a learning item in this lesson's `learning-items.ts` or a prior lesson (ADR-0018 root-vocab prereq). Cross-check against the pool; flag a missing root as CRITICAL.
+- **illustratesCategory exists** — each value is the EXACT title of a grammar category in this lesson's `lesson.ts` `content.categories`. Flag a non-matching title as CRITICAL (the slug mint would not resolve → publish aborts).
+- **Allomorph-class coverage (WARNING)** — for meN-/peN-, the root set should exercise every nasalisation class the lesson's categories teach (at least one each of me-, mem-, men-, meny-, meng-). Flag a class with no example root.
+- **Misfile adjudication** — if the generation script flags a root whose engine-derived class falls outside its category's covered classes, confirm whether the root is genuinely misfiled (wrong `illustratesCategory`) or the category legitimately spans it, and report accordingly.
+- **Curation size (WARNING)** — ~8–15 roots per affix; flag a thin set (<8) or an overlong one.
 
 ## Report format
 
