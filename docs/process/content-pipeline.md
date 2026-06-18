@@ -165,7 +165,8 @@ Inside `scripts/data/staging/lesson-<N>/`:
 | `lesson.ts` | `generate-staging-files.ts` + `linguist-structurer` agent |
 | `learning-items.ts` | `generate-staging-files.ts` + enrichment writeback during Stage B |
 | `grammar-patterns.ts` | `linguist-structurer` agent |
-| `morphology-patterns.ts` | manual + `linguist-structurer` (where applicable) |
+| `morphology-roots.ts` | `linguist-structurer` agent (systematic-affix lessons only — the lean `(root, affix, illustratesCategory)` judgment) |
+| `morphology-patterns.ts` | **Authoring-time regenerated** by `scripts/generate-morphology-patterns.ts` from `morphology-roots.ts` (deterministic engine + slug mint). Hand-edits are overwritten on the next run — edit `morphology-roots.ts` instead. Run after the structurer, before publish. |
 | `pattern-brief.json` | `linguist-structurer` (intermediate brief) |
 | `candidates.ts` | `grammar-exercise-creator` agent |
 | `vocab-enrichments.ts` | `vocab-exercise-creator` agent |

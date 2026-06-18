@@ -1,5 +1,11 @@
 ---
-status: approved
+status: shipped
+implementation: PR #255
+merged_at: 2026-06-18
+implementation_paths:
+  - src/lib/capabilities/affixDerivation.ts
+  - scripts/generate-morphology-patterns.ts
+  - scripts/data/staging/lesson-13/morphology-roots.ts
 title: Morphology authoring capability — deterministic engine + lean roots file + linguist extension
 author_session: morphology linguist-authoring follow-on (grill-with-docs, 2026-06-17/18)
 reviewed_by: [architect, data-architect]   # round-2 APPROVE both (staff-engineer SOUND); fixes C1/C2/M1 + cross-check applied

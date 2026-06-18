@@ -40,6 +40,7 @@ Write **exactly** these files on every run (full regeneration of lesson.ts / gra
 | `grammar-patterns.ts` | All grammar patterns with slug + complexity_score + one short `example` per pattern |
 | `pattern-brief.json` | Intermediate artifact for downstream agents |
 | `learning-items.ts` | **Constrained edit only.** For every `dialogue_chunk` item with empty `translation_nl`, populate it with a literal Dutch translation (Step 7). Do NOT add, remove, or modify any other field or any non-dialogue_chunk item. |
+| `morphology-roots.ts` | **Systematic-affix lessons ONLY (Step 5b).** The lean judgment-only `(root, affix, illustratesCategory)` list. Do NOT write derived forms, allomorph classes, or pattern slugs — the engine does. Omit this file entirely for non-affix lessons. |
 
 **Strictly forbidden:** Writing candidates, cloze contexts, audio specs, review reports, vocab enrichments, or any file outside `scripts/data/staging/lesson-N/`. The `learning-items.ts` edit is the *only* exception to the "don't touch learning items" rule, and it is strictly narrower than adding new items or editing vocab entries — translation fields on existing dialogue_chunk rows only.
 
@@ -176,6 +177,34 @@ Extract grammar patterns from grammar sections. For each pattern:
 
 Check against DB and all staging files before writing. Skip any slug that already exists.
 
+## Step 5b — Morphology roots (systematic-affix lessons ONLY)
+
+Skip this step entirely unless the lesson's grammar categories **systematically teach an affix process** (the meN- of L13–15, ber- of L12, di- of L16, peN-, and the affix chapters of book 2). A lesson that merely *mentions* an affixed word in passing is NOT a systematic-affix lesson — leave it alone.
+
+When it is one, author `scripts/data/staging/lesson-N/morphology-roots.ts`: a lean list of judgment-only entries the deterministic engine (`src/lib/capabilities/affixDerivation.ts`) turns into the full `morphology-patterns.ts` via `scripts/generate-morphology-patterns.ts` (you do NOT run it — you have no Bash; the pipeline runs it after you).
+
+```typescript
+import type { MorphologyRoot } from '@/lib/capabilities'
+
+export const morphologyRoots: MorphologyRoot[] = [
+  { root: 'masak', affix: 'meN-', illustratesCategory: 'A1. ME- zonder verandering (me-)' },
+  // …
+]
+// MorphologyRoot = { root: string; affix: string; illustratesCategory: string }
+```
+
+**What you author (judgment only):**
+- `root` — an Indonesian base word that **already exists as a `learning_item`** (in this lesson's `learning-items.ts` or the prior-lesson pool you built in Step 1). The generation script HARD-FAILS on a root that is not a learning_item (ADR-0018 root-vocab prereq).
+- `affix` — the **canonical catalog label**, exactly as in `src/lib/capabilities/affixCatalog.ts`: `meN-`, `peN-`, `ber-`, `di-`. (Suffixes like `-an`, confixes, and reduplication are NOT supported this pass — the generation script rejects them; defer those roots to their book-2 chapter.)
+- `illustratesCategory` — the **exact title** of a grammar category you authored in this lesson's `lesson.ts` `content.categories` (Step 4). The generation script mints the pattern slug from it; you never write a raw slug.
+
+**Curation rules (research-grounded):**
+- ~8–15 high-frequency, high-transparency roots per affix.
+- **Cover every allomorph class the lesson's categories teach.** For meN-/peN-, give at least one example whose root selects each nasalisation class the lesson presents (me-, mem-, men-, meny-, meng-) — e.g. one `b`-initial root (→ mem-), one `c/d/j`-initial (→ men-), one vowel/`g`/`h`-initial (→ meng-), one `k/p/s/t`-initial (→ the eliding class), and one `l/m/n/r/w/y`-initial (→ unchanged me-).
+- File each root under the category that demonstrates **its** behaviour: a root whose engine-derived class falls outside the classes its category covers is flagged by the generation script as misfiled.
+
+You do NOT author `derived`, `allomorphClass`, `allomorphRule`, `affixType`, `affixGloss`, or `productive` — all of those are rule-governed and the engine fills them deterministically.
+
 ## Step 6 — Pattern brief
 
 Write `pattern-brief.json` with the following structure:
@@ -259,6 +288,7 @@ Print a summary:
 | example sentences in brief | N |
 | dialogue translations written | N |
 | dialogue translations flagged ambiguous (TODO) | N |
+| morphology roots authored (systematic-affix lessons; else N/A) | N |
 
 ## Indonesian Grammar Context
 
