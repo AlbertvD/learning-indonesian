@@ -75,6 +75,10 @@ export interface AffixedPairInput {
   /** The authored grammar-pattern slug the cap stage resolves to grammar_pattern_id
    *  (must match the lesson's `l{N}-{title}` grammar_patterns.slug). */
   patternSourceRef?: string | null
+  /** Canonical catalog affix label (e.g. 'meN-', 'ber-', '-an'). Authored
+   *  explicitly (the engine knows it) and stored as-is — single source of truth,
+   *  so suffixes round-trip and HC31's `affix ∈ catalog` holds. */
+  affix: string
   root: string
   derived: string
   allomorphRule?: string | null
@@ -135,16 +139,6 @@ export function isNamedNumber(indonesian: string, dutchValue: string | undefined
   }
   const firstToken = indonesian.trim().toLowerCase().split(/\s+/)[0] ?? ''
   return NUMBER_LANDMARKS.has(firstToken)
-}
-
-/** Affix from the allomorph-rule prefix ('meN- becomes…' → 'meN-'); falls back
- *  to the sourceRef's `morphology/<affix>-…` first segment. */
-export function deriveAffix(sourceRef: string, allomorphRule: string | null | undefined): string {
-  const ruleMatch = (allomorphRule ?? '').match(/^([A-Za-z]+-)/)
-  if (ruleMatch) return ruleMatch[1]
-  const lastSeg = sourceRef.split('/').pop() ?? ''
-  const seg = lastSeg.split('-')[0] ?? ''
-  return seg ? `${seg}-` : ''
 }
 
 function nonEmpty(value: unknown): value is string {
@@ -238,7 +232,7 @@ export function projectSections(input: ProjectSectionsInput): ProjectSectionsOut
   const affixedPairs: ProjectedAffixedPair[] = (input.affixedPairs ?? []).map((p) => ({
     source_ref: p.sourceRef,
     pattern_source_ref: p.patternSourceRef ?? null,
-    affix: deriveAffix(p.sourceRef, p.allomorphRule),
+    affix: p.affix,
     root_text: (p.root ?? '').trim(),
     derived_text: (p.derived ?? '').trim(),
     allomorph_rule: (p.allomorphRule ?? '').trim(),

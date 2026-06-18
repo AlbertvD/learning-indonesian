@@ -6,6 +6,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-masak-memasak",
     patternSourceRef: "l13-a1-me-zonder-verandering-me",
+    affix: "meN-",
     root: "masak",
     derived: "memasak",
     allomorphRule: "meN- blijft me- voor m: masak → memasak.",
@@ -17,6 +18,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-lihat-melihat",
     patternSourceRef: "l13-a1-me-zonder-verandering-me",
+    affix: "meN-",
     root: "lihat",
     derived: "melihat",
     allomorphRule: "meN- blijft me- voor l: lihat → melihat.",
@@ -28,6 +30,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-baca-membaca",
     patternSourceRef: "l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng",
+    affix: "meN-",
     root: "baca",
     derived: "membaca",
     allomorphRule: "meN- wordt mem- voor b: baca → membaca.",
@@ -39,6 +42,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-beli-membeli",
     patternSourceRef: "l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng",
+    affix: "meN-",
     root: "beli",
     derived: "membeli",
     allomorphRule: "meN- wordt mem- voor b: beli → membeli.",
@@ -50,6 +54,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-cari-mencari",
     patternSourceRef: "l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng",
+    affix: "meN-",
     root: "cari",
     derived: "mencari",
     allomorphRule: "meN- wordt men- voor c: cari → mencari.",
@@ -61,6 +66,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-dengar-mendengar",
     patternSourceRef: "l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng",
+    affix: "meN-",
     root: "dengar",
     derived: "mendengar",
     allomorphRule: "meN- wordt men- voor d: dengar → mendengar.",
@@ -72,6 +78,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-jual-menjual",
     patternSourceRef: "l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng",
+    affix: "meN-",
     root: "jual",
     derived: "menjual",
     allomorphRule: "meN- wordt men- voor j: jual → menjual.",
@@ -83,6 +90,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-ganti-mengganti",
     patternSourceRef: "l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng",
+    affix: "meN-",
     root: "ganti",
     derived: "mengganti",
     allomorphRule: "meN- wordt meng- voor g: ganti → mengganti.",
@@ -94,6 +102,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-ambil-mengambil",
     patternSourceRef: "l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng",
+    affix: "meN-",
     root: "ambil",
     derived: "mengambil",
     allomorphRule: "meN- wordt meng- voor een klinker: ambil → mengambil.",
@@ -105,6 +114,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-tulis-menulis",
     patternSourceRef: "l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t",
+    affix: "meN-",
     root: "tulis",
     derived: "menulis",
     allomorphRule: "meN- wordt men- voor t, en de t valt weg: tulis → menulis.",
@@ -116,6 +126,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-tukar-menukar",
     patternSourceRef: "l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t",
+    affix: "meN-",
     root: "tukar",
     derived: "menukar",
     allomorphRule: "meN- wordt men- voor t, en de t valt weg: tukar → menukar.",
@@ -127,6 +138,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-pukul-memukul",
     patternSourceRef: "l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t",
+    affix: "meN-",
     root: "pukul",
     derived: "memukul",
     allomorphRule: "meN- wordt mem- voor p, en de p valt weg: pukul → memukul.",
@@ -138,6 +150,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-potong-memotong",
     patternSourceRef: "l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t",
+    affix: "meN-",
     root: "potong",
     derived: "memotong",
     allomorphRule: "meN- wordt mem- voor p, en de p valt weg: potong → memotong.",
@@ -149,6 +162,7 @@ export const affixedFormPairs = [
   {
     sourceRef: "lesson-13/morphology/meN-kirim-mengirim",
     patternSourceRef: "l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t",
+    affix: "meN-",
     root: "kirim",
     derived: "mengirim",
     allomorphRule: "meN- wordt meng- voor k, en de k valt weg: kirim → mengirim.",

@@ -52,6 +52,7 @@ export interface GenerateInput {
 export interface GeneratedPair {
   sourceRef: string
   patternSourceRef: string
+  affix: string
   root: string
   derived: string
   allomorphRule: string
@@ -164,8 +165,10 @@ export function generateMorphologyPatterns(input: GenerateInput): GenerateResult
     pairs.push({
       // affix already carries its trailing hyphen (e.g. 'meN-'), so it is the
       // separator before the root — matches the L13 pilot's sourceRef exactly.
+      // (A suffix like '-an' carries a leading hyphen; the ref is still unique.)
       sourceRef: `lesson-${lessonNumber}/morphology/${affix}${root}-${derived.derived}`,
       patternSourceRef,
+      affix,
       root,
       derived: derived.derived,
       allomorphRule: derived.allomorphRule,
@@ -188,6 +191,7 @@ export function serializePairs(lessonNumber: number, pairs: GeneratedPair[]): st
         '  {',
         `    sourceRef: ${q(p.sourceRef)},`,
         `    patternSourceRef: ${q(p.patternSourceRef)},`,
+        `    affix: ${q(p.affix)},`,
         `    root: ${q(p.root)},`,
         `    derived: ${q(p.derived)},`,
         `    allomorphRule: ${q(p.allomorphRule)},`,
