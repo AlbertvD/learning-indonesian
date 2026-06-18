@@ -226,7 +226,7 @@ export interface ExerciseItem {
    *  populated; null for item-sourced type_form_ex (existing path). The UI
    *  branches on this field's presence. */
   affixedFormPairData?: {
-    /** Prompt the learner sees (e.g. "Form the meN- form of: baca"). */
+    /** Prompt the learner sees (e.g. "Geef de meN-vorm van: baca"). */
     promptText: string
     /** The exact answer string the learner must type. */
     acceptedAnswer: string

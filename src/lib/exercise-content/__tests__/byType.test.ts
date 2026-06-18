@@ -617,6 +617,7 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
         derived: 'membaca',
         direction: 'root_to_derived',
         allomorphRule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
+        affix: 'meN-',
         sourceRef: 'lesson-9/morphology/meN-baca-membaca',
       },
       ...overrides,
@@ -630,7 +631,7 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
     expect(r.exerciseItem.exerciseType).toBe('type_form_ex')
     expect(r.exerciseItem.learningItem).toBeNull()
     expect(r.exerciseItem.affixedFormPairData).toEqual({
-      promptText: 'Form the meN- form of: baca',
+      promptText: 'Geef de meN-vorm van: baca',
       acceptedAnswer: 'membaca',
       direction: 'root_to_derived',
       allomorphRule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
@@ -652,7 +653,7 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
     }))
     expect(r.kind).toBe('ok')
     if (r.kind !== 'ok') return
-    expect(r.exerciseItem.affixedFormPairData?.promptText).toBe('What is the root of: membaca')
+    expect(r.exerciseItem.affixedFormPairData?.promptText).toBe('Wat is het basiswoord van: membaca')
     expect(r.exerciseItem.affixedFormPairData?.acceptedAnswer).toBe('baca')
     expect(r.exerciseItem.skillType).toBe('recognise_mode')
   })

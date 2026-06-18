@@ -104,6 +104,7 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
           root_text: 'baca',
           derived_text: 'membaca',
           allomorph_rule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
+          affix: 'meN-',
         },
       ], inserts: [] },
       capability_resolution_failure_events: { rows: [], inserts: [] },
@@ -128,7 +129,7 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
     expect(ctx?.diagnostic).toBeNull()
     expect(ctx?.exerciseItem).toBeDefined()
     expect(ctx?.exerciseItem?.affixedFormPairData).toEqual({
-      promptText: 'Form the meN- form of: baca',
+      promptText: 'Geef de meN-vorm van: baca',
       acceptedAnswer: 'membaca',
       direction: 'root_to_derived',
       allomorphRule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
@@ -155,7 +156,7 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
     )
 
     // The prompt is shown.
-    expect(screen.getByText('Form the meN- form of: baca')).toBeInTheDocument()
+    expect(screen.getByText('Geef de meN-vorm van: baca')).toBeInTheDocument()
 
     // ── 5. Type the correct answer and submit.
     const user = userEvent.setup()
@@ -174,7 +175,7 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
     expect(args?.rawResponse).toBe('membaca')
   })
 
-  it('resolves a derived→root (recognition) block — prompt flips to "What is the root of: membaca", answer is "baca"', async () => {
+  it('resolves a derived→root (recognition) block — prompt flips to "Wat is het basiswoord van: membaca", answer is "baca"', async () => {
     const capabilityId = 'cap-l9-membaca-recognition'
     const sourceRef = 'lesson-9/morphology/meN-baca-membaca'
 
@@ -204,7 +205,7 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
     })
 
     const ctx = result.get(block.id)
-    expect(ctx?.exerciseItem?.affixedFormPairData?.promptText).toBe('What is the root of: membaca')
+    expect(ctx?.exerciseItem?.affixedFormPairData?.promptText).toBe('Wat is het basiswoord van: membaca')
     expect(ctx?.exerciseItem?.affixedFormPairData?.acceptedAnswer).toBe('baca')
 
     const onAnswer = vi.fn()
@@ -220,7 +221,7 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
       </MantineProvider>
     )
 
-    expect(screen.getByText('What is the root of: membaca')).toBeInTheDocument()
+    expect(screen.getByText('Wat is het basiswoord van: membaca')).toBeInTheDocument()
 
     const user = userEvent.setup()
     const input = screen.getByRole('textbox')
