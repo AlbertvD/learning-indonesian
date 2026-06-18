@@ -1,8 +1,19 @@
 ---
-status: approved
+status: shipped
 title: Morphology nasalization cap-model fix — retire the per-pair allomorph cap
 author_session: morphology linguist-authoring follow-on (grill-with-docs, 2026-06-17)
 reviewed_by: [architect, data-architect]   # architect round-3 APPROVE; data-architect round-2 APPROVE (round-3 edits schema-neutral)
+implementation: commit 08eace7 (main)
+merged_at: 2026-06-18
+implementation_paths:
+  - src/lib/capabilities/capabilityTypes.ts
+  - src/lib/capabilities/renderContracts.ts
+  - src/lib/exercise-content/byType/cuedRecall.ts
+  - src/lib/exercise-content/byKind/affixedFormPair.ts
+  - scripts/lib/pipeline/capability-stage/projectors/affixedCapabilities.ts
+  - scripts/lib/pipeline/capability-stage/projectors/morphology.ts
+  - scripts/check-supabase-deep.ts   # HC32
+# Live DB: L13 cleaned to the 2-cap contract (42→28 caps); HC17/HC31/HC32 green 2026-06-18.
 supersedes: []
 relates_to:
   - docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md   # shipped; this corrects its cap model
