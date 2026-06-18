@@ -73,6 +73,10 @@ export type { CanonicalKeyInput } from './canonicalKey'
 // ─── Item slug derivation (PR #59) ─────────────────────────────────────────
 export { itemSlug } from './itemSlug'
 
+// ─── Affix derivation engine (morphology authoring, Spec 2) ─────────────────
+export { deriveAffixedForm, UnsupportedAffixError } from './affixDerivation'
+export type { DerivedAffixedForm, MorphologyRoot } from './affixDerivation'
+
 // ─── Alternative-answer separator convention (PR #129) — the single ─────────
 // definition shared by the runtime grader and the pipeline gate/health check.
 export {

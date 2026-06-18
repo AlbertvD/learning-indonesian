@@ -146,11 +146,14 @@ describe('capability health exit code planning', () => {
     // publish pipeline at scripts/lib/content-pipeline-output.ts:430-441 so
     // L9's 4 morphology caps register as ready with type_form_ex as the
     // only allowed exercise (choose_form_ex stays item-only per D4).
-    const report = await buildCapabilityHealthReport('scripts/data/staging/lesson-9')
+    // Repointed L9 → L13 (Spec 2 §4): the stale L9 morphology file was deleted
+    // (L9 teaches no meN- grammar); L13 is the live meN- application-tier lesson,
+    // and its morphology-patterns.ts is now engine-generated (Spec 2).
+    const report = await buildCapabilityHealthReport('scripts/data/staging/lesson-13')
 
     expect(report.results.map(result => result.canonicalKey)).toEqual(expect.arrayContaining([
-      'cap:v1:word_form_pair_src:lesson-9/morphology/meN-baca-membaca:recognise_word_form_link_cap:derived_to_root:text:none',
-      'cap:v1:word_form_pair_src:lesson-9/morphology/meN-baca-membaca:produce_derived_form_cap:root_to_derived:text:none',
+      'cap:v1:word_form_pair_src:lesson-13/morphology/meN-baca-membaca:recognise_word_form_link_cap:derived_to_root:text:none',
+      'cap:v1:word_form_pair_src:lesson-13/morphology/meN-baca-membaca:produce_derived_form_cap:root_to_derived:text:none',
     ]))
     const morphologyResults = report.results.filter(r => r.canonicalKey.startsWith('cap:v1:word_form_pair_src:'))
     expect(morphologyResults.length).toBeGreaterThan(0)

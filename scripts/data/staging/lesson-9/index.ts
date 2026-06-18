@@ -1,7 +1,6 @@
 export { lesson } from './lesson'
 export { learningItems } from './learning-items'
 export { grammarPatterns } from './grammar-patterns'
-export { affixedFormPairs } from './morphology-patterns'
 export { candidates } from './candidates'
 export { clozeContexts } from './cloze-contexts'
 export { contentUnits } from './content-units'
