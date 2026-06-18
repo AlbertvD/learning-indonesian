@@ -195,7 +195,7 @@ export const morphologyRoots: MorphologyRoot[] = [
 
 **What you author (judgment only):**
 - `root` — an Indonesian base word that **already exists as a `learning_item`** (in this lesson's `learning-items.ts` or the prior-lesson pool you built in Step 1). The generation script HARD-FAILS on a root that is not a learning_item (ADR-0018 root-vocab prereq).
-- `affix` — the **canonical catalog label**, exactly as in `src/lib/capabilities/affixCatalog.ts`: `meN-`, `peN-`, `ber-`, `di-`. (Suffixes like `-an`, confixes, and reduplication are NOT supported this pass — the generation script rejects them; defer those roots to their book-2 chapter.)
+- `affix` — the **canonical catalog label**, exactly as in `src/lib/capabilities/affixCatalog.ts`: prefixes `meN-`, `peN-`, `ber-`, `di-` and suffixes `-an`, `-kan`, `-i`. (Confixes like `ke-…-an` and reduplication are NOT supported yet — the generation script rejects them; defer those roots to their book-2 chapter.)
 - `illustratesCategory` — the **exact title** of a grammar category you authored in this lesson's `lesson.ts` `content.categories` (Step 4). The generation script mints the pattern slug from it; you never write a raw slug.
 
 **Curation rules (research-grounded):**

@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 import { deriveAffixedForm, UnsupportedAffixError } from '../affixDerivation'
-import { deriveAffix } from '../../../../scripts/lib/pipeline/lesson-stage/projectSections'
 
 // ── L13 golden fixture (Spec 2 §3.1) ─────────────────────────────────────────
 // The 14 hand-authored pairs from scripts/data/staging/lesson-13/morphology-patterns.ts.
@@ -32,13 +31,8 @@ describe('deriveAffixedForm — meN- golden fixture (L13 pilot)', () => {
       expect(r.allomorphClass).toBe(allomorphClass)
       expect(r.affixType).toBe('prefix')
       expect(r.productive).toBe(true)
-      // Engine's OWN leading-token assertion — independent of the sourceRef
-      // fallback, so a malformed template can't be masked (Spec 2 §8 test hygiene).
+      // Rule note is well-formed Dutch starting with the affix label.
       expect(r.allomorphRule).toMatch(/^meN- /)
-      // Route through the real lesson-stage recovery with the minted sourceRef:
-      // the live HC31 contract must yield the catalog affix.
-      const sourceRef = `lesson-13/morphology/meN-${root}-${derived}`
-      expect(deriveAffix(sourceRef, r.allomorphRule)).toBe('meN-')
     })
   }
 })
@@ -92,10 +86,18 @@ describe('deriveAffixedForm — invariant prefixes', () => {
   })
 })
 
-describe('deriveAffixedForm — unsupported affixes fail loud', () => {
-  it('throws on suffixes (leading-hyphen label cannot round-trip HC31)', () => {
-    expect(() => deriveAffixedForm('makan', '-an')).toThrow(UnsupportedAffixError)
+describe('deriveAffixedForm — invariant suffixes', () => {
+  it('concatenates -an / -kan / -i with null allomorphClass', () => {
+    const an = deriveAffixedForm('makan', '-an')
+    expect(an.derived).toBe('makanan')
+    expect(an.allomorphClass).toBeNull()
+    expect(an.affixType).toBe('suffix')
+    expect(deriveAffixedForm('beli', '-kan').derived).toBe('belikan')
+    expect(deriveAffixedForm('duduk', '-i').derived).toBe('duduki')
   })
+})
+
+describe('deriveAffixedForm — unsupported affixes fail loud', () => {
   it('throws on confixes and reduplication (deferred to book-2 chapters)', () => {
     expect(() => deriveAffixedForm('adil', 'ke-…-an')).toThrow(UnsupportedAffixError)
     expect(() => deriveAffixedForm('anak', 'reduplication')).toThrow(UnsupportedAffixError)

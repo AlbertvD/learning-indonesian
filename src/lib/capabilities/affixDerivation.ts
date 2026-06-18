@@ -12,15 +12,13 @@
 // the generation script (scripts/) and the pipeline both import only from here
 // (target-architecture.md:1159, the sole pipeline↔runtime shared seam). Pure, no I/O.
 //
-// SCOPE (this pass): allomorphic prefixes meN-/peN- (nasalisation) + invariant
-// prefixes ber-/di-. Suffixes (-an) and confixes/reduplication THROW
-// UnsupportedAffixError: a suffix's canonical label carries a LEADING hyphen
-// (`-an`), which the lesson stage's `deriveAffix` (projectSections.ts:142-148)
-// cannot recover (its regex `^([A-Za-z]+-)` only yields trailing-hyphen tokens),
-// so a suffix pair would silently fail HC31's `affix ∈ catalog` check. Supporting
-// suffixes needs a writer-contract change Spec 2 explicitly defers; until then the
-// engine fails loud rather than emit unpublishable data. Confix/reduplication
-// derivation is likewise deferred to their book-2 chapters (matches Task 6).
+// SCOPE: allomorphic prefixes meN-/peN- (nasalisation), invariant prefixes
+// ber-/di-, and invariant suffixes -an/-kan/-i (plain concatenation). The stored
+// `affix` is carried explicitly on the authored pair (AffixedPairInput.affix), so
+// suffixes round-trip cleanly — the old `deriveAffix` reverse-engineering that
+// could only recover trailing-hyphen prefix labels has been retired. Confix and
+// reduplication derivation are still deferred to their book-2 chapters (Task 6):
+// deriveAffixedForm THROWS UnsupportedAffixError for those.
 
 import { affixCatalogEntry, type AffixType } from './affixCatalog'
 
@@ -141,6 +139,21 @@ function deriveInvariantPrefix(root: string, affix: string): Pick<DerivedAffixed
   }
 }
 
+// ── Invariant suffixes (-an, -kan, -i) ──────────────────────────────────────
+// Indonesian suffixes attach by plain concatenation; the morphophonemic detail
+// that exists (e.g. some -i/-kan sandhi) is curated via the exception table, not
+// rule-derived, for this controlled-root workflow.
+
+function deriveSuffix(root: string, affix: string): Pick<DerivedAffixedForm, 'derived' | 'allomorphClass' | 'allomorphRule'> {
+  const base = affix.replace(/^-/, '') // '-an' → 'an'
+  const derived = root + base
+  return {
+    derived,
+    allomorphClass: null,
+    allomorphRule: `Achtervoegsel ${affix} bij ${root}: ${root} → ${derived}.`,
+  }
+}
+
 // ── Static exception table (Spec 2 §3.1) ────────────────────────────────────
 // Curated irregulars override the rule. Keyed `${affix}:${root}`. A
 // curated-root workflow needs no auto-suspicion heuristic (staff-engineer);
@@ -181,18 +194,15 @@ export function deriveAffixedForm(root: string, affix: string): DerivedAffixedFo
   if (entry.affixType === 'confix' || entry.affixType === 'reduplication') {
     throw new UnsupportedAffixError(affix, `${entry.affixType} derivation is deferred to its book-2 chapter (Task 6)`)
   }
-  if (entry.affixType === 'suffix') {
-    throw new UnsupportedAffixError(
-      affix,
-      'suffix derivation is deferred — the leading-hyphen label cannot round-trip through the ' +
-      'lesson stage deriveAffix (HC31), which needs a writer-contract change Spec 2 defers',
-    )
-  }
 
-  const ruleGoverned =
-    affix === 'meN-' || affix === 'peN-'
-      ? deriveNasalising(root, affix)
-      : deriveInvariantPrefix(root, affix)
+  let ruleGoverned: Pick<DerivedAffixedForm, 'derived' | 'allomorphClass' | 'allomorphRule'>
+  if (affix === 'meN-' || affix === 'peN-') {
+    ruleGoverned = deriveNasalising(root, affix)
+  } else if (entry.affixType === 'suffix') {
+    ruleGoverned = deriveSuffix(root, affix)
+  } else {
+    ruleGoverned = deriveInvariantPrefix(root, affix)
+  }
 
   const base: DerivedAffixedForm = {
     ...ruleGoverned,

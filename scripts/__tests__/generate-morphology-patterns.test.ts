@@ -83,6 +83,7 @@ describe('generateMorphologyPatterns — L13 golden proof (file scope)', () => {
       expect(p.derived).toBe(exp.derived)
       expect(p.allomorphClass).toBe(exp.cls)
       expect(p.patternSourceRef).toBe(exp.ref)
+      expect(p.affix).toBe('meN-')
       expect(p.affixType).toBe('prefix')
       expect(p.productive).toBe(true)
       expect(p.sourceRef).toBe(`lesson-13/morphology/meN-${p.root}-${p.derived}`)
@@ -133,14 +134,15 @@ describe('generateMorphologyPatterns — author-time guards', () => {
     expect(errors[0]).toMatch(/does not resolve to a unique grammar_patterns slug/)
   })
 
-  it('rejects a suffix (cannot round-trip HC31)', () => {
-    const { errors } = generateMorphologyPatterns({
+  it('derives a suffix pair (-an) and carries the explicit affix', () => {
+    const { pairs, errors } = generateMorphologyPatterns({
       lessonNumber: 10,
       roots: [{ root: 'masak', affix: '-an', illustratesCategory: A1 }],
       categories: [{ title: A1, examples: [] }],
       knownItemSlugs: KNOWN,
     })
-    expect(errors[0]).toMatch(/suffix derivation is deferred/)
+    expect(errors).toEqual([])
+    expect(pairs[0]).toMatchObject({ affix: '-an', root: 'masak', derived: 'masakan', allomorphClass: null })
   })
 })
 

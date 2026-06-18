@@ -3,7 +3,6 @@ import {
   projectSections,
   classifyItemType,
   isNamedNumber,
-  deriveAffix,
   sourceSectionRef,
 } from '../projectSections'
 
@@ -37,16 +36,6 @@ describe('isNamedNumber', () => {
     expect(isNamedNumber('sejuta', '1.000.000')).toBe(true)
     expect(isNamedNumber('semiliar', '1.000.000.000')).toBe(true)
     expect(isNamedNumber('setriliun', '1.000.000.000.000')).toBe(true)
-  })
-})
-
-describe('deriveAffix', () => {
-  it('derives the affix from the allomorph rule prefix', () => {
-    expect(deriveAffix('lesson-9/morphology/meN-baca-membaca', 'meN- becomes mem- before b: baca -> membaca.')).toBe('meN-')
-    expect(deriveAffix('lesson-9/morphology/di-x-y', 'di- is the passive prefix.')).toBe('di-')
-  })
-  it('falls back to the sourceRef first segment when the rule has no leading affix', () => {
-    expect(deriveAffix('lesson-9/morphology/ber-jalan-berjalan', 'Prefix attaches to jalan.')).toBe('ber-')
   })
 })
 
@@ -107,6 +96,7 @@ describe('projectSections', () => {
       {
         sourceRef: 'lesson-9/morphology/meN-baca-membaca',
         patternSourceRef: 'lesson-9/pattern-men-active',
+        affix: 'meN-',
         root: 'baca',
         derived: 'membaca',
         allomorphRule: 'meN- becomes mem- before b: baca -> membaca.',
@@ -119,6 +109,7 @@ describe('projectSections', () => {
         // optional payload absent -> projects to null (cap-stage validator enforces presence)
         sourceRef: 'lesson-9/morphology/meN-tulis-menulis',
         patternSourceRef: 'lesson-9/pattern-men-active',
+        affix: 'meN-',
         root: 'tulis',
         derived: 'menulis',
         allomorphRule: 'meN- becomes men- before t: tulis -> menulis.',
