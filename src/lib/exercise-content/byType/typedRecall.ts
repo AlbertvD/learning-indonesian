@@ -17,11 +17,18 @@ import { audibleTextFieldsOf } from '@/lib/session-builder'
 export function buildTypedRecall(input: BuilderInputFor<'type_form_ex'>): BuilderResult {
   // word_form_pair_src path — input.affixedFormPair is populated; input.learningItem is null.
   if (input.affixedFormPair) {
-    const { root, derived, direction, allomorphRule } = input.affixedFormPair
+    const { root, derived, direction, allomorphRule, affix } = input.affixedFormPair
     const isRootToDerived = direction === 'root_to_derived'
+    // Use the pair's actual affix (peN-/ber-/di-/-an…), not a hardcoded meN-,
+    // and prompt in Dutch (the learner's language). `affix` carries its own
+    // hyphen marking the attachment point (e.g. 'peN-'); strip a trailing one so
+    // 'peN-' → 'peN-vorm' reads cleanly. Null only for legacy rows → generic.
+    const affixLabel = affix ? affix.replace(/-+$/, '') : null
     const promptText = isRootToDerived
-      ? `Form the meN- form of: ${root}`
-      : `What is the root of: ${derived}`
+      ? affixLabel
+        ? `Geef de ${affixLabel}-vorm van: ${root}`
+        : `Geef de afgeleide vorm van: ${root}`
+      : `Wat is het basiswoord van: ${derived}`
     const acceptedAnswer = isRootToDerived ? derived : root
     const exerciseItem: ExerciseItem = {
       learningItem: null,
