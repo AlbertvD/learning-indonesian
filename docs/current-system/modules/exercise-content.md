@@ -1,7 +1,7 @@
 ---
 module: exercise-content
 surface: src/lib/exercise-content/
-last_verified_against_code: 2026-05-21
+last_verified_against_code: 2026-06-19
 inbound_port: src/lib/exercise-content/index.ts
 status: stable
 ---
@@ -234,7 +234,9 @@ Both also appear on `BuilderBase` (`renderContracts.ts:341`) so every builder re
 
 ## 6. Known limitations and follow-ups
 
-- **Two source kinds supported post PR-B: `item` and `dialogue_line`.** The bucketing dispatch handles both; `fetchForItemBlocks` and `fetchForDialogueLineBlocks` run in parallel via `Promise.all` inside `loadBlockData`. `cloze` (typed) is the only exercise type whose contract accepts `dialogue_line`; `cloze_mcq` stays item-only because its distractor pool is lesson-anchored and the dialogue_line fetcher does not populate a pool today (follow-up — see below). `affixed_form_pair` is the next pilot; `podcast_segment` + `podcast_phrase` follow; `pattern`-sourced capabilities are slated for retirement (the projection pipeline emits them but no exercise renders them and the gap doc recommends a cleanup migration).
+- **Three source kinds supported: `item`, `dialogue_line`, and `word_form_pair_src` (morphology).** The bucketing dispatch handles all three; `fetchForItemBlocks` / `fetchForDialogueLineBlocks` / `fetchForAffixedFormPairBlocks` run in parallel via `Promise.all` inside `loadBlockData`. `cloze` (typed) is the only exercise type whose contract accepts `dialogue_line`; `cloze_mcq` stays item-only because its distractor pool is lesson-anchored and the dialogue_line fetcher does not populate a pool today (follow-up — see below). `podcast_segment` + `podcast_phrase` are the next pilots; `pattern`-sourced capabilities now render the four grammar exercises (ADR 0017).
+
+- **Morphology (`word_form_pair_src`) rendering.** Three exercises serve it: `type_form_ex` (`byType/typedRecall.ts`, production — root→derived, optionally in a harvested carrier sentence per ADR 0019 option B), `decompose_word_ex` (`byType/decomposeWord.ts`, recognition — segment the derived word into its morpheme pieces), and `choose_form_ex` (`byType/cuedRecall.ts`, the derived→root "pick the affix" MCQ). `decompose_word_ex` is declared before `choose_form_ex` in `renderContracts.ts`, so the first-compatible resolver always picks it for `recognise_word_form_link_cap`. `morphemePieces` (`decomposeWord.ts:18`) derives the segmentation: a confix from the stored `circumfix_left/right`; a bare prefix/suffix re-derived from `(root, affix)`; and **reduplication re-derived from the catalog `composition` recipe** — full → `[root, root]`, wrapped → `[left, root-root, right]` (ADR 0019 amended L22). Reduplication rows carry **null `circumfix_left/right`** (Option A — the wrap pieces are re-derived, never stored), so `decompose_word_ex` must read the recipe, not the columns. The reduplication production prompt is the Dutch "Geef de verdubbelde vorm van: …" (`typedRecall.ts`), not the dev affix label.
 
 - **`cloze_mcq` does not accept `dialogue_line`.** The runtime cloze_mcq path picks distractors via `pickDistractorCascade` against `input.poolItems` — items whose `item_contexts.source_lesson_id` matches a touched lesson. `fetchForDialogueLineBlocks` does not fetch a distractor pool today; extending it to do so requires parsing `lesson-N` from the source ref + a lesson-id-keyed pool query. Tracked as a follow-up after `affixed_form_pair` lands.
 
