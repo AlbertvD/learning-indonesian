@@ -101,7 +101,14 @@ export const AFFIX_CATALOG: readonly AffixCatalogEntry[] = [
   { affix: 'di-…-i', affixType: 'confix', gloss: 'passive locative/repetitive transitiviser', composition: { prefix: { fixed: 'di' }, suffix: 'i' } },
   { affix: 'memper-…-kan', affixType: 'confix', gloss: 'causative transitiviser (intensifying)', composition: { prefix: { fixed: 'memper' }, suffix: 'kan' } },
   // ── Reduplication ───────────────────────────────────────────────────────────
+  // Base modifier (ADR 0019, amended L22): double the root, then OPTIONALLY apply the
+  // fixed prefix / fixed suffix slots. circumfix_left/right stay null on the row;
+  // decompose_word_ex re-derives the wrap pieces from these recipes. The U+2026 in
+  // `ke-…-an-reduplication` matches the confix `ke-…-an` char, but the `-reduplication`
+  // tail keeps it a distinct key in BY_AFFIX (no collision).
   { affix: 'reduplication', affixType: 'reduplication', gloss: 'plurality / variety / intensity', composition: { reduplicate: true } },
+  { affix: 'reduplication-an', affixType: 'reduplication', gloss: 'collective/variety reduplication + -an', composition: { reduplicate: true, suffix: 'an' } },
+  { affix: 'ke-…-an-reduplication', affixType: 'reduplication', gloss: 'approximative ("-ish") colour reduplication', composition: { prefix: { fixed: 'ke' }, reduplicate: true, suffix: 'an' } },
 ] as const
 
 const BY_AFFIX = new Map<string, AffixCatalogEntry>(AFFIX_CATALOG.map((e) => [e.affix, e]))

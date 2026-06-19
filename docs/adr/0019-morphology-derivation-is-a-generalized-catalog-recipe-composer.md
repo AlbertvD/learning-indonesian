@@ -67,11 +67,33 @@ per-chapter.**
    `null` for confixes (its documented scope is bare `meN-`/`peN-` only). No
    migration for derivation.
 
-3. **Reduplication is the one separate path.** It copies the root rather than
-   concatenating slots, so the composer hands off to `deriveReduplication`
-   (full reduplication `root-root` derived by rule; sound-change forms
-   `sayur-mayur` curated via the `IRREGULAR` table; affixed reduplication wired
-   against its chapter's examples).
+3. **Reduplication composes through the same slots as a base modifier.**
+   It doubles the root to form a base (`anak-anak`), then *optionally* applies the
+   existing fixed-prefix / fixed-suffix slots to that base — so the one composer
+   covers full (`anak-anak`), redup+suffix (`sayur-sayuran`), and `ke-…-an`
+   reduplication (`kebiru-biruan`), and `ber-…-an` / `se-…-nya` when their chapters
+   land. Sound-change forms (`sayur-mayur`), lexicalised forms (`alun-alun`) and
+   the asymmetric reciprocal `root-meN(root)` (`sewa-menyewa`) are **not** rule-derived —
+   they are frozen vocabulary / recognition-only (deriving them would teach a false
+   generalisation; research §25/§106).
+
+   **Amendment (2026-06-19, L22 / Bab 6 *Verdubbelingen*).** This refines the
+   original Decision 3, which said reduplication "copies the root rather than
+   concatenating slots, so the composer hands off to `deriveReduplication`" — i.e.
+   a *terminal separate branch*. Grounding the design against L22's actual grammar
+   showed reduplication frequently co-occurs with an affix wrap (`sayur-sayuran`,
+   `kebiru-biruan`), which the terminal branch could not express. The fix is the
+   base-modifier composition above. Two consequences are load-bearing:
+   - **`circumfix_left/right` stay `null` on every reduplication row** (the
+     CS12/HC31 invariant is unchanged, no migration): the wrap pieces are
+     re-derived from `(root, affix)` at render, not persisted. Each wrapped shape
+     is a distinct, reduplication-namespaced catalog affix (`reduplication-an`,
+     `ke-…-an-reduplication`) so it never collides with the confix `ke-…-an`.
+   - **The decompose split is by reduplication kind:** *wrapped* → `decompose_word_ex`
+     renders `[left, root-root, right]`; *full* → `decompose_word_ex` renders the
+     easy `[root, root]` "find-the-root" rung (research §100's recognition intro
+     step) rather than failing. The resolver stays type-based; no `allowedExercises`
+     / `ProjectedCapability` change; no ready-but-unrenderable cap.
 
 4. **Production-in-context via contextualised `type_form_ex`, NOT a cloze
    capability.** The morphology literature ranks *production in a carrier

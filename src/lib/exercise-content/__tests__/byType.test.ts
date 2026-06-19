@@ -666,6 +666,23 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
     expect(r.audibleTexts).toEqual(expect.arrayContaining(['baca', 'membaca']))
   })
 
+  it('type_form_ex reduplication produce prompt is Dutch verdubbeling (no English label leak)', () => {
+    const r = buildForExerciseType('type_form_ex', affixedInput({
+      affixedFormPair: {
+        root: 'sayur', derived: 'sayur-sayuran', direction: 'root_to_derived',
+        allomorphRule: 'Verdubbeling + achtervoegsel -an: sayur → sayur-sayuran.',
+        affix: 'reduplication-an',
+        sourceRef: 'lesson-22/morphology/reduplication-ansayur-sayur-sayuran',
+      },
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    const prompt = r.exerciseItem.affixedFormPairData!.promptText
+    expect(prompt).not.toMatch(/reduplication/i)
+    expect(prompt).toContain('verdubbelde vorm')
+    expect(prompt).toContain('sayur')
+  })
+
   // The per-pair allomorph MCQ (root→derived) was retired in the 2026-06-17 cap-model
   // fix — nasalization is taught at the rule tier (grammar_pattern_src, ADR 0017).
   // choose_form_ex over word_form_pair_src now serves ONLY the derived→root link MCQ.
@@ -765,5 +782,32 @@ describe('buildDecomposeWord — morpheme breakdown MCQ', () => {
     expect(r.kind).toBe('ok')
     if (r.kind !== 'ok') return
     expect(r.exerciseItem.decomposeData?.correctOptionId).toBe('mem + baca')
+  })
+
+  it('segments full reduplication into [root, root] (anak-anak → anak + anak)', () => {
+    const r = buildForExerciseType('decompose_word_ex', decomposeInput({
+      root: 'anak', derived: 'anak-anak', direction: 'derived_to_root',
+      allomorphRule: 'Verdubbeling: anak → anak-anak.', affix: 'reduplication',
+      circumfixLeft: null, circumfixRight: null,
+      sourceRef: 'lesson-22/morphology/reduplicationanak-anak-anak',
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    const d = r.exerciseItem.decomposeData!
+    expect(d.correctOptionId).toBe('anak + anak')
+    expect(d.options.length).toBeGreaterThanOrEqual(2)
+    expect(d.options).toContain('anak + anak')
+  })
+
+  it('segments wrapped reduplication into [left, root-root, right] (kebiru-biruan → ke + biru-biru + an)', () => {
+    const r = buildForExerciseType('decompose_word_ex', decomposeInput({
+      root: 'biru', derived: 'kebiru-biruan', direction: 'derived_to_root',
+      allomorphRule: 'ke-…-an om de verdubbeling: biru → kebiru-biruan.', affix: 'ke-…-an-reduplication',
+      circumfixLeft: null, circumfixRight: null,
+      sourceRef: 'lesson-22/morphology/ke-…-an-reduplicationbiru-kebiru-biruan',
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.decomposeData?.correctOptionId).toBe('ke + biru-biru + an')
   })
 })

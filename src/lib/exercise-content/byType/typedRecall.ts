@@ -14,6 +14,7 @@ import type { BuilderInputFor, BuilderResult } from './types'
 import type { ExerciseItem } from '@/types/learning'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { blankDerivedInCarrier } from '@/lib/capabilities'
+import { affixCatalogEntry } from '@/lib/capabilities/affixCatalog'
 
 export function buildTypedRecall(input: BuilderInputFor<'type_form_ex'>): BuilderResult {
   // word_form_pair_src path — input.affixedFormPair is populated; input.learningItem is null.
@@ -29,11 +30,16 @@ export function buildTypedRecall(input: BuilderInputFor<'type_form_ex'>): Builde
     // and prompt in Dutch (the learner's language). `affix` carries its own
     // hyphen marking the attachment point (e.g. 'peN-'); strip a trailing one so
     // 'peN-' → 'peN-vorm' reads cleanly. Null only for legacy rows → generic.
+    // Reduplication affix labels (e.g. 'reduplication-an') are dev strings, not
+    // learner Dutch — use "verdubbelde vorm" for any reduplication shape.
+    const isRedup = affix ? affixCatalogEntry(affix)?.affixType === 'reduplication' : false
     const affixLabel = affix ? affix.replace(/-+$/, '') : null
     const promptText = isRootToDerived
-      ? affixLabel
-        ? `Geef de ${affixLabel}-vorm van: ${root}`
-        : `Geef de afgeleide vorm van: ${root}`
+      ? isRedup
+        ? `Geef de verdubbelde vorm van: ${root}`
+        : affixLabel
+          ? `Geef de ${affixLabel}-vorm van: ${root}`
+          : `Geef de afgeleide vorm van: ${root}`
       : `Wat is het basiswoord van: ${derived}`
     const acceptedAnswer = isRootToDerived ? derived : root
     const exerciseItem: ExerciseItem = {

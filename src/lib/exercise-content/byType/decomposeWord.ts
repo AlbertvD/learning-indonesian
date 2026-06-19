@@ -12,7 +12,7 @@ import type { BuilderInputFor, BuilderResult } from './types'
 import type { ExerciseItem } from '@/types/learning'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { deriveAffixedForm } from '@/lib/capabilities'
-import { allomorphClassesFor } from '@/lib/capabilities/affixCatalog'
+import { allomorphClassesFor, affixCatalogEntry } from '@/lib/capabilities/affixCatalog'
 
 /** The morpheme surface pieces of a derived form: prefix? + root + suffix?. */
 function morphemePieces(
@@ -21,6 +21,16 @@ function morphemePieces(
   circumfixLeft: string | null,
   circumfixRight: string | null,
 ): { prefix: string | null; root: string; suffix: string | null } {
+  // Reduplication (ADR 0019 amended): circumfix pieces are NOT stored — re-derive
+  // the segmentation from the catalog recipe. Wrapped → [left, root-root, right];
+  // full → [root, root] (two root pieces, the easy "find-the-root" recognition rung).
+  const recipe = affix ? affixCatalogEntry(affix)?.composition : undefined
+  if (recipe?.reduplicate) {
+    const left = recipe.prefix && 'fixed' in recipe.prefix ? recipe.prefix.fixed : null
+    const right = recipe.suffix ?? null
+    if (left || right) return { prefix: left, root: `${root}-${root}`, suffix: right }
+    return { prefix: root, root, suffix: null }
+  }
   // Confix: both pieces stored on the row.
   if (circumfixLeft && circumfixRight) return { prefix: circumfixLeft, root, suffix: circumfixRight }
   if (!affix) return { prefix: null, root, suffix: null }

@@ -134,6 +134,27 @@ describe('deriveAffixedForm — reduplication (full)', () => {
   })
 })
 
+describe('deriveAffixedForm — reduplication as a base modifier (ADR 0019 amended, L22)', () => {
+  it('reduplication + -an appends the suffix to the doubled base, null circumfix', () => {
+    const r = deriveAffixedForm('sayur', 'reduplication-an')
+    expect(r.derived).toBe('sayur-sayuran')
+    expect(r.affixType).toBe('reduplication')
+    expect(r.circumfixLeft).toBeNull()
+    expect(r.circumfixRight).toBeNull()
+    expect(deriveAffixedForm('daun', 'reduplication-an').derived).toBe('daun-daunan')
+  })
+
+  it('ke-…-an reduplication wraps the doubled base, still null circumfix', () => {
+    const r = deriveAffixedForm('biru', 'ke-…-an-reduplication')
+    expect(r.derived).toBe('kebiru-biruan')
+    expect(r.affixType).toBe('reduplication')
+    expect(r.circumfixLeft).toBeNull()
+    expect(r.circumfixRight).toBeNull()
+    expect(r.allomorphRule).toContain('kebiru-biruan')
+    expect(deriveAffixedForm('hitam', 'ke-…-an-reduplication').derived).toBe('kehitam-hitaman')
+  })
+})
+
 describe('blankDerivedInCarrier — whole-word blank (option B)', () => {
   it('blanks the derived form as a whole word', () => {
     expect(blankDerivedInCarrier('Ibu membelikan anaknya buku', 'membelikan')).toBe('Ibu ___ anaknya buku')
