@@ -1,6 +1,7 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #259
+merged_at: 2026-06-19
 reviewed_by: [staff-engineer, architect, data-architect]
 supersedes: []
 implementation_paths:
