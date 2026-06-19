@@ -27,6 +27,28 @@ related:
 > the morphology data the trainer needs does not exist yet. Design order = top-down; **build order =
 > bottom-up** (§5). Not yet reviewed; needs `architect` + `data-architect` before `approved`.
 
+> **🔄 RE-GROUNDED 2026-06-19 (verified against current `main`) — this plan is now BUILDABLE.**
+> Its blocking prerequisites (§5 steps 1–2) have all shipped since it was written:
+> - **§8 rename A–C** shipped 2026-06-16 (commits `50d8b75`/`3ae3a14`/`54429d8`) — the `_src`/`_cap`/`_ex`/`_mode`
+>   names the trainer reads are live (`src/types/learning.ts`).
+> - **phase-b + substrate A/B/D/E** shipped: the **affix catalog code constant exists** (`src/lib/capabilities/affixCatalog.ts`, with the `affix ∈ catalog` CS12/HC31 gates — item A **DONE**); the **root-vocab hard-prerequisite** shipped via **ADR 0018** (item B **DONE**); affix-filtered cap reads (D) + lesson-activation introduction (E) hold.
+> - **Content (§5 step 3):** meN- (L9/L13), peN- (L20), -kan (L21), reduplication (L22) are live — enough for **v1** (catalog + rule card + per-affix funnel tile). The **word-family explorer (§2.2 / v2)** still wants the broader L14–24 + book-2 rollout (ongoing).
+>
+> **Remaining to build (the actual forward work):**
+> 1. The surface — `src/lib/morphology/` + `src/components/morphology/` (do not exist yet).
+> 2. **Item C — the 3-way "Morfologie" funnel split is NOT done:** `masteryModel.ts:391` still has
+>    `GRAMMAR_SOURCE_KINDS = {grammar_pattern_src, word_form_pair_src}` and `funnelBucket` returns only
+>    `vocab|grammar` — `word_form_pair_src` must split into a morphology bucket (+ SQL parity HC27/HC28).
+> 3. **Item F′ — the affix SessionMode is NOT added:** `SessionMode = 'standard'|'lesson_practice'|'lesson_review'`
+>    (`model.ts:5`); add the source-ref-scoped mode + `isScopedMode` per §4-F′.
+>
+> **⚠️ Stale references below (correct when building):** §5 step 2 cites `recognise_allomorph_from_root_cap`
+> (built then **RETIRED** — `2026-06-17-morphology-nasalization-cap-model-fix.md`) and `build_confix_ex`
+> (**CUT** — ADR 0019). The live morphology exercise roster is **`decompose_word_ex` + `type_form_ex`
+> (carrier, option B) + `choose_form_ex`** (pick-the-affix). §4-A's "a separate constant in the *spirit* of
+> `MORPHOLOGY_PATTERN_SLUGS`" is moot — `affixCatalog.ts` was built. The §0/§1 prose and the Resume-context
+> blockquote ("not yet reviewed") predate review + these ships; read for design intent, not current state.
+
 ## 0. Grounding (plan-grounding rule)
 
 Modules this plan touches, against `docs/target-architecture.md` + the foundation doc + module specs:

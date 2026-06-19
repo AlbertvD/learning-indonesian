@@ -1,6 +1,7 @@
 ---
-status: draft
-reviewed_by: []          # REQUIRED before approved: architect + data-architect (data-model plan)
+status: shipped
+merged_at: 2026-06-19
+reviewed_by: []          # never formally reviewed as one plan — decomposed into the plans/ADRs below
 supersedes: []
 related:
   - docs/research/2026-06-15-affix-morphology-module-research.md
@@ -9,6 +10,20 @@ related:
 ---
 
 # Morphology module + capability-model upgrade — design (draft)
+
+> **⚠️ SHIPPED / DECOMPOSED (2026-06-19) — changelog, not forward work.** This program-level
+> design was never executed as one plan; its deliverables were decomposed and shipped:
+> the 3-tier model + `affixed_form_pairs` extension (affix_type/affix/circumfix/productive/
+> grammar_pattern_id) → **`2026-06-15-morphology-phase-b-implementation-spec.md`** + **ADR 0018**;
+> the deterministic derivation engine + authoring → **`2026-06-18-morphology-authoring-capability.md`**;
+> generalised derivation incl. reduplication + `decompose_word_ex` → **ADR 0019** +
+> **`2026-06-19-l22-reduplication-engine-extension.md`**; the `recognise_allomorph_from_root_cap`
+> proposed here was built-then-**retired** (`2026-06-17-morphology-nasalization-cap-model-fix.md`);
+> `build_confix_ex` was **cut** (ADR 0019); the grammar produce split → **ADR 0017**; the §8 rename →
+> **`2026-06-15-capability-naming-rename-plan.md`** (shipped). **Forward tail that remains:** the
+> **Affix Trainer** surface (`2026-06-15-affix-trainer-capstone-design.md`, approved, not built) and
+> the **book-2 content rollout** (author morphology-roots per chapter on the now-complete engine).
+> The prose below is the original draft — read for rationale, not as a build spec.
 
 > **Resume context (2026-06-15).** Output of a long design dialogue. The goal: ingest the
 > **follow-up textbook** (Selamat Datang book 2, the `SD_L*` series) "the same way as previous

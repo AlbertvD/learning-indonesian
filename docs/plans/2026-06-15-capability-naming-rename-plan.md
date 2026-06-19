@@ -6,7 +6,9 @@
 > now triggered. Sequenced BEFORE the morphology build so new morphology caps are born in the new names.
 
 ---
-status: approved
+status: shipped
+implementation: §8 rename Phases A–C (commits 50d8b75, 3ae3a14, 54429d8 — Phase D typed-table renames deferred, non-identity-bearing)
+merged_at: 2026-06-16
 reviewed_by: [architect, data-architect]   # round 3, 2026-06-15: data-architect APPROVE; architect
                                            # APPROVE-WITH-CHANGES — the round-3 minor corrections
                                            # (seed-clause fact, podcast_phrase retire, speaking/
