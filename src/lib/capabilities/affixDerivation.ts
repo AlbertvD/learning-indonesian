@@ -190,19 +190,33 @@ function deriveConfix(root: string, affix: string, prefix: { nasal: 'me' | 'pe' 
   }
 }
 
-// ── Reduplication (the one non-concatenative path) ──────────────────────────
-// Full reduplication only (root-root); partial / sound-change forms (sayur-mayur)
-// are lexicalised and live in the IRREGULAR table, never rule-derived.
+// ── Reduplication (the one non-concatenative base; ADR 0019, amended L22) ────
+// Reduplication forms the base by doubling the root, then OPTIONALLY applies the
+// recipe's FIXED prefix / FIXED suffix slots: full (anak-anak), redup+-an
+// (sayur-sayuran), ke-…-an redup (kebiru-biruan). circumfix_left/right stay NULL —
+// the invariant is "reduplication carries no circumfix"; decompose_word_ex re-derives
+// the wrap pieces from the catalog recipe. Sound-change / lexicalised / asymmetric
+// ME-redup forms are vocabulary, not rule-derived. A nasalising prefix over a
+// reduplicated base has no book example → fail loud rather than guess.
 
-function deriveReduplication(root: string): ConfixCore {
-  const derived = `${root}-${root}`
-  return {
-    derived,
-    allomorphClass: null,
-    allomorphRule: `Verdubbeling: ${root} → ${derived}.`,
-    circumfixLeft: null,
-    circumfixRight: null,
+function deriveReduplicated(root: string, affix: string, recipe: AffixComposition): ConfixCore {
+  if (recipe.prefix && 'nasal' in recipe.prefix) {
+    throw new UnsupportedAffixError(affix, 'nasalising prefix over a reduplicated base is not supported')
   }
+  const base = `${root}-${root}`
+  const left = recipe.prefix && 'fixed' in recipe.prefix ? recipe.prefix.fixed : ''
+  const right = recipe.suffix ?? ''
+  const derived = left + base + right
+
+  let allomorphRule: string
+  if (left && right) {
+    allomorphRule = `${left}-…-${right} om de verdubbeling: ${root} → ${derived}.`
+  } else if (right) {
+    allomorphRule = `Verdubbeling + achtervoegsel -${right}: ${root} → ${derived}.`
+  } else {
+    allomorphRule = `Verdubbeling: ${root} → ${derived}.`
+  }
+  return { derived, allomorphClass: null, allomorphRule, circumfixLeft: null, circumfixRight: null }
 }
 
 // ── Static exception table (Spec 2 §3.1) ────────────────────────────────────
@@ -250,7 +264,7 @@ export function deriveAffixedForm(root: string, affix: string): DerivedAffixedFo
 
   let core: ConfixCore
   if (recipe.reduplicate) {
-    core = deriveReduplication(root)
+    core = deriveReduplicated(root, affix, recipe)
   } else if (recipe.prefix && recipe.suffix !== undefined) {
     core = deriveConfix(root, affix, recipe.prefix, recipe.suffix)
   } else if (recipe.prefix) {
