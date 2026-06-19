@@ -3,6 +3,8 @@ import {
   generateMorphologyPatterns,
   resolvableBaseSlugs,
   coveredClasses,
+  extractSentences,
+  harvestCarrier,
   type LessonCategory,
 } from '../generate-morphology-patterns'
 import { morphologyRoots } from '../data/staging/lesson-13/morphology-roots'
@@ -164,5 +166,27 @@ describe('coveredClasses', () => {
   it('derives the class set from a category’s examples', () => {
     const covered = coveredClasses(L13_CATEGORIES[3], 'meN-') // category B
     expect([...covered].sort()).toEqual(['mem', 'meng', 'meny', 'men'].sort())
+  })
+})
+
+describe('carrier harvest (option B)', () => {
+  it('extracts sentences and drops arrow fragments + short ones', () => {
+    expect(extractSentences('Ibu membelikan anaknya buku')).toEqual(['Ibu membelikan anaknya buku'])
+    expect(extractSentences('tempat → menempatkan')).toEqual([]) // arrow fragment
+    expect(extractSentences('turun')).toEqual([]) // single word
+  })
+  it('parses Latihan a./b. answers into clean carrier sentences', () => {
+    const ans = 'a. menaikkan — Dia menaikkan bendera. b. dinaikkan — Bendera dinaikkan Pak guru.'
+    expect(extractSentences(ans)).toEqual(['Dia menaikkan bendera', 'Bendera dinaikkan Pak guru'])
+  })
+  it('honours source priority (grammar beats story) then shortest-wins', () => {
+    const grammar = ['Ibu membelikan anaknya sebuah buku baru']
+    const story = ['Dia membelikan adik']
+    expect(harvestCarrier('membelikan', [grammar, story])).toBe('Ibu membelikan anaknya sebuah buku baru')
+    // shortest within the winning tier
+    expect(harvestCarrier('membelikan', [[...grammar, 'Ibu membelikan buku']])).toBe('Ibu membelikan buku')
+  })
+  it('does NOT harvest a clitic-attached surface, and falls back to null', () => {
+    expect(harvestCarrier('dinaikkan', [['Bendera dinaikkannya tinggi sekali']])).toBeNull()
   })
 })

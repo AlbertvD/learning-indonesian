@@ -66,7 +66,11 @@ the decision and rationale.
    runtime blank-replacement uses, so a validator-pass guarantees a render-match
    (avoids the `root_text`/`normalized_text` zero-row class, OpenBrain a9fdeb91).
    No match in any source → `carrier_text` null → isolated prompt. The fallback is
-   "no carrier," never an ugly one.
+   "no carrier," never an ugly one. **The match is WHOLE-WORD, not substring**
+   (`blankDerivedInCarrier` in `lib/capabilities/affixDerivation.ts`, shared by the
+   harvest gate and the runtime render so they can't drift) — a substring `includes`
+   would wrongly match a clitic surface (`"dinaikkannya".includes("dinaikkan")` is
+   true) and mis-blank to `___nya`; the verified L21 clitic cases require this.
 7. **Per pair (reused, ADR 0018):** 2 caps (`recognise_word_form_link_cap` +
    `produce_derived_form_cap`); both hard-block on the **formation** grammar-pattern
    cap + the **root vocab** cap; `word_form_pair_src` exempt from the phase gate.
@@ -132,7 +136,8 @@ the decision and rationale.
 8. **Three-layer gate** — Layer 1 engine golden tests; Layer 2 CS12
    (`scripts/lib/pipeline/capability-stage/validators/affixedFormPairs.ts` —
    reduplication shape + **required**
-   `carrier_text == null || carrier_text.includes(derived_text)`); Layer 3 HC31
+   `carrier_text == null || blankDerivedInCarrier(carrier_text, derived_text) !== null`
+   — the shared whole-word matcher, NOT substring `includes`); Layer 3 HC31
    (`check-supabase-deep.ts` — reduplication shape). **HC31 does NOT re-check the
    carrier** — CS12 closes it pre-write (cheapest mechanism; no redundant HC). The
    "optional" carrier-HC is removed.

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { deriveAffixedForm, UnsupportedAffixError } from '../affixDerivation'
+import { deriveAffixedForm, UnsupportedAffixError, blankDerivedInCarrier } from '../affixDerivation'
 
 // ── L13 golden fixture (Spec 2 §3.1) ─────────────────────────────────────────
 // The 14 hand-authored pairs from scripts/data/staging/lesson-13/morphology-patterns.ts.
@@ -131,6 +131,26 @@ describe('deriveAffixedForm — reduplication (full)', () => {
     expect(r.circumfixLeft).toBeNull()
     expect(r.circumfixRight).toBeNull()
     expect(r.allomorphClass).toBeNull()
+  })
+})
+
+describe('blankDerivedInCarrier — whole-word blank (option B)', () => {
+  it('blanks the derived form as a whole word', () => {
+    expect(blankDerivedInCarrier('Ibu membelikan anaknya buku', 'membelikan')).toBe('Ibu ___ anaknya buku')
+    expect(blankDerivedInCarrier('Bendera dinaikkan Pak guru', 'dinaikkan')).toBe('Bendera ___ Pak guru')
+  })
+  it('preserves surrounding punctuation on the blanked token', () => {
+    expect(blankDerivedInCarrier('Dia membersihkan mobil, lalu pergi', 'membersihkan')).toBe('Dia ___ mobil, lalu pergi')
+  })
+  it('does NOT match a clitic-attached surface (the dinaikkannya case)', () => {
+    expect(blankDerivedInCarrier('Bendera dinaikkannya', 'dinaikkan')).toBeNull()
+    expect(blankDerivedInCarrier('Koper diturunkannya', 'diturunkan')).toBeNull()
+  })
+  it('matches reduplication forms with the internal hyphen', () => {
+    expect(blankDerivedInCarrier('Banyak anak-anak bermain', 'anak-anak')).toBe('Banyak ___ bermain')
+  })
+  it('returns null when the form is absent', () => {
+    expect(blankDerivedInCarrier('Ibu membeli buku', 'membelikan')).toBeNull()
   })
 })
 

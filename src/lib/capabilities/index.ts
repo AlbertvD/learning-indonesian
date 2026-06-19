@@ -74,7 +74,7 @@ export type { CanonicalKeyInput } from './canonicalKey'
 export { itemSlug } from './itemSlug'
 
 // ─── Affix derivation engine (morphology authoring, Spec 2) ─────────────────
-export { deriveAffixedForm, UnsupportedAffixError } from './affixDerivation'
+export { deriveAffixedForm, UnsupportedAffixError, blankDerivedInCarrier } from './affixDerivation'
 export type { DerivedAffixedForm, MorphologyRoot } from './affixDerivation'
 
 // ─── Alternative-answer separator convention (PR #129) — the single ─────────
