@@ -68,12 +68,12 @@ describe('morphology capability projection', () => {
     }
   })
 
-  it('marks morphology recognise_word_form_link_cap ready via choose_form_ex + type_form_ex with NO capability_artifacts (phase-b widened choose_form_ex to the MCQ)', () => {
+  it('marks morphology recognise_word_form_link_cap ready via decompose_word_ex + choose_form_ex + type_form_ex with NO capability_artifacts (ADR 0019 adds the segmentation drill)', () => {
     const recognition = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'recognise_word_form_link_cap')!
     const readiness = validateCapability({ capability: recognition })
     expect(readiness.status).toBe('ready')
     if (readiness.status === 'ready') {
-      expect(readiness.allowedExercises).toEqual(['choose_form_ex', 'type_form_ex'])
+      expect(readiness.allowedExercises).toEqual(['decompose_word_ex', 'choose_form_ex', 'type_form_ex'])
     }
   })
 

@@ -1039,6 +1039,7 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         if (!r.affix || !isCatalogAffix(r.affix)) problems.push(`affix not in catalog: ${r.affix ?? 'null'}`)
         else if (ALLOMORPHIC.has(r.affix) && !r.allomorph_class) problems.push('missing allomorph_class')
         if (r.affix_type === 'confix' && (!r.circumfix_left || !r.circumfix_right)) problems.push('confix missing circumfix')
+        if (r.affix_type === 'reduplication' && (r.circumfix_left || r.circumfix_right)) problems.push('reduplication carries circumfix (ADR 0019: it has none)')
         if (!r.root_text || !normalizedTexts.has(itemSlug(r.root_text))) {
           problems.push(`root "${r.root_text ?? 'null'}" not a live learning_item (root-vocab prereq unsatisfiable)`)
         }

@@ -363,6 +363,7 @@ describe('fetchAffixedPairsFromDb', () => {
       circumfix_left: null,
       circumfix_right: null,
       productive: null,
+      carrier_text: null,
     })
     const me = pairs.find((p) => p.source_ref === 'lesson-5/affixed/me-masak')!
     expect(me.section_id).toBeNull()

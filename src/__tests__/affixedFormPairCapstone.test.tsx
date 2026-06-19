@@ -135,6 +135,7 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
       allomorphRule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
       root: 'baca',
       derived: 'membaca',
+      carrierBlanked: null, // no carrier on this fixture (ADR 0019 option B)
     })
     expect(ctx?.exerciseItem?.learningItem).toBeNull()
 
