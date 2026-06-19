@@ -75,8 +75,14 @@ export default function TypedRecall({
         </ExerciseSubmitButton>
       }
     >
-      <ExerciseInstruction>{t.session.recall.question}</ExerciseInstruction>
-      <ExercisePromptCard variant="word">{promptText}</ExercisePromptCard>
+      {/* ADR 0019 option B: with a carrier, the sentence (blank) is the prompt and
+          the "give the X-form of: root" guidance moves to the instruction line. */}
+      <ExerciseInstruction>
+        {affixedFormPairData?.carrierBlanked ? promptText : t.session.recall.question}
+      </ExerciseInstruction>
+      <ExercisePromptCard variant={affixedFormPairData?.carrierBlanked ? 'sentence' : 'word'}>
+        {affixedFormPairData?.carrierBlanked ?? promptText}
+      </ExercisePromptCard>
       <ExerciseTextInput
         label={t.session.recall.placeholder}
         placeholder={t.session.recall.placeholder}

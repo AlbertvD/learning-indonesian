@@ -256,5 +256,23 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
         commitFailed,
       }
     }
+
+    case 'decompose_word_ex': {
+      // ADR 0019 — morphology segmentation. The word was shown; the learner
+      // picked a breakdown. grammar-reveal so the formation rule surfaces as the
+      // explanation card, like the type_form_ex word_form_pair branch.
+      const d = item.decomposeData
+      return {
+        outcome,
+        layout: 'grammar-reveal',
+        direction: 'ID→ID',
+        promptShown: { text: d?.word ?? '', lang: 'ID', role: 'shown' },
+        correctAnswer: { text: d?.correctOptionId ?? '', lang: 'ID', role: 'target' },
+        userAnswer: response ? { text: response, lang: 'ID', role: 'picked' } : undefined,
+        acceptedVariants: [],
+        explanation: d?.explanationText,
+        commitFailed,
+      }
+    }
   }
 }

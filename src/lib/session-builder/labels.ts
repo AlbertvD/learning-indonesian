@@ -96,6 +96,7 @@ const exerciseLabels: Partial<Record<ExerciseType, string>> = {
   choose_meaning_from_audio_ex: 'Luisterkeuze',
   type_form_from_audio_ex: 'Dictee',
   speaking: 'Spreken',
+  decompose_word_ex: 'Woord ontleden',
 }
 
 const skillLabels: Partial<Record<SkillType, string>> = {
