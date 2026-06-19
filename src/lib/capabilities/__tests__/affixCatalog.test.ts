@@ -42,6 +42,20 @@ describe('affix catalog', () => {
     expect(affixCatalogEntry('nope')).toBeUndefined()
   })
 
+  it('reduplication-an is a catalog affix with a redup+suffix recipe (L22)', () => {
+    expect(isCatalogAffix('reduplication-an')).toBe(true)
+    const e = affixCatalogEntry('reduplication-an')!
+    expect(e.affixType).toBe('reduplication')
+    expect(e.composition).toEqual({ reduplicate: true, suffix: 'an' })
+  })
+
+  it('ke-…-an-reduplication is a catalog affix with a fixed-prefix + redup + suffix recipe (L22)', () => {
+    expect(isCatalogAffix('ke-…-an-reduplication')).toBe(true)
+    const e = affixCatalogEntry('ke-…-an-reduplication')!
+    expect(e.affixType).toBe('reduplication')
+    expect(e.composition).toEqual({ prefix: { fixed: 'ke' }, reduplicate: true, suffix: 'an' })
+  })
+
   it('distractorAffixes excludes the correct affix and prefers same affix_type first', () => {
     const ds = distractorAffixes('meN-')
     expect(ds).not.toContain('meN-')
