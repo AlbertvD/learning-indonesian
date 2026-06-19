@@ -1,0 +1,185 @@
+import { describe, expect, it } from 'vitest'
+import { buildAffixCatalog } from '../catalog'
+import { buildAffixDetail } from '../family'
+import { affixPracticePath, affixScopeFromSnapshot, AFFIX_SESSION_MODE } from '../practice'
+import type {
+  MorphologyCapRow,
+  MorphologyPairRow,
+  MorphologySnapshot,
+  MorphologyStateRow,
+} from '../adapter'
+
+const now = new Date('2026-06-19T10:00:00.000Z')
+const recent = '2026-06-18T10:00:00.000Z'
+
+// Lesson ids ↔ order. L9/L7/L13 activated; L20 (peN-) NOT activated.
+const L7 = 'lesson-7-id'
+const L9 = 'lesson-9-id'
+const L13 = 'lesson-13-id'
+const L20 = 'lesson-20-id'
+
+function cap(overrides: Partial<MorphologyCapRow> & { id: string; sourceRef: string }): MorphologyCapRow {
+  return {
+    canonicalKey: `key:${overrides.id}`,
+    sourceKind: 'word_form_pair_src',
+    capabilityType: 'recognise_word_form_link_cap',
+    modality: 'text',
+    readinessStatus: 'ready',
+    publicationStatus: 'published',
+    lessonId: null,
+    ...overrides,
+  }
+}
+
+function pair(overrides: Partial<MorphologyPairRow> & { capabilityId: string; rootText: string; derivedText: string; affix: string }): MorphologyPairRow {
+  return {
+    affixType: 'prefix',
+    affixGloss: null,
+    allomorphClass: null,
+    allomorphRule: '',
+    productive: true,
+    carrierText: null,
+    grammarPatternId: null,
+    ...overrides,
+  }
+}
+
+function masteredState(capabilityId: string): MorphologyStateRow {
+  return { capabilityId, reviewCount: 5, lapseCount: 0, consecutiveFailureCount: 0, stability: 20, lastReviewedAt: recent }
+}
+
+// meN- (ajar→mengajar mastered L9, tulis→menulis introduced L13),
+// ber- (ajar→belajar L7), peN- (ajar→pengajar L20, unavailable).
+function fixture(): MorphologySnapshot {
+  const pairs: MorphologyPairRow[] = [
+    pair({ capabilityId: 'cap-men-ajar', rootText: 'ajar', derivedText: 'mengajar', affix: 'meN-', allomorphRule: 'ajar → mengajar (ng-)', carrierText: 'Saya mengajar di sekolah.', grammarPatternId: 'pat-men' }),
+    pair({ capabilityId: 'cap-men-tulis', rootText: 'tulis', derivedText: 'menulis', affix: 'meN-', allomorphRule: 'tulis → menulis (n-)', grammarPatternId: 'pat-men' }),
+    pair({ capabilityId: 'cap-ber-ajar', rootText: 'ajar', derivedText: 'belajar', affix: 'ber-', productive: true }),
+    pair({ capabilityId: 'cap-pen-ajar', rootText: 'ajar', derivedText: 'pengajar', affix: 'peN-', productive: false }),
+    // a null-affix projection row — must be excluded defensively everywhere.
+    pair({ capabilityId: 'cap-null', rootText: 'ajar', derivedText: 'mengajarkan', affix: null as unknown as string }),
+  ]
+  const caps = [
+    cap({ id: 'cap-men-ajar', sourceRef: 'affixed_form_pairs/men-ajar', lessonId: L9 }),
+    cap({ id: 'cap-men-tulis', sourceRef: 'affixed_form_pairs/men-tulis', lessonId: L13 }),
+    cap({ id: 'cap-ber-ajar', sourceRef: 'affixed_form_pairs/ber-ajar', lessonId: L7 }),
+    cap({ id: 'cap-pen-ajar', sourceRef: 'affixed_form_pairs/pen-ajar', lessonId: L20 }),
+    cap({ id: 'cap-null', sourceRef: 'affixed_form_pairs/null', lessonId: L9 }),
+    // root vocab cap for ajar — mastered → ajar is a known root.
+    cap({ id: 'cap-root-ajar', sourceRef: 'learning_items/ajar', sourceKind: 'vocabulary_src', capabilityType: 'recognise_meaning_from_text_cap', lessonId: L9 }),
+  ]
+  return {
+    pairs,
+    pairCapsById: new Map(caps.filter(c => c.sourceKind === 'word_form_pair_src').map(c => [c.id, c])),
+    rootCaps: caps.filter(c => c.sourceKind === 'vocabulary_src'),
+    statesByCapId: new Map<string, MorphologyStateRow>([
+      ['cap-men-ajar', masteredState('cap-men-ajar')],
+      ['cap-root-ajar', masteredState('cap-root-ajar')],
+    ]),
+    lessonOrderById: new Map([[L7, 7], [L9, 9], [L13, 13], [L20, 20]]),
+    activatedLessonIds: new Set([L7, L9, L13]),
+    patternsById: new Map([['pat-men', { slug: 'l9-men', name: 'Het voorvoegsel meN-', shortExplanation: 'Vormt actieve werkwoorden.' }]]),
+    rootItemsBySlug: new Map([
+      ['ajar', { normalizedText: 'ajar', baseText: 'ajar', meaningNl: 'onderwijzen', meaningEn: 'to teach' }],
+      ['tulis', { normalizedText: 'tulis', baseText: 'tulis', meaningNl: 'schrijven', meaningEn: 'to write' }],
+    ]),
+  }
+}
+
+describe('buildAffixCatalog', () => {
+  it('returns every catalog affix, sorted by teaching rank', () => {
+    const tiles = buildAffixCatalog(fixture(), now)
+    expect(tiles.length).toBeGreaterThanOrEqual(21)
+    const ranks = tiles.map(t => t.rank)
+    expect(ranks).toEqual([...ranks].sort((a, b) => a - b))
+    expect(tiles[0]?.affix).toBe('ber-')
+  })
+
+  it('rolls up per-affix progress weakest-wins per derivation', () => {
+    const tiles = buildAffixCatalog(fixture(), now)
+    const meN = tiles.find(t => t.affix === 'meN-')!
+    // 2 derivations: mengajar (mastered) + menulis (introduced, L13 activated, 0 reviews).
+    expect(meN.progress.totalCount).toBe(2)
+    expect(meN.progress.masteredCount).toBe(1)
+    expect(meN.progress.practisedCount).toBe(1)
+    expect(meN.progress.funnel.mastered).toBe(1)
+    expect(meN.progress.funnel.introduced).toBe(1)
+    expect(meN.progress.label).toBe('introduced') // weakest of {mastered, introduced}
+    expect(meN.available).toBe(true)
+    expect(meN.introLessonNumber).toBe(9)
+  })
+
+  it('marks an affix unavailable when its introducing lesson is not activated', () => {
+    const peN = buildAffixCatalog(fixture(), now).find(t => t.affix === 'peN-')!
+    expect(peN.available).toBe(false)
+    expect(peN.progress.funnel.not_assessed).toBe(1)
+  })
+
+  it('shows zero-content affixes (e.g. -i) as empty, unavailable tiles', () => {
+    const minusI = buildAffixCatalog(fixture(), now).find(t => t.affix === '-i')!
+    expect(minusI.progress.totalCount).toBe(0)
+    expect(minusI.available).toBe(false)
+  })
+})
+
+describe('buildAffixDetail', () => {
+  it('returns null for an affix that is not a catalog member', () => {
+    expect(buildAffixDetail(fixture(), 'not-an-affix', 'nl', now)).toBeNull()
+  })
+
+  it('builds the rule card from catalog metadata + the introducing lesson/pattern', () => {
+    const detail = buildAffixDetail(fixture(), 'meN-', 'nl', now)!
+    expect(detail.allomorphClasses).toEqual(['me', 'mem', 'men', 'meny', 'meng', 'menge'])
+    expect(detail.ruleNote).toContain('mengajar')
+    expect(detail.rule.lessonNumber).toBe(9)
+    expect(detail.rule.patternName).toBe('Het voorvoegsel meN-')
+    expect(detail.examples.length).toBeGreaterThan(0)
+    expect(detail.cefrLevel).toBe('A2')
+  })
+
+  it('explores full cross-affix families, status-marked, with productive flags', () => {
+    const detail = buildAffixDetail(fixture(), 'meN-', 'nl', now)!
+    const ajar = detail.families.find(f => f.rootText === 'ajar')!
+    // ajar leads the meN- page but shows its whole family: mengajar (meN-),
+    // belajar (ber-), pengajar (peN-). The null-affix row is excluded.
+    const forms = ajar.forms.map(f => f.derivedText)
+    expect(forms).toEqual(expect.arrayContaining(['mengajar', 'belajar', 'pengajar']))
+    expect(forms).not.toContain('mengajarkan')
+    expect(ajar.rootMeaning).toBe('onderwijzen')
+    expect(ajar.rootKnown).toBe(true)
+    const pengajar = ajar.forms.find(f => f.derivedText === 'pengajar')!
+    expect(pengajar.productive).toBe(false) // lexicalised — "vocab, not rule-formed"
+    const mengajar = ajar.forms.find(f => f.derivedText === 'mengajar')!
+    expect(mengajar.label).toBe('mastered')
+  })
+
+  it('flags an unknown root and uses the user language for the gloss', () => {
+    const detail = buildAffixDetail(fixture(), 'meN-', 'en', now)!
+    const tulis = detail.families.find(f => f.rootText === 'tulis')!
+    expect(tulis.rootKnown).toBe(false) // item exists but no solid recognition cap
+    expect(tulis.rootMeaning).toBe('to write')
+  })
+
+  it('exposes only ready+published source_refs for the practice scope', () => {
+    const detail = buildAffixDetail(fixture(), 'meN-', 'nl', now)!
+    expect(detail.practiceSourceRefs.sort()).toEqual([
+      'affixed_form_pairs/men-ajar',
+      'affixed_form_pairs/men-tulis',
+    ])
+  })
+})
+
+describe('practice launch', () => {
+  it('builds the scoped-session route with the affix in the URL', () => {
+    expect(affixPracticePath('meN-')).toBe('/session?mode=affix_practice&affix=meN-')
+    expect(AFFIX_SESSION_MODE).toBe('affix_practice')
+  })
+
+  it('affixScopeFromSnapshot mirrors the ready+published source_refs', () => {
+    expect(affixScopeFromSnapshot(fixture(), 'meN-').sort()).toEqual([
+      'affixed_form_pairs/men-ajar',
+      'affixed_form_pairs/men-tulis',
+    ])
+    expect(affixScopeFromSnapshot(fixture(), '-i')).toEqual([])
+  })
+})

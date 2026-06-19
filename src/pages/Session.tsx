@@ -12,11 +12,14 @@ import {
   buildSession,
   collectAudibleTexts,
   sessionBuilderAdapter,
+  isLessonScopedMode,
+  isSourceRefScopedMode,
   type SessionMode,
   type SessionPlan,
 } from '@/lib/session-builder'
 import { translations } from '@/lib/i18n'
 import { getLessonSourceRefsByLessonId } from '@/lib/lessons'
+import { loadSelectedAffixScope } from '@/lib/morphology'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'
 import { resolveCapabilityBlocks, type CapabilityRenderContext } from '@/lib/exercise-content'
@@ -25,14 +28,10 @@ import { commitCapabilityAnswerReport } from '@/lib/reviews/capabilityReviewProc
 import { capabilityReviewService } from '@/services/capabilityReviewService'
 import { markSessionComplete } from '@/services/sessionService'
 
-const VALID_SESSION_MODES: SessionMode[] = ['standard', 'lesson_practice', 'lesson_review']
+const VALID_SESSION_MODES: SessionMode[] = ['standard', 'lesson_practice', 'lesson_review', 'affix_practice']
 
 function parseSessionMode(value: string | null): SessionMode {
   return VALID_SESSION_MODES.includes(value as SessionMode) ? value as SessionMode : 'standard'
-}
-
-function isLessonScopedSessionMode(mode: SessionMode): boolean {
-  return mode === 'lesson_practice' || mode === 'lesson_review'
 }
 
 async function loadSelectedLessonScope(lessonId: string | null): Promise<{
@@ -65,6 +64,7 @@ export function Session() {
   const [dryingDismissed, setDryingDismissed] = useState(false)
 
   const lessonFilter = searchParams.get('lesson')
+  const affixFilter = searchParams.get('affix')
   const sessionModeParam = searchParams.get('mode')
   const sessionMode = parseSessionMode(sessionModeParam)
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
@@ -102,13 +102,26 @@ export function Session() {
         // session start. See docs/plans/2026-05-07-retire-session-lifecycle.md.
         const sid = crypto.randomUUID()
         sessionIdRef.current = sid
-        const lessonScope = isLessonScopedSessionMode(sessionMode)
-          ? await loadSelectedLessonScope(lessonFilter)
-          : null
-        if (isLessonScopedSessionMode(sessionMode) && !lessonScope) {
-          setError('Deze les is nog niet klaar om te oefenen.')
-          setLoading(false)
-          return
+        // Resolve the session scope. Lesson modes need a lesson id + its
+        // source_refs; the affix mode (capstone item F′) resolves the affix
+        // label in the URL to source_refs ONLY (an affix spans many lessons).
+        // Both mirror loadSelectedLessonScope; an unresolved scope is a friendly
+        // error, not a broken session.
+        let scope: { selectedLessonId?: string; selectedSourceRefs: string[] } | null = null
+        if (isLessonScopedMode(sessionMode)) {
+          scope = await loadSelectedLessonScope(lessonFilter)
+          if (!scope) {
+            setError('Deze les is nog niet klaar om te oefenen.')
+            setLoading(false)
+            return
+          }
+        } else if (isSourceRefScopedMode(sessionMode)) {
+          scope = await loadSelectedAffixScope(affixFilter)
+          if (!scope) {
+            setError('Dit voorvoegsel heeft nog geen oefeningen.')
+            setLoading(false)
+            return
+          }
         }
         const capabilityPlan = await buildSession({
           enabled: true,
@@ -118,7 +131,7 @@ export function Session() {
           now: new Date(),
           limit: preferredSessionSize,
           preferredSessionSize,
-          ...(lessonScope ?? {}),
+          ...(scope ?? {}),
           ...(allowForceCapability && forceCapabilityKey ? { forceCapabilityKey } : {}),
           adapter: sessionBuilderAdapter,
         })
@@ -157,7 +170,7 @@ export function Session() {
     }
 
     initSession()
-  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, sessionMode, forceCapabilityKey, allowForceCapability])
+  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, affixFilter, sessionMode, forceCapabilityKey, allowForceCapability])
 
   // Session finished (queue exhausted) — fired by ExperiencePlayer the moment the
   // cards run out, NOT on the recap button. Marks the session complete so it
