@@ -32,9 +32,25 @@ The catalog's `confix` type is **shape-based** (the affix wraps the root: part b
 - **Atomic circumfix** — one indivisible morpheme delivered in two fragments; neither half is a word on its own. `ke-…-an`: `adil` ("just") → `keadilan` ("justice"), but `*keadil` and `*adilan` do not exist as words with that meaning.
 - **Stacked / combined affix** — two independent morphemes that co-occur, each a real standalone step. `meN-…-kan`: `beli` → `membelikan`, where `membeli` ("to buy") *and* `belikan` ("buy it for someone") both exist.
 
-**The derivation engine spells both the same way** — `prefix-piece(root) + suffix-piece`, the prefix piece being invariant (`ke`, `di`, `per`…) or nasalising (`me`, `pe`): `keadilan = 'ke'+adil+'an'`, `membelikan = nasalise(beli,'me-')+'kan'`, `pendidikan = nasalise(didik,'pe-')+'an'`. So a **single composer** handles every prefix/suffix/confix in the book-2 syllabus (Bab 4/5/7/9/11/13); the atomic-vs-stacked distinction is **metadata for grouping and teaching** (the Affix trainer, the rule note), never a derivation fork. The one true exception is **reduplication** (`rumah-rumah`), which copies the root rather than concatenating slots — its own derivation path (same table, `affix_type='reduplication'`).
+**The derivation engine spells both the same way** — `prefix-piece(root) + suffix-piece`, the prefix piece being invariant (`ke`, `di`, `per`…) or nasalising (`me`, `pe`): `keadilan = 'ke'+adil+'an'`, `membelikan = nasalise(beli,'me-')+'kan'`, `pendidikan = nasalise(didik,'pe-')+'an'`. So a **single composer** handles every prefix/suffix/confix in the book-2 syllabus (Bab 4/5/7/9/11/13); the atomic-vs-stacked distinction is **metadata for grouping and teaching** (the Affix trainer, the rule note), never a derivation fork. Reduplication is *not* a fork either — it composes through the same slots as a **base modifier** (see **Reduplication** below).
 
 We collapse all wrap-arounds under `confix` because every consumer — the DB CHECK, the CS12 validator, and the `decompose_word_ex`/`build_confix_ex` drills — keys on *shape* (`circumfix_left` + `circumfix_right` present). `meN-…-kan`/`pe-…-an` are additionally **allomorphic** on the left half (their `circumfix_left` is the nasalised spelling `mem`/`pen`/…); `di-…-kan`/`ke-…-an` are invariant. First exercised by **lesson 21** (Bab 5, `-kan`); the engine is generalised across the whole known affix set rather than added per-chapter, since all book-2 chapters land together.
+
+### Reduplication (`affixType: 'reduplication'`) — a base modifier, not a separate path
+
+A reduplication **doubles the root to form a base** (`anak → anak-anak`), then *optionally* wraps that base with the **same** fixed prefix / fixed suffix slots the confix composer already uses. So one composer covers the whole family:
+
+- **full** — `{ reduplicate }` → `anak-anak` (noun: plurality-with-diversity; verb/adj: intensity/aspect)
+- **redup + suffix** — `{ reduplicate, suffix:'an' }` → `sayur → sayur-sayuran` ("various vegetables")
+- **`ke-…-an` reduplication** — `{ prefix:{fixed:'ke'}, reduplicate, suffix:'an' }` → `biru → kebiru-biruan` ("bluish")
+- **(later)** `ber-…-an` reciprocity (L12), `se-…-nya` (L8) — same shape, added with their chapters.
+
+Two facts pin the data model and follow from grounding the design against L22's actual grammar (Bab 6, *Verdubbelingen*):
+
+- **`circumfix_left/right` stay `null` for every reduplication row, even the wrapped ones** — the CS12/HC31 invariant ("reduplication carries no circumfix") is **unchanged**. The wrap pieces (`ke`, `an`) are *re-derived from `(root, affix)` at render*, never persisted (they are mechanically derivable; storing them is redundant). Each wrapped shape is a **distinct, reduplication-namespaced catalog affix** (e.g. `reduplication-an`, `ke-…-an-reduplication`) so it never collides with the confix `ke-…-an` in the 1:1 catalog map.
+- **The exercise split is by reduplication kind, not by cap type.** *Wrapped* reduplication has a real morpheme boundary → `decompose_word_ex` renders `[left, root-root, right]` (recognition) + contextualised `type_form_ex` (production). *Full* reduplication has no boundary → `decompose_word_ex` renders the easy `[root, root]` "find-the-root" rung (the literature's recognition intro step), production again via `type_form_ex`. The resolver stays type-based and dumb; no `allowedExercises` / `ProjectedCapability` change; no ready-but-unrenderable cap.
+
+The **one shape that is NOT engine-derived** is the asymmetric reciprocal `root-meN(root)` (`sewa-menyewa`, `surat-menyurat`): only the second half is affixed, so it does not fit "double the base then wrap." It is **recognition-only / vocab** — deriving it by rule would teach a false generalisation (research §106). Likewise **sound-change** (`sayur-mayur`, `warna-warni`), **lexicalised** (`alun-alun`, `kura-kura`) and **fixed-adverb** (`hati-hati`, `tiba-tiba`) reduplications are **frozen vocabulary**, not morphology pairs; only *compositional, productive* reduplications become rule-drilled pairs (research §25/§106). First exercised by **lesson 22**; see **ADR 0019** (amended for the base-modifier refinement).
 
 ## Content Unit
 
