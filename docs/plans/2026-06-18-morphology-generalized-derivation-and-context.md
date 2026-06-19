@@ -1,5 +1,18 @@
 ---
-status: approved
+status: shipped
+implementation: PR (feat/morphology-generalized-derivation, 9 commits)
+merged_at: 2026-06-19
+implementation_paths:
+  - src/lib/capabilities/affixCatalog.ts          # composition recipe + confix/stacked entries
+  - src/lib/capabilities/affixDerivation.ts        # recipe composer + deriveConfix/deriveReduplication + blankDerivedInCarrier
+  - scripts/generate-morphology-patterns.ts        # circumfix/carrier emit + carrier harvest
+  - scripts/migration.sql                          # carrier_text column
+  - src/lib/exercise-content/byType/decomposeWord.ts  # decompose_word_ex packager
+  - src/components/exercises/implementations/DecomposeWordExercise.tsx
+  - scripts/lib/pipeline/capability-stage/validators/affixedFormPairs.ts  # CS12 carrier+reduplication
+  - scripts/check-supabase-deep.ts                 # HC31 reduplication
+# SHIPPED 2026-06-19: Tasks 1-9 built (tsc+lint+1992 tests green); L21 published live
+# (36 confix caps, gate ok=true, HC17/HC31 green); render-verified via RTL on live shapes.
 reviewed_by: [architect, data-architect]   # round-2 sign-off 2026-06-18; staff-engineer soundness pass: SOUND
 supersedes: []
 related:
