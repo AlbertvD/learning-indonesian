@@ -29,6 +29,7 @@ import { createCapabilityContentService } from '@/lib/exercise-content'
 import { buildCanonicalKey } from '@/lib/capabilities/canonicalKey'
 import { audibleTextFieldsOf } from '@/lib/session-builder/audibleTexts'
 import TypedRecall from '@/components/exercises/implementations/TypedRecall'
+import DecomposeWordExercise from '@/components/exercises/implementations/DecomposeWordExercise'
 import type { SessionBlock } from '@/lib/session-builder'
 
 vi.mock('@/lib/supabase', () => ({ supabase: {} }))
@@ -58,6 +59,7 @@ function makeAffixedBlock(opts: {
   sourceRef: string
   direction: 'root_to_derived' | 'derived_to_root'
   capabilityType: 'produce_derived_form_cap' | 'recognise_word_form_link_cap'
+  exerciseType?: 'type_form_ex' | 'decompose_word_ex'
 }): SessionBlock {
   const key = buildCanonicalKey({
     sourceKind: 'word_form_pair_src',
@@ -75,7 +77,7 @@ function makeAffixedBlock(opts: {
     renderPlan: {
       capabilityKey: key,
       sourceRef: opts.sourceRef,
-      exerciseType: 'type_form_ex',
+      exerciseType: opts.exerciseType ?? 'type_form_ex',
       capabilityType: opts.capabilityType,
       skillType: opts.direction === 'root_to_derived' ? 'produce_mode' : 'recognise_mode',
     },
@@ -288,5 +290,86 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
     }, { timeout: 2000 })
 
     expect(onAnswer.mock.calls[0]?.[0]?.wasCorrect).toBe(false)
+  })
+
+  // ── ADR 0019 — confix render-verify using the LIVE L21 data shapes ──────────
+  // (root beli + meN-…-kan → membelikan, circumfix mem/kan, carrier harvested from
+  // L21's grammar example "Ibu membelikan anaknya buku"). Mirrors what the live
+  // app renders for the published L21 caps, without needing admin auth.
+
+  const L21_CONFIX_ROW = {
+    capability_id: 'cap-l21-membelikan',
+    root_text: 'beli',
+    derived_text: 'membelikan',
+    allomorph_rule: 'meN-…-kan: voorvoegsel mem- met achtervoegsel -kan: beli → membelikan.',
+    affix: 'meN-…-kan',
+    circumfix_left: 'mem',
+    circumfix_right: 'kan',
+    carrier_text: 'Ibu membelikan anaknya buku',
+  }
+
+  it('renders decompose_word_ex for a confix recognition cap — the breakdown "mem + beli + kan" is selectable and answering fires onAnswer', async () => {
+    const tables: Record<string, MockTable> = {
+      affixed_form_pairs: { rows: [L21_CONFIX_ROW], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const block = makeAffixedBlock({
+      capabilityId: 'cap-l21-membelikan',
+      sourceRef: 'lesson-21/morphology/meN-…-kanbeli-membelikan',
+      direction: 'derived_to_root',
+      capabilityType: 'recognise_word_form_link_cap',
+      exerciseType: 'decompose_word_ex',
+    })
+    const result = await service.resolveBlocks([block], { userId: 'u', userLanguage: 'nl', sessionId: 's' })
+    const ctx = result.get(block.id)
+    expect(ctx?.diagnostic).toBeNull()
+    expect(ctx?.exerciseItem?.decomposeData?.word).toBe('membelikan')
+    expect(ctx?.exerciseItem?.decomposeData?.correctOptionId).toBe('mem + beli + kan')
+
+    const onAnswer = vi.fn()
+    render(
+      <MantineProvider>
+        <DecomposeWordExercise exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} adminOverlay={null} />
+      </MantineProvider>
+    )
+    // The word renders as the prompt (and also as the unsegmented-word distractor,
+    // so it appears more than once — that distractor is intentional).
+    expect(screen.getAllByText('membelikan').length).toBeGreaterThanOrEqual(1)
+    const correct = screen.getByText('mem + beli + kan')
+    expect(correct).toBeInTheDocument()
+
+    await userEvent.setup().click(correct)
+    await vi.waitFor(() => { expect(onAnswer).toHaveBeenCalled() }, { timeout: 2000 })
+    expect(onAnswer.mock.calls[0]?.[0]?.wasCorrect).toBe(true)
+  })
+
+  it('renders the contextualised carrier on the produce cap — type_form_ex shows the blanked sentence "Ibu ___ anaknya buku"', async () => {
+    const tables: Record<string, MockTable> = {
+      affixed_form_pairs: { rows: [L21_CONFIX_ROW], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const block = makeAffixedBlock({
+      capabilityId: 'cap-l21-membelikan',
+      sourceRef: 'lesson-21/morphology/meN-…-kanbeli-membelikan',
+      direction: 'root_to_derived',
+      capabilityType: 'produce_derived_form_cap',
+    })
+    const result = await service.resolveBlocks([block], { userId: 'u', userLanguage: 'nl', sessionId: 's' })
+    const ctx = result.get(block.id)
+    expect(ctx?.exerciseItem?.affixedFormPairData?.carrierBlanked).toBe('Ibu ___ anaknya buku')
+
+    render(
+      <MantineProvider>
+        <TypedRecall exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={vi.fn()} onEvent={vi.fn()} adminOverlay={null} />
+      </MantineProvider>
+    )
+    // The carrier sentence (blanked) is the prompt; typing the form is graded against membelikan.
+    expect(screen.getByText('Ibu ___ anaknya buku')).toBeInTheDocument()
+    const user = userEvent.setup()
+    await user.type(screen.getByRole('textbox'), 'membelikan')
+    await user.keyboard('{Enter}')
+    // (grading uses acceptedAnswer=membelikan; the carrier is the prompt context.)
   })
 })
