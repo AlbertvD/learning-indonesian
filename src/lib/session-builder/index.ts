@@ -8,6 +8,7 @@ export { buildSession, type CapabilitySessionDataAdapter, type CapabilitySession
 export { sessionBuilderAdapter, createSessionBuilderAdapter } from '@/lib/session-builder/adapter'
 export { audibleTextFieldsOf, collectAudibleTexts } from '@/lib/session-builder/audibleTexts'
 export { capabilityDisplay, exerciseLabel, skillLabel, CAPABILITY_DISPLAY, type CapabilityDisplay } from '@/lib/session-builder/labels'
+export { isLessonScopedMode, isSourceRefScopedMode, isScopedMode } from '@/lib/session-builder/model'
 export type {
   SessionMode,
   SessionPlan,

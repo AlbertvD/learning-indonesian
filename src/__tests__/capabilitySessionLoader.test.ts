@@ -359,6 +359,165 @@ describe('capability session loader', () => {
     }))
   })
 
+  // ── Affix-scoped session (source-ref-only scope, capstone item F′) ─────────
+  // The affix mode is scoped by source_refs ALONE (an affix spans many lessons,
+  // so it has no single selectedLessonId). These four regressions guard the
+  // round-2/3 finding: a non-lesson scoped mode must NOT bypass scoping and ship
+  // the whole global queue + out-of-scope new caps + a dead practice-review pass.
+  describe('affix-scoped session (mode=affix_practice)', () => {
+    const inDueKey = 'affix-in-due-key'
+    const outDueKey = 'affix-out-due-key'
+    const inNewKey = 'affix-in-new-key'
+    const outNewKey = 'affix-out-new-key'
+    const inActiveKey = 'affix-in-active-key'
+    const affixRefs = [
+      'affixed_form_pairs/meN-ajar',
+      'affixed_form_pairs/meN-tulis',
+      'affixed_form_pairs/meN-baca',
+      'affixed_form_pairs/meN-dengar',
+    ]
+    // An affix cap: word_form_pair_src, null lessonId so the lesson-activation
+    // gate is bypassed and these tests isolate the SCOPE behaviour.
+    const affixCap = (key: string, ref: string): ProjectedCapability =>
+      projectedCapability({
+        canonicalKey: key,
+        sourceKind: 'word_form_pair_src',
+        sourceRef: ref,
+        capabilityType: 'recognise_word_form_link_cap',
+        requiredArtifacts: [],
+      })
+    const affixPlanner = (id: string, key: string, ref: string): PlannerCapability => ({
+      id,
+      canonicalKey: key,
+      sourceKind: 'word_form_pair_src',
+      sourceRef: ref,
+      capabilityType: 'recognise_word_form_link_cap',
+      skillType: 'recognise_mode',
+      readinessStatus: 'ready',
+      publicationStatus: 'published',
+      prerequisiteKeys: [],
+      lessonId: null,
+    })
+
+    it('(i) filters DUE caps to the affix source_refs and stays valid without a selectedLessonId', async () => {
+      const projections = [
+        affixCap(inDueKey, 'affixed_form_pairs/meN-ajar'),
+        affixCap(outDueKey, 'learning_items/some-other-word'),
+      ]
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        mode: 'affix_practice',
+        limit: 10,
+        schedulerRows: [
+          activeState({ id: 'in-due-state', canonicalKeySnapshot: inDueKey, capabilityId: 'in-due', nextDueAt: '2026-04-25T09:00:00.000Z' }),
+          activeState({ id: 'out-due-state', canonicalKeySnapshot: outDueKey, capabilityId: 'out-due', nextDueAt: '2026-04-25T08:00:00.000Z' }),
+        ],
+        plannerInput: {
+          userId: 'user-1',
+          preferredSessionSize: 10,
+          dueCount: 0,
+          readyCapabilities: [],
+          learnerCapabilityStates: [],
+          activatedLessons: new Set<string>(),
+          selectedSourceRefs: affixRefs,
+        },
+        capabilitiesByKey: new Map(projections.map(p => [p.canonicalKey, p])),
+        readinessByKey: new Map(projections.map(p => [p.canonicalKey, { status: 'ready' as const, allowedExercises: ['choose_form_ex' as const] }])),
+        selectedSourceRefs: affixRefs,
+      }))
+      // No missing_selected_lesson diagnostic — the source-ref-only scope is valid.
+      expect(plan.diagnostics).not.toContainEqual(expect.objectContaining({ reason: 'missing_selected_lesson' }))
+      expect(plan.blocks.map(b => b.renderPlan.sourceRef)).toEqual(['affixed_form_pairs/meN-ajar'])
+    })
+
+    it('(ii) scopes NEW introductions to the affix — out-of-scope caps are suppressed', async () => {
+      const projections = [
+        affixCap(inNewKey, 'affixed_form_pairs/meN-tulis'),
+        affixCap(outNewKey, 'learning_items/some-other-word'),
+      ]
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        mode: 'affix_practice',
+        limit: 10,
+        schedulerRows: [],
+        plannerInput: {
+          userId: 'user-1',
+          preferredSessionSize: 10,
+          dueCount: 0,
+          readyCapabilities: [
+            affixPlanner('in-new', inNewKey, 'affixed_form_pairs/meN-tulis'),
+            affixPlanner('out-new', outNewKey, 'learning_items/some-other-word'),
+          ],
+          learnerCapabilityStates: [],
+          activatedLessons: new Set<string>(),
+          selectedSourceRefs: affixRefs,
+        },
+        capabilitiesByKey: new Map(projections.map(p => [p.canonicalKey, p])),
+        readinessByKey: new Map(projections.map(p => [p.canonicalKey, { status: 'ready' as const, allowedExercises: ['choose_form_ex' as const] }])),
+        selectedSourceRefs: affixRefs,
+      }))
+      expect(plan.blocks.map(b => b.renderPlan.sourceRef)).toEqual(['affixed_form_pairs/meN-tulis'])
+      expect(plan.blocks[0]?.pendingActivation).toEqual(expect.objectContaining({ capabilityId: 'in-new' }))
+    })
+
+    it('(iii) surfaces active-but-not-due affix caps via the practice-review pass', async () => {
+      const projections = [affixCap(inActiveKey, 'affixed_form_pairs/meN-baca')]
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        mode: 'affix_practice',
+        limit: 10,
+        schedulerRows: [
+          // active, reviewed once, due in the FUTURE → not due, but in scope.
+          activeState({ id: 'in-active-state', canonicalKeySnapshot: inActiveKey, capabilityId: 'in-active', reviewCount: 2, nextDueAt: '2026-04-28T09:00:00.000Z' }),
+        ],
+        plannerInput: {
+          userId: 'user-1',
+          preferredSessionSize: 10,
+          dueCount: 0,
+          readyCapabilities: [],
+          learnerCapabilityStates: [],
+          activatedLessons: new Set<string>(),
+          selectedSourceRefs: affixRefs,
+        },
+        capabilitiesByKey: new Map(projections.map(p => [p.canonicalKey, p])),
+        readinessByKey: new Map(projections.map(p => [p.canonicalKey, { status: 'ready' as const, allowedExercises: ['choose_form_ex' as const] }])),
+        selectedSourceRefs: affixRefs,
+      }))
+      expect(plan.blocks.map(b => b.renderPlan.sourceRef)).toEqual(['affixed_form_pairs/meN-baca'])
+    })
+
+    it('(iv) fills open budget slots with in-scope new caps after the due cap', async () => {
+      const dueKey = 'affix-budget-due'
+      const newKeys = ['affix-budget-new-1', 'affix-budget-new-2', 'affix-budget-new-3']
+      const projections = [
+        affixCap(dueKey, 'affixed_form_pairs/meN-ajar'),
+        affixCap(newKeys[0]!, 'affixed_form_pairs/meN-tulis'),
+        affixCap(newKeys[1]!, 'affixed_form_pairs/meN-baca'),
+        affixCap(newKeys[2]!, 'affixed_form_pairs/meN-dengar'),
+      ]
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        mode: 'affix_practice',
+        limit: 3,
+        schedulerRows: [
+          activeState({ id: 'budget-due-state', canonicalKeySnapshot: dueKey, capabilityId: 'budget-due', nextDueAt: '2026-04-25T09:00:00.000Z' }),
+        ],
+        plannerInput: {
+          userId: 'user-1',
+          preferredSessionSize: 3,
+          dueCount: 1,
+          readyCapabilities: newKeys.map((k, i) => affixPlanner(`budget-new-${i}`, k, projections[i + 1]!.sourceRef)),
+          learnerCapabilityStates: [],
+          activatedLessons: new Set<string>(),
+          selectedSourceRefs: affixRefs,
+        },
+        capabilitiesByKey: new Map(projections.map(p => [p.canonicalKey, p])),
+        readinessByKey: new Map(projections.map(p => [p.canonicalKey, { status: 'ready' as const, allowedExercises: ['choose_form_ex' as const] }])),
+        selectedSourceRefs: affixRefs,
+      }))
+      // 1 due + open slots (3 - 1 = 2) filled with new in-scope caps = 3 total.
+      expect(plan.blocks).toHaveLength(3)
+      expect(plan.blocks[0]?.renderPlan.sourceRef).toBe('affixed_form_pairs/meN-ajar')
+      expect(plan.blocks.filter(b => b.pendingActivation)).toHaveLength(2)
+    })
+  })
+
   describe('lesson-activation gate (Decision 3b / ADR 0006)', () => {
     const lesson1Id = 'lesson-1-uuid'
     const lesson2Id = 'lesson-2-uuid'
