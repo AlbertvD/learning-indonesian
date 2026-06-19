@@ -23,19 +23,22 @@ describe('deriveWeeklyMovement', () => {
     expect(deriveWeeklyMovement({ events, now: NOW })).toEqual({
       advancedVocab: 1,
       advancedGrammar: 0,
+      advancedMorphology: 0,
       reachedMastered: 0,
       slipped: 0,
     })
   })
 
-  it('counts grammar advances in the grammar bucket', () => {
+  it('splits grammar and morphology advances into their own buckets (item C)', () => {
     const events = [
       evt('lesson-1/pattern-ber', { reviewCount: 1, stability: 1 }, { reviewCount: 3, stability: 6 }, 'grammar_pattern_src'),
+      evt('baca-membaca', { reviewCount: 1, stability: 1 }, { reviewCount: 3, stability: 6 }, 'word_form_pair_src'),
       evt('makan', { reviewCount: 1, stability: 1 }, { reviewCount: 3, stability: 6 }, 'vocabulary_src'),
     ]
     expect(deriveWeeklyMovement({ events, now: NOW })).toEqual({
       advancedVocab: 1,
       advancedGrammar: 1,
+      advancedMorphology: 1,
       reachedMastered: 0,
       slipped: 0,
     })
@@ -48,6 +51,7 @@ describe('deriveWeeklyMovement', () => {
     expect(deriveWeeklyMovement({ events, now: NOW })).toEqual({
       advancedVocab: 0,
       advancedGrammar: 0,
+      advancedMorphology: 0,
       reachedMastered: 0,
       slipped: 0,
     })
@@ -71,6 +75,7 @@ describe('deriveWeeklyMovement', () => {
     expect(deriveWeeklyMovement({ events, now: NOW })).toEqual({
       advancedVocab: 0,
       advancedGrammar: 0,
+      advancedMorphology: 0,
       reachedMastered: 0,
       slipped: 1,
     })

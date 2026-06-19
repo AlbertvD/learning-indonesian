@@ -1608,26 +1608,27 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     if (evErr) throw new Error(evErr.message)
     // Reuse the canonical TS bucket classifier (single source of truth) so this
     // parity check can't drift from the funnel / movement derivers it guards.
-    const advVocab = new Set<string>(), advGrammar = new Set<string>(), reached = new Set<string>(), slip = new Set<string>()
+    const advVocab = new Set<string>(), advGrammar = new Set<string>(), advMorph = new Set<string>(), reached = new Set<string>(), slip = new Set<string>()
     for (const e of (events ?? []) as Array<{ state_before_json: StateJson; state_after_json: StateJson; learning_capabilities: { source_ref: string; source_kind: string } }>) {
       const bucket = funnelBucket(e.learning_capabilities.source_kind as CapabilitySourceKind)
       if (!bucket) continue
       const b = e.state_before_json, a = e.state_after_json
       const ref = e.learning_capabilities.source_ref
-      if (rankOf(a, now) > rankOf(b, now)) (bucket === 'vocab' ? advVocab : advGrammar).add(ref)
+      if (rankOf(a, now) > rankOf(b, now)) (bucket === 'vocab' ? advVocab : bucket === 'grammar' ? advGrammar : advMorph).add(ref)
       if (isMastered(a, now) && !isMastered(b, now)) reached.add(ref)
       if (isAtRisk(a) && !isAtRisk(b)) slip.add(ref)
     }
     const { data: rpc, error: rpcErr } = await supabase.schema('indonesian')
       .rpc('get_weekly_movement', { p_user_id: TEST_USER_ID, p_timezone: 'UTC' })
     if (rpcErr) throw new Error(rpcErr.message)
-    const r = (rpc ?? {}) as { advanced_vocab?: number; advanced_grammar?: number; reached_mastered?: number; slipped?: number }
+    const r = (rpc ?? {}) as { advanced_vocab?: number; advanced_grammar?: number; advanced_morphology?: number; reached_mastered?: number; slipped?: number }
     const ok = (r.advanced_vocab ?? 0) === advVocab.size && (r.advanced_grammar ?? 0) === advGrammar.size
+      && (r.advanced_morphology ?? 0) === advMorph.size
       && (r.reached_mastered ?? 0) === reached.size && (r.slipped ?? 0) === slip.size
     if (ok) {
-      pass(`HC28 weekly movement parity (RPC == TS) — vocab=${advVocab.size} grammar=${advGrammar.size} mastered=${reached.size} slipped=${slip.size} (ADR 0015)`)
+      pass(`HC28 weekly movement parity (RPC == TS) — vocab=${advVocab.size} grammar=${advGrammar.size} morphology=${advMorph.size} mastered=${reached.size} slipped=${slip.size} (ADR 0015)`)
     } else {
-      fail('HC28 weekly movement parity (RPC vs TS)', `RPC {v:${r.advanced_vocab},g:${r.advanced_grammar},m:${r.reached_mastered},s:${r.slipped}} vs TS {v:${advVocab.size},g:${advGrammar.size},m:${reached.size},s:${slip.size}} — _mastery_label / bucketing diverged`)
+      fail('HC28 weekly movement parity (RPC vs TS)', `RPC {v:${r.advanced_vocab},g:${r.advanced_grammar},mo:${r.advanced_morphology},m:${r.reached_mastered},s:${r.slipped}} vs TS {v:${advVocab.size},g:${advGrammar.size},mo:${advMorph.size},m:${reached.size},s:${slip.size}} — _mastery_label / bucketing diverged`)
     }
   } catch (err) {
     fail('HC28 weekly movement parity', err instanceof Error ? err.message : String(err))

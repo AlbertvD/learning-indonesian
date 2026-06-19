@@ -17,8 +17,8 @@ describe('MasteryFunnelPanel', () => {
 
   it('renders the all-lessons funnel by default, a lesson filter, and the footer', async () => {
     vi.mocked(getMasteryFunnels).mockResolvedValue({
-      all: { vocabulary: funnel({ mastered: 12, introduced: 3 }), grammar: funnel() },
-      byLesson: new Map([[2, { vocabulary: funnel({ mastered: 4 }), grammar: funnel() }]]),
+      all: { vocabulary: funnel({ mastered: 12, introduced: 3 }), grammar: funnel(), morphology: funnel() },
+      byLesson: new Map([[2, { vocabulary: funnel({ mastered: 4 }), grammar: funnel(), morphology: funnel() }]]),
     })
 
     render(
