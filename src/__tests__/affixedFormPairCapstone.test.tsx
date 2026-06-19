@@ -373,3 +373,130 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
     // (grading uses acceptedAnswer=membelikan; the carrier is the prompt context.)
   })
 })
+
+// ── ADR 0019 (amended L22) — reduplication render-verify on LIVE L22 data shapes ──
+// circumfix_left/right are NULL on the row (Option A); decompose re-derives the
+// segmentation from the catalog recipe. Full reduplication renders [root, root];
+// wrapped reduplication renders [left, root-root, right]; the produce prompt is the
+// Dutch "verdubbelde vorm". Mirrors what the published L22 caps render in-app.
+describe('word_form_pair_src reduplication (L22) — render-verify', () => {
+  it('full reduplication decompose_word_ex: "anak + anak" is selectable and answering fires onAnswer', async () => {
+    const tables: Record<string, MockTable> = {
+      affixed_form_pairs: { rows: [{
+        capability_id: 'cap-l22-anak-anak', root_text: 'anak', derived_text: 'anak-anak',
+        allomorph_rule: 'Verdubbeling: anak → anak-anak.', affix: 'reduplication',
+        circumfix_left: null, circumfix_right: null, carrier_text: null,
+      }], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const block = makeAffixedBlock({
+      capabilityId: 'cap-l22-anak-anak', sourceRef: 'lesson-22/morphology/reduplicationanak-anak-anak',
+      direction: 'derived_to_root', capabilityType: 'recognise_word_form_link_cap', exerciseType: 'decompose_word_ex',
+    })
+    const result = await service.resolveBlocks([block], { userId: 'u', userLanguage: 'nl', sessionId: 's' })
+    const ctx = result.get(block.id)
+    expect(ctx?.diagnostic).toBeNull()
+    expect(ctx?.exerciseItem?.decomposeData?.correctOptionId).toBe('anak + anak')
+
+    const onAnswer = vi.fn()
+    render(
+      <MantineProvider>
+        <DecomposeWordExercise exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} adminOverlay={null} />
+      </MantineProvider>
+    )
+    const correct = screen.getByText('anak + anak')
+    expect(correct).toBeInTheDocument()
+    await userEvent.setup().click(correct)
+    await vi.waitFor(() => { expect(onAnswer).toHaveBeenCalled() }, { timeout: 2000 })
+    expect(onAnswer.mock.calls[0]?.[0]?.wasCorrect).toBe(true)
+  })
+
+  it('wrapped reduplication decompose_word_ex: "ke + biru-biru + an" is the correct breakdown', async () => {
+    const tables: Record<string, MockTable> = {
+      affixed_form_pairs: { rows: [{
+        capability_id: 'cap-l22-kebiru-biruan', root_text: 'biru', derived_text: 'kebiru-biruan',
+        allomorph_rule: 'ke-…-an om de verdubbeling: biru → kebiru-biruan.', affix: 'ke-…-an-reduplication',
+        circumfix_left: null, circumfix_right: null, carrier_text: null,
+      }], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const block = makeAffixedBlock({
+      capabilityId: 'cap-l22-kebiru-biruan', sourceRef: 'lesson-22/morphology/ke-…-an-reduplicationbiru-kebiru-biruan',
+      direction: 'derived_to_root', capabilityType: 'recognise_word_form_link_cap', exerciseType: 'decompose_word_ex',
+    })
+    const result = await service.resolveBlocks([block], { userId: 'u', userLanguage: 'nl', sessionId: 's' })
+    const ctx = result.get(block.id)
+    expect(ctx?.diagnostic).toBeNull()
+    expect(ctx?.exerciseItem?.decomposeData?.word).toBe('kebiru-biruan')
+    expect(ctx?.exerciseItem?.decomposeData?.correctOptionId).toBe('ke + biru-biru + an')
+
+    render(
+      <MantineProvider>
+        <DecomposeWordExercise exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={vi.fn()} onEvent={vi.fn()} adminOverlay={null} />
+      </MantineProvider>
+    )
+    expect(screen.getByText('ke + biru-biru + an')).toBeInTheDocument()
+  })
+
+  it('reduplication produce type_form_ex (isolated): Dutch "verdubbelde vorm" prompt, typing the doubled form is correct', async () => {
+    const tables: Record<string, MockTable> = {
+      affixed_form_pairs: { rows: [{
+        capability_id: 'cap-l22-anak-anak-produce', root_text: 'anak', derived_text: 'anak-anak',
+        allomorph_rule: 'Verdubbeling: anak → anak-anak.', affix: 'reduplication',
+        circumfix_left: null, circumfix_right: null, carrier_text: null,
+      }], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const block = makeAffixedBlock({
+      capabilityId: 'cap-l22-anak-anak-produce', sourceRef: 'lesson-22/morphology/reduplicationanak-anak-anak',
+      direction: 'root_to_derived', capabilityType: 'produce_derived_form_cap',
+    })
+    const result = await service.resolveBlocks([block], { userId: 'u', userLanguage: 'nl', sessionId: 's' })
+    const ctx = result.get(block.id)
+    expect(ctx?.exerciseItem?.affixedFormPairData?.promptText).toBe('Geef de verdubbelde vorm van: anak')
+    expect(ctx?.exerciseItem?.affixedFormPairData?.carrierBlanked).toBeNull()
+
+    const onAnswer = vi.fn()
+    render(
+      <MantineProvider>
+        <TypedRecall exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} adminOverlay={null} />
+      </MantineProvider>
+    )
+    expect(screen.getByText('Geef de verdubbelde vorm van: anak')).toBeInTheDocument()
+    const user = userEvent.setup()
+    await user.type(screen.getByRole('textbox'), 'anak-anak')
+    await user.keyboard('{Enter}')
+    await vi.waitFor(() => { expect(onAnswer).toHaveBeenCalled() }, { timeout: 2000 })
+    expect(onAnswer.mock.calls[0]?.[0]?.wasCorrect).toBe(true)
+  })
+
+  it('reduplication produce with carrier: the hyphenated form blanks as a whole word ("…, ___ tentu")', async () => {
+    const tables: Record<string, MockTable> = {
+      affixed_form_pairs: { rows: [{
+        capability_id: 'cap-l22-sayur-sayuran', root_text: 'sayur', derived_text: 'sayur-sayuran',
+        allomorph_rule: 'Verdubbeling + achtervoegsel -an: sayur → sayur-sayuran.', affix: 'reduplication-an',
+        circumfix_left: null, circumfix_right: null, carrier_text: 'Kura-kura makan apa, sayur-sayuran tentu',
+      }], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const block = makeAffixedBlock({
+      capabilityId: 'cap-l22-sayur-sayuran', sourceRef: 'lesson-22/morphology/reduplication-ansayur-sayur-sayuran',
+      direction: 'root_to_derived', capabilityType: 'produce_derived_form_cap',
+    })
+    const result = await service.resolveBlocks([block], { userId: 'u', userLanguage: 'nl', sessionId: 's' })
+    const ctx = result.get(block.id)
+    // The whole reduplication token (internal hyphen kept) blanks, not just one half.
+    expect(ctx?.exerciseItem?.affixedFormPairData?.carrierBlanked).toBe('Kura-kura makan apa, ___ tentu')
+
+    render(
+      <MantineProvider>
+        <TypedRecall exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={vi.fn()} onEvent={vi.fn()} adminOverlay={null} />
+      </MantineProvider>
+    )
+    expect(screen.getByText('Kura-kura makan apa, ___ tentu')).toBeInTheDocument()
+  })
+})
