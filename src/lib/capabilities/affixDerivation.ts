@@ -12,28 +12,37 @@
 // the generation script (scripts/) and the pipeline both import only from here
 // (target-architecture.md:1159, the sole pipeline↔runtime shared seam). Pure, no I/O.
 //
-// SCOPE: allomorphic prefixes meN-/peN- (nasalisation), invariant prefixes
-// ber-/di-, and invariant suffixes -an/-kan/-i (plain concatenation). The stored
-// `affix` is carried explicitly on the authored pair (AffixedPairInput.affix), so
-// suffixes round-trip cleanly — the old `deriveAffix` reverse-engineering that
-// could only recover trailing-hyphen prefix labels has been retired. Confix and
-// reduplication derivation are still deferred to their book-2 chapters (Task 6):
-// deriveAffixedForm THROWS UnsupportedAffixError for those.
+// SCOPE (ADR 0019): a single catalog-recipe composer. Every catalog entry carries
+// a `composition` recipe — a left piece (nasalising meN-/peN- or a fixed prefix),
+// a right piece (a fixed suffix), or `reduplicate` — and the engine reads it
+// instead of branching per affix. This covers ALL prefixes, suffixes, and confixes
+// (`prefix + suffix` present → the surface is spelled identically whether the
+// confix is atomic like `ke-…-an` or stacked like `meN-…-kan`); reduplication is
+// the one separate, non-concatenative path. The stored `affix` is carried
+// explicitly on the authored pair, so forms round-trip cleanly. Only an affix with
+// no recipe, an unknown affix, or a root whose nasalisation class can't be derived
+// throws UnsupportedAffixError.
 
-import { affixCatalogEntry, type AffixType } from './affixCatalog'
+import { affixCatalogEntry, type AffixComposition, type AffixType } from './affixCatalog'
 
 export interface DerivedAffixedForm {
   derived: string
-  /** Non-null only for allomorphic (meN-/peN-) affixes; the chosen prefix spelling. */
+  /** Non-null only for a BARE allomorphic (meN-/peN-) prefix; the chosen spelling.
+   *  For a confix the nasalised left half lives in `circumfixLeft` instead, and
+   *  this stays null (its documented scope is bare meN-/peN- only). */
   allomorphClass: string | null
-  /** Short Dutch rule note shown on link/produce exercises. MUST begin with the
-   *  canonical affix label so the lesson stage's `deriveAffix` recovers a
-   *  catalog-valid affix (HC31). */
+  /** Short Dutch rule note shown on link/produce exercises. Begins with the
+   *  canonical affix label. */
   allomorphRule: string
   affixType: AffixType
   /** From the catalog (English dev gloss; metadata only — not rendered to learners). */
   affixGloss: string
   productive: boolean
+  /** The left surface piece of a confix (e.g. 'mem' for meN-…-kan, 'ke' for
+   *  ke-…-an); null for non-confix affixes. */
+  circumfixLeft: string | null
+  /** The right surface piece of a confix (e.g. 'kan', 'an'); null otherwise. */
+  circumfixRight: string | null
 }
 
 export class UnsupportedAffixError extends Error {
@@ -108,7 +117,7 @@ function nasalSpelling(base: 'me' | 'pe', slot: NasalSlot): string {
   }
 }
 
-function deriveNasalising(root: string, affix: 'meN-' | 'peN-'): Pick<DerivedAffixedForm, 'derived' | 'allomorphClass' | 'allomorphRule'> {
+function deriveNasalising(root: string, affix: 'meN-' | 'peN-'): { derived: string; allomorphClass: string; allomorphRule: string } {
   const base = affix === 'meN-' ? 'me' : 'pe'
   const firstChar = root[0]?.toLowerCase() ?? ''
   const { slot, drops } = nasalDecision(firstChar)
@@ -154,6 +163,48 @@ function deriveSuffix(root: string, affix: string): Pick<DerivedAffixedForm, 'de
   }
 }
 
+// ── Confixes (prefix + suffix wrap-around) ──────────────────────────────────
+// Composes the existing pieces: the left half is nasalising (reuse deriveNasalising)
+// or fixed; the right half is a plain suffix. The nasalised left spelling lives in
+// `circumfixLeft` (NOT allomorphClass — that column's scope is bare meN-/peN-).
+
+type ConfixCore = Pick<DerivedAffixedForm, 'derived' | 'allomorphClass' | 'allomorphRule' | 'circumfixLeft' | 'circumfixRight'>
+
+function deriveConfix(root: string, affix: string, prefix: { nasal: 'me' | 'pe' } | { fixed: string }, suffix: string): ConfixCore {
+  let left: string
+  let derived: string
+  if ('nasal' in prefix) {
+    const nas = deriveNasalising(root, prefix.nasal === 'me' ? 'meN-' : 'peN-')
+    left = nas.allomorphClass // the chosen spelling, e.g. 'mem' / 'pen'
+    derived = nas.derived + suffix // nas.derived is left+stem (with any elision) already
+  } else {
+    left = prefix.fixed
+    derived = left + root + suffix
+  }
+  return {
+    derived,
+    allomorphClass: null,
+    allomorphRule: `${affix}: voorvoegsel ${left}- met achtervoegsel -${suffix}: ${root} → ${derived}.`,
+    circumfixLeft: left,
+    circumfixRight: suffix,
+  }
+}
+
+// ── Reduplication (the one non-concatenative path) ──────────────────────────
+// Full reduplication only (root-root); partial / sound-change forms (sayur-mayur)
+// are lexicalised and live in the IRREGULAR table, never rule-derived.
+
+function deriveReduplication(root: string): ConfixCore {
+  const derived = `${root}-${root}`
+  return {
+    derived,
+    allomorphClass: null,
+    allomorphRule: `Verdubbeling: ${root} → ${derived}.`,
+    circumfixLeft: null,
+    circumfixRight: null,
+  }
+}
+
 // ── Static exception table (Spec 2 §3.1) ────────────────────────────────────
 // Curated irregulars override the rule. Keyed `${affix}:${root}`. A
 // curated-root workflow needs no auto-suspicion heuristic (staff-engineer);
@@ -180,10 +231,11 @@ const IRREGULAR: Record<string, Partial<DerivedAffixedForm>> = {
 }
 
 /**
- * Derive the rule-governed fields of an affixed-form pair from `(root, affix)`.
+ * Derive the rule-governed fields of an affixed-form pair from `(root, affix)`,
+ * reading the affix's `composition` recipe from the catalog (ADR 0019).
  *
- * @throws UnsupportedAffixError for unknown affixes, suffixes, confixes,
- *   reduplication, and roots whose nasalisation class can't be rule-derived
+ * @throws UnsupportedAffixError for an affix not in the catalog, an affix with no
+ *   composition recipe, and roots whose nasalisation class can't be rule-derived
  *   (curated irregulars must go in the exception table).
  */
 export function deriveAffixedForm(root: string, affix: string): DerivedAffixedForm {
@@ -191,21 +243,30 @@ export function deriveAffixedForm(root: string, affix: string): DerivedAffixedFo
   if (!entry) {
     throw new UnsupportedAffixError(affix, 'not in the affix catalog (lib/capabilities/affixCatalog.ts)')
   }
-  if (entry.affixType === 'confix' || entry.affixType === 'reduplication') {
-    throw new UnsupportedAffixError(affix, `${entry.affixType} derivation is deferred to its book-2 chapter (Task 6)`)
+  const recipe: AffixComposition | undefined = entry.composition
+  if (!recipe) {
+    throw new UnsupportedAffixError(affix, 'has no composition recipe — the engine cannot derive it yet')
   }
 
-  let ruleGoverned: Pick<DerivedAffixedForm, 'derived' | 'allomorphClass' | 'allomorphRule'>
-  if (affix === 'meN-' || affix === 'peN-') {
-    ruleGoverned = deriveNasalising(root, affix)
-  } else if (entry.affixType === 'suffix') {
-    ruleGoverned = deriveSuffix(root, affix)
+  let core: ConfixCore
+  if (recipe.reduplicate) {
+    core = deriveReduplication(root)
+  } else if (recipe.prefix && recipe.suffix !== undefined) {
+    core = deriveConfix(root, affix, recipe.prefix, recipe.suffix)
+  } else if (recipe.prefix) {
+    const bare =
+      'nasal' in recipe.prefix
+        ? deriveNasalising(root, recipe.prefix.nasal === 'me' ? 'meN-' : 'peN-')
+        : deriveInvariantPrefix(root, affix)
+    core = { ...bare, circumfixLeft: null, circumfixRight: null }
+  } else if (recipe.suffix !== undefined) {
+    core = { ...deriveSuffix(root, affix), circumfixLeft: null, circumfixRight: null }
   } else {
-    ruleGoverned = deriveInvariantPrefix(root, affix)
+    throw new UnsupportedAffixError(affix, 'has an empty composition recipe')
   }
 
   const base: DerivedAffixedForm = {
-    ...ruleGoverned,
+    ...core,
     affixType: entry.affixType,
     affixGloss: entry.gloss,
     productive: true,

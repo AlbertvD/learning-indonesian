@@ -10,6 +10,26 @@
 
 export type AffixType = 'prefix' | 'suffix' | 'confix' | 'reduplication'
 
+/**
+ * The deterministic composition recipe the derivation engine reads to build the
+ * surface form (ADR 0019). One recipe per catalog entry replaces the engine's
+ * former per-affix branching:
+ *  - a left piece (`prefix`) — nasalising (`meN-`/`peN-` slot logic, base 'me'/'pe')
+ *    or a fixed string ('di','ke','ber','per','ter','se','memper'), or absent;
+ *  - a right piece (`suffix`) — a fixed string ('kan','i','an'), or absent;
+ *  - `reduplicate` — the one non-concatenative path (copies the root, `root-root`).
+ *
+ * A `confix` is just "both prefix AND suffix present" (shape, not atomicity): the
+ * engine fills `circumfix_left`/`circumfix_right` from the two pieces. Atomic
+ * circumfixes (`ke-…-an`) and stacked affixes (`meN-…-kan`) spell identically and
+ * share this composer; the difference is teaching metadata, not derivation.
+ */
+export interface AffixComposition {
+  prefix?: { nasal: 'me' | 'pe' } | { fixed: string }
+  suffix?: string
+  reduplicate?: boolean
+}
+
 export interface AffixCatalogEntry {
   /** Canonical affix label, e.g. 'meN-', '-kan', 'ke-…-an'. Matches
    *  affixed_form_pairs.affix and lesson_section_affixed_pairs.affix. */
@@ -22,6 +42,9 @@ export interface AffixCatalogEntry {
    *  Present ONLY for allomorphic affixes. Nasalization is drilled at the rule tier
    *  (grammar_pattern_src, ADR 0017); this list also seeds the rule note + catalog HC. */
   allomorphClasses?: string[]
+  /** How the engine derives the surface form (ADR 0019). Absent → engine cannot
+   *  derive it (throws UnsupportedAffixError). */
+  composition?: AffixComposition
 }
 
 export const AFFIX_CATALOG: readonly AffixCatalogEntry[] = [
@@ -31,28 +54,54 @@ export const AFFIX_CATALOG: readonly AffixCatalogEntry[] = [
     affixType: 'prefix',
     gloss: 'active/agent verb-former (nasalising)',
     allomorphClasses: ['me', 'mem', 'men', 'meny', 'meng', 'menge'],
+    composition: { prefix: { nasal: 'me' } },
   },
   {
     affix: 'peN-',
     affixType: 'prefix',
     gloss: 'agent/instrument noun-former (nasalising)',
     allomorphClasses: ['pe', 'pem', 'pen', 'peny', 'peng', 'penge'],
+    composition: { prefix: { nasal: 'pe' } },
   },
-  { affix: 'ber-', affixType: 'prefix', gloss: 'intransitive / stative / possessive verb-former' },
-  { affix: 'di-', affixType: 'prefix', gloss: 'passive verb-former' },
-  { affix: 'ter-', affixType: 'prefix', gloss: 'accidental / resultative / superlative' },
-  { affix: 'se-', affixType: 'prefix', gloss: 'one / same / as…as' },
-  { affix: 'memper-', affixType: 'prefix', gloss: 'causative (intensifying)' },
+  { affix: 'ber-', affixType: 'prefix', gloss: 'intransitive / stative / possessive verb-former', composition: { prefix: { fixed: 'ber' } } },
+  { affix: 'di-', affixType: 'prefix', gloss: 'passive verb-former', composition: { prefix: { fixed: 'di' } } },
+  { affix: 'ter-', affixType: 'prefix', gloss: 'accidental / resultative / superlative', composition: { prefix: { fixed: 'ter' } } },
+  { affix: 'se-', affixType: 'prefix', gloss: 'one / same / as…as', composition: { prefix: { fixed: 'se' } } },
+  { affix: 'memper-', affixType: 'prefix', gloss: 'causative (intensifying)', composition: { prefix: { fixed: 'memper' } } },
   // ── Suffixes ───────────────────────────────────────────────────────────────
-  { affix: '-kan', affixType: 'suffix', gloss: 'causative / benefactive transitiviser' },
-  { affix: '-i', affixType: 'suffix', gloss: 'locative / repetitive transitiviser' },
-  { affix: '-an', affixType: 'suffix', gloss: 'nominaliser (result / object)' },
-  // ── Confixes (circumfixes) ──────────────────────────────────────────────────
-  { affix: 'ke-…-an', affixType: 'confix', gloss: 'abstract noun / adversative state' },
-  { affix: 'pe-…-an', affixType: 'confix', gloss: 'process / result nominaliser' },
-  { affix: 'per-…-an', affixType: 'confix', gloss: 'collective / result nominaliser' },
+  { affix: '-kan', affixType: 'suffix', gloss: 'causative / benefactive transitiviser', composition: { suffix: 'kan' } },
+  { affix: '-i', affixType: 'suffix', gloss: 'locative / repetitive transitiviser', composition: { suffix: 'i' } },
+  { affix: '-an', affixType: 'suffix', gloss: 'nominaliser (result / object)', composition: { suffix: 'an' } },
+  // ── Confixes (circumfixes) ── shape = prefix + suffix (ADR 0019; atomicity is teaching metadata)
+  { affix: 'ke-…-an', affixType: 'confix', gloss: 'abstract noun / adversative state', composition: { prefix: { fixed: 'ke' }, suffix: 'an' } },
+  {
+    affix: 'pe-…-an',
+    affixType: 'confix',
+    gloss: 'process / result nominaliser',
+    allomorphClasses: ['pe', 'pem', 'pen', 'peny', 'peng', 'penge'],
+    composition: { prefix: { nasal: 'pe' }, suffix: 'an' },
+  },
+  { affix: 'per-…-an', affixType: 'confix', gloss: 'collective / result nominaliser', composition: { prefix: { fixed: 'per' }, suffix: 'an' } },
+  // ── Stacked affixes (prefix + suffix co-occurring; left half allomorphic for meN-) ──
+  {
+    affix: 'meN-…-kan',
+    affixType: 'confix',
+    gloss: 'active benefactive/causative transitiviser',
+    allomorphClasses: ['me', 'mem', 'men', 'meny', 'meng', 'menge'],
+    composition: { prefix: { nasal: 'me' }, suffix: 'kan' },
+  },
+  { affix: 'di-…-kan', affixType: 'confix', gloss: 'passive benefactive/causative transitiviser', composition: { prefix: { fixed: 'di' }, suffix: 'kan' } },
+  {
+    affix: 'meN-…-i',
+    affixType: 'confix',
+    gloss: 'active locative/repetitive transitiviser',
+    allomorphClasses: ['me', 'mem', 'men', 'meny', 'meng', 'menge'],
+    composition: { prefix: { nasal: 'me' }, suffix: 'i' },
+  },
+  { affix: 'di-…-i', affixType: 'confix', gloss: 'passive locative/repetitive transitiviser', composition: { prefix: { fixed: 'di' }, suffix: 'i' } },
+  { affix: 'memper-…-kan', affixType: 'confix', gloss: 'causative transitiviser (intensifying)', composition: { prefix: { fixed: 'memper' }, suffix: 'kan' } },
   // ── Reduplication ───────────────────────────────────────────────────────────
-  { affix: 'reduplication', affixType: 'reduplication', gloss: 'plurality / variety / intensity' },
+  { affix: 'reduplication', affixType: 'reduplication', gloss: 'plurality / variety / intensity', composition: { reduplicate: true } },
 ] as const
 
 const BY_AFFIX = new Map<string, AffixCatalogEntry>(AFFIX_CATALOG.map((e) => [e.affix, e]))
