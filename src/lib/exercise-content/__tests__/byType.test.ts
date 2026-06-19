@@ -766,4 +766,31 @@ describe('buildDecomposeWord — morpheme breakdown MCQ', () => {
     if (r.kind !== 'ok') return
     expect(r.exerciseItem.decomposeData?.correctOptionId).toBe('mem + baca')
   })
+
+  it('segments full reduplication into [root, root] (anak-anak → anak + anak)', () => {
+    const r = buildForExerciseType('decompose_word_ex', decomposeInput({
+      root: 'anak', derived: 'anak-anak', direction: 'derived_to_root',
+      allomorphRule: 'Verdubbeling: anak → anak-anak.', affix: 'reduplication',
+      circumfixLeft: null, circumfixRight: null,
+      sourceRef: 'lesson-22/morphology/reduplicationanak-anak-anak',
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    const d = r.exerciseItem.decomposeData!
+    expect(d.correctOptionId).toBe('anak + anak')
+    expect(d.options.length).toBeGreaterThanOrEqual(2)
+    expect(d.options).toContain('anak + anak')
+  })
+
+  it('segments wrapped reduplication into [left, root-root, right] (kebiru-biruan → ke + biru-biru + an)', () => {
+    const r = buildForExerciseType('decompose_word_ex', decomposeInput({
+      root: 'biru', derived: 'kebiru-biruan', direction: 'derived_to_root',
+      allomorphRule: 'ke-…-an om de verdubbeling: biru → kebiru-biruan.', affix: 'ke-…-an-reduplication',
+      circumfixLeft: null, circumfixRight: null,
+      sourceRef: 'lesson-22/morphology/ke-…-an-reduplicationbiru-kebiru-biruan',
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.decomposeData?.correctOptionId).toBe('ke + biru-biru + an')
+  })
 })
