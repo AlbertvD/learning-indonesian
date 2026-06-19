@@ -455,6 +455,7 @@ export interface AffixedFormPairRowInput {
   circumfix_left: string | null
   circumfix_right: string | null
   productive: boolean | null
+  carrier_text: string | null
 }
 
 /**
@@ -501,6 +502,7 @@ export async function replaceAffixedFormPairs(
         circumfix_left: r.circumfix_left,
         circumfix_right: r.circumfix_right,
         productive: r.productive,
+        carrier_text: r.carrier_text,
       })),
     )
   if (insertError) throw insertError

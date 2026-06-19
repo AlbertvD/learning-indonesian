@@ -325,6 +325,13 @@ export interface AffixedFormPairInput {
   /** The affix label (e.g. 'meN-'). Drives the choose_form_ex link-cap MCQ
    *  ("pick the affix") via catalog-derived distractors. Null for legacy rows. */
   affix?: string | null
+  /** Confix surface pieces (ADR 0019) — feed decompose_word_ex's segmentation
+   *  slots (e.g. 'mem' + 'kan' for membelikan). Null for non-confix affixes. */
+  circumfixLeft?: string | null
+  circumfixRight?: string | null
+  /** Harvested carrier sentence containing `derived` (ADR 0019 option B); when
+   *  present, type_form_ex blanks the derived form in it. Null = isolated prompt. */
+  carrierText?: string | null
   /** The cap's source_ref of shape `lesson-N/morphology/<slug>`. Carried for
    *  audit/debug; the builder does not parse it. */
   sourceRef: string

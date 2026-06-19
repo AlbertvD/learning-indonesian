@@ -46,6 +46,7 @@ export interface AffixedPairSource {
   circumfixLeft?: string | null
   circumfixRight?: string | null
   productive?: boolean | null
+  carrierText?: string | null
 }
 
 export interface AffixedFormPairsProjectionInput {
@@ -159,6 +160,7 @@ export function projectAffixedFormPairs(
       circumfix_left: ((pair.circumfixLeft ?? '').trim()) || null,
       circumfix_right: ((pair.circumfixRight ?? '').trim()) || null,
       productive: pair.productive ?? null,
+      carrier_text: ((pair.carrierText ?? '').trim()) || null,
     })
   }
 
