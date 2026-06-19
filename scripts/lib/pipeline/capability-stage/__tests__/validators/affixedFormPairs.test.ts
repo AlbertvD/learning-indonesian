@@ -20,6 +20,7 @@ function row(overrides: Partial<AffixedFormPairRowInput> = {}): AffixedFormPairR
     circumfix_left: null,
     circumfix_right: null,
     productive: true,
+    carrier_text: null,
     ...overrides,
   }
 }
@@ -93,6 +94,32 @@ describe('affixedPayloadFindings (Layer-1 morphology payload invariants)', () =>
     expect(affixedPayloadFindings(row({
       affix: 'ke-…-an', affix_type: 'confix', allomorph_class: null,
       circumfix_left: 'ke', circumfix_right: 'an',
+    }))).toEqual([])
+  })
+
+  it('flags a reduplication row that carries circumfix pieces (ADR 0019)', () => {
+    const f = affixedPayloadFindings(row({
+      affix: 'reduplication', affix_type: 'reduplication', allomorph_class: null,
+      root_text: 'anak', derived_text: 'anak-anak', circumfix_left: 'anak', circumfix_right: null,
+    }))
+    expect(f.some(x => x.message.includes('reduplication'))).toBe(true)
+  })
+
+  it('flags a carrier that does not contain derived_text as a whole word', () => {
+    // "dinaikkannya" contains "dinaikkan" only as a substring — must NOT pass.
+    const f = affixedPayloadFindings(row({
+      affix: 'di-…-kan', affix_type: 'confix', allomorph_class: null,
+      circumfix_left: 'di', circumfix_right: 'kan', root_text: 'naik', derived_text: 'dinaikkan',
+      carrier_text: 'Bendera dinaikkannya tinggi',
+    }))
+    expect(f.some(x => x.message.includes('carrier_text'))).toBe(true)
+  })
+
+  it('passes a carrier that contains derived_text as a whole word', () => {
+    expect(affixedPayloadFindings(row({
+      affix: 'meN-…-kan', affix_type: 'confix', allomorph_class: null,
+      circumfix_left: 'mem', circumfix_right: 'kan', root_text: 'beli', derived_text: 'membelikan',
+      carrier_text: 'Ibu membelikan anaknya buku',
     }))).toEqual([])
   })
 })

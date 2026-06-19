@@ -637,6 +637,7 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
       allomorphRule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
       root: 'baca',
       derived: 'membaca',
+      carrierBlanked: null, // no carrier on this fixture (ADR 0019 option B)
     })
     expect(r.exerciseItem.skillType).toBe('produce_mode')
   })
@@ -712,5 +713,57 @@ describe('buildTypedRecall — word_form_pair_src source kind', () => {
     const r = buildForExerciseType('type_form_from_audio_ex', affixedInput())
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
+  })
+
+  it('contextualises type_form_ex production with a blanked carrier (ADR 0019 option B)', () => {
+    const r = buildForExerciseType('type_form_ex', affixedInput({
+      affixedFormPair: {
+        root: 'beli', derived: 'membelikan', direction: 'root_to_derived',
+        allomorphRule: 'meN-…-kan: voorvoegsel mem- met achtervoegsel -kan.',
+        affix: 'meN-…-kan', circumfixLeft: 'mem', circumfixRight: 'kan',
+        carrierText: 'Ibu membelikan anaknya buku',
+        sourceRef: 'lesson-21/morphology/meN-…-kanbeli-membelikan',
+      },
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.affixedFormPairData?.carrierBlanked).toBe('Ibu ___ anaknya buku')
+  })
+})
+
+// ─── decompose_word_ex (ADR 0019 — morphology segmentation) ───
+
+describe('buildDecomposeWord — morpheme breakdown MCQ', () => {
+  function decomposeInput(pair: Record<string, unknown>): RawProjectorInput {
+    return baseInput({ learningItem: null, meanings: [], affixedFormPair: pair as never })
+  }
+
+  it('builds the correct breakdown of a confix (membelikan → mem + beli + kan) with plausible distractors', () => {
+    const r = buildForExerciseType('decompose_word_ex', decomposeInput({
+      root: 'beli', derived: 'membelikan', direction: 'derived_to_root',
+      allomorphRule: 'meN-…-kan rule', affix: 'meN-…-kan', circumfixLeft: 'mem', circumfixRight: 'kan',
+      sourceRef: 'lesson-21/morphology/meN-…-kanbeli-membelikan',
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    const d = r.exerciseItem.decomposeData!
+    expect(d.word).toBe('membelikan')
+    expect(d.correctOptionId).toBe('mem + beli + kan')
+    expect(d.options).toContain('mem + beli + kan')
+    expect(d.options).toContain('membelikan')        // unsegmented distractor
+    expect(d.options).toContain('membeli + kan')      // missed prefix boundary
+    expect(d.options).toContain('mem + belikan')      // missed suffix boundary
+    expect(d.options).toContain(d.correctOptionId)
+  })
+
+  it('segments a bare nasal prefix by re-deriving the spelling (membaca → mem + baca)', () => {
+    const r = buildForExerciseType('decompose_word_ex', decomposeInput({
+      root: 'baca', derived: 'membaca', direction: 'derived_to_root',
+      allomorphRule: 'meN- rule', affix: 'meN-', circumfixLeft: null, circumfixRight: null,
+      sourceRef: 'lesson-13/morphology/meN-baca-membaca',
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.decomposeData?.correctOptionId).toBe('mem + baca')
   })
 })

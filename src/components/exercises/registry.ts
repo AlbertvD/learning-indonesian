@@ -72,6 +72,8 @@ export const exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>> = {
   transform_sentence_ex: lazy(() => import('./implementations/SentenceTransformationExercise')),
   translate_sentence_ex: lazy(() => import('./implementations/ConstrainedTranslationExercise')),
   type_form_from_audio_ex:               lazy(() => import('./implementations/Dictation')),
+  // ADR 0019 — morphology segmentation drill.
+  decompose_word_ex:       lazy(() => import('./implementations/DecomposeWordExercise')),
 }
 
 /**
@@ -91,6 +93,7 @@ export const exerciseSkeletonVariant: Record<ExerciseType, 'word' | 'sentence' |
   choose_meaning_from_audio_ex:           'audio',
   type_form_from_audio_ex:               'audio',
   speaking:                'word',
+  decompose_word_ex:       'word',
 }
 
 /**

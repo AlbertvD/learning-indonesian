@@ -22,7 +22,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
-import { deriveAffixedForm, UnsupportedAffixError, itemSlug, type MorphologyRoot } from '@/lib/capabilities'
+import { deriveAffixedForm, UnsupportedAffixError, itemSlug, blankDerivedInCarrier, type MorphologyRoot } from '@/lib/capabilities'
 import { isCatalogAffix, allomorphClassesFor } from '@/lib/capabilities/affixCatalog'
 import { stableSlug } from './lib/content-pipeline-output'
 
@@ -46,9 +46,14 @@ export interface GenerateInput {
   categories: LessonCategory[]
   /** itemSlug-normalized base_texts that exist as learning_items (root-vocab prereq). */
   knownItemSlugs: ReadonlySet<string>
+  /** Raw candidate source strings for the in-context carrier (ADR 0019 option B),
+   *  in SOURCE-PRIORITY order: [grammar examples, story paragraphs, exercise answers].
+   *  Each tier is extracted into sentences + matched verbatim against derived_text;
+   *  shortest match in the first tier that has one wins. Optional (default []). */
+  carrierTiers?: string[][]
 }
 
-/** The emitted shape — structurally `AffixedPairInput` (projectSections.ts:73-89). */
+/** The emitted shape — structurally `AffixedPairInput` (projectSections.ts:73-93). */
 export interface GeneratedPair {
   sourceRef: string
   patternSourceRef: string
@@ -60,6 +65,11 @@ export interface GeneratedPair {
   affixGloss: string
   allomorphClass: string | null
   productive: boolean
+  /** Confix surface pieces (ADR 0019); null for non-confix affixes. */
+  circumfixLeft: string | null
+  circumfixRight: string | null
+  /** Harvested carrier sentence containing `derived` verbatim, or null (isolated). */
+  carrierText: string | null
 }
 
 export interface GenerateResult {
@@ -110,8 +120,38 @@ export function coveredClasses(category: LessonCategory, affix: string): Set<str
   return covered
 }
 
+/**
+ * Split a raw source string (a grammar example, story paragraph, or exercise
+ * answer) into candidate carrier sentences: break on sentence punctuation, em-dash,
+ * newline, and `;`; strip list markers (`a.`/`b.`/`1.`); drop arrow fragments
+ * (`tempat → menempatkan`) and anything under 3 words (too short to be a carrier).
+ */
+export function extractSentences(raw: string): string[] {
+  return raw
+    .split(/[.!?]+\s+|—|\n|;/u)
+    .map((s) => s.replace(/^\s*[a-z0-9]\.\s*/iu, '').replace(/[.!?]+\s*$/u, '').trim())
+    .filter((s) => !/→|->/.test(s) && s.split(/\s+/u).filter(Boolean).length >= 3)
+}
+
+/**
+ * Harvest the carrier for `derived` from priority-ordered raw source tiers
+ * (ADR 0019 option B): the first tier with a sentence containing `derived` as a
+ * WHOLE WORD wins; within it, the shortest match. The gate is `blankDerivedInCarrier`
+ * (the SAME whole-word matcher the runtime render uses), so a hit guarantees the
+ * runtime blank lands — and a clitic-attached surface (`dinaikkannya`) is correctly
+ * NOT matched. Returns the FULL carrier sentence (the runtime blanks it at render);
+ * null when no tier contains it → isolated prompt fallback.
+ */
+export function harvestCarrier(derived: string, tiers: string[][]): string | null {
+  for (const tier of tiers) {
+    const matches = tier.flatMap(extractSentences).filter((s) => blankDerivedInCarrier(s, derived) !== null)
+    if (matches.length > 0) return matches.reduce((a, b) => (b.length < a.length ? b : a))
+  }
+  return null
+}
+
 export function generateMorphologyPatterns(input: GenerateInput): GenerateResult {
-  const { lessonNumber, roots, categories, knownItemSlugs } = input
+  const { lessonNumber, roots, categories, knownItemSlugs, carrierTiers = [] } = input
   const errors: string[] = []
   const pairs: GeneratedPair[] = []
   const resolvable = resolvableBaseSlugs(lessonNumber, categories.map((c) => c.title))
@@ -176,6 +216,9 @@ export function generateMorphologyPatterns(input: GenerateInput): GenerateResult
       affixGloss: derived.affixGloss,
       allomorphClass: derived.allomorphClass,
       productive: derived.productive,
+      circumfixLeft: derived.circumfixLeft,
+      circumfixRight: derived.circumfixRight,
+      carrierText: harvestCarrier(derived.derived, carrierTiers),
     })
   }
 
@@ -186,8 +229,8 @@ export function generateMorphologyPatterns(input: GenerateInput): GenerateResult
 export function serializePairs(lessonNumber: number, pairs: GeneratedPair[]): string {
   const q = (s: string) => JSON.stringify(s)
   const body = pairs
-    .map((p) =>
-      [
+    .map((p) => {
+      const lines = [
         '  {',
         `    sourceRef: ${q(p.sourceRef)},`,
         `    patternSourceRef: ${q(p.patternSourceRef)},`,
@@ -199,9 +242,15 @@ export function serializePairs(lessonNumber: number, pairs: GeneratedPair[]): st
         `    affixGloss: ${q(p.affixGloss)},`,
         `    allomorphClass: ${p.allomorphClass === null ? 'null' : q(p.allomorphClass)},`,
         `    productive: ${p.productive},`,
-        '  },',
-      ].join('\n'),
-    )
+      ]
+      // Confix pieces + carrier are emitted only when present — prefix/suffix pairs
+      // (e.g. the L13/L20 meN-/peN- snapshots) serialise byte-identically as before.
+      if (p.circumfixLeft !== null) lines.push(`    circumfixLeft: ${q(p.circumfixLeft)},`)
+      if (p.circumfixRight !== null) lines.push(`    circumfixRight: ${q(p.circumfixRight)},`)
+      if (p.carrierText !== null) lines.push(`    carrierText: ${q(p.carrierText)},`)
+      lines.push('  },')
+      return lines.join('\n')
+    })
     .join('\n')
   return (
     `// GENERATED by scripts/generate-morphology-patterns.ts — DO NOT hand-edit.\n` +
@@ -237,6 +286,37 @@ function categoriesFromLesson(lesson: any): LessonCategory[] {
     }
   }
   return out
+}
+
+/**
+ * Priority-ordered raw carrier candidates from the lesson (ADR 0019 option B):
+ * [grammar examples, story paragraphs, exercise answers]. `harvestCarrier` extracts
+ * sentences + matches verbatim against derived_text.
+ */
+function carrierTiersFromLesson(lesson: any, categories: LessonCategory[]): string[][] {
+  const grammar = categories.flatMap((c) => (c.examples ?? []).map((e) => e.indonesian)).filter((s): s is string => typeof s === 'string')
+
+  const story: string[] = []
+  const exercise: string[] = []
+  const sections: any[] = Array.isArray(lesson?.sections) ? lesson.sections : []
+  for (const s of sections) {
+    const content = s?.content
+    if (content?.type === 'text' && Array.isArray(content.paragraphs)) {
+      for (const p of content.paragraphs) if (typeof p === 'string') story.push(p)
+    }
+  }
+  // Exercise answers can be nested arbitrarily deep (Latihan → sub-exercises → items).
+  const collectAnswers = (node: unknown): void => {
+    if (Array.isArray(node)) node.forEach(collectAnswers)
+    else if (node && typeof node === 'object') {
+      const obj = node as Record<string, unknown>
+      if (typeof obj.answer === 'string') exercise.push(obj.answer)
+      Object.values(obj).forEach(collectAnswers)
+    }
+  }
+  collectAnswers(sections)
+
+  return [grammar, story, exercise]
 }
 
 async function fetchKnownItemSlugs(): Promise<Set<string>> {
@@ -279,8 +359,9 @@ async function main() {
     }
     const lesson = await readExport(path.join(dir, 'lesson.ts'))
     const categories = categoriesFromLesson(lesson)
+    const carrierTiers = carrierTiersFromLesson(lesson, categories)
 
-    const { pairs, errors } = generateMorphologyPatterns({ lessonNumber, roots, categories, knownItemSlugs })
+    const { pairs, errors } = generateMorphologyPatterns({ lessonNumber, roots, categories, knownItemSlugs, carrierTiers })
     if (errors.length > 0) {
       anyError = true
       console.error(`\nlesson-${lessonNumber}: ${errors.length} author-time error(s) — NOT writing morphology-patterns.ts:`)

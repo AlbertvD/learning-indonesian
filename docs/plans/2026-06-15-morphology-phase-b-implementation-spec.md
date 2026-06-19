@@ -23,8 +23,10 @@ implementation_paths:
   - scripts/data/staging/lesson-13/morphology-patterns.ts                   # L13 pilot content (hand-authored)
 # SHIPPED 2026-06-17: migration live, L13 pilot live (42 caps — 14 link/14 allomorph/14 produce; all prereqs
 # resolve; HC31/HC17 green), image e903401 deployed (homelab container Running, site 307=healthy). Task 6
-# (decompose_word_ex/build_confix_ex) DEFERRED to the confix-chapter phase. Linguist affixed-pair authoring
-# is a scoped follow-on (memory: project_morphology_linguist_authoring_followon).
+# (decompose_word_ex/build_confix_ex) was DEFERRED here, now SUPERSEDED by
+# docs/plans/2026-06-18-morphology-generalized-derivation-and-context.md + ADR 0019 (shipped 2026-06-19):
+# the generalised recipe composer + decompose_word_ex shipped (build_confix_ex stays cut — typing>assembling).
+# Linguist affixed-pair authoring is a scoped follow-on (memory: project_morphology_linguist_authoring_followon).
 reviewed_by: [architect, data-architect]
 supersedes: []
 related:

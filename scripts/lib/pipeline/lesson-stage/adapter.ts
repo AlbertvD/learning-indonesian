@@ -322,6 +322,7 @@ export interface AffixedPairRowInput {
   circumfix_left: string | null
   circumfix_right: string | null
   productive: boolean | null
+  carrier_text: string | null
 }
 
 /**

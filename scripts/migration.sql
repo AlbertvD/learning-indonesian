@@ -3427,6 +3427,7 @@ alter table indonesian.affixed_form_pairs
   add column if not exists circumfix_left    text,
   add column if not exists circumfix_right   text,
   add column if not exists productive        boolean,
+  add column if not exists carrier_text       text,  -- ADR 0019: harvested example sentence containing derived_text (option B in-context production)
   add column if not exists grammar_pattern_id uuid references indonesian.grammar_patterns(id) on delete restrict;
 
 --    SOURCE table — authored payload only; NO grammar_pattern_id (resolved later,
@@ -3438,7 +3439,8 @@ alter table indonesian.lesson_section_affixed_pairs
   add column if not exists allomorph_class   text,
   add column if not exists circumfix_left    text,
   add column if not exists circumfix_right   text,
-  add column if not exists productive        boolean;
+  add column if not exists productive        boolean,
+  add column if not exists carrier_text       text;  -- ADR 0019: harvested carrier sentence (option B)
 
 -- 2. Guarded CHECK constraints on BOTH tables (drop-if-exists + add = idempotent;
 --    each passes on NULL columns, so they hold during the nullable-add phase too).

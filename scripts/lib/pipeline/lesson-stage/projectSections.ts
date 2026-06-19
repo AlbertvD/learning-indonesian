@@ -62,6 +62,8 @@ export interface ProjectedAffixedPair {
   circumfix_left: string | null
   circumfix_right: string | null
   productive: boolean | null
+  /** Harvested carrier sentence containing derived_text (ADR 0019 option B); null = isolated. */
+  carrier_text: string | null
 }
 
 export interface SectionMeta {
@@ -90,6 +92,8 @@ export interface AffixedPairInput {
   circumfixLeft?: string | null
   circumfixRight?: string | null
   productive?: boolean | null
+  /** Harvested carrier sentence (ADR 0019 option B); null/absent = isolated prompt. */
+  carrierText?: string | null
 }
 
 export interface ProjectSectionsInput {
@@ -242,6 +246,7 @@ export function projectSections(input: ProjectSectionsInput): ProjectSectionsOut
     circumfix_left: p.circumfixLeft ?? null,
     circumfix_right: p.circumfixRight ?? null,
     productive: p.productive ?? null,
+    carrier_text: p.carrierText ?? null,
   }))
 
   return { sectionMeta, itemRows, grammarCategories, grammarTopics, affixedPairs }

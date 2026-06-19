@@ -24,6 +24,7 @@ import { buildContrastPair } from './contrastPair'
 import { buildSentenceTransformation } from './sentenceTransformation'
 import { buildConstrainedTranslation } from './constrainedTranslation'
 import { buildSpeaking } from './speaking'
+import { buildDecomposeWord } from './decomposeWord'
 
 export type { BuilderResult, BuilderInputFor, RawProjectorInput } from './types'
 
@@ -44,6 +45,7 @@ const BUILDERS: BuilderRegistry = {
   transform_sentence_ex: buildSentenceTransformation,
   translate_sentence_ex: buildConstrainedTranslation,
   speaking:                buildSpeaking,
+  decompose_word_ex:       buildDecomposeWord,
 }
 
 /**

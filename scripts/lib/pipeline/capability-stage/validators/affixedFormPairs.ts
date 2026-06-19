@@ -1,4 +1,5 @@
 import { isCatalogAffix } from '@/lib/capabilities/affixCatalog'
+import { blankDerivedInCarrier } from '@/lib/capabilities'
 import type { AffixedFormPairRowInput } from '../adapter'
 import type { ValidationFinding } from '../model'
 
@@ -37,6 +38,15 @@ export function affixedPayloadFindings(row: AffixedFormPairRowInput): Validation
   }
   if (row.affix_type === 'confix' && !(row.circumfix_left?.trim() && row.circumfix_right?.trim())) {
     push(`${where} is a confix but is missing circumfix_left/circumfix_right`)
+  }
+  // Reduplication is not a circumfix — it must not carry circumfix pieces (ADR 0019).
+  if (row.affix_type === 'reduplication' && (row.circumfix_left?.trim() || row.circumfix_right?.trim())) {
+    push(`${where} is reduplication but carries circumfix_left/right (reduplication copies the root, it has no circumfix)`)
+  }
+  // ADR 0019 option B: a carrier must contain its derived form as a WHOLE WORD, so
+  // the runtime blank lands exactly (the same matcher the harvest gate + render use).
+  if (row.carrier_text && blankDerivedInCarrier(row.carrier_text, row.derived_text) === null) {
+    push(`${where} carrier_text "${row.carrier_text}" does not contain derived_text "${row.derived_text}" as a whole word — it would mis-blank at render`)
   }
   return findings
 }

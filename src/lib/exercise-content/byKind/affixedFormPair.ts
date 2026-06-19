@@ -41,6 +41,11 @@ interface AffixedFormPairRow {
   derived_text: string
   allomorph_rule: string
   affix: string | null
+  // ADR 0019: circumfix pieces feed decompose_word_ex; carrier_text feeds the
+  // contextualised type_form_ex (option B). All nullable.
+  circumfix_left: string | null
+  circumfix_right: string | null
+  carrier_text: string | null
 }
 
 export async function fetchForAffixedFormPairBlocks(
@@ -54,7 +59,7 @@ export async function fetchForAffixedFormPairBlocks(
   const capabilityIds = [...new Set(affixedBlocks.map(b => b.block.capabilityId))]
   const { data, error } = await client.schema('indonesian')
     .from('affixed_form_pairs')
-    .select('capability_id, root_text, derived_text, allomorph_rule, affix')
+    .select('capability_id, root_text, derived_text, allomorph_rule, affix, circumfix_left, circumfix_right, carrier_text')
     .in('capability_id', capabilityIds)
   if (error) throw error
 
@@ -123,6 +128,9 @@ export async function fetchForAffixedFormPairBlocks(
           direction: normalizedDirection,
           allomorphRule: rule,
           affix: row.affix,
+          circumfixLeft: row.circumfix_left,
+          circumfixRight: row.circumfix_right,
+          carrierText: row.carrier_text,
           sourceRef,
         },
         meanings: [],

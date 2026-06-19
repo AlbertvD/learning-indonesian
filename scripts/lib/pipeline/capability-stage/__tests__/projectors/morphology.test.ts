@@ -63,6 +63,7 @@ const afpFullRow = {
   circumfix_left: null,
   circumfix_right: null,
   productive: true,
+  carrier_text: null,
 }
 
 describe('projectAffixedFormPairs — happy path', () => {

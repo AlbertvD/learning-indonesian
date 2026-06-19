@@ -62,6 +62,17 @@ export const RENDER_CONTRACTS = {
     supportedSourceKinds: ['vocabulary_src'],
     requiredArtifacts: { vocabulary_src: [] },
   },
+  decompose_word_ex: {
+    // ADR 0019: the morphology segmentation drill. Serves recognise_word_form_link_cap
+    // on word_form_pair_src. Declared BEFORE choose_form_ex so the first-compatible
+    // resolver (exerciseResolver.ts) picks it as THE recognition drill for affixed
+    // pairs (segment the word > pick-the-affix MCQ); choose_form_ex's word_form_pair
+    // widening remains as a fallback. Renders from the typed affixed_form_pairs row
+    // (root/derived/affix/circumfix) — no artifact bag.
+    capabilityTypes: ['recognise_word_form_link_cap'],
+    supportedSourceKinds: ['word_form_pair_src'],
+    requiredArtifacts: { word_form_pair_src: [] },
+  },
   choose_form_ex: {
     // Morphology phase-b: choose_form_ex (the "prompt + tappable options" MCQ) is
     // widened to word_form_pair_src to serve the recognise-level morphology MCQ cap
@@ -325,6 +336,13 @@ export interface AffixedFormPairInput {
   /** The affix label (e.g. 'meN-'). Drives the choose_form_ex link-cap MCQ
    *  ("pick the affix") via catalog-derived distractors. Null for legacy rows. */
   affix?: string | null
+  /** Confix surface pieces (ADR 0019) — feed decompose_word_ex's segmentation
+   *  slots (e.g. 'mem' + 'kan' for membelikan). Null for non-confix affixes. */
+  circumfixLeft?: string | null
+  circumfixRight?: string | null
+  /** Harvested carrier sentence containing `derived` (ADR 0019 option B); when
+   *  present, type_form_ex blanks the derived form in it. Null = isolated prompt. */
+  carrierText?: string | null
   /** The cap's source_ref of shape `lesson-N/morphology/<slug>`. Carried for
    *  audit/debug; the builder does not parse it. */
   sourceRef: string
@@ -426,6 +444,7 @@ export interface ContractInputShapes {
   choose_meaning_ex: BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   choose_form_ex:     BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
   type_form_ex:    BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
+  decompose_word_ex: BuilderBase & { affixedFormPair: AffixedFormPairInput }
   type_meaning_ex:  BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   choose_meaning_from_audio_ex:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   type_form_from_audio_ex:       BuilderBase & { learningItem: LearningItem }
@@ -637,6 +656,14 @@ export function projectBuilderInput<T extends ExerciseType>(
         primaryMeaning: primaryMeaning ?? null,
         affixedFormPair: raw.affixedFormPair,
       } as BuilderInputFor<T> }
+    case 'decompose_word_ex':
+      // word_form_pair_src only — the segmentation drill reads the pair's
+      // root/derived/affix/circumfix. The guard above proved affixedFormPair is
+      // non-null (it is the only valid slot for this exercise).
+      if (!raw.affixedFormPair) {
+        return { ok: false, reasonCode: 'item_not_found', message: 'decompose_word_ex requires an affixedFormPair' }
+      }
+      return { ok: true, input: { ...base, affixedFormPair: raw.affixedFormPair } as BuilderInputFor<T> }
     case 'choose_meaning_ex':
     case 'type_meaning_ex':
     case 'choose_meaning_from_audio_ex':

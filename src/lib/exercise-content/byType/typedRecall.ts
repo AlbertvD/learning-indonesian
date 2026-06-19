@@ -13,12 +13,18 @@
 import type { BuilderInputFor, BuilderResult } from './types'
 import type { ExerciseItem } from '@/types/learning'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
+import { blankDerivedInCarrier } from '@/lib/capabilities'
 
 export function buildTypedRecall(input: BuilderInputFor<'type_form_ex'>): BuilderResult {
   // word_form_pair_src path — input.affixedFormPair is populated; input.learningItem is null.
   if (input.affixedFormPair) {
-    const { root, derived, direction, allomorphRule, affix } = input.affixedFormPair
+    const { root, derived, direction, allomorphRule, affix, carrierText } = input.affixedFormPair
     const isRootToDerived = direction === 'root_to_derived'
+    // ADR 0019 option B: on the produce direction, if a carrier sentence exists,
+    // present the derived form blanked in context instead of the isolated prompt.
+    const carrierBlanked = isRootToDerived && carrierText
+      ? blankDerivedInCarrier(carrierText, derived)
+      : null
     // Use the pair's actual affix (peN-/ber-/di-/-an…), not a hardcoded meN-,
     // and prompt in Dutch (the learner's language). `affix` carries its own
     // hyphen marking the attachment point (e.g. 'peN-'); strip a trailing one so
@@ -44,6 +50,7 @@ export function buildTypedRecall(input: BuilderInputFor<'type_form_ex'>): Builde
         allomorphRule,
         root,
         derived,
+        carrierBlanked,
       },
     }
     return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }

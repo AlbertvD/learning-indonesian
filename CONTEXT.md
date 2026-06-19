@@ -25,6 +25,17 @@ The **organizing unit of the morphology / affix-trainer surface** — a single I
 
 There is no `affixes` table. An Affix's identity is the **`affix` value** carried on each `affixed_form_pair` (added by the morphology phase-b work), constrained to a **controlled vocabulary** — the canonical catalog constant in `lib/capabilities/affixCatalog.ts` (sequence rank, gloss, CEFR level, allomorph reference; placed in `lib/capabilities` because both the pipeline validator and the runtime read it — the sole pipeline↔runtime shared seam). Every authored `affix` value MUST be a catalog member; the phase-b validator **and** a live-DB health check assert `affix ∈ catalog` (the three-layer-gate habit), so the catalog grouping cannot silently split one affix across spelling variants (`meN-` vs `me-` vs `meng-`). Concrete once phase-b + the affix trainer ship; see `docs/plans/2026-06-15-affix-trainer-capstone-design.md` §4-A and `docs/plans/2026-06-15-morphology-phase-b-implementation-spec.md`.
 
+### Confix (`affixType: 'confix'`) — atomicity is a *teaching* fact, not a *derivation* fact
+
+The catalog's `confix` type is **shape-based** (the affix wraps the root: part before, part after). It covers two cases that are linguistically different *in meaning* but **identical in how the surface string is spelled**:
+
+- **Atomic circumfix** — one indivisible morpheme delivered in two fragments; neither half is a word on its own. `ke-…-an`: `adil` ("just") → `keadilan` ("justice"), but `*keadil` and `*adilan` do not exist as words with that meaning.
+- **Stacked / combined affix** — two independent morphemes that co-occur, each a real standalone step. `meN-…-kan`: `beli` → `membelikan`, where `membeli` ("to buy") *and* `belikan` ("buy it for someone") both exist.
+
+**The derivation engine spells both the same way** — `prefix-piece(root) + suffix-piece`, the prefix piece being invariant (`ke`, `di`, `per`…) or nasalising (`me`, `pe`): `keadilan = 'ke'+adil+'an'`, `membelikan = nasalise(beli,'me-')+'kan'`, `pendidikan = nasalise(didik,'pe-')+'an'`. So a **single composer** handles every prefix/suffix/confix in the book-2 syllabus (Bab 4/5/7/9/11/13); the atomic-vs-stacked distinction is **metadata for grouping and teaching** (the Affix trainer, the rule note), never a derivation fork. The one true exception is **reduplication** (`rumah-rumah`), which copies the root rather than concatenating slots — its own derivation path (same table, `affix_type='reduplication'`).
+
+We collapse all wrap-arounds under `confix` because every consumer — the DB CHECK, the CS12 validator, and the `decompose_word_ex`/`build_confix_ex` drills — keys on *shape* (`circumfix_left` + `circumfix_right` present). `meN-…-kan`/`pe-…-an` are additionally **allomorphic** on the left half (their `circumfix_left` is the nasalised spelling `mem`/`pen`/…); `di-…-kan`/`ke-…-an` are invariant. First exercised by **lesson 21** (Bab 5, `-kan`); the engine is generalised across the whole known affix set rather than added per-chapter, since all book-2 chapters land together.
+
 ## Content Unit
 
 A stable, publishable unit derived from a content source. Content units preserve source refs, section refs, ordering, and relationships to lesson page blocks and learning capabilities.

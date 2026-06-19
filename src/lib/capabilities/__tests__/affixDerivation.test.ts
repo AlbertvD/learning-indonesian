@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { deriveAffixedForm, UnsupportedAffixError } from '../affixDerivation'
+import { deriveAffixedForm, UnsupportedAffixError, blankDerivedInCarrier } from '../affixDerivation'
 
 // ── L13 golden fixture (Spec 2 §3.1) ─────────────────────────────────────────
 // The 14 hand-authored pairs from scripts/data/staging/lesson-13/morphology-patterns.ts.
@@ -97,11 +97,64 @@ describe('deriveAffixedForm — invariant suffixes', () => {
   })
 })
 
-describe('deriveAffixedForm — unsupported affixes fail loud', () => {
-  it('throws on confixes and reduplication (deferred to book-2 chapters)', () => {
-    expect(() => deriveAffixedForm('adil', 'ke-…-an')).toThrow(UnsupportedAffixError)
-    expect(() => deriveAffixedForm('anak', 'reduplication')).toThrow(UnsupportedAffixError)
+describe('deriveAffixedForm — confixes (wrap-around; ADR 0019)', () => {
+  // Atomic (ke-…-an) and stacked (meN-…-kan) confixes spell identically:
+  // prefix-piece + root + suffix-piece. The nasalised left lives in circumfixLeft;
+  // allomorphClass stays null for confixes.
+  const CONFIX_CASES: Array<{ root: string; affix: string; derived: string; left: string; right: string }> = [
+    { root: 'beli', affix: 'meN-…-kan', derived: 'membelikan', left: 'mem', right: 'kan' },
+    { root: 'naik', affix: 'meN-…-kan', derived: 'menaikkan', left: 'me', right: 'kan' },
+    { root: 'pukul', affix: 'meN-…-kan', derived: 'memukulkan', left: 'mem', right: 'kan' }, // p elides
+    { root: 'beli', affix: 'di-…-kan', derived: 'dibelikan', left: 'di', right: 'kan' },
+    { root: 'naik', affix: 'di-…-kan', derived: 'dinaikkan', left: 'di', right: 'kan' },
+    { root: 'didik', affix: 'pe-…-an', derived: 'pendidikan', left: 'pen', right: 'an' }, // nasalising left
+    { root: 'adil', affix: 'ke-…-an', derived: 'keadilan', left: 'ke', right: 'an' }, // atomic, fixed left
+  ]
+  for (const c of CONFIX_CASES) {
+    it(`derives ${c.root} + ${c.affix} → ${c.derived}`, () => {
+      const r = deriveAffixedForm(c.root, c.affix)
+      expect(r.derived).toBe(c.derived)
+      expect(r.affixType).toBe('confix')
+      expect(r.circumfixLeft).toBe(c.left)
+      expect(r.circumfixRight).toBe(c.right)
+      expect(r.allomorphClass).toBeNull()
+      expect(r.allomorphRule.startsWith(c.affix)).toBe(true)
+    })
+  }
+})
+
+describe('deriveAffixedForm — reduplication (full)', () => {
+  it('derives the root-root copy with null circumfix', () => {
+    const r = deriveAffixedForm('anak', 'reduplication')
+    expect(r.derived).toBe('anak-anak')
+    expect(r.affixType).toBe('reduplication')
+    expect(r.circumfixLeft).toBeNull()
+    expect(r.circumfixRight).toBeNull()
+    expect(r.allomorphClass).toBeNull()
   })
+})
+
+describe('blankDerivedInCarrier — whole-word blank (option B)', () => {
+  it('blanks the derived form as a whole word', () => {
+    expect(blankDerivedInCarrier('Ibu membelikan anaknya buku', 'membelikan')).toBe('Ibu ___ anaknya buku')
+    expect(blankDerivedInCarrier('Bendera dinaikkan Pak guru', 'dinaikkan')).toBe('Bendera ___ Pak guru')
+  })
+  it('preserves surrounding punctuation on the blanked token', () => {
+    expect(blankDerivedInCarrier('Dia membersihkan mobil, lalu pergi', 'membersihkan')).toBe('Dia ___ mobil, lalu pergi')
+  })
+  it('does NOT match a clitic-attached surface (the dinaikkannya case)', () => {
+    expect(blankDerivedInCarrier('Bendera dinaikkannya', 'dinaikkan')).toBeNull()
+    expect(blankDerivedInCarrier('Koper diturunkannya', 'diturunkan')).toBeNull()
+  })
+  it('matches reduplication forms with the internal hyphen', () => {
+    expect(blankDerivedInCarrier('Banyak anak-anak bermain', 'anak-anak')).toBe('Banyak ___ bermain')
+  })
+  it('returns null when the form is absent', () => {
+    expect(blankDerivedInCarrier('Ibu membeli buku', 'membelikan')).toBeNull()
+  })
+})
+
+describe('deriveAffixedForm — unsupported affixes fail loud', () => {
   it('throws on an unknown affix', () => {
     expect(() => deriveAffixedForm('makan', 'xyz-')).toThrow(UnsupportedAffixError)
   })

@@ -105,7 +105,7 @@ function makeRawInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorI
 
 describe('RENDER_CONTRACTS table', () => {
   it('has an entry for every ExerciseType (exhaustiveness enforced via satisfies)', () => {
-    expect(Object.keys(RENDER_CONTRACTS)).toHaveLength(12)
+    expect(Object.keys(RENDER_CONTRACTS)).toHaveLength(13)
   })
 
   it('every entry declares supportedSourceKinds non-empty', () => {
@@ -165,13 +165,13 @@ describe('exerciseTypesForCapability', () => {
 })
 
 describe('supportsSourceKind', () => {
-  it('every exercise supports source kind item except the 4 pattern-only grammar exercises (cap-v2 #161)', () => {
-    // choose_correct_form_ex / transform_sentence_ex / translate_sentence_ex AND now
-    // choose_missing_word_ex route exclusively to pattern caps — item cloze is typed-only (the
-    // `cloze` builder), so choose_missing_word_ex dropped 'item' from supportedSourceKinds.
-    const patternOnly = new Set(['choose_correct_form_ex', 'transform_sentence_ex', 'translate_sentence_ex', 'choose_missing_word_ex'])
+  it('every exercise supports source kind item except the 4 pattern-only grammar exercises + decompose_word_ex', () => {
+    // choose_correct_form_ex / transform_sentence_ex / translate_sentence_ex AND
+    // choose_missing_word_ex route exclusively to pattern caps; decompose_word_ex (ADR
+    // 0019) is word_form_pair_src-only. None of these support vocabulary_src.
+    const notItemSourced = new Set(['choose_correct_form_ex', 'transform_sentence_ex', 'translate_sentence_ex', 'choose_missing_word_ex', 'decompose_word_ex'])
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
-      expect(supportsSourceKind(et, 'vocabulary_src')).toBe(!patternOnly.has(et))
+      expect(supportsSourceKind(et, 'vocabulary_src')).toBe(!notItemSourced.has(et))
     }
   })
 
@@ -189,8 +189,8 @@ describe('supportsSourceKind', () => {
     }
   })
 
-  it('type_form_ex + choose_form_ex support word_form_pair_src (morphology phase-b widened choose_form_ex for the two recognise-level MCQ caps)', () => {
-    const supporting = new Set(['type_form_ex', 'choose_form_ex'])
+  it('type_form_ex + choose_form_ex + decompose_word_ex support word_form_pair_src (morphology phase-b + ADR 0019)', () => {
+    const supporting = new Set(['type_form_ex', 'choose_form_ex', 'decompose_word_ex'])
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
       expect(supportsSourceKind(et, 'word_form_pair_src')).toBe(supporting.has(et))
     }

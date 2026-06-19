@@ -144,6 +144,9 @@ export type ExerciseType =
   | 'speaking'
   | 'choose_meaning_from_audio_ex'
   | 'type_form_from_audio_ex'
+  // ADR 0019 — morphology segmentation drill (recognise_word_form_link_cap on
+  // word_form_pair_src): show the derived word, pick its correct morpheme breakdown.
+  | 'decompose_word_ex'
 
 export type FlagType = 'wrong_translation' | 'bad_sentence' | 'confusing' | 'sunset' | 'other'
 export type FlagStatus = 'open' | 'resolved'
@@ -239,6 +242,23 @@ export interface ExerciseItem {
      *  audibleTexts TTS prefetch. */
     root: string
     derived: string
+    /** ADR 0019 option B: a harvested carrier sentence with the derived form
+     *  blanked (`Ibu ___ anaknya buku`). Set only on the produce direction when a
+     *  carrier exists; the UI shows it as the prompt instead of the isolated
+     *  "Geef de …-vorm van" instruction. Absent → isolated prompt. */
+    carrierBlanked?: string | null
+  }
+  /** For decompose_word_ex (ADR 0019): the morpheme-segmentation MCQ. */
+  decomposeData?: {
+    /** The finished word the learner segments (e.g. "membelikan"). */
+    word: string
+    /** Candidate breakdowns (the correct morpheme split + plausible wrong ones),
+     *  joined with " + " (e.g. "mem + beli + kan"). Deterministically ordered. */
+    options: string[]
+    /** The correct breakdown string (one of `options`). */
+    correctOptionId: string
+    /** The formation/allomorph rule, shown on the feedback screen. */
+    explanationText: string
   }
   /** For choose_correct_form_ex: contrast options and metadata */
   contrastPairData?: {
