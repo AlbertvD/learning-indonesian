@@ -1,0 +1,62 @@
+{
+  "lesson_number": 19,
+  "cefr_level": "A1",
+  "lesson_topic": "Zinsbouw — sentence structure (agens/patiens, word order, reason/purpose conjunctions)",
+  "grammar_patterns": [
+    {
+      "slug": "l19-agens-patiens-en-de-partijen-in-de-zin",
+      "name": "Agens, patiens en de partijen in de zin (zinsbouwschema)",
+      "description": "Een Indonesische zin geeft informatie over verschillende partijen, verbonden door een werkwoordsvorm (de handeling). Partij 1 = agens (uitvoerder), partij 2 = patiens (ondergaat de handeling). Basis: Agens — handeling — Patiens. Uitbreidbaar met partij 3 (voor wie/wat: bagi/buat/kepada/untuk) en partij 4 (met wie/waarmee: dengan/sama/tanpa).",
+      "confusion_group": "me-di-voice",
+      "key_contrast": "agens (uitvoerder, vóór de handeling) vs patiens (ondergaat, ná de handeling); partij 3 (voor wie) vs partij 4 (waarmee)",
+      "research_notes": "Indonesisch is een SVO-taal: in een actieve zin staat de agens vóór de ME-werkwoordsvorm en de patiens erná. Nederlandstaligen verwarren de markeerwoorden voor partij 3 en 4: 'voor wie' (bagi/buat/kepada/untuk) is doel/begunstigde, 'waarmee/met wie' (dengan/sama/tanpa) is instrument/begeleiding. Sluit aan op de ME-vorm van L13–14 (actief) en bereidt de DI-vorm-volgorde van L16 voor, waar patiens en agens van plaats wisselen.",
+      "example_sentences": [
+        { "id": "Presiden membuka sekolah baru.", "nl": "De president opent een nieuwe school." },
+        { "id": "Presiden membuka sekolah baru buat guru dengan pidato.", "nl": "De president opent een nieuwe school voor de onderwijzers met een redevoering." },
+        { "id": "Ibu membeli baju untuk anaknya.", "nl": "Moeder koopt kleren voor haar kind." }
+      ]
+    },
+    {
+      "slug": "l19-gebruikelijke-volgorde-in-een-actieve-zin",
+      "name": "De gebruikelijke volgorde in een actieve zin (tijd · wijze · plaats)",
+      "description": "Naast de partijen kan een zin bepalingen van tijd, wijze en plaats bevatten. Gebruikelijke volgorde: tijdsbepaling — agens — wijze van uitvoering — handeling — patiens — partij 3 — partij 4 — plaatsbepaling. Wat het belangrijkst is, komt vooraan; verschuift de focus, dan verandert de volgorde.",
+      "confusion_group": "zinsvolgorde-bepalingen",
+      "key_contrast": "vaste kernvolgorde (agens-handeling-patiens) vs vrij plaatsbare tijd-/plaatsbepaling die voor focus naar voren schuift",
+      "research_notes": "Formeel geschreven Indonesisch houdt de volle S-P-O-volgorde aan; spreektaal staat meer topicalisatie en weglating toe. Tijd- en plaatsbepalingen staan bij voorkeur aan het begin of einde van de zin. Fronting (Di Denpasar … / Pekan lalu …) is het belangrijkste focusmiddel — vergelijkbaar met de topicalisatie met -nya uit L7. Wijze van uitvoering = secara + bijvoeglijk naamwoord, of een bijwoord (cepat, lekas).",
+      "example_sentences": [
+        { "id": "Pekan lalu presiden secara resmi membuka sekolah baru di Denpasar.", "nl": "Vorige week opende de president officieel een nieuwe school in Denpasar." },
+        { "id": "Di Denpasar presiden secara resmi membuka sekolah baru.", "nl": "In Denpasar opende de president officieel een nieuwe school." },
+        { "id": "Setiap pagi saya pergi ke kantor dengan bus.", "nl": "Elke ochtend ga ik met de bus naar kantoor." }
+      ]
+    },
+    {
+      "slug": "l19-reden-en-oorzaak-sebab-karena",
+      "name": "Reden en oorzaak: sebab, karena, sebab itu, karena itu",
+      "description": "Sebab en karena (= omdat) leiden een reden of oorzaak in. Sebab itu en karena itu (= daarom / om die reden) drukken een gevolg uit. Na karena/sebab hoeft het onderwerp niet herhaald te worden als het al duidelijk is.",
+      "confusion_group": "voegwoorden-reden-gevolg",
+      "key_contrast": "karena/sebab (omdat — leidt de oorzaak in) vs karena itu/sebab itu (daarom — leidt het gevolg in)",
+      "research_notes": "Karena is een voegwoord (= omdat) dat oorzaak/reden inleidt en aan begin of midden van de zin kan staan; sebab functioneert ook als zelfstandig naamwoord (= oorzaak) en klinkt iets formeler. Anders dan in het Nederlands wordt het onderwerp na karena/sebab niet herhaald als het uit de hoofdzin volgt. Veelgemaakte fout door Nederlandstaligen: 'karena' en 'karena itu' verwisselen — het ene leidt de oorzaak in, het andere het gevolg.",
+      "example_sentences": [
+        { "id": "Sebab dia sedang makan, kita berangkat sebentar lagi.", "nl": "Omdat hij nog aan het eten is, vertrekken wij wat later." },
+        { "id": "Karena feri tidak datang, orang harus tunggu lama.", "nl": "Omdat de ferry niet komt, moeten de mensen lang wachten." },
+        { "id": "Bapak sakit, sebab itu dia tidak ke kantor.", "nl": "Vader is ziek, daarom gaat hij niet naar kantoor." },
+        { "id": "Bank sudah tutup, karena itu tidak bisa menukar uang.", "nl": "De banken zijn al gesloten, daarom kunnen wij geen geld wisselen." }
+      ]
+    },
+    {
+      "slug": "l19-doel-en-gevolg-supaya-tegenover-sehingga",
+      "name": "Doel en gevolg: supaya (opdat) tegenover sehingga (zodat)",
+      "description": "Supaya leidt een doel in (opdat/zodat met een bedoeling): de tweede clausule beschrijft iets dat men wíl bereiken. Sehingga leidt een gevolg in (zodat met als resultaat): iets dat zich vanzelf voordoet. Kern: supaya = beoogd doel, sehingga = optredend gevolg. Agar is een formelere variant van supaya.",
+      "confusion_group": "voegwoorden-reden-gevolg",
+      "key_contrast": "supaya (doel — bewust nagestreefd resultaat) vs sehingga (gevolg — vanzelf optredend resultaat)",
+      "research_notes": "Het kernonderscheid: sehingga = 'zodat' als gevolg van een gebeurtenis die plaatsvond; supaya = 'zodat/opdat' met een doel/bedoeling. Vergelijk: 'Penny kehujanan sehingga dia sakit' (gevolg) vs 'Robert harus minum obat supaya cepat sembuh' (doel). Agar heeft dezelfde betekenis als supaya maar is formeler en vooral schrijftaal. Een supaya/agar-clausule heeft, anders dan een untuk-clausule, doorgaans een eigen onderwerp. Veelgemaakte fout: supaya gebruiken waar een gevolg (sehingga) bedoeld is, of omgekeerd.",
+      "example_sentences": [
+        { "id": "Dia makan sedikit supaya badannya menjadi kurus.", "nl": "Zij eet weinig opdat zij afvalt." },
+        { "id": "Dia sakit dan tidak makan sehingga badannya menjadi kurus.", "nl": "Zij is ziek en eet niet zodat zij afvalt." },
+        { "id": "Sebab ibu saya sakit saya berangkat ke Sukabumi supaya saya bisa membantunya.", "nl": "Omdat mijn moeder ziek is, vertrek ik naar Sukabumi, opdat ik haar kan helpen." }
+      ]
+    }
+  ],
+  "vocabulary_pool": [],
+  "current_lesson_items": []
+}

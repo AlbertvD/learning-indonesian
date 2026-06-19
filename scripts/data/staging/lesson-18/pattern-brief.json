@@ -1,0 +1,102 @@
+{
+  "lesson_number": 18,
+  "cefr_level": "A1",
+  "lesson_topic": "Mampir (langsgaan bij vrienden) — passieve zinsconstructie, aspect (sudah/telah, sesudah/setelah), kwantoren (alle/alles/iedereen)",
+  "grammar_patterns": [
+    {
+      "slug": "l18-passieve-zin-met-de-di-vorm-3e-persoon",
+      "name": "Passieve zin met de DI-vorm (3e persoon, agens onbenoemd)",
+      "description": "Passieve zinnen voor de 3e persoon met de DI-werkwoordsvorm; de agens hoeft niet genoemd te worden, de patiens komt centraal.",
+      "confusion_group": "me-di-voice",
+      "key_contrast": "DI-passief (3e persoon) vs. de agens-volgorde bij 1e/2e persoon; di- staat NOOIT bij saya/kamu/kami/kalian",
+      "research_notes": "Voortzetting van de in L16 ingevoerde DI-vorm. Nederlandstaligen neigen ertoe ELKE passieve zin met di- te vormen; de kerncontrast van L18 is dat di- exclusief 3e-persoon is. Veelgemaakte fout: *Surat itu sudah disaya tulis. De DI-vorm verbergt de agens (sudah dimakan = 'iemand heeft het opgegeten'), wat in het Nederlands vaak met een onpersoonlijk 'men' of een passief vertaald wordt.",
+      "example_sentences": [
+        { "id": "Sudah dimakan.", "nl": "Die is al opgegeten (door iemand)." },
+        { "id": "Kue dipotong dan dibagi.", "nl": "De koek werd gesneden en verdeeld." },
+        { "id": "Kunci itu dicari.", "nl": "De sleutel wordt gezocht / men zoekt de sleutel." },
+        { "id": "Minuman baru saja ditaruh di meja.", "nl": "De drankjes zijn net op tafel gezet." }
+      ]
+    },
+    {
+      "slug": "l18-passieve-zin-met-1e-of-2e-persoon-als-agens",
+      "name": "Passieve zin met 1e of 2e persoon als agens: patiens — agens — werkwoord",
+      "description": "Bij een 1e/2e-persoons agens GEEN di-vorm, maar patiens — agens — kale werkwoordstam; ku-/kau- worden vastgeschreven.",
+      "confusion_group": "me-di-voice",
+      "key_contrast": "saya/kamu/kami/kalian + KALE stam (saya tulis) vs. di-vorm (3e persoon); geen prefix op het werkwoord",
+      "research_notes": "Dit is voor Nederlandstaligen de moeilijkste constructie: de werkwoordstam staat kaal (geen me-, geen di-) en het voornaamwoord komt ertussen. Strikt: tussen agens en werkwoord mag GEEN woord. De aspectmarker (sudah/belum) staat vóór het hele blok: 'sudah saya tulis', niet *'saya sudah tulis' in deze passieve lezing. De gehechte vormen kujual (saya) en kaubeli (kamu) zijn schrijftaalvarianten.",
+      "example_sentences": [
+        { "id": "Surat itu sudah saya tulis kemarin.", "nl": "Die brief heb ik gisteren al geschreven." },
+        { "id": "Surat itu sudah kamu tulis kemarin.", "nl": "Die brief heb je gisteren al geschreven." },
+        { "id": "Mobil itu saya jual.", "nl": "De auto wordt door mij verkocht." },
+        { "id": "Pintu halaman kalian buka.", "nl": "De erfdeur wordt door jullie geopend." }
+      ]
+    },
+    {
+      "slug": "l18-passieve-zin-met-3e-persoon-meervoud",
+      "name": "Passieve zin met 3e persoon meervoud: twee mogelijkheden",
+      "description": "Bij mereka als agens: ofwel patiens — mereka — stam, ofwel de di-vorm met -nya. Geen woord tussen agens en werkwoord.",
+      "confusion_group": "me-di-voice",
+      "key_contrast": "mereka tulis (agens-volgorde) ↔ ditulisnya (di-vorm + -nya) — beide correct voor 'door hen/hem'",
+      "research_notes": "Mereka gedraagt zich als de 1e/2e persoon (kale stam, agens-volgorde), MAAR mag ook de di-vorm krijgen — een keuzevrijheid die de andere personen niet hebben. -nya dekt 3e enkelvoud (hem/haar). Nuttige drilcontrast: laat de leerling dezelfde zin in beide vormen produceren.",
+      "example_sentences": [
+        { "id": "Surat itu sudah mereka tulis kemarin.", "nl": "Die brief hebben zij gisteren al geschreven." },
+        { "id": "Surat itu sudah ditulisnya kemarin.", "nl": "Die brief heeft hij/zij gisteren al geschreven." },
+        { "id": "Ikan mereka makan.", "nl": "De vis wordt door hen gegeten." },
+        { "id": "Hadiah diberinya.", "nl": "Het cadeau wordt door hem/haar gegeven." }
+      ]
+    },
+    {
+      "slug": "l18-yang-en-passieve-zinnen",
+      "name": "YANG en passieve zinnen",
+      "description": "Yang leidt een passieve bijzin in: yang + agens + stam (1e/2e p.) of yang + di-vorm (3e p.); de bijzin bepaalt het voorafgaande naamwoord.",
+      "confusion_group": "yang-functions",
+      "key_contrast": "yang saya baca (agens-bijzin) vs. yang dibawanya (di-bijzin) — beide = relatieve passieve bepaling",
+      "research_notes": "Combineert de yang-relativisering uit L4 met de passieve constructie van deze les. De Nederlandse vertaling kan zowel actief ('het boek dat ik lees') als passief ('dat door mij gelezen wordt') zijn — de bijzin is in het Indonesisch passief van structuur. Veel voorkomend in de dialoog van deze les: 'Pintu halaman dibukanya', 'Buku yang dibawanya hilang'.",
+      "example_sentences": [
+        { "id": "Buku yang saya baca bagus.", "nl": "Het boek dat ik lees, is mooi." },
+        { "id": "Itulah buku yang saya baca.", "nl": "Dat is het boek dat ik lees." },
+        { "id": "Buku yang dibawanya hilang.", "nl": "Het boek dat hij heeft meegenomen, is weg." }
+      ]
+    },
+    {
+      "slug": "l18-sudah-telah-reeds-al",
+      "name": "Sudah — telah (reeds, al)",
+      "description": "Sudah en telah betekenen beide 'al/reeds'; sudah = spreektaal, telah = formeel/geschreven; kort antwoord alleen met sudah.",
+      "confusion_group": "aspect-markers",
+      "key_contrast": "sudah (spreektaal, ook als antwoord) vs. telah (formeel, NOOIT als kort antwoord)",
+      "research_notes": "Sudah is in L6 al ingevoerd als voltooiingsaspect; L18 voegt het register-doublet telah toe. De praktijkregel voor de leerling: in gesproken taal altijd sudah; telah herken je in kranten en officiële teksten. *Telah als antwoord op 'Sudah makan?' is fout.",
+      "example_sentences": [
+        { "id": "Saya sudah makan.", "nl": "Ik heb al gegeten." },
+        { "id": "Saya telah makan.", "nl": "Ik heb al gegeten." },
+        { "id": "Kamu sudah makan? — Sudah.", "nl": "Heb je al gegeten? — Ja." }
+      ]
+    },
+    {
+      "slug": "l18-sesudah-setelah-na-nadat",
+      "name": "Sesudah — setelah (na, nadat)",
+      "description": "Sesudah en setelah betekenen beide 'na, nadat'; sesudah is frequenter; 'setelah sudah' bestaat, 'sesudah telah' niet.",
+      "confusion_group": "aspect-markers",
+      "key_contrast": "sudah/telah = 'al, reeds' (aspect) ≠ sesudah/setelah = 'na, nadat' (tijdsvoegwoord)",
+      "research_notes": "De grote valkuil is de verwarring met sudah/telah door de gedeelde stam. Sudah/telah zijn aspectmarkers ('al'); se+sudah/se+telah zijn tijdsvoegwoorden ('na/nadat'). De combinatie 'setelah sudah mandi' = 'nadat hij gebaad HAD' (voltooid), terwijl 'setelah mandi' = 'na het baden'. 'sesudah telah' is ongrammaticaal.",
+      "example_sentences": [
+        { "id": "Sesudah itu dia menonton tv.", "nl": "Daarna keek hij naar de televisie." },
+        { "id": "Setelah makan dia mencuci piring.", "nl": "Na het eten waste hij de borden af." },
+        { "id": "Setelah sudah mandi dia pergi.", "nl": "Nadat hij gebaad had, ging hij weg." }
+      ]
+    },
+    {
+      "slug": "l18-alle-alles-allerlei-elke-geheel-en-iedereen",
+      "name": "Alle, alles, allerlei, elke, geheel en iedereen",
+      "description": "Overzicht van kwantoren: semua, tiap/setiap, segala(nya)/semuanya, serba, segenap/seluruh/seantero, siapa saja.",
+      "confusion_group": "se-prefix",
+      "key_contrast": "telbare eenheden (semua/tiap) vs. totale hoeveelheid (segala/semuanya) vs. ondeelbaar geheel (seluruh/segenap/seantero)",
+      "research_notes": "Eén Nederlandse vorm ('alle/alles/heel') dekt meerdere Indonesische woorden, wat overgeneralisatie uitlokt. Praktijkregel: semua + telbaar naamwoord (semua tamu); setiap/tiap = 'elke' per eenheid (setiap hari); seluruh/segenap/seantero = 'het hele' bij een ondeelbaar geheel (seluruh kota, seantero Jakarta); serba = 'allerlei' (toko serba ada); siapa saja = 'wie dan ook'. Het se-prefix in seluruh/segenap/seantero verbindt deze met de se-familie uit L8.",
+      "example_sentences": [
+        { "id": "Semua tamu hadir.", "nl": "Alle gasten waren aanwezig." },
+        { "id": "Setiap hari mereka datang.", "nl": "Ze kwamen elke dag." },
+        { "id": "Seluruh isi kota berpesta.", "nl": "De hele stad vierde feest." },
+        { "id": "Siapa saja boleh ikut.", "nl": "Iedereen (wie dan ook) mag meegaan." }
+      ]
+    }
+  ]
+}

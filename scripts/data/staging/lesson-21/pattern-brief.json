@@ -1,0 +1,99 @@
+{
+  "lesson_number": 21,
+  "cefr_level": "A1",
+  "lesson_topic": "Dongeng — de werkwoordsvorm met -KAN (causatief en benefactief)",
+  "grammar_patterns": [
+    {
+      "slug": "l21-werkwoordsvorm-met-kan-hoofdfunctie",
+      "name": "De werkwoordsvorm met -KAN — hoofdfunctie",
+      "description": "Het achtervoegsel -KAN maakt van een basiswoord een transitieve werkwoordsvorm met verplicht lijdend voorwerp; het voegt een causatieve ('laten/maken') of een benefactieve ('voor iemand') lezing toe.",
+      "confusion_group": "kan-suffix",
+      "key_contrast": "kale stam (intransitief) vs. stam + -kan (transitief, met patiens); causatieve vs. benefactieve lezing afhankelijk van de woordklasse van het basiswoord",
+      "research_notes": "Het -kan-achtervoegsel is functioneel een 'homoniem' affix: causatief (iets laten gebeuren), applicatief/benefactief (iets voor iemand doen) en objectmarkering. De algemene betekenis bij transitieve stammen is benefactief; bij intransitieve stammen, naamwoorden en bijvoeglijke naamwoorden domineert de causatieve lezing. Voor Nederlandstaligen: koppel de causatieve -kan aan 'laten/maken' (menjatuhkan = laten vallen) en de benefactieve aan 'voor iemand' (membelikan = voor iemand kopen); de valstrik is dat de begunstigde direct lijdend voorwerp wordt en het voorzetsel untuk vervalt.",
+      "example_sentences": [
+        { "id": "Utun menjatuhkan mata kailnya ke dalam air.", "nl": "Utun laat zijn dobber in het water vallen." },
+        { "id": "Ibu membelikan anaknya buku.", "nl": "Moeder koopt voor haar kind een boek." },
+        { "id": "Pak sopir membersihkan mobil.", "nl": "De chauffeur maakt de auto schoon." }
+      ]
+    },
+    {
+      "slug": "l21-me-kan-naast-di-kan",
+      "name": "ME-...-KAN naast DI-...-KAN — bedrijvend en lijdend",
+      "description": "Naast elke bedrijvende ME-...-KAN-vorm bestaat een lijdende DI-...-KAN-vorm; alleen het voorvoegsel wisselt (meN- → di-), de stam en -kan blijven gelijk.",
+      "confusion_group": "me-di-voice",
+      "key_contrast": "meN-...-kan (agens centraal, actief) vs. di-...-kan (patiens centraal, passief)",
+      "research_notes": "De me-groep markeert de bedrijvende vorm met de actievoerder als focus; di- markeert de lijdende vorm met de patiens/handeling als focus. Het Indonesisch kiest bij de 3e persoon sterk voor de di-vorm. Veelgemaakte fout bij Nederlandstaligen: di-...-kan letterlijk als 'worden ge-...-d' vertalen terwijl een actieve Nederlandse zin natuurlijker is.",
+      "example_sentences": [
+        { "id": "Yono menurunkan koper dari lemari.", "nl": "Yono haalt de koffer van de kast." },
+        { "id": "Koper diturunkan Yono dari lemari.", "nl": "De koffer is door Yono van de kast gehaald." },
+        { "id": "Bendera dinaikkannya.", "nl": "De vlag is door hem gehesen." }
+      ]
+    },
+    {
+      "slug": "l21-zes-woordklassen-als-basiswoord-voor-kan",
+      "name": "Zes woordklassen als basiswoord voor -KAN",
+      "description": "-KAN kan op zes soorten basiswoorden: transitief ww. (1a), intransitief ww. (1b), zelfstandig naamwoord (2), bijvoeglijk naamwoord (3), telwoord (4, zeldzaam), persoonlijk voornaamwoord (5, zeldzaam) en woord van plaats (6, zeldzaam).",
+      "confusion_group": "kan-suffix",
+      "key_contrast": "woordklasse van het basiswoord bepaalt de lezing: transitief → benefactief; intransitief/naamwoord/bijvoeglijk → causatief",
+      "research_notes": "De vier gangbare basiswoordklassen (1a, 1b, 2, 3) zijn de leerkern; klassen 4-6 zijn expliciet als zeldzaam gemarkeerd in het bronmateriaal. Nuttig als classificatieoefening: laat de leerling per afgeleide vorm de woordklasse van de stam herkennen (membersihkan ← bijvoeglijk bersih; menempatkan ← naamwoord tempat).",
+      "example_sentences": [
+        { "id": "beli → membelikan", "nl": "kopen → iets kopen voor iemand (transitief ww.)" },
+        { "id": "tempat → menempatkan", "nl": "plaats → iets neerzetten (zelfstandig naamwoord)" },
+        { "id": "bersih → membersihkan", "nl": "schoon → iets schoonmaken (bijvoeglijk naamwoord)" }
+      ]
+    },
+    {
+      "slug": "l21-benefactief-kan-bij-transitief-werkwoord",
+      "name": "Benefactief -KAN bij een transitief werkwoord (1a)",
+      "description": "Bij een transitief basiswoord geeft -KAN een benefactieve lezing: untuk vervalt en de begunstigde wordt het directe lijdend voorwerp.",
+      "confusion_group": "kan-suffix",
+      "key_contrast": "membeli ... untuk X (voorzetsel) vs. membelikan X ... (X is direct lijdend voorwerp, geen untuk)",
+      "research_notes": "Het benefactieve -kan verandert de valentie: de begunstigde verschuift van een untuk-bepaling naar de directe-objectpositie. Klassieke fout: untuk én -kan tegelijk gebruiken (*membelikan untuk anaknya). De lijdende vorm kan de begunstigde topicaliseren (Anaknya dibelikan ibu buku).",
+      "example_sentences": [
+        { "id": "Ibu membeli buku untuk anaknya.", "nl": "Moeder koopt een boek voor haar kind." },
+        { "id": "Ibu membelikan anaknya buku.", "nl": "Moeder koopt voor haar kind een boek." },
+        { "id": "Anaknya dibelikan ibu buku.", "nl": "Voor haar kind is door moeder een boek gekocht." }
+      ]
+    },
+    {
+      "slug": "l21-causatief-kan-bij-intransitief-naamwoord-bijvoeglijk",
+      "name": "Causatief -KAN bij intransitief werkwoord, naamwoord en bijvoeglijk naamwoord (1b, 2, 3)",
+      "description": "Bij een intransitief werkwoord, naamwoord of bijvoeglijk naamwoord geeft -KAN een causatieve lezing ('maken/laten dat ...') en maakt het de vorm transitief, met di-tegenhanger.",
+      "confusion_group": "kan-suffix",
+      "key_contrast": "naik (zelf omhoog) vs. menaikkan (iets omhoog laten gaan); bersih (toestand schoon) vs. membersihkan (schoon maken)",
+      "research_notes": "De causatieve -kan voegt een veroorzaker-argument toe: de toestand of intransitieve handeling van de stam wordt door een agens veroorzaakt. Voor Nederlandstaligen het scherpst voelbaar bij toestands-adjectieven: bersih = 'schoon (zijn)', membersihkan = 'schoon maken'. Elke causatieve vorm heeft een natuurlijke di-passief (Mobil dibersihkan Pak sopir).",
+      "example_sentences": [
+        { "id": "Dia menaikkan bendera.", "nl": "Hij hees de vlag." },
+        { "id": "Hasan menguangkan ceknya.", "nl": "Hasan verzilvert zijn cheque." },
+        { "id": "Mobil dibersihkan Pak sopir.", "nl": "De auto wordt door de chauffeur schoongemaakt." }
+      ]
+    },
+    {
+      "slug": "l21-gebiedende-wijs-met-kan",
+      "name": "Gebiedende wijs met -KAN",
+      "description": "In de imperatief markeert -KAN 'iets (voor iemand/iets) doen' tegenover de kale stam; verbod met jangan.",
+      "confusion_group": "kan-suffix",
+      "key_contrast": "beli! (koop het!) vs. belikan! (koop het voor mij!); turun! (stap uit!) vs. turunkan! (laat het zakken!)",
+      "research_notes": "De -kan-imperatief is een van de gangbaarste plekken waar -kan opduikt (instructies, bevelen). Het minimale paar beli!/belikan! en turun!/turunkan! maakt het causatieve/benefactieve verschil concreet voelbaar. Verbod: Jangan + -kan-vorm.",
+      "example_sentences": [
+        { "id": "Belikan!", "nl": "Koop het (voor mij)!" },
+        { "id": "Turunkan!", "nl": "Laat (het) zakken!" },
+        { "id": "Jangan turunkan!", "nl": "Laat (het) niet zakken!" }
+      ]
+    },
+    {
+      "slug": "l21-passieve-zinsconstructie-met-kan-per-persoon",
+      "name": "Passieve zinsconstructie met -KAN per persoon",
+      "description": "De lijdende -KAN-zin hangt af van de persoon van de agens: 1e/2e persoon → patiens + voornaamwoord + kale stam-met-kan (zonder di-); 3e persoon → di-...-kan-nya of patiens + mereka + stam-met-kan.",
+      "confusion_group": "me-di-voice",
+      "key_contrast": "Koper saya/kamu turunkan (1e/2e p., geen di-) vs. Koper diturunkannya / Koper mereka turunkan (3e p.)",
+      "research_notes": "Dit is het 'passief type 1/type 2'-onderscheid uit de Indonesische grammatica: bij 1e/2e persoon agens staat het pronomen direct vóór de kale stam zonder di-; bij 3e persoon agens gebruik je di- (+ -nya) of het volle voornaamwoord vóór de stam. Veelgemaakte fout bij Nederlandstaligen: *Koper saya diturunkan (di- gebruiken bij 1e/2e persoon) — dat hoort niet. Verwijst terug naar Les 2.",
+      "example_sentences": [
+        { "id": "Koper saya turunkan.", "nl": "De koffer haal ik naar beneden." },
+        { "id": "Koper kamu turunkan.", "nl": "De koffer haal jij naar beneden." },
+        { "id": "Koper diturunkannya.", "nl": "De koffer wordt door hem/haar naar beneden gehaald." },
+        { "id": "Koper mereka turunkan.", "nl": "De koffer halen zij naar beneden." }
+      ]
+    }
+  ]
+}

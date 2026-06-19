@@ -1,0 +1,77 @@
+{
+  "lesson_number": 20,
+  "cefr_level": "A1",
+  "lesson_topic": "Biar Lambat Asal Selamat — kruiden, smaken, en het nominaliserende voorvoegsel PE-",
+  "grammar_patterns": [
+    {
+      "slug": "l20-voorvoegsel-pe-handelend-persoon-instrument",
+      "name": "Het voorvoegsel PE-: vorming van een handelend persoon of instrument",
+      "description": "Het voorvoegsel PE- (de peN-familie) maakt van een basiswoord een zelfstandig naamwoord dat een handelend persoon of een ding/instrument aanduidt dat de handeling verricht. Vaak is er een corresponderend ME-werkwoord (menjual → penjual, membaca → pembaca). PE- combineert met werkwoorden, zelfstandige naamwoorden, bijvoeglijke naamwoorden en zeldzaam telwoorden.",
+      "confusion_group": "pe-prefix",
+      "key_contrast": "PE- (de uitvoerder/het middel, een persoon of instrument) vs het basiswoord/ME-werkwoord (de handeling zelf); en PE- (de doener: pemilih) vs -an (het resultaat: pilihan).",
+      "research_notes": "PE- is de nominale tegenhanger van het verbale ME-: ze delen exact dezelfde nasaliseringsregels, dus een leerder die ME- al kent (lessen 13–15) hoeft alleen de betekenisverschuiving 'handeling → doener/instrument' bij te leren. Voor Nederlandstaligen is de productiviteit een valkuil: het Indonesisch maakt veel agensnamen morfologisch (penjual = verkoper) waar het Nederlands een los grondwoord + achtervoegsel -er/-aar gebruikt; leerders neigen ernaar het ME-werkwoord onveranderd te laten staan i.p.v. te nominaliseren. Onderscheid persoon-PE- (penyanyi = zanger) van instrument-PE- (pembuka = opener) via de context (seorang yang … vs alat untuk …). Teaching strategy: koppel elke PE-vorm aan zijn ME-werkwoord zodat de allomorfie meelift op reeds bekende kennis.",
+      "example_sentences": [
+        { "id": "Penjual itu ramah sekali.", "nl": "Die verkoper is heel vriendelijk." },
+        { "id": "Penyanyi lagu ini berambut gondrong.", "nl": "De zanger van dit lied heeft lang haar." },
+        { "id": "Pembuka botol ada di dapur.", "nl": "De flesopener ligt in de keuken." },
+        { "id": "Pembantu kami datang setiap pagi.", "nl": "Onze hulp in de huishouding komt elke ochtend." }
+      ]
+    },
+    {
+      "slug": "l20-pe-allomorfen-pem-pen-peng",
+      "name": "PE- zonder klankverandering en de allomorfen pem-/pen-/peng-",
+      "description": "De beginklank van het basiswoord bepaalt de vorm van het voorvoegsel, identiek aan ME-. PE- blijft onveranderd vóór L, M, N, NY, R, W, Y; PEM- vóór B en F; PEN- vóór C, D, J; PENG- vóór de klinkers A, E, I, O, U en vóór G en H.",
+      "confusion_group": "pe-prefix",
+      "key_contrast": "Welke beginklank welke allomorf kiest: L/M/N/NY/R/W/Y → pe-, B/F → pem-, C/D/J → pen-, klinker+G/H → peng-.",
+      "research_notes": "Dit is dezelfde nasaliseringstabel als bij ME- (L13–15); de N.B. in het boek zegt dat letterlijk: 'PE- wordt op dezelfde wijze voorgevoegd als ME-'. Veelgemaakte fout: de keuze tussen pen- en peng- — leerders gebruiken peng- te breed (ook vóór C/D/J) terwijl die naar pen- gaan, of vergeten de extra -g- bij G-/H-/klinkerstammen (ajar → pengajar, niet *penajar). Het loont om de allomorfen per beginklankklasse te drillen i.p.v. los uit het hoofd, omdat de regels fonologisch gemotiveerd zijn (de neusklank past zich aan de articulatieplaats van de beginmedeklinker aan).",
+      "example_sentences": [
+        { "id": "Penyanyi itu sangat terkenal.", "nl": "Die zanger is heel beroemd." },
+        { "id": "Pembaca buku ini banyak.", "nl": "Dit boek heeft veel lezers." },
+        { "id": "Pendengar radio itu setia.", "nl": "De luisteraars van die radio zijn trouw." },
+        { "id": "Pengajar bahasa Indonesia ramah.", "nl": "De docent Indonesisch is vriendelijk." }
+      ]
+    },
+    {
+      "slug": "l20-pe-wegval-beginklank-k-p-s-t",
+      "name": "PE- met wegval van de beginklank bij K, P, S, T",
+      "description": "Bij basiswoorden die beginnen met K, P, S of T valt die beginklank weg en versmelt met de neusklank, net als bij ME-: K → peng- (kemudi → pengemudi), P → pem- (pesan → pemesan), S → peny- (sewa → penyewa), T → pen- (tulis → penulis). De oorspronkelijke medeklinker is in de afgeleide vorm niet meer hoorbaar.",
+      "confusion_group": "pe-prefix",
+      "key_contrast": "Wegval-klassen (K/P/S/T verdwijnen) vs niet-wegval-klassen; en het herkennen van het basiswoord ondanks de verdwenen beginmedeklinker (penulis ← tulis, niet *nulis).",
+      "research_notes": "Dit is het lastigste deel van peN-/meN- voor leerders: de productieve regel verbergt het basiswoord. penulis lijkt op *nulis maar komt van tulis; penyewa lijkt op *nyewa maar komt van sewa. De omgekeerde richting (een PE-woord terugleiden naar zijn basiswoord) vereist dat de leerder de wegvalregel actief kan terugdraaien — een veelvoorkomende bron van woordenboekfouten. Teaching strategy: drill paren (basiswoord ↔ PE-vorm) in beide richtingen, en wijs erop dat dezelfde wegval al bekend is uit de ME-vormen (menulis, menyewa) van de vorige lessen.",
+      "example_sentences": [
+        { "id": "Penulis buku itu sudah meninggal.", "nl": "De schrijver van dat boek is al overleden." },
+        { "id": "Pengemudi bus malam itu lelah.", "nl": "De chauffeur van die nachtbus is moe." },
+        { "id": "Penyewa rumah ini membayar tepat waktu.", "nl": "De huurder van dit huis betaalt op tijd." },
+        { "id": "Pemesan makanan itu sudah datang.", "nl": "Degene die het eten besteld heeft, is al gekomen." }
+      ]
+    },
+    {
+      "slug": "l20-pe-overdrijving-en-afwijkende-vormen",
+      "name": "PE- met de bijbetekenis van overdrijving en de afwijkende pe-vormen",
+      "description": "PE- kan de bijbetekenis hebben dat iemand iets in overdreven mate is of doet (pemalas = luilak, peminum = zuiplap, penangis = huilebalk, pengopi = koffieleut). Daarnaast bestaan afwijkende vormen waarbij de algemene regels niet worden toegepast en PE- onveranderd blijft (pedagang, pejabat, peserta, petani); spelling controleren in een woordenboek blijft nodig.",
+      "confusion_group": "pe-prefix",
+      "key_contrast": "De neutrale agens/instrument-betekenis (penjual = verkoper) vs de overdrijvende karakter-betekenis (peminum = zuiplap); en regelmatige allomorfie vs lexicaal vastgelegde uitzonderingen (pedagang i.p.v. *pendagang).",
+      "research_notes": "De overdrijvings-PE- is pedagogisch waardevol omdat het de leerder leert dat morfologie niet altijd compositioneel is: peminum is niet zomaar 'een drinker' maar 'een zuiplap'. De afwijkende pe-vormen (pedagang, petani) zijn frequente, alledaagse woorden die de leerder uit de tekst van deze les al kent (pedagang komt voor in 'Banyak pedagang kecil menjual dagangannya'). Belangrijk om expliciet te zeggen: de regelmatige tabel voorspelt *pendagang/*penani, maar de gangbare vorm is pedagang/petani — het boek waarschuwt zelf dat de spelling in een woordenboek moet worden nagezien.",
+      "example_sentences": [
+        { "id": "Adik saya pemalas, ia masih tidur.", "nl": "Mijn broertje is een luilak, hij slaapt nog." },
+        { "id": "Banyak pedagang kecil menjual dagangannya.", "nl": "Veel kleine handelaren verkopen hun waar." },
+        { "id": "Petani itu bekerja di sawah.", "nl": "Die boer werkt op de rijstvelden." },
+        { "id": "Dia peminum yang berat.", "nl": "Hij is een zware drinker." }
+      ]
+    },
+    {
+      "slug": "l20-samenstellingen-met-pe",
+      "name": "Samenstellingen met PE-: het instrument- of agensnaamwoord in een woordgroep",
+      "description": "Een PE-vorm verschijnt vaak als kern van een woordgroep die een instrument of beroep benoemt, gevolgd door een bepaling: alat pembuka (opener), pengharum ruangan (luchtverfrisser), alat penghitung (telmachine), perekam suara (antwoordapparaat), pil penenang (kalmeringspil). Binnen één basiswoord staat de PE-vorm (de doener/het middel) tegenover de -an-vorm (het resultaat): pemilih (de kiezer) vs pilihan (de keuze).",
+      "confusion_group": "pe-prefix",
+      "key_contrast": "PE- als doener/middel (pemilih = de kiezer, pencuci = de wasser/wasmiddel) vs -an als resultaat (pilihan = de keuze); en de samenstellingsvolgorde kern-PE-vorm + bepaling (pengharum ruangan, niet *ruangan pengharum).",
+      "research_notes": "Deze samenstellingen zijn alledaagse productlabels (luchtverfrisser, telmachine, shampoo) die een leerder direct in een Indonesische supermarkt of toko tegenkomt — hoge praktische opbrengst. Het PE- vs -an contrast (pemilih/pilihan, pembuka/bukaan) is conceptueel de kern: PE- nominaliseert naar de agens/het instrument, -an naar het object/resultaat. Voor Nederlandstaligen is de hoofd-bepaling-volgorde wennen: pencuci rambut = letterlijk 'wasser haar' = 'haarwasmiddel/shampoo', met het bepaalde woord vooraan (kern eerst), omgekeerd t.o.v. het Nederlandse samenstellingspatroon.",
+      "example_sentences": [
+        { "id": "Pengharum ruangan ini wangi sekali.", "nl": "Deze luchtverfrisser ruikt heerlijk." },
+        { "id": "Tolong ambil alat pembuka botol.", "nl": "Pak alsjeblieft de flesopener." },
+        { "id": "Pencuci rambut ini cocok untuk rambut kering.", "nl": "Deze shampoo is geschikt voor droog haar." },
+        { "id": "Pilihan saya berbeda dengan pilihan pemilih lain.", "nl": "Mijn keuze verschilt van de keuze van andere kiezers." }
+      ]
+    }
+  ]
+}

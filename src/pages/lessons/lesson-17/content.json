@@ -1,0 +1,952 @@
+{
+  "meta": {
+    "id": "80e82703-b33a-480f-bfc6-34a257e515a5",
+    "order_index": 17,
+    "title": "Telur Mata Sapi",
+    "level": "A1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Despina",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Pagi hari Laura bangun, kemudian mandi dan berpakaian. Teh dan nasi goreng sudah dihidangkan di meja, di depan kamarnya, oleh pembantu losmen. Dengan segan ia melihat sarapannya. Nasi lagi! Sudah tiga minggu Laura makan masakan Indonesia dan sampai hari ini tetap dengan penuh selera. Tapi entah kenapa, pagi ini Laura ingin makan sarapan Eropa.",
+          "Dia ke luar losmen dan pergi ke sebuah restoran Eropa.",
+          "Setelah pelayan membawa makanan, Laura mencari garam dan merica. Di meja ada tempat gula, sambal dan serbet, tetapi garam dan merica tidak ada."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "dialogue",
+        "lines": [
+          {
+            "text": "Ada makanan Eropa, Mas?",
+            "speaker": "Laura",
+            "translation": "Heeft u Europees eten, Mas?",
+            "translation_en": "Is there European food, Mas?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/ada-makanan-eropa-mas-354f9b2c.mp3"
+          },
+          {
+            "text": "Ada Nona. Nona mau melihat daftar makanan dulu?",
+            "speaker": "Mas Piro",
+            "translation": "Ja Nona. Wilt u eerst de menukaart bekijken, Nona?",
+            "translation_en": "Yes Nona. Would you like to see the menu first, Nona?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ada-nona-nona-mau-e0546c6a.mp3"
+          },
+          {
+            "text": "Boleh, terima kasih.",
+            "speaker": "Laura",
+            "translation": "Graag, dank u wel.",
+            "translation_en": "Please, thank you.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/boleh-terima-kasih-8b0e0201.mp3"
+          },
+          {
+            "text": "Ini, Nona. Ada bubur, roti, mentega, susu dan telur ayam. Telur ayam bisa direbus setengah matang atau matang. Kalau Nona mau, juga ada kue donat atau roti pakai mentega dan selai. Keju juga ada. Nona mau makan apa?",
+            "speaker": "Mas Piro",
+            "translation": "Alstublieft, Nona. We hebben pap, brood, boter, melk en kippeneieren. De kippeneieren kunnen halfzacht of hard gekookt worden. Als u wilt, is er ook donut of brood met boter en jam. Kaas is er ook. Wat wilt u eten, Nona?",
+            "translation_en": "Here you are, Nona. We have porridge, bread, butter, milk and eggs. Eggs can be soft-boiled or hard-boiled. If you wish, we also have donuts or bread with butter and jam. Cheese is available too. What would you like to eat, Nona?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ini-nona-ada-bubur-3f4fabc6.mp3"
+          },
+          {
+            "text": "Tunggu dulu ya, Mas!",
+            "speaker": "Laura",
+            "translation": "Even wachten hè, Mas!",
+            "translation_en": "Wait a moment, Mas!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tunggu-dulu-ya-mas-e321d655.mp3"
+          },
+          {
+            "text": "Barangkali Nona mau 'Continental breakfast'?",
+            "speaker": "Mas Piro",
+            "translation": "Misschien wilt u een 'Continental breakfast', Nona?",
+            "translation_en": "Perhaps you'd like a Continental breakfast, Nona?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/barangkali-nona-mau-continental-2d309979.mp3"
+          },
+          {
+            "text": "Apa itu?",
+            "speaker": "Laura",
+            "translation": "Wat is dat?",
+            "translation_en": "What is that?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/apa-itu-922bfa32.mp3"
+          },
+          {
+            "text": "Dua potong roti, tomat, dan telur mata sapi pakai ham. Terus segelas jeruk peras, dan sepiring variasi buah-buahan seperti mangga, semangka dan pisang susu.",
+            "speaker": "Mas Piro",
+            "translation": "Twee sneetjes brood, tomaat, en een spiegelei met ham. Verder een glas geperste sinaasappel, en een bord met een variatie aan fruit zoals mango, watermeloen en kleine banaan.",
+            "translation_en": "Two slices of bread, tomato, and a fried egg with ham. Then a glass of fresh orange juice, and a plate of assorted fruit like mango, watermelon and banana.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dua-potong-roti-tomat-96ccad64.mp3"
+          },
+          {
+            "text": "Baiklah. Tapi..... Mas, sebetulnya apa itu, telur mata sapi?",
+            "speaker": "Laura",
+            "translation": "Goed dan. Maar..... Mas, wat is dat eigenlijk, telur mata sapi (spiegelei)?",
+            "translation_en": "All right. But..... Mas, what actually is a fried egg?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/baiklah-tapi-mas-sebetulnya-8a5f08a4.mp3"
+          },
+          {
+            "text": "Ha....., Nona belum tahu? Belum pernah coba? Enak sekali. Telur mata sapi itu sebetulnya satu atau dua butir telur yang digoreng tanpa dikocok. Jadi kuning telurnya masih utuh. Tetapi kalau telur dikocok dulu dan kemudian digoreng namanya dadar! Sebentar ya, Non.",
+            "speaker": "Mas Piro",
+            "translation": "Ha....., weet u dat nog niet, Nona? Nog nooit geproefd? Het is heerlijk. Een telur mata sapi is eigenlijk één of twee eieren die gebakken worden zonder te klutsen. Zo blijft de dooier nog heel. Maar als het ei eerst geklutst wordt en daarna gebakken, heet het dadar (omelet)! Een momentje hè, Non.",
+            "translation_en": "Ha....., you don't know that yet, Nona? Never tried it? It's delicious. A fried egg is actually one or two eggs fried without beating. So the yolk stays whole. But if the egg is beaten first and then fried it's called an omelet! Just a moment, Nona.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ha-nona-belum-tahu-52007362.mp3"
+          },
+          {
+            "text": "Mas, Mas! Minta garam dan merica. Tolong tambah segelas kopi pahit, ya.",
+            "speaker": "Laura",
+            "translation": "Mas, Mas! Mag ik zout en peper. Doe er alstublieft ook een glas zwarte koffie bij, hè.",
+            "translation_en": "Mas, Mas! Can I have salt and pepper. Please also add a glass of black coffee, will you.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/mas-mas-minta-garam-843c80cc.mp3"
+          },
+          {
+            "text": "Baik Nona.",
+            "speaker": "Mas Piro",
+            "translation": "Goed, Nona.",
+            "translation_en": "Right away, Nona.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/baik-nona-2c78dd8a.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "De woorden uit Selamat Datang deel 1 worden bekend verondersteld. In de woordenlijst zijn uitsluitend de nieuwe woorden opgenomen. Alleen de betekenis die bedoeld is in de tekst is vermeld. Hetzelfde geldt voor de woordenlijsten die achterin het boek zijn opgenomen.",
+          "Het is belangrijk in een woord het basiswoord te herkennen, omdat in een woordenboek rangschikking plaatsvindt onder het basiswoord.",
+          "Het ~ teken geeft de plaats aan van het basiswoord. Let op, de vermelde betekenis is die van de geaffigeerde vorm. Zo is masak, ~an: masakan = gerecht.",
+          "Daar waar een dergelijke notatie problemen zou kunnen geven, is zowel het basiswoord als de gehele geaffigeerde vorm opgenomen, bijvoorbeeld: potret, memotret = fotograferen. Vormen die nog niet eerder werden behandeld, zijn in het geheel opgenomen."
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "hoofdstuk",
+            "english": "chapter",
+            "indonesian": "bab",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bab-d4134f4c.mp3"
+          },
+          {
+            "dutch": "pap",
+            "english": "porridge",
+            "indonesian": "bubur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bubur-8c2e210d.mp3"
+          },
+          {
+            "dutch": "omelet",
+            "english": "omelet",
+            "indonesian": "dadar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dadar-64b7e082.mp3"
+          },
+          {
+            "dutch": "lijst",
+            "english": "list",
+            "indonesian": "daftar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/daftar-260ccf6b.mp3"
+          },
+          {
+            "dutch": "menukaart",
+            "english": "menu",
+            "indonesian": "daftar makanan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/daftar-makanan-3f54da15.mp3"
+          },
+          {
+            "dutch": "opgediend",
+            "english": "served",
+            "indonesian": "dihidangkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dihidangkan-c4759b66.mp3"
+          },
+          {
+            "dutch": "donut",
+            "english": "donut",
+            "indonesian": "donat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/donat-a066be6d.mp3"
+          },
+          {
+            "dutch": "ik weet niet",
+            "english": "I don't know",
+            "indonesian": "entah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/entah-902b9598.mp3"
+          },
+          {
+            "dutch": "Europa",
+            "english": "Europe",
+            "indonesian": "Eropa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/eropa-f1028f01.mp3"
+          },
+          {
+            "dutch": "zout",
+            "english": "salt",
+            "indonesian": "garam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/garam-77c57b6e.mp3"
+          },
+          {
+            "dutch": "suiker",
+            "english": "sugar",
+            "indonesian": "gula",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gula-0f644456.mp3"
+          },
+          {
+            "dutch": "ham",
+            "english": "ham",
+            "indonesian": "ham",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ham-92128d1e.mp3"
+          },
+          {
+            "dutch": "cultuur",
+            "english": "culture",
+            "indonesian": "kebudayaan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kebudayaan-3968abd0.mp3"
+          },
+          {
+            "dutch": "klutsen",
+            "english": "beat",
+            "indonesian": "kocok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kocok-5ce034b6.mp3"
+          },
+          {
+            "dutch": "mango",
+            "english": "mango",
+            "indonesian": "mangga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mangga-8961f57d.mp3"
+          },
+          {
+            "dutch": "gerecht",
+            "english": "dish",
+            "indonesian": "masak, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/masak-an-8eb16df7.mp3"
+          },
+          {
+            "dutch": "boter",
+            "english": "butter",
+            "indonesian": "mentega",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mentega-0fd87d65.mp3"
+          },
+          {
+            "dutch": "peper",
+            "english": "pepper",
+            "indonesian": "merica",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/merica-4023ca94.mp3"
+          },
+          {
+            "dutch": "'s ochtends",
+            "english": "morning",
+            "indonesian": "pagi hari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pagi-hari-7ba9da92.mp3"
+          },
+          {
+            "dutch": "met",
+            "english": "with",
+            "indonesian": "pakai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pakai-abe9c373.mp3"
+          },
+          {
+            "dutch": "les",
+            "english": "lesson",
+            "indonesian": "pelajaran",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pelajaran-0745a121.mp3"
+          },
+          {
+            "dutch": "ober / serveerster",
+            "english": "waiter / waitress",
+            "indonesian": "pelayan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pelayan-2b3cfee3.mp3"
+          },
+          {
+            "dutch": "spreuk / uitdrukking",
+            "english": "saying / expression",
+            "indonesian": "pepatah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pepatah-f20f3be0.mp3"
+          },
+          {
+            "dutch": "persen",
+            "english": "squeeze / press",
+            "indonesian": "peras, memeras",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/peras-memeras-29f35e2f.mp3"
+          },
+          {
+            "dutch": "kleine banaan",
+            "english": "small banana",
+            "indonesian": "pisang susu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pisang-susu-bcc0b9fc.mp3"
+          },
+          {
+            "dutch": "'n sneetje",
+            "english": "slice",
+            "indonesian": "potong, se-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/potong-se-ca51de77.mp3"
+          },
+          {
+            "dutch": "koken in water",
+            "english": "boil in water",
+            "indonesian": "rebus",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rebus-8fa38823.mp3"
+          },
+          {
+            "dutch": "eigenlijk / in feite",
+            "english": "actually / in fact",
+            "indonesian": "sebetulnya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sebetulnya-3657dfc5.mp3"
+          },
+          {
+            "dutch": "tegenzin",
+            "english": "reluctance / unwillingness",
+            "indonesian": "segan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/segan-56d17c18.mp3"
+          },
+          {
+            "dutch": "jam",
+            "english": "jam",
+            "indonesian": "selai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selai-a03bf009.mp3"
+          },
+          {
+            "dutch": "smaak",
+            "english": "taste",
+            "indonesian": "selera",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selera-7299901f.mp3"
+          },
+          {
+            "dutch": "watermeloen",
+            "english": "watermelon",
+            "indonesian": "semangka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/semangka-348a643b.mp3"
+          },
+          {
+            "dutch": "servet",
+            "english": "napkin",
+            "indonesian": "serbet",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/serbet-2f04b81f.mp3"
+          },
+          {
+            "dutch": "hoorn (rund)",
+            "english": "horn (cattle)",
+            "indonesian": "tanduk",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tanduk-b49f91ad.mp3"
+          },
+          {
+            "dutch": "grammatica",
+            "english": "grammar",
+            "indonesian": "tata bahasa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tata-bahasa-8b0a3437.mp3"
+          },
+          {
+            "dutch": "ei",
+            "english": "egg",
+            "indonesian": "telur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/telur-ea2032ec.mp3"
+          },
+          {
+            "dutch": "spiegelei",
+            "english": "fried egg",
+            "indonesian": "telur mata sapi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/telur-mata-sapi-9c9dd8ec.mp3"
+          },
+          {
+            "dutch": "suikerpot",
+            "english": "sugar bowl",
+            "indonesian": "tempat gula",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tempat-gula-d8b14968.mp3"
+          },
+          {
+            "dutch": "steeds",
+            "english": "constantly",
+            "indonesian": "tetap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tetap-4aea1d54.mp3"
+          },
+          {
+            "dutch": "uitdrukking",
+            "english": "expression",
+            "indonesian": "ungkap, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ungkap-an-ba897cf9.mp3"
+          },
+          {
+            "dutch": "heel / onbeschadigd",
+            "english": "whole / intact",
+            "indonesian": "utuh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/utuh-a712e986.mp3"
+          },
+          {
+            "dutch": "variatie",
+            "english": "variation",
+            "indonesian": "variasi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/variasi-88d5cf87.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "expressions",
+        "items": [
+          {
+            "dutch": "ontbijt",
+            "english": "breakfast",
+            "indonesian": "makan pagi / sarapan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/makan-pagi-sarapan-3b484796.mp3"
+          },
+          {
+            "dutch": "lunch / middagmaal",
+            "english": "lunch",
+            "indonesian": "makan siang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/makan-siang-1004d7c6.mp3"
+          },
+          {
+            "dutch": "diner / avondmaal",
+            "english": "dinner",
+            "indonesian": "makan malam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/makan-malam-49045a13.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "expressions",
+        "items": [
+          {
+            "dutch": "Onder zeer zware en moeilijke omstandigheden",
+            "english": "Under very difficult and challenging circumstances",
+            "indonesian": "Seperti telur di ujung tanduk",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/seperti-telur-di-ujung-8d2a701d.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 6,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Bij actieve (bedrijvende) zinnen staat de agens vóór de ME-werkwoordsvorm en komt de patiens erná.",
+              "De agens is de persoon of zaak die de handeling uitvoert; de patiens is de persoon of zaak die de handeling ondergaat.",
+              "Schema: Agens — ME-werkwoordsvorm — Patiens."
+            ],
+            "title": "Volgorde in de actieve zin: agens — ME-vorm — patiens",
+            "examples": [
+              {
+                "dutch": "Wie zoekt mij?",
+                "english": "Who is looking for me?",
+                "indonesian": "Siapa mencari saya?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/siapa-mencari-saya-00dada5e.mp3"
+              },
+              {
+                "dutch": "Moeder roept jou",
+                "english": "Mother calls you",
+                "indonesian": "Ibu memanggil kamu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ibu-memanggil-kamu-bb076303.mp3"
+              },
+              {
+                "dutch": "De leraar zag hem / haar / het",
+                "english": "The teacher saw him/her/it",
+                "indonesian": "Guru melihat dia",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/guru-melihat-dia-4d4dcee7.mp3"
+              },
+              {
+                "dutch": "Zij bellen ons",
+                "english": "They call us",
+                "indonesian": "Mereka menelepon kami / kita",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mereka-menelepon-kami-kita-7526ac6d.mp3"
+              },
+              {
+                "dutch": "Vader begeleidt jullie",
+                "english": "Father accompanies you (plural)",
+                "indonesian": "Bapak mengantar kalian / kamu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bapak-mengantar-kalian-kamu-83cfb819.mp3"
+              },
+              {
+                "dutch": "Ali heeft hen gezien",
+                "english": "Ali has seen them",
+                "indonesian": "Ali melihat mereka",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ali-melihat-mereka-63ea1c16.mp3"
+              }
+            ],
+            "rules_en": [
+              "In active sentences, the agent comes before the ME-verb form and the patient comes after.",
+              "The agent is the person or thing performing the action; the patient is the person or thing undergoing the action.",
+              "Schema: Agent — ME-verb form — Patient."
+            ],
+            "title_en": "Word order in the active voice: agent — ME-form — patient"
+          },
+          {
+            "rules": [
+              "Is de patiens een persoonlijk voornaamwoord, dan kan dat als enclitisch achtervoegsel direct aan de ME-vorm worden vastgehecht: saya → -ku, kamu → -mu, dia → -nya.",
+              "Alleen saya, kamu en dia hebben een clitische vorm; kami/kita, kalian en mereka blijven volle woorden achter het werkwoord.",
+              "De clitische vorm is optioneel: de volle vorm met los voornaamwoord blijft altijd correct."
+            ],
+            "title": "De patiens als persoonlijk voornaamwoord: de clitica -ku / -mu / -nya",
+            "examples": [
+              {
+                "dutch": "Wie zoekt mij?",
+                "english": "Who is looking for me?",
+                "indonesian": "Siapa mencariku?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/siapa-mencariku-f1977708.mp3"
+              },
+              {
+                "dutch": "Moeder roept jou",
+                "english": "Mother calls you",
+                "indonesian": "Ibu memanggilmu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ibu-memanggilmu-dbed0c66.mp3"
+              },
+              {
+                "dutch": "De leraar zag hem / haar / het",
+                "english": "The teacher saw him/her/it",
+                "indonesian": "Guru melihatnya",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/guru-melihatnya-b98f6926.mp3"
+              },
+              {
+                "dutch": "Ali heeft hem / haar gezien",
+                "english": "Ali has seen him/her",
+                "indonesian": "Ali melihatnya",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ali-melihatnya-5b42a4df.mp3"
+              }
+            ],
+            "rules_en": [
+              "If the patient is a personal pronoun, it can be attached as an enclitic suffix directly to the ME-form: saya → -ku, kamu → -mu, dia → -nya.",
+              "Only saya, kamu and dia have a clitic form; kami/kita, kalian and mereka remain full words after the verb.",
+              "The clitic form is optional: the full form with separate pronoun is always correct."
+            ],
+            "title_en": "The patient as personal pronoun: the clitics -ku / -mu / -nya"
+          }
+        ],
+        "grammar_topics": [
+          "Vraagwoorden",
+          "Werkwoordvolgorde en clitica"
+        ]
+      }
+    },
+    {
+      "order_index": 7,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Berapa? betekent 'hoeveel?' en gebruik je wanneer je een getal als antwoord verwacht.",
+              "Vaak combineer je berapa met een zelfstandig naamwoord + -nya; de -nya verwijst naar de zaak waarover je vraagt.",
+              "In het antwoord mag het kernwoord (met -nya) herhaald worden, maar dat hoeft niet."
+            ],
+            "title": "Berapa? = hoeveel? — wanneer je een getal verwacht",
+            "examples": [
+              {
+                "dutch": "Wat is het nummer (ervan)? — (Nomor) 24",
+                "english": "What is the number (of it)? — (Number) 24",
+                "indonesian": "Berapa nomornya?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/berapa-nomornya-675bb643.mp3"
+              },
+              {
+                "dutch": "Hoe zwaar is het? — (Beratnya) 6 kilo",
+                "english": "How heavy is it? — (Weight) 6 kilos",
+                "indonesian": "Berapa beratnya?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/berapa-beratnya-c64ee27d.mp3"
+              },
+              {
+                "dutch": "Wat is de prijs (ervan), wat kost het? — (Harganya) 35.000 rupiah",
+                "english": "What is the price (of it), how much does it cost? — (Price) 35,000 rupiah",
+                "indonesian": "Berapa harganya?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/berapa-harganya-ef692cc9.mp3"
+              },
+              {
+                "dutch": "Hoe hoog is het? — (Tingginya) 2 meter",
+                "english": "How high is it? — (Height) 2 meters",
+                "indonesian": "Berapa tingginya?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/berapa-tingginya-32c90174.mp3"
+              }
+            ],
+            "rules_en": [
+              "Berapa? means 'how much?' or 'how many?' and you use it when you expect a number as an answer.",
+              "Often you combine berapa with a noun + -nya; the -nya refers to the thing you are asking about.",
+              "In the answer, the headword (with -nya) may be repeated, but it doesn't have to be."
+            ],
+            "title_en": "Berapa? = how much? / how many? — when you expect a number as an answer"
+          }
+        ],
+        "grammar_topics": [
+          "Vraagwoorden",
+          "Werkwoordvolgorde en clitica"
+        ]
+      }
+    },
+    {
+      "order_index": 8,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Voor personen en voor gepersonifieerde zaken (zoals een pop) gebruik je het vraagwoord siapa? = wie?",
+              "Let op: ook bij het vragen naar een naam gebruik je siapa, niet apa."
+            ],
+            "title": "Siapa? = wie? — voor personen en gepersonifieerde zaken",
+            "examples": [
+              {
+                "dutch": "Hoe heet hij?",
+                "english": "What is his/her name?",
+                "indonesian": "Siapa namanya?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/siapa-namanya-fd6d6bce.mp3"
+              },
+              {
+                "dutch": "Hoe heet je pop?",
+                "english": "What is your doll's name?",
+                "indonesian": "Bonekamu siapa namanya?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bonekamu-siapa-namanya-a41da299.mp3"
+              },
+              {
+                "dutch": "Wiens koffer is dit? (Van wie is deze koffer?)",
+                "english": "Whose suitcase is this? (Whose is this suitcase?)",
+                "indonesian": "Ini koper siapa?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ini-koper-siapa-4f4857e4.mp3"
+              }
+            ],
+            "rules_en": [
+              "For persons and personified things (such as a doll) you use the question word siapa? = who?",
+              "Note: even when asking for a name use siapa, not apa."
+            ],
+            "title_en": "Siapa? = who? — for persons and personified things"
+          },
+          {
+            "rules": [
+              "Voor dieren, dingen of zaken gebruik je het vraagwoord apa? = wat?"
+            ],
+            "title": "Apa? = wat? — voor dieren, dingen en zaken",
+            "examples": [
+              {
+                "dutch": "Wat wilt u?",
+                "english": "What do you want?",
+                "indonesian": "Bapak / Ibu ingin apa?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bapak-ibu-ingin-apa-9e47b424.mp3"
+              },
+              {
+                "dutch": "Wat voor auto is dit?",
+                "english": "What kind of car is this?",
+                "indonesian": "Ini mobil apa?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ini-mobil-apa-53620fbe.mp3"
+              },
+              {
+                "dutch": "Wat is de naam van dat hotel?",
+                "english": "What is the name of that hotel?",
+                "indonesian": "Nama hotel itu apa?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nama-hotel-itu-apa-b6c9a14a.mp3"
+              }
+            ],
+            "rules_en": [
+              "For animals, things or matters, use the question word apa? = what?"
+            ],
+            "title_en": "Apa? = what? — for animals, things and matters"
+          },
+          {
+            "rules": [
+              "Mana? = welk, welke? Vaak gebruikt met yang om een keuze uit een verzameling te vragen.",
+              "Mana? kan ook een afkorting zijn van bagaimana? = hoe? (bijv. Mana mungkin? = Hoe kan dat nou?).",
+              "Mana? kan ook een afkorting zijn van di mana? = waar? (bijv. Mana orangnya? = Waar zit hij?)."
+            ],
+            "title": "Mana? = welk(e)? en de afgeleide betekenissen",
+            "examples": [
+              {
+                "dutch": "Welke is / zijn lekker?",
+                "english": "Which is / are delicious?",
+                "indonesian": "Mana yang enak?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mana-yang-enak-cb43bdcb.mp3"
+              },
+              {
+                "dutch": "Welke is / zijn klein?",
+                "english": "Which is / are small?",
+                "indonesian": "Mana yang kecil?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mana-yang-kecil-798b1670.mp3"
+              },
+              {
+                "dutch": "Welke koffer is van u?",
+                "english": "Which suitcase is yours?",
+                "indonesian": "Koper Bapak yang mana?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/koper-bapak-yang-mana-0c76406e.mp3"
+              },
+              {
+                "dutch": "Hoe kan dat nou?",
+                "english": "How can that be?",
+                "indonesian": "Mana mungkin?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mana-mungkin-b3037c0a.mp3"
+              },
+              {
+                "dutch": "Waar zit hij?",
+                "english": "Where is he?",
+                "indonesian": "Mana orangnya?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mana-orangnya-317b1c5c.mp3"
+              }
+            ],
+            "rules_en": [
+              "Mana? = which? Often used with yang to ask for a choice from a group.",
+              "Mana? can also be short for bagaimana? = how? (e.g. Mana mungkin? = How can that be?)",
+              "Mana? can also be short for di mana? = where? (e.g. Mana orangnya? = Where is he?)"
+            ],
+            "title_en": "Mana? = which? and related meanings"
+          },
+          {
+            "rules": [
+              "Indien het antwoord bevestigend is, wordt in het algemeen het kernwoord uit de vraag herhaald (in plaats van 'ja').",
+              "Het juiste ontkennende woord (tidak vs belum) hangt af van het kernwoord."
+            ],
+            "title": "Herhaling van het kernwoord in het bevestigend antwoord",
+            "examples": [
+              {
+                "dutch": "Wilt u meekomen? — bevestigend: Mau / ontkennend: Tidak mau",
+                "english": "Do you want to come along? — affirmative: Mau / negative: Tidak mau",
+                "indonesian": "Apa(kah) Anda mau ikut?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/apakah-anda-mau-ikut-5b1b3bbe.mp3"
+              },
+              {
+                "dutch": "Ben je hier al lang? — bevestigend: Sudah / Lama / ontkennend: Belum",
+                "english": "Have you been here long? — affirmative: Sudah / Lama / negative: Belum",
+                "indonesian": "Apa kamu sudah lama di sini?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/apa-kamu-sudah-lama-3cf449af.mp3"
+              },
+              {
+                "dutch": "Is dat lekker? — bevestigend: Enak / ontkennend: Tidak enak",
+                "english": "Is that delicious? — affirmative: Enak / negative: Tidak enak",
+                "indonesian": "Apa itu enak?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/apa-itu-enak-ca926356.mp3"
+              }
+            ],
+            "rules_en": [
+              "When the answer is affirmative, the key word from the question is generally repeated (instead of 'yes').",
+              "The correct negative word (tidak vs belum) depends on the key word."
+            ],
+            "title_en": "Repetition of the key word in an affirmative answer"
+          }
+        ],
+        "grammar_topics": [
+          "Vraagwoorden",
+          "Werkwoordvolgorde en clitica"
+        ]
+      }
+    },
+    {
+      "order_index": 9,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "conversation",
+            "title": "Latihan I",
+            "instruction": "Schrijf in het Indonesisch een verhaal over een vakantie, in minimaal 5 en maximaal 10 zinnen. Maak eventueel gebruik van de tekening (Yance tiba di daerah tropis) als inspiratiebron."
+          },
+          {
+            "type": "conversation",
+            "title": "Latihan II",
+            "instruction": "Spreekvaardigheid en herhaling van woorden. Begin met 'Saya berangkat ke Indonesia dan membawa ... (koper)'. Met herhaling van eerder genoemde voorwerpen voegt de volgende persoon een nieuw woord (bijvoorbeeld een kledingstuk) toe."
+          },
+          {
+            "type": "conversation",
+            "items": [
+              {
+                "prompt": "Nama Bapak / Ibu siapa?"
+              },
+              {
+                "prompt": "Nama Bapak / Ibu yang duduk di sebelah kanan dan kiri siapa?"
+              },
+              {
+                "prompt": "Apakah Bapak / Ibu sudah pernah pergi ke Indonesia? Ke mana?"
+              },
+              {
+                "prompt": "Di negeri Belanda makanan Indonesia bisa dibeli di mana?"
+              },
+              {
+                "prompt": "Kenapa orang tidak bisa berjalan kaki ke Indonesia?"
+              },
+              {
+                "prompt": "Kapan Anda mau (kembali lagi) ke Indonesia?"
+              },
+              {
+                "prompt": "Sekarang tanggal berapa, hari apa, dan bulan apa?"
+              },
+              {
+                "prompt": "Sekarang jam berapa?"
+              },
+              {
+                "prompt": "Bapak / Ibu baru datang dari mana?"
+              },
+              {
+                "prompt": "Apakah tempat itu jauh dari sini?"
+              }
+            ],
+            "title": "Latihan III",
+            "instruction": "Beantwoord de volgende vragen in het Indonesisch."
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 10,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Pakaian Laura sudah dicuci",
+                "prompt": "Laura's kleding is al gewassen"
+              },
+              {
+                "answer": "Kamar hotel ini lantainya tidak bersih",
+                "prompt": "De vloer van deze hotelkamer is niet schoon"
+              },
+              {
+                "answer": "Daerah di utara itu apa namanya?",
+                "prompt": "Hoe heet die streek in het noorden?"
+              },
+              {
+                "answer": "Adik saya sepatunya basah",
+                "prompt": "De schoenen van mijn zusje zijn nat"
+              },
+              {
+                "answer": "Mobil itu pintunya rusak",
+                "prompt": "De deur van de auto is kapot"
+              }
+            ],
+            "title": "Latihan IV",
+            "instruction": "Vertaal met behulp van een -NYA-constructie. Voorbeeld: Ahmad is 23 jaar → Ahmad umurnya 23 tahun."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Botol itu berisi apa?",
+                "prompt": "Wat zit er in die fles?"
+              },
+              {
+                "answer": "Orang ini sudah berumur 80 tahun",
+                "prompt": "Deze man is al 80 jaar oud"
+              },
+              {
+                "answer": "Kapan dia berulang tahun?",
+                "prompt": "Wanneer is hij jarig?"
+              },
+              {
+                "answer": "Setelah mandi, mereka berpakaian",
+                "prompt": "Na te hebben gebaad, kleden ze zich aan"
+              },
+              {
+                "answer": "Ayam bertelur",
+                "prompt": "De kip legt een ei"
+              }
+            ],
+            "title": "Latihan V",
+            "instruction": "Vertaal met behulp van een BER-werkwoordsvorm. Voorbeeld: De bloem heeft een rode kleur → Bunga berwarna merah."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Mereka berkumpul di depan pohon besar",
+                "prompt": "Mereka berkumpul (voor) pohon besar"
+              },
+              {
+                "answer": "Siapa tinggal di sini dan siapa mau ke atas?",
+                "prompt": "Siapa tinggal (hier) dan siapa mau (naar boven)?"
+              },
+              {
+                "answer": "Dari belakang sekolah anak-anak berlari ke kiri",
+                "prompt": "(Van achter) sekolah anak-anak berlari (naar links)"
+              },
+              {
+                "answer": "Kucing masih di dalam rumah, tetapi anjing sudah ke luar",
+                "prompt": "Kucing (nog in) rumah, tetapi anjing (al naar buiten)"
+              },
+              {
+                "answer": "Pelayan berjalan sampai jembatan baru",
+                "prompt": "Pelayan berjalan (tot) jembatan baru"
+              }
+            ],
+            "title": "Latihan VI",
+            "instruction": "Vertaal de woorden die tussen haakjes staan. Voorbeeld: Kita (niet) naik taksi → Kita tidak naik taksi."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Pelayan membawa daftar makanan",
+                "prompt": "De ober brengt de menukaart"
+              },
+              {
+                "answer": "Kami memesan makan siang",
+                "prompt": "Wij bestellen een middagmaal"
+              },
+              {
+                "answer": "Dia mengulangi pesanan",
+                "prompt": "Hij herhaalt de bestelling"
+              },
+              {
+                "answer": "Dia menulis pesanan di kertas",
+                "prompt": "Hij schrijft de bestelling op papier"
+              },
+              {
+                "answer": "Kemudian dia mengocok telur dan menggorengnya",
+                "prompt": "Daarna klutst hij de eieren en bakt ze"
+              }
+            ],
+            "title": "Latihan VII",
+            "instruction": "Gebruik bij de vertaling van de volgende zinnen een ME-werkwoordsvorm. Voorbeeld: Moeder bakt een omelet → Ibu menggoreng dadar."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Minuman ini dipesan oleh Endang",
+                "prompt": "Deze drankjes werden besteld door Endang"
+              },
+              {
+                "answer": "Sarapan harus dimakan",
+                "prompt": "Het ontbijt moet worden opgegeten"
+              },
+              {
+                "answer": "Makanan sudah dibayar",
+                "prompt": "Het eten is al betaald"
+              },
+              {
+                "answer": "Tiket saya diurus oleh Pak Sukiman",
+                "prompt": "Mijn ticket wordt geregeld door meneer Sukiman"
+              },
+              {
+                "answer": "Sepeda saya, yang ada di depan stasiun, kemarin dicuri",
+                "prompt": "Mijn fiets, die voor het station stond, is gisteren gestolen"
+              }
+            ],
+            "title": "Latihan VIII",
+            "instruction": "Vertaal met behulp van een DI-werkwoordsvorm. Voorbeeld: De eieren zijn hardgekookt → Telur direbus matang."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"80e82703-b33a-480f-bfc6-34a257e515a5\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"80e82703-b33a-480f-bfc6-34a257e515a5\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

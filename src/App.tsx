@@ -43,6 +43,16 @@ const Lesson13Bespoke = lazy(() => import('@/pages/lessons/lesson-13/Page'))
 const Lesson14Bespoke = lazy(() => import('@/pages/lessons/lesson-14/Page'))
 const Lesson15Bespoke = lazy(() => import('@/pages/lessons/lesson-15/Page'))
 const Lesson16Bespoke = lazy(() => import('@/pages/lessons/lesson-16/Page'))
+const Lesson17Bespoke = lazy(() => import('@/pages/lessons/lesson-17/Page'))
+const Lesson18Bespoke = lazy(() => import('@/pages/lessons/lesson-18/Page'))
+const Lesson19Bespoke = lazy(() => import('@/pages/lessons/lesson-19/Page'))
+const Lesson20Bespoke = lazy(() => import('@/pages/lessons/lesson-20/Page'))
+const Lesson21Bespoke = lazy(() => import('@/pages/lessons/lesson-21/Page'))
+const Lesson22Bespoke = lazy(() => import('@/pages/lessons/lesson-22/Page'))
+const Lesson23Bespoke = lazy(() => import('@/pages/lessons/lesson-23/Page'))
+const Lesson24Bespoke = lazy(() => import('@/pages/lessons/lesson-24/Page'))
+const Lesson25Bespoke = lazy(() => import('@/pages/lessons/lesson-25/Page'))
+const Lesson26Bespoke = lazy(() => import('@/pages/lessons/lesson-26/Page'))
 
 function LazyPage({ children }: { children: React.ReactNode }) {
   return (
@@ -220,6 +230,86 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><Lesson16Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/17"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson17Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/18"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson18Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/19"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson19Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/20"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson20Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/21"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson21Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/22"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson22Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/23"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson23Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/24"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson24Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/25"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson25Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/26"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson26Bespoke /></LazyPage>
             </ProtectedRoute>
           }
         />

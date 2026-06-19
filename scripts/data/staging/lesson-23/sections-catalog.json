@@ -1,0 +1,335 @@
+{
+  "lesson": 23,
+  "generatedAt": "2026-06-19T05:14:29.580Z",
+  "sourcePages": 6,
+  "lessonMeta": {
+    "title": "Bab 7 - Berdisko di Jakarta",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 23
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Berdisko di Jakarta",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Jakarta adalah suatu kota metropolitan dan tentu saja yang bersifat kota besar dapat kita temui di kota ini. Walaupun Jakarta mempunyai penduduk yang sangat banyak, namun tempat berlibur sebenarnya belum begitu banyak.",
+        "Di dekat pantai laut terletak Taman Impian Ancol. Katanya dulu tempat ini ramai didiami monyet. Dulu burung juga cukup banyak di sana. Sekarang, itu benar-benar cerita masa lampau. Sekarang Ancol merupakan tempat hiburan yang sangat besar dan modern.",
+        "Di situ ada kolam renang yang besar dengan aluran air berputar dan kolam ombak. Juga ada pasar seni, hotel yang bagus dan tempat hiburan yang lain seperti Dunia Fantasi. Di situ ada nightclub besar. Di tempat ini orang berdansa dan berdisko sampai jauh malam. Taman Ria di Jakarta Pusat dekat Monas (Monumen Nasional) juga sangat terkenal, karena di situ terdapat panggung untuk orang berdangdut.",
+        "Di tempat lain di kota ini ada lagi disko.",
+        "Tentu pengunjung yang pernah tinggal di Hotel Sari Pan Pacific di Jalan Thamrin dapat berdisko di Pitstop. Walaupun disko ini agak kecil namun musiknya benar-benar termasuk yang paling bagus di kota ini. Sering penyanyi dari luar negeri datang dengan bandnya untuk menghibur para pengunjung dari luar maupun dari dalam negeri. Konon inilah tempat untuk jetset berdisko di Jakarta.",
+        "Di Jakarta Kota dekat laut ada disko Stardust. Tentu sebaiknya kita jangan lupa pula menyebut Hard Rock Café, disko Voila di Gedung Patra Jasa dan lain-lain.",
+        "Pada malam hari orang muda mencari hiburan di pusat Jakarta.",
+        "Disko yang ada di Glodok, di Blok M dan di daerah Monas dikerumuni oleh pemuda-pemudi. Apalagi pada malam Minggu. Malam ini paling cocok untuk pergi berdansa. Pada malam ini pula disko paling ramai dan orang berusaha mengenakan pakaian yang paling bagus.",
+        "Hanya ada beberapa hal yang agak kurang dalam disko Jakarta. Musiknya kadang-kadang terlalu bising sehingga para pengunjung dari luar negeri ingin lari saja supaya telinganya tidak rusak. Juga disc jockey sering sekali mengikuti selera musiknya sendiri sehingga seringkali tidak seorang pun yang ingin berdansa. Hal yang lucu juga terdapat di disko di Jakarta. Di sana para pemuda-pemudi berdansa berbaris-baris! Seolah-olah mereka takut bergerak-gerik bebas. Untuk orang asing hal ini aneh sekali. Kalau Anda pergi ke Jakarta, jangan lupa mengunjungi disko-disko tersebut."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "alur, ~an",
+          "dutch": "geul",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "Taman Impian Ancol",
+          "dutch": "pretpark in N.-Jakarta",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ancol",
+          "dutch": "landtong",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "aneh",
+          "dutch": "vreemd",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "band",
+          "dutch": "band (muziek)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "baris, ber-~~",
+          "dutch": "in rijen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "bebas",
+          "dutch": "vrij",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "bising",
+          "dutch": "herrie / lawaai",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "Blok M",
+          "dutch": "winkelcomplex in Jakarta",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dangdut",
+          "dutch": "dans en muziek met Indiase invloed",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dangdut, ber~",
+          "dutch": "dansen op dangdut muziek",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "dansa, ber~",
+          "dutch": "dansen (westers)",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "diam, men~i",
+          "dutch": "bewonen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "disko, ber~",
+          "dutch": "naar de discotheek gaan",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Dunia Fantasi",
+          "dutch": "pretpark in Jakarta",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "fantasi",
+          "dutch": "fantasie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gerak-gerik, ber~",
+          "dutch": "bewegingen, gebaren maken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Glodok",
+          "dutch": "winkelwijk in Jakarta",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hibur, ~an",
+          "dutch": "vermaak / amusement",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hibur, mencari ~an",
+          "dutch": "uitgaan / stappen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "hibur, meng~",
+          "dutch": "(zich) vermaken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "ikut, meng~i",
+          "dutch": "volgen / meedoen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "impi, ~an",
+          "dutch": "droom",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jasa",
+          "dutch": "verdienste / nut",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kena, mengenakan",
+          "dutch": "aantrekken / aandoen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kerumun, mengerumuni",
+          "dutch": "omstuwen / rondzwermen om",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kolam ombak",
+          "dutch": "golfslagbad",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "konon",
+          "dutch": "men zegt dat ...",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "kota metropolitan",
+          "dutch": "metropool",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kunjung, mengunjungi",
+          "dutch": "bezoeken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pengunjung",
+          "dutch": "bezoeker",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lampau",
+          "dutch": "voorbij / vroeger",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "malam hari",
+          "dutch": "avond",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "masa",
+          "dutch": "tijd / periode",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "masa lampau",
+          "dutch": "vroeger tijden / vroeger",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "maupun",
+          "dutch": "of / hetzij",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "musik",
+          "dutch": "muziek",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "namun",
+          "dutch": "echter / toch / maar",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "pula",
+          "dutch": "ook / eveneens",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "pun",
+          "dutch": "ook",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "punya, mem~i",
+          "dutch": "bezitten / hebben",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "putar, ber~",
+          "dutch": "ronddraaien",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "ria",
+          "dutch": "vrolijk / uitgelaten",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "rupa, me~kan",
+          "dutch": "vormen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sebut, menyebut",
+          "dutch": "noemen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "tersebut",
+          "dutch": "genoemde",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "seni",
+          "dutch": "kunst",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "seringkali",
+          "dutch": "vaak",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "sifat, ber~",
+          "dutch": "het karakter hebben van",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "temu, menemui",
+          "dutch": "ontmoeten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "terkenal",
+          "dutch": "bekend / gekend",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "usaha, ber~",
+          "dutch": "inspannen / moeite doen",
+          "pos": "verb"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "grammar",
+      "title": "TATA BAHASA - De werkwoordsvorm met -i",
+      "source_pages": [
+        3,
+        4
+      ],
+      "confidence": "high",
+      "raw_text": "TATA BAHASA\n\nDe werkwoordsvorm met -i\n\nHoofdfunctie:\n\nΔ het maken van een transitieve werkwoordsvorm van een basiswoord\n\nΔ bij de werkwoordsvorm met -i wordt de handeling gericht op een vast punt.\nDat kan een persoon, plaats, voorwerp of zaak zijn.\nVoorbeeld:\n\nPetani menanami sawahnya dengan bibit   De boer beplant zijn sawah met zaaigoed\nSawah ditanami petani dengan bibit       De sawah wordt door de boer met zaaigoed beplant\n\nΔ Als -i gecombineerd wordt met van oorsprong transitieve werkwoorden kan er een extra betekenisaspect optreden:\nherhaaldelijk / intensief de actie van het basiswerkwoord uitvoeren.\n\nN.B. Indien het basiswoord eindigt op een i dan kan aan dat woord geen -i meer worden toegevoegd, bijvoorbeeld bij beli, cari, beri.\n\nDe volgende basiswoorden kunnen gecombineerd worden met -i\n\n1a. transitief werkwoord        tanam    menanami    iets beplanten\n1b. intransitief werkwoord      duduk    menduduki   iets bezetten\n2.  zelfstandig naamwoord       seberang menyeberangi iets oversteken\n3.  bijvoeglijk naamwoord       dekat    mendekati   iets benaderen\n4.  telwoord (zeldzaam)         dua      menduai     'n tweede vrouw nemen\n5.  persoonlijk voornaamwoord (zeldzaam)  aku  mengakui  iets erkennen\n6.  woord van plaats (zeldzaam) atas     mengatasi   iets te boven komen\n\n1a. Transitief werkwoord\n\npukul - memukuli                           slaan - herhaaldelijk slaan\nOrang ini memukuli anjing                  Deze man sloeg de hond herhaaldelijk\nAnjing dipukuli orang ini                  De hond werd herhaaldelijk door deze man geslagen\n\n1b. Intransitief werkwoord\n\nduduk - menduduki                          zitten - iets bezetten\nDia menduduki pangkat tinggi               Hij heeft (bezet) een hoge functie\nPangkat tinggi didudukinya                 De hoge functie werd door hem bezet\n\n2. Zelfstandig naamwoord\n\nseberang - menyeberangi                    overkant - iets oversteken\nAnak-anak menyeberangi jalan               De kinderen steken de weg over\nJalan diseberangi anak-anak                De weg werd door de kinderen overgestoken\n\ntanda tangan - menandatangani              handtekening - iets ondertekenen\nPegawai menandatangani surat               De employé ondertekende de brief\nSurat ditandatanganinya                    De brief werd door hem ondertekend\n\n3. Bijvoeglijk naamwoord\n\njauh - menjauhi                            ver - (zich) verwijderen van\nDia menjauhi sungai                        Hij verwijderde zich van de rivier\nSungai dijauhinya                          Hij verwijderde zich van de rivier\n\ndekat - mendekati                          dichtbij - (iets) benaderen\nDia mau mendekati binatang liar itu        Hij wilde dat wilde dier benaderen\nBinatang liar itu tidak boleh didekati     Men mag niet in de buurt van dat wilde dier komen\n\nGebiedende wijs\n\nIkuti contoh itu!       Volg dat voorbeeld!\nJangan kunjungi disko itu!   Ga niet naar die discotheek!\n\nPassieve zinsconstructies met -i\n\n              Enkelvoud                          Passief\n1e pers.   Saya menanami sawah          Sawah saya tanami\n2e pers.   Kamu menanami sawah          Sawah kamu tanami\n3e pers.   Dia menanami sawah           Sawah ditanaminya\n\n              Meervoud\n1e pers.   Kita / kami menanami sawah   Sawah kita / kami tanami\n2e pers.   Kalian menanami sawah        Sawah kalian tanami\n3e pers.   Mereka menanami sawah        Sawah ditanaminya\n                                        Sawah mereka tanami"
+    },
+    {
+      "id": 3,
+      "type": "exercises",
+      "title": "LATIHAN",
+      "source_pages": [
+        5,
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "LATIHAN\n\nLatihan I. Vertaal met behulp van een -i vorm.\n\n1. ikut         Zij volgen die man vaak\n2. teman        Wie vergezelt mijn moeder naar het ziekenhuis?\n3. seberang     De toeristen steken de drukke weg over\n4. darat        Het vliegtuig landt op de luchthaven Polonia in Medan\n5. tanda tangan Heb je die brief al ondertekend?\n6. kirim        De leraar heeft aan jouw broertje dit boek gezonden\n7. aku          Vader erkende dat hij te snel een cadeau had gekocht\n8. pandang      Zij keken naar de mooie boten\n9. air          In de droge tijd worden de rijstvelden bevloeid\n10. keliling    Het huis werd omringd door bomen\n\nLatihan II. Vul het ontbrekende woord in en vertaal de zin.\n\n1. nadat        .......... berbelanja Pak Budi makan di restoran\n2. vervolgens   .......... dia mau pulang. Tapi bus berangkat dari mana, ya?\n3. links        Sebelum perempatan Bapak harus belok ke ..........\n4. rechterkant  Terminal bus terletak di .......... perusahaan umum Telkom\n5. zeer, zeer   Terminal itu besar .......... dan .......... ramai\n6. op           Bus malam itu selalu berangkat .......... waktunya\n7. terwijl      .......... menunggu bus, Pak Budi merokok rokok kretek\n8. ofschoon     .......... banyak orang menumpang bus masih ada tempat duduk\n9. ongeveer     Dia harus berjalan .......... satu jam sampai ke rumahnya\n10. toen        .......... dia tiba di rumah semua lampu sudah dimatikan\n\nLatihan III. Vertaal.\n\n1. Kom, laten we bij Nina langsgaan\n2. Zij is nu nog thuis, morgen vertrekt ze naar Padang\n3. Daar woont haar zwager, die bij een reisburo werkt\n4. Hij begeleidt toeristen naar het eiland Nias\n5. Daar blijven ze een nacht slapen\n6. Soms mag Nina met hem mee\n7. Nina zal momenteel haar bagage aan het verzamelen zijn\n8. Tringgg! De deur gaat open. Goedenavond, is Nina thuis?\n9. Ja, kom binnen, dan zal ik haar even roepen\n10. Ga zitten. De bediende brengt zo thee en koekjes\n11. Dat hoeft niet hoor, we willen alleen Nina even gedag zeggen!\n\nLatihan IV. Vertaal onderstaande tekst en geef antwoord op de vraag.\n\nUsia\nSeorang wanita didatangi seorang dokter karena ia merasa kesehatannya kurang baik.\n\nDokter : Nyonya berusia berapa tahun?\nWanita : Wah, saya tidak ingat, dokter! Saya akan coba mengingatnya!\n\nWanita itu berpikir sebentar.\n\nWanita : Sekarang saya ingat, dokter. Pada waktu saya kawin usia saya delapan belas tahun, usia suami saya tiga puluh tahun.\nSekarang usia suami saya enam puluh tahun, berarti 2 x 30 tahun.\nDengan demikian, usia saya 2 x 18 tahun, jadi 36 tahun, dokter!\nDokter : Lho, bagaimana ini ??\n\nJawablah: Wanita itu berusia berapa tahunkah sekarang?\n\nLatihan V. Vul in een me-kan, di-kan, me-i of di-i en vertaal de zin.\n\n1. banding   ............... dengan Jakarta, Yogya belum begitu ramai\n2. rupa      Apalagi Yogya juga ............... pusat kebudayaan Jawa\n3. punya     Kota itu ............... istana Jawa, namanya keraton\n4. kunjung   Orang turis boleh ............... sebagian keraton itu\n5. diam      Bagian lain ............... Sultan Hamengkubuwono X dan keluarganya\n6. senang    Suasana di Yogya sangat ...............\n7. seberang  Siang agak sulit ............... Jalan Malioboro, jalan yang termasyur di kota itu\n8. kerumun   Pada malam hari Jalan Malioboro ............... pemuda-pemudi\n9. hidang    Bermacam-macam masakan Jawa ............... di restoran atau di pinggir jalan\n10. nama     Dalam bahasa Jawa, makan di pinggir di Jalan Malioboro, ............... 'lesehan (lèséhan)'"
+    }
+  ],
+  "flags": [
+    "Image IMG_1622.jpg: Full text of the culture text 'Berdisko di Jakarta' recovered from image — OCR page 1 was incomplete (cut off at bottom). Final paragraphs about disc jockeys and dancing in rows added from image.",
+    "Image IMG_1623.jpg: Vocabulary list header confirmed as 'Daftar kata-kata baru' (not 'Woordenlijst'). Several items recovered or corrected from image including: hibur (zich) amuseren sense reconstructed fully, ikut/meng~i corrected, impi/~an droom, jasa verdienste/nut, kena/mengenakan aantrekken/aandoen.",
+    "Image IMG_1624.jpg: Grammar section confirmed as 'TATA BAHASA - De werkwoordsvorm met -i'. Section on 1a Transitief werkwoord (pukul - memukuli) recovered from image — not present in OCR.",
+    "Image IMG_1625.jpg: Passieve zinsconstructies met -i table recovered from image and added to grammar section.",
+    "Image IMG_1626.jpg: Latihan II items 7–10 (terwijl, ofschoon, ongeveer, toen) recovered from image — OCR page 5 was incomplete. Latihan III items 7–11 also recovered from image.",
+    "Image IMG_1627.jpg: Latihan V items 8–10 (kerumun, hidang, nama) and full text of Latihan IV (Usia dialogue) recovered from image."
+  ],
+  "sourceImages": 6
+}

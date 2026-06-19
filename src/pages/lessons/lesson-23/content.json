@@ -1,0 +1,889 @@
+{
+  "meta": {
+    "id": "fb35a2f1-25af-45cc-a655-e20d73845b22",
+    "order_index": 23,
+    "title": "Berdisko di Jakarta",
+    "level": "A1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Despina",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Jakarta adalah suatu kota metropolitan dan tentu saja yang bersifat kota besar dapat kita temui di kota ini. Walaupun Jakarta mempunyai penduduk yang sangat banyak, namun tempat berlibur sebenarnya belum begitu banyak.",
+          "Di dekat pantai laut terletak Taman Impian Ancol. Katanya dulu tempat ini ramai didiami monyet. Dulu burung juga cukup banyak di sana. Sekarang, itu benar-benar cerita masa lampau. Sekarang Ancol merupakan tempat hiburan yang sangat besar dan modern.",
+          "Di situ ada kolam renang yang besar dengan aluran air berputar dan kolam ombak. Juga ada pasar seni, hotel yang bagus dan tempat hiburan yang lain seperti Dunia Fantasi. Di situ ada nightclub besar. Di tempat ini orang berdansa dan berdisko sampai jauh malam. Taman Ria di Jakarta Pusat dekat Monas (Monumen Nasional) juga sangat terkenal, karena di situ terdapat panggung untuk orang berdangdut.",
+          "Di tempat lain di kota ini ada lagi disko.",
+          "Tentu pengunjung yang pernah tinggal di Hotel Sari Pan Pacific di Jalan Thamrin dapat berdisko di Pitstop. Walaupun disko ini agak kecil namun musiknya benar-benar termasuk yang paling bagus di kota ini. Sering penyanyi dari luar negeri datang dengan bandnya untuk menghibur para pengunjung dari luar maupun dari dalam negeri. Konon inilah tempat untuk jetset berdisko di Jakarta.",
+          "Di Jakarta Kota dekat laut ada disko Stardust. Tentu sebaiknya kita jangan lupa pula menyebut Hard Rock Café, disko Voila di Gedung Patra Jasa dan lain-lain.",
+          "Pada malam hari orang muda mencari hiburan di pusat Jakarta.",
+          "Disko yang ada di Glodok, di Blok M dan di daerah Monas dikerumuni oleh pemuda-pemudi. Apalagi pada malam Minggu. Malam ini paling cocok untuk pergi berdansa. Pada malam ini pula disko paling ramai dan orang berusaha mengenakan pakaian yang paling bagus.",
+          "Hanya ada beberapa hal yang agak kurang dalam disko Jakarta. Musiknya kadang-kadang terlalu bising sehingga para pengunjung dari luar negeri ingin lari saja supaya telinganya tidak rusak. Juga disc jockey sering sekali mengikuti selera musiknya sendiri sehingga seringkali tidak seorang pun yang ingin berdansa. Hal yang lucu juga terdapat di disko di Jakarta. Di sana para pemuda-pemudi berdansa berbaris-baris! Seolah-olah mereka takut bergerak-gerik bebas. Untuk orang asing hal ini aneh sekali. Kalau Anda pergi ke Jakarta, jangan lupa mengunjungi disko-disko tersebut."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "geul",
+            "english": "groove, channel",
+            "indonesian": "alur, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/alur-an-861aa841.mp3"
+          },
+          {
+            "dutch": "pretpark in N.-Jakarta",
+            "english": "amusement park in North Jakarta",
+            "indonesian": "Taman Impian Ancol",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/taman-impian-ancol-61785090.mp3"
+          },
+          {
+            "dutch": "landtong",
+            "english": "spit of land",
+            "indonesian": "ancol",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ancol-dec94204.mp3"
+          },
+          {
+            "dutch": "vreemd",
+            "english": "strange",
+            "indonesian": "aneh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/aneh-d66ed248.mp3"
+          },
+          {
+            "dutch": "band (muziek)",
+            "english": "band (music)",
+            "indonesian": "band",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/band-2081447a.mp3"
+          },
+          {
+            "dutch": "in rijen",
+            "english": "in rows",
+            "indonesian": "baris, ber-~~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/baris-ber-24ddc7c0.mp3"
+          },
+          {
+            "dutch": "vrij",
+            "english": "free",
+            "indonesian": "bebas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bebas-f42025d4.mp3"
+          },
+          {
+            "dutch": "herrie / lawaai",
+            "english": "noise",
+            "indonesian": "bising",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bising-982d0ad9.mp3"
+          },
+          {
+            "dutch": "winkelcomplex in Jakarta",
+            "english": "shopping complex in Jakarta",
+            "indonesian": "Blok M",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/blok-m-8bee2c1f.mp3"
+          },
+          {
+            "dutch": "dans en muziek met Indiase invloed",
+            "english": "dance and music with Indian influence",
+            "indonesian": "dangdut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dangdut-9570f163.mp3"
+          },
+          {
+            "dutch": "dansen op dangdut muziek",
+            "english": "dance to dangdut music",
+            "indonesian": "dangdut, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dangdut-ber-b6eaac2e.mp3"
+          },
+          {
+            "dutch": "dansen (westers)",
+            "english": "dance (western style)",
+            "indonesian": "dansa, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dansa-ber-610efe4c.mp3"
+          },
+          {
+            "dutch": "bewonen",
+            "english": "inhabit",
+            "indonesian": "diam, men~i",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/diam-meni-265bf0f8.mp3"
+          },
+          {
+            "dutch": "naar de discotheek gaan",
+            "english": "go to the discotheque",
+            "indonesian": "disko, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/disko-ber-7b695612.mp3"
+          },
+          {
+            "dutch": "pretpark in Jakarta",
+            "english": "amusement park in Jakarta",
+            "indonesian": "Dunia Fantasi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dunia-fantasi-3d1392fd.mp3"
+          },
+          {
+            "dutch": "fantasie",
+            "english": "fantasy",
+            "indonesian": "fantasi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/fantasi-5f8ecdf8.mp3"
+          },
+          {
+            "dutch": "bewegingen, gebaren maken",
+            "english": "make movements, gestures",
+            "indonesian": "gerak-gerik, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gerakgerik-ber-389de9a2.mp3"
+          },
+          {
+            "dutch": "winkelwijk in Jakarta",
+            "english": "shopping district in Jakarta",
+            "indonesian": "Glodok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/glodok-eaf7d384.mp3"
+          },
+          {
+            "dutch": "vermaak / amusement",
+            "english": "entertainment",
+            "indonesian": "hibur, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hibur-an-79620ca3.mp3"
+          },
+          {
+            "dutch": "uitgaan / stappen",
+            "english": "go out, have fun",
+            "indonesian": "hibur, mencari ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hibur-mencari-an-6732f06b.mp3"
+          },
+          {
+            "dutch": "(zich) vermaken",
+            "english": "amuse (oneself)",
+            "indonesian": "hibur, meng~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hibur-meng-015c5450.mp3"
+          },
+          {
+            "dutch": "volgen / meedoen",
+            "english": "follow, join in",
+            "indonesian": "ikut, meng~i",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ikut-mengi-c9565ad9.mp3"
+          },
+          {
+            "dutch": "droom",
+            "english": "dream",
+            "indonesian": "impi, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/impi-an-db323729.mp3"
+          },
+          {
+            "dutch": "verdienste / nut",
+            "english": "merit, benefit",
+            "indonesian": "jasa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jasa-200e9761.mp3"
+          },
+          {
+            "dutch": "aantrekken / aandoen",
+            "english": "put on, wear",
+            "indonesian": "kena, mengenakan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kena-mengenakan-d4bf250a.mp3"
+          },
+          {
+            "dutch": "omstuwen / rondzwermen om",
+            "english": "crowd around, swarm around",
+            "indonesian": "kerumun, mengerumuni",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kerumun-mengerumuni-506d692b.mp3"
+          },
+          {
+            "dutch": "golfslagbad",
+            "english": "wave pool",
+            "indonesian": "kolam ombak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kolam-ombak-ec71cc17.mp3"
+          },
+          {
+            "dutch": "men zegt dat ...",
+            "english": "it is said that",
+            "indonesian": "konon",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/konon-e9210bbc.mp3"
+          },
+          {
+            "dutch": "metropool",
+            "english": "metropolis",
+            "indonesian": "kota metropolitan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kota-metropolitan-3dd58ce5.mp3"
+          },
+          {
+            "dutch": "bezoeken",
+            "english": "visit",
+            "indonesian": "kunjung, mengunjungi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kunjung-mengunjungi-f265ea36.mp3"
+          },
+          {
+            "dutch": "bezoeker",
+            "english": "visitor",
+            "indonesian": "pengunjung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pengunjung-a21da55b.mp3"
+          },
+          {
+            "dutch": "voorbij / vroeger",
+            "english": "past / bygone",
+            "indonesian": "lampau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lampau-237708ae.mp3"
+          },
+          {
+            "dutch": "avond",
+            "english": "evening",
+            "indonesian": "malam hari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/malam-hari-e666c248.mp3"
+          },
+          {
+            "dutch": "tijd / periode",
+            "english": "time / period",
+            "indonesian": "masa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/masa-5159c3e5.mp3"
+          },
+          {
+            "dutch": "vroeger tijden / vroeger",
+            "english": "former times / past",
+            "indonesian": "masa lampau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/masa-lampau-7f5ea4ed.mp3"
+          },
+          {
+            "dutch": "of / hetzij",
+            "english": "or / either",
+            "indonesian": "maupun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/maupun-a28559f5.mp3"
+          },
+          {
+            "dutch": "muziek",
+            "english": "music",
+            "indonesian": "musik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/musik-c711db81.mp3"
+          },
+          {
+            "dutch": "echter / toch / maar",
+            "english": "however / yet / but",
+            "indonesian": "namun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/namun-d9bfef07.mp3"
+          },
+          {
+            "dutch": "ook / eveneens",
+            "english": "also / likewise",
+            "indonesian": "pula",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pula-403417bc.mp3"
+          },
+          {
+            "dutch": "ook",
+            "english": "also",
+            "indonesian": "pun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pun-adcd1134.mp3"
+          },
+          {
+            "dutch": "bezitten / hebben",
+            "english": "own / have",
+            "indonesian": "punya, mem~i",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/punya-memi-b339da98.mp3"
+          },
+          {
+            "dutch": "ronddraaien",
+            "english": "spin / rotate",
+            "indonesian": "putar, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/putar-ber-fadafaf9.mp3"
+          },
+          {
+            "dutch": "vrolijk / uitgelaten",
+            "english": "cheerful / merry",
+            "indonesian": "ria",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ria-b56cfdb7.mp3"
+          },
+          {
+            "dutch": "vormen",
+            "english": "form / shape",
+            "indonesian": "rupa, me~kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rupa-mekan-a2cdee0c.mp3"
+          },
+          {
+            "dutch": "noemen",
+            "english": "name / call",
+            "indonesian": "sebut, menyebut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sebut-menyebut-4730b152.mp3"
+          },
+          {
+            "dutch": "genoemde",
+            "english": "aforementioned / said",
+            "indonesian": "tersebut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tersebut-88e78fa9.mp3"
+          },
+          {
+            "dutch": "kunst",
+            "english": "art",
+            "indonesian": "seni",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/seni-055a8044.mp3"
+          },
+          {
+            "dutch": "vaak",
+            "english": "often",
+            "indonesian": "seringkali",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/seringkali-fe1e12d5.mp3"
+          },
+          {
+            "dutch": "het karakter hebben van",
+            "english": "have the character of",
+            "indonesian": "sifat, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sifat-ber-fa061ea3.mp3"
+          },
+          {
+            "dutch": "ontmoeten",
+            "english": "meet / encounter",
+            "indonesian": "temu, menemui",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/temu-menemui-d1871579.mp3"
+          },
+          {
+            "dutch": "bekend / gekend",
+            "english": "famous / well-known",
+            "indonesian": "terkenal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/terkenal-2f941e13.mp3"
+          },
+          {
+            "dutch": "inspannen / moeite doen",
+            "english": "exert / make an effort",
+            "indonesian": "usaha, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/usaha-ber-88c2762b.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Het achtervoegsel -i maakt van een basiswoord een transitieve (overgankelijke) werkwoordsvorm.",
+              "Bij de -i-vorm wordt de handeling gericht op een vast punt: een persoon, plaats, voorwerp of zaak. Dat punt wordt het lijdend voorwerp (patiens).",
+              "Verschil met -kan (Les 21): -i richt de handeling NAAR een doelpunt of oppervlak toe (menanami = iets beplanten), terwijl -kan een causatieve lezing geeft (iets laten/maken) of een benefactieve (iets voor iemand doen).",
+              "N.B. Eindigt het basiswoord al op -i, dan kan er geen -i meer worden toegevoegd, bijvoorbeeld bij beli, cari, beri.",
+              "Wordt -i gecombineerd met een van oorsprong al transitief werkwoord, dan komt er een extra aspect bij: de handeling wordt herhaaldelijk / intensief uitgevoerd."
+            ],
+            "title": "Hoofdfunctie van de werkwoordsvorm met -i",
+            "examples": [
+              {
+                "dutch": "De boer beplant zijn sawah met zaaigoed",
+                "english": "The farmer plants his rice field with seedlings",
+                "indonesian": "Petani menanami sawahnya dengan bibit",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/petani-menanami-sawahnya-dengan-661080e0.mp3"
+              },
+              {
+                "dutch": "De sawah wordt door de boer met zaaigoed beplant",
+                "english": "The rice field is planted by the farmer with seedlings",
+                "indonesian": "Sawah ditanami petani dengan bibit",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sawah-ditanami-petani-dengan-77c4d26d.mp3"
+              }
+            ],
+            "rules_en": [
+              "The suffix -i transforms a base word into a transitive (object-taking) verb form.",
+              "With the -i form, the action is directed at a fixed point: a person, place, object, or thing. This point becomes the direct object (patient).",
+              "Difference from -kan (Lesson 21): -i directs the action TOWARD a target or surface (menanami = to plant something), while -kan gives a causative reading (to make/have something done) or a benefactive reading (to do something for someone).",
+              "N.B. If the base word already ends in -i, no further -i can be added, for example with beli, cari, beri.",
+              "When -i is combined with an inherently transitive verb, an additional aspect is added: the action is performed repeatedly / intensively."
+            ],
+            "title_en": "Main function of the verb form with -i"
+          },
+          {
+            "rules": [
+              "1a. Transitief werkwoord: tanam → menanami (iets beplanten).",
+              "1b. Intransitief werkwoord: duduk → menduduki (iets bezetten).",
+              "2. Zelfstandig naamwoord: seberang → menyeberangi (iets oversteken).",
+              "3. Bijvoeglijk naamwoord: dekat → mendekati (iets benaderen).",
+              "4. Telwoord (zeldzaam): dua → menduai ('n tweede vrouw nemen).",
+              "5. Persoonlijk voornaamwoord (zeldzaam): aku → mengakui (iets erkennen).",
+              "6. Woord van plaats (zeldzaam): atas → mengatasi (iets te boven komen)."
+            ],
+            "title": "Zes woordklassen als basiswoord voor -i",
+            "examples": [
+              {
+                "dutch": "iets beplanten",
+                "english": "tanam → menanami: to plant something",
+                "indonesian": "tanam → menanami",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tanam-menanami-34282926.mp3"
+              },
+              {
+                "dutch": "iets bezetten",
+                "english": "duduk → menduduki: to occupy something",
+                "indonesian": "duduk → menduduki",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/duduk-menduduki-5f4cdb16.mp3"
+              },
+              {
+                "dutch": "iets oversteken",
+                "english": "seberang → menyeberangi: to cross something",
+                "indonesian": "seberang → menyeberangi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/seberang-menyeberangi-4f66ccc5.mp3"
+              },
+              {
+                "dutch": "iets benaderen",
+                "english": "dekat → mendekati: to approach something",
+                "indonesian": "dekat → mendekati",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dekat-mendekati-ebb6bf29.mp3"
+              }
+            ],
+            "rules_en": [
+              "1a. Transitive verb: tanam → menanami (to plant something).",
+              "1b. Intransitive verb: duduk → menduduki (to occupy something).",
+              "2. Noun: seberang → menyeberangi (to cross something).",
+              "3. Adjective: dekat → mendekati (to approach something).",
+              "4. Numeral (rare): dua → menduai (to take a second wife).",
+              "5. Personal pronoun (rare): aku → mengakui (to acknowledge something).",
+              "6. Locative word (rare): atas → mengatasi (to overcome something)."
+            ],
+            "title_en": "Six word classes as base word for -i"
+          },
+          {
+            "rules": [
+              "Bij een transitief basiswoord krijgt de -i-vorm de bijbetekenis 'herhaaldelijk / intensief'.",
+              "pukul (slaan) → memukuli (herhaaldelijk slaan).",
+              "Naast de bedrijvende meN-...-i-vorm bestaat de lijdende di-...-i-vorm met dezelfde stam."
+            ],
+            "title": "1a. Transitief werkwoord — het iteratieve aspect",
+            "examples": [
+              {
+                "dutch": "Deze man sloeg de hond herhaaldelijk",
+                "english": "This man hit the dog repeatedly",
+                "indonesian": "Orang ini memukuli anjing",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/orang-ini-memukuli-anjing-cfadce45.mp3"
+              },
+              {
+                "dutch": "De hond werd herhaaldelijk door deze man geslagen",
+                "english": "The dog was hit repeatedly by this man",
+                "indonesian": "Anjing dipukuli orang ini",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/anjing-dipukuli-orang-ini-db923acd.mp3"
+              }
+            ],
+            "rules_en": [
+              "With a transitive base word, the -i form takes on the added meaning 'repeatedly/intensively'.",
+              "pukul (to hit) → memukuli (to hit repeatedly).",
+              "Beside the active meN-...-i form there exists the passive di-...-i form with the same stem."
+            ],
+            "title_en": "1a. Transitive verb — the iterative aspect"
+          },
+          {
+            "rules": [
+              "Een intransitief basiswerkwoord wordt door -i transitief en richt zich op een vast punt.",
+              "duduk (zitten) → menduduki (iets bezetten, een functie bekleden)."
+            ],
+            "title": "1b. Intransitief werkwoord",
+            "examples": [
+              {
+                "dutch": "Hij bekleedt (bezet) een hoge functie",
+                "english": "He holds a high rank",
+                "indonesian": "Dia menduduki pangkat tinggi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dia-menduduki-pangkat-tinggi-15a45242.mp3"
+              },
+              {
+                "dutch": "De hoge functie werd door hem bezet",
+                "english": "The high rank was held by him",
+                "indonesian": "Pangkat tinggi didudukinya",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pangkat-tinggi-didudukinya-606ed28a.mp3"
+              }
+            ],
+            "rules_en": [
+              "An intransitive base verb becomes transitive with -i and is directed toward a fixed point.",
+              "duduk (to sit) → menduduki (to occupy something, to hold a position)."
+            ],
+            "title_en": "1b. Intransitive verb"
+          },
+          {
+            "rules": [
+              "Een zelfstandig naamwoord als basiswoord wordt met -i een werkwoord dat zich op een doelpunt richt.",
+              "seberang (overkant) → menyeberangi (iets oversteken).",
+              "tanda tangan (handtekening) → menandatangani (iets ondertekenen)."
+            ],
+            "title": "2. Zelfstandig naamwoord",
+            "examples": [
+              {
+                "dutch": "De kinderen steken de weg over",
+                "english": "The children cross the road",
+                "indonesian": "Anak-anak menyeberangi jalan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/anakanak-menyeberangi-jalan-f29c83ab.mp3"
+              },
+              {
+                "dutch": "De weg werd door de kinderen overgestoken",
+                "english": "The road was crossed by the children",
+                "indonesian": "Jalan diseberangi anak-anak",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jalan-diseberangi-anakanak-8dcb9544.mp3"
+              },
+              {
+                "dutch": "De employé ondertekende de brief",
+                "english": "The employee signed the letter",
+                "indonesian": "Pegawai menandatangani surat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pegawai-menandatangani-surat-d46406bc.mp3"
+              },
+              {
+                "dutch": "De brief werd door hem ondertekend",
+                "english": "The letter was signed by him",
+                "indonesian": "Surat ditandatanganinya",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/surat-ditandatanganinya-755d5895.mp3"
+              }
+            ],
+            "rules_en": [
+              "A noun as base word becomes with -i a verb that is directed toward a goal point.",
+              "seberang (opposite side) → menyeberangi (to cross something).",
+              "tanda tangan (signature) → menandatangani (to sign something)."
+            ],
+            "title_en": "2. Noun"
+          },
+          {
+            "rules": [
+              "Een bijvoeglijk naamwoord als basiswoord wordt met -i een werkwoord van toenadering of verwijdering ten opzichte van een punt.",
+              "jauh (ver) → menjauhi (zich verwijderen van).",
+              "dekat (dichtbij) → mendekati (iets benaderen)."
+            ],
+            "title": "3. Bijvoeglijk naamwoord",
+            "examples": [
+              {
+                "dutch": "Hij verwijderde zich van de rivier",
+                "english": "He moved away from the river",
+                "indonesian": "Dia menjauhi sungai",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dia-menjauhi-sungai-c30a3744.mp3"
+              },
+              {
+                "dutch": "Hij wilde dat wilde dier benaderen",
+                "english": "He wanted to approach that wild animal",
+                "indonesian": "Dia mau mendekati binatang liar itu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dia-mau-mendekati-binatang-2c9acf5d.mp3"
+              },
+              {
+                "dutch": "Men mag niet in de buurt van dat wilde dier komen",
+                "english": "One must not go near that wild animal",
+                "indonesian": "Binatang liar itu tidak boleh didekati",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/binatang-liar-itu-tidak-3db52da4.mp3"
+              }
+            ],
+            "rules_en": [
+              "An adjective as base word becomes a verb of approach or withdrawal with respect to a point with -i.",
+              "jauh (far) → menjauhi (to move away from).",
+              "dekat (near) → mendekati (to approach)."
+            ],
+            "title_en": "3. Adjective"
+          },
+          {
+            "rules": [
+              "In de gebiedende wijs gebruik je de kale stam-met-i zonder voorvoegsel.",
+              "Een verbod vorm je met jangan + stam-met-i."
+            ],
+            "title": "Gebiedende wijs met -i",
+            "examples": [
+              {
+                "dutch": "Volg dat voorbeeld!",
+                "english": "Follow that example!",
+                "indonesian": "Ikuti contoh itu!",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ikuti-contoh-itu-1345b0ca.mp3"
+              },
+              {
+                "dutch": "Ga niet naar die discotheek!",
+                "english": "Don't go to that discotheque!",
+                "indonesian": "Jangan kunjungi disko itu!",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jangan-kunjungi-disko-itu-4f8be0f2.mp3"
+              }
+            ],
+            "rules_en": [
+              "In the imperative, use the bare stem-with-i without prefix.",
+              "You form a prohibition with jangan + stem-with-i."
+            ],
+            "title_en": "Imperative with -i"
+          },
+          {
+            "rules": [
+              "1e/2e persoon: patiens + persoonlijk voornaamwoord + kale stam-met-i (zonder di-).",
+              "3e persoon enkelvoud: di-...-i-vorm met -nya (Sawah ditanaminya).",
+              "3e persoon meervoud: di-...-i-vorm (Sawah ditanaminya) of patiens + mereka + kale stam-met-i (Sawah mereka tanami)."
+            ],
+            "table": [
+              [
+                "Persoon",
+                "Bedrijvend (actief)",
+                "Lijdend (passief)"
+              ],
+              [
+                "1e ev.",
+                "Saya menanami sawah",
+                "Sawah saya tanami"
+              ],
+              [
+                "2e ev.",
+                "Kamu menanami sawah",
+                "Sawah kamu tanami"
+              ],
+              [
+                "3e ev.",
+                "Dia menanami sawah",
+                "Sawah ditanaminya"
+              ],
+              [
+                "1e mv.",
+                "Kita / kami menanami sawah",
+                "Sawah kita / kami tanami"
+              ],
+              [
+                "2e mv.",
+                "Kalian menanami sawah",
+                "Sawah kalian tanami"
+              ],
+              [
+                "3e mv.",
+                "Mereka menanami sawah",
+                "Sawah ditanaminya / Sawah mereka tanami"
+              ]
+            ],
+            "title": "Passieve zinsconstructies met -i",
+            "rules_en": [
+              "1st/2nd person: patient + personal pronoun + bare stem-with-i (without di-).",
+              "3rd person singular: di-...-i form with -nya (Sawah ditanaminya).",
+              "3rd person plural: di-...-i form (Sawah ditanaminya) or patient + mereka + bare stem-with-i (Sawah mereka tanami)."
+            ],
+            "title_en": "Passive sentence constructions with -i"
+          }
+        ],
+        "grammar_topics": [
+          "Werkwoordsvorm met -i"
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Mereka sering mengikuti orang itu",
+                "prompt": "ikut — Zij volgen die man vaak"
+              },
+              {
+                "answer": "Siapa menemani ibu saya ke rumah sakit?",
+                "prompt": "teman — Wie vergezelt mijn moeder naar het ziekenhuis?"
+              },
+              {
+                "answer": "Para turis menyeberangi jalan yang ramai itu",
+                "prompt": "seberang — De toeristen steken de drukke weg over"
+              },
+              {
+                "answer": "Pesawat itu mendarati bandara Polonia di Medan",
+                "prompt": "darat — Het vliegtuig landt op de luchthaven Polonia in Medan"
+              },
+              {
+                "answer": "Apakah kamu sudah menandatangani surat itu?",
+                "prompt": "tanda tangan — Heb je die brief al ondertekend?"
+              },
+              {
+                "answer": "Guru itu mengirimi adikmu buku ini",
+                "prompt": "kirim — De leraar heeft aan jouw broertje dit boek gezonden"
+              },
+              {
+                "answer": "Ayah mengakui bahwa ia terlalu cepat membeli hadiah",
+                "prompt": "aku — Vader erkende dat hij te snel een cadeau had gekocht"
+              },
+              {
+                "answer": "Mereka memandangi perahu-perahu yang bagus itu",
+                "prompt": "pandang — Zij keken naar de mooie boten"
+              },
+              {
+                "answer": "Pada musim kemarau sawah-sawah diairi",
+                "prompt": "air — In de droge tijd worden de rijstvelden bevloeid"
+              },
+              {
+                "answer": "Rumah itu dikelilingi pohon-pohon",
+                "prompt": "keliling — Het huis werd omringd door bomen"
+              }
+            ],
+            "title": "Latihan I",
+            "instruction": "Vertaal met behulp van een -i vorm."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Sesudah / Setelah berbelanja Pak Budi makan di restoran. — Nadat hij boodschappen had gedaan, at Pak Budi in een restaurant.",
+                "prompt": "nadat — .......... berbelanja Pak Budi makan di restoran"
+              },
+              {
+                "answer": "Kemudian dia mau pulang. Tapi bus berangkat dari mana, ya? — Vervolgens wilde hij naar huis. Maar van waar vertrekt de bus eigenlijk?",
+                "prompt": "vervolgens — .......... dia mau pulang. Tapi bus berangkat dari mana, ya?"
+              },
+              {
+                "answer": "Sebelum perempatan Bapak harus belok ke kiri. — Vóór het kruispunt moet u naar links afslaan.",
+                "prompt": "links — Sebelum perempatan Bapak harus belok ke .........."
+              },
+              {
+                "answer": "Terminal bus terletak di sebelah kanan perusahaan umum Telkom. — Het busstation ligt aan de rechterkant van het staatsbedrijf Telkom.",
+                "prompt": "rechterkant — Terminal bus terletak di .......... perusahaan umum Telkom"
+              },
+              {
+                "answer": "Terminal itu besar sekali dan sangat ramai. — Dat station is heel groot en heel druk.",
+                "prompt": "zeer, zeer — Terminal itu besar .......... dan .......... ramai"
+              },
+              {
+                "answer": "Bus malam itu selalu berangkat tepat pada waktunya. — Die nachtbus vertrekt altijd op tijd.",
+                "prompt": "op — Bus malam itu selalu berangkat .......... waktunya"
+              },
+              {
+                "answer": "Sambil menunggu bus, Pak Budi merokok rokok kretek. — Terwijl hij op de bus wachtte, rookte Pak Budi een kretek-sigaret.",
+                "prompt": "terwijl — .......... menunggu bus, Pak Budi merokok rokok kretek"
+              },
+              {
+                "answer": "Walaupun banyak orang menumpang bus masih ada tempat duduk. — Ofschoon veel mensen de bus namen, was er nog een zitplaats.",
+                "prompt": "ofschoon — .......... banyak orang menumpang bus masih ada tempat duduk"
+              },
+              {
+                "answer": "Dia harus berjalan kira-kira satu jam sampai ke rumahnya. — Hij moest ongeveer een uur lopen tot aan zijn huis.",
+                "prompt": "ongeveer — Dia harus berjalan .......... satu jam sampai ke rumahnya"
+              },
+              {
+                "answer": "Ketika dia tiba di rumah semua lampu sudah dimatikan. — Toen hij thuiskwam, waren alle lampen al uitgedaan.",
+                "prompt": "toen — .......... dia tiba di rumah semua lampu sudah dimatikan"
+              }
+            ],
+            "title": "Latihan II",
+            "instruction": "Vul het ontbrekende woord in en vertaal de zin."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Ayo, mari kita mampir ke rumah Nina",
+                "prompt": "Kom, laten we bij Nina langsgaan"
+              },
+              {
+                "answer": "Dia sekarang masih di rumah, besok dia berangkat ke Padang",
+                "prompt": "Zij is nu nog thuis, morgen vertrekt ze naar Padang"
+              },
+              {
+                "answer": "Di sana tinggal iparnya, yang bekerja di biro perjalanan",
+                "prompt": "Daar woont haar zwager, die bij een reisburo werkt"
+              },
+              {
+                "answer": "Dia mengantar turis ke pulau Nias",
+                "prompt": "Hij begeleidt toeristen naar het eiland Nias"
+              },
+              {
+                "answer": "Di sana mereka menginap satu malam",
+                "prompt": "Daar blijven ze een nacht slapen"
+              },
+              {
+                "answer": "Kadang-kadang Nina boleh ikut dengan dia",
+                "prompt": "Soms mag Nina met hem mee"
+              },
+              {
+                "answer": "Nina sekarang sedang mengumpulkan barang-barangnya",
+                "prompt": "Nina zal momenteel haar bagage aan het verzamelen zijn"
+              },
+              {
+                "answer": "Tringgg! Pintu terbuka. Selamat malam, apakah Nina ada di rumah?",
+                "prompt": "Tringgg! De deur gaat open. Goedenavond, is Nina thuis?"
+              },
+              {
+                "answer": "Ya, silakan masuk, nanti saya panggil dia sebentar",
+                "prompt": "Ja, kom binnen, dan zal ik haar even roepen"
+              },
+              {
+                "answer": "Silakan duduk. Pembantu akan membawa teh dan kue sebentar lagi",
+                "prompt": "Ga zitten. De bediende brengt zo thee en koekjes"
+              },
+              {
+                "answer": "Tidak usah kok, kami hanya mau menyapa Nina sebentar!",
+                "prompt": "Dat hoeft niet hoor, we willen alleen Nina even gedag zeggen!"
+              }
+            ],
+            "title": "Latihan III",
+            "instruction": "Vertaal."
+          },
+          {
+            "type": "conversation",
+            "items": [
+              {
+                "prompt": "Seorang wanita didatangi seorang dokter karena ia merasa kesehatannya kurang baik."
+              },
+              {
+                "prompt": "Dokter: Nyonya berusia berapa tahun?"
+              },
+              {
+                "prompt": "Wanita: Wah, saya tidak ingat, dokter! Saya akan coba mengingatnya!"
+              },
+              {
+                "prompt": "Wanita: Pada waktu saya kawin usia saya delapan belas tahun, usia suami saya tiga puluh tahun. Sekarang usia suami saya enam puluh tahun, berarti 2 x 30 tahun. Dengan demikian, usia saya 2 x 18 tahun, jadi 36 tahun, dokter!"
+              },
+              {
+                "prompt": "Dokter: Lho, bagaimana ini ??"
+              },
+              {
+                "prompt": "Jawablah: Wanita itu berusia berapa tahunkah sekarang? (De redenering klopt niet: de man is van 30 naar 60 gegaan, dus 30 jaar ouder; de vrouw, 18 toen ze trouwde, is óók 30 jaar ouder: zij is nu 48 jaar, niet 36.)"
+              }
+            ],
+            "title": "Latihan IV — Usia",
+            "instruction": "Vertaal onderstaande tekst en geef antwoord op de vraag. (Een dialoog tussen een arts en een vrouw over haar leeftijd; bereken hoe oud de vrouw werkelijk is.)"
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Dibandingkan dengan Jakarta, Yogya belum begitu ramai. — Vergeleken met Jakarta is Yogya nog niet zo druk. (di-kan)",
+                "prompt": "banding — ............... dengan Jakarta, Yogya belum begitu ramai"
+              },
+              {
+                "answer": "Apalagi Yogya juga merupakan pusat kebudayaan Jawa. — Bovendien vormt Yogya ook het centrum van de Javaanse cultuur. (me-kan)",
+                "prompt": "rupa — Apalagi Yogya juga ............... pusat kebudayaan Jawa"
+              },
+              {
+                "answer": "Kota itu mempunyai istana Jawa, namanya keraton. — Die stad bezit een Javaans paleis, dat keraton heet. (me-i)",
+                "prompt": "punya — Kota itu ............... istana Jawa, namanya keraton"
+              },
+              {
+                "answer": "Orang turis boleh mengunjungi sebagian keraton itu. — Toeristen mogen een deel van die keraton bezoeken. (me-i)",
+                "prompt": "kunjung — Orang turis boleh ............... sebagian keraton itu"
+              },
+              {
+                "answer": "Bagian lain didiami Sultan Hamengkubuwono X dan keluarganya. — Het andere deel wordt bewoond door Sultan Hamengkubuwono X en zijn familie. (di-i)",
+                "prompt": "diam — Bagian lain ............... Sultan Hamengkubuwono X dan keluarganya"
+              },
+              {
+                "answer": "Suasana di Yogya sangat menyenangkan. — De sfeer in Yogya is heel aangenaam. (me-kan)",
+                "prompt": "senang — Suasana di Yogya sangat ..............."
+              },
+              {
+                "answer": "Siang agak sulit menyeberangi Jalan Malioboro, jalan yang termasyur di kota itu. — Overdag is het nogal moeilijk om de Malioboro-straat over te steken, de beroemdste straat van die stad. (me-i)",
+                "prompt": "seberang — Siang agak sulit ............... Jalan Malioboro, jalan yang termasyur di kota itu"
+              },
+              {
+                "answer": "Pada malam hari Jalan Malioboro dikerumuni pemuda-pemudi. — 's Avonds wordt de Malioboro-straat omstuwd door jongeren. (di-i)",
+                "prompt": "kerumun — Pada malam hari Jalan Malioboro ............... pemuda-pemudi"
+              },
+              {
+                "answer": "Bermacam-macam masakan Jawa dihidangkan di restoran atau di pinggir jalan. — Allerlei Javaanse gerechten worden opgediend in restaurants of langs de weg. (di-kan)",
+                "prompt": "hidang — Bermacam-macam masakan Jawa ............... di restoran atau di pinggir jalan"
+              },
+              {
+                "answer": "Dalam bahasa Jawa, makan di pinggir Jalan Malioboro dinamai 'lesehan'. — In het Javaans wordt langs de weg eten in de Malioboro-straat 'lesehan' genoemd. (di-i)",
+                "prompt": "nama — Dalam bahasa Jawa, makan di pinggir Jalan Malioboro ............... 'lesehan'"
+              }
+            ],
+            "title": "Latihan V",
+            "instruction": "Vul in: een me-kan, di-kan, me-i of di-i, en vertaal de zin."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"fb35a2f1-25af-45cc-a655-e20d73845b22\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"fb35a2f1-25af-45cc-a655-e20d73845b22\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

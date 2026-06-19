@@ -1,0 +1,72 @@
+{
+  "lesson_number": 25,
+  "cefr_level": "A1",
+  "lesson_topic": "het nominaliserende circumfix PE-...-AN",
+  "grammar_patterns": [
+    {
+      "slug": "l25-circumfix-pe-an-van-basiswoord-naar-zelfstandig-naamwoord",
+      "name": "Het circumfix PE-...-AN: van basiswoord naar zelfstandig naamwoord",
+      "description": "Het circumfix PE-...-AN (voorvoegsel PE- + achtervoegsel -AN) maakt van een basiswoord een zelfstandig naamwoord dat het proces, de handeling, het resultaat, een abstractie of een plaats benoemt. De vorming combineert de regels van PE- (Les 20) en -AN (Les 10) en wordt afgeleid van het ME-/ME-KAN/ME-I werkwoord.",
+      "confusion_group": "pe-an-circumfix",
+      "key_contrast": "PE-...-AN (proces: penjualan = de verkoop) versus de losse PE-vorm (uitvoerder: penjual = verkoper) en de kale -AN-vorm (resultaat: jualan = koopwaar)",
+      "research_notes": "Het leerboek behandelt onder één label twee verwante circumfixen: peN-...-an (penjualan, pembukaan, pengiriman, pendidikan) en het archaïscher per-...-an (perikanan, perkebunan, perjalanan, perkembangan, permukaan). Voor de leerder is de hanteerbare regel: peN-...-an bij de meeste werkwoordstammen, per-...-an bij stammen die met ber- combineren (berkembang → perkembangan) of een plaats/collectief aanduiden (kebun → perkebunan). Belangrijkste fout bij Nederlandstaligen: de PE-vorm (uitvoerder) en de PE-...-AN-vorm (proces) door elkaar halen — pemilih (kiezer) vs pemilihan (verkiezing). Onderwijsstrategie: altijd via het ME-werkwoord aanleren (didik → mendidik → pendidikan) zodat de allomorf volgt uit Les 13/20.",
+      "example_sentences": [
+        { "id": "Penjualan mobil itu proses menjual mobil.", "nl": "Die autoverkoop is het proces van auto's verkopen." },
+        { "id": "Pembukaan pesta merupakan hal yang menyenangkan.", "nl": "De opening van het feest is iets aangenaams." },
+        { "id": "Pendidikan di Indonesia berkembang dengan cepat.", "nl": "Het onderwijs in Indonesië ontwikkelt zich snel." }
+      ]
+    },
+    {
+      "slug": "l25-pe-an-allomorfen-pem-pen-peny-peng",
+      "name": "De PE-...-AN allomorfen: pe-/pem-/pen-/peny-/peng-/penge-",
+      "description": "De beginklank van het basiswoord bepaalt de vorm van het voorvoegsel-deel, volgens dezelfde nasaleringsregels als bij ME- (Les 13) en PE- (Les 20): pe- (L/M/N/NY/R/W/Y), pem- (B/F), pen- (C/D/J), peny- (S valt weg), peng- (klinkers + G/H), penge- (eenlettergrepig). Bij K/P/S/T valt de beginklank van het basiswoord weg.",
+      "confusion_group": "pe-an-circumfix",
+      "key_contrast": "De allomorf hangt af van de eerste klank van de stam, niet van de betekenis; bij K/P/S/T verdwijnt de stamklank (kirim → pengiriman, niet *pengkiriman).",
+      "research_notes": "De peN- familie heeft vijf nasale allomorfen (peng-, pen-, pem-, peny-, penge-) plus de neutrale pe-, geconditioneerd door de articulatieplaats van de beginklank van de stam. Dit is exact het paradigma dat de leerder bij ME- (Les 13) en PE- (Les 20) al heeft gezien. Veelgemaakte fout: de wegval bij K/P/S/T vergeten (pengiriman uit kirim, penyerahan uit serah). Onderwijsstrategie: de stam terugvinden door de allomorf 'af te pellen'.",
+      "example_sentences": [
+        { "id": "Besok pengumuman hasil perusahaan akan diumumkan.", "nl": "Morgen wordt de bekendmaking van de bedrijfsresultaten afgekondigd." },
+        { "id": "Pengiriman surat itu memakan waktu tiga hari.", "nl": "Het verzenden van die brief duurt drie dagen." },
+        { "id": "Pembayaran harus dilakukan sebelum tanggal sepuluh.", "nl": "De betaling moet voor de tiende worden gedaan." }
+      ]
+    },
+    {
+      "slug": "l25-pe-an-op-werkwoord-proces-of-handeling",
+      "name": "PE-...-AN op een werkwoord: het proces of de handeling",
+      "description": "Op een (ME-)werkwoord benoemt PE-...-AN het proces of de handeling zelf, te vertalen met het Nederlandse 'het ...-en': menjual → penjualan, membuka → pembukaan, mengirim → pengiriman.",
+      "confusion_group": "pe-an-circumfix",
+      "key_contrast": "PE-...-AN benoemt de handeling als zelfstandig naamwoord (penjualan = de verkoop), terwijl de PE-vorm de uitvoerder benoemt (penjual = verkoper).",
+      "research_notes": "pe-...-an beschrijft typisch het proces van de bijbehorende me-handeling (membuka → pembukaan = het openen). Dit is de productiefste en best voorspelbare subklasse — ideaal voor productieve oefening. Fout bij Nederlandstaligen: een gerundium ('het openen') letterlijk willen omzetten zonder de allomorf; oplossing is altijd eerst het ME-werkwoord vormen.",
+      "example_sentences": [
+        { "id": "Pembukaan toko baru itu menarik banyak orang.", "nl": "De opening van die nieuwe winkel trok veel mensen." },
+        { "id": "Penjualan tiket pesawat ke Ambon sudah dimulai.", "nl": "De verkoop van vliegtickets naar Ambon is al begonnen." },
+        { "id": "Pengiriman barang ke Amerika Serikat memakan waktu lama.", "nl": "Het verzenden van goederen naar de Verenigde Staten duurt lang." }
+      ]
+    },
+    {
+      "slug": "l25-pe-an-op-naamwoord-en-bijvoeglijk-naamwoord-resultaat-abstractie-plaats",
+      "name": "PE-...-AN op een naamwoord of bijvoeglijk naamwoord: handeling, resultaat, abstractie en plaats",
+      "description": "Op een zelfstandig of bijvoeglijk naamwoord (via het bijbehorende ME-werkwoord) levert PE-...-AN naast het proces ook resultaat-, abstractie- of plaatsbetekenissen op: penghargaan, pendaftaran, perencanaan; penjelasan, pendekatan, pengumuman; en plaatsnamen als perkebunan, perikanan, permukaan.",
+      "confusion_group": "pe-an-circumfix",
+      "key_contrast": "Dezelfde vorm dekt meerdere semantische rollen — proces (pendaftaran), abstractie (penjelasan) en plaats (perkebunan); de rol volgt uit het basiswoord en de context.",
+      "research_notes": "De plaatsbetekenis (perkebunan = plantage, perikanan = visserij(sector), permukaan = oppervlak) komt vrijwel altijd uit de per-...-an variant. De abstractie-/resultaatbetekenis (penghargaan = waardering én onderscheiding) toont de proces↔resultaat-ambiguïteit die typisch is voor dit circumfix.",
+      "example_sentences": [
+        { "id": "Pendaftaran mahasiswa baru memulai pada bulan Juni.", "nl": "De inschrijving van nieuwe studenten begint in juni." },
+        { "id": "Hasil perkebunan dan perikanan penting untuk ekonomi.", "nl": "De opbrengst van de plantages en de visserij is belangrijk voor de economie." },
+        { "id": "Penjelasan guru itu kurang jelas.", "nl": "De uitleg van die leraar is niet duidelijk genoeg." }
+      ]
+    },
+    {
+      "slug": "l25-pe-an-tegenover-pe-vorm-en-kale-an-vorm",
+      "name": "PE-...-AN tegenover de PE-vorm en de kale -AN-vorm: uitvoerder, proces en resultaat onderscheiden",
+      "description": "Eén basiswoord levert via drie afleidingen drie zelfstandige naamwoorden op: de PE-vorm (uitvoerder/instrument), de PE-...-AN-vorm (proces/handeling, soms plaats) en de kale -AN-vorm (resultaat). pemilih (kiezer) / pemilihan (verkiezing) / pilihan (keuze).",
+      "confusion_group": "pe-an-circumfix",
+      "key_contrast": "pemilih = de kiezer (uitvoerder, PE-, Les 20) ≠ pemilihan = de verkiezing (proces, PE-...-AN) ≠ pilihan = de keuze (resultaat, -AN, Les 10).",
+      "research_notes": "Dit is de synthese-pattern die de drie eerder geleerde affixen (PE-, -AN, en nu PE-...-AN) op één basiswoord legt. De grootste struikelblok voor Nederlandstaligen is de proces↔uitvoerder-verwarring (pendaftar = degene die zich inschrijft vs pendaftaran = de inschrijving). Onderwijsstrategie: minimale drietallen (penjual/penjualan/jualan, pemilih/pemilihan/pilihan) als geheugensteun.",
+      "example_sentences": [
+        { "id": "Pemilih itu memberikan suaranya dalam pemilihan.", "nl": "Die kiezer bracht zijn stem uit bij de verkiezing." },
+        { "id": "Penjual itu menata jualannya sebelum penjualan dimulai.", "nl": "Die verkoper schikte zijn koopwaar voordat de verkoop begon." },
+        { "id": "Pendaftar harus menyelesaikan pendaftaran sebelum bulan Juni.", "nl": "Wie zich inschrijft moet de inschrijving voor juni afronden." }
+      ]
+    }
+  ]
+}

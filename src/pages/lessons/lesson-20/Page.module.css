@@ -1,0 +1,657 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 20: Bab 4 · Biar Lambat Asal Selamat
+
+   A kitchen-and-spice chapter. Warm, paprika-and-turmeric heat in the hero;
+   a dense but aligned vocabulary grid that survives 100+ items; an editorial
+   Indonesian reading passage; and a grammar centrepiece that maps the PE-
+   prefix's allomorphy as aligned base → derived transforms.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Page root ──────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band {
+  width: 100%;
+  padding: 56px 0;
+}
+
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — spice heat: turmeric / chili / clove ────────────────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #b54708;
+  background-image:
+    linear-gradient(135deg, rgba(120, 53, 15, 0.84) 0%, rgba(154, 52, 18, 0.72) 45%, rgba(252, 196, 25, 0.30) 100%),
+    url('/lesson-20-hero.webp');
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 82% 22%, rgba(252, 196, 25, 0.26), transparent 42%),
+    radial-gradient(circle at 12% 88%, rgba(217, 70, 39, 0.22), transparent 38%);
+  pointer-events: none;
+}
+
+.heroInner {
+  composes: container;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 760px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(252, 196, 25, 0.20);
+  color: var(--ring-target);
+  border: 1px solid rgba(252, 196, 25, 0.34);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 8px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.70);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.90);
+  line-height: 1.6;
+  max-width: 620px;
+}
+
+/* ─── Editorial lede ─────────────────────────────────────────────────────── */
+
+.ledeBand { composes: band; padding: 64px 0 32px; }
+
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em { font-style: italic; color: var(--warning); font-weight: var(--fw-semibold); }
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--warning);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Audio band ─────────────────────────────────────────────────────────── */
+
+.audioBand { composes: band; padding: 0 0 8px; }
+.audioInner { composes: container; max-width: 920px; }
+
+/* ─── Main content shell ─────────────────────────────────────────────────── */
+
+.shellBand { composes: band; padding-top: 24px; padding-bottom: 24px; }
+
+.shell {
+  composes: container;
+  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+.section { display: flex; flex-direction: column; }
+
+/* ─── Shared section header ──────────────────────────────────────────────── */
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 22px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ─── Culture essay — drop-cap prologue ──────────────────────────────────── */
+
+.essayBand {
+  background: linear-gradient(180deg, rgba(252, 196, 25, 0.06) 0%, transparent 100%);
+  border-radius: var(--r-xl);
+  padding: 40px 36px;
+  margin: 0 -36px;
+}
+
+@media (max-width: 720px) { .essayBand { padding: 32px 20px; margin: 0; } }
+
+.essayEyebrow { composes: sectionEyebrow; color: var(--ring-target); }
+.essayEyebrow::before { background: var(--ring-target); }
+
+.essayLead {
+  font-size: clamp(16px, 1.4vw, 18px);
+  color: var(--text-primary);
+  line-height: 1.72;
+  margin: 0 0 18px;
+  max-width: 68ch;
+}
+
+.essayLead::first-letter {
+  float: left;
+  font-size: 3.1em;
+  line-height: 0.8;
+  font-weight: var(--fw-black);
+  color: var(--ring-target);
+  padding: 6px 12px 0 0;
+}
+
+.essayBody {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.72;
+  margin: 0 0 16px;
+  max-width: 68ch;
+}
+
+.essayBody:last-child { margin-bottom: 0; }
+
+/* ─── Vocabulary — aligned, dense, three-tone chip grid ──────────────────── */
+
+.vocabEyebrow { composes: sectionEyebrow; }
+.vocabEyebrow[data-tone='spice']  { color: var(--warning); }
+.vocabEyebrow[data-tone='spice']::before  { background: var(--warning); }
+.vocabEyebrow[data-tone='taste']  { color: var(--ring-target); }
+.vocabEyebrow[data-tone='taste']::before  { background: var(--ring-target); }
+.vocabEyebrow[data-tone='story']  { color: var(--success); }
+.vocabEyebrow[data-tone='story']::before  { background: var(--success); }
+
+.vocabCount {
+  font-size: var(--fs-sm);
+  font-style: normal;
+  font-weight: var(--fw-medium);
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+}
+
+.vocabGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+
+@media (max-width: 900px) { .vocabGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .vocabGrid { grid-template-columns: 1fr; } }
+
+.vocabChip {
+  display: grid;
+  grid-template-columns: 24px minmax(6.5em, max-content) 1fr;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 13px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+  min-width: 0;
+}
+
+.vocabChip[data-tone='spice'] { background: rgba(255, 149, 0, 0.05); border-color: rgba(255, 149, 0, 0.16); }
+.vocabChip[data-tone='taste'] { background: rgba(252, 196, 25, 0.06); border-color: rgba(252, 196, 25, 0.18); }
+.vocabChip[data-tone='story'] { background: rgba(50, 215, 75, 0.05); border-color: rgba(50, 215, 75, 0.16); }
+
+.vocabChip[data-tone='spice']:hover { border-color: var(--warning); transform: translateY(-1px); }
+.vocabChip[data-tone='taste']:hover { border-color: var(--ring-target); transform: translateY(-1px); }
+.vocabChip[data-tone='story']:hover { border-color: var(--success); transform: translateY(-1px); }
+
+.vocabId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.vocabNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  min-width: 0;
+}
+
+/* ─── Reading passage — Indonesian narrative, editorial flow ─────────────── */
+
+.readingBand {
+  background:
+    radial-gradient(circle at 90% 0%, rgba(0, 199, 190, 0.10), transparent 55%),
+    linear-gradient(180deg, rgba(0, 199, 190, 0.05) 0%, transparent 100%);
+  border-radius: var(--r-xl);
+  padding: 44px 40px;
+  margin: 0 -40px;
+}
+
+@media (max-width: 720px) { .readingBand { padding: 32px 20px; margin: 0; } }
+
+.readingEyebrow { composes: sectionEyebrow; color: var(--teal); }
+.readingEyebrow::before { background: var(--teal); }
+
+.readingProverb {
+  font-size: var(--fs-md);
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 32px;
+  max-width: 70ch;
+}
+
+.readingProverb em { color: var(--teal); font-style: italic; font-weight: var(--fw-medium); }
+
+.readingFlow { display: flex; flex-direction: column; gap: 22px; max-width: 72ch; }
+
+.readingPara {
+  font-size: clamp(16px, 1.35vw, 17px);
+  color: var(--text-primary);
+  line-height: 1.78;
+  margin: 0;
+  padding-left: 44px;
+  position: relative;
+}
+
+.readingNum {
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--teal);
+  width: 28px;
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .readingPara { padding-left: 0; }
+  .readingNum { position: static; display: inline-block; margin-right: 10px; width: auto; text-align: left; }
+}
+
+/* ─── Grammar — PE- prefix: concept → allomorphy map → semantic asides ───── */
+
+.grammarEyebrow { composes: sectionEyebrow; color: var(--mix-recall); }
+.grammarEyebrow::before { background: var(--mix-recall); }
+
+/* Concept intro — what PE- does, with its first example chips below */
+.conceptBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px 26px;
+  border-radius: var(--r-lg);
+  background: rgba(156, 54, 181, 0.06);
+  border: 1px solid rgba(156, 54, 181, 0.20);
+  margin-bottom: 36px;
+}
+
+.conceptRules,
+.allomorphRules,
+.asideRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.conceptRules li,
+.allomorphRules li,
+.asideRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.58;
+  padding-left: 22px;
+  position: relative;
+}
+
+.conceptRules li::before,
+.allomorphRules li::before,
+.asideRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--tile-accent, var(--mix-recall));
+  font-weight: var(--fw-bold);
+}
+
+/* Caption introducing the allomorphy map */
+.allomorphCaption {
+  font-size: var(--fs-md);
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 18px;
+  max-width: 72ch;
+}
+
+.allomorphGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.allomorphTile {
+  padding: 24px 26px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.allomorphTile[data-accent='cyan']   { --tile-accent: var(--accent-primary); }
+.allomorphTile[data-accent='purple'] { --tile-accent: var(--mix-recall); }
+.allomorphTile[data-accent='teal']   { --tile-accent: var(--teal); }
+.allomorphTile[data-accent='amber']  { --tile-accent: var(--ring-target); }
+.allomorphTile[data-accent='green']  { --tile-accent: var(--success); }
+
+.allomorphHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.allomorphNumber {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--tile-accent, var(--mix-recall));
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+}
+
+.allomorphTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* The transform rows — base → derived, the visual heart of the grammar.
+   3-track grid: every arrow + derived form lines up vertically down the column. */
+.transformGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 32px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--card-border);
+}
+
+@media (max-width: 620px) { .transformGrid { grid-template-columns: 1fr; } }
+
+.transform {
+  display: grid;
+  grid-template-columns: 6em auto 1fr;
+  align-items: baseline;
+  gap: 6px 10px;
+}
+
+.transformBase {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+  text-align: right;
+}
+
+.transformArrow { color: var(--tile-accent, var(--mix-recall)); font-weight: var(--fw-bold); }
+
+.transformDerived {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.transformNl {
+  grid-column: 1 / -1;
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  font-style: italic;
+  padding-left: calc(6em + 10px);
+}
+
+@media (max-width: 620px) { .transformNl { padding-left: 0; } }
+
+/* Derived-only chip grid — for concept examples + semantic-aside lists */
+.derivedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px 12px;
+}
+
+.derivedChip {
+  display: grid;
+  grid-template-columns: minmax(6em, max-content) 24px 1fr;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  min-width: 0;
+}
+
+.derivedId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.derivedNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  min-width: 0;
+}
+
+/* Semantic asides — connotation / irregular / compounds */
+.asideGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.aside {
+  padding: 26px 28px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--card-border);
+}
+
+.aside[data-tone='connotation'] { background: rgba(255, 149, 0, 0.05); border-color: rgba(255, 149, 0, 0.20); }
+.aside[data-tone='irregular']   { background: rgba(217, 70, 39, 0.05); border-color: rgba(217, 70, 39, 0.20); }
+.aside[data-tone='compound']    { background: rgba(0, 199, 190, 0.05); border-color: rgba(0, 199, 190, 0.20); }
+
+.aside[data-tone='connotation'] { --tile-accent: var(--warning); }
+.aside[data-tone='irregular']   { --tile-accent: var(--danger); }
+.aside[data-tone='compound']    { --tile-accent: var(--teal); }
+
+.asideEyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tile-accent, var(--warning));
+  margin: 0 0 6px;
+}
+
+.asideTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 14px;
+}
+
+.asideRules { margin-bottom: 18px; }
+
+/* ─── Inline play button ─────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--warning);
+  color: var(--warning);
+  background: rgba(255, 149, 0, 0.10);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--warning);
+  color: var(--warning);
+  background: rgba(255, 149, 0, 0.16);
+}
+
+.playButton svg { width: 9px; height: 9px; }
+
+/* ─── Closing band ───────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 229, 255, 0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner { composes: container; max-width: 720px; text-align: center; }
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation { display: flex; justify-content: center; margin: 0 0 28px; }
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions { display: flex; justify-content: center; }
+.closingActions > * { width: 100%; max-width: 660px; }

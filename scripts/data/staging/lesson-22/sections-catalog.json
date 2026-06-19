@@ -1,0 +1,473 @@
+{
+  "lesson": 22,
+  "generatedAt": "2026-06-19T05:12:28.694Z",
+  "sourcePages": 8,
+  "lessonMeta": {
+    "title": "Bab 6 - Pesta Pernikahan",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 22
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Pesta Pernikahan",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Minggu ini akan diadakan pesta pernikahan di rumah keluarga Murjito. Titi, putri yang kedua, akan menikah dengan seorang pemuda yang cakap. Dia berusia 25 tahun dan sudah selama tiga tahun bekerja sebagai juru rawat di sebuah klinik.",
+        "Nugroho calon suaminya berusia sedikit lebih muda: 24 tahun. Dia bekerja di kantor Perumtel (Perusahaan Umum Telekomunikasi).",
+        "Orang tua Titi dan Nugroho sudah saling mengenal dan tidak ada halangan untuk pernikahan ini. Ibu dan ayah Titi senang sekali karena bakal menantunya sudah bekerja di perusahaan yang baik.",
+        "Sudah beberapa hari rumah keluarga Murjito ramai dikunjungi orang. Banyak anggota keluarga Titi datang ke Jakarta untuk ikut membantu. Tentu bibi Ratna juga sudah hadir. Mana ada pesta tanpa bibi ini! Seperti biasa suaminya, paman Ton, juga ikut datang. Nenek dan kakek dari pihak ibu Titi juga sudah ada. Dari pihak Nugroho belum banyak orang yang datang karena harus datang dari Yogyakarta.",
+        "Susi, kakak Titi dengan suaminya Benny - ipar Titi - sudah datang seminggu sebelum pesta. Syaiful, adiknya, belum ada karena masih berkuliah di Malang. Syaiful akan datang dengan pacarnya Nining. Titi belum pernah berkenalan dengan Nining. Karena itu ia ingin berkenalan dengannya. Katanya gadis ini sangat cantik.",
+        "Nenek Titi sangat senang. Titi, cucu yang paling dibanggakannya, akan menikah sekarang. Nenek juga senang karena Titi akan tinggal di Jakarta. Tidak seperti cucunya yang lain. Semuanya sudah pindah ke luar kota Jakarta.",
+        "Orang-orang sibuk dengan persiapan terakhir untuk pesta ini. Buat tamu yang akan datang tentu banyak alat yang diperlukan seperti kursi, meja, pecah belah dan sebagainya. Karena barang-barang ini harus disewa, dua minggu sebelumnya sudah dipesan. Makanan dan makanan kecil dimasak lebih dulu. Tentu rumah harus dihias dengan bunga dan janur. Setandan pisang mas serta buah kelapa gading muda juga harus dipasang. Ini adalah lambang kesuburan pasangan pengantin baru."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "ada, meng-kan",
+          "dutch": "houden / uitvoeren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "alun-alun",
+          "dutch": "stadsplein",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "anggota keluarga",
+          "dutch": "familielid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bagai, se-nya",
+          "dutch": "en dergelijke",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "bakal",
+          "dutch": "aanstaande",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "bangga",
+          "dutch": "trots",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "mem-kan",
+          "dutch": "trots zijn op",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "bunga",
+          "dutch": "bloem",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cakap",
+          "dutch": "leuk / knap (man)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "calon",
+          "dutch": "kandidaat",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cantik",
+          "dutch": "mooi (vrouw)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "cucu",
+          "dutch": "kleinkind",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dikunjungi",
+          "dutch": "bezocht",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "halang, -an",
+          "dutch": "belemmering",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hias, meng-",
+          "dutch": "versieren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "ipar",
+          "dutch": "zwager / schoonzus",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "janur",
+          "dutch": "palmbladversiering",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "juru rawat",
+          "dutch": "verpleegkundige",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kakek",
+          "dutch": "opa / grootvader",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kaki lima",
+          "dutch": "rijdend eetstalletje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kelapa gading",
+          "dutch": "soort kokospalm",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kesuburan",
+          "dutch": "vruchtbaarheid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "klinik",
+          "dutch": "kliniek",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lambang",
+          "dutch": "symbool",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "menantu",
+          "dutch": "schoondochter / -zoon",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "nikah, me-",
+          "dutch": "huwen / trouwen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pacar",
+          "dutch": "vaste vriend(in)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pasangan",
+          "dutch": "paar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pengantin",
+          "dutch": "bruidspaar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pecah belah",
+          "dutch": "serviesgoed",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pengantin",
+          "dutch": "bruid(egom)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "perlu, memerlukan",
+          "dutch": "nodig hebben",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pernikahan",
+          "dutch": "huwelijk",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "persiapan",
+          "dutch": "voorbereidingen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "perusahaan",
+          "dutch": "bedrijf",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "perusahaan umum",
+          "dutch": "openbaar nutsbedrijf",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pihak",
+          "dutch": "zijde / kant",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pindah",
+          "dutch": "verhuizen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pisang mas",
+          "dutch": "soort kleine banaan",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "putri",
+          "dutch": "dochter",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "serta",
+          "dutch": "en / met",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "sewa, menyewa",
+          "dutch": "huren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "tandan",
+          "dutch": "tros (bananen)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "telekomunikasi",
+          "dutch": "telecommunicatie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tempuh, menempuh",
+          "dutch": "ingaan / betreden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "umum",
+          "dutch": "openbaar",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "usia",
+          "dutch": "leeftijd",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ber-",
+          "dutch": "... jaar oud zijn",
+          "pos": "verb"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "expressions",
+      "title": "Ungkapan",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "Selamat menempuh hidup baru",
+          "dutch": "Gefeliciteerd met uw huwelijk",
+          "pos": "greeting"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "reference_table",
+      "title": "Perhubungan Famili",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "raw_text": "PERHUBUNGAN FAMILI\n\nnenek moyang (voorouders)\n  |\nkakek & nenek (opa en oma)\n  |------------------------------|------------------------------|\npaman & bibi               bapak & ibu              mertua\n(oom & tante)              (vader & moeder)         (schoonouders)\n  |                              |\nsepupu                  kakak laki-laki         [diri-sendiri]     suami / isteri      adik laki-laki\n(neef / nicht,           (oudere broer)          (jezelf)          (man / vrouw)       (jongere broer)\nkind van oom             kakak perempuan                                                adik perempuan\nof tante)                (oudere zus)                                                   (jongere zus)\n  |                              |                                                           |\nkemenakan           putra, anak laki-laki (zoon)                                    kemenakan\n(neef / nicht,       putri, anak perempuan (dochter)                               (neef / nicht,\nkind van zus                    |                                                   kind van zus\nof broer)                      cucu (kleinkind)                                    of broer)"
+    },
+    {
+      "id": 4,
+      "type": "grammar",
+      "title": "Tata Bahasa - Verdubbelingen",
+      "source_pages": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "confidence": "high",
+      "raw_text": "TATA BAHASA\n\nVerdubbelingen\n\nDe volgende woordsoorten kunnen verdubbeld worden:\n1. werkwoord\n2. zelfstandig naamwoord\n3. bijvoeglijk naamwoord\n\nVroeger werd een verdubbeling weergegeven met de \"angka dua\", dat wil zeggen met het cijfer twee achter het woord (anak² = anak-anak). Dit is in de officiële spelling niet meer toegestaan. Hieronder worden een aantal veelgebruikte verdubbelingen kort behandeld.\n\n1. Werkwoord\n\nVrijwel alle werkwoorden kunnen worden verdubbeld. De verdubbeling drukt een wederkerigheid (over en weer iets doen), een bepaalde intensiteit of nadruk uit en geeft aan dat de handeling voortduurt.\n\njalan-jalan         wandelen, een uitstapje maken\nmain-main           spelenderwijs, voor de grap\nsewa-menyewa        huren en verhuren\nsurat-menyurat      corresponderen\n\n2. Zelfstandig naamwoord\n\nVerdubbeling van zelfstandige naamwoorden geeft niet uitsluitend meervoud aan. Er is altijd een aspect van diversiteit aanwezig. Bijvoorbeeld:\n\norang-orang tua             ouderparen\norang tua-tua               diverse oude mensen\npedagang-pedagang luar negeri   buitenlandse handelaren\nKota-kota di Indonesia ada yang besar, ada yang kecil   Er zijn grote en kleine steden in Indonesië\n\nEnkele zelfstandige naamwoorden komen alleen in een verdubbelde vorm voor.\n\nalun-alun       groot plein\nlabah-labah     spin\nkura-kura       schildpad\n\nBij enkele zelfstandige naamwoorden levert een verdubbeling een speciale betekenis op.\n\nlangit-langit   gehemelte, de hemel van een hemelbed\nmata-mata       spion\n\nSoms treedt bij verdubbelingen een klankverschuiving op:\n\nlauk-pauk       allerlei bijgerechten\nsayur-mayur     allerlei groenten\nteka-teki       kruiswoordraadsel\nwarna-warni     veelkleurig, met verschillende kleuren\n\nVerdubbelingen met zelfstandig naamwoord plus -AN\n\na. Algemene betekenis verwijzend naar een collectief:\n\ndaun            blad\ndaun-daun       bladeren\ndaun-daunan     gebladerte\n\nsayur           groente\nsayur-sayur     groenten\nsayur-sayuran   allerlei groentesoorten\n                (in het Nederlands is voor dit woord geen passend equivalent te vinden)\n\nb. De betekenis verwijst naar iets dat lijkt op het origineel:\n\norang           mens\norang-orangan   vogelverschrikker\n\npesawat         vliegtuig\npesawat-pesawatan   speelgoedvliegtuigje\n\nrobot           robot\nrobot-robotan   speelgoedrobotje\n\n3. Bijvoeglijk naamwoord\n\nEen verdubbeling van het bijvoeglijk naamwoord duidt, evenals bij het werkwoord, versterking of intensivering aan.\n\nanak kecil-kecil    een heel klein kind\nbuah masam-masam    zeer zure vruchten\nkertas tipis-tipis  heel dun papier\n\nN.B.: over het algemeen worden bij deze vormen niet nog eens sekali of amat gebruikt. In spreektaal kan dit echter wel eens voorkomen, bijvoorbeeld:\nAnak itu benar kurus-kurus sekali   Dat kind is echt broodmager\n\nEen andere samenstelling wordt gevormd door combinatie van bijvoeglijk naamwoorden met min of meer dezelfde betekenis:\n\nkecil-kurus     klein en mager\nmurah-meriah    goedkoop en gezellig\npintar-cerdas   intelligent\ntinggi-besar    groot\n\nOok komen combinaties van tegengestelde bijvoeglijke naamwoorden voor.\n\nbesar-kecil     de grootte (van omvang)\npanjang-pendek  de lengte\n\nVaste samenstellingen met de functie van bijwoord\n\nIn het Indonesisch komen enkele verdubbelingen voor die optreden als bijwoord. Voorbeelden:\n\nhati-hati       voorzichtig\nkira-kira       ongeveer\nmula-mula       aanvankelijk\npelan-pelan     langzaam aan, kalm aan\ntiba-tiba       plotseling"
+    },
+    {
+      "id": 5,
+      "type": "vocabulary",
+      "title": "Kleuren",
+      "source_pages": [
+        6,
+        7
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "abu-abu / kelabu",
+          "dutch": "grijs",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "biru",
+          "dutch": "blauw",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "coklat",
+          "dutch": "bruin",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "hijau",
+          "dutch": "groen",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "hitam",
+          "dutch": "zwart",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kuning",
+          "dutch": "geel",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "merah",
+          "dutch": "rood",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "oranye",
+          "dutch": "oranje",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "perak",
+          "dutch": "zilver",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "putih",
+          "dutch": "wit",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "ungu",
+          "dutch": "paars",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "hijau muda",
+          "dutch": "lichtgroen",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "hijau tua",
+          "dutch": "donkergroen",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "biru laut",
+          "dutch": "blauw (als de kleur van de zee)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "coklat sawo",
+          "dutch": "bruin (als de kleur van de sawo-vrucht)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "merah jambu",
+          "dutch": "rose (als van de jambu-vrucht)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "warna terong",
+          "dutch": "donkerpaars (als de kleur van aubergine)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kebiru-biruan",
+          "dutch": "blauwachtig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "keemas-emasan",
+          "dutch": "goudachtig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kehitam-hitaman",
+          "dutch": "zwartachtig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "hijau kebiru-biruan",
+          "dutch": "blauwachtig groen",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "coklat kekuning-kuningan",
+          "dutch": "geelachtig bruin",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kuning keabu-abuan",
+          "dutch": "beige",
+          "pos": "adjective"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "exercises",
+      "title": "Latihan",
+      "source_pages": [
+        7,
+        8
+      ],
+      "confidence": "high",
+      "raw_text": "LATIHAN\n\nLatihan I. Vul de juiste werkwoordsvorm in.\n\n1. usia    Susi ............... 26 tahun tetapi belum kawin\n2. belok   Karena tidak boleh masuk jalan itu, tukang becak ............... becak ke kiri\n3. sewa    Sayang sekali mobil yang besar itu sudah ...........\n4. angkat  Pada jam sebelas kereta api ............... ke Surabaya\n5. duduk   Ibu ............... anaknya di kursi\n6. perlu   Buku pelajaran ini ............... Hasan\n7. kerja   Pacarmu ............... di mana sekarang?\n8. bersih  Kamar mandi harus ............... pembantu\n9. cerita  Tiap malam kakek suka ...............\n10. cerita Ibu guru ............... dongeng yang lucu\n\nLatihan II. Zet de dialoog om in Indonesische zinnen.\nMaak bij de reactie van persoon B gebruik van de woorden die gegeven zijn.\n\nDialoog: Membeli makanan kecil\n\nPersoon A                                          Persoon B\n1. Goedemiddag, meneer. Is dit een winkel?         kaki lima\n2. Wat verkoopt u zoal?                            diverse gerechten\n3. Hoe heet dit eten?                              gado-gado\n4. Waar zijn die pinda's voor?                     voor de saus\n5. Groenten met pindasaus, is dat lekker?          wij vinden van wel\n6. Verkoopt u ook snacks?                          pisang goreng, geen saté\n7. Oh, pisang goreng vind ik heel lekker           pisang tanduk, heel speciaal\n8. Die soort heb ik nog nooit gegeten              ga zitten, komt u uit ...?\n9. Ik kom uit Nederland                            pisang goreng ook te koop?\n10. Jawel, maar hier is het lekkerder              dank u wel\n\nLatihan III. Gebruik in de volgende zinnen de werkwoordsvorm met -KAN.\n\n1. tempat  Waar zijn de spullen neergezet?\n2. turun   De goederen moeten uit de trein worden geladen\n3. pikir   Mijn zwager overdenkt de situatie\n4. sebab   Zijn vriend heeft veel problemen veroorzaakt\n5. beri    Wilt u deze brief aan het bruidspaar geven?\n6. besar   Kunt u deze afbeelding vergroten?\n7. guna    Dat bedrijf maakt gebruik van komputers\n8. kata    De verpleegkundige wilde iets zeggen\n9. jelas   Kunt u dat toelichten?\n10. kerja  Ahmad bewerkt zijn artikel\n\nLatihan IV. Vertaal de zinnen in het Indonesisch.\n\n1. Plotseling kwam Tuti's zusje binnen\n2. Hallo, wie gaat er mee een wandeling maken?\n3. Kalm aan, ik wil eerst mijn thee opdrinken\n4. Goed, ik wacht wel even\n5. Maar ga je daarna mee naar het stadsplein?\n6. Nou, ik wil naar de markt om een schildpad te kopen voor Arwin\n7. Hij houdt morgen een klein feestje omdat hij jarig is\n8. Wat eet een schildpad, allerlei groenten zeker?\n9. Ja, en groene blaadjes\n10. Kom, laten we er één kopen met veel kleuren"
+    }
+  ],
+  "flags": [
+    "OCR page 1: first paragraph truncated ('pesta pern!', 'putri yang kedua' missing) — recovered from image IMG_1614.jpg",
+    "OCR page 1: last paragraph cut off — full text recovered from image IMG_1614.jpg",
+    "OCR page 2: 'pasangan' had no Dutch translation in OCR — recovered as 'paar' from image IMG_1615.jpg",
+    "OCR page 2: 'lambang' and 'menantu' entries recovered from image IMG_1615.jpg; OCR had them partially garbled",
+    "OCR page 2: Ungkapan section (expressions) recovered from image IMG_1615.jpg — not present in OCR",
+    "OCR page 3: family tree diagram reconstructed as reference_table from image IMG_1616.jpg; OCR only captured partial list",
+    "Image IMG_1617.jpg: grammar page with 'langit-langit / mata-mata' and adjective examples recovered — OCR page 4 missed these",
+    "Image IMG_1618.jpg: full adjective reduplication section (anak kecil-kecil etc.), synonymous compounds (kecil-kurus etc.), colour compound section recovered — OCR pages 5–6 were incomplete",
+    "Image IMG_1619.jpg: colour section (kleuren) with fruit-colour compounds and '-achtig' forms recovered — these were only partially in OCR pages 6–7",
+    "Image IMG_1620.jpg: Latihan I items 9–10 (cerita) recovered — missing from OCR page 7",
+    "Image IMG_1621.jpg: Latihan IV items 6–10 recovered — OCR page 8 was truncated"
+  ],
+  "sourceImages": 8
+}

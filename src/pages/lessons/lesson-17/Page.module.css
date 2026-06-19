@@ -1,0 +1,663 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 17: Bab 1 — Telur Mata Sapi (Spiegelei)
+
+   A breakfast story. The page is built around reading: a narrative opens it,
+   a long restaurant dialogue is its centre of gravity, and the grammar (a
+   vraagwoorden + clitica suite split over three DB sections) is rendered as
+   one continuous numbered suite of accent blocks — rules first, aligned
+   example pairs below. Warm golden-yolk accent against the dark surface.
+
+   Mobile-safe: every grid collapses to one column, every chip row flex-wraps.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Page root ──────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band {
+  width: 100%;
+  padding: 56px 0;
+}
+
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — golden eggs blended under a warm dawn gradient ───────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #6e4a16;
+  background-image:
+    linear-gradient(135deg, rgba(26, 30, 38, 0.88) 0%, rgba(46, 36, 18, 0.78) 50%, rgba(255, 176, 32, 0.30) 100%),
+    url('/lesson-17-hero.webp');
+  background-size: cover;
+  background-position: center 38%;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 82% 22%, rgba(255, 176, 32, 0.22), transparent 42%),
+    radial-gradient(circle at 12% 88%, rgba(252, 196, 25, 0.12), transparent 38%);
+  pointer-events: none;
+}
+
+.heroInner { composes: container; position: relative; z-index: 1; }
+
+@media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(252, 196, 25, 0.18);
+  color: var(--ring-target);
+  border: 1px solid rgba(252, 196, 25, 0.30);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(40px, 5.5vw, 60px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 580px;
+}
+
+/* ─── Editorial lede ─────────────────────────────────────────────────────── */
+
+.ledeBand { composes: band; padding: 64px 0 32px; }
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--ring-target);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--ring-target);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Audio band ─────────────────────────────────────────────────────────── */
+
+.audioBand { composes: band; padding: 0 0 8px; }
+.audioInner { composes: container; max-width: 920px; }
+
+/* ─── Main content shell ─────────────────────────────────────────────────── */
+
+.shellBand { composes: band; padding-top: 24px; padding-bottom: 24px; }
+
+.shell {
+  composes: container;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+.section { display: flex; flex-direction: column; }
+
+/* ─── Shared section header ──────────────────────────────────────────────── */
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* ─── 1. Reading narrative — editorial prose with a drop cap ─────────────── */
+
+.readingEyebrow { composes: sectionEyebrow; color: var(--ring-target); }
+.readingEyebrow::before { background: var(--ring-target); }
+
+.readingProse {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 64ch;
+}
+
+.readingPara {
+  font-size: clamp(16px, 1.5vw, 18px);
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0;
+}
+
+.readingPara[data-lead='true']::first-letter {
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.78;
+  font-weight: var(--fw-black);
+  color: var(--ring-target);
+  padding: 6px 12px 0 0;
+}
+
+/* ─── 2. Dialogue — warm restaurant scene ────────────────────────────────── */
+
+.dialogueBand {
+  background:
+    radial-gradient(circle at 88% 4%, rgba(255, 176, 32, 0.12), transparent 52%),
+    linear-gradient(135deg, rgba(255, 176, 32, 0.06) 0%, rgba(0, 199, 190, 0.05) 100%);
+  border-radius: var(--r-xl);
+  padding: 48px 36px;
+  margin: 0 -36px;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 720px) { .dialogueBand { padding: 32px 20px; margin: 0; } }
+
+.dialogueEyebrow { composes: sectionEyebrow; color: var(--ring-target); }
+.dialogueEyebrow::before { background: var(--ring-target); }
+
+.dialogueSetup {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 28px;
+  max-width: 72ch;
+}
+
+.dialogueSetup em { color: var(--text-primary); font-style: italic; }
+
+.dialogueLines {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.dialogueLine {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--r-md);
+}
+
+@media (max-width: 720px) { .dialogueLine { grid-template-columns: 1fr; gap: 6px; } }
+
+.dialogueSpeaker {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding-top: 4px;
+}
+
+.dialogueLine[data-speaker-tone='laura'] .dialogueSpeaker { color: var(--teal); }
+.dialogueLine[data-speaker-tone='mas'] .dialogueSpeaker { color: var(--ring-target); }
+
+.dialogueBody { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+.dialogueIdRow { display: flex; align-items: baseline; gap: 12px; }
+
+.dialogueId {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  line-height: 1.55;
+  flex: 1;
+  min-width: 0;
+}
+
+.dialogueNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+/* ─── 3. Vocabulary — green chips, aligned headwords ─────────────────────── */
+
+.vocabEyebrow { composes: sectionEyebrow; color: var(--success); }
+.vocabEyebrow::before { background: var(--success); }
+
+.vocabNote {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 22px;
+  max-width: 70ch;
+}
+
+.vocabNote em { color: var(--text-primary); font-style: italic; font-weight: var(--fw-medium); }
+
+.tilde {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  color: var(--success);
+  font-weight: var(--fw-bold);
+}
+
+.vocabGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+}
+
+.vocabChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 14px;
+  background: rgba(50, 215, 75, 0.05);
+  border: 1px solid rgba(50, 215, 75, 0.18);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.vocabChip:hover { border-color: var(--success); transform: translateY(-1px); }
+
+.vocabId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  min-width: 6.5em;
+}
+
+.vocabSep { color: var(--text-tertiary); flex-shrink: 0; }
+
+.vocabNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── 4. Mealtimes — three amber cards in a row ──────────────────────────── */
+
+.mealEyebrow { composes: sectionEyebrow; color: var(--warning); }
+.mealEyebrow::before { background: var(--warning); }
+
+.mealRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 620px) { .mealRow { grid-template-columns: 1fr; } }
+
+.mealCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 22px;
+  background: rgba(255, 149, 0, 0.06);
+  border: 1px solid rgba(255, 149, 0, 0.20);
+  border-radius: var(--r-lg);
+  transition: var(--transition-base);
+}
+
+.mealCard:hover { border-color: var(--warning); transform: translateY(-2px); }
+
+.mealIdRow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.mealId {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.mealNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ─── 5. Proverb — a single featured pepatah ─────────────────────────────── */
+
+.proverbEyebrow { composes: sectionEyebrow; color: var(--accent-primary); }
+.proverbEyebrow::before { background: var(--accent-primary); }
+
+.proverbCard {
+  margin: 0;
+  padding: 40px 40px;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 6% 10%, rgba(0, 229, 255, 0.10), transparent 55%),
+    var(--card-bg);
+  border: 1px solid var(--accent-primary-border);
+  position: relative;
+}
+
+@media (max-width: 720px) { .proverbCard { padding: 28px 24px; } }
+
+.proverbCard::before {
+  content: '“';
+  position: absolute;
+  top: -6px;
+  left: 18px;
+  font-size: clamp(56px, 9vw, 88px);
+  line-height: 1;
+  color: var(--accent-primary-glow);
+  font-weight: var(--fw-black);
+  pointer-events: none;
+}
+
+.proverbQuote {
+  margin: 0 0 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.proverbId {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  font-style: italic;
+}
+
+.proverbNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+/* ─── 6. Grammar — one continuous numbered suite of accent blocks ────────── */
+
+.grammarEyebrow { composes: sectionEyebrow; color: var(--mix-recall); }
+.grammarEyebrow::before { background: var(--mix-recall); }
+
+.grammarStack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grammarTile {
+  --tile-accent: var(--accent-primary);
+  padding: 24px 26px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.grammarTile[data-accent='cyan']   { --tile-accent: var(--accent-primary); }
+.grammarTile[data-accent='purple'] { --tile-accent: var(--mix-recall); }
+.grammarTile[data-accent='teal']   { --tile-accent: var(--teal); }
+
+.grammarTileHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.grammarTileNumber {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--fs-sm);
+  color: var(--tile-accent);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+}
+
+.grammarTileTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.grammarRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.grammarRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding-left: 24px;
+  position: relative;
+}
+
+.grammarRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--tile-accent);
+  font-weight: var(--fw-bold);
+}
+
+/* Aligned example pairs: indonesian (right-aligned) → dutch, so every arrow
+ * and every translation lands on a shared vertical line down the block. */
+.grammarExamples {
+  display: grid;
+  grid-template-columns: minmax(0, max-content) max-content minmax(0, 1fr);
+  gap: 10px 14px;
+  align-items: baseline;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.grammarPair { display: contents; }
+
+.grammarPairId {
+  justify-self: end;
+  text-align: right;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.grammarPairArrow {
+  color: var(--tile-accent);
+  font-weight: var(--fw-bold);
+  flex-shrink: 0;
+}
+
+.grammarPairNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+@media (max-width: 620px) {
+  .grammarExamples { grid-template-columns: 1fr; gap: 4px; }
+  .grammarPair {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--card-border);
+  }
+  .grammarPair:last-child { border-bottom: none; }
+  .grammarPairId { justify-self: start; text-align: left; }
+  .grammarPairArrow { display: none; }
+}
+
+/* ─── Inline play button ─────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--ring-target);
+  color: var(--ring-target);
+  background: rgba(252, 196, 25, 0.12);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--ring-target);
+  color: var(--ring-target);
+  background: rgba(252, 196, 25, 0.18);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ───────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 229, 255, 0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner { composes: container; max-width: 720px; text-align: center; }
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation { display: flex; justify-content: center; margin: 0 0 28px; }
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions { display: flex; justify-content: center; }
+.closingActions > * { width: 100%; max-width: 660px; }

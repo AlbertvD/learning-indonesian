@@ -1,0 +1,81 @@
+{
+  "lesson_number": 23,
+  "cefr_level": "A1",
+  "lesson_topic": "Berdisko di Jakarta — de werkwoordsvorm met -i",
+  "grammar_patterns": [
+    {
+      "slug": "l23-werkwoordsvorm-met-i-hoofdfunctie",
+      "name": "De werkwoordsvorm met -I — hoofdfunctie",
+      "description": "Het achtervoegsel -i maakt een transitieve werkwoordsvorm en richt de handeling op een vast punt (persoon, plaats, voorwerp of zaak) als locatief/directioneel doelpunt; dat punt wordt het lijdend voorwerp, vaak zonder voorzetsel.",
+      "confusion_group": "i-suffix",
+      "key_contrast": "-i (handeling NAAR een doelpunt: menanami = iets beplanten) vs -kan (causatief/benefactief: menjatuhkan = laten vallen, membelikan = voor iemand kopen)",
+      "research_notes": "Voor Nederlandstaligen is de val het verwarren van -i met -kan: beide transitiveren een stam, maar -i behandelt het object als oppervlak/bestemming waar de handeling op neerkomt (locatief-applicatief), terwijl -kan iets veroorzaakt of ten behoeve van iemand doet. Klassiek minimaal paar: menanami sawah (de sawah beplanten — sawah = locatie) vs menanamkan bibit (zaaigoed planten — bibit = verplaatst object). Tweede struikelblok: de N.B.-regel dat stammen die al op -i eindigen (beli, cari, beri) geen -i krijgen — leerders produceren foutief *membelii.",
+      "example_sentences": [
+        { "id": "Petani menanami sawahnya dengan bibit.", "nl": "De boer beplant zijn sawah met zaaigoed." },
+        { "id": "Sawah ditanami petani dengan bibit.", "nl": "De sawah wordt door de boer met zaaigoed beplant." },
+        { "id": "Anak-anak menyeberangi jalan.", "nl": "De kinderen steken de weg over." }
+      ]
+    },
+    {
+      "slug": "l23-iteratief-intensief-aspect-bij-i",
+      "name": "Iteratief/intensief aspect bij -I op een transitief basiswoord",
+      "description": "Op een van oorsprong al transitief basiswerkwoord voegt -i een iteratief/intensief aspect toe: de handeling wordt herhaaldelijk of intensief uitgevoerd (pukul = slaan → memukuli = herhaaldelijk slaan).",
+      "confusion_group": "i-suffix",
+      "key_contrast": "pukul (één keer slaan) vs memukuli (herhaaldelijk slaan); -i voegt iteratie toe, -kan niet",
+      "research_notes": "Dit aspect is voor Nederlandstaligen onzichtbaar in de vertaling als 'slaan' niet wordt aangevuld met 'herhaaldelijk/erop los'. Goede oefenparen: pukul → memukuli, tembak → menembaki, lempar → melempari. Belangrijk contrast met -kan op dezelfde stam: melemparkan = iets (weg)gooien (causatief), melempari = iets/iemand herhaaldelijk bekogelen (iteratief). Het minimaal paar lempar/-i vs lempar/-kan is een standaard toetsvraag.",
+      "example_sentences": [
+        { "id": "Orang ini memukuli anjing.", "nl": "Deze man sloeg de hond herhaaldelijk." },
+        { "id": "Mereka melempari pohon mangga dengan batu.", "nl": "Zij bekogelden de mangoboom met stenen." }
+      ]
+    },
+    {
+      "slug": "l23-zes-woordklassen-als-basiswoord-voor-i",
+      "name": "Zes woordklassen als basiswoord voor -I",
+      "description": "Net als -kan kan -i op zes soorten basiswoorden: transitief werkwoord (tanam), intransitief werkwoord (duduk), zelfstandig naamwoord (seberang, tanda tangan), bijvoeglijk naamwoord (dekat, jauh), telwoord (dua, zeldzaam) en persoonlijk voornaamwoord (aku, zeldzaam). De eerste drie zijn gangbaar.",
+      "confusion_group": "i-suffix",
+      "key_contrast": "dezelfde zes-klassen-tabel als -kan in Les 21, maar de afgeleide betekenis verschilt: -i richt op een doelpunt, -kan veroorzaakt/begunstigt",
+      "research_notes": "De parallelle zes-klassen-tabel van Les 21 (-kan) en Les 23 (-i) is een bewuste didactische spiegel. Bij een bijvoeglijk naamwoord: dekat → mendekati (benaderen, -i) vs dekat → mendekatkan (iets dichterbij brengen, -kan). Bij een naamwoord: seberang → menyeberangi (oversteken, -i) vs seberang → menyeberangkan (iets/iemand overzetten, -kan).",
+      "example_sentences": [
+        { "id": "Pegawai menandatangani surat.", "nl": "De employé ondertekende de brief." },
+        { "id": "Dia menjauhi sungai.", "nl": "Hij verwijderde zich van de rivier." }
+      ]
+    },
+    {
+      "slug": "l23-me-i-naast-di-i",
+      "name": "ME-...-I naast DI-...-I — bedrijvend en lijdend",
+      "description": "Naast elke bedrijvende meN-...-i-vorm bestaat een lijdende di-...-i-vorm met dezelfde stam; alleen het voorvoegsel wisselt (meN- → di-), het achtervoegsel -i blijft. Hetzelfde voice-mechanisme als bij de di-vorm (Les 16) en di-...-kan (Les 21).",
+      "confusion_group": "me-di-voice",
+      "key_contrast": "meN-...-i (agens centraal) vs di-...-i (patiens centraal); het -i blijft in beide voices staan",
+      "research_notes": "Leerders die de meN-/di-wisseling uit Les 13-16 beheersen, breiden die hier vanzelf uit; de enige nieuwe moeilijkheid is dat -i blijft staan bij de voice-wissel (dipukuli, niet *dipukul). Veelgemaakte fout: in de passief het iteratieve -i laten vallen, waardoor de iteratieve lezing verdwijnt.",
+      "example_sentences": [
+        { "id": "Jalan diseberangi anak-anak.", "nl": "De weg wordt door de kinderen overgestoken." },
+        { "id": "Surat ditandatanganinya.", "nl": "De brief werd door hem ondertekend." }
+      ]
+    },
+    {
+      "slug": "l23-gebiedende-wijs-met-i",
+      "name": "Gebiedende wijs met -I",
+      "description": "In de imperatief gebruik je de kale stam-met-i zonder voorvoegsel (Ikuti contoh itu! = volg dat voorbeeld!); een verbod vorm je met jangan + stam-met-i (Jangan kunjungi disko itu!).",
+      "confusion_group": "i-suffix",
+      "key_contrast": "imperatief = kale stam + -i (zonder meN-/di-); verbod = jangan + stam + -i",
+      "research_notes": "Parallel met de imperatief van -kan (Les 21: belikan!, jangan turunkan!). Struikelblok: leerders houden onterecht het meN-voorvoegsel aan in de imperatief (*mengikuti contoh itu!). De juiste vorm is de kale stam met behoud van -i (ikuti!, kunjungi!, temani!).",
+      "example_sentences": [
+        { "id": "Ikuti contoh itu!", "nl": "Volg dat voorbeeld!" },
+        { "id": "Jangan kunjungi disko itu!", "nl": "Ga niet naar die discotheek!" }
+      ]
+    },
+    {
+      "slug": "l23-passieve-zinsconstructie-met-i-per-persoon",
+      "name": "Passieve zinsconstructie met -I per persoon",
+      "description": "De passieve -i-zin hangt af van de persoon van de agens: 1e/2e persoon = patiens + voornaamwoord + kale stam-met-i (Sawah saya tanami); 3e persoon = di-...-i-vorm met -nya (Sawah ditanaminya) of patiens + mereka + kale stam-met-i (Sawah mereka tanami).",
+      "confusion_group": "me-di-voice",
+      "key_contrast": "1e/2e persoon: patiens + pron + stam-i (geen di-) vs 3e persoon: di-...-i + -nya",
+      "research_notes": "Dit is het structureel lastigste punt van de les en spiegelt exact de -kan-paradigma van Les 21 en de di-vorm-persoonsregels van Les 18. De kernfout van Nederlandstaligen: di- gebruiken bij de 1e/2e persoon (*Sawah saya ditanami in plaats van Sawah saya tanami). De regel 'geen di- bij 1e/2e persoon, wel bij 3e' moet als geheel worden gedrild.",
+      "example_sentences": [
+        { "id": "Sawah saya tanami.", "nl": "De sawah beplant ik." },
+        { "id": "Sawah ditanaminya.", "nl": "De sawah wordt door hem/haar beplant." },
+        { "id": "Sawah mereka tanami.", "nl": "De sawah beplanten zij." }
+      ]
+    }
+  ]
+}

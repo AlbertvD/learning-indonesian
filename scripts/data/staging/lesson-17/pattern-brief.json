@@ -1,0 +1,77 @@
+{
+  "lesson_number": 17,
+  "cefr_level": "A1",
+  "lesson_topic": "Telur Mata Sapi (ontbijt / restaurant)",
+  "grammar_patterns": [
+    {
+      "slug": "l17-agens-werkwoord-patiens-volgorde",
+      "name": "Agens — ME-werkwoordsvorm — patiens",
+      "description": "In de actieve zin staat de agens voor de ME-vorm en de patiens erna.",
+      "confusion_group": "me-di-voice",
+      "key_contrast": "actieve ME-volgorde (agens-werkwoord-patiens) vs passieve DI-volgorde (patiens-werkwoord-agens, L16)",
+      "research_notes": "meN- markeert de actieve/bedrijvende vorm; de agens is meestal het onderwerp. meN-werkwoorden zijn doorgaans transitief en vragen een patiens (vgl. ber-werkwoorden die nooit een object hebben). Nederlandstaligen mappen dit op SVO en doen dat meestal goed; de echte moeilijkheid komt pas bij de clitische patiens en bij het contrast met de DI-vorm uit L16. Didactiek: laat het schema Agens — ME-vorm — Patiens steeds expliciet benoemen voor de overstap naar clitica.",
+      "example_sentences": [
+        { "id": "Siapa mencari saya?", "nl": "Wie zoekt mij?" },
+        { "id": "Ibu memanggil kamu", "nl": "Moeder roept jou" },
+        { "id": "Guru melihat dia", "nl": "De leraar zag hem / haar / het" },
+        { "id": "Bapak mengantar kalian", "nl": "Vader begeleidt jullie" }
+      ]
+    },
+    {
+      "slug": "l17-patiens-persoonlijk-voornaamwoord-clitica",
+      "name": "Patiens als clitica -ku / -mu / -nya",
+      "description": "Een pronominale patiens kan als enclitisch achtervoegsel aan de ME-vorm worden vastgehecht.",
+      "confusion_group": "nya-functions",
+      "key_contrast": "object-clitica (mencariku = mij zoeken) vs bezittelijke -nya uit L7 (bukunya = zijn boek); alleen saya/kamu/dia clitiseren, mereka/kalian/kami niet",
+      "research_notes": "De enclitica -ku/-mu/-nya zijn obliek (object of bezit); de proclitica ku-/kau- zijn subject (buiten deze les). Cruciale valkuil voor Nederlandstaligen: -nya heeft twee functies — hier lijdend voorwerp van een werkwoord (melihatnya = hem zien), in L7 bezit (rumahnya = zijn huis). De vorm is identiek, de functie verschilt per gastheer (werkwoord vs zelfstandig naamwoord). Tweede valkuil: overgeneraliseren naar *meneleponku-mereka* — mereka/kalian/kami clitiseren niet, die blijven volle woorden. De clitische vorm is optioneel; in formele schrijftaal blijft het losse voornaamwoord gangbaar.",
+      "example_sentences": [
+        { "id": "Siapa mencariku?", "nl": "Wie zoekt mij?" },
+        { "id": "Ibu memanggilmu", "nl": "Moeder roept jou" },
+        { "id": "Guru melihatnya", "nl": "De leraar zag hem / haar / het" },
+        { "id": "Ali melihatnya", "nl": "Ali heeft hem / haar gezien" }
+      ]
+    },
+    {
+      "slug": "l17-berapa-vraagwoord-getal",
+      "name": "Berapa? = hoeveel? (+ noun-nya antwoordpatroon)",
+      "description": "Berapa verwacht een getal; vaak gecombineerd met zelfstandig naamwoord + -nya.",
+      "confusion_group": "time-expressions",
+      "key_contrast": "berapa (verwacht een getal: prijs, gewicht, hoogte, nummer) vs apa/siapa (verwacht een naam of zaak)",
+      "research_notes": "Het kernpatroon is 'Berapa + N-nya?' waarbij -nya verwijst naar het besproken object: harganya (prijs), beratnya (gewicht), tingginya (hoogte), nomornya (nummer). Antwoord herhaalt het kernwoord optioneel: '(Harganya) 35.000 rupiah'. Veelvoorkomend in de winkel-/restaurantcontext van deze les (Berapa harganya? = wat kost het?). Nederlandstaligen vertalen 'hoe duur/hoe zwaar' soms met een bijvoeglijke constructie; in het Indonesisch loopt het via berapa + zelfstandig naamwoord + -nya.",
+      "example_sentences": [
+        { "id": "Berapa harganya?", "nl": "Wat is de prijs / wat kost het?" },
+        { "id": "Berapa beratnya?", "nl": "Hoe zwaar is het?" },
+        { "id": "Berapa nomornya?", "nl": "Wat is het nummer ervan?" },
+        { "id": "Berapa tingginya?", "nl": "Hoe hoog is het?" }
+      ]
+    },
+    {
+      "slug": "l17-siapa-apa-mana-selectie",
+      "name": "Siapa? vs apa? vs mana?",
+      "description": "Vraagwoordkeuze: siapa voor personen, apa voor zaken, mana voor een keuze.",
+      "confusion_group": "question-words-selection",
+      "key_contrast": "siapa (personen/gepersonifieerd, ook bij namen) vs apa (dieren/dingen/zaken) vs mana (keuze uit een verzameling, vaak met yang)",
+      "research_notes": "De selectieregel is animacy-/categoriegebaseerd, niet letterlijk Nederlands. De grootste valkuil: 'Wat is je naam?' wordt in het Indonesisch 'Siapa namanya?' (met siapa, want de naam staat voor een persoon), niet 'Apa namanya?'. Mana correleert vaak met yang ('Mana yang enak?'). De optionele -kah verzacht de vraag (apakah, siapakah). Question words staan doorgaans vooraan, maar kunnen ook achteraan bij possessieve constructies (Ini koper siapa?, Ini mobil apa?).",
+      "example_sentences": [
+        { "id": "Siapa namanya?", "nl": "Hoe heet hij?" },
+        { "id": "Ini mobil apa?", "nl": "Wat voor auto is dit?" },
+        { "id": "Mana yang enak?", "nl": "Welke is / zijn lekker?" },
+        { "id": "Koper Bapak yang mana?", "nl": "Welke koffer is van u?" }
+      ]
+    },
+    {
+      "slug": "l17-mana-afkorting-en-kernwoord-herhaling",
+      "name": "Mana-afkortingen + kernwoord-herhaling in bevestigend antwoord",
+      "description": "Mana als afkorting van bagaimana/di mana; bevestigend antwoord herhaalt het kernwoord.",
+      "confusion_group": "question-words-selection",
+      "key_contrast": "mana=welke vs mana=hoe (bagaimana) vs mana=waar (di mana); bevestigend antwoord = kernwoord, niet 'ya'",
+      "research_notes": "Twee zaken samen: (1) mana heeft ingekorte betekenissen — 'Mana mungkin?' (hoe kan dat nou?) en 'Mana orangnya?' (waar is hij?). (2) Bevestigend antwoorden in het Indonesisch herhalen typisch het kernwoord uit de vraag in plaats van 'ja' te zeggen: 'Apa itu enak?' → 'Enak'. Het ontkennende woord hangt af van het kernwoord: tidak (bij werkwoord/bijv.nw.) vs belum (bij sudah/aspect): 'Apa kamu sudah lama di sini?' → 'Belum'. Dit is een pragmatisch contrast met het Nederlands, waar 'ja/nee' de norm is.",
+      "example_sentences": [
+        { "id": "Mana mungkin?", "nl": "Hoe kan dat nou?" },
+        { "id": "Mana orangnya?", "nl": "Waar zit hij?" },
+        { "id": "Apa itu enak? — Enak", "nl": "Is dat lekker? — Lekker" },
+        { "id": "Apa kamu sudah lama di sini? — Belum", "nl": "Ben je hier al lang? — Nog niet" }
+      ]
+    }
+  ]
+}

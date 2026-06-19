@@ -1,0 +1,847 @@
+{
+  "meta": {
+    "id": "22e6a963-4ebd-4b57-8fc4-ac644ac0576e",
+    "order_index": 26,
+    "title": "Musim Hujan",
+    "level": "A1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Achird",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Dari bulan November sampai dengan bulan Maret di Indonesia musim hujan. Hujan di Indonesia berarti hujan deras. Bukan seperti di Eropa. Di sana hanya hujan gerimis dibandingkan dengan hujan di Indonesia.",
+          "Hujan di Indonesia lebat sekali. Kalau hujan lebat turun, memang kita tidak mungkin lagi pergi berjalan-jalan. Sebab dalam waktu sedetik saja, kita sudah akan basah kuyup. Tetapi hujan turun hanya beberapa jam saja. Sehabis hujan, hari cerah kembali.\nDi Indonesia, kalau hujan turun, semua janji dibatalkan. Memang tidak enak sampai ke kantor atau ke rumah teman kalau basah kuyup, bukan?",
+          "Buat orang asing yang tidak terbiasa dengan cuaca demikian, banyak masalah yang muncul. Mereka pasti akan ke luar kalau memang ada janji, walaupun mereka akan basah. Dengan payung atau dengan alat apa saja, mereka akan mencoba mencegah supaya tidak sampai basah. Orang Indonesia ketawa. \"Kenapa kok mau keluar Mas? Sekarang 'kan masih hujan. Tunggu dulu, sebentar lagi hujan akan berhenti.\"",
+          "Tetapi orang asing ini tentu saja keluar, dan mengharapkan orang Indonesia akan memenuhi janjinya. Orang asing sangat frustrasi kalau janji dibatalkan. Namun, kalau di Indonesia, adat istiadat Indonesia pula yang harus kita ingat. Jadi, tunggu saja, jangan tergesa-gesa. Hujan memang tidak lama.\nBukan hanya janji yang tidak dipenuhi, tapi ada juga hal lain yang dialami orang asing. Misalnya kalau ada banjir. Saluran telepon putus. Baru mau pakai komputer, eh, listrik mati.",
+          "Ada enaknya juga. Kalau hujan, suara air yang terjun dari langit bunyinya sangat enak. Debu juga akan dibawa air mengalir ke selokan, sehingga tidak mengganggu orang. Apalagi kalau hujan turun, suhu udara tidak begitu panas lagi. Kalau hujan deras baru berhenti, enak sekali hawanya, dan matahari mulai lagi bersinar dengan panasnya."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "zeden en gebruiken",
+            "english": "customs and traditions",
+            "indonesian": "adat istiadat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/adat-istiadat-1e7ac277.mp3"
+          },
+          {
+            "dutch": "natuur",
+            "english": "nature",
+            "indonesian": "alam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/alam-6ebab8de.mp3"
+          },
+          {
+            "dutch": "meemaken, ervaren",
+            "english": "experience, undergo",
+            "indonesian": "alam, meng-i",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/alam-mengi-a8ce95a5.mp3"
+          },
+          {
+            "dutch": "stromen",
+            "english": "flow",
+            "indonesian": "alir, meng-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/alir-meng-d7c1cab9.mp3"
+          },
+          {
+            "dutch": "stroom",
+            "english": "current",
+            "indonesian": "arus",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/arus-52e3f087.mp3"
+          },
+          {
+            "dutch": "verbrand",
+            "english": "burnt",
+            "indonesian": "bakar, ter-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bakar-ter-7ac0edeb.mp3"
+          },
+          {
+            "dutch": "niet doorgaan, afzeggen",
+            "english": "cancel, call off",
+            "indonesian": "batal, mem-kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/batal-memkan-705da3cc.mp3"
+          },
+          {
+            "dutch": "gewoon, gewend",
+            "english": "usual, accustomed",
+            "indonesian": "biasa, ter-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/biasa-ter-a4ededd3.mp3"
+          },
+          {
+            "dutch": "geluid",
+            "english": "sound",
+            "indonesian": "bunyi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bunyi-d07510ff.mp3"
+          },
+          {
+            "dutch": "voorkomen, tegenhouden, verhinderen",
+            "english": "prevent, hinder, stop",
+            "indonesian": "cegah, men-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/cegah-men-0a7114db.mp3"
+          },
+          {
+            "dutch": "helder",
+            "english": "clear, bright",
+            "indonesian": "cerah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/cerah-98939793.mp3"
+          },
+          {
+            "dutch": "het weer",
+            "english": "weather",
+            "indonesian": "cuaca",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/cuaca-79364c22.mp3"
+          },
+          {
+            "dutch": "aldus, zodanig",
+            "english": "thus, such",
+            "indonesian": "demikian",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/demikian-1b47a155.mp3"
+          },
+          {
+            "dutch": "graden",
+            "english": "degrees",
+            "indonesian": "derajat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/derajat-341393af.mp3"
+          },
+          {
+            "dutch": "hard (v. regen)",
+            "english": "heavy (of rain)",
+            "indonesian": "deras",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/deras-3dd3caa7.mp3"
+          },
+          {
+            "dutch": "frustratie",
+            "english": "frustration",
+            "indonesian": "frustrasi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/frustrasi-1e79d51c.mp3"
+          },
+          {
+            "dutch": "motregen",
+            "english": "drizzle",
+            "indonesian": "gerimis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gerimis-62a66e76.mp3"
+          },
+          {
+            "dutch": "schram, kras",
+            "english": "scratch, scrape",
+            "indonesian": "gores",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gores-2ae6ba67.mp3"
+          },
+          {
+            "dutch": "verwachten",
+            "english": "expect",
+            "indonesian": "harap, meng-kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/harap-mengkan-c2ac699a.mp3"
+          },
+          {
+            "dutch": "het weer, lucht",
+            "english": "weather, air",
+            "indonesian": "hawa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/hawa-ea2249cb.mp3"
+          },
+          {
+            "dutch": "klimaat",
+            "english": "climate",
+            "indonesian": "iklim",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/iklim-3d9e3e59.mp3"
+          },
+          {
+            "dutch": "drogen in de zon, zonnebaden",
+            "english": "dry in the sun, sunbathe",
+            "indonesian": "jemur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jemur-38abd81f.mp3"
+          },
+          {
+            "dutch": "ook, weer",
+            "english": "also, again",
+            "indonesian": "jua = juga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jua-juga-cc1f73a6.mp3"
+          },
+          {
+            "dutch": "lachen",
+            "english": "laugh",
+            "indonesian": "ketawa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ketawa-8dd4d4e7.mp3"
+          },
+          {
+            "dutch": "computer",
+            "english": "computer",
+            "indonesian": "komputer",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/komputer-579f7b4c.mp3"
+          },
+          {
+            "dutch": "electriciteit",
+            "english": "electricity",
+            "indonesian": "listrik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/listrik-b6a36acb.mp3"
+          },
+          {
+            "dutch": "wond",
+            "english": "wound",
+            "indonesian": "luka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/luka-828d69d6.mp3"
+          },
+          {
+            "dutch": "spelletje",
+            "english": "game, little game",
+            "indonesian": "main, per-an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/main-peran-2d8ac5cc.mp3"
+          },
+          {
+            "dutch": "probleem, kwestie",
+            "english": "problem, issue",
+            "indonesian": "masalah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/masalah-80b76687.mp3"
+          },
+          {
+            "dutch": "opkomen, opduiken",
+            "english": "emerge, appear",
+            "indonesian": "muncul",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/muncul-7bb3f063.mp3"
+          },
+          {
+            "dutch": "vervullen, zich houden aan",
+            "english": "fulfill, comply with",
+            "indonesian": "penuh, memenuhi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/penuh-memenuhi-49d99980.mp3"
+          },
+          {
+            "dutch": "voorspelling",
+            "english": "forecast",
+            "indonesian": "prakira, -an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/prakira-an-77b9501d.mp3"
+          },
+          {
+            "dutch": "kapot, verbroken",
+            "english": "broken, severed",
+            "indonesian": "putus",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/putus-933f7911.mp3"
+          },
+          {
+            "dutch": "zalf",
+            "english": "ointment",
+            "indonesian": "salep",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/salep-ad8b0fab.mp3"
+          },
+          {
+            "dutch": "lijn",
+            "english": "line",
+            "indonesian": "salur, -an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/salur-an-4e443fe6.mp3"
+          },
+          {
+            "dutch": "na",
+            "english": "after",
+            "indonesian": "sehabis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sehabis-28695142.mp3"
+          },
+          {
+            "dutch": "goot, afvoer, sloot",
+            "english": "gutter, drain, ditch",
+            "indonesian": "selokan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/selokan-50700f74.mp3"
+          },
+          {
+            "dutch": "schijnen",
+            "english": "shine",
+            "indonesian": "sinar, ber-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sinar-ber-46ed3571.mp3"
+          },
+          {
+            "dutch": "temperatuur",
+            "english": "temperature",
+            "indonesian": "suhu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/suhu-761b7935.mp3"
+          },
+          {
+            "dutch": "gehaast",
+            "english": "hurried",
+            "indonesian": "tergesa-gesa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tergesagesa-dcb542de.mp3"
+          },
+          {
+            "dutch": "lucht, het weer",
+            "english": "air, weather",
+            "indonesian": "udara",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/udara-233f6343.mp3"
+          },
+          {
+            "dutch": "uitnodigen",
+            "english": "invite",
+            "indonesian": "undang, meng-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/undang-meng-c369572f.mp3"
+          },
+          {
+            "dutch": "video",
+            "english": "video",
+            "indonesian": "video",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/video-774e0820.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "expressions",
+        "items": [
+          {
+            "dutch": "gerucht",
+            "english": "rumor",
+            "indonesian": "kabar angin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kabar-angin-6e4cb7c4.mp3"
+          },
+          {
+            "dutch": "kouvatten",
+            "english": "catch a cold",
+            "indonesian": "masuk angin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/masuk-angin-77e1bc5b.mp3"
+          },
+          {
+            "dutch": "weerbericht, weersvoorspelling",
+            "english": "weather forecast",
+            "indonesian": "prakiraan cuaca",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/prakiraan-cuaca-3a78ca5f.mp3"
+          },
+          {
+            "dutch": "winter",
+            "english": "winter",
+            "indonesian": "musim dingin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-dingin-1a398b20.mp3"
+          },
+          {
+            "dutch": "herfst",
+            "english": "autumn",
+            "indonesian": "musim gugur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-gugur-f511e445.mp3"
+          },
+          {
+            "dutch": "zomer",
+            "english": "summer",
+            "indonesian": "musim panas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-panas-37303e60.mp3"
+          },
+          {
+            "dutch": "lente",
+            "english": "spring",
+            "indonesian": "musim semi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-semi-220a22ee.mp3"
+          },
+          {
+            "dutch": "regentijd (oktober - maart)",
+            "english": "rainy season (October - March)",
+            "indonesian": "musim hujan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-hujan-b68ad1be.mp3"
+          },
+          {
+            "dutch": "droge tijd (april - september)",
+            "english": "dry season (April - September)",
+            "indonesian": "musim kemarau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-kemarau-1fdff5f4.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Setelah hujan akan panas jua — Na regen komt zonneschijn"
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "PPN = Pajak Pertambahan Nilai — Belasting Toegevoegde Waarde (BTW)"
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "lente",
+            "english": "spring",
+            "indonesian": "musim semi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-semi-220a22ee.mp3"
+          },
+          {
+            "dutch": "zomer",
+            "english": "summer",
+            "indonesian": "musim panas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-panas-37303e60.mp3"
+          },
+          {
+            "dutch": "herfst",
+            "english": "autumn",
+            "indonesian": "musim gugur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-gugur-f511e445.mp3"
+          },
+          {
+            "dutch": "winter",
+            "english": "winter",
+            "indonesian": "musim dingin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/musim-dingin-1a398b20.mp3"
+          },
+          {
+            "dutch": "sneeuw",
+            "english": "snow",
+            "indonesian": "salju",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/salju-4c96de76.mp3"
+          },
+          {
+            "dutch": "bevroren",
+            "english": "frozen",
+            "indonesian": "beku",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/beku-d2ddea60.mp3"
+          },
+          {
+            "dutch": "bewolkt",
+            "english": "cloudy",
+            "indonesian": "berawan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/berawan-606be11c.mp3"
+          },
+          {
+            "dutch": "wind",
+            "english": "wind",
+            "indonesian": "angin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/angin-4161352b.mp3"
+          },
+          {
+            "dutch": "bliksem",
+            "english": "lightning",
+            "indonesian": "kilat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kilat-03b5d9e1.mp3"
+          },
+          {
+            "dutch": "motregen",
+            "english": "drizzle",
+            "indonesian": "gerimis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gerimis-62a66e76.mp3"
+          },
+          {
+            "dutch": "regen",
+            "english": "rain",
+            "indonesian": "hujan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/hujan-069e7922.mp3"
+          },
+          {
+            "dutch": "donderslag",
+            "english": "thunder",
+            "indonesian": "petir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/petir-d3674fca.mp3"
+          },
+          {
+            "dutch": "zon",
+            "english": "sun",
+            "indonesian": "matahari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/matahari-0531a026.mp3"
+          },
+          {
+            "dutch": "maan",
+            "english": "moon",
+            "indonesian": "bulan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bulan-2df9e8a4.mp3"
+          },
+          {
+            "dutch": "ster",
+            "english": "star",
+            "indonesian": "bintang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bintang-c643cb5f.mp3"
+          },
+          {
+            "dutch": "overstroming",
+            "english": "flood",
+            "indonesian": "banjir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/banjir-3d0a5576.mp3"
+          },
+          {
+            "dutch": "aardbeving",
+            "english": "earthquake",
+            "indonesian": "gempa bumi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gempa-bumi-64093318.mp3"
+          },
+          {
+            "dutch": "graden",
+            "english": "degrees",
+            "indonesian": "derajat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/derajat-341393af.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 6,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "De TER-vorm kan in twee posities optreden: (1) in de positie van een handeling (een werkwoordsvorm) en (2) in de positie van een bijvoeglijke bepaling.",
+              "TER- combineert vooral met een werkwoord (tidur → tertidur) en soms met een zelfstandig naamwoord (nama → ternama = een goede naam hebben).",
+              "Anders dan de ME-vorm (bedrijvend) en de DI-vorm (lijdend, met agens) zet TER- de actievoerder op de achtergrond: de nadruk ligt op de toestand, het onbedoelde of het mogelijke.",
+              "Eén TER-vorm kan, afhankelijk van het basiswoord en de context, vier betekenissen oproepen: onopzettelijk, resultaat/toestand, mogelijkheid, of de overtreffende trap (bij een bijvoeglijk naamwoord)."
+            ],
+            "title": "Het voorvoegsel TER- — twee posities, twee basiswoordklassen",
+            "examples": [
+              {
+                "dutch": "slapen → in slaap vallen",
+                "english": "sleep → fall asleep",
+                "indonesian": "tidur → tertidur",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tidur-tertidur-2182b598.mp3"
+              },
+              {
+                "dutch": "naam → een goede naam hebben",
+                "english": "name → have a good name",
+                "indonesian": "nama → ternama",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/nama-ternama-dd4aa13d.mp3"
+              }
+            ],
+            "rules_en": [
+              "The TER-form can occur in two positions: (1) in the position of an action (a verb form) and (2) in the position of an adjective.",
+              "TER- combines mainly with a verb (tidur → tertidur) and sometimes with a noun (nama → ternama = to have a good name).",
+              "Unlike the ME-form (active) and the DI-form (passive, with agent) TER- pushes the actor into the background: the emphasis lies on the state, the unintentional, or the possible.",
+              "One TER-form can, depending on the base word and context, convey four meanings: unintentional, result/state, possibility, or the superlative (with an adjective)."
+            ],
+            "title_en": "The prefix TER- — two positions, two basic word classes"
+          },
+          {
+            "rules": [
+              "Deze TER-vorm drukt uit dat een handeling de persoon ongewild of per ongeluk overkomt, zonder dat hij of zij die bewust uitvoert.",
+              "Vergelijk met de bewuste, gerichte ME-vorm: menidurkan = iemand te slapen leggen (gericht), tegenover tertidur = onbedoeld in slaap vallen.",
+              "Veelgemaakte fout: een ME- of DI-vorm gebruiken waar het Indonesisch het onbedoelde karakter juist met TER- markeert."
+            ],
+            "title": "TER- 'onopzettelijk / per ongeluk' (ongewild)",
+            "examples": [
+              {
+                "dutch": "Terwijl ze tv keek, viel Sarti in slaap",
+                "english": "While watching TV, Sarti fell asleep",
+                "indonesian": "Sedang menonton tv, Sarti tertidur",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sedang-menonton-tv-sarti-86975cc8.mp3"
+              },
+              {
+                "dutch": "Hij lachte / Hij moest erom lachen",
+                "english": "He laughed / He had to laugh",
+                "indonesian": "Dia tertawa",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dia-tertawa-efbc93df.mp3"
+              },
+              {
+                "dutch": "Dat kind viel per ongeluk uit de boom",
+                "english": "That child fell out of the tree by accident",
+                "indonesian": "Anak itu terjatuh dari pohon",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anak-itu-terjatuh-dari-18f9cbae.mp3"
+              }
+            ],
+            "rules_en": [
+              "This TER-form expresses that an action befalls the person unintentionally or by accident, without them consciously performing it.",
+              "Compare with the intentional, directed ME-form: menidurkan = to put someone to sleep (directed), versus tertidur = to fall asleep unintentionally.",
+              "Common mistake: using a ME- or DI-form where Indonesian marks the unintentional character precisely with TER-."
+            ],
+            "title_en": "TER- 'unintentional / by accident' (unwilled)"
+          },
+          {
+            "rules": [
+              "De TER-vorm beschrijft vaak een resultaat of de toestand waarin iets verkeert — het gevolg van een eerdere handeling, zonder dat de actievoerder genoemd of belangrijk is.",
+              "Vergelijkbaar met het Nederlandse voltooid deelwoord als bijvoeglijke bepaling: terbuka (open(staand)), tertutup (gesloten), tertulis (geschreven), terletak (gelegen), terlarang (verboden), terbakar (verbrand).",
+              "Het accidentele en het resultatieve liggen dicht bij elkaar: een toestand is vaak ontstaan zonder dat iemand die bewust heeft veroorzaakt.",
+              "De Betadine-advertentie illustreert de resulterende toestand van de huid: TERBAKAR (verbrand), TERGORES (geschaafd/gekrast), TERPOTONG (gesneden)."
+            ],
+            "title": "TER- 'resultaat / toestand' (een situatie beschrijven)",
+            "examples": [
+              {
+                "dutch": "Bandung ligt in West-Java",
+                "english": "Bandung is located in West Java",
+                "indonesian": "Kota Bandung terletak di Jawa Barat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kota-bandung-terletak-di-6cd5a9aa.mp3"
+              },
+              {
+                "dutch": "Ga daar niet naar binnen. Dat is verboden!",
+                "english": "Don't go in there. That is forbidden!",
+                "indonesian": "Jangan masuk di situ. Itu terlarang!",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jangan-masuk-di-situ-154e4ca2.mp3"
+              },
+              {
+                "dutch": "Die deur staat open",
+                "english": "That door is open",
+                "indonesian": "Pintu itu terbuka",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pintu-itu-terbuka-8588081e.mp3"
+              }
+            ],
+            "rules_en": [
+              "The TER-form often describes a result or the state in which something exists — the consequence of a prior action, without the actor being named or important.",
+              "Comparable to the Dutch past participle as an adjective: terbuka (open), tertutup (closed), tertulis (written), terletak (situated), terlarang (forbidden), terbakar (burnt).",
+              "The accidental and the resultative lie close together: a state often arises without anyone having deliberately caused it.",
+              "The Betadine advertisement illustrates the resulting condition of the skin: TERBAKAR (burnt), TERGORES (scraped/scratched), TERPOTONG (cut)."
+            ],
+            "title_en": "TER- 'result / state' (describing a situation)"
+          },
+          {
+            "rules": [
+              "De TER-vorm kan een mogelijkheid uitdrukken: dat iets gedaan, waargenomen of bereikt kán worden, los van wie het doet. Nederlands vertaalt met 'te + werkwoord' of 'kunnen'.",
+              "Voorbeelden: terdengar (te horen / hoorbaar), terlihat (te zien / zichtbaar), terbaca (leesbaar).",
+              "Heel kenmerkend is het ontkennende gebruik met tidak, dat de onmogelijkheid uitdrukt: tidak terangkat (niet op te tillen), tidak terbaca (onleesbaar), tidak termakan (oneetbaar).",
+              "Deze abilitatieve TER- is de Indonesische tegenhanger van het Nederlandse '-baar' en '(niet) te ...'."
+            ],
+            "title": "TER- 'kunnen / in staat zijn om' (mogelijkheid, vaak ontkennend)",
+            "examples": [
+              {
+                "dutch": "Zijn stem is tot hier te horen",
+                "english": "His voice can be heard all the way here",
+                "indonesian": "Suaranya terdengar sampai di sini",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/suaranya-terdengar-sampai-di-06bef0b3.mp3"
+              },
+              {
+                "dutch": "Vanaf hier is de berg te zien",
+                "english": "From here the mountain can be seen",
+                "indonesian": "Dari sini gunung itu terlihat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dari-sini-gunung-itu-de35c3d5.mp3"
+              },
+              {
+                "dutch": "Deze kast is zo zwaar, hij is niet op te tillen",
+                "english": "This cupboard is so heavy, it cannot be lifted",
+                "indonesian": "Lemari ini berat sekali, tidak terangkat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lemari-ini-berat-sekali-3f4181ed.mp3"
+              }
+            ],
+            "rules_en": [
+              "The TER-form can express a possibility: that something can be done, perceived or achieved, regardless of who does it. Dutch translates with 'te + verb' or 'can'.",
+              "Examples: terdengar (audible / can be heard), terlihat (visible / can be seen), terbaca (legible / can be read).",
+              "Characteristic is the negative use with tidak, expressing impossibility: tidak terangkat (cannot be lifted), tidak terbaca (illegible), tidak termakan (inedible).",
+              "This abilitative TER- is the Indonesian counterpart of the Dutch '-baar' and '(not) to ...'."
+            ],
+            "title_en": "TER- 'can / be able to' (possibility, often negative)"
+          },
+          {
+            "rules": [
+              "Op een bijvoeglijk naamwoord geeft TER- de overtreffende trap (superlatief), als alternatief voor paling (Les 8): terbesar (grootst), tertinggi (hoogst), terbaik (best).",
+              "TER- treedt ook op als bijvoeglijke bepaling vóór een zelfstandig naamwoord, vaak met een passief-resultatieve kleur: dokter terkenal (de bekende arts), penyanyi tercinta (de geliefde zanger).",
+              "Een aantal TER-vormen is een vaste term die je als geheel leert: tergantung dari (afhangen van), termasuk (inclusief / behoren tot), tersebut (genoemd, voornoemd), terdiri dari (bestaan uit)."
+            ],
+            "title": "TER- als overtreffende trap, bijvoeglijke bepaling en vaste term",
+            "examples": [
+              {
+                "dutch": "Dit is de grootste haven",
+                "english": "This is the largest port",
+                "indonesian": "Ini pelabuhan terbesar",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ini-pelabuhan-terbesar-c45c9566.mp3"
+              },
+              {
+                "dutch": "Die bekende arts vertrekt naar het buitenland",
+                "english": "That famous doctor is leaving abroad",
+                "indonesian": "Dokter terkenal itu berangkat ke luar negeri",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dokter-terkenal-itu-berangkat-75af06c1.mp3"
+              },
+              {
+                "dutch": "Is de rekening inclusief BTW?",
+                "english": "Is this bill including VAT?",
+                "indonesian": "Rekening ini sudah termasuk PPN?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rekening-ini-sudah-termasuk-d4318f24.mp3"
+              },
+              {
+                "dutch": "Dit boek bestaat uit 14 hoofdstukken",
+                "english": "This book consists of 14 chapters",
+                "indonesian": "Buku ini terdiri dari 14 bab",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/buku-ini-terdiri-dari-52f2249c.mp3"
+              }
+            ],
+            "rules_en": [
+              "On an adjective, TER- gives the superlative, as an alternative to paling (Lesson 8): terbesar (largest), tertinggi (highest), terbaik (best).",
+              "TER- also appears as an attributive adjective before a noun, often with a passive-resultative sense: dokter terkenal (the famous doctor), penyanyi tercinta (the beloved singer).",
+              "A number of TER-forms is a fixed term that you learn as a whole: tergantung dari (depend on), termasuk (including / belong to), tersebut (mentioned, aforesaid), terdiri dari (consist of)."
+            ],
+            "title_en": "TER- as superlative, attributive adjective and fixed term"
+          }
+        ],
+        "grammar_topics": [
+          "Het voorvoegsel TER-"
+        ]
+      }
+    },
+    {
+      "order_index": 7,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "conversation",
+            "title": "Latihan I",
+            "instruction": "Schrijf een verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van onderstaande tekeningen. (De bijbehorende tekeningen zijn niet beschikbaar; gebruik deze opdracht als vrije schrijf-/spreekoefening over een dagje uit in de regentijd.)"
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Di mana terdapat sekolah di kampung Anda? — Waar bevindt zich een school in uw dorp?",
+                "prompt": "(dapat) Di mana .......... sekolah di kampung Anda?"
+              },
+              {
+                "answer": "Janji itu dibatalkan karena hujan deras. — Die afspraak werd afgezegd vanwege de hevige regen.",
+                "prompt": "(batal) Janji itu .......... karena hujan deras."
+              },
+              {
+                "answer": "Guru mengunjungi orang tua anak ini. — De leraar bezoekt de ouders van dit kind.",
+                "prompt": "(kunjung) Guru .......... orang tua anak ini."
+              },
+              {
+                "answer": "Bisakah Bapak menunjukkan jalan ke rumah sakit? — Kunt u de weg naar het ziekenhuis wijzen?",
+                "prompt": "(tunjuk) Bisakah Bapak .......... jalan ke rumah sakit?"
+              },
+              {
+                "answer": "Sesudah film berakhir dia pulang. — Nadat de film afgelopen was, ging hij naar huis.",
+                "prompt": "(akhir) Sesudah film .......... dia pulang."
+              },
+              {
+                "answer": "Pada umumnya rumah yang besar terjaga. — Over het algemeen worden grote huizen bewaakt.",
+                "prompt": "(jaga) Pada umumnya rumah yang besar ..........."
+              },
+              {
+                "answer": "Apakah Bapak sudah kenal dengan adik saya? — Kent u mijn jongere broer/zus al?",
+                "prompt": "(kenal) Apakah Bapak sudah .......... dengan adik saya?"
+              },
+              {
+                "answer": "Apakah harga ini sudah termasuk ongkos kirim? — Zijn de verzendkosten al bij deze prijs inbegrepen?",
+                "prompt": "(masuk) Apakah harga ini sudah .......... ongkos kirim?"
+              },
+              {
+                "answer": "Saudara mau mengundang siapa? — Wie wilt u uitnodigen?",
+                "prompt": "(undang) Saudara mau .......... siapa?"
+              },
+              {
+                "answer": "Kakaknya sudah menjadi guru dan mengajar di Aceh, tetapi adiknya masih belajar. — Zijn/haar oudere broer/zus is al leraar geworden en geeft les in Aceh, maar het jongere broertje/zusje studeert nog.",
+                "prompt": "(ajar) Kakaknya sudah menjadi guru dan .......... di Aceh, tetapi adiknya masih .........."
+              }
+            ],
+            "title": "Latihan II",
+            "instruction": "Vul de juiste werkwoordsvorm in en vertaal de zin."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Karena ulang tahunnya, guru itu mengundang semua anak ke rumahnya.",
+                "prompt": "Vanwege zijn verjaardag heeft de onderwijzer alle kinderen thuis uitgenodigd."
+              },
+              {
+                "answer": "Karena beberapa anak menjadi sakit, mereka tidak datang semua.",
+                "prompt": "Omdat een paar kinderen ziek zijn geworden, zijn ze er niet allemaal."
+              },
+              {
+                "answer": "Waktu masuk, mereka mendapat sebuah kantong plastik berisi permen.",
+                "prompt": "Bij binnenkomst kregen zij een plastic zakje met snoepgoed."
+              },
+              {
+                "answer": "Sesudah itu diputarkan film video.",
+                "prompt": "Daarna werden er videofilms gedraaid."
+              },
+              {
+                "answer": "Sebagian tertidur.",
+                "prompt": "Een deel viel in slaap."
+              },
+              {
+                "answer": "Lalu guru itu membawa mereka ke pantai.",
+                "prompt": "Toen heeft de onderwijzer hen meegenomen naar het strand."
+              },
+              {
+                "answer": "Rini, yang berumur sebelas tahun, mendapat luka karena terjatuh.",
+                "prompt": "Rini, die elf jaar is, liep een wond op doordat zij viel."
+              },
+              {
+                "answer": "Untungnya guru itu sudah membawa perban dan Betadine.",
+                "prompt": "Gelukkig had de onderwijzer verband en Betadine meegenomen."
+              },
+              {
+                "answer": "Menjelang pukul lima sore mereka mendapat kue.",
+                "prompt": "Tegen vijf uur in de namiddag kregen zij koekjes."
+              },
+              {
+                "answer": "Sesudah itu sudah waktunya untuk pulang.",
+                "prompt": "Daarna was het tijd om naar huis te gaan."
+              }
+            ],
+            "title": "Latihan III",
+            "instruction": "Vertaal naar het Indonesisch."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Besok bapak berangkat ke Yogyakarta. — Fout: mengangkat (= optillen) is verkeerd; het basiswoord is berangkat (= vertrekken), een ber-vorm. Vertaling: Morgen vertrekt vader naar Yogyakarta.",
+                "prompt": "Besok bapak mengangkat ke Yogyakarta."
+              },
+              {
+                "answer": "Ibu, apakah pembantu sudah membersihkan lantai? — Fout: membersih bestaat niet; bij het bijvoeglijk naamwoord bersih hoort -kan: membersihkan (schoonmaken). Vertaling: Mevrouw, heeft de hulp de vloer al schoongemaakt?",
+                "prompt": "Ibu, apakah pembantu sudah membersih lantai?"
+              },
+              {
+                "answer": "Penyanyi tercinta tidak akan datang karena sakit. — Fout: dicinta is hier verkeerd; als bijvoeglijke bepaling 'geliefd' gebruik je de TER-vorm tercinta. Vertaling: De geliefde zanger zal niet komen omdat hij ziek is.",
+                "prompt": "Penyanyi dicinta tidak akan datang karena sakit."
+              },
+              {
+                "answer": "Ibu dikirimi buku oleh anaknya di Jakarta. — Fout: bij de ontvanger als onderwerp hoort de -i-vorm (dikirimi), niet -kan. Vertaling: Moeder krijgt een boek toegestuurd door haar kind in Jakarta.",
+                "prompt": "Ibu dikirimkan buku oleh anaknya di Jakarta."
+              },
+              {
+                "answer": "Cepat minum air itu 'nak, kita harus pergi sekarang. — Fout: in de gebiedende wijs voor jezelf laten drinken gebruik je de kale stam minum; meminumkan (= iemand anders laten drinken) past niet. Vertaling: Drink snel dat water, kind, we moeten nu weg.",
+                "prompt": "Cepat meminumkan air itu 'nak, kita harus pergi sekarang."
+              },
+              {
+                "answer": "Nanti sore ia akan tiba dari Singapura. — Fout: sudah (voltooid) botst met de toekomstbepaling nanti sore; gebruik akan. Vertaling: Vanmiddag zal hij/zij uit Singapore aankomen.",
+                "prompt": "Nanti sore ia sudah tiba dari Singapura."
+              },
+              {
+                "answer": "Borobudur terletak dekat kota Yogyakarta di Jawa Tengah. — Fout: een ligging vraag je niet met een di-vorm maar met de TER-vorm terletak (gelegen zijn). Vertaling: Borobudur ligt vlak bij de stad Yogyakarta in Midden-Java.",
+                "prompt": "Borobudur diletak dekat kota Yogyakarta di Jawa Tengah."
+              },
+              {
+                "answer": "Minuman sudah diambil ayah dari lemari es. — Fout: minuman (de drank) is de patiens en hoort vooraan in een passieve di-vorm (diambil). Vertaling: De drank is al door vader uit de koelkast gehaald.",
+                "prompt": "Minuman sudah mengambil ayah dari lemari es."
+              },
+              {
+                "answer": "Sekarang banyak desa di Indonesia sudah mempunyai listrik. — Fout: het telwoord banyak geeft het meervoud al aan, dus geen verdubbeling desa-desa (Les 22). Vertaling: Tegenwoordig hebben veel dorpen in Indonesië al elektriciteit.",
+                "prompt": "Sekarang banyak desa-desa di Indonesia sudah mempunyai listrik."
+              },
+              {
+                "answer": "Pada musim semi bunga pohon itu memang sangat bagus. — Fout: sangat en sekali stapelen twee intensiveerders; kies er één (sangat bagus óf bagus sekali). Vertaling: In de lente is de bloesem van die boom inderdaad heel mooi.",
+                "prompt": "Pada musim semi bunga pohon itu memang sangat bagus sekali."
+              }
+            ],
+            "title": "Latihan IV",
+            "instruction": "Haal de fout uit de zin, verklaar uw antwoord en vertaal de zin."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"22e6a963-4ebd-4b57-8fc4-ac644ac0576e\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"22e6a963-4ebd-4b57-8fc4-ac644ac0576e\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

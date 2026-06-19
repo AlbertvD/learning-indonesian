@@ -1,0 +1,72 @@
+{
+  "lesson_number": 26,
+  "cefr_level": "A1",
+  "lesson_topic": "Musim Hujan — weer en klimaat; het voorvoegsel TER-",
+  "grammar_patterns": [
+    {
+      "slug": "l26-voorvoegsel-ter-vormen-en-basiswoordklassen",
+      "name": "Het voorvoegsel TER- — vormen en basiswoordklassen",
+      "description": "TER- wordt rechtstreeks aan een basiswoord gehecht en treedt op in de positie van een handeling of van een bijvoeglijke bepaling; het combineert vooral met een werkwoord en soms met een zelfstandig naamwoord, en kan vier betekenissen oproepen (onopzettelijk, resultaat/toestand, mogelijkheid, overtreffende trap).",
+      "confusion_group": "ter-functions",
+      "key_contrast": "TER- (actievoerder op achtergrond: toestand/onbedoeld/mogelijk) vs ME- (bedrijvend, bewust) vs DI- (lijdend, met agens)",
+      "research_notes": "ter- vormt verba/adjectiva die a) statief/resultatief, b) accidenteel/onbedoeld of c) abilitatief zijn, plus de superlatief op adjectieven. Eén vorm kan meerdere lezingen hebben; de context beslist. Voor Nederlandstaligen is de valkuil dat zij een ME- of DI-vorm kiezen waar TER- vereist is om het toestands- of onbedoelde karakter te markeren. Onderwijsstrategie: TER- contrasteren met de al bekende ME- (Les 13–15) en DI- (Les 16) door te vragen 'wie doet het bewust?' — bij TER- is het antwoord 'niemand / dat is niet belangrijk'.",
+      "example_sentences": [
+        { "id": "Sedang menonton tv, Sarti tertidur.", "nl": "Terwijl ze tv keek, viel Sarti in slaap." },
+        { "id": "Kota Bandung terletak di Jawa Barat.", "nl": "Bandung ligt in West-Java." },
+        { "id": "Buku ini terdiri dari 14 bab.", "nl": "Dit boek bestaat uit 14 hoofdstukken." }
+      ]
+    },
+    {
+      "slug": "l26-ter-onopzettelijk-per-ongeluk",
+      "name": "TER- met de betekenis 'onopzettelijk / per ongeluk'",
+      "description": "De TER-vorm drukt uit dat een handeling de persoon ongewild of per ongeluk overkomt, zonder bewuste uitvoering — tertidur (in slaap vallen), terjatuh (per ongeluk vallen), tertawa (in de lach schieten).",
+      "confusion_group": "ter-functions",
+      "key_contrast": "tertidur (onbedoeld in slaap vallen) vs menidurkan (iemand bewust te slapen leggen)",
+      "research_notes": "Het accidentele is de meest geciteerde TER-functie. De meeste accidentele ter-werkwoorden zijn tegelijk statief: er is geen focus op de actor. Voor de leerder: het onbedoelde karakter is precies wat het Nederlands met 'per ongeluk' of een onpersoonlijke constructie uitdrukt. Veelgemaakte fout: bewuste ME-vorm gebruiken (jatuh → menjatuhkan = laten vallen) waar het onbedoelde terjatuh bedoeld is.",
+      "example_sentences": [
+        { "id": "Sedang menonton tv, Sarti tertidur.", "nl": "Terwijl ze tv keek, viel Sarti in slaap." },
+        { "id": "Dia tertawa.", "nl": "Hij lachte / Hij moest erom lachen." },
+        { "id": "Anak itu terjatuh dari pohon.", "nl": "Dat kind viel per ongeluk uit de boom." }
+      ]
+    },
+    {
+      "slug": "l26-ter-resultaat-toestand",
+      "name": "TER- met de betekenis van resultaat / toestand",
+      "description": "De TER-vorm beschrijft een resultaat of toestand zonder genoemde actievoerder — terbuka (open), tertutup (gesloten), tertulis (geschreven), terletak (gelegen), terlarang (verboden), terbakar (verbrand). Vergelijkbaar met het Nederlandse voltooid deelwoord als bepaling.",
+      "confusion_group": "ter-functions",
+      "key_contrast": "terbuka (toestand: open(staand)) vs membuka (handeling: openen) vs dibuka (lijdend: geopend worden door iemand)",
+      "research_notes": "Statief en accidenteel lopen in elkaar over. De resultatieve lezing is de Indonesische pendant van het Nederlandse voltooid deelwoord als bijvoeglijke bepaling (de open deur = pintu yang terbuka). Onderwijsstrategie: contrasteer het drietal membuka / dibuka / terbuka op hetzelfde basiswoord buka.",
+      "example_sentences": [
+        { "id": "Kota Bandung terletak di Jawa Barat.", "nl": "Bandung ligt in West-Java." },
+        { "id": "Jangan masuk di situ. Itu terlarang!", "nl": "Ga daar niet naar binnen. Dat is verboden!" },
+        { "id": "Pintu itu terbuka.", "nl": "Die deur staat open." }
+      ]
+    },
+    {
+      "slug": "l26-ter-kunnen-mogelijkheid-vaak-ontkennend",
+      "name": "TER- met de betekenis 'kunnen / in staat zijn om' (vaak ontkennend)",
+      "description": "De TER-vorm kan een mogelijkheid uitdrukken (terdengar = te horen, terlihat = te zien, terbaca = leesbaar), heel kenmerkend in de ontkennende vorm met tidak voor onmogelijkheid: tidak terangkat (niet op te tillen), tidak terbaca (onleesbaar).",
+      "confusion_group": "ter-functions",
+      "key_contrast": "terangkat (op te tillen) / tidak terangkat (niet op te tillen) — de abilitatieve TER- = Nederlands '-baar' / '(niet) te ...'",
+      "research_notes": "De abilitatieve functie (terbaca = 'can be read'). De ontkennende variant (tidak ter-) is in de praktijk vaak frequenter en pedagogisch het sterkst, omdat hij correspondeert met Nederlands 'niet te + infinitief'. Onderwijsstrategie: laat leerders het '-baar'-paradigma maken (terlihat = zichtbaar, terdengar = hoorbaar, terbaca = leesbaar) en vervolgens ontkennen. Valkuil: bisa + passief (bisa diangkat) gebruiken waar idiomatisch Indonesisch de compacte TER-vorm verkiest.",
+      "example_sentences": [
+        { "id": "Suaranya terdengar sampai di sini.", "nl": "Zijn stem is tot hier te horen." },
+        { "id": "Dari sini gunung itu terlihat.", "nl": "Vanaf hier is de berg te zien." },
+        { "id": "Lemari ini berat sekali, tidak terangkat.", "nl": "Deze kast is zo zwaar, hij is niet op te tillen." }
+      ]
+    },
+    {
+      "slug": "l26-ter-overtreffende-trap-bijvoeglijke-bepaling-en-vaste-termen",
+      "name": "TER- als overtreffende trap, als bijvoeglijke bepaling en in vaste termen",
+      "description": "Op een bijvoeglijk naamwoord geeft TER- de overtreffende trap (terbesar = grootst, terbaik = best), als alternatief voor paling. TER- treedt ook op als bijvoeglijke bepaling (dokter terkenal, penyanyi tercinta) en in vaste termen (tergantung dari, termasuk, tersebut, terdiri dari).",
+      "confusion_group": "overtreffende-trap",
+      "key_contrast": "terbesar = paling besar (grootst); beide markeren de superlatief, TER- is de gebonden, paling de vrije vorm (Les 8)",
+      "research_notes": "ter- op een adjectief geeft de superlatief (terbesar = 'biggest'). Dit knoopt aan bij Les 8 (overtreffende trap met paling/ter). De vaste termen (termasuk, terdiri dari, tergantung dari, tersebut) zijn gelexicaliseerd en moeten als geheel geleerd worden — frequent in geschreven/formeel Indonesisch. Onderwijsstrategie: behandel de superlatief als herhaling van Les 8 en de vaste termen apart als woordenschat-met-vorm.",
+      "example_sentences": [
+        { "id": "Ini pelabuhan terbesar.", "nl": "Dit is de grootste haven." },
+        { "id": "Dokter terkenal itu berangkat ke luar negeri.", "nl": "Die bekende arts vertrekt naar het buitenland." },
+        { "id": "Rekening ini sudah termasuk PPN?", "nl": "Is de rekening inclusief BTW?" }
+      ]
+    }
+  ]
+}

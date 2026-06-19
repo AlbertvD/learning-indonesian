@@ -1,0 +1,422 @@
+{
+  "lesson": 17,
+  "generatedAt": "2026-06-18T04:55:33.243Z",
+  "sourcePages": 6,
+  "lessonMeta": {
+    "title": "Bab 1 - Telur Mata Sapi",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 17
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Tekst - Telur Mata Sapi",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Pagi hari Laura bangun, kemudian mandi dan berpakaian. Teh dan nasi goreng sudah dihidangkan di meja, di depan kamarnya, oleh pembantu losmen. Dengan segan ia melihat sarapannya. Nasi lagi! Sudah tiga minggu Laura makan masakan Indonesia dan sampai hari ini tetap dengan penuh selera. Tapi entah kenapa, pagi ini Laura ingin makan sarapan Eropa.",
+        "Dia ke luar losmen dan pergi ke sebuah restoran Eropa.",
+        "Setelah pelayan membawa makanan, Laura mencari garam dan merica. Di meja ada tempat gula, sambal dan serbet, tetapi garam dan merica tidak ada."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "dialogue",
+      "title": "Dialoog - Telur Mata Sapi",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "lines": [
+        {
+          "speaker": "Laura",
+          "text": "Ada makanan Eropa, Mas?"
+        },
+        {
+          "speaker": "Mas Piro",
+          "text": "Ada Nona. Nona mau melihat daftar makanan dulu?"
+        },
+        {
+          "speaker": "Laura",
+          "text": "Boleh, terima kasih."
+        },
+        {
+          "speaker": "Mas Piro",
+          "text": "Ini, Nona. Ada bubur, roti, mentega, susu dan telur ayam. Telur ayam bisa direbus setengah matang atau matang. Kalau Nona mau, juga ada kue donat atau roti pakai mentega dan selai. Keju juga ada. Nona mau makan apa?"
+        },
+        {
+          "speaker": "Laura",
+          "text": "Tunggu dulu ya, Mas!"
+        },
+        {
+          "speaker": "Mas Piro",
+          "text": "Barangkali Nona mau 'Continental breakfast'?"
+        },
+        {
+          "speaker": "Laura",
+          "text": "Apa itu?"
+        },
+        {
+          "speaker": "Mas Piro",
+          "text": "Dua potong roti, tomat, dan telur mata sapi pakai ham. Terus segelas jeruk peras, dan sepiring variasi buah-buahan seperti mangga, semangka dan pisang susu."
+        },
+        {
+          "speaker": "Laura",
+          "text": "Baiklah. Tapi..... Mas, sebetulnya apa itu, telur mata sapi?"
+        },
+        {
+          "speaker": "Mas Piro",
+          "text": "Ha....., Nona belum tahu? Belum pernah coba? Enak sekali. Telur mata sapi itu sebetulnya satu atau dua butir telur yang digoreng tanpa dikocok. Jadi kuning telurnya masih utuh. Tetapi kalau telur dikocok dulu dan kemudian digoreng namanya dadar! Sebentar ya, Non."
+        },
+        {
+          "speaker": "Laura",
+          "text": "Mas, Mas! Minta garam dan merica. Tolong tambah segelas kopi pahit, ya."
+        },
+        {
+          "speaker": "Mas Piro",
+          "text": "Baik Nona."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "text",
+      "title": "De woordenlijst - inleiding",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "De woorden uit Selamat Datang deel 1 worden bekend verondersteld. In de woordenlijst zijn uitsluitend de nieuwe woorden opgenomen. Alleen de betekenis die bedoeld is in de tekst is vermeld. Hetzelfde geldt voor de woordenlijsten die achterin het boek zijn opgenomen.",
+        "Het is belangrijk in een woord het basiswoord te herkennen, omdat in een woordenboek rangschikking plaatsvindt onder het basiswoord.",
+        "Het ~ teken geeft de plaats aan van het basiswoord. Let op, de vermelde betekenis is die van de geaffigeerde vorm. Zo is masak, ~an: masakan = gerecht.",
+        "Daar waar een dergelijke notatie problemen zou kunnen geven, is zowel het basiswoord als de gehele geaffigeerde vorm opgenomen, bijvoorbeeld: potret, memotret = fotograferen. Vormen die nog niet eerder werden behandeld, zijn in het geheel opgenomen."
+      ]
+    },
+    {
+      "id": 3,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "bab",
+          "dutch": "hoofdstuk",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bubur",
+          "dutch": "pap",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dadar",
+          "dutch": "omelet",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "daftar",
+          "dutch": "lijst",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "daftar makanan",
+          "dutch": "menukaart",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dihidangkan",
+          "dutch": "opgediend",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "donat",
+          "dutch": "donut",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "entah",
+          "dutch": "ik weet niet",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "Eropa",
+          "dutch": "Europa",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "garam",
+          "dutch": "zout",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gula",
+          "dutch": "suiker",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ham",
+          "dutch": "ham",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kebudayaan",
+          "dutch": "cultuur",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kocok",
+          "dutch": "klutsen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "mangga",
+          "dutch": "mango",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "masak, ~an",
+          "dutch": "gerecht",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mentega",
+          "dutch": "boter",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "merica",
+          "dutch": "peper",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pagi hari",
+          "dutch": "'s ochtends",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "pakai",
+          "dutch": "met",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "pelajaran",
+          "dutch": "les",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pelayan",
+          "dutch": "ober / serveerster",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pepatah",
+          "dutch": "spreuk / uitdrukking",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "peras, memeras",
+          "dutch": "persen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pisang susu",
+          "dutch": "kleine banaan",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "potong, se-",
+          "dutch": "'n sneetje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rebus",
+          "dutch": "koken in water",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sebetulnya",
+          "dutch": "eigenlijk / in feite",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "segan",
+          "dutch": "tegenzin",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "selai",
+          "dutch": "jam",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "selera",
+          "dutch": "smaak",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "semangka",
+          "dutch": "watermeloen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "serbet",
+          "dutch": "servet",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tanduk",
+          "dutch": "hoorn (rund)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tata bahasa",
+          "dutch": "grammatica",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "telur",
+          "dutch": "ei",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "telur mata sapi",
+          "dutch": "spiegelei",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tempat gula",
+          "dutch": "suikerpot",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tetap",
+          "dutch": "steeds",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "ungkap, ~an",
+          "dutch": "uitdrukking",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "utuh",
+          "dutch": "heel / onbeschadigd",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "variasi",
+          "dutch": "variatie",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "expressions",
+      "title": "Ungkapan",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "makan pagi / sarapan",
+          "dutch": "ontbijt",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "makan siang",
+          "dutch": "lunch / middagmaal",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "makan malam",
+          "dutch": "diner / avondmaal",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "expressions",
+      "title": "Pepatah",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "Seperti telur di ujung tanduk",
+          "dutch": "Onder zeer zware en moeilijke omstandigheden",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "grammar",
+      "title": "Agens, werkwoord en persoonlijk voornaamwoord",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "raw_text": "Bij actieve zinnen staat de agens vóór de ME-werkwoordsvorm en komt de patiens na de ME-werkwoordsvorm.\nOnder de agens verstaan wij: de persoon / zaak die de handeling uitvoert en onder de patiens verstaan wij: de persoon / zaak die de handeling ondergaat.\nDe patiens kan ook een persoonlijk voornaamwoord zijn. Volgorde:\n\nAgens ——— ME-werkwoordsvorm ——— Patiens (= pers. vnw.)\n\nSiapa mencari saya?         Wie zoekt mij?\nSiapa mencariku?\n\nIbu memanggil kamu          Moeder roept jou\nIbu memanggilmu\n\nGuru melihat dia             De leraar zag hem / haar / het\nGuru melihatnya\n\nMereka menelepon kami / kita    Zij bellen ons\n\nBapak mengantar kalian / kamu   Vader begeleidt jullie\n\nAli melihat mereka          Ali heeft hen gezien\nAli melihatnya\n\nMerk op dat het zelfstandig naamwoord uit de vraagzin in het antwoord herhaald kan worden. Dit is echter niet verplicht."
+    },
+    {
+      "id": 7,
+      "type": "grammar",
+      "title": "Vraag en antwoord - Berapa",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "raw_text": "Berapa = hoeveel?\nAls men een getal als antwoord verwacht gebruikt men het vraagwoord berapa?\n\nWat is het nummer (ervan)?     Berapa nomornya?\n24                             (Nomor) 24\n\nHoe zwaar is het?              Berapa beratnya?\n6 kilo                         (Beratnya) 6 kilo\n\nWat is de prijs (ervan), wat kost het?   Berapa harganya?\n35.000 rupiah                  (Harganya) 35.000 rupiah\n\nHoe hoog is het?               Berapa tingginya?\n2 meter                        (Tingginya) 2 meter"
+    },
+    {
+      "id": 8,
+      "type": "grammar",
+      "title": "Siapa & apa? = wie & wat?",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "raw_text": "Voor personen en voor gepersonifieerde zaken (zoals een pop) gebruikt men het vraagwoord siapa? = wie?\n\nHoe heet hij?                  Siapa namanya?\nHoe heet je pop?               Bonekamu siapa namanya?\nWiens koffer is dit?           Ini koper siapa?\n(Van wie is deze koffer?)\n\nVoor dieren, dingen of zaken gebruikt men het vraagwoord apa? = wat?\n\nWat wilt u?                    Bapak / Ibu ingin apa?\nWat voor auto is dit?          Ini mobil apa?\nWat is de naam van dat hotel?  Nama hotel itu apa?\n\nMana? = welk, welke?\n\nWelke is / zijn lekker?        Mana yang enak?\nWelke is / zijn klein?         Mana yang kecil?\nWelke koffer is van u?         Koper Bapak yang mana?\n\nMana heeft ook andere betekenissen:\n\nMana? als afkorting van bagaimana? = hoe?\nHoe kan dat nou?               Mana mungkin?\n\nMana? als afkorting van di mana? = waar?\nWaar zit hij?                  Mana orangnya?\n\nIndien het antwoord bevestigend is, geldt in het algemeen dat het kernwoord uit de vraag wordt herhaald.\n\nVraag                antwoord:  bevestigend    ontkennend\n\nApa(kah) Anda mau ikut?        Mau             Tidak mau\nApa kamu sudah lama di sini?   Sudah / Lama    Belum\nApa itu enak?                  Enak            Tidak enak"
+    },
+    {
+      "id": 9,
+      "type": "exercises",
+      "title": "Oefeningen",
+      "source_pages": [
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "Latihan I. Schrijf in het Indonesisch een verhaal over een vakantie, in minimaal 5 en maximaal 10 zinnen.\nMaak eventueel gebruik van onderstaande tekening als inspiratiebron.\n[tekening: Yance tiba di daerah tropis]\n\nLatihan II. Spreekvaardigheid en herhaling van woorden.\n\"Saya berangkat ke Indonesia dan membawa ... (koper)\".\nMet herhaling van eerder genoemde voorwerpen, voegt de volgende persoon een nieuw woord (bijvoorbeeld van een kledingstuk) toe.\n\nLatihan III. Beantwoord de volgende vragen in het Indonesisch.\n1. Nama Bapak / Ibu siapa?\n2. Nama Bapak / Ibu yang duduk di sebelah kanan dan kiri siapa?\n3. Apakah Bapak / Ibu sudah pernah pergi ke Indonesia? Ke mana?\n4. Di negeri Belanda makanan Indonesia bisa dibeli di mana?\n5. Kenapa orang tidak bisa berjalan kaki ke Indonesia?\n6. Kapan Anda mau (kembali lagi) ke Indonesia?\n7. Sekarang tanggal berapa, hari apa, dan bulan apa?\n8. Sekarang jam berapa?\n9. Bapak / Ibu baru datang dari mana?\n10. Apakah tempat itu jauh dari sini?"
+    },
+    {
+      "id": 10,
+      "type": "exercises",
+      "title": "Oefeningen (vervolg)",
+      "source_pages": [
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "Latihan IV. Vertaal met behulp van een -NYA-constructie. Voorbeeld:\nAhmad is 23 jaar    Ahmad umurnya 23 tahun\n\n1. Laura's kleding is al gewassen\n2. De vloer van deze hotelkamer is niet schoon\n3. Hoe heet die streek in het noorden?\n4. De schoenen van mijn zusje zijn nat\n5. De deur van de auto is kapot\n\nLatihan V. Vertaal met behulp van een BER-werkwoordsvorm. Voorbeeld:\nDe bloem heeft een rode kleur    Bunga berwarna merah\n\n1. Wat zit er in die fles?\n2. Deze man is al 80 jaar oud\n3. Wanneer is hij jarig?\n4. Na te hebben gebaad, kleden ze zich aan\n5. De kip legt een ei\n\nLatihan VI. Vertaal de woorden die tussen haakjes staan. Voorbeeld:\nKita (niet) naik taksi    Kita tidak naik taksi\n\n1. Mereka berkumpul (voor) pohon besar\n2. Siapa tinggal (hier) dan siapa mau (naar boven)?\n3. (Van achter) sekolah anak-anak berlari (naar links)\n4. Kucing (nog in) rumah, tetapi anjing (al naar buiten)\n5. Pelayan berjalan (tot) jembatan baru\n\nLatihan VII. Gebruik bij de vertaling van de volgende zinnen een ME-werkwoordsvorm.\nVoorbeeld: Moeder bakt een omelet    Ibu menggoreng dadar\n\n1. De ober brengt de menukaart\n2. Wij bestellen een middagmaal\n3. Hij herhaalt de bestelling\n4. Hij schrijft de bestelling op papier\n5. Daarna klutst hij de eieren en bakt ze\n\nLatihan VIII. Vertaal met behulp van een DI-werkwoordsvorm. Voorbeeld:\nDe eieren zijn hardgekookt    Telur direbus matang\n\n1. Deze drankjes werden besteld door Endang\n2. Het ontbijt moet worden opgegeten\n3. Het eten is al betaald\n4. Mijn ticket wordt geregeld door meneer Sukiman\n5. Mijn fiets, die voor het station stond, is gisteren gestolen"
+    }
+  ],
+  "flags": [
+    "Image page 1 (IMG_1572): Dialogue recovered additional lines not fully captured in OCR: Mas Piro's full explanation of telur mata sapi, and final exchange (Laura asking for garam/merica and kopi pahit, Mas Piro responding 'Baik Nona').",
+    "Image page 2 (IMG_1573): Vocabulary item 'utuh' Dutch translation recovered from image as 'heel / onbeschadigd' (OCR had only 'heel'); 'pagi hari' Dutch translation confirmed as \"'s ochtends\"; 'pelayan' confirmed as 'ober / serveerster'.",
+    "Image page 3 (IMG_1574): Additional closing note recovered from image: 'Merk op dat het zelfstandig naamwoord uit de vraagzin in het antwoord herhaald kan worden. Dit is echter niet verplicht.'",
+    "Image page 5 (IMG_1578): Latihan I and full Latihan III (questions 6-10) recovered from image, partially missing in OCR.",
+    "Image page 6 (IMG_1579): Full Latihan IV, Latihan VIII items 1-5 recovered from image; OCR page 6 was incomplete."
+  ],
+  "sourceImages": 6
+}

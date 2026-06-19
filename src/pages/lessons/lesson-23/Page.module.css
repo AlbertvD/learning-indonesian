@@ -1,0 +1,697 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 23: Berdisko di Jakarta (Uitgaan in Jakarta)
+
+   A culture chapter set after dark. The mood is electric-night: violet and
+   cyan over a navy skyline. The culture essay leads; the -i grammar follows
+   as a four-accent stack with a passive-paradigm table at its heart; the
+   vocabulary closes in cool green chips.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Page root ──────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band {
+  width: 100%;
+  padding: 56px 0;
+}
+
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — Jakarta skyline at night, violet→navy→cyan glow ──────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #14102a;
+  background-image:
+    linear-gradient(135deg, rgba(28, 18, 56, 0.82) 0%, rgba(12, 14, 32, 0.80) 52%, rgba(0, 229, 255, 0.20) 100%),
+    url('/lesson-23-hero.webp');
+  background-size: cover;
+  background-position: center 38%;
+  background-blend-mode: normal;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 82% 22%, rgba(0, 229, 255, 0.22), transparent 42%),
+    radial-gradient(circle at 12% 88%, rgba(156, 54, 181, 0.28), transparent 40%);
+  pointer-events: none;
+}
+
+.heroBand::after {
+  /* faint scatter of 'city lights' */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 26px 26px;
+  pointer-events: none;
+}
+
+.heroInner {
+  composes: container;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) {
+  .heroBand { padding: 56px 0 64px; }
+}
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(156, 54, 181, 0.22);
+  color: #d9b8ff;
+  border: 1px solid rgba(156, 54, 181, 0.40);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(40px, 5.5vw, 60px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 600px;
+  font-weight: var(--fw-normal);
+}
+
+/* ─── Editorial lede ─────────────────────────────────────────────────────── */
+
+.ledeBand {
+  composes: band;
+  padding: 64px 0 32px;
+}
+
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--mix-recall);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--mix-recall);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Audio band ─────────────────────────────────────────────────────────── */
+
+.audioBand {
+  composes: band;
+  padding: 0 0 8px;
+}
+
+.audioInner {
+  composes: container;
+  max-width: 920px;
+}
+
+/* ─── Main content shell ─────────────────────────────────────────────────── */
+
+.shellBand {
+  composes: band;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.shell {
+  composes: container;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+.section { display: flex; flex-direction: column; }
+
+/* ─── Shared section header ──────────────────────────────────────────────── */
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 22px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* ─── 1. Culture spread — electric-violet night ──────────────────────────── */
+
+.cultureBand {
+  background:
+    linear-gradient(180deg, rgba(156, 54, 181, 0.08) 0%, rgba(0, 229, 255, 0.04) 55%, transparent 100%);
+  border-radius: var(--r-xl);
+  padding: 56px 56px;
+  margin: 0 -56px;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(156, 54, 181, 0.24);
+}
+
+@media (max-width: 720px) {
+  .cultureBand { padding: 36px 22px; margin: 0; }
+}
+
+.cultureBand::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -120px;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.cultureBand::after {
+  content: '';
+  position: absolute;
+  bottom: -140px; left: -140px;
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(156, 54, 181, 0.14), transparent 70%);
+  pointer-events: none;
+}
+
+.cultureKicker {
+  composes: sectionEyebrow;
+  color: var(--mix-recall);
+  margin-bottom: 16px;
+}
+
+.cultureKicker::before { background: var(--mix-recall); }
+
+.cultureDisplay {
+  font-size: clamp(28px, 3.4vw, 42px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 28px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cultureDisplayLine2 {
+  font-size: clamp(18px, 1.9vw, 24px);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
+.cultureLede {
+  font-size: clamp(16px, 1.4vw, 18px);
+  font-weight: var(--fw-normal);
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0 0 22px;
+  max-width: 78ch;
+  position: relative;
+  z-index: 1;
+}
+
+.cultureLede::first-letter {
+  font-size: 4.2em;
+  font-weight: var(--fw-black);
+  float: left;
+  line-height: 0.82;
+  padding: 6px 14px 0 0;
+  color: var(--mix-recall);
+  font-style: normal;
+  letter-spacing: -0.04em;
+}
+
+.cultureBody {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0 0 18px;
+  max-width: 78ch;
+  position: relative;
+  z-index: 1;
+}
+
+.culturePull {
+  margin: 34px 0;
+  padding: 24px 34px;
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: var(--fw-medium);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text-primary);
+  border-left: 3px solid var(--accent-primary);
+  position: relative;
+  z-index: 1;
+}
+
+.culturePullMark,
+.culturePullMarkClose {
+  color: var(--accent-primary);
+  font-weight: var(--fw-black);
+  font-style: normal;
+}
+
+.culturePullMark { margin-right: 2px; }
+.culturePullMarkClose { margin-left: 2px; }
+
+/* The outsider's-eye coda — the essay's wry punchline, called out */
+.coda {
+  margin: 36px 0 0;
+  padding: 28px 32px;
+  border-radius: var(--r-lg);
+  background: rgba(0, 229, 255, 0.05);
+  border: 1px solid var(--accent-primary-border);
+  position: relative;
+  z-index: 1;
+}
+
+.codaKicker {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  margin: 0 0 10px;
+}
+
+.codaBody {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* ─── 2. Grammar — four-accent stack, the -i suffix ──────────────────────── */
+
+.grammarEyebrow {
+  composes: sectionEyebrow;
+  color: var(--mix-recall);
+}
+
+.grammarEyebrow::before { background: var(--mix-recall); }
+
+.grammarRules {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.grammarTile {
+  padding: 26px 28px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  --tile-accent: var(--accent-primary);
+}
+
+.grammarTile[data-accent='cyan']   { --tile-accent: var(--accent-primary); }
+.grammarTile[data-accent='purple'] { --tile-accent: var(--mix-recall); }
+.grammarTile[data-accent='teal']   { --tile-accent: var(--teal); }
+.grammarTile[data-accent='amber']  { --tile-accent: var(--ring-target); }
+
+.grammarTileHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.grammarTileNumber {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--tile-accent);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  margin: 0;
+}
+
+.grammarTileTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.grammarTileBody {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.grammarTileRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.grammarTileRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding-left: 22px;
+  position: relative;
+}
+
+.grammarTileRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--tile-accent);
+  font-weight: var(--fw-bold);
+}
+
+/* Examples below the rules, under a dashed rule; aligned base → derived */
+.grammarTileExamples {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 36px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--card-border);
+}
+
+@media (max-width: 720px) {
+  .grammarTileExamples { grid-template-columns: 1fr; }
+}
+
+.grammarExample { display: flex; flex-direction: column; gap: 2px; }
+
+.grammarExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.grammarExampleNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── The passive paradigm table ─────────────────────────────────────────── */
+
+.paradigmWrap {
+  overflow-x: auto;
+  padding-top: 6px;
+}
+
+.paradigm {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-md);
+}
+
+.paradigmHead,
+.paradigmHeadPerson {
+  text-align: left;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tile-accent);
+  padding: 0 16px 12px;
+  border-bottom: 1px solid var(--tile-accent);
+}
+
+.paradigmHeadPerson {
+  color: var(--text-tertiary);
+  border-bottom-color: var(--card-border);
+  white-space: nowrap;
+}
+
+.paradigmPerson {
+  text-align: left;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  padding: 12px 16px;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.paradigmCell {
+  padding: 12px 16px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  vertical-align: top;
+  border-top: 1px solid var(--card-border);
+}
+
+.paradigmCell[data-voice='active'] {
+  font-weight: var(--fw-medium);
+}
+
+.paradigmCell[data-voice='passive'] {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.paradigmPerson { border-top: 1px solid var(--card-border); }
+
+/* ─── 3. Vocabulary — cool green chips ───────────────────────────────────── */
+
+.vocabEyebrow {
+  composes: sectionEyebrow;
+  color: var(--success);
+}
+
+.vocabEyebrow::before { background: var(--success); }
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.itemChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(50, 215, 75, 0.05);
+  border: 1px solid rgba(50, 215, 75, 0.18);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.itemChip:hover {
+  border-color: var(--success);
+  transform: translateY(-1px);
+}
+
+.itemId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  min-width: 7.5em;
+}
+
+.itemSep {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.itemNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Inline play button ─────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ───────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 229, 255, 0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner {
+  composes: container;
+  max-width: 720px;
+  text-align: center;
+}
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 28px;
+}
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions {
+  display: flex;
+  justify-content: center;
+}
+
+.closingActions > * {
+  width: 100%;
+  max-width: 660px;
+}

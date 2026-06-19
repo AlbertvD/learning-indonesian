@@ -1,0 +1,354 @@
+{
+  "lesson": 18,
+  "generatedAt": "2026-06-18T05:36:42.682Z",
+  "sourcePages": 7,
+  "lessonMeta": {
+    "title": "Bab 2 - Mampir",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 18
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "dialogue",
+      "title": "Mampir",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "lines": [
+        {
+          "speaker": "narrator",
+          "text": "Joyce dan Harry hendak singgah ke rumah temannya, Jumilah. Sekarang mereka sudah berdiri di depan rumah Jumilah dan memanggilnya. Tetapi tidak ada jawaban."
+        },
+        {
+          "speaker": "Joyce",
+          "text": "Halo, Jumilah, Jumilah!"
+        },
+        {
+          "speaker": "Harry",
+          "text": "Tidak ada jawaban, mungkin ia lagi tidur siang. Kita 'kan berjanji mau mampir jam empat sore dan sekarang baru jam tiga. Mari, kita jalan-jalan dulu sebentar."
+        },
+        {
+          "speaker": "narrator",
+          "text": "Tetapi sebenarnya Jumilah sudah mendengar mereka, dan dari dalam rumah berlari ke luar."
+        },
+        {
+          "speaker": "Jumilah",
+          "text": "Hai, dari mana? Saya mendengar suara di luar, jadi saya melihat saja dulu. Halo, apa kabar? Mari masuk."
+        },
+        {
+          "speaker": "Harry",
+          "text": "Kami tidak mengganggu 'kan? Soalnya kami datang terlalu siang."
+        },
+        {
+          "speaker": "Jumilah",
+          "text": "Oh, tidak apa-apa. Saya sudah menunggu kalian."
+        },
+        {
+          "speaker": "narrator",
+          "text": "Pintu halaman dibukanya dan mereka bertiga masuk ke dalam rumah lalu duduk di ruang tamu. Minuman dan makanan baru saja ditaruh di meja oleh pembantu."
+        },
+        {
+          "speaker": "Jumilah",
+          "text": "Mari, silakan. Kue ini saya buat sendiri. Resep ini paling enak. Awas, jangan bilang tak enak lho!"
+        },
+        {
+          "speaker": "Joyce",
+          "text": "Enak sekali. Nanti, jangan lupa kasih resepmu ya."
+        },
+        {
+          "speaker": "Harry",
+          "text": "Di mana orang tuamu? Saya ingin sekali bertemu dengan mereka."
+        },
+        {
+          "speaker": "Jumilah",
+          "text": "Saya mencari orang tua saya dulu. Tunggu sebentar, ya."
+        },
+        {
+          "speaker": "narrator",
+          "text": "Ayah dan ibu Jumilah sudah lama ingin berkenalan dengan teman anaknya. Tamu asing jarang berkunjung ke rumah mereka, jadi tentu saja mereka senang sekali."
+        },
+        {
+          "speaker": "Ayah",
+          "text": "Nah, akhirnya kita bertemu juga sebelum Anda pulang ke negeri Anda. Jumilah sudah sering bercerita tentang Anda."
+        },
+        {
+          "speaker": "Ibu",
+          "text": "Saya juga senang sekali. Ayo kita bercakap-cakap sambil makan. Kue ini khas Jawa, coba saja."
+        },
+        {
+          "speaker": "Joyce",
+          "text": "Jangan pakai tangan kiri, ya Harry, seperti dulu. 'Kan tidak sopan!"
+        },
+        {
+          "speaker": "Harry",
+          "text": "O, ya, hampir lupa lagi. Saya tahu, soalnya saya kidal. Selalu memakai tangan kiri."
+        },
+        {
+          "speaker": "Jumilah",
+          "text": "Memang itu adat orang Indonesia, tetapi dengan orang asing kami sudah mengerti. Sama seperti: jangan minum sampai isi gelas betul-betul habis. Kalau begitu disangka mau minum lagi!"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "begitu",
+          "dutch": "aldus / 't zit zo",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "betul-betul",
+          "dutch": "écht / heus",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "buat, mem-",
+          "dutch": "maken / doen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "cakap, ber- - -",
+          "dutch": "babbelen / kletsen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "diri, ber-",
+          "dutch": "staan",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "erti, meng-",
+          "dutch": "begrijpen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "ganggu, meng-",
+          "dutch": "lastigvallen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "halaman",
+          "dutch": "erf",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "janji, ber-",
+          "dutch": "beloven",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "jarang",
+          "dutch": "zelden",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "jawab",
+          "dutch": "antwoord",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jawab, -an",
+          "dutch": "antwoord",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jawab, men-",
+          "dutch": "beantwoorden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kasih, mengasih",
+          "dutch": "geven",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kenal, ber- -an",
+          "dutch": "kennismaken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kenang, - - -an",
+          "dutch": "aandenken",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "khas",
+          "dutch": "speciaal",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kidal",
+          "dutch": "linkshandig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kunjung, ber-",
+          "dutch": "bezoeken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "lama",
+          "dutch": "lang (tijd)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "larang, me-",
+          "dutch": "verbieden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "lari, ber-",
+          "dutch": "rennen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "memang",
+          "dutch": "inderdaad / trouwens",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "orang tua",
+          "dutch": "ouders",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "potret, memotret",
+          "dutch": "fotograferen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "resep",
+          "dutch": "recept",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rokok, me-",
+          "dutch": "roken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "ruang",
+          "dutch": "vertrek / kamer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sambil",
+          "dutch": "terwijl / tijdens",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "sangka, menyangka",
+          "dutch": "vermoeden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sebenarnya",
+          "dutch": "in feite / inderdaad",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "sering",
+          "dutch": "vaak",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "singgah ke",
+          "dutch": "langsgaan bij",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sopan",
+          "dutch": "beleefd / netjes",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "suara",
+          "dutch": "stem / klank / geluid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "taruh, menaruh",
+          "dutch": "plaatsen / leggen",
+          "pos": "verb"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "expressions",
+      "title": "Ungkapan",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "omong kosong",
+          "dutch": "kletskoek / flauwekul",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "grammar",
+      "title": "Tata Bahasa - Passieve zinsconstructie",
+      "source_pages": [
+        2,
+        3
+      ],
+      "confidence": "high",
+      "raw_text": "Passieve zinsconstructie\n\nPassieve zinnen komen in het Indonesisch relatief veel voor.\nHiertoe maakt men dikwijls gebruik van de DI-werkwoordsvorm (3e persoon). Deze vorm biedt de spreker de mogelijkheid om zich wat algemener uit te drukken, dat wil zeggen dat de persoon of zaak die de handeling verricht (de agens) niet altijd genoemd hoeft te worden.\n\nKok, di mana coklat itu?          Goh, waar is die chocolade toch?\nOoh, sudah dimakan                 Ooh, die is opgegeten (door iemand)\n\nKue dipotong dan dibagi            De koek werd gesneden en verdeeld\n                                   (Iemand sneed de koek en verdeelde hem)\n\nIn een passieve zin waarin de agens de 1e of 2e persoon is, wordt de volgorde:\n\nPatiens ——— Agens ——— werkwoordsvorm\n\nSurat itu sudah saya tulis kemarin      Die brief heb ik gisteren al geschreven\nSurat itu sudah kamu tulis kemarin      Die brief heb je gisteren al geschreven\nSurat itu sudah kami tulis kemarin      Die brief hebben wij gisteren al geschreven\nSurat itu sudah kalian tulis kemarin    Die brief hebben jullie gisteren al geschreven\n\nIn een passieve zin waarbij de agens de 3e persoon meervoud is, zijn er twee mogelijkheden:\n\nSurat itu sudah mereka tulis kemarin    Die brief hebben zij gisteren al geschreven\nSurat itu sudah ditulisnya kemarin      Die brief hebben zij gisteren al geschreven\n\nLet op: bij de passieve constructie mag tussen de agens en de werkwoordsvorm geen ander woord staan.\n\nOverzicht passieve zinnen 1e, 2e en 3e persoon in het enkel- en meervoud\n\nMobil itu saya jual / kujual            De auto wordt door mij verkocht\nRumah itu kamu beli / kaubeli           Het huis wordt door jou gekocht\nKunci itu dicari                        De sleutel wordt gezocht\n                                        Men zoekt de sleutel\nHadiah diberinya                        Het cadeau wordt door hem / haar gegeven\n\nKunci itu kami cari / kita cari         De sleutel wordt door ons gezocht\nWarnanya kalian pilih                   De kleur wordt door jullie gekozen\nIkan mereka makan                       De vis wordt door hen gegeten\nIkan dimakannya\n\nPassieve zinsconstructie in antwoordzinnen\n\nMasih ada koper biru?                   Sudah dijual / Sudah saya jual\nBapak suka membaca mingguan ini?        Suka, tetapi belum dibaca / belum saya baca\nDi mana kue-kue?                        Sudah ditaruh di meja\n\nYANG en passieve zinnen\nBuku yang saya baca bagus               Het boek, dat ik lees, is mooi\n                                        (Het boek, dat door mij gelezen wordt, is mooi)\nItulah buku yang saya baca              Dat is het boek, dat ik lees\n                                        (Dat is het boek, dat door mij gelezen wordt)\nBuku yang dibawanya hilang              Het boek, dat hij heeft meegenomen, is weg"
+    },
+    {
+      "id": 4,
+      "type": "grammar",
+      "title": "Tata Bahasa - Sudah - telah, sesudah - setelah",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "raw_text": "Sudah - telah, sesudah - setelah\n\nSudah en telah betekenen beide: reeds, al.\nSudah wordt meer in spreektaal en telah meer in officiële en geschreven taal gebruikt.\n\nSaya sudah makan         Ik heb al gegeten\nSaya telah makan         Ik heb al gegeten\n\nTelah komt als antwoord op een vraag niet voor.\n\nKamu sudah makan? Sudah     Heb je al gegeten? Ja\n\nSesudah en setelah betekenen beide: na, nadat.\nSesudah wordt echter vaker gebruikt dan setelah.\n\nSesudah itu dia menonton tv         Daarna keek hij naar de televisie\nSetelah makan dia mencuci piring    Na het eten waste hij de borden af\n\nDe combinatie setelah sudah komt voor. De combinatie sesudah telah echter niet.\n\nSetelah mandi dia pergi             Na het baden ging hij weg\nSetelah sudah mandi dia pergi       Nadat hij gebaad had, ging hij weg"
+    },
+    {
+      "id": 5,
+      "type": "grammar",
+      "title": "Tata Bahasa - Alle, alles, allerlei, elke, geheel en iedereen",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "raw_text": "Alle, alles, allerlei, elke, geheel en iedereen\n\nAlle       Semua tamu hadir              Alle gasten waren aanwezig\nAlle       Tiap hari hujan               Alle dagen regen\nAlles      Segalanya / semuanya habis    Alles is op\nAlles      Segala sesuatu                Van alles en nog wat\nAllerlei   Toko serba ada                Winkel van Sinkel, warenhuis\nElke       Setiap hari mereka datang     Ze kwamen elke dag\nGeheel     Segenap negeri                Het hele land\nGeheel     Seluruh isi kota berpesta     De (ge)hele stad vierde feest\nGeheel     Seantero Jakarta              In geheel Jakarta\nIedereen   Semua orang hadir             Iedereen is aanwezig\nIedereen   Siapa saja boleh ikut         Iedereen (wie dan ook) mag meegaan"
+    },
+    {
+      "id": 6,
+      "type": "exercises",
+      "title": "Latihan",
+      "source_pages": [
+        5,
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "Latihan I. Schrijf een verhaal in het Indonesisch van minimaal 5 en maximaal 10 zinnen naar aanleiding van onderstaande tekeningen.\n[Illustrations: cartoon showing people walking in a village with speech bubbles \"Bagus desa ini\" and \"Ikut saja Pak\"; second cartoon showing two people with speech bubbles \"Tolong memotret kami bersama\" and \"Ayo, sebagai kenang-kenangan\"]\n\nLatihan II. Vertaal de woorden tussen haakjes.\n1. Serbet dibawa (hem)\n2. Ibu mencari (jou)\n3. Siapa menelepon (jullie)?\n4. Hasan membantu (mij)\n5. Siapa mengganggu (jou)?\n6. Adang menjawab (meneer Suwardi)\n7. Dia berkenalan (met haar ouders)\n8. Semangka itu dimakan (hen)\n9. Lemari ditutup (haar)\n10. Kapan Ratna bercakap-cakap dengan (u)?\n\nLatihan III. Welk woord hoort niet in de rij? Geef een reden.\n1. berapa        berdiri       berdekat      bercakap-cakap\n2. mengganggu    mengirim      melangkah     memakai\n3. kemudian      berian        tutupan       turunan\n4. masuk         naik          terbang       berdiri\n5. berbunga      berenang      berkumpul     berlari\n6. dilihatnya    dimakan       dicari        dirinya\n7. kapan         siapa         dengan        bagaimana\n8. terus         tertinggi     terbaik       terberat\n9. di atas       ke bawah      dari kiri     mengapa\n10. bukan        kiriman       carian        jawaban\n\nLatihan IV. Maak van de volgende zinnen passieve zinnen.\n1. Siapa mengganggu anak kecil itu?\n2. Saya menutup pintu masuk\n3. Mengapa Anda belum menelepon Pak Ahmad?\n4. Setiap hari kita membaca harian 'Kompas'\n5. Kami memesan dadar\n\nLatihan V. Maak de volgende zinnen aktief met behulp van de ME-werkwoordsvorm.\n1. Suara ini saya dengar\n2. Buku itu dibacanya\n3. Warna ini dipilih orang tuanya\n4. Obat ini kami beli\n5. Pintu halaman kalian buka\n6. Koper yang berat sudah dibawa ke taksi\n7. Payung ini dijual anak kecil itu\n8. Film Eropa jarang kita tonton\n9. Buku itu dikirim oleh siapa?\n10. Uang Belanda ditukamya di Bank Ekspor Impor Indonesia\n\nLatihan VI. Vertaal onderstaande dialoog in het Indonesisch. Maak gebruik van de woorden die gegeven zijn.\n* Bolehkah    Mag* ik dit boek lenen?\n* belum       Nee, ik heb het boek nog niet* gelezen\n* baru        Ik heb het pas* gisteren van mijn moeder gekregen\n* mahal       Was het een duur* boek?\n* kepada      Dat heeft zij niet tegen* mij gezegd\n* dibeli      Waar heeft zij het boek gekocht*?\n* kira        Ik geloof* dat zij het bij 'Toko buku Jago' besteld heeft\n* juga        Het is een mooi boek. Ik wil dat boek ook* kopen\n* saja        Hou je van boeken? Kijk dan maar* in mijn boekenkast\n* punya       Wow! Je hebt* veel boeken zeg!"
+    }
+  ],
+  "flags": [
+    "Image IMG_1580.jpg: Full dialogue recovered including final lines (Joyce, Harry, Jumilah) which were cut off in OCR page 1",
+    "Image IMG_1581.jpg: Vocabulary header confirmed as 'Daftar kata-kata baru' (not 'Woordenlijst'); 'Ungkapan' section (not 'Uitdrukkingen') confirmed; grammar example 'Kue dipotong dan dibagi' recovered from image, missing from OCR",
+    "Image IMG_1582.jpg: Full grammar section on passive constructions recovered including 'YANG en passieve zinnen' subsection and example 'Buku yang dibawanya hilang'",
+    "Image IMG_1583.jpg: Full grammar section on 'Alle, alles, allerlei, elke, geheel en iedereen' recovered including rows for Geheel (Segenap, Seluruh, Seantero) and Iedereen (Semua, Siapa saja) missing from OCR page 4",
+    "Image IMG_1584.jpg: Latihan II items 4-10 recovered; Latihan III full content recovered; Latihan IV items 3-5 recovered; Latihan V items 5-10 recovered; Latihan VI full word list and sentences recovered",
+    "Image IMG_1585.jpg: Duplicate/rotated view of Latihan VI page 26 — no additional content beyond IMG_1584.jpg"
+  ],
+  "sourceImages": 7
+}

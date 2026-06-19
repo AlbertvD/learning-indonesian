@@ -1,0 +1,1272 @@
+{
+  "meta": {
+    "id": "17068386-b35d-4f6a-a7c8-64105ab0d630",
+    "order_index": 20,
+    "title": "Biar Lambat Asal Selamat",
+    "level": "A1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Algenib",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Bij Indonesische gerechten is de samenstelling van kruidenmengsels (bumbu-bumbu) het grote geheim van de kok. Achteloos gooien de koks of kokki's een beetje van dit en een beetje van dat kruid in een bepaald gerecht, roeren door de pan en toveren vervolgens een tongstrelend gerecht op tafel. Het is dikwijls om jaloers op te worden, maar gelukkig hebben ze in de loop der jaren enkele geheimen prijsgegeven en deze opgeschreven in kookboeken. Bovendien vinden we in Nederland in bijna elke stad een toko waar een groot aantal uitheemse kruiden te koop is in zowel verse of gedroogde vorm, of uit de diepvries. Het gebruik van verse kruiden verdient uiteraard de voorkeur omdat de aroma's beter bewaard blijven. Heeft men alle benodigde ingrediënten in huis, dan valt het bereiden van een eenvoudig, smaakvol gerecht best mee. Zorg ervoor dat de aangegeven hoeveelheden en aanwijzingen zo nauwkeurig mogelijk worden opgevolgd. Om u een beetje wegwijs te maken zijn hieronder in alfabetische volgorde de namen van de meest gebruikte kruiden vermeld."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "anijs",
+            "english": "fennel (sweet)",
+            "indonesian": "adas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/adas-3309d1ed.mp3"
+          },
+          {
+            "dutch": "tamarinde",
+            "english": "tamarind",
+            "indonesian": "asam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/asam-a326576c.mp3"
+          },
+          {
+            "dutch": "ui",
+            "english": "onion",
+            "indonesian": "bawang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bawang-f02b3301.mp3"
+          },
+          {
+            "dutch": "rode ui",
+            "english": "red onion",
+            "indonesian": "bawang merah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bawang-merah-39d8a07d.mp3"
+          },
+          {
+            "dutch": "knoflook",
+            "english": "garlic",
+            "indonesian": "bawang putih",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bawang-putih-8cdd8e17.mp3"
+          },
+          {
+            "dutch": "kruiden",
+            "english": "spices",
+            "indonesian": "bumbu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bumbu-d0ad8640.mp3"
+          },
+          {
+            "dutch": "kleine, hete pepers",
+            "english": "small, hot peppers",
+            "indonesian": "cabai, cabe rawit",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cabai-cabe-rawit-eba7e533.mp3"
+          },
+          {
+            "dutch": "kruidnagel",
+            "english": "clove",
+            "indonesian": "cengkeh, cengkih",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cengkeh-cengkih-e009b9c4.mp3"
+          },
+          {
+            "dutch": "azijn",
+            "english": "vinegar",
+            "indonesian": "cuka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cuka-9a0c3a54.mp3"
+          },
+          {
+            "dutch": "blad van bep. citrusboom",
+            "english": "leaf of certain citrus tree",
+            "indonesian": "daun jeruk purut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/daun-jeruk-purut-1cb75396.mp3"
+          },
+          {
+            "dutch": "laurierachtig blad",
+            "english": "laurel-like leaf",
+            "indonesian": "daun salam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/daun-salam-2cf2c165.mp3"
+          },
+          {
+            "dutch": "zout",
+            "english": "salt",
+            "indonesian": "garam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/garam-c1ad5200.mp3"
+          },
+          {
+            "dutch": "suiker",
+            "english": "sugar",
+            "indonesian": "gula",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gula-fb636711.mp3"
+          },
+          {
+            "dutch": "palmsuiker",
+            "english": "palm sugar",
+            "indonesian": "gula Jawa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gula-jawa-58a31c00.mp3"
+          },
+          {
+            "dutch": "gember",
+            "english": "ginger",
+            "indonesian": "jahe",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jahe-281cd37e.mp3"
+          },
+          {
+            "dutch": "komijn",
+            "english": "cumin",
+            "indonesian": "jintan, jinten",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jintan-jinten-dea627b7.mp3"
+          },
+          {
+            "dutch": "kaneel",
+            "english": "cinnamon",
+            "indonesian": "kayu manis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kayu-manis-744dd451.mp3"
+          },
+          {
+            "dutch": "ketjap (zoet; zout)",
+            "english": "soy sauce (sweet; salty)",
+            "indonesian": "kecap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kecap-d1ad3db8.mp3"
+          },
+          {
+            "dutch": "kokosnoot",
+            "english": "coconut",
+            "indonesian": "kelapa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kelapa-186ddb71.mp3"
+          },
+          {
+            "dutch": "geurige bladsoort",
+            "english": "fragrant leaf variety",
+            "indonesian": "kemangi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kemangi-9b768ae0.mp3"
+          },
+          {
+            "dutch": "kemirinoot",
+            "english": "candlenut",
+            "indonesian": "kemiri",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kemiri-6134e7c2.mp3"
+          },
+          {
+            "dutch": "foelie (vruchtvlees van nootmuskaat)",
+            "english": "mace",
+            "indonesian": "kembang pala",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kembang-pala-9a287258.mp3"
+          },
+          {
+            "dutch": "soort gemberwortel",
+            "english": "lesser galangal",
+            "indonesian": "kencur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kencur-d63251b5.mp3"
+          },
+          {
+            "dutch": "kardemom",
+            "english": "cardamom",
+            "indonesian": "kepulaga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kepulaga-68ee7d37.mp3"
+          },
+          {
+            "dutch": "koriander",
+            "english": "coriander",
+            "indonesian": "ketumbar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ketumbar-d6d59071.mp3"
+          },
+          {
+            "dutch": "geelwortel, curcuma",
+            "english": "turmeric",
+            "indonesian": "kunir, kunyit",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kunir-kunyit-449ace2b.mp3"
+          },
+          {
+            "dutch": "peper",
+            "english": "pepper",
+            "indonesian": "lada, merica",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lada-merica-6bc1d9c6.mp3"
+          },
+          {
+            "dutch": "gemberachtige wortel",
+            "english": "galangal",
+            "indonesian": "laos",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/laos-760e3438.mp3"
+          },
+          {
+            "dutch": "gemberachtige wortel",
+            "english": "greater galangal",
+            "indonesian": "lengkuas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lengkuas-d1cb07fc.mp3"
+          },
+          {
+            "dutch": "Spaanse peper",
+            "english": "chili pepper",
+            "indonesian": "lombok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lombok-329f1b7f.mp3"
+          },
+          {
+            "dutch": "peper",
+            "english": "pepper",
+            "indonesian": "merica, lada",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/merica-lada-9dde6c21.mp3"
+          },
+          {
+            "dutch": "nootmuskaat",
+            "english": "nutmeg",
+            "indonesian": "pala",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pala-a5f3fd05.mp3"
+          },
+          {
+            "dutch": "vanille",
+            "english": "vanilla",
+            "indonesian": "panili, vanili",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/panili-vanili-a1709c97.mp3"
+          },
+          {
+            "dutch": "geurige vruchten van de petaiboom (stinkboon)",
+            "english": "fragrant pods of the petai tree (stinkbean)",
+            "indonesian": "petai, pete",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/petai-pete-71440e69.mp3"
+          },
+          {
+            "dutch": "kruiden",
+            "english": "spices",
+            "indonesian": "rempah-rempah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rempahrempah-738f8c8b.mp3"
+          },
+          {
+            "dutch": "tot dikke pasta fijngewreven Spaanse pepers",
+            "english": "chili peppers ground to a thick paste",
+            "indonesian": "sambal, sambel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sambal-sambel-130fc6c3.mp3"
+          },
+          {
+            "dutch": "sap van uitgeperste kokospulp",
+            "english": "juice of pressed coconut pulp",
+            "indonesian": "santan, santen",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/santan-santen-fbc48be6.mp3"
+          },
+          {
+            "dutch": "basilicumzaadjes",
+            "english": "basil seeds",
+            "indonesian": "selasih",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/selasih-88d8b566.mp3"
+          },
+          {
+            "dutch": "citrusachtige grassoort",
+            "english": "citrus-like grass",
+            "indonesian": "serai, sereh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/serai-sereh-ee3ccede.mp3"
+          },
+          {
+            "dutch": "geurig, aromatisch blad",
+            "english": "aromatic, fragrant leaf",
+            "indonesian": "temu kunci",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/temu-kunci-bf882d75.mp3"
+          },
+          {
+            "dutch": "curcuma, geelwortel",
+            "english": "turmeric, yellow root",
+            "indonesian": "temu kuning = kunyit",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/temu-kuning-kunyit-bfe19255.mp3"
+          },
+          {
+            "dutch": "garnalen- of vispasta (gedroogd; gebakken)",
+            "english": "shrimp or fish paste (dried; fried)",
+            "indonesian": "terasi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/terasi-83371394.mp3"
+          },
+          {
+            "dutch": "vanille",
+            "english": "vanilla",
+            "indonesian": "vanili, panili",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/vanili-panili-8453a6fc.mp3"
+          },
+          {
+            "dutch": "sesamzaadjes",
+            "english": "sesame seeds",
+            "indonesian": "wijen",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/wijen-89d70f59.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "zuur",
+            "english": "sour",
+            "indonesian": "asam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/asam-a326576c.mp3"
+          },
+          {
+            "dutch": "zout",
+            "english": "salty",
+            "indonesian": "asin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/asin-5ea71683.mp3"
+          },
+          {
+            "dutch": "smaak",
+            "english": "taste",
+            "indonesian": "citarasa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/citarasa-a5c0d2a9.mp3"
+          },
+          {
+            "dutch": "lekker",
+            "english": "delicious",
+            "indonesian": "enak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/enak-147aa769.mp3"
+          },
+          {
+            "dutch": "smakelijk / lekker gekruid",
+            "english": "savory / deliciously spiced",
+            "indonesian": "gurih",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gurih-7fd7492a.mp3"
+          },
+          {
+            "dutch": "niet (zo) lekker",
+            "english": "not (so) delicious",
+            "indonesian": "kurang enak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kurang-enak-8083252f.mp3"
+          },
+          {
+            "dutch": "te weinig ... (zoet) (niet zoet genoeg)",
+            "english": "too little ... (sweet) (not sweet enough)",
+            "indonesian": "kurang ...",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kurang-1b8bcd8d.mp3"
+          },
+          {
+            "dutch": "heerlijk",
+            "english": "delightful",
+            "indonesian": "lezat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lezat-c1af61cc.mp3"
+          },
+          {
+            "dutch": "met smaak eten",
+            "english": "eat with relish",
+            "indonesian": "makan dengan selera",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/makan-dengan-selera-0de88b9c.mp3"
+          },
+          {
+            "dutch": "zoet",
+            "english": "sweet",
+            "indonesian": "manis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/manis-f93276ab.mp3"
+          },
+          {
+            "dutch": "bitter, zonder suiker",
+            "english": "bitter, unsweetened",
+            "indonesian": "pahit",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pahit-64487eaf.mp3"
+          },
+          {
+            "dutch": "heet / scherp",
+            "english": "hot / spicy",
+            "indonesian": "pedas, pedis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pedas-pedis-0b9a4350.mp3"
+          },
+          {
+            "dutch": "smaak",
+            "english": "taste",
+            "indonesian": "rasa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rasa-aadd5574.mp3"
+          },
+          {
+            "dutch": "heerlijk",
+            "english": "delightful",
+            "indonesian": "sedap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sedap-9c2e08b8.mp3"
+          },
+          {
+            "dutch": "te ... (zuur)",
+            "english": "too ... (sour)",
+            "indonesian": "terlalu ...",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/terlalu-67aaf2d5.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Pulau Bali terkenal di seluruh dunia dan turis-turis senang berlibur ke sana. Kalau orang dari pulau Jawa mau ke Bali, mereka harus menyeberang naik feri. Banyak bus malam membawa penumpang dari Malang, Surabaya dan Yogya ke Bali, tetapi mereka belum mendapat giliran naik feri.",
+          "Banyak pedagang kecil menjual dagangannya. Ada yang menjual jamu dan ada juga anak kecil yang menjual rokok, manisan, majalah, es, telur puyuh dalam kantong plastik, dan sebagainya. Jualan mereka laris sekali malam itu sehingga mereka dapat untung besar.",
+          "Waktu itu menjelang hari Lebaran dan pada saat itu selalu banyak turis domestik ingin berlibur ke Bali, walaupun hanya untuk beberapa hari saja. Jalanan penuh sesak. Lalu lintas macet. Karena itu bus harus menunggu giliran lama sekali: \"Mana feri itu, kok tak datang-datang?\"",
+          "Tak lama kemudian bus sudah naik ke kapal. Di kapal, semua orang keluar dari bus dan naik ke geladak untuk melihat ke arah tujuannya: Bali. Anak-anak kecil berenang di dalam air kotor di depan kapal. Uang logam yang dilemparkan ke arah mereka, lalu ditangkap dan dimasukkan ke dalam mulut.",
+          "Di mana-mana di Indonesia, termasuk juga di feri ini dapat dibeli apa saja. Yang paling banyak dibeli penumpang ialah teh, coca-cola, 7-up dan kacang. Seorang penyanyi berambut gondrong memetik gitarnya dan baru mau pergi kalau sudah dikasih uang sedikit.",
+          "Pemuda-pemudi berpandang-pandangan. Mereka mau bercakap-cakap tapi sedikit malu karena diperhatikan orang tuanya. Beberapa pemuda minum bir dan merokok. Penjaga kapal membiarkan mereka saja. \"Mereka 'kan masih muda dan asal tidak mengganggu penumpang lain!\"",
+          "Karena feri penuh sesak dan gelombang laut besar sekali perjalanan makan waktu agak lama. Kebanyakan orang tidak peduli. Mereka ingat pepatah Indonesia: \"Biar lambat asal selamat!\" dan dengan sabar orang menunggu pendaratan di pulau Bali."
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "richting",
+            "english": "direction",
+            "indonesian": "arah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/arah-e428b15d.mp3"
+          },
+          {
+            "dutch": "nachtbus",
+            "english": "night bus",
+            "indonesian": "bus malam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bus-malam-afeca11c.mp3"
+          },
+          {
+            "dutch": "handel",
+            "english": "trade",
+            "indonesian": "dagang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dagang-c3c3ea33.mp3"
+          },
+          {
+            "dutch": "handelswaar",
+            "english": "merchandise",
+            "indonesian": "dagang, -an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dagang-an-5df5f6b9.mp3"
+          },
+          {
+            "dutch": "handelaar",
+            "english": "trader",
+            "indonesian": "dagang, pe-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dagang-pe-ca6d2dd9.mp3"
+          },
+          {
+            "dutch": "gegooid",
+            "english": "thrown",
+            "indonesian": "dilemparkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dilemparkan-93e10e1f.mp3"
+          },
+          {
+            "dutch": "ingestopt",
+            "english": "stuffed in",
+            "indonesian": "dimasukkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dimasukkan-c005b3f9.mp3"
+          },
+          {
+            "dutch": "gadegeslagen / waargenomen",
+            "english": "observed",
+            "indonesian": "diperhatikan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/diperhatikan-7e4762be.mp3"
+          },
+          {
+            "dutch": "binnenlands",
+            "english": "domestic",
+            "indonesian": "domestik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/domestik-b8de6a22.mp3"
+          },
+          {
+            "dutch": "wereld",
+            "english": "world",
+            "indonesian": "dunia",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dunia-df8a9246.mp3"
+          },
+          {
+            "dutch": "ijs",
+            "english": "ice",
+            "indonesian": "es",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/es-084f043d.mp3"
+          },
+          {
+            "dutch": "dek (van schip)",
+            "english": "deck (of ship)",
+            "indonesian": "geladak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/geladak-be0d7b4e.mp3"
+          },
+          {
+            "dutch": "golven",
+            "english": "waves",
+            "indonesian": "gelombang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gelombang-dfc19631.mp3"
+          },
+          {
+            "dutch": "beurt",
+            "english": "turn",
+            "indonesian": "gilir, -an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gilir-an-c7042362.mp3"
+          },
+          {
+            "dutch": "gitaar",
+            "english": "guitar",
+            "indonesian": "gitar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gitar-bf2f0e11.mp3"
+          },
+          {
+            "dutch": "lang (van haar)",
+            "english": "long (of hair)",
+            "indonesian": "gondrong",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gondrong-19f71595.mp3"
+          },
+          {
+            "dutch": "bewaker",
+            "english": "guard",
+            "indonesian": "jaga, pen-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jaga-pen-a5a08103.mp3"
+          },
+          {
+            "dutch": "verkoop",
+            "english": "sale",
+            "indonesian": "jual, -an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jual-an-64d984f1.mp3"
+          },
+          {
+            "dutch": "merendeel / meeste",
+            "english": "most",
+            "indonesian": "kebanyakan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kebanyakan-06fc3766.mp3"
+          },
+          {
+            "dutch": "laat / vertraagd",
+            "english": "late / delayed",
+            "indonesian": "lambat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lambat-987fd1b2.mp3"
+          },
+          {
+            "dutch": "file / vastlopen",
+            "english": "traffic jam / stuck",
+            "indonesian": "macet",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/macet-8c29285d.mp3"
+          },
+          {
+            "dutch": "verlegen",
+            "english": "embarrassed",
+            "indonesian": "malu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/malu-e7a0df3e.mp3"
+          },
+          {
+            "dutch": "toestaan / toelaten",
+            "english": "allow",
+            "indonesian": "membiarkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/membiarkan-a66ad939.mp3"
+          },
+          {
+            "dutch": "kort voor",
+            "english": "shortly before",
+            "indonesian": "menjelang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/menjelang-8baaf829.mp3"
+          },
+          {
+            "dutch": "jongeman",
+            "english": "young man",
+            "indonesian": "muda, pe-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/muda-pe-3a3869dd.mp3"
+          },
+          {
+            "dutch": "jonge vrouw",
+            "english": "young woman",
+            "indonesian": "mudi, pe-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/mudi-pe-71d957fe.mp3"
+          },
+          {
+            "dutch": "elkaar aankijken",
+            "english": "look at each other",
+            "indonesian": "pandang, ber- -an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pandang-ber-an-8aa1cc34.mp3"
+          },
+          {
+            "dutch": "zich storen aan",
+            "english": "care about",
+            "indonesian": "peduli",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peduli-2574b203.mp3"
+          },
+          {
+            "dutch": "jongeren",
+            "english": "young people",
+            "indonesian": "pemuda-pemudi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pemudapemudi-f1cdd5f5.mp3"
+          },
+          {
+            "dutch": "landing",
+            "english": "landing",
+            "indonesian": "pendaratan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pendaratan-c7fca227.mp3"
+          },
+          {
+            "dutch": "tjokvol",
+            "english": "jam-packed",
+            "indonesian": "penuh sesak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penuh-sesak-af8ece2b.mp3"
+          },
+          {
+            "dutch": "bevel",
+            "english": "command",
+            "indonesian": "perintah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/perintah-dd3fef41.mp3"
+          },
+          {
+            "dutch": "tokkelen",
+            "english": "pluck, pick",
+            "indonesian": "petik, memetik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/petik-memetik-d18e10e7.mp3"
+          },
+          {
+            "dutch": "plastic",
+            "english": "plastic",
+            "indonesian": "plastik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/plastik-f45945a7.mp3"
+          },
+          {
+            "dutch": "kwartel",
+            "english": "quail",
+            "indonesian": "puyuh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/puyuh-09637e7e.mp3"
+          },
+          {
+            "dutch": "haar hebben",
+            "english": "hair, have hair",
+            "indonesian": "rambut, berambut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rambut-berambut-49d7bd1a.mp3"
+          },
+          {
+            "dutch": "zwemmen",
+            "english": "swim, swimming",
+            "indonesian": "renang, berenang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/renang-berenang-eb92b0e1.mp3"
+          },
+          {
+            "dutch": "geduld",
+            "english": "patience",
+            "indonesian": "sabar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sabar-ba60ffd7.mp3"
+          },
+          {
+            "dutch": "af en toe",
+            "english": "now and then",
+            "indonesian": "sekali-sekali",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sekalisekali-3bbd7f96.mp3"
+          },
+          {
+            "dutch": "doel / richting",
+            "english": "goal, direction",
+            "indonesian": "tuju, -an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tuju-an-ce4ab055.mp3"
+          },
+          {
+            "dutch": "passagier",
+            "english": "passenger",
+            "indonesian": "tumpang, penumpang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tumpang-penumpang-2687f89c.mp3"
+          },
+          {
+            "dutch": "binnenlandse toerist",
+            "english": "domestic tourist",
+            "indonesian": "turis domestik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/turis-domestik-c0252a1b.mp3"
+          },
+          {
+            "dutch": "winst",
+            "english": "profit",
+            "indonesian": "untung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/untung-d4627938.mp3"
+          },
+          {
+            "dutch": "dat wil zeggen",
+            "english": "that is to say",
+            "indonesian": "yaitu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yaitu-6f92a749.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Het voorvoegsel PE- maakt van het basiswoord een zelfstandig naamwoord met de betekenis van een handelend persoon of een ding/instrument dat de handeling verricht.",
+              "Bij veel PE-woorden hoort een ME-werkwoord met hetzelfde basiswoord: penjual = seorang yang menjual (verkoper), pembuka = alat untuk membuka (opener).",
+              "PE- wordt gecombineerd met een werkwoord (duduk → penduduk, ingezetene), een zelfstandig naamwoord (laut → pelaut, zeeman), een bijvoeglijk naamwoord (malas → pemalas, luilak) en zeldzaam een telwoord (dua → pendua, bijkris)."
+            ],
+            "title": "Het voorvoegsel PE-: een handelend persoon of ding",
+            "examples": [
+              {
+                "dutch": "opener (alat untuk membuka)",
+                "english": "opener (tool for opening)",
+                "indonesian": "pembuka",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pembuka-4951df78.mp3"
+              },
+              {
+                "dutch": "verkoper (seorang yang menjual)",
+                "english": "seller (someone who sells)",
+                "indonesian": "penjual",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penjual-c3c3144c.mp3"
+              },
+              {
+                "dutch": "hulp in de huishouding (seorang yang membantu)",
+                "english": "domestic helper (someone who helps)",
+                "indonesian": "pembantu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pembantu-7730c6fb.mp3"
+              },
+              {
+                "dutch": "ingezetene (van duduk)",
+                "english": "resident (from duduk)",
+                "indonesian": "penduduk",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penduduk-269161d7.mp3"
+              },
+              {
+                "dutch": "zeeman (van laut)",
+                "english": "sailor (from laut)",
+                "indonesian": "pelaut",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pelaut-960032ba.mp3"
+              }
+            ],
+            "rules_en": [
+              "The prefix PE- turns a base word into a noun meaning a person who acts or a thing/instrument that performs the action.",
+              "Many PE- words have a corresponding ME- verb with the same base word: penjual = someone who sells (seller), pembuka = tool for opening (opener).",
+              "PE- is combined with a verb (duduk → penduduk, resident), a noun (laut → pelaut, sailor), an adjective (malas → pemalas, lazybones), and rarely a numeral (dua → pendua, duplicate)."
+            ],
+            "title_en": "The prefix PE-: a person or thing that acts"
+          },
+          {
+            "rules": [
+              "PE- wordt op dezelfde wijze voorgevoegd als ME-; de beginklank van het basiswoord bepaalt de vorm.",
+              "Bij basiswoorden die beginnen met L, M, N, NY, R, W of Y blijft het voorvoegsel onveranderd PE-."
+            ],
+            "title": "A. Voorvoeging zonder verandering van het basiswoord (L, M, N, NY, R, W, Y)",
+            "examples": [
+              {
+                "dutch": "rapporteren → rapporteur",
+                "english": "lapor → pelapor | report → reporter",
+                "indonesian": "lapor → pelapor",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lapor-pelapor-c1b2eaf7.mp3"
+              },
+              {
+                "dutch": "bezitten → eigenaar",
+                "english": "milik → pemilik | own → owner",
+                "indonesian": "milik → pemilik",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/milik-pemilik-8cb45a1e.mp3"
+              },
+              {
+                "dutch": "beoordelen → taxateur",
+                "english": "nilai → penilai | assess → assessor",
+                "indonesian": "nilai → penilai",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nilai-penilai-b72aaccc.mp3"
+              },
+              {
+                "dutch": "zingen → zanger",
+                "english": "nyanyi → penyanyi | sing → singer",
+                "indonesian": "nyanyi → penyanyi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nyanyi-penyanyi-41d0027e.mp3"
+              },
+              {
+                "dutch": "beroven → rover",
+                "english": "rampok → perampok | rob → robber",
+                "indonesian": "rampok → perampok",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rampok-perampok-29ab31f1.mp3"
+              },
+              {
+                "dutch": "erven → erfgenaam",
+                "english": "heir → heir/inheritor",
+                "indonesian": "waris → pewaris",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/waris-pewaris-e4fe70e5.mp3"
+              },
+              {
+                "dutch": "judo → judoka",
+                "english": "judo → judoka",
+                "indonesian": "yudo → peyudo",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yudo-peyudo-2f68ec0e.mp3"
+              }
+            ],
+            "rules_en": [
+              "PE- is prefixed in the same way as ME-; the initial consonant of the base word determines the form.",
+              "With base words beginning with L, M, N, NY, R, W, or Y, the prefix remains unchanged as PE-."
+            ],
+            "title_en": "A. Prefixing without change to the base word (L, M, N, NY, R, W, Y)"
+          },
+          {
+            "rules": [
+              "Bij basiswoorden die beginnen met B of F wordt het voorvoegsel PEM-."
+            ],
+            "title": "PEM- voor B en F",
+            "examples": [
+              {
+                "dutch": "lezen → lezer",
+                "english": "read → reader",
+                "indonesian": "baca → pembaca",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/baca-pembaca-674df9fd.mp3"
+              },
+              {
+                "dutch": "lasteren → lasteraar",
+                "english": "slander → slanderer",
+                "indonesian": "fitnah → pemfitnah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/fitnah-pemfitnah-ef46020d.mp3"
+              }
+            ],
+            "rules_en": [
+              "For base words beginning with B or F, the prefix PEM- is used."
+            ],
+            "title_en": "PEM- before B and F"
+          },
+          {
+            "rules": [
+              "Bij basiswoorden die beginnen met C, D of J wordt het voorvoegsel PEN-."
+            ],
+            "title": "PEN- voor C, D, J",
+            "examples": [
+              {
+                "dutch": "stelen → dief",
+                "english": "steal → thief",
+                "indonesian": "curi → pencuri",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/curi-pencuri-f77a3ed9.mp3"
+              },
+              {
+                "dutch": "horen → luisteraar",
+                "english": "hear → listener",
+                "indonesian": "dengar → pendengar",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dengar-pendengar-1a930575.mp3"
+              },
+              {
+                "dutch": "verkopen → verkoper",
+                "english": "sell → seller",
+                "indonesian": "jual → penjual",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jual-penjual-00393928.mp3"
+              }
+            ],
+            "rules_en": [
+              "For base words beginning with C, D, or J, the prefix PEN- is used."
+            ],
+            "title_en": "PEN- before C, D, J"
+          },
+          {
+            "rules": [
+              "Bij basiswoorden die beginnen met een klinker (A, E, I, O, U) of met G of H wordt het voorvoegsel PENG-."
+            ],
+            "title": "PENG- voor de klinkers (A, E, I, O, U) en voor G, H",
+            "examples": [
+              {
+                "dutch": "onderwijzen → onderwijzer",
+                "english": "teach → teacher",
+                "indonesian": "ajar → pengajar",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ajar-pengajar-db6798ab.mp3"
+              },
+              {
+                "dutch": "zwerven → zwerver",
+                "english": "wander → wanderer",
+                "indonesian": "embara → pengembara",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/embara-pengembara-69be24e0.mp3"
+              },
+              {
+                "dutch": "volgen → volgeling",
+                "english": "follow → follower",
+                "indonesian": "ikut → pengikut",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ikut-pengikut-ccee7ae1.mp3"
+              },
+              {
+                "dutch": "bewerken → bewerker",
+                "english": "process → processor",
+                "indonesian": "olah → pengolah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/olah-pengolah-e2086e0c.mp3"
+              },
+              {
+                "dutch": "regelen → bestuurder",
+                "english": "manage → manager",
+                "indonesian": "urus → pengurus",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/urus-pengurus-0f8765c7.mp3"
+              },
+              {
+                "dutch": "vervangen → vervanger",
+                "english": "replace → replacement/substitute",
+                "indonesian": "ganti → pengganti",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ganti-pengganti-8240f80f.mp3"
+              },
+              {
+                "dutch": "tellen → teller",
+                "english": "count → counter",
+                "indonesian": "hitung → penghitung",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/hitung-penghitung-5dd2dbbd.mp3"
+              }
+            ],
+            "rules_en": [
+              "For base words beginning with a vowel (A, E, I, O, U) or with G or H, the prefix PENG- is used."
+            ],
+            "title_en": "PENG- before vowels (A, E, I, O, U) and before G, H"
+          },
+          {
+            "rules": [
+              "Bij basiswoorden die beginnen met K, P, S of T valt de beginklank weg en versmelt met de neusklank, net als bij ME-.",
+              "K → peng- (de k verdwijnt), P → pem- (de p verdwijnt), S → peny- (de s verdwijnt), T → pen- (de t verdwijnt).",
+              "De oorspronkelijke medeklinker is in het afgeleide woord niet meer hoorbaar; herken het basiswoord ondanks de wegval."
+            ],
+            "title": "B. Voorvoeging met wegval van de beginklank (K, P, S, T)",
+            "examples": [
+              {
+                "dutch": "besturen → bestuurder",
+                "english": "steer → driver",
+                "indonesian": "kemudi → pengemudi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kemudi-pengemudi-62bec590.mp3"
+              },
+              {
+                "dutch": "bestellen → opdrachtgever",
+                "english": "order → orderer",
+                "indonesian": "pesan → pemesan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pesan-pemesan-1fa41976.mp3"
+              },
+              {
+                "dutch": "huren → huurder",
+                "english": "rent → renter",
+                "indonesian": "sewa → penyewa",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sewa-penyewa-8c9b0575.mp3"
+              },
+              {
+                "dutch": "schrijven → schrijver",
+                "english": "write → writer",
+                "indonesian": "tulis → penulis",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tulis-penulis-b6ea316e.mp3"
+              }
+            ],
+            "rules_en": [
+              "For base words beginning with K, P, S, or T, the initial consonant is dropped and merges with the nasal, just as with ME-.",
+              "K → peng- (the k disappears), P → pem- (the p disappears), S → peny- (the s disappears), T → pen- (the t disappears).",
+              "The original consonant is no longer audible in the derived word; recognize the base word despite the loss."
+            ],
+            "title_en": "B. Prefixation with loss of initial consonant (K, P, S, T)"
+          },
+          {
+            "rules": [
+              "Soms drukt PE- uit dat iemand iets in overdreven mate is of doet."
+            ],
+            "title": "PE- met de bijbetekenis van overdrijving",
+            "examples": [
+              {
+                "dutch": "luilak",
+                "english": "lazy person",
+                "indonesian": "pemalas",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pemalas-1d3880ee.mp3"
+              },
+              {
+                "dutch": "waaghals",
+                "english": "daredevil",
+                "indonesian": "pemberani",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pemberani-b5d4ea26.mp3"
+              },
+              {
+                "dutch": "dronkaard, zuiplap",
+                "english": "drunkard",
+                "indonesian": "peminum",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peminum-9d4d60f7.mp3"
+              },
+              {
+                "dutch": "huilebalk",
+                "english": "crybaby",
+                "indonesian": "penangis",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penangis-9979c154.mp3"
+              },
+              {
+                "dutch": "zwijgzaam persoon",
+                "english": "taciturn person",
+                "indonesian": "pendiam",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pendiam-7cd3405d.mp3"
+              },
+              {
+                "dutch": "koffieleut",
+                "english": "coffee drinker",
+                "indonesian": "pengopi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pengopi-8f13fada.mp3"
+              },
+              {
+                "dutch": "slaapkop",
+                "english": "sleepyhead",
+                "indonesian": "penidur",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penidur-0e6f9b8a.mp3"
+              },
+              {
+                "dutch": "herrieschopper",
+                "english": "troublemaker",
+                "indonesian": "peribut",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peribut-63fa9282.mp3"
+              }
+            ],
+            "rules_en": [
+              "Sometimes PE- expresses that someone is or does something to an exaggerated degree."
+            ],
+            "title_en": "PE- with the connotation of exaggeration"
+          },
+          {
+            "rules": [
+              "Soms worden de algemene plaatsingsregels niet toegepast en blijft PE- onveranderd waar je een neusklank zou verwachten.",
+              "Het blijft daarom zaak de spelling in een goed woordenboek te controleren."
+            ],
+            "title": "Afwijkende pe-vormen (algemene regels niet toegepast)",
+            "examples": [
+              {
+                "dutch": "handelaar",
+                "english": "merchant",
+                "indonesian": "pedagang",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pedagang-6126acc6.mp3"
+              },
+              {
+                "dutch": "hoge ambtenaar",
+                "english": "high official",
+                "indonesian": "pejabat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pejabat-77a61346.mp3"
+              },
+              {
+                "dutch": "deelnemer",
+                "english": "participant",
+                "indonesian": "peserta",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peserta-e1d2d04d.mp3"
+              },
+              {
+                "dutch": "landbouwer",
+                "english": "farmer",
+                "indonesian": "petani",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/petani-f57ae870.mp3"
+              }
+            ],
+            "rules_en": [
+              "Sometimes the general placement rules are not applied and PE- remains unchanged where you would expect a nasal.",
+              "It is therefore advisable to check the spelling in a good dictionary."
+            ],
+            "title_en": "Irregular pe- forms (general rules not applied)"
+          },
+          {
+            "rules": [
+              "Een PE-vorm verschijnt vaak als kern van een woordgroep die een instrument of beroep aanduidt, gevolgd door een bepaling.",
+              "Let op het betekenisverschil binnen één basiswoord: de PE-vorm is de uitvoerder of het middel, de -an-vorm is het resultaat (pemilih = de kiezer, pilihan = de keuze / wat gekozen is)."
+            ],
+            "title": "Samenstellingen met PE-",
+            "examples": [
+              {
+                "dutch": "opener (van buka, openen)",
+                "english": "opener (from buka, to open)",
+                "indonesian": "alat pembuka",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/alat-pembuka-de40d2c2.mp3"
+              },
+              {
+                "dutch": "wasvrouw (van cuci, wassen)",
+                "english": "washerwoman (from cuci, to wash)",
+                "indonesian": "wanita pencuci",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/wanita-pencuci-2dad0935.mp3"
+              },
+              {
+                "dutch": "shampoo",
+                "english": "shampoo",
+                "indonesian": "pencuci rambut",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pencuci-rambut-a3310bf1.mp3"
+              },
+              {
+                "dutch": "luchtverfrisser (van harum, geur)",
+                "english": "air freshener (from harum, fragrance)",
+                "indonesian": "pengharum ruangan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pengharum-ruangan-4e05179a.mp3"
+              },
+              {
+                "dutch": "telmachine (van hitung, tellen)",
+                "english": "counting machine (from hitung, to count)",
+                "indonesian": "alat penghitung",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/alat-penghitung-7945b9a9.mp3"
+              },
+              {
+                "dutch": "antwoordapparaat / geluidsrecorder (van rekam, opnemen)",
+                "english": "answering machine / voice recorder (from rekam, to record)",
+                "indonesian": "perekam suara",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/perekam-suara-1d27bff2.mp3"
+              },
+              {
+                "dutch": "kalmeringspil (van tenang, rustig)",
+                "english": "tranquilizer pill (from tenang, calm)",
+                "indonesian": "pil penenang",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pil-penenang-02545abb.mp3"
+              },
+              {
+                "dutch": "de kiezer (memilih) / de keuze (dipilih)",
+                "english": "the voter (memilih) / the choice (dipilih)",
+                "indonesian": "pemilih / pilihan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pemilih-pilihan-e4b903e9.mp3"
+              }
+            ],
+            "rules_en": [
+              "A PE- form often appears as the core of a phrase group that designates an instrument or profession, followed by a modifier.",
+              "Note the meaning difference within one root word: the PE- form is the executor or the means, the -an form is the result (pemilih = the voter, pilihan = the choice / what is chosen)."
+            ],
+            "title_en": "Compounds with PE-"
+          }
+        ],
+        "grammar_topics": [
+          "Het voorvoegsel PE-"
+        ]
+      }
+    },
+    {
+      "order_index": 6,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "conversation",
+            "title": "Latihan I",
+            "instruction": "Schrijf een kort verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van de drie tekeningen: (1) een motorrijder in de regen met 'Wah mau hujan!', (2) een fiets tegen een boom met 'Syukur tidak mati', (3) een man op een bank met de omroep 'Pak Yance dipanggil'."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "pembantu",
+                "prompt": "bantu"
+              },
+              {
+                "answer": "perokok",
+                "prompt": "rokok"
+              },
+              {
+                "answer": "pendapat",
+                "prompt": "dapat"
+              },
+              {
+                "answer": "pengunjung",
+                "prompt": "kunjung"
+              },
+              {
+                "answer": "pengawas",
+                "prompt": "awas"
+              },
+              {
+                "answer": "pencuri",
+                "prompt": "curi"
+              },
+              {
+                "answer": "pemerintah",
+                "prompt": "perintah"
+              },
+              {
+                "answer": "pemilik",
+                "prompt": "milik"
+              },
+              {
+                "answer": "pengemudi",
+                "prompt": "mengemudi"
+              },
+              {
+                "answer": "penduduk",
+                "prompt": "duduk"
+              }
+            ],
+            "title": "Latihan II",
+            "instruction": "Maak een PE-vorm van onderstaande woorden en pas deze toe in een zin. De PE-vorm staat hieronder als antwoord; bedenk er zelf een passende zin bij."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "ingat",
+                "prompt": "lupa"
+              },
+              {
+                "answer": "lambat",
+                "prompt": "cepat"
+              },
+              {
+                "answer": "basah",
+                "prompt": "kering"
+              },
+              {
+                "answer": "kurang",
+                "prompt": "lebih"
+              },
+              {
+                "answer": "sudah",
+                "prompt": "belum"
+              },
+              {
+                "answer": "penutup",
+                "prompt": "pembuka"
+              },
+              {
+                "answer": "nanti",
+                "prompt": "tadi"
+              },
+              {
+                "answer": "pergi",
+                "prompt": "pulang"
+              },
+              {
+                "answer": "besok",
+                "prompt": "kemarin"
+              },
+              {
+                "answer": "bertanya",
+                "prompt": "menjawab"
+              }
+            ],
+            "title": "Latihan III",
+            "instruction": "Wat is het tegenovergestelde van:"
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Penyanyi lagu yang indah ini pergi ke Jakarta naik pesawat terbang.",
+                "prompt": "De zanger van dit mooie lied gaat met het vliegtuig naar Jakarta."
+              },
+              {
+                "answer": "Perangko Indonesia itu diminta oleh pengumpul perangko dari Belanda.",
+                "prompt": "Die Indonesische postzegels worden gevraagd door de postzegelverzamelaar uit Nederland."
+              },
+              {
+                "answer": "Para pembaca buku ini setuju dengan penulisnya.",
+                "prompt": "De lezers van dit boek zijn het eens met de schrijver."
+              },
+              {
+                "answer": "Siapa pengirim surat ini?",
+                "prompt": "Wie is de afzender van deze brief?"
+              },
+              {
+                "answer": "Mardi, si pemalas, masih tidur, tetapi adik perempuannya sudah bekerja sebagai pembantu.",
+                "prompt": "Mardi, de luilak, slaapt nog, maar zijn zusje is al aan het werk als hulp in de huishouding."
+              },
+              {
+                "answer": "Para pencari emas mencari emas di sungai.",
+                "prompt": "De goudzoekers zoeken in de rivier naar goud."
+              },
+              {
+                "answer": "Pemuda-pemudi senang bercakap-cakap satu sama lain sampai malam.",
+                "prompt": "De jongelui vinden het fijn om tot 's avonds laat met elkaar te praten."
+              },
+              {
+                "answer": "Siapa pengganti Pak Adang?",
+                "prompt": "Wie is de vervanger van meneer Adang?"
+              },
+              {
+                "answer": "Sekali setahun para penulis mengadakan pesta di Hotel Mutiara.",
+                "prompt": "Eenmaal per jaar houden de schrijvers een feest in Hotel Mutiara."
+              },
+              {
+                "answer": "Museum Van Gogh adalah contoh bagi para pembaharu museum.",
+                "prompt": "Het Van Goghmuseum is een voorbeeld voor museumvernieuwers."
+              }
+            ],
+            "title": "Latihan IV",
+            "instruction": "Vertaal."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"17068386-b35d-4f6a-a7c8-64105ab0d630\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"17068386-b35d-4f6a-a7c8-64105ab0d630\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

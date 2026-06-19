@@ -1,0 +1,103 @@
+{
+  "lesson_number": 22,
+  "cefr_level": "A1",
+  "lesson_topic": "Pesta Pernikahan (een bruiloft) — familierelaties en verdubbelingen (reduplicatie)",
+  "grammar_patterns": [
+    {
+      "slug": "l22-verdubbeling-inleiding-en-de-angka-dua",
+      "name": "Verdubbeling — algemene inleiding en de oude \"angka dua\"",
+      "description": "Reduplicatie als productief woordvormingsproces; drie woordsoorten (werkwoord, zelfstandig naamwoord, bijvoeglijk naamwoord); de verboden oude \"angka dua\"-spelling (anak² = anak-anak); verdubbeling betekent niet automatisch meervoud.",
+      "confusion_group": "reduplication",
+      "key_contrast": "verdubbeling met koppelteken (anak-anak) versus de oude/verboden cijfer-2 notatie (anak²); en het misverstand 'verdubbeling = meervoud'",
+      "research_notes": "Reduplicatie (Indonesisch: kata ulang / reduplikasi) is een van de meest productieve morfologische processen van het Indonesisch. De meest basale, volledige vorm heet dwilingga (anak-anak). Nederlandstaligen projecteren ten onrechte hun eigen meervoud op de verdubbeling; de kern-leerregel is dat de betekenis per woordsoort verschilt en bij naamwoorden 'diversiteit' impliceert, niet kale pluraliteit. De officiële spelling (EYD) verbiedt de superscript-2 notatie.",
+      "example_sentences": [
+        { "id": "Anak-anak itu bermain di alun-alun.", "nl": "Die kinderen spelen op het stadsplein." },
+        { "id": "Dahulu orang menulis anak² untuk anak-anak.", "nl": "Vroeger schreef men anak² voor anak-anak." }
+      ]
+    },
+    {
+      "slug": "l22-verdubbeling-werkwoord-wederkerigheid-intensiteit-voortduring",
+      "name": "Verdubbeling van het werkwoord — wederkerigheid, intensiteit en voortduring",
+      "description": "Werkwoordverdubbeling drukt wederkerigheid (sewa-menyewa, surat-menyurat), intensiteit/nadruk, of voortduring en een spelend karakter uit (jalan-jalan, main-main) — geen meervoud.",
+      "confusion_group": "reduplication",
+      "key_contrast": "jalan-jalan (voortdurend/ongericht: rondwandelen) versus jalan (gericht: lopen/gaan); en de half-verdubbelde wederkerige ME-vorm sewa-menyewa (huren én verhuren) versus enkelvoudig menyewa (huren)",
+      "research_notes": "Wederkerige reduplicatie is een zeer productief type. Twee subpatronen: volledige verdubbeling (main-main) en de 'half'-vorm waarbij het tweede deel de ME-vorm draagt (surat-menyurat). Voor Nederlandstaligen is jalan-jalan een hoogfrequent struikelwoord: het is geen meervoud van 'lopen' maar een aspectueel/ongericht 'een uitstapje maken'.",
+      "example_sentences": [
+        { "id": "Mari kita jalan-jalan ke alun-alun.", "nl": "Kom, laten we een uitstapje maken naar het stadsplein." },
+        { "id": "Mereka sudah lama surat-menyurat.", "nl": "Zij corresponderen al lang met elkaar." }
+      ]
+    },
+    {
+      "slug": "l22-verdubbeling-zelfstandig-naamwoord-meervoud-met-diversiteit",
+      "name": "Verdubbeling van het zelfstandig naamwoord — meervoud mét diversiteit",
+      "description": "Naamwoordverdubbeling geeft meervoud met een onlosmakelijk aspect van diversiteit/verscheidenheid; de plaats van de verdubbeling verschuift de betekenis; vermijd verdubbeling als een telwoord het meervoud al draagt.",
+      "confusion_group": "reduplication",
+      "key_contrast": "orang-orang tua (ouderparen) versus orang tua-tua (diverse oude mensen) — plaatsverschuiving; en buku-buku (allerlei boeken) versus dua buku (twee boeken: GEEN verdubbeling want telwoord aanwezig)",
+      "research_notes": "Indonesische naamwoordreduplicatie is 'plurality + variety', niet kale pluraliteit. Cruciale fout van Nederlandstaligen: dubbele markering — *dua buku-buku — terwijl een telwoord het meervoud al draagt. De positie van -tua in orang-orang tua versus orang tua-tua is een mooi minimal pair om de diversiteits-semantiek te tonen.",
+      "example_sentences": [
+        { "id": "Kota-kota di Indonesia ada yang besar, ada yang kecil.", "nl": "Er zijn grote en kleine steden in Indonesië." },
+        { "id": "Di pasar dijual buah-buahan.", "nl": "Op de markt wordt allerlei fruit verkocht." }
+      ]
+    },
+    {
+      "slug": "l22-gelexicaliseerde-verdubbelingen-en-klankverschuiving",
+      "name": "Gelexicaliseerde verdubbelingen, speciale betekenissen en klankverschuiving",
+      "description": "Drie groepen vaste vormen: woorden die alleen verdubbeld bestaan (alun-alun, kura-kura), verdubbelingen met een afwijkende betekenis (mata-mata = spion), en verdubbelingen met klankverschuiving (sayur-mayur, warna-warni).",
+      "confusion_group": "reduplication",
+      "key_contrast": "mata (oog) versus mata-mata (spion) — verdubbeling = NIET 'twee ogen' maar een nieuw lexeem; en de klankverschuiving sayur → sayur-mayur (niet *sayur-sayur) als apart type (dwilingga salin suara)",
+      "research_notes": "De taalkundige term is dwilingga salin suara (reduplicatie met klankwisseling): bolak-balik, lauk-pauk, sayur-mayur, teka-teki, warna-warni. Deze zijn niet productief af te leiden en moeten als idiomen geleerd worden. langit-langit (gehemelte) en mata-mata (spion) tonen dat verdubbeling semantisch volledig kan delexicaliseren. alun-alun en kura-kura hebben geen los basiswoord.",
+      "example_sentences": [
+        { "id": "Dia bekerja sebagai mata-mata.", "nl": "Hij werkt als spion." },
+        { "id": "Saya mau membeli kura-kura untuk Arwin.", "nl": "Ik wil een schildpad kopen voor Arwin." }
+      ]
+    },
+    {
+      "slug": "l22-verdubbeling-zelfstandig-naamwoord-plus-an",
+      "name": "Verdubbeling van het zelfstandig naamwoord plus -AN — collectief of \"lijkend op\"",
+      "description": "Naamwoord + verdubbeling + -AN heeft twee betekenissen: (a) een abstracter collectief (daun-daunan = gebladerte) en (b) iets dat lijkt op het origineel / speelgoed (orang-orangan = vogelverschrikker, robot-robotan = speelgoedrobotje).",
+      "confusion_group": "reduplication",
+      "key_contrast": "daun (blad) → daun-daun (bladeren) → daun-daunan (gebladerte: collectiever/abstracter); en orang (mens) → orang-orangan (vogelverschrikker: 'lijkt op een mens')",
+      "research_notes": "De -an-laag stapelt op de verdubbeling en levert óf een hoger-orde collectief (sayur → sayur-sayur → sayur-sayuran) óf een 'mock/resemblance'-betekenis (pesawat-pesawatan = speelgoedvliegtuigje). De driedeling daun / daun-daun / daun-daunan is het ideale onderwijsvoorbeeld. De stelregel 'levend ding + -an reduplicatie → namaak/speelgoed' helpt onderscheiden.",
+      "example_sentences": [
+        { "id": "Di kebun banyak daun-daunan kering.", "nl": "In de tuin ligt veel droog gebladerte." },
+        { "id": "Petani memasang orang-orangan di sawah.", "nl": "De boer zet een vogelverschrikker in de rijstvelden." }
+      ]
+    },
+    {
+      "slug": "l22-verdubbeling-bijvoeglijk-naamwoord-versterking-en-samenstellingen",
+      "name": "Verdubbeling van het bijvoeglijk naamwoord — versterking en samenstellingen",
+      "description": "Adjectiefverdubbeling intensiveert (kertas tipis-tipis = heel dun papier), normaal zonder extra sekali/amat. Daarnaast samenstellingen van twee synonieme (kecil-kurus) of twee tegengestelde (besar-kecil = de grootte) bijvoeglijke naamwoorden.",
+      "confusion_group": "reduplication",
+      "key_contrast": "tipis (dun) versus tipis-tipis (heel dun: intensivering, zónder sekali); en synoniem-samenstelling kecil-kurus (klein én mager) versus tegenstelling-samenstelling besar-kecil (de grootte/omvang, een abstracte eigenschap)",
+      "research_notes": "Twee functies: pure intensivering (tipis-tipis, masam-masam) en samenstelling. Belangrijke gebruiksregel: bij de geïntensiveerde vorm voegt men normaliter geen sekali/amat toe. De tegengestelde samenstelling (besar-kecil, panjang-pendek, tua-muda) is voor Nederlandstaligen contra-intuïtief: ze benoemt de dimensie zelf (de grootte, de lengte), niet 'groot en klein'.",
+      "example_sentences": [
+        { "id": "Anak kecil-kecil itu sangat lucu.", "nl": "Dat heel kleine kind is erg schattig." },
+        { "id": "Saya tidak tahu besar-kecil kamar itu.", "nl": "Ik weet de grootte van die kamer niet." }
+      ]
+    },
+    {
+      "slug": "l22-vaste-verdubbelingen-met-functie-van-bijwoord",
+      "name": "Vaste verdubbelingen met de functie van bijwoord",
+      "description": "Een gesloten groep verdubbelingen functioneert als vast bijwoord: hati-hati (voorzichtig), kira-kira (ongeveer), mula-mula (aanvankelijk), pelan-pelan (kalm aan), tiba-tiba (plotseling).",
+      "confusion_group": "reduplication",
+      "key_contrast": "deze bijwoordelijke verdubbelingen zijn vast en niet-productief; tiba (aankomen) ≠ tiba-tiba (plotseling)",
+      "research_notes": "Gelexicaliseerde adverbiale reduplicaties; hoogfrequent in spreektaal (hati-hati op verkeersborden, pelan-pelan als 'rustig aan'). De semantische afstand tot het basiswoord is groot, dus ze moeten als vocabulaire-items geleerd worden. Latihan IV van deze les oefent ze rechtstreeks.",
+      "example_sentences": [
+        { "id": "Tiba-tiba adik Tuti masuk.", "nl": "Plotseling kwam Tuti's zusje binnen." },
+        { "id": "Hati-hati di jalan!", "nl": "Wees voorzichtig onderweg!" }
+      ]
+    },
+    {
+      "slug": "l22-kleurnuances-muda-tua-vruchten-en-ke-an-achtig-verdubbeling",
+      "name": "Kleurnuances — muda/tua, vruchtvergelijkingen en de ke-...-an \"-achtig\" verdubbeling",
+      "description": "Kleurnuance op drie manieren: tint met muda (licht) / tua (donker), vergelijking met een vrucht/ding (biru laut, merah jambu), en benadering met de ke-...-an verdubbeling (kebiru-biruan = blauwachtig).",
+      "confusion_group": "reduplication",
+      "key_contrast": "hijau muda/tua (lichter/donkerder van dezelfde kleur) versus kebiru-biruan (níet helemaal blauw, 'agak', -achtig); en vrucht-vergelijking merah jambu versus ke-...-an benadering",
+      "research_notes": "De ke-...-an-reduplicatie van kleurwoorden (kebiru-biruan, kekuning-kuningan, kemerah-merahan) betekent 'agak X' — enigszins X — en is de tegenhanger van het Engelse -ish en het Nederlandse -achtig. Onderscheid voor de leerder: muda/tua = lichter/donkerder binnen dezelfde kleur; ke-...-an = afwijkend/benaderend richting die kleur; vruchtvergelijking = een culturele, vaste tintnaam.",
+      "example_sentences": [
+        { "id": "Langit kebiru-biruan di pagi hari.", "nl": "Een blauwachtige lucht in de ochtend." },
+        { "id": "Bunga itu merah jambu.", "nl": "Die bloem is jambu-roze." }
+      ]
+    }
+  ]
+}

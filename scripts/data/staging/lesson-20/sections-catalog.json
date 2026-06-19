@@ -1,0 +1,627 @@
+{
+  "lesson": 20,
+  "generatedAt": "2026-06-18T05:40:23.561Z",
+  "sourcePages": 8,
+  "lessonMeta": {
+    "title": "Bab 4 - Biar Lambat Asal Selamat",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 20
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Kebudayaan - Kruiden",
+      "source_pages": [
+        1,
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Bij Indonesische gerechten is de samenstelling van kruidenmengsels (bumbu-bumbu) het grote geheim van de kok. Achteloos gooien de koks of kokki's een beetje van dit en een beetje van dat kruid in een bepaald gerecht, roeren door de pan en toveren vervolgens een tongstrelend gerecht op tafel. Het is dikwijls om jaloers op te worden, maar gelukkig hebben ze in de loop der jaren enkele geheimen prijsgegeven en deze opgeschreven in kookboeken. Bovendien vinden we in Nederland in bijna elke stad een toko waar een groot aantal uitheemse kruiden te koop is in zowel verse of gedroogde vorm, of uit de diepvries. Het gebruik van verse kruiden verdient uiteraard de voorkeur omdat de aroma's beter bewaard blijven. Heeft men alle benodigde ingrediënten in huis, dan valt het bereiden van een eenvoudig, smaakvol gerecht best mee. Zorg ervoor dat de aangegeven hoeveelheden en aanwijzingen zo nauwkeurig mogelijk worden opgevolgd. Om u een beetje wegwijs te maken zijn hieronder in alfabetische volgorde de namen van de meest gebruikte kruiden vermeld."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Woordenlijst - Kruiden",
+      "source_pages": [
+        1,
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "adas (manis)",
+          "dutch": "anijs",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "asam",
+          "dutch": "tamarinde",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bawang",
+          "dutch": "ui",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bawang merah",
+          "dutch": "rode ui",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bawang putih",
+          "dutch": "knoflook",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bumbu",
+          "dutch": "kruiden",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cabai, cabe rawit",
+          "dutch": "kleine, hete pepers",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cengkeh, cengkih",
+          "dutch": "kruidnagel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cuka",
+          "dutch": "azijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "daun jeruk purut",
+          "dutch": "blad van bep. citrusboom",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "daun salam",
+          "dutch": "laurierachtig blad",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "garam",
+          "dutch": "zout",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gula",
+          "dutch": "suiker",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gula Jawa",
+          "dutch": "palmsuiker",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jahe",
+          "dutch": "gember",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jintan, jinten",
+          "dutch": "komijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kayu manis",
+          "dutch": "kaneel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kecap (manis; asin)",
+          "dutch": "ketjap (zoet; zout)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kelapa",
+          "dutch": "kokosnoot",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kemangi",
+          "dutch": "geurige bladsoort",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kemiri",
+          "dutch": "kemirinoot",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kembang pala",
+          "dutch": "foelie (vruchtvlees van nootmuskaat)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kencur",
+          "dutch": "soort gemberwortel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kepulaga",
+          "dutch": "kardemom",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ketumbar",
+          "dutch": "koriander",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kunir, kunyit",
+          "dutch": "geelwortel, curcuma",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lada, merica",
+          "dutch": "peper",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "laos",
+          "dutch": "gemberachtige wortel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lengkuas",
+          "dutch": "gemberachtige wortel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lombok",
+          "dutch": "Spaanse peper",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "merica, lada",
+          "dutch": "peper",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pala",
+          "dutch": "nootmuskaat",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "panili, vanili",
+          "dutch": "vanille",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "petai, pete",
+          "dutch": "geurige vruchten van de petaiboom (stinkboon)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rempah-rempah",
+          "dutch": "kruiden",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sambal, sambel",
+          "dutch": "tot dikke pasta fijngewreven Spaanse pepers",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "santan, santen",
+          "dutch": "sap van uitgeperste kokospulp",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "selasih",
+          "dutch": "basilicumzaadjes",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "serai, sereh",
+          "dutch": "citrusachtige grassoort",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "temu kunci",
+          "dutch": "geurig, aromatisch blad",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "temu kuning = kunyit",
+          "dutch": "curcuma, geelwortel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "terasi",
+          "dutch": "garnalen- of vispasta (gedroogd; gebakken)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "vanili, panili",
+          "dutch": "vanille",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "wijen",
+          "dutch": "sesamzaadjes",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "vocabulary",
+      "title": "Woordenlijst - Aneka rasa (Diverse smaken)",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "asam",
+          "dutch": "zuur",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "asin",
+          "dutch": "zout",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "citarasa",
+          "dutch": "smaak",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "enak",
+          "dutch": "lekker",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "gurih",
+          "dutch": "smakelijk / lekker gekruid",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kurang enak",
+          "dutch": "niet (zo) lekker",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kurang ... (manis)",
+          "dutch": "te weinig ... (zoet) (niet zoet genoeg)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "lezat",
+          "dutch": "heerlijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "makan dengan selera",
+          "dutch": "met smaak eten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "manis",
+          "dutch": "zoet",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "pahit",
+          "dutch": "bitter, zonder suiker",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "pedas, pedis",
+          "dutch": "heet / scherp",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "rasa",
+          "dutch": "smaak",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sedap",
+          "dutch": "heerlijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "terlalu ... (asam)",
+          "dutch": "te ... (zuur)",
+          "pos": "adverb"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "text",
+      "title": "Tekst - Biar Lambat Asal Selamat",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Pulau Bali terkenal di seluruh dunia dan turis-turis senang berlibur ke sana. Kalau orang dari pulau Jawa mau ke Bali, mereka harus menyeberang naik feri. Banyak bus malam membawa penumpang dari Malang, Surabaya dan Yogya ke Bali, tetapi mereka belum mendapat giliran naik feri.",
+        "Banyak pedagang kecil menjual dagangannya. Ada yang menjual jamu dan ada juga anak kecil yang menjual rokok, manisan, majalah, es, telur puyuh dalam kantong plastik, dan sebagainya. Jualan mereka laris sekali malam itu sehingga mereka dapat untung besar.",
+        "Waktu itu menjelang hari Lebaran dan pada saat itu selalu banyak turis domestik ingin berlibur ke Bali, walaupun hanya untuk beberapa hari saja. Jalanan penuh sesak. Lalu lintas macet. Karena itu bus harus menunggu giliran lama sekali: \"Mana feri itu, kok tak datang-datang?\"",
+        "Tak lama kemudian bus sudah naik ke kapal. Di kapal, semua orang keluar dari bus dan naik ke geladak untuk melihat ke arah tujuannya: Bali. Anak-anak kecil berenang di dalam air kotor di depan kapal. Uang logam yang dilemparkan ke arah mereka, lalu ditangkap dan dimasukkan ke dalam mulut.",
+        "Di mana-mana di Indonesia, termasuk juga di feri ini dapat dibeli apa saja. Yang paling banyak dibeli penumpang ialah teh, coca-cola, 7-up dan kacang. Seorang penyanyi berambut gondrong memetik gitarnya dan baru mau pergi kalau sudah dikasih uang sedikit.",
+        "Pemuda-pemudi berpandang-pandangan. Mereka mau bercakap-cakap tapi sedikit malu karena diperhatikan orang tuanya. Beberapa pemuda minum bir dan merokok. Penjaga kapal membiarkan mereka saja. \"Mereka 'kan masih muda dan asal tidak mengganggu penumpang lain!\"",
+        "Karena feri penuh sesak dan gelombang laut besar sekali perjalanan makan waktu agak lama. Kebanyakan orang tidak peduli. Mereka ingat pepatah Indonesia: \"Biar lambat asal selamat!\" dan dengan sabar orang menunggu pendaratan di pulau Bali."
+      ]
+    },
+    {
+      "id": 4,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "arah",
+          "dutch": "richting",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bus malam",
+          "dutch": "nachtbus",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dagang",
+          "dutch": "handel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dagang, -an",
+          "dutch": "handelswaar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dagang, pe-",
+          "dutch": "handelaar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dilemparkan",
+          "dutch": "gegooid",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "dimasukkan",
+          "dutch": "ingestopt",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "diperhatikan",
+          "dutch": "gadegeslagen / waargenomen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "domestik",
+          "dutch": "binnenlands",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "dunia",
+          "dutch": "wereld",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "es",
+          "dutch": "ijs",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "geladak",
+          "dutch": "dek (van schip)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gelombang",
+          "dutch": "golven",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gilir, -an",
+          "dutch": "beurt",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gitar",
+          "dutch": "gitaar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gondrong",
+          "dutch": "lang (van haar)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "jaga, pen-",
+          "dutch": "bewaker",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jual, -an",
+          "dutch": "verkoop",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kebanyakan",
+          "dutch": "merendeel / meeste",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lambat",
+          "dutch": "laat / vertraagd",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "macet",
+          "dutch": "file / vastlopen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "malu",
+          "dutch": "verlegen",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "membiarkan",
+          "dutch": "toestaan / toelaten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "menjelang",
+          "dutch": "kort voor",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "muda, pe-",
+          "dutch": "jongeman",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mudi, pe-",
+          "dutch": "jonge vrouw",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pandang, ber- -an",
+          "dutch": "elkaar aankijken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "peduli",
+          "dutch": "zich storen aan",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pemuda-pemudi",
+          "dutch": "jongeren",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pendaratan",
+          "dutch": "landing",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "penuh sesak",
+          "dutch": "tjokvol",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "perintah",
+          "dutch": "bevel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "petik, memetik",
+          "dutch": "tokkelen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "plastik",
+          "dutch": "plastic",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "puyuh",
+          "dutch": "kwartel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rambut, berambut",
+          "dutch": "haar hebben",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "renang, berenang",
+          "dutch": "zwemmen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sabar",
+          "dutch": "geduld",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sekali-sekali",
+          "dutch": "af en toe",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "tuju, -an",
+          "dutch": "doel / richting",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tumpang, penumpang",
+          "dutch": "passagier",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "turis domestik",
+          "dutch": "binnenlandse toerist",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "untung",
+          "dutch": "winst",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "yaitu",
+          "dutch": "dat wil zeggen",
+          "pos": "conjunction"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "grammar",
+      "title": "Tata Bahasa - Het voorvoegsel PE-",
+      "source_pages": [
+        4,
+        5,
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "TATA BAHASA\n\nHet voorvoegsel PE-\n\nΔ Het voorvoegsel PE- maakt van het basiswoord een zelfstandig naamwoord met de betekenis van een handelend persoon of ding.\n\nVoorbeelden:\n\npembuka   = alat untuk membuka        opener\npenjual    = seorang yang menjual      verkoper\npembantu   = seorang yang membantu     hulp in de huishouding\n\nHet voorvoegsel PE- kan worden gecombineerd met:\n\n1. werkwoord              duduk      penduduk    ingezetene\n2. zelfstandig naamwoord  laut       pelaut      zeeman\n3. bijvoeglijk naamwoord  malas      pemalas     luilak\n4. telwoord (zeldzaam)    dua        pendua      bijkris (naast een hoofdkris)\n\nAlgemene regels van plaatsing van PE- voor een basiswoord\n\nPE- wordt op dezelfde wijze voorgevoegd als ME-.\nHieronder worden de regels herhaald met een aantal voorbeelden.\n\nA. Voorvoeging zonder verandering van het basiswoord\n\nPE- wordt direct aan het basiswoord gevoegd bij: L, M, N, NY, R, W, Y\n\nlapor    melapor    rapporteren    pelapor     rapporteur\nmilik    memilik    bezitten       pemilik     eigenaar\nnilai    menilai    beoordelen     penilai     taxateur\nnyanyi   menyanyi   zingen         penyanyi    zanger\nrampok   merampok   beroven        perampok    rover\nwaris    mewaris    erven          pewaris     erfgenaam\nyudo                judo           peyudo      judoka\n\nPEM- wordt voorgevoegd aan: B, F\n\nbaca     membaca    lezen          pembaca     lezer\nfitnah   memfitnah  lasteren       pemfitnah   lasteraar\n\nPEN- wordt voorgevoegd aan: C, D, J\n\ncuri     mencuri    stelen         pencuri     dief\ndengar   mendengar  horen          pendengar   luisteraar\njual     menjual    verkopen       penjual     verkoper\n\nPENG- wordt voorgevoegd aan: A, E, I, O, U en G, H\n\najar     mengajar    onderwijzen    pengajar      onderwijzer\nembara   mengembara  zwerven        pengembara    zwerver\nikut     mengikut    volgen         pengikut      volgeling\nolah     mengolah    bewerken       pengolah      bewerker\nurus     mengurus    regelen        pengurus      bestuurder\nganti    mengganti   vervangen      pengganti     vervanger\nhitung   menghitung  tellen         penghitung    teller\n\nB. Voorvoeging PE- met verandering van de eerste klank van het basiswoord bij: K, P, S, T in NG, M, NY, N\n\nkemudi   mengemudi   besturen       pengemudi   bestuurder\npesan    memesan     bestellen      pemesan     opdrachtgever\nsewa     menyewa     huren          penyewa     huurder\ntulis    menulis     schrijven      penulis     schrijver\n\nN.B. Soms heeft de PE- de bijbetekenis: iemand die iets in overdreven mate is of doet.\npemalas    luilak\npemberani  waaghals\npeminum    dronkaard, zuiplap\npenangis   huilebalk\npendiam    zwijgzaam persoon\npengopi    koffieleut\npenidur    slaapkop\nperibut    herrieschopper\n\nSoms worden de algemene regels niet toegepast. Het blijft dus zaak dat u de spelling controleert in een goed woordenboek.\n\nVoorbeelden:\npedagang   handelaar\npejabat    hoge ambtenaar\npeserta    deelnemer\npetani     landbouwer\n\nSamenstellingen met PE-\n\nVoorbeelden:\n\nbuka     openen     alat pembuka          opener\ncuci     wassen     wanita pencuci        wasvrouw\n                    pencuci rambut        shampoo\nharum    geur       pengharum ruangan     luchtverfrisser\nhitung   tellen     alat penghitung       telmachine\nrekam    opnemen    perekam suara         antwoordapparaat\ntenang   rustig     pil penenang          kalmeringspil\n\nN.B. pemilih = seorang yang memilih\n     pilihan = apa yang dipilih"
+    },
+    {
+      "id": 6,
+      "type": "exercises",
+      "title": "Latihan",
+      "source_pages": [
+        7,
+        8
+      ],
+      "confidence": "high",
+      "raw_text": "LATIHAN\n\nLatihan I. Schrijf een kort verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van onderstaande tekeningen.\n[drie tekeningen: 1) motorrijder in regen met tekstballon 'Wah mau hujan!', 2) fiets tegen boom met tekstballon 'Syukur tidak mati', 3) man op bank met omroep 'Pak Yance dipanggil']\n\nLatihan II. Maak een PE-vorm van onderstaande woorden en pas deze toe in een zin.\n1. bantu\n2. rokok\n3. dapat\n4. kunjung\n5. awas\n6. curi\n7. perintah\n8. milik\n9. mengemudi\n10. duduk\n\nLatihan III. Wat is het tegenovergestelde van:\n1. lupa\n2. cepat\n3. kering\n4. lebih\n5. belum\n6. pembuka\n7. tadi\n8. pulang\n9. kemarin\n10. menjawab\n\nLatihan IV. Vertaal.\n1. De zanger van dit mooie lied gaat met het vliegtuig naar Jakarta\n2. Die Indonesische postzegels worden gevraagd door de postzegelverzamelaar uit Nederland\n3. De lezers van dit boek zijn het eens met de schrijver\n4. Wie is de afzender van deze brief?\n5. Mardi, de luilak, slaapt nog, maar zijn zusje is al aan het werk als hulp in de huishouding\n6. De goudzoekers zoeken in de rivier naar goud\n7. De jongelui vinden het fijn om tot 's avonds laat met elkaar te praten\n8. Wie is de vervanger van meneer Adang?\n9. Eenmaal per jaar houden de schrijvers een feest in Hotel Mutiara\n10. Het Van Goghmuseum is een voorbeeld voor museumvernieuwers"
+    }
+  ],
+  "flags": [
+    "OCR page 1 missed vocabulary items K (kayu manis through kunir/kunyit) — recovered from image IMG_1596.jpg",
+    "OCR page 2 missed vocabulary items L (lada/merica, laos, lengkuas, lombok) and M (merica/lada) — recovered from image IMG_1597.jpg",
+    "OCR page 2 missed full 'Aneka rasa' section items (asin, lezat, makan dengan selera, manis, pahit, pedas/pedis, sedap, terlalu) — recovered from image IMG_1597.jpg",
+    "OCR page 3 was incomplete (cut off mid-paragraph); full text of paragraphs 5–7 recovered from image IMG_1598.jpg",
+    "OCR page 4 heading 'Daftar kata-kata baru' and grammar heading 'TATA BAHASA / Het voorvoegsel PE-' with introductory examples (pembuka, penjual, pembantu) recovered from image IMG_1599.jpg",
+    "OCR page 5 missed PENG- section and PEN- dengar/jual entries — recovered from image IMG_1600.jpg",
+    "OCR page 6 missed full section B (kemudi, pesan, sewa, tulis) and full Samenstellingen met PE- details (harum, hitung, rekam, tenang) and N.B. note — recovered from image IMG_1601.jpg",
+    "OCR page 8 Latihan II and III missed entirely — recovered from image IMG_1602.jpg"
+  ],
+  "sourceImages": 8
+}

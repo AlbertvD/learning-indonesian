@@ -1,0 +1,327 @@
+{
+  "lesson": 21,
+  "generatedAt": "2026-06-18T06:09:02.062Z",
+  "sourcePages": 6,
+  "lessonMeta": {
+    "title": "Bab 5 - Dongeng",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 21
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Dongeng - Si monyet dan si kura-kura",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Di Indonesia ada banyak dongeng. Misalnya dongeng yang berasal dari India, negeri Barat dan dongeng daerah. Di bawah ini diceritakan sebuah dongeng menarik dari Pancatantra (berasal dari India).",
+        "Si monyet dan si kura-kura\nAda seekor monyet dan seekor kura-kura. Si monyet bernama Utun dan si kura-kura bernama Uca. Mereka sudah lama berteman akrab.\nPada suatu hari Utun mau memancing ke sungai.\nUtun mengajak Uca, \"Kamu mau ikut memancing, Ca?\"\nUca tidak mau sebab masih banyak pekerjaan yang harus dikerjakannya di kebun.\nDia menjawab \"Pergilah sendirian, tapi hati-hati! Hari ini akan turun hujan!\"",
+        "Bersiul-siul Utun turun ke sungai. Sebuah batu besar terletak di tengah sungai itu. Utun meloncat ke atas batu dan mulai memancing. 'Cup', Utun menjatuhkan mata kailnya ke dalam air. Dia menunggu ikan yang mau menggigit umpan kailnya.\nDia duduk di batu itu sambil bernyanyi.",
+        "Tak lama kemudian langit mendung. Degung...ng!!!\nKilat menyobek awan dan tiba-tiba hujan lebat turun. Air sungai naik cepat sekali, makin lama makin tinggi! Sungai yang tadi tenang sekarang berubah menjadi berombak besar. Utun takut! Mau pulang. Tetapi tidak bisa. Sekarang terlalu banyak air yang dalam di sekeliling batu. \"Tolong! ....., tolong! ....., tolong!\", teriak Utun.",
+        "Syukur Uca mendengar teriakan temannya itu. Dia terjun ke sungai dan berenang ke batu untuk menolong temannya yang bodoh.\n\"Lekas naik ke atas punggungku! Ayo cepat!\"\nUtun duduk di punggung Uca dan memegang kulitnya.\nDengan susah payah Uca sampai di tepi sungai. Mereka basah kuyup, tetapi selamat.\nDi rumah pakaian mereka harus dikeringkan dulu.\nSetelah hujan berhenti Utun masuk ke dalam hutan untuk memetik buah yang enak.\nKemudian ia kembali lagi dan ia memberi Uca sebuah semangka besar.\nUca merasa senang dan dengan tenang memakan buah itu."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "acara",
+          "dutch": "ceremonie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "akrab",
+          "dutch": "goed bevriend / intiem",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "ajak, meng-",
+          "dutch": "uitnodigen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "asal, ber-",
+          "dutch": "afkomstig zijn van",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "basah kuyup",
+          "dutch": "doorweekt",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "bendera",
+          "dutch": "vlag",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bodoh",
+          "dutch": "dom / dwaas",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "cerita, men-kan",
+          "dutch": "iets vertellen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "cup",
+          "dutch": "plons",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dalam",
+          "dutch": "diep",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "degung!",
+          "dutch": "boem! / bang!",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "dongeng",
+          "dutch": "sprookje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gigit, meng-",
+          "dutch": "bijten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "gubernur",
+          "dutch": "gouverneur",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "guna, meng-kan",
+          "dutch": "gebruik / nut / gebruiken",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hujan",
+          "dutch": "regen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jatuh, men-kan",
+          "dutch": "laten vallen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kail",
+          "dutch": "hengel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kering, mengeringkan",
+          "dutch": "iets drogen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kerja, mengerjakan",
+          "dutch": "bewerken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kolam",
+          "dutch": "vijver",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kolam renang",
+          "dutch": "zwembad",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kura-kura",
+          "dutch": "schildpad",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "langit",
+          "dutch": "hemel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lebat",
+          "dutch": "hard (regen)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "mata kail",
+          "dutch": "dobber",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mendung",
+          "dutch": "bewolkt",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "ombak, ber-",
+          "dutch": "met golven",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "Pancatantra",
+          "dutch": "dierfabels",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pancing, memancing",
+          "dutch": "vishaak / hengel / hengelen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pegang, memegang",
+          "dutch": "vasthouden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pekerjaan",
+          "dutch": "werk",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "perempatan",
+          "dutch": "kruispunt",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "petik, memetik",
+          "dutch": "plukken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "punggung",
+          "dutch": "rug",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sendiri, -an",
+          "dutch": "alleen / in z'n eentje",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "sesuatu",
+          "dutch": "iets / een",
+          "pos": "pronoun"
+        },
+        {
+          "indonesian": "si",
+          "dutch": "de (persoonlijk lidwoord)",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "siul, ber- - -",
+          "dutch": "fluitend",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sobek, menyobek",
+          "dutch": "verscheuren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "susah payah",
+          "dutch": "met moeite",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "tarik, menarik",
+          "dutch": "trekken / aantrekkelijk / interessant",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "teman, ber-",
+          "dutch": "bevriend",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "tenang",
+          "dutch": "rustig / kalm",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "tepi",
+          "dutch": "kant",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "teriak, -an",
+          "dutch": "schreeuwen / gillen / schreeuw / gil",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "terjun",
+          "dutch": "naar beneden springen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "tiba-tiba",
+          "dutch": "plotseling",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "tolong, menolong",
+          "dutch": "helpen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "umpan",
+          "dutch": "aas / lokaas",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "wajib",
+          "dutch": "verplicht",
+          "pos": "adjective"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "grammar",
+      "title": "Tata Bahasa - De werkwoordsvorm met -KAN",
+      "source_pages": [
+        2,
+        3,
+        4
+      ],
+      "confidence": "high",
+      "raw_text": "TATA BAHASA\n\nDe werkwoordsvorm met -KAN\n\nHoofdfunctie:\n△  het maken van een transitieve werkwoordsvorm van een basiswoord\n△  is het basiswoord reeds een transitief werkwoord, dan verleent -KAN nadruk aan de patiens en dient de patiens genoemd te worden. Bij 3 partijen is focuswisseling mogelijk (zie pagina 50).\n\nNaast elke ME-KAN bestaat een DI-KAN. Voorbeeld:\n\nturun              (zelf) naar beneden gaan\nmenurunkan         (iets) naar beneden halen\nYono menurunkan koper dari lemari    Yono haalt de koffer van de kast\nKoper diturunkan Yono dari lemari    De koffer is door Yono van de kast gehaald\n\nDe volgende basiswoorden kunnen worden gecombineerd met -KAN:\n\n1a.  transitief werkwoord       beli       membelikan      iets kopen voor iemand\n1b.  intransitief werkwoord     duduk      mendudukkan     iemand laten zitten\n2.   zelfstandig naamwoord      tempat     menempatkan     iets neerzetten\n3.   bijvoeglijk naamwoord      bersih     membersihkan    iets schoonmaken\n4.   telwoord (zeldzaam)        dua        menduakan       iets verdubbelen\n5.   persoonlijk voornaamwoord (zeldzaam)  aku  mengakukan  laten erkennen\n6.   woord van plaats (zeldzaam)  ke muka  mengemukakan    opperen, voorstellen, iets naar voren brengen\n\n1a. Transitief werkwoord met -KAN\n\nbeli - membelikan                    kopen - iets kopen voor iemand\nIbu membeli buku                     Moeder koopt een boek\nIbu membeli buku untuk anaknya       Moeder koopt een boek voor haar kind\nIbu membelikan anaknya buku          Moeder koopt voor haar kind een boek\n\nBuku dibeli ibu                      Moeder kocht een boek\nBuku dibeli ibu untuk anaknya        Het boek is door moeder voor haar kind gekocht\nAnaknya dibelikan ibu buku           Voor haar kind is door moeder een boek gekocht\n\n1b. Intransitief werkwoord met -KAN\n\nnaik - menaikkan                     omhoog gaan - iets omhoog laten gaan\nDia menaikkan bendera                Hij hees de vlag\nBendera dinaikkannya                 De vlag is door hem gehesen\n\n2. Zelfstandig naamwoord met -KAN\n\nuang - menguangkan                   geld - verzilveren, te gelde maken\nHasan menguangkan ceknya             Hasan verzilvert zijn cheque\nCeknya diuangkan Hasan               Hasan heeft zijn cheque verzilverd\n\n3. Bijvoeglijk naamwoord met -KAN\n\nbersih - membersihkan                schoon - iets schoonmaken\nMobil belum bersih                   De auto is nog niet schoon\nPak sopir membersihkan mobil         De chauffeur maakt de auto schoon\nMobil dibersihkan Pak sopir          De auto wordt door de chauffeur schoongemaakt\n\nGebiedende wijs\n\nbeli!              koop het!\nbelikan!           koop het (voor mij)!\n\nturun!             stap uit!\nturunkan!          laat (het) zakken!\nJangan turunkan!   laat (het) niet zakken!\n\nPassieve zinsconstructie (zie tevens Les 2)\n\n              Enkelvoud                              Passief\n1e persoon    Saya menurunkan koper                  Koper saya turunkan\n2e persoon    Kamu menurunkan koper                  Koper kamu turunkan\n3e persoon    Dia menurunkan koper                   Koper diturunkannya\n\n              Meervoud\n1e persoon    Kita / kami menurunkan koper            Koper kita / kami turunkan\n2e persoon    Kalian menurunkan koper                 Koper kalian turunkan\n3e persoon    Mereka menurunkan koper                 Koper diturunkannya\n                                                      Koper mereka turunkan"
+    },
+    {
+      "id": 3,
+      "type": "exercises",
+      "title": "Latihan",
+      "source_pages": [
+        5,
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "LATIHAN\n\nLatihan I.  Zet de dialoog om in Indonesische zinnen.\n            Maak bij de reactie van persoon B gebruik van de woorden die gegeven zijn.\n\nDialoog: Naik mikrolet\n\n[Illustration: cartoon of a mikrolet with speech bubbles: \"Pak sopir, mikrolet ini ke arah mana?\" and \"Ke selatan sampai perempatan terus ke timur!\"]\n\nPersoon A                                                          Persoon B\n1.  Chauffeur, welke kant gaat u op?                               zuiden, kruispunt, oosten\n2.  Ik wil naar het zwembad, gaat u daar ook heen?                 welk zwembad?\n3.  Ik weet niet hoe het heet, maar het is een blauw gebouw        de Hendraweg\n4.  Ja, daar inderdaad. Kan ik meerijden?                          betjak sneller\n5.  Maar ik wil zo graag een Mikrolet proberen                     goed\n6.  Naar welke interessante plaatsen gaat u?                       stadspark, supermarkt\n7.  Gaat u ook naar het paleis?                                    ja\n8.  Dan wil ik graag meerijden. Wat kost een kaartje?              Rp 800\n9.  Dat is goedkoop, nog goedkoper dan de betjak                   lopen goedkoper, ha, ha!\n10. Ja, maar om te wandelen is het veel te warm                    stapt u in, we vertrekken\n\nLatihan II.  Omschrijf elk woord in het Indonesisch.\n             Contoh: guru --> guru adalah seorang yang mengajar\n\n1.  penulis            6.  pencuci\n2.  pegawai            7.  dokter\n3.  dalang             8.  penduduk\n4.  pembesar           9.  pengukir\n5.  murid              10. pedagang\n\nLatihan III.  Vervoeg elk van de onderstaande basiswoorden met de volgende vormen.\n              Maak met de werkwoordsvormen een zin.\n\n              a. me-...-kan    b. di-...-kan\n\n1.  naik\n2.  ambil\n3.  kering\n4.  tempat\n5.  duduk\n\nLatihan IV.  Vertaal onderstaande zinnen.\n\n1.  Hari Rabu sekolah baru itu akan diresmikan Bapak Gubernur\n2.  Dua hari sebelumnya murid-murid diperintahkan membersihkan halaman sekolah\n3.  Murid-murid juga diwajibkan menggunakan kemeja putih\n4.  Hari ini bendera negara dinaikkan di lapangan sekolah\n5.  Setelah acara itu minuman dan makanan kecil dihidangkan"
+    }
+  ],
+  "flags": [
+    "Image IMG_1604.jpg: Full text of story recovered from image — OCR page 1 was truncated after 'berenang ke bi'. Remaining paragraphs added from image.",
+    "Image IMG_1605.jpg: Vocabulary header is 'Daftar kata-kata baru' (not 'Woordenlijst'). Also recovered grammar section header and introductory text from image.",
+    "Image IMG_1606.jpg: Additional grammar content recovered — sections '1b. Intransitief werkwoord met -KAN' (naik/menaikkan example) and '2. Zelfstandig naamwoord met -KAN' (uang/menguangkan example) not present in OCR.",
+    "Image IMG_1607.jpg: Section '3. Bijvoeglijk naamwoord met -KAN' and complete Passieve zinsconstructie table (including Meervoud rows and 'Koper mereka turunkan') recovered from image — OCR page 4 was incomplete.",
+    "Image IMG_1608.jpg: Latihan I dialogue cartoon speech bubbles recovered: 'Pak sopir, mikrolet ini ke arah mana?' and 'Ke selatan sampai perempatan terus ke timur!'. Also Latihan II full exercise recovered from image — not present in OCR.",
+    "OCR page 5: Latihan I item 9 persoon B answer was 'betjak sneller' in OCR but image shows 'lopen goedkoper, ha, ha!' for item 9 and 'stapt u in, we vertrekken' for item 10 — corrected from image."
+  ],
+  "sourceImages": 6
+}

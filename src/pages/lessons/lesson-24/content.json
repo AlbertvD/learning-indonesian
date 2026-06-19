@@ -1,0 +1,858 @@
+{
+  "meta": {
+    "id": "77859172-c910-43a1-a94b-c8d6c1dabf1d",
+    "order_index": 24,
+    "title": "Surat dari Indonesia",
+    "level": "A1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Achird",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Maninjau, 8 Nopember 1996\nKabupaten Agam, Sumbar",
+          "Ibu yang tercinta,",
+          "Apa kabar Ibu? Baik-baik saja bukan? Saya di desa dalam keadaan cukup baik. Begitu juga dengan kakak dan adik saya. Setiap hari saya pergi ke sekolah, dan sekarang saya sudah cukup pintar. Tahun ini saya duduk di kelas lima Sekolah Dasar (SD). Adik saya baru di kelas satu. Memang dia masih kecil. Kakak saya sudah masuk sekolah SMP.",
+          "Ibu, sekarang musim hujan. Aduh, saya sering tidak bisa pergi ke sekolah karena jalanan dilanda banjir. Mungkin di kota Ibu tidak ada banjir. Tapi di desa saya masih sering ada banjir karena letaknya dekat sungai. Kalau terlalu banyak air hujan turun, sungai menjadi penuh sampai meluap.",
+          "Kalau banjir, saya takut naik sepeda ke sekolah. Jalanan hampir tidak kelihatan, sehingga berjalan susah sekali. Pernah saya jatuh dan masuk ke sawah, sebab jalan tidak kelihatan lagi. Saya paling takut kalau sepeda saya rusak. Sepeda itu bukan hanya untuk saya sendiri! Juga anak tetangga suka memakainya. Berkat Ibu, saya dapat meminjamkan sepeda saya kepada kakak dan tetangga sebab mereka juga senang bersepeda.",
+          "Kapan Ibu datang ke Indonesia? Saya tahu Indonesia cukup jauh dari Belanda. Saya tidak tahu berapa jauhnya. Peta di sekolah sudah kabur, dan saya tidak dapat membayangkan tentang ribuan kilometer. Katanya, Belanda dengan Indonesia jaraknya kira-kira 12.000 kilometer. Coba kalau saya bersepeda, satu tahun mungkin belum sampai. Kalau bisa saya mau coba, biar dengan mata saya sendiri dapat melihat negeri Ibu yang bagus. Katanya banyak bunga tulip di Belanda. Guru saya pernah mendapat kartu pos yang bergambar bunga tulip dari temannya orang Belanda. Negeri Ibu ini mungkin penuh bunga tulip, ya? Kalau bisa, saya juga minta dikirimi kartu pos tulip. Boleh 'kan, Bu?",
+          "Saya harap Ibu sekeluarga senantiasa dalam keadaan baik-baik, dan, pada suatu hari Ibu bisa datang ke desa saya. Walaupun desa saya agak sederhana, tetapi letaknya benar-benar bagus, di antara sawah-sawah.",
+          "Salam hangat,\n\nNurul"
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "dat",
+            "english": "that",
+            "indonesian": "bahwa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bahwa-b4949151.mp3"
+          },
+          {
+            "dutch": "blouse",
+            "english": "blouse",
+            "indonesian": "baju",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/baju-fbe3e499.mp3"
+          },
+          {
+            "dutch": "overstroming",
+            "english": "flood",
+            "indonesian": "banjir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/banjir-3d0a5576.mp3"
+          },
+          {
+            "dutch": "zich voorstellen",
+            "english": "imagine",
+            "indonesian": "bayang, mem-kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bayang-memkan-46d28d2b.mp3"
+          },
+          {
+            "dutch": "meedelen / berichten",
+            "english": "inform / report",
+            "indonesian": "beri tahu, mem-kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/beri-tahu-memkan-a1539b68.mp3"
+          },
+          {
+            "dutch": "dankzij",
+            "english": "thanks to",
+            "indonesian": "berkat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/berkat-f578878b.mp3"
+          },
+          {
+            "dutch": "laat maar",
+            "english": "let it be",
+            "indonesian": "biar saja",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/biar-saja-138c74d1.mp3"
+          },
+          {
+            "dutch": "krokodil",
+            "english": "crocodile",
+            "indonesian": "buaya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/buaya-4fe70cf0.mp3"
+          },
+          {
+            "dutch": "boetiek",
+            "english": "boutique",
+            "indonesian": "butik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/butik-23b92840.mp3"
+          },
+          {
+            "dutch": "liefde / genegenheid",
+            "english": "love / affection",
+            "indonesian": "cinta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/cinta-7d9c6b8a.mp3"
+          },
+          {
+            "dutch": "krimpen / gekrompen",
+            "english": "shrink / shrunken",
+            "indonesian": "ciut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ciut-a5dc5800.mp3"
+          },
+          {
+            "dutch": "meisje / jonge vrouw",
+            "english": "girl / young woman",
+            "indonesian": "gadis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gadis-bb7d9fcc.mp3"
+          },
+          {
+            "dutch": "opschudding",
+            "english": "commotion",
+            "indonesian": "gara-gara",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/garagara-0bbb10d6.mp3"
+          },
+          {
+            "dutch": "stommeling",
+            "english": "fool",
+            "indonesian": "goblok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/goblok-08a29970.mp3"
+          },
+          {
+            "dutch": "hopen",
+            "english": "hope",
+            "indonesian": "harap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/harap-8ac288da.mp3"
+          },
+          {
+            "dutch": "eerbied",
+            "english": "respect",
+            "indonesian": "hormat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/hormat-9f8287b0.mp3"
+          },
+          {
+            "dutch": "industrie",
+            "english": "industry",
+            "indonesian": "industri",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/industri-bdfd9d28.mp3"
+          },
+          {
+            "dutch": "district",
+            "english": "district",
+            "indonesian": "kabupaten",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kabupaten-026f16b7.mp3"
+          },
+          {
+            "dutch": "verbleekt / wazig",
+            "english": "faded / blurred",
+            "indonesian": "kabur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kabur-fd8095b8.mp3"
+          },
+          {
+            "dutch": "toestand / situatie",
+            "english": "condition / situation",
+            "indonesian": "keadaan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/keadaan-5d532da0.mp3"
+          },
+          {
+            "dutch": "klas",
+            "english": "class",
+            "indonesian": "kelas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kelas-3b35be85.mp3"
+          },
+          {
+            "dutch": "zichtbaar",
+            "english": "visible",
+            "indonesian": "kelihatan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kelihatan-7d24876d.mp3"
+          },
+          {
+            "dutch": "treffen / raken",
+            "english": "strike / hit",
+            "indonesian": "landa, me-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/landa-me-500b634a.mp3"
+          },
+          {
+            "dutch": "overstromen",
+            "english": "overflow",
+            "indonesian": "luap, me-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/luap-me-ba3d7058.mp3"
+          },
+          {
+            "dutch": "uitlenen (aan)",
+            "english": "lend (to)",
+            "indonesian": "pinjam, meminjamkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pinjam-meminjamkan-89f6f9d7.mp3"
+          },
+          {
+            "dutch": "paniek",
+            "english": "panic",
+            "indonesian": "panik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/panik-6935b1ca.mp3"
+          },
+          {
+            "dutch": "plattegrond / kaart",
+            "english": "map / plan",
+            "indonesian": "peta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/peta-d9169c85.mp3"
+          },
+          {
+            "dutch": "knap / intelligent",
+            "english": "smart / intelligent",
+            "indonesian": "pintar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pintar-8f4f58fc.mp3"
+          },
+          {
+            "dutch": "plannen",
+            "english": "plan",
+            "indonesian": "rencana, me-kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rencana-mekan-bc6f5b0e.mp3"
+          },
+          {
+            "dutch": "eenvoudig",
+            "english": "simple",
+            "indonesian": "sederhana",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sederhana-d24294b5.mp3"
+          },
+          {
+            "dutch": "gezond",
+            "english": "healthy",
+            "indonesian": "sehat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sehat-5c7fc67c.mp3"
+          },
+          {
+            "dutch": "van dezelfde familie",
+            "english": "of the same family",
+            "indonesian": "sekeluarga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sekeluarga-0901cc2c.mp3"
+          },
+          {
+            "dutch": "voortdurend / steeds",
+            "english": "continually / always",
+            "indonesian": "senantiasa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/senantiasa-efb4af00.mp3"
+          },
+          {
+            "dutch": "kort",
+            "english": "short",
+            "indonesian": "singkat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/singkat-ecbbd5b1.mp3"
+          },
+          {
+            "dutch": "afkorting",
+            "english": "abbreviation",
+            "indonesian": "singkat, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/singkat-an-a4f7f9c0.mp3"
+          },
+          {
+            "dutch": "geliefd / dierbaar",
+            "english": "beloved / dear",
+            "indonesian": "tercinta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tercinta-99f76678.mp3"
+          },
+          {
+            "dutch": "gedateerd / de dato",
+            "english": "dated",
+            "indonesian": "tertanggal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tertanggal-de88add2.mp3"
+          },
+          {
+            "dutch": "buur / buurman / buurvrouw",
+            "english": "neighbor",
+            "indonesian": "tetangga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tetangga-3de1f2e8.mp3"
+          },
+          {
+            "dutch": "tulp",
+            "english": "tulip",
+            "indonesian": "tulip",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tulip-264f577d.mp3"
+          },
+          {
+            "dutch": "zeggen / uitspreken",
+            "english": "say / pronounce",
+            "indonesian": "ucap, meng-kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ucap-mengkan-10ab0b6b.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "De hoofdfunctie van zowel de -KAN- als de -i-vorm is het maken van transitieve (overgankelijke) werkwoordsvormen.",
+              "De -KAN- en -i-werkwoordsvormen treden in elkaars verlengde op: ze vullen elkaar aan.",
+              "Of een basiswoord met -KAN of met -i wordt gecombineerd, hangt af van de betekenis, het gebruik en de vorm van het betreffende woord.",
+              "Veel basiswoorden laten beide achtervoegsels toe — maar telkens met een andere betekenis."
+            ],
+            "title": "Algemeen: de verhouding tussen -KAN en -i",
+            "rules_en": [
+              "The main function of both the -KAN- and -i-form is to create transitive verb forms.",
+              "The -KAN- and -i-verb forms are complementary: they supplement each other.",
+              "Whether a base word is combined with -KAN or -i depends on the meaning, usage, and form of the word in question.",
+              "Many base words allow both suffixes — but each time with a different meaning."
+            ],
+            "title_en": "General: the relationship between -KAN and -i"
+          },
+          {
+            "rules": [
+              "Bij de -KAN-vorm is de agens (partij 1) statisch ten opzichte van de patiens (partij 2); de patiens wordt bewogen of tot stand gebracht ten opzichte van de agens (causatief / benefactief).",
+              "Schema -KAN: agens (partij 1) statisch ——————— patiens (partij 2).",
+              "Bij de -i-vorm is de patiens (partij 2) een vast punt; de agens (partij 1) beweegt zich of wordt bewogen ten opzichte van dat vaste punt (locatief / directioneel).",
+              "Schema -i: agens (partij 1) dynamisch ——————— patiens (partij 2, vast)."
+            ],
+            "title": "Verschil tussen -KAN en -i: statische versus dynamische agens",
+            "examples": [
+              {
+                "dutch": "springen",
+                "english": "jump",
+                "indonesian": "loncat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/loncat-769d9c2a.mp3"
+              },
+              {
+                "dutch": "(iets / iemand) laten springen",
+                "english": "(something / someone) make jump",
+                "indonesian": "meloncatkan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meloncatkan-392ca932.mp3"
+              },
+              {
+                "dutch": "(iets) bespringen",
+                "english": "(something) jump on",
+                "indonesian": "meloncati",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meloncati-bf8cbb3f.mp3"
+              },
+              {
+                "dutch": "Hij laat de bal springen",
+                "english": "He makes the ball jump",
+                "indonesian": "Dia meloncatkan bola",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dia-meloncatkan-bola-2faaacdb.mp3"
+              },
+              {
+                "dutch": "De tijger bespringt de buffel",
+                "english": "The tiger jumps on the buffalo",
+                "indonesian": "Harimau meloncati kerbau",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/harimau-meloncati-kerbau-9aed5d71.mp3"
+              },
+              {
+                "dutch": "overkant",
+                "english": "opposite side",
+                "indonesian": "seberang",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/seberang-9c1d7846.mp3"
+              },
+              {
+                "dutch": "(iets / iemand) overzetten",
+                "english": "(something / someone) ferry across",
+                "indonesian": "menyeberangkan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menyeberangkan-7e0d463a.mp3"
+              },
+              {
+                "dutch": "(iets) oversteken",
+                "english": "(something) cross over",
+                "indonesian": "menyeberangi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menyeberangi-cdac4dd3.mp3"
+              },
+              {
+                "dutch": "De onderwijzer zet de kinderen over",
+                "english": "The teacher ferries the children across",
+                "indonesian": "Guru menyeberangkan anak",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/guru-menyeberangkan-anak-9358cd2b.mp3"
+              },
+              {
+                "dutch": "De jongeman steekt de rivier over",
+                "english": "The young man crosses the river",
+                "indonesian": "Pemuda menyeberangi sungai",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pemuda-menyeberangi-sungai-0df2e5fa.mp3"
+              }
+            ],
+            "rules_en": [
+              "In the -KAN-form, the agent (party 1) is static in relation to the patient (party 2); the patient is moved or brought about in relation to the agent (causative / benefactive).",
+              "Schema -KAN: agent (party 1) static ——————— patient (party 2).",
+              "In the -i-form, the patient (party 2) is a fixed point; the agent (party 1) moves or is moved in relation to that fixed point (locative / directional).",
+              "Schema -i: agent (party 1) dynamic ——————— patient (party 2, fixed)."
+            ],
+            "title_en": "Difference between -KAN and -i: static versus dynamic agent"
+          },
+          {
+            "rules": [
+              "Evenals -KAN heeft de -i-vorm bij van oorsprong transitieve werkwoorden nog een specifieke functie: het creëert de mogelijkheid van focuswisseling (het centrale lijdend voorwerp verschuiven).",
+              "Bij de -i-vorm wordt de ontvanger het directe lijdend voorwerp zonder voorzetsel kepada: vergelijk mengirimkan surat kepada Adi met mengirimi Adi surat.",
+              "Aktieve zin: Partij 1 — handeling — partij 3 — partij 2  (Ibu — mengirimi — Adi — surat).",
+              "Passieve zin: Partij 3 — handeling — partij 1 — partij 2  (Adi — dikirimi — ibu — surat)."
+            ],
+            "title": "Focuswisseling met -i bij van oorsprong transitieve werkwoorden",
+            "examples": [
+              {
+                "dutch": "Moeder stuurt een brief",
+                "english": "Mother sends a letter",
+                "indonesian": "Ibu mengirim surat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mengirim-surat-b50af72c.mp3"
+              },
+              {
+                "dutch": "Moeder stuurt een brief naar Adi",
+                "english": "Mother sends a letter to Adi",
+                "indonesian": "Ibu mengirimkan surat kepada Adi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mengirimkan-surat-kepada-e18dd3b3.mp3"
+              },
+              {
+                "dutch": "Moeder stuurt Adi een brief",
+                "english": "Mother sends Adi a letter",
+                "indonesian": "Ibu mengirimi Adi surat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mengirimi-adi-surat-aa354519.mp3"
+              },
+              {
+                "dutch": "De brief wordt door moeder gestuurd",
+                "english": "The letter is sent by mother",
+                "indonesian": "Surat dikirim ibu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-dikirim-ibu-37d1b028.mp3"
+              },
+              {
+                "dutch": "De brief wordt door moeder naar Adi gestuurd",
+                "english": "The letter is sent by mother to Adi",
+                "indonesian": "Surat dikirimkan ibu kepada Adi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-dikirimkan-ibu-kepada-a0ec2c69.mp3"
+              },
+              {
+                "dutch": "Adi wordt door moeder een brief gestuurd",
+                "english": "Adi is sent a letter by mother",
+                "indonesian": "Adi dikirimi ibu surat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/adi-dikirimi-ibu-surat-baa7e325.mp3"
+              }
+            ],
+            "rules_en": [
+              "Like -KAN, the -i form in originally transitive verbs has a specific function: it enables focus shift (moving the central direct object).",
+              "In the -i form, the recipient becomes the direct object without the preposition kepada: compare mengirimkan surat kepada Adi with mengirimi Adi surat.",
+              "Active sentence: Party 1 — action — party 3 — party 2 (Ibu — mengirimi — Adi — surat).",
+              "Passive sentence: Party 3 — action — party 1 — party 2 (Adi — dikirimi — ibu — surat)."
+            ],
+            "title_en": "Focus shift with -i in originally transitive verbs"
+          },
+          {
+            "rules": [
+              "Bij veel basiswoorden geven -KAN en -i een verschillende betekenis: -KAN causatief/benefactief (patiens bewogen of gemaakt), -i locatief (handeling op een vast doelpunt gericht).",
+              "tinggal (blijven): meninggalkan = achterlaten; meninggali = nalaten, verlaten.",
+              "duduk (zitten): mendudukkan = iemand laten zitten; menduduki = bezetten.",
+              "gambar (illustratie, tekening): menggambarkan = afbeelden; menggambari = illustreren, beschilderen."
+            ],
+            "title": "Minimale paren: zelfde basiswoord, -KAN tegenover -i",
+            "examples": [
+              {
+                "dutch": "blijven",
+                "english": "stay",
+                "indonesian": "tinggal",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tinggal-90397dc1.mp3"
+              },
+              {
+                "dutch": "achterlaten",
+                "english": "abandon",
+                "indonesian": "meninggalkan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meninggalkan-3509053a.mp3"
+              },
+              {
+                "dutch": "nalaten; verlaten",
+                "english": "bequeath; leave",
+                "indonesian": "meninggali",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meninggali-306e708d.mp3"
+              },
+              {
+                "dutch": "De vrouw heeft haar kind achtergelaten",
+                "english": "The woman abandoned her child",
+                "indonesian": "Perempuan meninggalkan anaknya",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/perempuan-meninggalkan-anaknya-857ef538.mp3"
+              },
+              {
+                "dutch": "Het kind is door de vrouw achtergelaten",
+                "english": "The child was abandoned by the woman",
+                "indonesian": "Anaknya ditinggalkan perempuan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anaknya-ditinggalkan-perempuan-b60d3129.mp3"
+              },
+              {
+                "dutch": "Die persoon heeft zijn kind geld nagelaten",
+                "english": "That person bequeathed money to his child",
+                "indonesian": "Orang itu meninggali anaknya uang",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/orang-itu-meninggali-anaknya-3a9f726b.mp3"
+              },
+              {
+                "dutch": "Aan het kind is door die persoon geld nagelaten",
+                "english": "Money was bequeathed to the child by that person",
+                "indonesian": "Anaknya ditinggali uang oleh orang itu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anaknya-ditinggali-uang-oleh-8a09c3c4.mp3"
+              },
+              {
+                "dutch": "Wie heeft dat huis verlaten?",
+                "english": "Who left that house?",
+                "indonesian": "Siapa meninggali rumah itu?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/siapa-meninggali-rumah-itu-86a75a60.mp3"
+              },
+              {
+                "dutch": "zitten",
+                "english": "sit",
+                "indonesian": "duduk",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/duduk-ead8bff5.mp3"
+              },
+              {
+                "dutch": "laten zitten",
+                "english": "make sit",
+                "indonesian": "mendudukkan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mendudukkan-a0853f94.mp3"
+              },
+              {
+                "dutch": "bezetten",
+                "english": "occupy",
+                "indonesian": "menduduki",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menduduki-48eb69e1.mp3"
+              },
+              {
+                "dutch": "De moeder laat het kind zitten",
+                "english": "The mother makes the child sit",
+                "indonesian": "Ibu mendudukkan anaknya",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mendudukkan-anaknya-53133f8a.mp3"
+              },
+              {
+                "dutch": "Het leger heeft die heuvel bezet",
+                "english": "The army occupied that hill",
+                "indonesian": "Tentara menduduki bukit itu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tentara-menduduki-bukit-itu-5804f384.mp3"
+              },
+              {
+                "dutch": "illustratie, tekening",
+                "english": "illustration, drawing",
+                "indonesian": "gambar",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gambar-39b341d0.mp3"
+              },
+              {
+                "dutch": "afbeelden",
+                "english": "depict",
+                "indonesian": "menggambarkan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menggambarkan-44e38342.mp3"
+              },
+              {
+                "dutch": "illustreren, beschilderen",
+                "english": "illustrate, paint",
+                "indonesian": "menggambari",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menggambari-5dcb56a4.mp3"
+              },
+              {
+                "dutch": "De schilder schildert een kat",
+                "english": "The painter depicts a cat",
+                "indonesian": "Pelukis menggambarkan kucing",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pelukis-menggambarkan-kucing-ebcfbb05.mp3"
+              },
+              {
+                "dutch": "De schilder beschildert de muur / schildert op de muur",
+                "english": "The painter paints the wall / paints on the wall",
+                "indonesian": "Pelukis menggambari dinding",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pelukis-menggambari-dinding-36594216.mp3"
+              }
+            ],
+            "rules_en": [
+              "With many base words, -KAN and -i have different meanings: -KAN causative/benefactive (patient moved or made), -i locative (action directed at a fixed goal).",
+              "tinggal (stay): meninggalkan = abandon; meninggali = bequeath, leave.",
+              "duduk (sit): mendudukkan = make someone sit; menduduki = occupy.",
+              "gambar (illustration, drawing): menggambarkan = depict; menggambari = illustrate, paint."
+            ],
+            "title_en": "Minimal pairs: same base word, -KAN versus -i"
+          },
+          {
+            "rules": [
+              "De volgende basiswoorden uit Selamat Datang 1 en eerdere hoofdstukken leveren zowel een -i- als een -kan-vorm op; leer ze paarsgewijs met beide betekenissen.",
+              "Vuistregel: de -i-vorm richt de handeling op een doelpunt; de -kan-vorm is causatief of brengt iets tot stand."
+            ],
+            "table": [
+              [
+                "Basiswoord",
+                "Betekenis",
+                "-i-vorm",
+                "-kan-vorm"
+              ],
+              [
+                "akhir",
+                "einde",
+                "mengakhiri — (iets) beëindigen",
+                "mengakhirkan — achteraan zetten, achterstellen"
+              ],
+              [
+                "aku",
+                "ik",
+                "mengakui — erkennen, toegeven",
+                "mengakukan — doen erkennen, laten bekennen"
+              ],
+              [
+                "atas",
+                "boven",
+                "mengatasi — te boven komen, oplossen",
+                "mengataskan — hoger plaatsen, (op)hijsen"
+              ],
+              [
+                "baca",
+                "lezen",
+                "membacai — grondig (herhaaldelijk) lezen",
+                "membacakan — voorlezen, laten (voor)lezen"
+              ],
+              [
+                "habis",
+                "op",
+                "menghabisi — beëindigen, als afgedaan beschouwen",
+                "menghabiskan — voltooien, ten einde brengen"
+              ],
+              [
+                "hidup",
+                "leven",
+                "menghidupi — het leven schenken, zorgen voor iemand",
+                "menghidupkan — in het leven roepen; aanzetten (machine)"
+              ],
+              [
+                "ikut",
+                "meegaan",
+                "mengikuti — op de voet volgen, navolgen",
+                "mengikutkan — doen volgen, laten deelnemen"
+              ],
+              [
+                "kurang",
+                "minder",
+                "mengurangi — tekort doen, verminderen",
+                "mengurangkan — beperken, inkorten"
+              ],
+              [
+                "lewat",
+                "voorbij",
+                "melewati — passeren, voorbij gaan",
+                "melewatkan — laten passeren, overslaan"
+              ],
+              [
+                "pinjam",
+                "lenen",
+                "meminjami — lenen aan, lenen bij",
+                "meminjamkan — uitlenen, te leen geven"
+              ]
+            ],
+            "title": "Basiswoorden uit eerdere lessen met beide afleidingen",
+            "rules_en": [
+              "The following base words from Selamat Datang 1 and earlier chapters yield both an -i- and a -kan- form; learn them pairwise with both meanings.",
+              "Rule of thumb: the -i- form directs the action at a target; the -kan- form is causative or brings something about."
+            ],
+            "title_en": "Base words from previous lessons with both derivations"
+          }
+        ],
+        "grammar_topics": [
+          "Werkwoordvormingen -KAN en -i"
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Een brief bestaat dikwijls uit de volgende onderdelen:\n\na. Briefhoofd - Kepala surat\nb. Opening - Pembukaan\nc. Inhoud - Isi\nd. Afsluiting - Penutup",
+          "Voorbeeldbrief:\n\nZwemleraar Jan Jansen,\nPlein 5,\nAmsterdam\n\nNomor: 5\n\n2 Juni 1996\n\nKepada Yth. Bp. Riyanto\nJl. Kolam Renang 1\nCipanas\n\nHal: Losmen\n\nDengan Hormat,\n\nSehubungan dengan surat kami tertanggal 17 Mei, No. 4, kami mohon bantuan Bapak Riyanto mencari losmen dekat kolam renang Cipanas. Maksudnya losmen yang tidak terlalu besar, dengan sewa kira-kira Rp 30.000,-- per kamar. Kami merencanakan akan datang berempat, yaitu saya sendiri, isteri saya dan 2 anak, selama 4 hari. Atas bantuan Bapak kami mengucapkan terima kasih.\n\nHormat kami,\n\nJJansen\n\nJAN JANSEN\n\n(Handtekening / Naam in blokletters)",
+          "Ad b. Openingsgroet\n\nKepada Bapak / Ibu .....          Aan de heer / mevrouw .....\nBapak yang terhormat              Geachte Heer\nDengan Hormat                     Geachte\nHormat kami                       Hoogachtend",
+          "Ad c. Openingszinnen\n\nDengan (surat) ini saya memberitahukan, bahwa .....\nBij deze deel ik u mee, dat .....\n\nSurat Anda tertanggal 23-8-1996 telah saya terima dengan baik .....\nUw brief gedateerd 23-8-1996 heb ik in goede orde ontvangen .....\n\nSehubungan dengan surat kami tertanggal 17 Mei, .....\nIn verband met onze brief de dato 17 mei, .....",
+          "Ad d. Afsluitende zinnen\n\nKami mengucapkan banyak terima kasih atas perhatian dan bantuan Saudara.\nWij danken u ten zeerste voor uw aandacht en medewerking.\n\nKemudian saya sangat mengharapkan berita dari Saudara mengenai .....\nTenslotte hoop ik ten zeerste dat ik een bericht van u zal ontvangen over .....\n\nTak lain sampaikan salam saya kepada teman-teman semuanya, semoga kita lekas berjumpa lagi.\nVergeet ook niet mijn groeten over te brengen aan alle vrienden, en ik hoop dat wij elkaar weer snel zien.\n\nHormat kami / Hormat saya     Hoogachtend\nWasalam                       Gegroet\nSalam dan Hormat              Met eerbiedige groeten\nSalam hangat                  Hartelijke groeten",
+          "Afkortingen in het Indonesisch. Hieronder volgen een aantal veel gebruikte afkortingen:\n\nBp., Ny.   Bapak, Nyonya             Dhr., Mw.\nbl(n).     bulan                     maand\ndgn.       dengan                    met\ndll.       dan lain-lain             enzovoorts\ndsb.       dan sebagainya            en dergelijke\ndst.       dan seterusnya            vervolgens\ndto.       ditandatangani oleh       ondertekend door\nJl.        Jalan                     straat\nkpd.       kepada                    aan\ntgl.       tanggal                   datum, de dato\nSdr.       Saudara                   de Heer, U\nSdri.      Saudari                   Mevrouw, U\nyb.        yang berikut              de volgende\nyg.        yang                      die, dat\ny.l.       yang lalu                 jongstleden\nYth.       Yang terhormat            Geachte"
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "conversation",
+            "items": [
+              {
+                "answer": "A: Selamat malam. Boleh kami duduk di sebelah Anda? — B: Silakan duduk.",
+                "prompt": "A1. Goedenavond. Mogen wij naast u zitten? — B: ga zitten"
+              },
+              {
+                "answer": "A: Nama saya [nama] dan ini suami / isteri saya [nama]. — B: Nama saya Yanto / Yanti.",
+                "prompt": "A2. Ik heet [naam] en dit is mijn man / vrouw [naam] — B: naam Yanto / Yanti"
+              },
+              {
+                "answer": "A: Bisakah Anda berbicara agak pelan, saya belum begitu lancar berbahasa Indonesia. — B: Tentu saja.",
+                "prompt": "A3. Kunt u wat langzamer praten, ik spreek nog niet zo goed Indonesisch — B: natuurlijk"
+              },
+              {
+                "answer": "A: Tidak, kami berasal dari Belanda. Anda berasal dari mana? — B: Dari Inggris?",
+                "prompt": "A4. Nee, wij komen uit Nederland. Waar komt u vandaan? — B: uit Engeland?"
+              },
+              {
+                "answer": "A: Kami merasa kota ini menyenangkan, tetapi agak ramai. — B: Ini Jakarta.",
+                "prompt": "A5. Wij vinden dit een leuke stad, maar wel een beetje druk — B: Jakarta"
+              },
+              {
+                "answer": "A: Apakah Anda sudah lama tinggal di sini? — B: Di sini ada sepuluh juta orang.",
+                "prompt": "A6. Woont u hier al lang? — B: 10 miljoen mensen"
+              },
+              {
+                "answer": "A: Apakah Anda datang ke sini untuk bekerja? — B: Saya baru dua tahun di sini.",
+                "prompt": "A7. Bent u hierheen gekomen om te werken? — B: pas 2 jaar"
+              },
+              {
+                "answer": "A: Oh, bagus. Anda kuliah di jurusan apa? — B: Saya masih kuliah.",
+                "prompt": "A8. O, dat is mooi, wat studeert u? — B: studie"
+              },
+              {
+                "answer": "A: Anda mau minum sesuatu? Saya ambil cola untuk saya dan isteri saya. — B: Saya kuliah kedokteran.",
+                "prompt": "A9. Wilt u wat drinken? Ik haal voor mij en mijn vrouw een cola — B: geneeskunde"
+              },
+              {
+                "answer": "A: Dengan susu dan gula? — B: Saya mau kopi saja, hanya dengan gula.",
+                "prompt": "A10. Met melk en suiker? — B: koffie graag / alleen suiker"
+              }
+            ],
+            "title": "Latihan I — Berkenalan",
+            "instruction": "Zet de dialoog om in Indonesische zinnen. Maak bij de reactie van persoon B gebruik van de gegeven woorden. (geneeskunde = kedokteran)"
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "mengembangkan (Indonesia mengembangkan industri rotan — Indonesië ontwikkelt de rotanindustrie)",
+                "prompt": "1. kembang — Indonesia .......... industri rotan"
+              },
+              {
+                "answer": "melewati (Tiap hari bus ini melewati desa itu — Elke dag passeert deze bus dat dorp)",
+                "prompt": "2. lewat — Tiap hari bus ini .......... desa itu"
+              },
+              {
+                "answer": "membangun (Pemerintah membangun sekolah baru — De overheid bouwt een nieuwe school)",
+                "prompt": "3. bangun — Pemerintah .......... sekolah baru"
+              },
+              {
+                "answer": "berpakaian (Setelah mandi Lidia berpakaian — Na het baden kleedt Lidia zich aan)",
+                "prompt": "4. pakaian — Setelah mandi Lidia .........."
+              },
+              {
+                "answer": "disinari (Sawah menguning disinari matahari — De geel wordende sawah wordt door de zon beschenen)",
+                "prompt": "5. sinar — Sawah menguning .......... matahari"
+              },
+              {
+                "answer": "berbelanja (Ibu dengan tetangganya mau berbelanja di pusat kota — Moeder wil met haar buurvrouw in het centrum winkelen)",
+                "prompt": "6. belanja — Ibu dengan tetangganya mau .......... di pusat kota"
+              },
+              {
+                "answer": "membumbui (Ibu membumbui ikan — Moeder kruidt de vis — de kruiden komen op de vis = doelpunt, -i)",
+                "prompt": "7. bumbu — Ibu .......... ikan"
+              },
+              {
+                "answer": "dikembalikan (Peta ini harus dikembalikan sebelum hari Selasa — Deze kaart moet vóór dinsdag teruggegeven worden)",
+                "prompt": "8. kembali — Peta ini harus .......... sebelum hari Selasa"
+              },
+              {
+                "answer": "menyelesaikan (Saya mau menyelesaikan surat ini — Ik wil deze brief afmaken)",
+                "prompt": "9. selesai — Saya mau .......... surat ini"
+              },
+              {
+                "answer": "direncanakan (Pesta itu direncanakan hari Minggu, pada jam 18.00 — Dat feest is gepland op zondag om 18.00 uur)",
+                "prompt": "10. rencana — Pesta itu .......... hari Minggu, pada jam 18.00"
+              }
+            ],
+            "title": "Latihan II — Vul de juiste werkwoordsvorm in",
+            "instruction": "Vul telkens de juiste werkwoordsvorm van het gegeven basiswoord in (-kan of -i, eventueel met meN- of di-)."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Door de regen",
+                "prompt": "Gara-gara hujan"
+              },
+              {
+                "answer": "Een jonge vrouw komt de boetiek uit met haar nieuwe blouse aan.",
+                "prompt": "Seorang pemudi keluar dari butik dengan memakai baju barunya."
+              },
+              {
+                "answer": "Plotseling begint het te regenen en het regent steeds harder.",
+                "prompt": "Tiba-tiba hujan turun dan semakin besar."
+              },
+              {
+                "answer": "De winkeleigenaar roept in paniek zijn bediende.",
+                "prompt": "Pemilik toko dengan panik memanggil pembantunya."
+              },
+              {
+                "answer": "Snel, achtervolg dat meisje van daarnet en houd een paraplu boven haar!",
+                "prompt": "Cepat kejar gadis tadi dan payungi dia!"
+              },
+              {
+                "answer": "Wauw, baas, wat bent u goedhartig. Laat maar, baas.",
+                "prompt": "Wah, Boss baik hati sekali. Biar aja, Boss."
+              },
+              {
+                "answer": "Snel, stommeling! Wil je dat dat meisje terugkomt met een gekrompen blouse?!",
+                "prompt": "Cepat, goblok! Kau mau melihat gadis itu kembali dengan baju ciut?!"
+              }
+            ],
+            "title": "Latihan III — Vertaal: Humor Indonesia (Gara-gara hujan)",
+            "instruction": "Vertaal de humoristische tekst in het Nederlands."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "bernyanyi. Vertaling: fietsen — zich verzamelen / bijeenkomen — zich ontwikkelen / opbloeien — zingen.",
+                "prompt": "1. bersepeda — berkumpul — berkembang — nyanyi (ber-werkwoorden)"
+              },
+              {
+                "answer": "mencari. Vertaling: schrijven — pakken / nemen — oversteken — zoeken.",
+                "prompt": "2. menulis — mengambil — menyeberang — cari (meN-werkwoorden)"
+              },
+              {
+                "answer": "dicoba. Vertaling: gedronken worden — geopend worden — geholpen worden — geprobeerd worden.",
+                "prompt": "3. diminum — dibuka — ditolong — coba (di-passieven)"
+              },
+              {
+                "answer": "membawahkan. Vertaling: laten vallen — baren / ter wereld brengen — achterlaten — ondergeschikt maken / naar beneden brengen.",
+                "prompt": "4. menjatuhkan — melahirkan — meninggalkan — bawah (meN-...-kan)"
+              },
+              {
+                "answer": "baiklah. Vertaling: ga zitten — laat maar — luister — goed dan / akkoord.",
+                "prompt": "5. duduklah — biarlah — dengarlah — baik (imperatief met -lah)"
+              },
+              {
+                "answer": "tontonan. Vertaling: gebouw — geschreeuw / kreet — diefstal / gestolen goed — schouwspel / voorstelling.",
+                "prompt": "6. bangunan — teriakan — curian — tonton (naamwoorden op -an)"
+              },
+              {
+                "answer": "tercantik. Vertaling: kleinst — zwaarst — armst — mooist.",
+                "prompt": "7. terkecil — terberat — termiskin — cantik (overtreffende trap met ter-)"
+              },
+              {
+                "answer": "penumpang. Vertaling: toeschouwer — inwoner / bewoner — bewaker / wacht — passagier.",
+                "prompt": "8. penonton — penduduk — penjaga — tumpang (peN-agensnaamwoorden)"
+              },
+              {
+                "answer": "dihiasnya. Vertaling: door hem/haar gegeven — door hem/haar gezien — door hem/haar gelezen — door hem/haar versierd.",
+                "prompt": "9. diberinya — dilihatnya — dibacanya — hias (di-...-nya passieven)"
+              },
+              {
+                "answer": "menjawab. Vertaling: lenen — regelen / verzorgen — vragen — antwoorden.",
+                "prompt": "10. meminjam — mengurus — menanya — jawab (meN-werkwoorden)"
+              }
+            ],
+            "title": "Latihan IV — Maak de rij af en vertaal",
+            "instruction": "Elke rij bevat drie vormen van eenzelfde afleiding plus een vierde kaal basiswoord. Vorm bij het vierde woord dezelfde afleiding als de eerste drie en vertaal alle woorden."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"77859172-c910-43a1-a94b-c8d6c1dabf1d\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"77859172-c910-43a1-a94b-c8d6c1dabf1d\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

@@ -1,0 +1,465 @@
+{
+  "lesson": 26,
+  "generatedAt": "2026-06-19T06:36:12.278Z",
+  "sourcePages": 6,
+  "lessonMeta": {
+    "title": "Bab 10 - Musim Hujan",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 26
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Musim Hujan",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Dari bulan November sampai dengan bulan Maret di Indonesia musim hujan. Hujan di Indonesia berarti hujan deras. Bukan seperti di Eropa. Di sana hanya hujan gerimis dibandingkan dengan hujan di Indonesia.",
+        "Hujan di Indonesia lebat sekali. Kalau hujan lebat turun, memang kita tidak mungkin lagi pergi berjalan-jalan. Sebab dalam waktu sedetik saja, kita sudah akan basah kuyup. Tetapi hujan turun hanya beberapa jam saja. Sehabis hujan, hari cerah kembali.\nDi Indonesia, kalau hujan turun, semua janji dibatalkan. Memang tidak enak sampai ke kantor atau ke rumah teman kalau basah kuyup, bukan?",
+        "Buat orang asing yang tidak terbiasa dengan cuaca demikian, banyak masalah yang muncul. Mereka pasti akan ke luar kalau memang ada janji, walaupun mereka akan basah. Dengan payung atau dengan alat apa saja, mereka akan mencoba mencegah supaya tidak sampai basah. Orang Indonesia ketawa. \"Kenapa kok mau keluar Mas? Sekarang 'kan masih hujan. Tunggu dulu, sebentar lagi hujan akan berhenti.\"",
+        "Tetapi orang asing ini tentu saja keluar, dan mengharapkan orang Indonesia akan memenuhi janjinya. Orang asing sangat frustrasi kalau janji dibatalkan. Namun, kalau di Indonesia, adat istiadat Indonesia pula yang harus kita ingat. Jadi, tunggu saja, jangan tergesa-gesa. Hujan memang tidak lama.\nBukan hanya janji yang tidak dipenuhi, tapi ada juga hal lain yang dialami orang asing. Misalnya kalau ada banjir. Saluran telepon putus. Baru mau pakai komputer, eh, listrik mati.",
+        "Ada enaknya juga. Kalau hujan, suara air yang terjun dari langit bunyinya sangat enak. Debu juga akan dibawa air mengalir ke selokan, sehingga tidak mengganggu orang. Apalagi kalau hujan turun, suhu udara tidak begitu panas lagi. Kalau hujan deras baru berhenti, enak sekali hawanya, dan matahari mulai lagi bersinar dengan panasnya."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "adat istiadat",
+          "dutch": "zeden en gebruiken",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "alam",
+          "dutch": "natuur",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "alam, meng-i",
+          "dutch": "meemaken, ervaren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "alir, meng-",
+          "dutch": "stromen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "arus",
+          "dutch": "stroom",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bakar, ter-",
+          "dutch": "verbrand",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "batal, mem-kan",
+          "dutch": "niet doorgaan, afzeggen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "biasa, ter-",
+          "dutch": "gewoon, gewend",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "bunyi",
+          "dutch": "geluid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cegah, men-",
+          "dutch": "voorkomen, tegenhouden, verhinderen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "cerah",
+          "dutch": "helder",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "cuaca",
+          "dutch": "het weer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "demikian",
+          "dutch": "aldus, zodanig",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "derajat",
+          "dutch": "graden",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "deras",
+          "dutch": "hard (v. regen)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "frustrasi",
+          "dutch": "frustratie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gerimis",
+          "dutch": "motregen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gores (gorès)",
+          "dutch": "schram, kras",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "harap, meng-kan",
+          "dutch": "verwachten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "hawa",
+          "dutch": "het weer, lucht",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "iklim",
+          "dutch": "klimaat",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jemur",
+          "dutch": "drogen in de zon, zonnebaden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "jua = juga",
+          "dutch": "ook, weer",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "ketawa",
+          "dutch": "lachen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "komputer",
+          "dutch": "computer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "listrik",
+          "dutch": "electriciteit",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "luka",
+          "dutch": "wond",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "main, per-an",
+          "dutch": "spelletje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "masalah",
+          "dutch": "probleem, kwestie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "muncul",
+          "dutch": "opkomen, opduiken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "penuh, memenuhi",
+          "dutch": "vervullen, zich houden aan",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "prakira, -an",
+          "dutch": "voorspelling",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "putus",
+          "dutch": "kapot, verbroken",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "salep",
+          "dutch": "zalf",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "salur, -an",
+          "dutch": "lijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sehabis",
+          "dutch": "na",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "selokan",
+          "dutch": "goot, afvoer, sloot",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sinar, ber-",
+          "dutch": "schijnen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "suhu",
+          "dutch": "temperatuur",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tergesa-gesa",
+          "dutch": "gehaast",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "udara",
+          "dutch": "lucht, het weer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "undang, meng-",
+          "dutch": "uitnodigen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "video",
+          "dutch": "video",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "expressions",
+      "title": "Ungkapan",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "kabar angin",
+          "dutch": "gerucht",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "masuk angin",
+          "dutch": "kouvatten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "prakiraan cuaca",
+          "dutch": "weerbericht, weersvoorspelling",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "musim dingin",
+          "dutch": "winter",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "musim gugur",
+          "dutch": "herfst",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "musim panas",
+          "dutch": "zomer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "musim semi",
+          "dutch": "lente",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "musim hujan",
+          "dutch": "regentijd (oktober - maart)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "musim kemarau",
+          "dutch": "droge tijd (april - september)",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "text",
+      "title": "Pepatah",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Setelah hujan akan panas jua — Na regen komt zonneschijn"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "text",
+      "title": "Singkatan",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "PPN = Pajak Pertambahan Nilai — Belasting Toegevoegde Waarde (BTW)"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "vocabulary",
+      "title": "Alam dan iklim",
+      "source_pages": [
+        3
+      ],
+      "confidence": "medium",
+      "items": [
+        {
+          "indonesian": "musim semi",
+          "dutch": "lente",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "musim panas",
+          "dutch": "zomer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "musim gugur",
+          "dutch": "herfst",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "musim dingin",
+          "dutch": "winter",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "salju",
+          "dutch": "sneeuw",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "beku",
+          "dutch": "bevroren",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "berawan",
+          "dutch": "bewolkt",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "angin",
+          "dutch": "wind",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kilat",
+          "dutch": "bliksem",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gerimis",
+          "dutch": "motregen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hujan",
+          "dutch": "regen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "petir",
+          "dutch": "donderslag",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "matahari",
+          "dutch": "zon",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bulan",
+          "dutch": "maan",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bintang",
+          "dutch": "ster",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "banjir",
+          "dutch": "overstroming",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gempa bumi",
+          "dutch": "aardbeving",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "derajat",
+          "dutch": "graden",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "grammar",
+      "title": "Tata Bahasa - Het voorvoegsel TER-",
+      "source_pages": [
+        4,
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "TATA BAHASA\n\nHet voorvoegsel TER-\n\nDe TER-vorm kan optreden: 1. in de positie van een handeling\n                           2. in de positie van een bijvoeglijke bepaling\n\nTER- kan worden gecombineerd met het volgende type basiswoord:\n\n1. werkwoord        tidur      tertidur     in slaap vallen\n2. zelfstandig naamwoord  nama   ternama      een goede naam hebben\n\nAd 1. Combinatie met TER- levert één van de volgende betekenissen op:\n\na. beschrijft een situatie            terletak    gesitueerd zijn\nb. 'in staat zijn om ...'             terdengar   te horen\nc. 'ongewild ...'                     tertidur    in slaap gevallen\n\na. TER-vorm: beschrijft een situatie\n\nKota Bandung terletak di Jawa Barat          Bandung ligt in West-Java\nJangan masuk di situ. Itu terlarang!         Ga daar niet naar binnen. Dat is verboden!\n\nb. TER-vorm met de betekenis 'in staat zijn om ...'\n\nSuaranya terdengar sampai di sini            Zijn stem is tot hier te horen\nDari sini gunung itu terlihat                Vanaf hier is de berg te zien\n\nc. TER-vorm in de betekenis 'ongewild ...'\n\nSedang menonton tv Sarti tertidur            Terwijl ze tv keek, viel Sarti in slaap\nDia tertawa                                  Hij lachte / Hij moest erom lachen\n\nAd 2. TER- als bijvoeglijke bepaling bij een zelfstandig naamwoord\n\nDokter terkenal itu berangkat ke luar negeri           Die bekende arts vertrekt naar het buitenland\nPenyanyi pop tercinta mengadakan konser pop malam ini  De geliefde popster geeft vanavond een popconcert\n\nEen enkele keer is de TER-vorm een vaste term:\n\nItu tergantung dari cuacanya           Dat hangt van het weer af\nBuku tersebut tebal sekali             Het genoemde boek is erg dik\nRekening ini sudah termasuk PPN?       Is de rekening inclusief BTW?\nBuku ini terdiri dari 14 bab           Dit boek bestaat uit 14 hoofdstukken\n\nTer herinnering:\nTER - met een bijvoeglijk naamwoord geeft de overtreffende trap.\n\nIni pelabuhan terbesar                 Dit is de grootste haven\n\nAU! gebrand, geschaafd, gesneden\n\n[Advertentie Betadine]\nTERBAKAR\nTERGORES\nTERPOTONG\nSALEP ANTISEPTIK BETADINE\nMencegah infeksi dan menyembuhkan luka serta luka bakar\n\nAdvertentie voor het antiseptische middel Betadine"
+    },
+    {
+      "id": 7,
+      "type": "exercises",
+      "title": "Latihan",
+      "source_pages": [
+        5,
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "LATIHAN\n\nLatihan I. Schrijf een verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van onderstaande tekeningen.\n\nLatihan II. Vul de juiste werkwoordsvorm in en vertaal de zin.\n\n1. dapat     Di mana .......... sekolah di kampung Anda?\n2. batal     Janji itu .......... karena hujan deras\n3. kunjung   Guru .......... orang tua anak ini\n4. tunjuk    Bisakah Bapak .............. jalan ke rumah sakit?\n5. akhir     Sesudah film .......... dia pulang\n6. jaga      Pada umumnya rumah yang besar ..........\n7. kenal     Apakah Bapak sudah ............ dengan adik saya?\n8. masuk     Apakah harga ini sudah .......... ongkos kirim?\n9. undang    Saudara mau ............ siapa?\n10. ajar     Kakaknya sudah menjadi guru dan .......... di Aceh, tetapi adiknya masih ........\n\nLatihan III. Vertaal naar het Indonesisch.\n\n1. Vanwege zijn verjaardag heeft de onderwijzer alle kinderen thuis uitgenodigd\n2. Omdat een paar kinderen ziek zijn geworden, zijn ze er niet allemaal\n3. Bij binnenkomst kregen zij een plastic zakje met snoepgoed\n4. Daarna werden er videofilms gedraaid\n5. Een deel viel in slaap\n6. Toen heeft de onderwijzer hen meegenomen naar het strand\n7. Rini, die elf jaar is, liep een wond op doordat zij viel\n8. Gelukkig had de onderwijzer verband en Betadine meegenomen\n9. Tegen vijf uur in de namiddag kregen zij koekjes\n10. Daarna was het tijd om naar huis te gaan\n\nLatihan IV. Haal de fout uit de zin, verklaar uw antwoord en vertaal de zin.\n\n1. Besok bapak mengangkat ke Yogyakarta\n2. Ibu, apakah pembantu sudah membersih lantai?\n3. Penyanyi dicinta tidak akan datang karena sakit\n4. Ibu dikirimkan buku oleh anaknya di Jakarta\n5. Cepat meminumkan air itu 'nak, kita harus pergi sekarang\n6. Nanti sore ia sudah tiba dari Singapura\n7. Borobudur diletak dekat kota Yogyakarta di Jawa Tengah\n8. Minuman sudah mengambil ayah dari lemari es\n9. Sekarang banyak desa-desa di Indonesia sudah mempunyai listrik\n10. Pada musim semi bunga pohon itu memang sangat bagus sekali"
+    }
+  ],
+  "flags": [
+    "Image page 3 (IMG_1668): illustrated vocabulary page titled 'Alam dan iklim' — items 'petir - donderslag', 'bulan - maan', 'bintang - ster', and 'berawan - bewolkt' recovered from image; not present in OCR text.",
+    "OCR page 2 header reads 'Bab 1' in top right corner — likely OCR error for 'Bab 10'; corrected per context.",
+    "OCR page 1: weather table city names and temperatures contain OCR garbling; corrected from image (IMG_1665): Manado 30/23 (bh), Ambon 31/24 (b), Jayapura 31/24 (b), Biak 30/24 (b), Dili 30/24 (bh), Kupang 31/22 (bh), Mataram 29/23 (bh), Denpasar 32/25 (bh), Surabaya 31/25 (bh), Yogyakarta 30/23 (b), Semarang 31/25 (bh), Bandung 28/19 (bh), Jakarta 32/24 (bh), Tanjungkarang 31/23 (bh), Pontianak 32/23 (b), Samarinda 33/23 (b), Palangkaraya 31/24 (b), Banjarmasin 32/34 (b), Ujungpandang 30/24 (bh), Kendari 32/23 (bh), Palu 33/23 (b).",
+    "Latihan I references 'onderstaande tekeningen' (illustrations) which are not present in the OCR or images provided."
+  ],
+  "sourceImages": 6
+}

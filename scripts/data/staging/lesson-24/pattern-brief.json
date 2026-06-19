@@ -1,0 +1,73 @@
+{
+  "lesson_number": 24,
+  "cefr_level": "A1",
+  "lesson_topic": "Bab 8 - Surat dari Indonesia (brief schrijven; het contrast tussen de werkwoordsachtervoegsels -KAN en -i)",
+  "grammar_patterns": [
+    {
+      "slug": "l24-verhouding-tussen-kan-en-i-algemeen",
+      "name": "De verhouding tussen -KAN en -i — algemeen",
+      "description": "De hoofdfunctie van zowel -KAN (Les 21) als -i (Les 23) is van een basiswoord een transitieve werkwoordsvorm maken. Ze treden in elkaars verlengde op. De keuze tussen -KAN en -i hangt af van betekenis, gebruik en vorm van het basiswoord; veel basiswoorden laten beide toe, telkens met een ander resultaat.",
+      "confusion_group": "kan-vs-i",
+      "key_contrast": "-KAN en -i zijn allebei transitiverend, maar niet inwisselbaar: de betekenis bepaalt welke je kiest",
+      "research_notes": "Synthese-les van Bab 8. Les 21 leerde -kan (causatief/benefactief) en Les 23 -i (locatief/iteratief) los van elkaar; Les 24 leert juist de KEUZE ertussen. Nederlandstaligen behandelen de twee achtervoegsels vaak als vrije varianten en kiezen willekeurig — de les corrigeert dat door de agens/patiens-geometrie als beslisregel te geven.",
+      "example_sentences": [
+        { "id": "duduk → mendudukkan / menduduki", "nl": "laten zitten / bezetten" },
+        { "id": "Pelukis menggambarkan kucing", "nl": "De schilder schildert een kat (-kan: tot stand brengen)" },
+        { "id": "Pelukis menggambari dinding", "nl": "De schilder beschildert de muur (-i: oppervlak als doelpunt)" }
+      ]
+    },
+    {
+      "slug": "l24-statische-versus-dynamische-agens",
+      "name": "Het betekenisverschil: statische versus dynamische agens",
+      "description": "Bij -KAN is de agens statisch ten opzichte van de patiens; de patiens wordt bewogen of tot stand gebracht (causatief/benefactief). Bij -i is de patiens een vast punt (doelpunt/oppervlak) en beweegt de agens zich daarnaartoe (locatief/directioneel).",
+      "confusion_group": "kan-vs-i",
+      "key_contrast": "-KAN: agens statisch, patiens beweegt; -i: patiens vast punt, agens beweegt ernaartoe",
+      "research_notes": "De centrale beslisregel van de les; het lesboek geeft twee pijlschema's. Het meloncatkan/meloncati-paar is het schoolvoorbeeld: bij meloncatkan blijft de werper staan en springt de bal; bij meloncati springt de tijger zelf naar de buffel. Toets begrip met minimale paren, niet met losse vormen.",
+      "example_sentences": [
+        { "id": "Dia meloncatkan bola", "nl": "Hij laat de bal springen (agens staat, patiens beweegt)" },
+        { "id": "Harimau meloncati kerbau", "nl": "De tijger bespringt de buffel (agens beweegt naar het vaste doelpunt)" },
+        { "id": "Pemuda menyeberangi sungai", "nl": "De jongeman steekt de rivier over (rivier = vast doelpunt)" }
+      ]
+    },
+    {
+      "slug": "l24-minimale-paren-kan-versus-i",
+      "name": "Minimale paren: zelfde basiswoord, -KAN versus -i",
+      "description": "Veel basiswoorden vormen zowel een -KAN- als een -i-afleiding met verschillende betekenis. tinggal → meninggalkan (achterlaten) vs meninggali (nalaten/verlaten); duduk → mendudukkan (laten zitten) vs menduduki (bezetten); gambar → menggambarkan (afbeelden) vs menggambari (beschilderen); seberang → menyeberangkan (overzetten) vs menyeberangi (oversteken).",
+      "confusion_group": "kan-vs-i",
+      "key_contrast": "Zelfde stam, ander achtervoegsel, andere betekenis: -KAN causatief/benefactief, -i locatief",
+      "research_notes": "De minimale paren zijn het hart van de les. Het meest didactisch krachtige paar is duduk: mendudukkan (iemand laten zitten) tegenover menduduki (een heuvel/gebied bezetten). Laat de leerling steeds eerst de agens/patiens-geometrie benoemen en daaruit de betekenis afleiden. meninggali heeft twee lezingen (iemand iets nalaten; een plaats verlaten) — beide passen in de 'gericht op een doelpunt'-logica.",
+      "example_sentences": [
+        { "id": "Perempuan meninggalkan anaknya", "nl": "De vrouw heeft haar kind achtergelaten" },
+        { "id": "Orang itu meninggali anaknya uang", "nl": "Die persoon heeft zijn kind geld nagelaten" },
+        { "id": "Tentara menduduki bukit itu", "nl": "Het leger heeft die heuvel bezet" },
+        { "id": "Ibu mendudukkan anaknya", "nl": "De moeder laat het kind zitten" }
+      ]
+    },
+    {
+      "slug": "l24-focuswisseling-met-i-bij-transitieve-werkwoorden",
+      "name": "Focuswisseling met -i bij van oorsprong transitieve werkwoorden",
+      "description": "Net als -KAN maakt -i bij een al transitief werkwoord focuswisseling mogelijk. kirim (sturen): mengirim surat (kale transitief) — mengirimkan surat kepada Adi (met -kan + kepada) — mengirimi Adi surat (met -i, ontvanger Adi wordt direct lijdend voorwerp). In de passieve vorm komt bij -i de ontvanger vooraan: Adi dikirimi ibu surat.",
+      "confusion_group": "kan-vs-i",
+      "key_contrast": "-kan ... kepada X (zaak centraal) versus -i X (ontvanger wordt direct lijdend voorwerp, geen kepada)",
+      "research_notes": "Lastigste pattern van de les. Het lesboek geeft het volledige actief/passief-schema voor kirim. De valkuil voor Nederlandstaligen: kepada laten staan bij de -i-vorm (*mengirimi kepada Adi). Bij -i vervalt kepada en wordt de ontvanger het lijdend voorwerp. Dit komt terug in de brieftekst van de les: 'saya juga minta dikirimi kartu pos tulip'.",
+      "example_sentences": [
+        { "id": "Ibu mengirimkan surat kepada Adi", "nl": "Moeder stuurt een brief naar Adi (zaak centraal, met kepada)" },
+        { "id": "Ibu mengirimi Adi surat", "nl": "Moeder stuurt Adi een brief (ontvanger centraal, zonder kepada)" },
+        { "id": "Adi dikirimi ibu surat", "nl": "Adi wordt door moeder een brief gestuurd" }
+      ]
+    },
+    {
+      "slug": "l24-basiswoorden-met-beide-afleidingen-i-en-kan",
+      "name": "Basiswoorden met beide afleidingen (-i en -kan)",
+      "description": "Een lijst basiswoorden uit Selamat Datang 1 en eerdere hoofdstukken die zowel een -i- als een -kan-vorm opleveren: akhir, aku, atas, baca, habis, hidup, ikut, kurang, lewat, pinjam. Telkens met een eigen betekenis langs dezelfde lijn (i = op doelpunt gericht; kan = causatief / tot stand brengen).",
+      "confusion_group": "kan-vs-i",
+      "key_contrast": "Paarsgewijs leren: één basiswoord, twee afleidingen, twee betekenissen",
+      "research_notes": "Consolidatie- en woordenschatlijst, geen nieuwe regel. Bekende basiswoorden worden hergebruikt zodat de leerling alleen op de -i/-kan-keuze hoeft te letten. pinjam komt terug in de brieftekst. Let op: woorden die al op -i eindigen (beli, cari, beri) krijgen geen extra -i (regel uit Les 23).",
+      "example_sentences": [
+        { "id": "pinjam → meminjami / meminjamkan", "nl": "lenen aan iemand / uitlenen, te leen geven" },
+        { "id": "atas → mengatasi / mengataskan", "nl": "te boven komen, oplossen / hoger plaatsen, ophijsen" },
+        { "id": "habis → menghabisi / menghabiskan", "nl": "beëindigen / voltooien, opmaken" }
+      ]
+    }
+  ]
+}

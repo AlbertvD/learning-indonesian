@@ -1,0 +1,627 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 21: Bab 5 — Dongeng (Een sprookje)
+
+   A folktale chapter. The story leads (a lamplit narrative spread), then the
+   -KAN grammar (seven movements, each example an aligned root → -KAN transform),
+   then the fable's vocabulary. Warm gold for the dongeng, per-tile colours for
+   the grammar, green for the words.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Page root ──────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band {
+  width: 100%;
+  padding: 56px 0;
+}
+
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — lamplit, warm gold ──────────────────────────────────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #1a120b;
+  background-image:
+    linear-gradient(115deg, rgba(20, 14, 8, 0.90) 0%, rgba(40, 26, 14, 0.74) 48%, rgba(252, 196, 25, 0.22) 100%),
+    url('/lesson-21-hero.webp');
+  background-size: cover;
+  background-position: center 38%;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 78% 28%, rgba(252, 196, 25, 0.22), transparent 42%),
+    radial-gradient(circle at 12% 88%, rgba(255, 149, 0, 0.12), transparent 38%);
+  pointer-events: none;
+}
+
+.heroInner {
+  composes: container;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) {
+  .heroBand { padding: 56px 0 64px; }
+}
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(252, 196, 25, 0.18);
+  color: var(--ring-target);
+  border: 1px solid rgba(252, 196, 25, 0.30);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(40px, 5.5vw, 60px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 600px;
+  font-weight: var(--fw-normal);
+}
+
+.heroDescription em {
+  font-style: italic;
+  color: var(--ring-target);
+  font-weight: var(--fw-semibold);
+}
+
+/* ─── Editorial lede ─────────────────────────────────────────────────────── */
+
+.ledeBand {
+  composes: band;
+  padding: 64px 0 32px;
+}
+
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+  max-width: 70ch;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--ring-target);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--ring-target);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Audio band ─────────────────────────────────────────────────────────── */
+
+.audioBand {
+  composes: band;
+  padding: 0 0 8px;
+}
+
+.audioInner {
+  composes: container;
+  max-width: 920px;
+}
+
+/* ─── Main content shell ─────────────────────────────────────────────────── */
+
+.shellBand {
+  composes: band;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.shell {
+  composes: container;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+.section { display: flex; flex-direction: column; }
+
+/* ─── Shared section header ──────────────────────────────────────────────── */
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* ─── 1. The fable — lamplit narrative spread ────────────────────────────── */
+
+.fableEyebrow {
+  composes: sectionEyebrow;
+  color: var(--ring-target);
+}
+
+.fableEyebrow::before { background: var(--ring-target); }
+
+.fableProloog {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.65;
+  margin: 0 0 28px;
+  max-width: 72ch;
+}
+
+.fableStage {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(252, 196, 25, 0.10), transparent 60%),
+    linear-gradient(180deg, rgba(252, 196, 25, 0.04) 0%, transparent 100%);
+  border: 1px solid rgba(252, 196, 25, 0.16);
+  border-radius: var(--r-xl);
+  padding: 48px 44px;
+}
+
+@media (max-width: 720px) {
+  .fableStage { padding: 32px 22px; }
+}
+
+.fableTitle {
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: var(--fw-black);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.fableTitle::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin: 16px auto 0;
+  border-radius: 999px;
+  background: var(--ring-target);
+}
+
+.fableScene {
+  font-size: clamp(16px, 1.4vw, 18px);
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0 0 20px;
+  white-space: pre-line; /* preserve story's intra-paragraph line breaks */
+  max-width: 64ch;
+  margin-inline: auto;
+}
+
+.fableScene:last-child { margin-bottom: 0; }
+
+.fableScene[data-lead='true']::first-letter {
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.82;
+  font-weight: var(--fw-black);
+  color: var(--ring-target);
+  padding: 6px 12px 0 0;
+}
+
+/* ─── 2. Grammar — the -KAN suffix, seven movements ──────────────────────── */
+
+.grammarEyebrow {
+  composes: sectionEyebrow;
+  color: var(--mix-recall);
+}
+
+.grammarEyebrow::before { background: var(--mix-recall); }
+
+.grammarDek {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 32px;
+  max-width: 76ch;
+}
+
+.grammarDek em {
+  font-style: normal;
+  font-family: var(--font-mono);
+  color: var(--mix-recall);
+  font-weight: var(--fw-semibold);
+}
+
+.grammarDek strong {
+  color: var(--text-primary);
+  font-weight: var(--fw-bold);
+}
+
+.grammarTiles {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.grammarTile {
+  --tile-accent: var(--accent-primary);
+  padding: 26px 28px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+@media (max-width: 720px) {
+  .grammarTile { padding: 22px 18px; }
+}
+
+.grammarTile[data-accent='cyan']   { --tile-accent: var(--accent-primary); }
+.grammarTile[data-accent='purple'] { --tile-accent: var(--mix-recall); }
+.grammarTile[data-accent='teal']   { --tile-accent: var(--teal); }
+.grammarTile[data-accent='amber']  { --tile-accent: var(--ring-target); }
+.grammarTile[data-accent='green']  { --tile-accent: var(--success); }
+.grammarTile[data-accent='orange'] { --tile-accent: var(--warning); }
+
+.grammarTileHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.grammarTileNumber {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--tile-accent);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.grammarTileTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.grammarRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.grammarRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.grammarRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--tile-accent);
+  font-weight: var(--fw-bold);
+}
+
+/* Examples — sit below the rules under a dashed rule */
+.grammarExamples {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Arrow-pair examples: a 3-track grid so every → and every -KAN form lines up */
+.grammarExamples[data-pairs='true'] {
+  display: grid;
+  grid-template-columns: minmax(0, max-content) auto minmax(0, 1fr);
+  column-gap: 14px;
+  row-gap: 12px;
+  align-items: baseline;
+}
+
+.grammarPair { display: contents; }
+
+.grammarPairLeft {
+  justify-self: end;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+}
+
+.grammarPairArrow {
+  color: var(--tile-accent);
+  font-weight: var(--fw-bold);
+}
+
+.grammarPairRight {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--tile-accent);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.grammarPairNl {
+  grid-column: 1 / -1;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  padding-left: 0;
+  margin-top: -4px;
+}
+
+@media (max-width: 720px) {
+  .grammarExamples[data-pairs='true'] { grid-template-columns: 1fr; row-gap: 4px; }
+  .grammarPairLeft { justify-self: start; }
+  .grammarPairNl { margin-top: 0; margin-bottom: 8px; }
+}
+
+/* Sentence examples: Indonesian primary, Dutch secondary */
+.grammarSentence { display: flex; flex-direction: column; gap: 3px; }
+
+.grammarSentenceId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.grammarSentenceNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── 3. Vocabulary — green chip grid ────────────────────────────────────── */
+
+.vocabEyebrow {
+  composes: sectionEyebrow;
+  color: var(--success);
+}
+
+.vocabEyebrow::before { background: var(--success); }
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.itemChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(50, 215, 75, 0.05);
+  border: 1px solid rgba(50, 215, 75, 0.18);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.itemChip:hover {
+  border-color: var(--success);
+  transform: translateY(-1px);
+}
+
+.itemId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  min-width: 6.5em;
+}
+
+.itemSep {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.itemNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Inline play button ─────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ───────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,229,255,0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner {
+  composes: container;
+  max-width: 720px;
+  text-align: center;
+}
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 28px;
+}
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions {
+  display: flex;
+  justify-content: center;
+}
+
+.closingActions > * {
+  width: 100%;
+  max-width: 660px;
+}

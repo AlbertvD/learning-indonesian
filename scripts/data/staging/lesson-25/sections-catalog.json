@@ -1,0 +1,513 @@
+{
+  "lesson": 25,
+  "generatedAt": "2026-06-19T06:27:03.866Z",
+  "sourcePages": 5,
+  "lessonMeta": {
+    "title": "Bab 9 - Ambon sebagai obyek pariwisata",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 25
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Cultuur - Ambon sebagai obyek pariwisata",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Di sekeliling Ambon terdapat taman laut yang paling indah di wilayah Indonesia. Walaupun demikian, sampai sekarang hanya beberapa wisatawan saja yang pernah mengunjungi taman laut tersebut.",
+        "Juga bagi para wisatawan Belanda yang pernah mengunjungi Indonesia, adanya taman laut ini masih kurang mereka kenal. Di Bali dan Lombok juga ada taman laut. Justru taman laut inilah sering dikunjungi orang. Mungkin karena pulau-pulau ini terkenal, maka orang asing pada umumnya sudah pernah mendengar cerita tentang keindahan yang terdapat di sana.",
+        "Kami sedang berbicara dengan seorang pegawai dari kantor pariwisata kota Ambon."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "dialogue",
+      "title": "Dialoog - Ambon sebagai obyek pariwisata",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "lines": [
+        {
+          "speaker": "Pegawai",
+          "text": "Ambon sebagai pulau di Indonesia bagian timur tentu saja sangat terkenal di negeri Belanda. Tetapi mungkin wilayah ini kurang menarik untuk para wisatawan, yang sering hanya mendengar informasi tentang Bali dan Jawa. Juga perjalanan dari Jakarta ke Ambon agak mahal, sehingga wisatawan tidak sanggup membayarnya. Wisatawan Belanda yang datang ke Ambon tentu saja orang Ambon sendiri yang sudah lama tinggal di sana. Kalau mereka banyak bercerita tentang pulau kita ini, di kemudian hari juga akan lebih terkenal."
+        },
+        {
+          "speaker": "Wartawan",
+          "text": "Kalau mau ke Ambon, bagaimana caranya?"
+        },
+        {
+          "speaker": "Pegawai",
+          "text": "Dari Jakarta ke Ambon ada beberapa cara. Bisa naik pesawat tetapi sebenarnya rugi juga. Naik kapal laut lebih baik, walaupun makan waktu agak lama. Pemandangan dari laut sangat bagus, dan untuk dapat berkenalan dengan orang Indonesia, cara ini juga lebih baik."
+        },
+        {
+          "speaker": "Wartawan",
+          "text": "Apakah menurut Anda gejala ekonomi dalam pariwisata juga akan berperan besar untuk pulau Ambon ini di kemudian hari?"
+        },
+        {
+          "speaker": "Pegawai",
+          "text": "Tentu saja. Walaupun di Ambon sekarang hasil perkebunan merupakan hasil utama, di samping hasil perikanan dan sebagainya, tetapi hasil yang diperoleh dari wisatawan juga akan penting sekali. Asal saja lingkungan dijaga supaya tetap indah dan menyenangkan. Itu yang dinamakan ekowisata. Dengan demikian perjalanan naik kole-kole untuk melihat taman cengkeh dari atas permukaan laut, akan tetap sangat menyenangkan. Apakah Anda pernah merokok rokok kretek? Untuk rokok itu kita juga memerlukan bunga cengkeh sebagai campuran."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "ada, ~nya",
+          "dutch": "bestaan",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "bagi, ~an",
+          "dutch": "deel / afdeling",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "campur, ~an",
+          "dutch": "mengsel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cengkeh",
+          "dutch": "kruidnagel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dengan demikian",
+          "dutch": "zodoende",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "di kemudian hari",
+          "dutch": "in de toekomst",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "diperoleh",
+          "dutch": "verkregen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "di samping",
+          "dutch": "naast",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "ekowisata",
+          "dutch": "ecotoerisme",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gejala",
+          "dutch": "verschijnsel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hasil",
+          "dutch": "opbrengst / resultaat",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ikan, per~an",
+          "dutch": "visserij",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "informasi",
+          "dutch": "informatie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jaga, men~",
+          "dutch": "beschermen / bewaken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "justru",
+          "dutch": "juist",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "kebun, per~an",
+          "dutch": "tuinbouw / plantage",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "keindahan",
+          "dutch": "schoonheid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kole-kole",
+          "dutch": "kleine prauw",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lingkung, ~an",
+          "dutch": "omgeving / milieu",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "Maluku",
+          "dutch": "Molukken",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "muka, per~an",
+          "dutch": "oppervlakte",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "nama, me~kan",
+          "dutch": "noemen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "obyek",
+          "dutch": "object",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pada umumnya",
+          "dutch": "in 't algemeen",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "pandang, pemandangan",
+          "dutch": "uitzicht / panorama",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "peran, ber~",
+          "dutch": "een rol spelen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sanggup",
+          "dutch": "in staat / bij machte",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "senang, menyenangkan",
+          "dutch": "aangenaam / aantrekkelijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "sepak bola, main ~",
+          "dutch": "voetballen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "taman laut",
+          "dutch": "zeetuin",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tetap",
+          "dutch": "duurzaam / vast",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "turut, menurut",
+          "dutch": "volgens",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "ubah, meng~",
+          "dutch": "veranderen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "wartawan",
+          "dutch": "journalist",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "wilayah",
+          "dutch": "gebied",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "wisatawan",
+          "dutch": "toerist",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "walaupun demikian",
+          "dutch": "alhoewel dat zo is",
+          "pos": "conjunction"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "grammar",
+      "title": "Tata Bahasa - PE-AN vormen",
+      "source_pages": [
+        2,
+        3
+      ],
+      "confidence": "high",
+      "raw_text": "TATA BAHASA\n\nPE - AN vormen\n\nΔ De PE - AN vorm maakt van het basiswoord een zelfstandig naamwoord.\n\nΔ De regels voor de vorming van een PE - AN vorm zijn identiek aan die van de PE-vorm, respectievelijk de -AN vorm.\n\nZoals we hebben gezien kan op basis van een basiswoord door middel van ME-, ME-KAN en ME-i een werkwoordsvorm worden gemaakt. Op basis van het aldus ontstane werkwoord kan door middel van de PE-AN vorm opnieuw een zelfstandig naamwoord worden gemaakt.\n\n1. PE - AN + werkwoord\n\nmenjual     verkopen     penjualan mobil     het verkopen van auto's\nmembuka     openen       pembukaan pesta     het openen van een feest\nmengirim    sturen       pengiriman surat    het verzenden van brieven\n\nPenjualan mobil itu proses menjual mobil\nPembukaan pesta merupakan hal yang menyenangkan\n\n2. PE - AN + zelfstandig naamwoord\n\nmenghargai      waarderen     penghargaan    het waarderen\nmendaftarkan    registreren   pendaftaran    het op de lijst plaatsen\nmerencanakan    plannen       perencanaan    het plannen\n\nPendaftaraan mahasiswa baru memulai pada bulan Juni\nOrang tua membantu dengan perencanaan perkawinan\n\n3. PE - AN + bijvoeglijk naamwoord\n\nmenjelaskan    verklaren      penjelasan    het verklaren\nmendekati      benaderen      pendekatan    het benaderen\nmengumumkan    bekend maken   pengumuman    het bekendmaken\n\nPenjelasan guru itu kurang jelas\nBesok pengumuman hasil perusahaan akan diumumkan"
+    },
+    {
+      "id": 4,
+      "type": "text",
+      "title": "Telepon Penting",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "TELEPON PENTING\n\nDaftar ini sewaktu-waktu bisa berubah — Deze lijst kan ieder moment veranderen\n\nPenerangan lokal : 108* | Lokale inlichtingen : 108\nInfo Pelayanan Pos & Giro : 161 | Info over Post- & Girodiensten : 161\nGangguan Lampu Penerangan Jalan : 234 | Storingen Straatverlichting : 234\nPelayanan Usaha Transfusi Darah : 118 | Bloedtransfusiedienst : 118\n\n(* de telefoonnummers zijn fictief)"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "vocabulary",
+      "title": "Dieren",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "udang",
+          "dutch": "garnaal",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tokeh",
+          "dutch": "gekko",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "anjing",
+          "dutch": "hond",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cicak",
+          "dutch": "huishagedis",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kecoak",
+          "dutch": "kakkerlak",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kucing",
+          "dutch": "kat",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kodok",
+          "dutch": "kikker",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ayam",
+          "dutch": "kip",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sapi",
+          "dutch": "koe",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kelinci",
+          "dutch": "konijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kepiting",
+          "dutch": "krab",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jangkrik",
+          "dutch": "krekel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ubur-ubur",
+          "dutch": "kwal",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "semut",
+          "dutch": "mier",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "nyamuk",
+          "dutch": "mug",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tikus",
+          "dutch": "muis",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "badak",
+          "dutch": "neushoorn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gajah",
+          "dutch": "olifant",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kuda",
+          "dutch": "paard",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sapi",
+          "dutch": "rund",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "domba",
+          "dutch": "schaap",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ular",
+          "dutch": "slang",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "laba-laba",
+          "dutch": "spin",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "harimau",
+          "dutch": "tijger",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "babi",
+          "dutch": "varken",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ikan",
+          "dutch": "vis",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lalat",
+          "dutch": "vlieg",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kupu-kupu",
+          "dutch": "vlinder",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "burung",
+          "dutch": "vogel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kerbau",
+          "dutch": "waterbuffel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "banteng",
+          "dutch": "wilde buffel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cacing",
+          "dutch": "worm",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kuiken",
+          "dutch": "anak ayam",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "zeeëgel",
+          "dutch": "babi laut",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "duif",
+          "dutch": "burung dara",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mus",
+          "dutch": "burung gereja",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kaketoe",
+          "dutch": "burung kaka tua",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dolfijn",
+          "dutch": "ikan domba",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "haai",
+          "dutch": "ikan hiu",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "zeevis",
+          "dutch": "ikan laut",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kreeft",
+          "dutch": "udang karang",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "exercises",
+      "title": "Latihan",
+      "source_pages": [
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "LATIHAN\n\nLatihan I. Schrijf een verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van onderstaande tekening.\n[tekening: Kantor Pos — cek pos ini harus diuangkan]\n\nLatihan II. Maak van onderstaande woorden een PE-AN vorm, vertaal het woord en pas deze toe in een Indonesische zin.\n\n1. bangun\n2. pandang\n3. periksa\n4. terbang\n5. bayar\n6. daftar\n7. awas\n8. pelihara\n9. obat\n10. terang\n\nLatihan III. Vertaal de hele zin naar het Indonesisch.\n\n1. Waar was jij (tadi)? Ali zoekt jou. Hij vraagt of je mee wilt doen (main sepak bola)\n2. Van wie is deze informatie? Dat is de informatie van die (wartawan)\n3. Waar is jouw paraplu? O, (ditinggalkan) in mijn hotelkamer\n4. Dichtbij deze stad (terletak) een grote zeehaven. Daar (barang-barang dikumpulkan) om verstuurd te worden naar (Amerika Serikat)\n5. Wat is jouw mening (tentang hal ini)? Ik weet het nog niet, maar ik (kurang setuju) met het hoofd van die afdeling\n6. Waar kunnen toeristen inlichtingen krijgen (mengenai waktu keberangkatan) van de trein?\n7. Wat kost een kaartje (pulang pergi) Prapat - Sibolga? (Pada jam berapa) moeten wij aanwezig zijn?\n8. Vanaf deze plaats is (pemandangan) bijzonder aangenaam\n9. Visserij, tuinbouw en ecotoerisme zijn (sangat penting) voor de Molukse economie\n10. Vandaag zullen (banyak tamu) komen, want mijn zusje (akan menikah) met haar verloofde"
+    }
+  ],
+  "flags": [
+    "Image IMG_1660.jpg: Full dialogue recovered from image; OCR page 1 contained only partial text (missing opening paragraphs and end of Pegawai's final turn).",
+    "Image IMG_1661.jpg: Vocabulary items 'campur, ~an = mengsel' and 'cengkeh = kruidnagel' and 'nama, me~kan = noemen' recovered from image — not present or garbled in OCR page 2.",
+    "Image IMG_1662.jpg: Grammar section intro paragraph ('Zoals we hebben gezien...') and Telepon Penting box fully recovered from image; OCR page 3 was incomplete.",
+    "Image IMG_1663.jpg: Dieren section header and first items (garnaal/udang through koe/sapi) and Samenstellingen subsection recovered from image — OCR page 4 was missing these.",
+    "Vocabulary section 'Dieren' lacks a 'Woordenlijst' header; uses 'Dieren' as section header. Dutch and Indonesian columns are reversed in the image for the Samenstellingen subsection — extracted with Dutch as dutch field and Indonesian as indonesian field.",
+    "Image IMG_1664.jpg: Latihan III items 8–10 recovered from image — not present in OCR page 5.",
+    "Note: 'sapi' appears twice in Dieren list (for both 'koe' and 'rund') — reproduced as found in source image."
+  ],
+  "sourceImages": 5
+}

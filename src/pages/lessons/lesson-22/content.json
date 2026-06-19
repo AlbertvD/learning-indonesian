@@ -1,0 +1,1282 @@
+{
+  "meta": {
+    "id": "e300259d-8d01-4484-b0b2-82dd54f373ed",
+    "order_index": 22,
+    "title": "Pesta Pernikahan",
+    "level": "A1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Orus",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Minggu ini akan diadakan pesta pernikahan di rumah keluarga Murjito. Titi, putri yang kedua, akan menikah dengan seorang pemuda yang cakap. Dia berusia 25 tahun dan sudah selama tiga tahun bekerja sebagai juru rawat di sebuah klinik.",
+          "Nugroho calon suaminya berusia sedikit lebih muda: 24 tahun. Dia bekerja di kantor Perumtel (Perusahaan Umum Telekomunikasi).",
+          "Orang tua Titi dan Nugroho sudah saling mengenal dan tidak ada halangan untuk pernikahan ini. Ibu dan ayah Titi senang sekali karena bakal menantunya sudah bekerja di perusahaan yang baik.",
+          "Sudah beberapa hari rumah keluarga Murjito ramai dikunjungi orang. Banyak anggota keluarga Titi datang ke Jakarta untuk ikut membantu. Tentu bibi Ratna juga sudah hadir. Mana ada pesta tanpa bibi ini! Seperti biasa suaminya, paman Ton, juga ikut datang. Nenek dan kakek dari pihak ibu Titi juga sudah ada. Dari pihak Nugroho belum banyak orang yang datang karena harus datang dari Yogyakarta.",
+          "Susi, kakak Titi dengan suaminya Benny - ipar Titi - sudah datang seminggu sebelum pesta. Syaiful, adiknya, belum ada karena masih berkuliah di Malang. Syaiful akan datang dengan pacarnya Nining. Titi belum pernah berkenalan dengan Nining. Karena itu ia ingin berkenalan dengannya. Katanya gadis ini sangat cantik.",
+          "Nenek Titi sangat senang. Titi, cucu yang paling dibanggakannya, akan menikah sekarang. Nenek juga senang karena Titi akan tinggal di Jakarta. Tidak seperti cucunya yang lain. Semuanya sudah pindah ke luar kota Jakarta.",
+          "Orang-orang sibuk dengan persiapan terakhir untuk pesta ini. Buat tamu yang akan datang tentu banyak alat yang diperlukan seperti kursi, meja, pecah belah dan sebagainya. Karena barang-barang ini harus disewa, dua minggu sebelumnya sudah dipesan. Makanan dan makanan kecil dimasak lebih dulu. Tentu rumah harus dihias dengan bunga dan janur. Setandan pisang mas serta buah kelapa gading muda juga harus dipasang. Ini adalah lambang kesuburan pasangan pengantin baru."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "houden / uitvoeren",
+            "english": "hold / conduct",
+            "indonesian": "ada, meng-kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ada-mengkan-e3d1e972.mp3"
+          },
+          {
+            "dutch": "stadsplein",
+            "english": "town square",
+            "indonesian": "alun-alun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/alunalun-3b5f5265.mp3"
+          },
+          {
+            "dutch": "familielid",
+            "english": "family member",
+            "indonesian": "anggota keluarga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/anggota-keluarga-6f500a1d.mp3"
+          },
+          {
+            "dutch": "en dergelijke",
+            "english": "and such",
+            "indonesian": "bagai, se-nya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bagai-senya-93759160.mp3"
+          },
+          {
+            "dutch": "aanstaande",
+            "english": "future / about to be",
+            "indonesian": "bakal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bakal-08fdabf4.mp3"
+          },
+          {
+            "dutch": "trots",
+            "english": "proud",
+            "indonesian": "bangga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bangga-377c0caa.mp3"
+          },
+          {
+            "dutch": "trots zijn op",
+            "english": "be proud of",
+            "indonesian": "mem-kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/memkan-0225fe6d.mp3"
+          },
+          {
+            "dutch": "bloem",
+            "english": "flower",
+            "indonesian": "bunga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bunga-2754dad4.mp3"
+          },
+          {
+            "dutch": "leuk / knap (man)",
+            "english": "handsome / attractive (man)",
+            "indonesian": "cakap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cakap-3a0c6411.mp3"
+          },
+          {
+            "dutch": "kandidaat",
+            "english": "candidate",
+            "indonesian": "calon",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/calon-eda13a61.mp3"
+          },
+          {
+            "dutch": "mooi (vrouw)",
+            "english": "beautiful (woman)",
+            "indonesian": "cantik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cantik-4ce01135.mp3"
+          },
+          {
+            "dutch": "kleinkind",
+            "english": "grandchild",
+            "indonesian": "cucu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cucu-0d8c0f4e.mp3"
+          },
+          {
+            "dutch": "bezocht",
+            "english": "visited",
+            "indonesian": "dikunjungi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dikunjungi-7e2eddfb.mp3"
+          },
+          {
+            "dutch": "belemmering",
+            "english": "obstacle / hindrance",
+            "indonesian": "halang, -an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/halang-an-a751465b.mp3"
+          },
+          {
+            "dutch": "versieren",
+            "english": "decorate",
+            "indonesian": "hias, meng-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hias-meng-bde47245.mp3"
+          },
+          {
+            "dutch": "zwager / schoonzus",
+            "english": "brother-in-law / sister-in-law",
+            "indonesian": "ipar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ipar-acad182d.mp3"
+          },
+          {
+            "dutch": "palmbladversiering",
+            "english": "palm leaf decoration",
+            "indonesian": "janur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/janur-a70a3a1a.mp3"
+          },
+          {
+            "dutch": "verpleegkundige",
+            "english": "nurse",
+            "indonesian": "juru rawat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/juru-rawat-b97ea463.mp3"
+          },
+          {
+            "dutch": "opa / grootvader",
+            "english": "grandfather / grandpa",
+            "indonesian": "kakek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kakek-2a1c1bda.mp3"
+          },
+          {
+            "dutch": "rijdend eetstalletje",
+            "english": "mobile food stall",
+            "indonesian": "kaki lima",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kaki-lima-ab038e7a.mp3"
+          },
+          {
+            "dutch": "soort kokospalm",
+            "english": "type of coconut palm",
+            "indonesian": "kelapa gading",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kelapa-gading-c2be8575.mp3"
+          },
+          {
+            "dutch": "vruchtbaarheid",
+            "english": "fertility",
+            "indonesian": "kesuburan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kesuburan-492db47d.mp3"
+          },
+          {
+            "dutch": "kliniek",
+            "english": "clinic",
+            "indonesian": "klinik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/klinik-ae5049ca.mp3"
+          },
+          {
+            "dutch": "symbool",
+            "english": "symbol",
+            "indonesian": "lambang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lambang-d06d16f2.mp3"
+          },
+          {
+            "dutch": "schoondochter / -zoon",
+            "english": "son-in-law / daughter-in-law",
+            "indonesian": "menantu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/menantu-ee72bdea.mp3"
+          },
+          {
+            "dutch": "huwen / trouwen",
+            "english": "marry / wed",
+            "indonesian": "nikah, me-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/nikah-me-fb56389b.mp3"
+          },
+          {
+            "dutch": "vaste vriend(in)",
+            "english": "steady boyfriend / girlfriend",
+            "indonesian": "pacar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pacar-9ef0e39e.mp3"
+          },
+          {
+            "dutch": "paar",
+            "english": "pair / couple",
+            "indonesian": "pasangan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pasangan-367e8fa3.mp3"
+          },
+          {
+            "dutch": "bruidspaar",
+            "english": "bride and groom",
+            "indonesian": "pengantin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pengantin-2522716a.mp3"
+          },
+          {
+            "dutch": "serviesgoed",
+            "english": "crockery / dishes",
+            "indonesian": "pecah belah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pecah-belah-a24695a2.mp3"
+          },
+          {
+            "dutch": "bruid(egom)",
+            "english": "bride(groom)",
+            "indonesian": "pengantin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pengantin-2522716a.mp3"
+          },
+          {
+            "dutch": "nodig hebben",
+            "english": "need, require",
+            "indonesian": "perlu, memerlukan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/perlu-memerlukan-816884d2.mp3"
+          },
+          {
+            "dutch": "huwelijk",
+            "english": "marriage",
+            "indonesian": "pernikahan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pernikahan-1e35d748.mp3"
+          },
+          {
+            "dutch": "voorbereidingen",
+            "english": "preparations",
+            "indonesian": "persiapan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/persiapan-0dbeb372.mp3"
+          },
+          {
+            "dutch": "bedrijf",
+            "english": "company",
+            "indonesian": "perusahaan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/perusahaan-19995391.mp3"
+          },
+          {
+            "dutch": "openbaar nutsbedrijf",
+            "english": "public utility",
+            "indonesian": "perusahaan umum",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/perusahaan-umum-7caa316c.mp3"
+          },
+          {
+            "dutch": "zijde / kant",
+            "english": "side / party",
+            "indonesian": "pihak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pihak-77efeb3e.mp3"
+          },
+          {
+            "dutch": "verhuizen",
+            "english": "move (house)",
+            "indonesian": "pindah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pindah-d3f80559.mp3"
+          },
+          {
+            "dutch": "soort kleine banaan",
+            "english": "type of small banana",
+            "indonesian": "pisang mas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pisang-mas-666a7d39.mp3"
+          },
+          {
+            "dutch": "dochter",
+            "english": "daughter",
+            "indonesian": "putri",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/putri-6619aded.mp3"
+          },
+          {
+            "dutch": "en / met",
+            "english": "and / with",
+            "indonesian": "serta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/serta-d0ae9b94.mp3"
+          },
+          {
+            "dutch": "huren",
+            "english": "rent, hire",
+            "indonesian": "sewa, menyewa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sewa-menyewa-7debdc99.mp3"
+          },
+          {
+            "dutch": "tros (bananen)",
+            "english": "bunch (of bananas)",
+            "indonesian": "tandan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tandan-67f1944b.mp3"
+          },
+          {
+            "dutch": "telecommunicatie",
+            "english": "telecommunication",
+            "indonesian": "telekomunikasi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/telekomunikasi-2f2b25fb.mp3"
+          },
+          {
+            "dutch": "ingaan / betreden",
+            "english": "enter, embark on",
+            "indonesian": "tempuh, menempuh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tempuh-menempuh-b5d47958.mp3"
+          },
+          {
+            "dutch": "openbaar",
+            "english": "public",
+            "indonesian": "umum",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/umum-b6f43be0.mp3"
+          },
+          {
+            "dutch": "leeftijd",
+            "english": "age",
+            "indonesian": "usia",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/usia-3e682a3d.mp3"
+          },
+          {
+            "dutch": "... jaar oud zijn",
+            "english": "be ... years old",
+            "indonesian": "ber-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ber-c9cd9fb5.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "expressions",
+        "items": [
+          {
+            "dutch": "Gefeliciteerd met uw huwelijk",
+            "english": "Congratulations on your marriage",
+            "indonesian": "Selamat menempuh hidup baru",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/selamat-menempuh-hidup-baru-9449ca54.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "reference_table",
+        "intro": "Onderstaand schema geeft de Indonesische familierelaties weer, uitgaande van 'diri-sendiri' (jezelf). De stamboom loopt van de voorouders (nenek moyang) bovenaan naar de kleinkinderen (cucu) onderaan. Let op: het Indonesisch onderscheidt oudere en jongere broers/zussen (kakak versus adik) en gebruikt voor de meeste relaties geen apart woord voor geslacht — dat wordt zo nodig met laki-laki (mannelijk) of perempuan (vrouwelijk) verduidelijkt.",
+        "columns": [
+          "Indonesisch",
+          "Nederlands"
+        ],
+        "examples": [
+          {
+            "dutch": "Titi, de tweede dochter, gaat trouwen.",
+            "indonesian": "Titi, putri yang kedua, akan menikah."
+          },
+          {
+            "dutch": "Benny is de zwager van Titi.",
+            "indonesian": "Benny adalah ipar Titi."
+          },
+          {
+            "dutch": "Haar aanstaande schoonzoon werkt al bij een goed bedrijf.",
+            "indonesian": "Bakal menantunya sudah bekerja di perusahaan yang baik."
+          }
+        ],
+        "sections": [
+          {
+            "rows": [
+              {
+                "cells": [
+                  "nenek moyang",
+                  "voorouders"
+                ],
+                "label": "nenek moyang"
+              },
+              {
+                "cells": [
+                  "kakek",
+                  "opa / grootvader"
+                ],
+                "label": "kakek"
+              },
+              {
+                "cells": [
+                  "nenek",
+                  "oma / grootmoeder"
+                ],
+                "label": "nenek"
+              },
+              {
+                "cells": [
+                  "kakek & nenek",
+                  "opa en oma (grootouders)"
+                ],
+                "label": "kakek & nenek"
+              }
+            ],
+            "heading": "De oudere generaties"
+          },
+          {
+            "rows": [
+              {
+                "cells": [
+                  "bapak",
+                  "vader"
+                ],
+                "label": "bapak"
+              },
+              {
+                "cells": [
+                  "ibu",
+                  "moeder"
+                ],
+                "label": "ibu"
+              },
+              {
+                "cells": [
+                  "bapak & ibu",
+                  "vader en moeder (ouders)"
+                ],
+                "label": "bapak & ibu"
+              },
+              {
+                "cells": [
+                  "paman",
+                  "oom"
+                ],
+                "label": "paman"
+              },
+              {
+                "cells": [
+                  "bibi",
+                  "tante"
+                ],
+                "label": "bibi"
+              },
+              {
+                "cells": [
+                  "paman & bibi",
+                  "oom en tante"
+                ],
+                "label": "paman & bibi"
+              },
+              {
+                "cells": [
+                  "mertua",
+                  "schoonouders"
+                ],
+                "label": "mertua"
+              }
+            ],
+            "heading": "Ouders, ooms en tantes, schoonouders"
+          },
+          {
+            "rows": [
+              {
+                "cells": [
+                  "diri-sendiri",
+                  "jezelf"
+                ],
+                "label": "diri-sendiri"
+              },
+              {
+                "cells": [
+                  "suami",
+                  "man / echtgenoot"
+                ],
+                "label": "suami"
+              },
+              {
+                "cells": [
+                  "isteri (istri)",
+                  "vrouw / echtgenote"
+                ],
+                "label": "isteri"
+              },
+              {
+                "cells": [
+                  "kakak laki-laki",
+                  "oudere broer"
+                ],
+                "label": "kakak laki-laki"
+              },
+              {
+                "cells": [
+                  "kakak perempuan",
+                  "oudere zus"
+                ],
+                "label": "kakak perempuan"
+              },
+              {
+                "cells": [
+                  "adik laki-laki",
+                  "jongere broer"
+                ],
+                "label": "adik laki-laki"
+              },
+              {
+                "cells": [
+                  "adik perempuan",
+                  "jongere zus"
+                ],
+                "label": "adik perempuan"
+              },
+              {
+                "cells": [
+                  "ipar",
+                  "zwager / schoonzus"
+                ],
+                "label": "ipar"
+              },
+              {
+                "cells": [
+                  "sepupu",
+                  "neef / nicht (kind van oom of tante)"
+                ],
+                "label": "sepupu"
+              }
+            ],
+            "heading": "De eigen generatie"
+          },
+          {
+            "rows": [
+              {
+                "cells": [
+                  "putra, anak laki-laki",
+                  "zoon"
+                ],
+                "label": "putra / anak laki-laki"
+              },
+              {
+                "cells": [
+                  "putri, anak perempuan",
+                  "dochter"
+                ],
+                "label": "putri / anak perempuan"
+              },
+              {
+                "cells": [
+                  "menantu",
+                  "schoondochter / schoonzoon"
+                ],
+                "label": "menantu"
+              },
+              {
+                "cells": [
+                  "kemenakan",
+                  "neef / nicht (kind van zus of broer)"
+                ],
+                "label": "kemenakan"
+              },
+              {
+                "cells": [
+                  "cucu",
+                  "kleinkind"
+                ],
+                "label": "cucu"
+              }
+            ],
+            "heading": "De jongere generaties"
+          }
+        ],
+        "footnotes": [
+          "Het Indonesisch maakt — anders dan het Nederlands — een vast onderscheid tussen oudere (kakak) en jongere (adik) broers en zussen; geslacht is secundair en wordt zo nodig met laki-laki / perempuan aangegeven.",
+          "isteri wordt tegenwoordig vaker als istri gespeld.",
+          "Eén woord, kemenakan, dekt zowel neef als nicht aan de kant van broer of zus; sepupu is de neef/nicht via oom of tante."
+        ],
+        "tableTitle": "Perhubungan Famili — Familierelaties",
+        "grammar_topics": [
+          "Verdubbelingen"
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Drie woordsoorten kunnen verdubbeld worden: het werkwoord, het zelfstandig naamwoord en het bijvoeglijk naamwoord.",
+              "Een verdubbeling wordt geschreven met een koppelteken tussen de twee delen: anak-anak.",
+              "Vroeger schreef men een verdubbeling met de \"angka dua\" — het cijfer 2 achter het woord (anak² = anak-anak); dat mag in de officiële spelling niet meer.",
+              "Let op: verdubbeling betekent NIET automatisch meervoud — de betekenis hangt af van de woordsoort."
+            ],
+            "title": "Verdubbeling — inleiding en de oude \"angka dua\"",
+            "examples": [
+              {
+                "dutch": "kinderen (oude versus nieuwe spelling)",
+                "english": "children (old versus new spelling)",
+                "indonesian": "anak² → anak-anak",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/anak-anakanak-430c6857.mp3"
+              }
+            ],
+            "rules_en": [
+              "Three parts of speech can be reduplicated: the verb, the noun, and the adjective.",
+              "A reduplication is written with a hyphen between the two parts: anak-anak.",
+              "Previously, a reduplication was written with the 'angka dua' — the numeral 2 after the word (anak² = anak-anak); this is no longer permitted in the official spelling.",
+              "Note: reduplication does NOT automatically mean plural — the meaning depends on the part of speech."
+            ],
+            "title_en": "Reduplication — introduction and the old 'angka dua'"
+          },
+          {
+            "rules": [
+              "Vrijwel alle werkwoorden kunnen worden verdubbeld.",
+              "De verdubbeling drukt wederkerigheid uit (iets over en weer doen), vaak met een half-verdubbelde ME-vorm.",
+              "Ze kan ook intensiteit of nadruk aangeven, of dat de handeling voortduurt of een spelend/ongericht karakter heeft.",
+              "De verdubbeling geeft het werkwoord dus geen meervoud, maar een wederkerige of aspectuele kleuring."
+            ],
+            "title": "1. Verdubbeling van het werkwoord",
+            "examples": [
+              {
+                "dutch": "wandelen, een uitstapje maken",
+                "english": "walk, take a trip",
+                "indonesian": "jalan-jalan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jalanjalan-016eadd9.mp3"
+              },
+              {
+                "dutch": "spelenderwijs, voor de grap",
+                "english": "playfully, for fun",
+                "indonesian": "main-main",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mainmain-c402c01f.mp3"
+              },
+              {
+                "dutch": "huren en verhuren",
+                "english": "renting and leasing",
+                "indonesian": "sewa-menyewa",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sewamenyewa-d932f263.mp3"
+              },
+              {
+                "dutch": "corresponderen",
+                "english": "correspond",
+                "indonesian": "surat-menyurat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/suratmenyurat-4d7d512e.mp3"
+              }
+            ],
+            "rules_en": [
+              "Almost all verbs can be reduplicated.",
+              "The reduplication expresses reciprocity (doing something back and forth), often with a semi-reduplicated ME-form.",
+              "It can also indicate intensity or emphasis, or that the action continues or has a playful/unfocused character.",
+              "The reduplication thus gives the verb no plural form, but a reciprocal or aspectual coloring."
+            ],
+            "title_en": "1. Reduplication of the verb"
+          },
+          {
+            "rules": [
+              "Verdubbeling van een zelfstandig naamwoord geeft niet uitsluitend meervoud aan: er is altijd een aspect van diversiteit of verscheidenheid aanwezig.",
+              "De plaats van de verdubbeling kan de betekenis verschuiven: orang-orang tua (ouderparen) tegenover orang tua-tua (diverse oude mensen).",
+              "Gebruik geen verdubbeling wanneer een telwoord (dua, banyak, beberapa) het meervoud al aangeeft."
+            ],
+            "title": "2. Verdubbeling van het zelfstandig naamwoord — meervoud mét diversiteit",
+            "examples": [
+              {
+                "dutch": "ouderparen",
+                "english": "parent couples",
+                "indonesian": "orang-orang tua",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/orangorang-tua-08d21908.mp3"
+              },
+              {
+                "dutch": "diverse oude mensen",
+                "english": "diverse elderly people",
+                "indonesian": "orang tua-tua",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/orang-tuatua-90089d42.mp3"
+              },
+              {
+                "dutch": "Er zijn grote en kleine steden in Indonesië",
+                "english": "There are large and small cities in Indonesia",
+                "indonesian": "Kota-kota di Indonesia ada yang besar, ada yang kecil",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kotakota-di-indonesia-ada-fa33feb0.mp3"
+              }
+            ],
+            "rules_en": [
+              "Reduplication of a noun does not solely indicate plurality: there is always an aspect of diversity or variety present.",
+              "The position of reduplication can shift the meaning: orang-orang tua (parent couples) versus orang tua-tua (diverse elderly people).",
+              "Do not use reduplication when a numeral (dua, banyak, beberapa) already indicates plurality."
+            ],
+            "title_en": "2. Reduplication of the noun — plural with diversity"
+          },
+          {
+            "rules": [
+              "Enkele zelfstandige naamwoorden komen alleen in een verdubbelde vorm voor en hebben geen los basiswoord.",
+              "Bij sommige naamwoorden levert de verdubbeling een speciale, afwijkende betekenis op.",
+              "Soms treedt bij de verdubbeling een klankverschuiving op (het tweede deel verandert van klank).",
+              "Deze gelexicaliseerde vormen moet je als vaste woorden leren."
+            ],
+            "title": "Gelexicaliseerde verdubbelingen, speciale betekenissen en klankverschuiving",
+            "examples": [
+              {
+                "dutch": "groot plein (alleen verdubbeld)",
+                "english": "large square (only reduplicated)",
+                "indonesian": "alun-alun",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/alunalun-3b5f5265.mp3"
+              },
+              {
+                "dutch": "schildpad (alleen verdubbeld)",
+                "english": "turtle (only reduplicated)",
+                "indonesian": "kura-kura",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kurakura-decdca89.mp3"
+              },
+              {
+                "dutch": "spion (speciale betekenis)",
+                "english": "spy (special meaning)",
+                "indonesian": "mata-mata",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/matamata-d5684d78.mp3"
+              },
+              {
+                "dutch": "allerlei groenten (klankverschuiving)",
+                "english": "various vegetables (sound change)",
+                "indonesian": "sayur-mayur",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sayurmayur-8198a4d5.mp3"
+              },
+              {
+                "dutch": "veelkleurig (klankverschuiving)",
+                "english": "colorful (sound change)",
+                "indonesian": "warna-warni",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/warnawarni-30c1d759.mp3"
+              }
+            ],
+            "rules_en": [
+              "Some nouns appear only in reduplicated form and have no independent base word.",
+              "With some nouns, reduplication yields a special, divergent meaning.",
+              "Sometimes a sound change occurs during reduplication (the second part changes sound).",
+              "These lexicalized forms must be learned as fixed words."
+            ],
+            "title_en": "Lexicalized reduplications, special meanings and sound changes"
+          },
+          {
+            "rules": [
+              "a. Algemene, collectieve betekenis — een trede abstracter dan de gewone verdubbeling: daun → daun-daun → daun-daunan (gebladerte).",
+              "b. Een betekenis die verwijst naar iets dat lijkt op het origineel, vaak een speelgoed- of namaakvorm: orang → orang-orangan (vogelverschrikker).",
+              "De vorm wordt gevormd door verdubbeling van het basiswoord plus het achtervoegsel -an."
+            ],
+            "title": "Verdubbeling van het zelfstandig naamwoord plus -AN",
+            "examples": [
+              {
+                "dutch": "gebladerte (collectief)",
+                "english": "foliage (collective)",
+                "indonesian": "daun-daunan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/daundaunan-c93cbb4e.mp3"
+              },
+              {
+                "dutch": "allerlei groentesoorten (collectief)",
+                "english": "various types of vegetables (collective)",
+                "indonesian": "sayur-sayuran",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sayursayuran-1150218d.mp3"
+              },
+              {
+                "dutch": "vogelverschrikker (lijkt op een mens)",
+                "english": "scarecrow (resembles a person)",
+                "indonesian": "orang-orangan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/orangorangan-f036f8ad.mp3"
+              },
+              {
+                "dutch": "speelgoedvliegtuigje",
+                "english": "toy airplane",
+                "indonesian": "pesawat-pesawatan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pesawatpesawatan-54a47c39.mp3"
+              }
+            ],
+            "rules_en": [
+              "a. General, collective meaning — one level more abstract than ordinary reduplication: daun → daun-daun → daun-daunan (foliage).",
+              "b. A meaning referring to something resembling the original, often a toy or imitation form: orang → orang-orangan (scarecrow).",
+              "The form is created by reduplication of the base word plus the suffix -an."
+            ],
+            "title_en": "Reduplication of the noun plus -AN"
+          },
+          {
+            "rules": [
+              "Een verdubbeling van het bijvoeglijk naamwoord duidt, net als bij het werkwoord, op versterking of intensivering.",
+              "Bij deze vormen worden over het algemeen niet ook nog sekali of amat toegevoegd; in spreektaal komt dat soms wél voor (Anak itu benar kurus-kurus sekali)."
+            ],
+            "title": "3. Verdubbeling van het bijvoeglijk naamwoord — versterking",
+            "examples": [
+              {
+                "dutch": "een heel klein kind",
+                "english": "a very small child",
+                "indonesian": "anak kecil-kecil",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/anak-kecilkecil-177d1dda.mp3"
+              },
+              {
+                "dutch": "zeer zure vruchten",
+                "english": "very sour fruits",
+                "indonesian": "buah masam-masam",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/buah-masammasam-5d947453.mp3"
+              },
+              {
+                "dutch": "heel dun papier",
+                "english": "very thin paper",
+                "indonesian": "kertas tipis-tipis",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kertas-tipistipis-f05f3750.mp3"
+              }
+            ],
+            "rules_en": [
+              "A doubling of the adjective indicates, just as with the verb, intensification or emphasis.",
+              "With these forms, sekali or amat are generally not added; in spoken language this sometimes does occur (Anak itu benar kurus-kurus sekali)."
+            ],
+            "title_en": "3. Reduplication of the adjective — intensification"
+          },
+          {
+            "rules": [
+              "Een samenstelling kan gevormd worden uit twee bijvoeglijke naamwoorden met (min of meer) dezelfde betekenis — die versterken elkaar.",
+              "Ook komen samenstellingen van twee tegengestelde bijvoeglijke naamwoorden voor; die benoemen een abstracte eigenschap (de mate van).",
+              "Deze samenstellingen zijn geen echte verdubbeling maar twee verschillende woorden met een koppelteken."
+            ],
+            "title": "Samenstellingen van bijvoeglijke naamwoorden — synoniem en tegengesteld",
+            "examples": [
+              {
+                "dutch": "klein en mager (synoniem)",
+                "english": "small and thin (synonym)",
+                "indonesian": "kecil-kurus",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kecilkurus-10c3a26a.mp3"
+              },
+              {
+                "dutch": "goedkoop en gezellig (synoniem)",
+                "english": "cheap and cheerful (synonym)",
+                "indonesian": "murah-meriah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/murahmeriah-c49768cf.mp3"
+              },
+              {
+                "dutch": "de grootte / omvang (tegengesteld)",
+                "english": "size / extent (opposite)",
+                "indonesian": "besar-kecil",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/besarkecil-c99b90ff.mp3"
+              },
+              {
+                "dutch": "de lengte (tegengesteld)",
+                "english": "length (opposite)",
+                "indonesian": "panjang-pendek",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/panjangpendek-6f2774e0.mp3"
+              }
+            ],
+            "rules_en": [
+              "A compound can be formed from two adjectives with (more or less) the same meaning — they reinforce each other.",
+              "Compounds of two opposite adjectives also occur; these denote an abstract quality (the degree of).",
+              "These compounds are not true doublings but two different words with a hyphen."
+            ],
+            "title_en": "Compounds of adjectives — synonym and opposite"
+          },
+          {
+            "rules": [
+              "Enkele verdubbelingen treden op als vast bijwoord en moeten als geheel geleerd worden.",
+              "Ze veranderen niet van vorm en drukken een wijze of mate uit."
+            ],
+            "title": "Vaste verdubbelingen met de functie van bijwoord",
+            "examples": [
+              {
+                "dutch": "voorzichtig",
+                "english": "carefully",
+                "indonesian": "hati-hati",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hatihati-c4a11986.mp3"
+              },
+              {
+                "dutch": "ongeveer",
+                "english": "approximately",
+                "indonesian": "kira-kira",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kirakira-af175e8c.mp3"
+              },
+              {
+                "dutch": "aanvankelijk, eerst",
+                "english": "initially, first",
+                "indonesian": "mula-mula",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mulamula-ea14c055.mp3"
+              },
+              {
+                "dutch": "langzaam aan, kalm aan",
+                "english": "slowly, calmly",
+                "indonesian": "pelan-pelan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pelanpelan-65d0f216.mp3"
+              },
+              {
+                "dutch": "plotseling",
+                "english": "suddenly",
+                "indonesian": "tiba-tiba",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tibatiba-a476ebc9.mp3"
+              }
+            ],
+            "rules_en": [
+              "Some doublings occur as fixed adverbs and must be learned as a whole.",
+              "They do not change form and express a manner or degree."
+            ],
+            "title_en": "Fixed doublings with the function of an adverb"
+          },
+          {
+            "rules": [
+              "De tint wordt aangegeven met muda (licht) of tua (donker): hijau muda (lichtgroen), hijau tua (donkergroen).",
+              "Een specifieke kleur wordt vaak benoemd door verwijzing naar een vrucht, groente of ding: biru laut, coklat sawo, merah jambu, warna terong.",
+              "Een benaderende kleur (\"-achtig\", agak = enigszins) wordt gevormd met de ke-...-an verdubbeling rond het verdubbelde kleurwoord: biru → kebiru-biruan (blauwachtig).",
+              "Deze ke-...-an vorm is de Indonesische tegenhanger van het Nederlandse -achtig en het Engelse -ish."
+            ],
+            "title": "Kleurnuances — muda/tua, vruchtvergelijkingen en de ke-...-an \"-achtig\" verdubbeling",
+            "examples": [
+              {
+                "dutch": "lichtgroen",
+                "english": "light green",
+                "indonesian": "hijau muda",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hijau-muda-7588cee4.mp3"
+              },
+              {
+                "dutch": "donkergroen",
+                "english": "dark green",
+                "indonesian": "hijau tua",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hijau-tua-6ac1cb5c.mp3"
+              },
+              {
+                "dutch": "roze (als de jambu-vrucht)",
+                "english": "pink (like the jambu fruit)",
+                "indonesian": "merah jambu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/merah-jambu-e724777c.mp3"
+              },
+              {
+                "dutch": "blauwachtig",
+                "english": "bluish",
+                "indonesian": "kebiru-biruan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kebirubiruan-8a53e391.mp3"
+              },
+              {
+                "dutch": "zwartachtig",
+                "english": "blackish",
+                "indonesian": "kehitam-hitaman",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kehitamhitaman-9da4a937.mp3"
+              }
+            ],
+            "rules_en": [
+              "The tint is indicated with muda (light) or tua (dark): hijau muda (light green), hijau tua (dark green).",
+              "A specific color is often named by reference to a fruit, vegetable or thing: biru laut, coklat sawo, merah jambu, warna terong.",
+              "An approximate color (\"-ish\", agak = somewhat) is formed with the ke-...-an doubling around the doubled color word: biru → kebiru-biruan (bluish).",
+              "This ke-...-an form is the Indonesian counterpart of the Dutch -achtig and the English -ish."
+            ],
+            "title_en": "Color nuances — muda/tua, fruit comparisons and the ke-...-an \"-ish\" doubling"
+          }
+        ],
+        "grammar_topics": [
+          "Verdubbelingen"
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "grijs",
+            "english": "grey",
+            "indonesian": "abu-abu / kelabu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/abuabu-kelabu-cd5f385b.mp3"
+          },
+          {
+            "dutch": "blauw",
+            "english": "blue",
+            "indonesian": "biru",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/biru-6e9a6309.mp3"
+          },
+          {
+            "dutch": "bruin",
+            "english": "brown",
+            "indonesian": "coklat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/coklat-a514499e.mp3"
+          },
+          {
+            "dutch": "groen",
+            "english": "green",
+            "indonesian": "hijau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hijau-3fa4e31b.mp3"
+          },
+          {
+            "dutch": "zwart",
+            "english": "black",
+            "indonesian": "hitam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hitam-99d4312f.mp3"
+          },
+          {
+            "dutch": "geel",
+            "english": "yellow",
+            "indonesian": "kuning",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kuning-c1ad1b36.mp3"
+          },
+          {
+            "dutch": "rood",
+            "english": "red",
+            "indonesian": "merah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/merah-06d35697.mp3"
+          },
+          {
+            "dutch": "oranje",
+            "english": "orange",
+            "indonesian": "oranye",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/oranye-719fab56.mp3"
+          },
+          {
+            "dutch": "zilver",
+            "english": "silver",
+            "indonesian": "perak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/perak-93b3b932.mp3"
+          },
+          {
+            "dutch": "wit",
+            "english": "white",
+            "indonesian": "putih",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/putih-fde7d574.mp3"
+          },
+          {
+            "dutch": "paars",
+            "english": "purple",
+            "indonesian": "ungu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ungu-eff8190a.mp3"
+          },
+          {
+            "dutch": "lichtgroen",
+            "english": "light green",
+            "indonesian": "hijau muda",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hijau-muda-7588cee4.mp3"
+          },
+          {
+            "dutch": "donkergroen",
+            "english": "dark green",
+            "indonesian": "hijau tua",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hijau-tua-6ac1cb5c.mp3"
+          },
+          {
+            "dutch": "blauw (als de kleur van de zee)",
+            "english": "navy blue",
+            "indonesian": "biru laut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/biru-laut-fb038090.mp3"
+          },
+          {
+            "dutch": "bruin (als de kleur van de sawo-vrucht)",
+            "english": "sapodilla brown",
+            "indonesian": "coklat sawo",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/coklat-sawo-01a5946d.mp3"
+          },
+          {
+            "dutch": "rose (als van de jambu-vrucht)",
+            "english": "rose pink",
+            "indonesian": "merah jambu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/merah-jambu-e724777c.mp3"
+          },
+          {
+            "dutch": "donkerpaars (als de kleur van aubergine)",
+            "english": "eggplant purple",
+            "indonesian": "warna terong",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/warna-terong-fb5d1ed7.mp3"
+          },
+          {
+            "dutch": "blauwachtig",
+            "english": "bluish",
+            "indonesian": "kebiru-biruan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kebirubiruan-8a53e391.mp3"
+          },
+          {
+            "dutch": "goudachtig",
+            "english": "golden",
+            "indonesian": "keemas-emasan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/keemasemasan-d295176c.mp3"
+          },
+          {
+            "dutch": "zwartachtig",
+            "english": "blackish",
+            "indonesian": "kehitam-hitaman",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kehitamhitaman-9da4a937.mp3"
+          },
+          {
+            "dutch": "blauwachtig groen",
+            "english": "blue-green",
+            "indonesian": "hijau kebiru-biruan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hijau-kebirubiruan-27d64f4f.mp3"
+          },
+          {
+            "dutch": "geelachtig bruin",
+            "english": "yellowish brown",
+            "indonesian": "coklat kekuning-kuningan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/coklat-kekuningkuningan-ca232fa2.mp3"
+          },
+          {
+            "dutch": "beige",
+            "english": "beige",
+            "indonesian": "kuning keabu-abuan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kuning-keabuabuan-a6b10b8f.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 6,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "berusia",
+                "prompt": "usia — Susi ............... 26 tahun tetapi belum kawin"
+              },
+              {
+                "answer": "membelokkan",
+                "prompt": "belok — Karena tidak boleh masuk jalan itu, tukang becak ............... becak ke kiri"
+              },
+              {
+                "answer": "disewa",
+                "prompt": "sewa — Sayang sekali mobil yang besar itu sudah ..........."
+              },
+              {
+                "answer": "berangkat",
+                "prompt": "angkat — Pada jam sebelas kereta api ............... ke Surabaya"
+              },
+              {
+                "answer": "mendudukkan",
+                "prompt": "duduk — Ibu ............... anaknya di kursi"
+              },
+              {
+                "answer": "diperlukan",
+                "prompt": "perlu — Buku pelajaran ini ............... Hasan"
+              },
+              {
+                "answer": "bekerja",
+                "prompt": "kerja — Pacarmu ............... di mana sekarang?"
+              },
+              {
+                "answer": "dibersihkan",
+                "prompt": "bersih — Kamar mandi harus ............... pembantu"
+              },
+              {
+                "answer": "bercerita",
+                "prompt": "cerita — Tiap malam kakek suka ..............."
+              },
+              {
+                "answer": "menceritakan",
+                "prompt": "cerita — Ibu guru ............... dongeng yang lucu"
+              }
+            ],
+            "title": "Latihan I",
+            "instruction": "Vul de juiste werkwoordsvorm in. Het basiswoord staat links."
+          },
+          {
+            "type": "conversation",
+            "items": [
+              {
+                "prompt": "A: Goedemiddag, meneer. Is dit een winkel? — B (gebruik: kaki lima)"
+              },
+              {
+                "prompt": "A: Wat verkoopt u zoal? — B (gebruik: diverse gerechten)"
+              },
+              {
+                "prompt": "A: Hoe heet dit eten? — B (gebruik: gado-gado)"
+              },
+              {
+                "prompt": "A: Waar zijn die pinda's voor? — B (gebruik: voor de saus)"
+              },
+              {
+                "prompt": "A: Groenten met pindasaus, is dat lekker? — B (gebruik: wij vinden van wel)"
+              },
+              {
+                "prompt": "A: Verkoopt u ook snacks? — B (gebruik: pisang goreng, geen saté)"
+              },
+              {
+                "prompt": "A: Oh, pisang goreng vind ik heel lekker — B (gebruik: pisang tanduk, heel speciaal)"
+              },
+              {
+                "prompt": "A: Die soort heb ik nog nooit gegeten — B (gebruik: ga zitten, komt u uit ...?)"
+              },
+              {
+                "prompt": "A: Ik kom uit Nederland — B (gebruik: pisang goreng ook te koop?)"
+              },
+              {
+                "prompt": "A: Jawel, maar hier is het lekkerder — B (gebruik: dank u wel)"
+              }
+            ],
+            "title": "Latihan II — Membeli makanan kecil",
+            "instruction": "Zet de dialoog om in Indonesische zinnen. Maak bij de reactie van persoon B gebruik van de gegeven woorden. Dit is een open spreekoefening — formuleer zelf volledige, natuurlijke zinnen."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Di mana barang-barang itu ditempatkan?",
+                "prompt": "tempat — Waar zijn de spullen neergezet?"
+              },
+              {
+                "answer": "Barang-barang itu harus diturunkan dari kereta api.",
+                "prompt": "turun — De goederen moeten uit de trein worden geladen"
+              },
+              {
+                "answer": "Ipar saya memikirkan keadaan itu.",
+                "prompt": "pikir — Mijn zwager overdenkt de situatie"
+              },
+              {
+                "answer": "Temannya menyebabkan banyak masalah.",
+                "prompt": "sebab — Zijn vriend heeft veel problemen veroorzaakt"
+              },
+              {
+                "answer": "Maukah Anda memberikan surat ini kepada pengantin?",
+                "prompt": "beri — Wilt u deze brief aan het bruidspaar geven?"
+              },
+              {
+                "answer": "Bisakah Anda membesarkan gambar ini?",
+                "prompt": "besar — Kunt u deze afbeelding vergroten?"
+              },
+              {
+                "answer": "Perusahaan itu menggunakan komputer.",
+                "prompt": "guna — Dat bedrijf maakt gebruik van komputers"
+              },
+              {
+                "answer": "Juru rawat itu mau mengatakan sesuatu.",
+                "prompt": "kata — De verpleegkundige wilde iets zeggen"
+              },
+              {
+                "answer": "Bisakah Anda menjelaskan hal itu?",
+                "prompt": "jelas — Kunt u dat toelichten?"
+              },
+              {
+                "answer": "Ahmad mengerjakan artikelnya.",
+                "prompt": "kerja — Ahmad bewerkt zijn artikel"
+              }
+            ],
+            "title": "Latihan III",
+            "instruction": "Gebruik in de volgende zinnen de werkwoordsvorm met -KAN. Het basiswoord staat links; vertaal de Nederlandse zin in het Indonesisch."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Tiba-tiba adik Tuti masuk.",
+                "prompt": "Plotseling kwam Tuti's zusje binnen"
+              },
+              {
+                "answer": "Halo, siapa mau ikut jalan-jalan?",
+                "prompt": "Hallo, wie gaat er mee een wandeling maken?"
+              },
+              {
+                "answer": "Pelan-pelan, saya mau minum teh saya dulu.",
+                "prompt": "Kalm aan, ik wil eerst mijn thee opdrinken"
+              },
+              {
+                "answer": "Baiklah, saya tunggu sebentar.",
+                "prompt": "Goed, ik wacht wel even"
+              },
+              {
+                "answer": "Tetapi sesudah itu kamu ikut ke alun-alun?",
+                "prompt": "Maar ga je daarna mee naar het stadsplein?"
+              },
+              {
+                "answer": "Wah, saya mau ke pasar untuk membeli kura-kura untuk Arwin.",
+                "prompt": "Nou, ik wil naar de markt om een schildpad te kopen voor Arwin"
+              },
+              {
+                "answer": "Besok dia mengadakan pesta kecil karena dia berulang tahun.",
+                "prompt": "Hij houdt morgen een klein feestje omdat hij jarig is"
+              },
+              {
+                "answer": "Kura-kura makan apa, sayur-sayuran tentu?",
+                "prompt": "Wat eet een schildpad, allerlei groenten zeker?"
+              },
+              {
+                "answer": "Ya, dan daun-daunan yang hijau.",
+                "prompt": "Ja, en groene blaadjes"
+              },
+              {
+                "answer": "Mari, kita beli satu yang warna-warni.",
+                "prompt": "Kom, laten we er één kopen met veel kleuren"
+              }
+            ],
+            "title": "Latihan IV",
+            "instruction": "Vertaal de zinnen in het Indonesisch. Let op de verdubbelingen."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"e300259d-8d01-4484-b0b2-82dd54f373ed\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"e300259d-8d01-4484-b0b2-82dd54f373ed\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

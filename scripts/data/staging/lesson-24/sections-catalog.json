@@ -1,0 +1,294 @@
+{
+  "lesson": 24,
+  "generatedAt": "2026-06-19T05:57:24.869Z",
+  "sourcePages": 8,
+  "lessonMeta": {
+    "title": "Bab 8 - Surat dari Indonesia",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 24
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Surat dari Indonesia",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Maninjau, 8 Nopember 1996\nKabupaten Agam, Sumbar",
+        "Ibu yang tercinta,",
+        "Apa kabar Ibu? Baik-baik saja bukan? Saya di desa dalam keadaan cukup baik. Begitu juga dengan kakak dan adik saya. Setiap hari saya pergi ke sekolah, dan sekarang saya sudah cukup pintar. Tahun ini saya duduk di kelas lima Sekolah Dasar (SD). Adik saya baru di kelas satu. Memang dia masih kecil. Kakak saya sudah masuk sekolah SMP.",
+        "Ibu, sekarang musim hujan. Aduh, saya sering tidak bisa pergi ke sekolah karena jalanan dilanda banjir. Mungkin di kota Ibu tidak ada banjir. Tapi di desa saya masih sering ada banjir karena letaknya dekat sungai. Kalau terlalu banyak air hujan turun, sungai menjadi penuh sampai meluap.",
+        "Kalau banjir, saya takut naik sepeda ke sekolah. Jalanan hampir tidak kelihatan, sehingga berjalan susah sekali. Pernah saya jatuh dan masuk ke sawah, sebab jalan tidak kelihatan lagi. Saya paling takut kalau sepeda saya rusak. Sepeda itu bukan hanya untuk saya sendiri! Juga anak tetangga suka memakainya. Berkat Ibu, saya dapat meminjamkan sepeda saya kepada kakak dan tetangga sebab mereka juga senang bersepeda.",
+        "Kapan Ibu datang ke Indonesia? Saya tahu Indonesia cukup jauh dari Belanda. Saya tidak tahu berapa jauhnya. Peta di sekolah sudah kabur, dan saya tidak dapat membayangkan tentang ribuan kilometer. Katanya, Belanda dengan Indonesia jaraknya kira-kira 12.000 kilometer. Coba kalau saya bersepeda, satu tahun mungkin belum sampai. Kalau bisa saya mau coba, biar dengan mata saya sendiri dapat melihat negeri Ibu yang bagus. Katanya banyak bunga tulip di Belanda. Guru saya pernah mendapat kartu pos yang bergambar bunga tulip dari temannya orang Belanda. Negeri Ibu ini mungkin penuh bunga tulip, ya? Kalau bisa, saya juga minta dikirimi kartu pos tulip. Boleh 'kan, Bu?",
+        "Saya harap Ibu sekeluarga senantiasa dalam keadaan baik-baik, dan, pada suatu hari Ibu bisa datang ke desa saya. Walaupun desa saya agak sederhana, tetapi letaknya benar-benar bagus, di antara sawah-sawah.",
+        "Salam hangat,\n\nNurul"
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "bahwa",
+          "dutch": "dat",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "baju",
+          "dutch": "blouse",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "banjir",
+          "dutch": "overstroming",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bayang, mem-kan",
+          "dutch": "zich voorstellen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "beri tahu, mem-kan",
+          "dutch": "meedelen / berichten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "berkat",
+          "dutch": "dankzij",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "biar (s)aja",
+          "dutch": "laat maar",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "buaya",
+          "dutch": "krokodil",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "butik",
+          "dutch": "boetiek",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cinta",
+          "dutch": "liefde / genegenheid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ciut",
+          "dutch": "krimpen / gekrompen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "gadis",
+          "dutch": "meisje / jonge vrouw",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gara-gara",
+          "dutch": "opschudding",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "goblok",
+          "dutch": "stommeling",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "harap",
+          "dutch": "hopen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "hormat",
+          "dutch": "eerbied",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "industri",
+          "dutch": "industrie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kabupaten",
+          "dutch": "district",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kabur",
+          "dutch": "verbleekt / wazig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "keadaan",
+          "dutch": "toestand / situatie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kelas",
+          "dutch": "klas",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kelihatan",
+          "dutch": "zichtbaar",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "landa, me-",
+          "dutch": "treffen / raken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "luap, me-",
+          "dutch": "overstromen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pinjam, meminjamkan",
+          "dutch": "uitlenen (aan)",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "panik",
+          "dutch": "paniek",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "peta",
+          "dutch": "plattegrond / kaart",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pintar",
+          "dutch": "knap / intelligent",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "rencana, me-kan",
+          "dutch": "plannen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sederhana",
+          "dutch": "eenvoudig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "sehat",
+          "dutch": "gezond",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "sekeluarga",
+          "dutch": "van dezelfde familie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "senantiasa",
+          "dutch": "voortdurend / steeds",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "singkat",
+          "dutch": "kort",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "singkat, ~an",
+          "dutch": "afkorting",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tercinta",
+          "dutch": "geliefd / dierbaar",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "tertanggal",
+          "dutch": "gedateerd / de dato",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "tetangga",
+          "dutch": "buur / buurman / buurvrouw",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tulip",
+          "dutch": "tulp",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ucap, meng-kan",
+          "dutch": "zeggen / uitspreken",
+          "pos": "verb"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "grammar",
+      "title": "TATA BAHASA - De verhouding tussen de werkwoordsvormen met -KAN en -i",
+      "source_pages": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "De verhouding tussen de werkwoordsvormen met -KAN en -i\n\nAlgemeen\n\nΔ  De hoofdfunctie van zowel de -KAN als de -i vorm is het maken van transitieve werkwoordsvormen.\n\nΔ  De -KAN en -i werkwoordsvormen treden in elkaars verlengde op.\n\nΔ  Of een basiswoord met -KAN of -i gecombineerd wordt, hangt af van de betekenis, het gebruik en de vorm van het betreffende woord.\n\nVerschil tussen de werkwoordsvormen met -KAN en -i\n\nΔ  Bij de werkwoordsvorm met -KAN geldt, dat de agens (partij 1) statisch is ten opzichte van de patiens (partij 2). De patiens wordt bewogen ten opzichte van de agens.\n\nagens (partij 1) statisch ————————————— patiens (partij 2)\n\nΔ  Bij de werkwoordsvorm met -i geldt, dat de patiens (partij 2) een vast punt is; de agens (partij 1) beweegt zich of wordt bewogen ten opzichte van dit vaste punt.\n\nagens (partij 1) dynamisch ————————————— patiens (partij 2)\n\nVoorbeelden:\n\nloncat                          springen\nmeloncatkan                     (iets / iemand) laten springen\nmeloncati                       (iets) bespringen\nDia meloncatkan bola            Hij laat de bal springen\nHarimau meloncati kerbau        De tijger bespringt de buffel\n\nseberang                        overkant\nmenyeberangkan                  (iets / iemand) overzetten\nmenyeberangi                    (iets) oversteken\nGuru menyeberangkan anak        De onderwijzer zet de kinderen over\nAnak diseberangkan guru         De kinderen werden door de leraar overgezet\nPemuda menyeberangi sungai      De jongeman steekt de rivier over\nSungai diseberangi pemuda       De rivier werd door de jongeman overgestoken\n\nΔ  Evenals bij de -KAN heeft de -i werkwoordsvorm bij van oorsprong transitieve werkwoorden nog een specifieke functie. Het creëert de mogelijkheid van focuswisseling.\n\nVoorbeeld en schema:\n\nIbu mengirim surat\nIbu mengirimkan surat kepada Adi\nIbu mengirimi Adi surat\n\nSurat dikirim ibu\nSurat dikirimkan ibu kepada Adi\nAdi dikirimi ibu surat\n\nAktieve zin:   Partij 1 ——— handeling ——— partij 3 ——— partij 2\n               Ibu             mengirimi       Adi           surat\n\nPassieve zin:  Partij 3 ——— handeling ——— partij 1 ——— partij 2\n               Adi             dikirimi        ibu           surat\n\nNog enkele voorbeelden:\n\ntinggal                              blijven\nmeninggalkan                         achterlaten\nmeninggali                           nalaten; verlaten\nPerempuan meninggalkan anaknya       De vrouw heeft haar kind achtergelaten\nAnaknya ditinggalkan perempuan       Het kind is door de vrouw achtergelaten\n\nOrang itu meninggali anaknya uang    Die persoon heeft zijn kind geld nagelaten\nAnaknya ditinggali uang oleh orang itu  Aan het kind is door die persoon geld nagelaten\n\nSiapa meninggali rumah itu?          Wie heeft dat huis verlaten?\n\nduduk                                zitten\nmendudukkan                          laten zitten\nmenduduki                            bezetten\nIbu mendudukkan anaknya              De moeder laat het kind zitten\nTentara menduduki bukit itu          Het leger heeft die heuvel bezet\n\ngambar                               illustratie, tekening\nmenggambarkan                        afbeelden\nmenggambari                          illustreren, beschilderen\nBuku bergambar                       Een boek met illustraties\nPelukis menggambarkan kucing         De schilder schildert een kat\nPelukis menggambari dinding          De schilder beschildert de muur / De schilder schildert op de muur\n\nHieronder volgt een aantal voorbeelden met basiswoorden die reeds in Selamat Datang 1 of in de voorgaande hoofdstukken zijn voorgekomen.\n\nakhir     einde       mengakhiri        (iets) beëindigen, een einde maken aan\n                      mengakhirkan      (iets) achteraan zetten, achterstellen\n\naku       ik          mengakui          erkennen, toegeven\n                      mengakukan        doen erkennen, laten bekennen\n\natas      boven       mengatasi         (iets) te boven komen, oplossen\n                      mengataskan       hoger plaatsen, (op)hijsen\n\nbaca      lezen       membacai          grondig (herhaaldelijk) lezen\n                      membacakan        voorlezen, laten (voor)lezen\n\nhabis     op          menghabisi        beëindigen, als afgedaan beschouwen\n                      menghabiskan      voltooien, ten einde brengen\n\nhidup     leven       menghidupi        het leven schenken, zorgen voor iemand\n                      menghidupkan      in het leven roepen, verwekken; aanmaken, aanzetten (machine)\n\nikut      meegaan     mengikuti         op de voet volgen, navolgen\n                      mengikutkan       doen volgen, laten deelnemen\n\nkurang    minder      mengurangi        tekort doen, verminderen\n                      mengurangkan      beperken, inkorten\n\nlewat     voorbij     melewati          passeren, voorbij gaan\n                      melewatkan        laten passeren, overslaan\n\npinjam    lenen       meminjami         lenen aan, lenen bij\n                      meminjamkan       uitlenen, te leen geven"
+    },
+    {
+      "id": 3,
+      "type": "text",
+      "title": "Het schrijven van een brief in het Indonesisch",
+      "source_pages": [
+        5,
+        6
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Een brief bestaat dikwijls uit de volgende onderdelen:\n\na. Briefhoofd - Kepala surat\nb. Opening - Pembukaan\nc. Inhoud - Isi\nd. Afsluiting - Penutup",
+        "Voorbeeldbrief:\n\nZwemleraar Jan Jansen,\nPlein 5,\nAmsterdam\n\nNomor: 5\n\n2 Juni 1996\n\nKepada Yth. Bp. Riyanto\nJl. Kolam Renang 1\nCipanas\n\nHal: Losmen\n\nDengan Hormat,\n\nSehubungan dengan surat kami tertanggal 17 Mei, No. 4, kami mohon bantuan Bapak Riyanto mencari losmen dekat kolam renang Cipanas. Maksudnya losmen yang tidak terlalu besar, dengan sewa kira-kira Rp 30.000,-- per kamar. Kami merencanakan akan datang berempat, yaitu saya sendiri, isteri saya dan 2 anak, selama 4 hari. Atas bantuan Bapak kami mengucapkan terima kasih.\n\nHormat kami,\n\nJJansen\n\nJAN JANSEN\n\n(Handtekening / Naam in blokletters)",
+        "Ad b. Openingsgroet\n\nKepada Bapak / Ibu .....          Aan de heer / mevrouw .....\nBapak yang terhormat              Geachte Heer\nDengan Hormat                     Geachte\nHormat kami                       Hoogachtend",
+        "Ad c. Openingszinnen\n\nDengan (surat) ini saya memberitahukan, bahwa .....\nBij deze deel ik u mee, dat .....\n\nSurat Anda tertanggal 23-8-1996 telah saya terima dengan baik .....\nUw brief gedateerd 23-8-1996 heb ik in goede orde ontvangen .....\n\nSehubungan dengan surat kami tertanggal 17 Mei, .....\nIn verband met onze brief de dato 17 mei, .....",
+        "Ad d. Afsluitende zinnen\n\nKami mengucapkan banyak terima kasih atas perhatian dan bantuan Saudara.\nWij danken u ten zeerste voor uw aandacht en medewerking.\n\nKemudian saya sangat mengharapkan berita dari Saudara mengenai .....\nTenslotte hoop ik ten zeerste dat ik een bericht van u zal ontvangen over .....\n\nTak lain sampaikan salam saya kepada teman-teman semuanya, semoga kita lekas berjumpa lagi.\nVergeet ook niet mijn groeten over te brengen aan alle vrienden, en ik hoop dat wij elkaar weer snel zien.\n\nHormat kami / Hormat saya     Hoogachtend\nWasalam                       Gegroet\nSalam dan Hormat              Met eerbiedige groeten\nSalam hangat                  Hartelijke groeten",
+        "Afkortingen in het Indonesisch. Hieronder volgen een aantal veel gebruikte afkortingen:\n\nBp., Ny.   Bapak, Nyonya             Dhr., Mw.\nbl(n).     bulan                     maand\ndgn.       dengan                    met\ndll.       dan lain-lain             enzovoorts\ndsb.       dan sebagainya            en dergelijke\ndst.       dan seterusnya            vervolgens\ndto.       ditandatangani oleh       ondertekend door\nJl.        Jalan                     straat\nkpd.       kepada                    aan\ntgl.       tanggal                   datum, de dato\nSdr.       Saudara                   de Heer, U\nSdri.      Saudari                   Mevrouw, U\nyb.        yang berikut              de volgende\nyg.        yang                      die, dat\ny.l.       yang lalu                 jongstleden\nYth.       Yang terhormat            Geachte"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "exercises",
+      "title": "LATIHAN",
+      "source_pages": [
+        7,
+        8
+      ],
+      "confidence": "high",
+      "raw_text": "Latihan I. Zet de dialoog om in Indonesische zinnen.\nMaak bij de reactie van persoon B gebruik van de woorden die gegeven zijn.\n\nDialoog: Berkenalan.\n\nPersoon A                                                          Persoon B\n\n1.  Goedenavond. Mogen wij naast u zitten?                         ga zitten\n2.  Ik heet [eigennaam] en dit is mijn man / vrouw [eigennaam]     naam Yanto / Yanti\n3.  Kunt u wat langzamer praten, ik spreek nog niet zo goed        natuurlijk\n    Indonesisch\n4.  Nee, wij komen uit Nederland. Waar komt u vandaan?             uit Engeland?\n5.  Wij vinden dit een leuke stad, maar wel een beetje druk        Jakarta\n6.  Woont u hier al lang?                                          10 miljoen mensen\n7.  Bent u hierheen gekomen om te werken?                          pas 2 jaar\n8.  O, dat is mooi, wat studeert u?                                studie\n9.  Wilt u wat drinken? Ik haal voor mij en mijn vrouw een cola    geneeskunde*\n10. Met melk en suiker?                                            koffie graag\n                                                                   alleen suiker\n\n*geneeskunde = kedokteran\n\nLatihan II. Vul de juiste werkwoordsvorm in.\n\n1.  kembang       Indonesia .................. industri rotan\n2.  lewat         Tiap hari bus ini .................. desa itu\n3.  bangun        Pemerintah .................. sekolah baru\n4.  pakaian       Setelah mandi Lidia ..................\n5.  sinar         Sawah menguning .................. matahari\n6.  belanja       Ibu dengan tetangganya mau .................. di pusat kota\n7.  bumbu         Ibu .................. ikan\n8.  kembali       Peta ini harus .................. sebelum hari Selasa\n9.  selesai       Saya mau .................. surat ini\n10. rencana       Pesta itu .................. hari Minggu, pada jam 18.00\n\nLatihan III. Vertaal: Humor Indonesia.\n\nGara-gara hujan\nSeorang pemudi keluar dari butik dengan memakai baju barunya. Tiba-tiba hujan turun dan semakin besar. Pemilik toko dengan panik memanggil pembantunya.\nCepat kejar gadis tadi dan payungi dia!\nWah, Boss baik hati sekali. Biar aja, Boss.\nCepat, goblok! Kau mau melihat gadis itu kembali dengan baju ciut?!\n\nLatihan IV. Maak de rij af en vertaal alle woorden.\n\n1.  bersepeda      - berkumpul      - berkembang      - nyanyi\n2.  menulis        - mengambil      - menyeberang     - cari\n3.  diminum        - dibuka         - ditolong        - coba\n4.  menjatuhkan    - melahirkan     - meninggalkan    - bawah\n5.  duduklah       - biarlah        - dengarlah       - baik\n6.  bangunan       - teriakan       - curian          - tonton\n7.  terkecil       - terberat       - termiskin       - cantik\n8.  penonton       - penduduk       - penjaga         - tumpang\n9.  diberinya      - dilihatnya     - dibacanya       - hias\n10. meminjam       - mengurus       - menanya         - jawab"
+    }
+  ],
+  "flags": [
+    "Image IMG_1652.jpg: Full letter text recovered including date 'Maninjau, 8 Nopember 1996 / Kabupaten Agam, Sumbar', closing 'Salam hangat, Nurul', and correction of '12000' in OCR to '12.000'.",
+    "Image IMG_1653.jpg: Vocabulary header is 'Daftar kata-kata baru' (not 'Woordenlijst'). Full two-column vocabulary list recovered from image including items missed/garbled by OCR (kelihatan=zichtbaar, landa me-=treffen/raken, luap me-=overstromen, pinjam meminjamkan=uitlenen aan, panik=paniek, peta=plattegrond/kaart, pintar=knap/intelligent, rencana me-kan=plannen). Grammar section title and three Algemeen bullet points recovered.",
+    "Image IMG_1655.jpg: Additional verb pairs 'lewat/pinjam' with derived forms recovered at top of page, preceding the letter-writing section.",
+    "Image IMG_1657.jpg: Full Latihan I dialogue with Persoon B column and Latihan II exercise with all 10 fill-in items recovered from image.",
+    "Image IMG_1659.jpg: Latihan III full humor text and Latihan IV complete word list with row 8 corrected to 'penonton' (OCR had '-') recovered from image.",
+    "Image IMG_1657.jpg: Afkortingen table with full two-column layout recovered from image IMG_1657.jpg (page 82)."
+  ],
+  "sourceImages": 8
+}
