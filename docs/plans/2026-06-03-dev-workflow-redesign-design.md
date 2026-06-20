@@ -1,5 +1,7 @@
 ---
-status: draft
+status: shipped
+implementation: EPIC #136 — PRs #142-#145
+merged_at: 2026-06-03
 topic: dev-workflow-redesign
 note: DRAFT skeleton for brainstorming — grounded in the actual Matt Pocock engineering
       skills (read 2026-06-03). Open in a Mermaid-aware viewer (VS Code Markdown

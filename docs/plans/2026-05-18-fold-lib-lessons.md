@@ -1,5 +1,6 @@
 ---
-status: implementing
+status: shipped
+merged_at: 2026-05-19
 implementation: branch fold/lib-lessons (commits 98a64f2, 9ffd3e9, dafdc5b, 6966aa5, cb833ef + this commit)
 implementation_paths:
   - src/lib/lessons/

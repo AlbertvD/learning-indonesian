@@ -1,5 +1,7 @@
 ---
-status: implementing
+status: shipped
+implementation: PRs 0-7 of the data-model migration (incl. #94, #108)
+merged_at: 2026-05-25
 approved_at: 2026-05-22
 doc_type: data-model-migration-plan
 migration_shape: additive+republish+final-cleanup

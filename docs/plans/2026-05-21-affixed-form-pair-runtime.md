@@ -1,5 +1,7 @@
 ---
-status: approved
+status: shipped
+implementation: PR #94
+merged_at: 2026-05-23
 ---
 
 # Affixed-form-pair runtime — the third source kind reaches learners

@@ -1,5 +1,6 @@
 ---
-status: approved
+status: superseded
+superseded_by: 2026-06-07-capability-generation-quality-salvage.md
 implementation: null
 reviewed_by: [architect, data-architect]   # both signed off 2026-06-06 round 3 (architect: APPROVE; data-architect: APPROVE)
 supersedes:
