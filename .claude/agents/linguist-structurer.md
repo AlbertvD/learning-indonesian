@@ -195,7 +195,7 @@ export const morphologyRoots: MorphologyRoot[] = [
 
 **What you author (judgment only):**
 - `root` — an Indonesian base word that **already exists as a `learning_item`** (in this lesson's `learning-items.ts` or the prior-lesson pool you built in Step 1). The generation script HARD-FAILS on a root that is not a learning_item (ADR-0018 root-vocab prereq).
-- `affix` — the **canonical catalog label**, exactly as in `src/lib/capabilities/affixCatalog.ts`: prefixes `meN-`, `peN-`, `ber-`, `di-` and suffixes `-an`, `-kan`, `-i`. (Confixes like `ke-…-an` and reduplication are NOT supported yet — the generation script rejects them; defer those roots to their book-2 chapter.)
+- `affix` — the **canonical catalog label**, exactly one of the `affix` values in `src/lib/capabilities/affixCatalog.ts` — the single source of truth for valid labels. Every catalog affix is supported: prefixes (`meN-`, `peN-`, `ber-`, `di-`, `ter-`, `se-`, `memper-`), suffixes (`-an`, `-kan`, `-i`), confixes / stacked affixes (`ke-…-an`, `pe-…-an`, `meN-…-kan`, `di-…-kan`, …), and reduplication (`reduplication`, `reduplication-an`, `ke-…-an-reduplication`). The deterministic engine composes each one from its catalog recipe (ADR 0019); the generation script hard-fails any `affix` that is not a catalog member.
 - `illustratesCategory` — the **exact title** of a grammar category you authored in this lesson's `lesson.ts` `content.categories` (Step 4). The generation script mints the pattern slug from it; you never write a raw slug.
 
 **Curation rules (research-grounded):**
@@ -203,7 +203,7 @@ export const morphologyRoots: MorphologyRoot[] = [
 - **Cover every allomorph class the lesson's categories teach.** For meN-/peN-, give at least one example whose root selects each nasalisation class the lesson presents (me-, mem-, men-, meny-, meng-) — e.g. one `b`-initial root (→ mem-), one `c/d/j`-initial (→ men-), one vowel/`g`/`h`-initial (→ meng-), one `k/p/s/t`-initial (→ the eliding class), and one `l/m/n/r/w/y`-initial (→ unchanged me-).
 - File each root under the category that demonstrates **its** behaviour: a root whose engine-derived class falls outside the classes its category covers is flagged by the generation script as misfiled.
 
-You do NOT author `derived`, `allomorphClass`, `allomorphRule`, `affixType`, `affixGloss`, or `productive` — all of those are rule-governed and the engine fills them deterministically.
+You do NOT author `derived`, `allomorphClass`, `allomorphRule`, `affixType`, `affixGloss`, `productive`, `circumfixLeft`/`circumfixRight` (confixes), or `carrierText` — all of those are rule-governed and the engine + generation script fill them deterministically.
 
 ## Step 6 — Pattern brief
 
