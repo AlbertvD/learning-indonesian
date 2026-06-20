@@ -1,11 +1,19 @@
 ---
-status: approved   # 2026-06-16 grill-with-docs pass MATERIALLY simplified the architecture (practice =
-                   # scoped-session launch, not an in-trainer engine → item F DROPPED → tiny F′; affix =
-                   # controlled-vocab catalog member; affix caps in the unified queue; catalog tiles reuse
-                   # the analytics funnel + canonical Mastered, no invented vocabulary). Re-reviewed clean:
-                   # data-architect APPROVE-WITH-CHANGES (F′ builder-note + m1/m2 folded); architect
-                   # APPROVE-WITH-CHANGES → F′ reworked (isScopedMode, 4 call-sites) → architect confirm
-                   # round CLEAN APPROVE. Build-ahead capstone; builds LAST per §5.
+status: shipped    # built + merged 2026-06-20 (PRs #261 trainer, #262 funnel-split item C, #263 chunkedIn
+                   # hotfix). Live at /morphology. The grill-decisions block below was the as-built spec;
+                   # one deviation from it surfaced post-deploy — the adapter's un-chunked `.in()` broke at
+                   # 126 caps (Kong URL limit) → fixed by routing reads through chunkedIn (#263, OpenBrain
+                   # lesson d1b88f00). Content is thin until the morphology rollout fills affixed_form_pairs
+                   # (8/21 affixes populated; see project_morphology_linguist_authoring_followon residual B).
+implementation: PR #261 (lib/morphology + components/morphology + F′ session mode) · PR #262 (item C funnel split) · PR #263 (chunkedIn hotfix)
+merged_at: 2026-06-20
+implementation_paths:
+  - src/lib/morphology/                              # the runtime module (catalog/family/practice/adapter)
+  - src/components/morphology/                       # the trainer UI (catalog grid + 3 detail panels)
+  - src/pages/AffixTrainer.tsx                       # the /morphology page
+  - src/lib/session-builder/model.ts                # F′ affix_practice mode + isScopedMode predicates
+  - src/lib/capabilities/affixCatalog.ts            # item A: rank + cefrLevel + barrel publish
+  - src/lib/analytics/mastery/masteryModel.ts       # item C: 3-way funnelBucket (vocab/grammar/morphology)
 reviewed_by: [architect, data-architect]
 supersedes: []
 related:
