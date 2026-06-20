@@ -7,7 +7,8 @@ import {
   harvestCarrier,
   type LessonCategory,
 } from '../generate-morphology-patterns'
-import { morphologyRoots } from '../data/staging/lesson-13/morphology-roots'
+// NB: the golden proof pins a FIXED pilot fixture below — NOT the live
+// lesson-13/morphology-roots.ts, which ADR 0020 makes a generated+expanded file.
 
 // The L13 grammar categories (titles + authored examples) as in lesson.ts. The
 // examples seed the class cross-check's covered-set; the titles seed slug minting.
@@ -44,8 +45,27 @@ const L13_CATEGORIES: LessonCategory[] = [
   },
 ]
 
-// Every L13 root exists as a learning_item (the pilot verified this).
-const KNOWN = new Set(morphologyRoots.map((r) => r.root))
+// The 14 hand-authored L13 pilot pairs as a FIXED fixture — the engine's golden
+// proof. ADR 0020: the live lesson-13/morphology-roots.ts is now GENERATED and
+// expanded by the proposer, so the engine regression guard pins this, not the file.
+const PILOT_ROOTS = [
+  { root: 'masak', affix: 'meN-', illustratesCategory: A1 },
+  { root: 'lihat', affix: 'meN-', illustratesCategory: A1 },
+  { root: 'baca', affix: 'meN-', illustratesCategory: A2 },
+  { root: 'beli', affix: 'meN-', illustratesCategory: A2 },
+  { root: 'cari', affix: 'meN-', illustratesCategory: A2 },
+  { root: 'dengar', affix: 'meN-', illustratesCategory: A2 },
+  { root: 'jual', affix: 'meN-', illustratesCategory: A2 },
+  { root: 'ganti', affix: 'meN-', illustratesCategory: A2 },
+  { root: 'ambil', affix: 'meN-', illustratesCategory: A2 },
+  { root: 'tulis', affix: 'meN-', illustratesCategory: B },
+  { root: 'tukar', affix: 'meN-', illustratesCategory: B },
+  { root: 'pukul', affix: 'meN-', illustratesCategory: B },
+  { root: 'potong', affix: 'meN-', illustratesCategory: B },
+  { root: 'kirim', affix: 'meN-', illustratesCategory: B },
+]
+// Every pilot root exists as a learning_item (the pilot verified this).
+const KNOWN = new Set(PILOT_ROOTS.map((r) => r.root))
 
 // Expected derived + class + patternSourceRef from the hand-authored pilot.
 const EXPECT: Record<string, { derived: string; cls: string; ref: string }> = {
@@ -68,14 +88,14 @@ const EXPECT: Record<string, { derived: string; cls: string; ref: string }> = {
 describe('generateMorphologyPatterns — L13 golden proof (file scope)', () => {
   const { pairs, errors } = generateMorphologyPatterns({
     lessonNumber: 13,
-    roots: morphologyRoots,
+    roots: PILOT_ROOTS,
     categories: L13_CATEGORIES,
     knownItemSlugs: KNOWN,
   })
 
   it('produces no author-time errors and one pair per root', () => {
     expect(errors).toEqual([])
-    expect(pairs).toHaveLength(morphologyRoots.length)
+    expect(pairs).toHaveLength(PILOT_ROOTS.length)
   })
 
   it('reproduces every pilot pair (derived + class + patternSourceRef)', () => {

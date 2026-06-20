@@ -3,17 +3,18 @@
  * (design: docs/plans/2026-06-20-morphology-affix-pool-proposer.md; ADR 0020).
  *
  * Picks ~15-25 high-frequency, attested, taught-root derived forms per affix and
- * emits a morphology-roots.ts block. Build-time only; writes no DB.
+ * GENERATES the home lesson's morphology-roots.ts. Build-time only; writes no DB.
  *
- * Inputs: (1) the per-affix config below, (2) learning_items (taught roots, ranked),
- * (3) the pinned kaikki attestation snapshot. Per (root,affix): engine-derive →
- * confirm (∈ attested) / flag-irregular (engine≠attested but a be…-shape form is) /
- * skip. meN-/peN- stratify by allomorph class; everything else top-N by frequency.
- *
- * PROTOTYPE STATUS: ber- only, --dry (report) mode. Extends to all affixes via CONFIG.
+ * Oracle (per (root,affix), engine-derive D):
+ *   D attested AND (kaikki decomposes D as affix+root  →  confirm)
+ *                OR (D is NOT a foreign borrowing       →  confirm; trusts the engine)
+ *                OR (D is a borrowing w/ no affix etym  →  reject: homograph like beranda)
+ *   D not attested but kaikki attests some affix+root form → flag-irregular (IRREGULAR-table todo)
+ *   else → skip.
+ * meN-/peN- stratify by allomorph class (floor 1/class); invariant affixes top-N by frequency.
  *
  * Usage:  SUPABASE_SERVICE_KEY=… NODE_TLS_REJECT_UNAUTHORIZED=0 \
- *           bun scripts/propose-morphology-roots.ts ber- [--cap 20]
+ *           bun scripts/propose-morphology-roots.ts <affix> [--cap N] [--write]
  */
 import fs from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
@@ -24,112 +25,146 @@ const URL = process.env.VITE_SUPABASE_URL
 const KEY = process.env.SUPABASE_SERVICE_KEY
 if (!URL || !KEY) throw new Error('VITE_SUPABASE_URL + SUPABASE_SERVICE_KEY required (.env.local)')
 
-// ── Per-affix config (Q2): home lesson + illustratesCategory + POS classes ──────
-// Prototype carries ber-; the rest land here as we roll out. meN-/peN- would carry
-// a class→category sub-map instead of a single category.
-const POS_FOR_AFFIX: Record<string, string[]> = {
-  'ber-': ['verb', 'noun', 'adjective', 'numeral', 'pronoun'],
-}
-const L11_EXCEPTIONS = 'Plaatsing van BER- — algemene regel en uitzonderingen'
+// ── Per-affix config (Q2): home lesson, illustratesCategory, POS, curation ──────
 interface AffixConfig {
   lesson: number
-  category: string
-  /** per-root illustratesCategory override (e.g. spelling exceptions → exceptions category). */
+  pos: string[]
+  /** invariant affix: one category for all pairs. */
+  category?: string
+  /** allomorphic affix: root → category (stratified by class). */
+  classify?: (root: string) => string
+  /** morph-index affix base (kaikki lemma): ber-→ber, meN-→meng, peN-→peng. */
+  affixBase?: string
+  /** per-root illustratesCategory override (spelling exceptions). */
   categoryOverride?: Record<string, string>
-  /** roots to drop — folk-etymology false positives kaikki attests but the learner shouldn't drill. */
+  /** folk-etymology false positives to drop. */
   exclude?: string[]
 }
+const L11_EXC = 'Plaatsing van BER- — algemene regel en uitzonderingen'
+const initial = (r: string) => r[0]?.toLowerCase() ?? ''
+const inSet = (r: string, chars: string) => chars.includes(initial(r))
+
 const CONFIG: Record<string, AffixConfig> = {
   'ber-': {
     lesson: 11,
+    pos: ['verb', 'noun', 'adjective', 'numeral', 'pronoun'],
     category: 'BER- + basiswoord uit vijf woordklassen',
-    categoryOverride: { ajar: L11_EXCEPTIONS, kerja: L11_EXCEPTIONS }, // belajar / bekerja
+    categoryOverride: { ajar: L11_EXC, kerja: L11_EXC },
     exclude: ['ingin', 'waktu'], // beringin = banyan (folk etym); berwaktu marginal
+  },
+  'meN-': {
+    lesson: 13,
+    pos: ['verb', 'noun', 'adjective'],
+    affixBase: 'meng',
+    // bare meN- exists but the *productive* form is a confix → drill there, not here:
+    // membanyak→memperbanyak, mengata→mengatakan, membaru→memperbarui.
+    exclude: ['banyak', 'kata', 'baru'],
+    classify: (r) =>
+      inSet(r, 'kpst') ? 'B. ME- met verandering van de eerste klank (K, P, S, T)'
+      : inSet(r, 'lmnrwy') ? 'A1. ME- zonder verandering (me-)'
+      : 'A2. ME- met aangepast voorvoegsel (mem-, men-, meng-)',
+  },
+  'peN-': {
+    lesson: 20,
+    pos: ['verb', 'noun', 'adjective'],
+    affixBase: 'peng',
+    classify: (r) =>
+      inSet(r, 'kpst') ? 'B. Voorvoeging met wegval van de beginklank (K, P, S, T)'
+      : inSet(r, 'bf') ? 'PEM- voor B en F'
+      : inSet(r, 'cdj') ? 'PEN- voor C, D, J'
+      : inSet(r, 'aeiough') ? 'PENG- voor de klinkers (A, E, I, O, U) en voor G, H'
+      : 'A. Voorvoeging zonder verandering van het basiswoord (L, M, N, NY, R, W, Y)',
   },
 }
 
 const affix = process.argv[2]
-const cap = Number(process.argv[process.argv.indexOf('--cap') + 1]) || 20
+const capArg = process.argv.indexOf('--cap')
+const cap = capArg >= 0 ? Number(process.argv[capArg + 1]) : 22
 if (!affix || !isCatalogAffix(affix)) throw new Error(`pass a catalog affix (got "${affix}")`)
 const cfg = CONFIG[affix]
-const posList = POS_FOR_AFFIX[affix]
-if (!cfg || !posList) throw new Error(`no config for ${affix} yet (prototype = ber- only)`)
+if (!cfg) throw new Error(`no config for ${affix} yet`)
+const catFor = (r: string) => cfg.categoryOverride?.[r] ?? (cfg.classify ? cfg.classify(r) : cfg.category!)
+const affixBase = cfg.affixBase ?? affix.replace(/-/g, '').toLowerCase()
 
-// ── Attestation oracle (etymology-based, ADR 0020) ──────────────────────────
-// kaikki tells us each form's morphological decomposition; we confirm a pair only
-// when kaikki attests "<affixBase> + <root>" for the engine's derived spelling —
-// NOT merely that the string is a word (which lets homographs like beranda slip in).
+// ── Attestation oracle (etymology-based + loanword-reject, ADR 0020) ────────────
 const snap = JSON.parse(fs.readFileSync('scripts/data/kaikki/id-attestation.json', 'utf8')) as {
   flat: string[]
-  morph: Record<string, string[]> // derivedForm -> ["affBase|root", …]
+  morph: Record<string, string[]>
+  borrowed: string[]
 }
-const affixBase = affix.replace(/-/g, '').toLowerCase() // 'ber-' → 'ber', 'meN-' → 'men' (refined per-affix at rollout)
-// reverse index: "affBase|root" -> [attested derived forms]
+const flat = new Set(snap.flat)
+const borrowed = new Set(snap.borrowed)
+const isReduplication = affixCatalogEntry(affix)!.affixType === 'reduplication'
 const reverse = new Map<string, string[]>()
 for (const [form, decomps] of Object.entries(snap.morph)) {
-  for (const d of decomps) {
-    const arr = reverse.get(d) ?? []
-    arr.push(form)
-    reverse.set(d, arr)
-  }
+  for (const d of decomps) reverse.set(d, [...(reverse.get(d) ?? []), form])
 }
-// For a non-reduplication affix, exclude reduplicated attested forms (internal
-// hyphen, e.g. berlari-lari) — those belong to the ber-…-reduplication affix, not
-// plain ber-. kaikki decomposes both as "ber+lari", so we split them by shape here.
-const isReduplication = affixCatalogEntry(affix)!.affixType === 'reduplication'
+const decompHas = (form: string, root: string) => (reverse.get(`${affixBase}|${root}`) ?? []).includes(form)
+// kaikki-attested affix+root forms (non-reduplicated unless the affix IS reduplication)
 const attestedFormsFor = (root: string): string[] =>
   (reverse.get(`${affixBase}|${root}`) ?? []).filter((f) => isReduplication || !f.includes('-'))
 
 const supabase = createClient(URL, KEY)
 const { data, error } = await supabase
-  .schema('indonesian')
-  .from('learning_items')
+  .schema('indonesian').from('learning_items')
   .select('normalized_text, pos, frequency_rank')
-  .eq('is_active', true)
-  .eq('item_type', 'word')
-  .in('pos', posList)
+  .eq('is_active', true).eq('item_type', 'word').in('pos', cfg.pos)
   .order('frequency_rank', { ascending: true, nullsFirst: false })
 if (error) throw error
 
-const confirmed: { root: string; derived: string; rank: number | null }[] = []
+interface Pick { root: string; derived: string; rank: number | null; category: string }
+const confirmed: Pick[] = []
 const flagged: { root: string; engine: string; attested: string }[] = []
-let skipped = 0
+let skipped = 0, rejected = 0
 
 const excludeSet = new Set(cfg.exclude ?? [])
-for (const row of (data ?? []) as Array<{ normalized_text: string; pos: string; frequency_rank: number | null }>) {
+for (const row of (data ?? []) as Array<{ normalized_text: string; frequency_rank: number | null }>) {
   const root = row.normalized_text
-  if (excludeSet.has(root)) continue // curation: folk-etymology false positives
-  const realForms = attestedFormsFor(root) // kaikki-attested affix+root forms
-  if (realForms.length === 0) {
-    skipped++ // root doesn't take this affix (per kaikki) → never a homograph false-positive
-    continue
-  }
-  let engineForm: string
-  try {
-    engineForm = deriveAffixedForm(root, affix).derived
-  } catch {
-    skipped++
-    continue
-  }
-  if (realForms.includes(engineForm)) {
-    confirmed.push({ root, derived: engineForm, rank: row.frequency_rank }) // engine spells it right
+  if (excludeSet.has(root)) continue
+  let derived: string
+  try { derived = deriveAffixedForm(root, affix).derived } catch { skipped++; continue }
+  if (flat.has(derived)) {
+    if (decompHas(derived, root) || !borrowed.has(derived)) {
+      confirmed.push({ root, derived, rank: row.frequency_rank, category: catFor(root) })
+    } else {
+      rejected++ // attested but a foreign borrowing with no affix etymology → homograph (beranda)
+    }
   } else {
-    // kaikki knows an affix+root form, but the engine mis-spells it → needs an
-    // IRREGULAR-table entry before it can be authored (don't auto-emit).
-    flagged.push({ root, engine: engineForm, attested: realForms[0] })
+    const real = attestedFormsFor(root)
+    if (real.length) flagged.push({ root, engine: derived, attested: real[0] }) // engine mis-spells → IRREGULAR todo
+    else skipped++
   }
+}
+
+// ── Selection: stratify allomorphic affixes (floor 1/class), else top-N ─────────
+let selected: Pick[]
+const perClass = new Map<string, number>()
+if (cfg.classify) {
+  const byCat = new Map<string, Pick[]>()
+  for (const c of confirmed) byCat.set(c.category, [...(byCat.get(c.category) ?? []), c])
+  for (const [k, v] of byCat) perClass.set(k, v.length)
+  const sel: Pick[] = []
+  for (const [, v] of byCat) if (v.length) sel.push(v[0]) // floor: 1 highest-freq per class
+  const chosen = new Set(sel.map((c) => c.root))
+  for (const c of confirmed) if (!chosen.has(c.root) && sel.length < cap) { sel.push(c); chosen.add(c.root) }
+  selected = sel.sort((a, b) => (a.rank ?? 1e9) - (b.rank ?? 1e9))
+} else {
+  selected = confirmed.slice(0, cap)
 }
 
 const entry = affixCatalogEntry(affix)!
 console.log(`\n=== propose ${affix}  (home L${cfg.lesson}, cap ${cap}, ${entry.affixType}) ===`)
-console.log(`candidates scanned: ${data?.length ?? 0}  |  confirmed: ${confirmed.length}  |  flagged-irregular: ${flagged.length}  |  skipped: ${skipped}\n`)
-console.log(`── top ${cap} confirmed (the proposed pool) ──`)
-for (const c of confirmed.slice(0, cap)) {
-  console.log(`  { root: '${c.root}', affix: '${affix}', illustratesCategory: ${JSON.stringify(cfg.category)} },  // ${c.derived}  [rank ${c.rank ?? '—'}]`)
+console.log(`scanned: ${data?.length ?? 0} | confirmed: ${confirmed.length} | selected: ${selected.length} | flagged-irregular: ${flagged.length} | rejected-borrowing: ${rejected} | skipped: ${skipped}`)
+if (cfg.classify) {
+  console.log(`per-class confirmed:`)
+  for (const [k, n] of perClass) console.log(`   ${n.toString().padStart(3)}  ${k}`)
+  const covered = new Set(selected.map((c) => c.category))
+  console.log(`selected covers ${covered.size}/${new Set(confirmed.map((c) => c.category)).size} classes present`)
 }
-if (confirmed.length > cap) console.log(`  … +${confirmed.length - cap} more confirmed beyond the cap`)
-console.log(`\n── flagged irregular (real form attested, engine mis-spells → IRREGULAR-table candidates) ──`)
-for (const f of flagged.slice(0, 20)) console.log(`  ${f.root}: engine='${f.engine}'  attested='${f.attested}'`)
+console.log(`\n── selected pool ──`)
+for (const c of selected) console.log(`  ${c.derived}  [${c.root}, rank ${c.rank ?? '—'}]  ${cfg.classify ? '· ' + c.category.slice(0, 28) : ''}`)
+console.log(`\n── flagged irregular (engine mis-spells an attested affix+root form → IRREGULAR-table) ──`)
+for (const f of flagged.slice(0, 25)) console.log(`  ${f.root}: engine='${f.engine}'  attested='${f.attested}'`)
 if (!flagged.length) console.log('  (none)')
 
 // ── --write: emit the generated morphology-roots.ts (additive, ADR 0011 / Q6) ──
@@ -139,39 +174,28 @@ if (process.argv.includes('--write')) {
   const { data: pubRows } = await supabase
     .schema('indonesian').from('affixed_form_pairs').select('root_text').eq('affix', affix).eq('lesson_id', lessonId)
   const published = new Set(((pubRows ?? []) as Array<{ root_text: string }>).map((r) => r.root_text))
-  const confirmedRoots = new Set(confirmed.map((c) => c.root))
+  const selRoots = new Set(selected.map((c) => c.root))
 
-  // Preserve every published root (never orphan a live cap); then append top new confirmed up to cap.
   const keep: string[] = []
-  for (const c of confirmed) if (published.has(c.root)) keep.push(c.root)
-  for (const r of published) if (!confirmedRoots.has(r) && !excludeSet.has(r)) keep.push(r)
-  for (const c of confirmed) if (!published.has(c.root) && keep.length < cap) keep.push(c.root)
+  for (const c of selected) if (published.has(c.root)) keep.push(c.root)          // preserved (live caps)
+  for (const r of published) if (!selRoots.has(r) && !excludeSet.has(r)) keep.push(r) // preserved even if reselection dropped
+  for (const c of selected) if (!published.has(c.root) && keep.length < cap) keep.push(c.root) // new
 
-  const catFor = (r: string) => cfg.categoryOverride?.[r] ?? cfg.category
   const groups = new Map<string, string[]>()
-  for (const r of keep) {
-    const c = catFor(r)
-    if (!groups.has(c)) groups.set(c, [])
-    groups.get(c)!.push(r)
-  }
-  const lines: string[] = []
-  lines.push(`import type { MorphologyRoot } from '@/lib/capabilities'`, '')
-  lines.push(`// GENERATED by scripts/propose-morphology-roots.ts — affix ${affix}, home L${cfg.lesson}.`)
-  lines.push(`// Roots = taught learning_items whose ${affix}-derived form kaikki attests as "${affix}+root"`)
-  lines.push(`// (ADR 0020). Re-run additive (--regenerate to rebuild). Curation overrides live in the script config.`)
+  for (const r of keep) { const c = catFor(r); groups.set(c, [...(groups.get(c) ?? []), r]) }
+  const lines: string[] = [`import type { MorphologyRoot } from '@/lib/capabilities'`, '']
+  lines.push(`// GENERATED by scripts/propose-morphology-roots.ts — affix ${affix}, home L${cfg.lesson} (ADR 0020).`)
+  lines.push(`// Roots = taught learning_items whose ${affix} form kaikki attests (not a loanword). Re-run additive.`)
   lines.push('')
-  // declare category consts referenced
   const cats = [...groups.keys()]
   cats.forEach((c, i) => lines.push(`const CAT_${i} = ${JSON.stringify(c)}`))
   lines.push('', 'export const morphologyRoots: MorphologyRoot[] = [')
   cats.forEach((c, i) => {
     lines.push(`  // ── ${c} ──`)
-    for (const r of groups.get(c)!) {
-      lines.push(`  { root: '${r}', affix: '${affix}', illustratesCategory: CAT_${i} }, // ${deriveAffixedForm(r, affix).derived}`)
-    }
+    for (const r of groups.get(c)!) lines.push(`  { root: '${r}', affix: '${affix}', illustratesCategory: CAT_${i} }, // ${deriveAffixedForm(r, affix).derived}`)
   })
   lines.push(']', '')
   const path = `scripts/data/staging/lesson-${cfg.lesson}/morphology-roots.ts`
   fs.writeFileSync(path, lines.join('\n'))
-  console.log(`\n✍  wrote ${keep.length} roots → ${path}  (preserved ${published.size} published + ${keep.length - published.size} new; cap ${cap})`)
+  console.log(`\n✍  wrote ${keep.length} roots → ${path}  (preserved ${published.size} published + ${keep.length - published.size} new)`)
 }
