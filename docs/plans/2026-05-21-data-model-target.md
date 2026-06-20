@@ -1,5 +1,6 @@
 ---
-status: draft
+status: superseded
+superseded_by: 2026-05-22-data-model-migration.md (+ ADR 0011/0012)
 doc_type: data-model-target-proposal
 last_verified_against_code: 2026-05-21
 depends_on:

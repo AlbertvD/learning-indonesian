@@ -1,5 +1,6 @@
 ---
-status: approved
+status: superseded
+superseded_by: 2026-06-07-capability-generation-quality-salvage.md
 parent: docs/plans/2026-06-06-capability-stage-v2.md   # umbrella (approved)
 reviewed_by: [architect, data-architect]   # design APPROVED both; strangler-to-prod go-live seam ruled + framing corrected 2026-06-06 (round 4)
 implementation: null

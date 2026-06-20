@@ -1,5 +1,7 @@
 ---
-status: approved
+status: shipped
+implementation: PR #213 (spec/ADR 0016) + #215 + #218 + #229
+merged_at: 2026-06-11
 reviewed_by: [architect, data-architect]   # both APPROVE-WITH-CHANGES 2026-06-10; all findings applied below
 review_notes: |
   architect (APPROVE-WITH-CHANGES): (1) movement folds into mastery/ — applied §2/§3;

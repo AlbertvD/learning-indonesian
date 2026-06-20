@@ -1,5 +1,6 @@
 ---
-status: implementing
+status: shipped
+merged_at: 2026-06-14
 implementation: branch feat/collections-schema (slice 1 — additive schema)
 reviewed_by: [architect, data-architect]   # round 2: both APPROVE-WITH-CHANGES; remaining DDL/test clarifications folded in inline (no further re-review needed, per both reviewers).
 supersedes: []

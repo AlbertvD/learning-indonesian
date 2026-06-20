@@ -1,5 +1,7 @@
 ---
-status: approved
+status: shipped
+implementation: PR #198 + #199
+merged_at: 2026-06-10
 reviewed_by: [architect, data-architect]
 supersedes: []
 related:

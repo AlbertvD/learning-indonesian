@@ -1,5 +1,6 @@
 ---
-status: implementing
+status: shipped
+merged_at: 2026-05-13
 implementation: branch fold/capability-stage (commits 97ceec8, 2140668, 957ba0c, b3b1ef1, 2d7f646, efd2fb6, 077f8bd, d078661, 5ce328e)
 implementation_paths:
   - scripts/lib/content-pipeline-output.ts

@@ -1,5 +1,6 @@
 ---
-status: implementing
+status: shipped
+merged_at: 2026-06-02
 implementation: PR #130 (Fix 2 — paraphrase acceptance); PR #131 (Fix 1 — productive ceiling)
 adr: docs/adr/0014-productive-ceiling-item-harvest-is-word-phrase-only.md
 reviewed_by:

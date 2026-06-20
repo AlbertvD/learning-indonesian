@@ -1,5 +1,6 @@
 ---
-status: completed
+status: shipped
+merged_at: 2026-05-21
 doc_type: data-model-evidence-audit
 last_verified_against_code: 2026-05-21
 last_verified_against_live_db: 2026-05-21

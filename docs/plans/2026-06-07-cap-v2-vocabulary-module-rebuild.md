@@ -1,5 +1,6 @@
 ---
-status: approved
+status: superseded
+superseded_by: 2026-06-07-capability-generation-quality-salvage.md
 parent: docs/plans/2026-06-06-capability-stage-v2-slice-1-vocabulary.md   # approved spec (the WHAT)
 reviewed_by: [architect, data-architect]   # round 2 — both APPROVED 2026-06-07 (3 CRITICALs + warnings resolved)
 implementation: null
