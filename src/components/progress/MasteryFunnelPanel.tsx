@@ -20,6 +20,7 @@ const ALL = 'all'
 const EMPTY: MasteryFunnels = {
   vocabulary: { not_assessed: 0, introduced: 0, learning: 0, strengthening: 0, mastered: 0, at_risk: 0 },
   grammar: { not_assessed: 0, introduced: 0, learning: 0, strengthening: 0, mastered: 0, at_risk: 0 },
+  morphology: { not_assessed: 0, introduced: 0, learning: 0, strengthening: 0, mastered: 0, at_risk: 0 },
 }
 
 export interface FunnelScope {
@@ -29,7 +30,7 @@ export interface FunnelScope {
 
 export interface MasteryFunnelPanelProps {
   userId: string
-  kind: 'vocabulary' | 'grammar'
+  kind: 'vocabulary' | 'grammar' | 'morphology'
   /** Noun for the funnel headline, e.g. "woorden" / "patronen". */
   unitLabel: string
   /** Scope-aware content rendered below the funnel. */

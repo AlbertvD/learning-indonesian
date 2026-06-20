@@ -2340,20 +2340,22 @@ create or replace function indonesian.get_weekly_movement(
   p_timezone text
 )
 returns json language sql stable security invoker as $$
-  -- Counts distinct SOURCE_REF (the learnable unit — a word / grammar topic) that
-  -- advanced a rung this week, SPLIT into vocab (source_kind 'item') and grammar
-  -- (pattern + affixed_form_pair) — the SAME two buckets and scope as the mastery
-  -- funnel, so the home pulse and the funnel speak one unit ("woorden" /
-  -- "grammatica"). dialogue_line / podcast source kinds are excluded (the funnel
-  -- excludes them too). Distinct source_ref (NOT capability_id): one word has
-  -- several caps, so per-cap counts overstate. A unit counts once if any of its
-  -- caps advanced.
+  -- Counts distinct SOURCE_REF (the learnable unit — a word / grammar topic /
+  -- morphology derivation) that advanced a rung this week, SPLIT into vocab
+  -- (vocabulary_src), grammar (grammar_pattern_src) and morphology
+  -- (word_form_pair_src) — the SAME three buckets + scope as the mastery funnel
+  -- (capstone item C). dialogue_line / podcast source kinds are excluded (the
+  -- funnel excludes them too). Distinct source_ref (NOT capability_id): one word
+  -- has several caps, so per-cap counts overstate. A unit counts once if any of
+  -- its caps advanced. TS mirror: funnelBucket
+  -- (src/lib/analytics/mastery/masteryModel.ts), held in lockstep by HC28 (ADR 0015).
   with ev as (
     select
       c.source_ref,
       case
         when c.source_kind = 'vocabulary_src' then 'vocab'
-        when c.source_kind in ('grammar_pattern_src', 'word_form_pair_src') then 'grammar'
+        when c.source_kind = 'grammar_pattern_src' then 'grammar'
+        when c.source_kind = 'word_form_pair_src' then 'morphology'
         else null
       end as bucket,
       indonesian._mastery_label(
@@ -2386,10 +2388,11 @@ returns json language sql stable security invoker as $$
     where bucket is not null
   )
   select json_build_object(
-    'advanced_vocab',   count(distinct source_ref) filter (where ra > rb and bucket = 'vocab'),
-    'advanced_grammar', count(distinct source_ref) filter (where ra > rb and bucket = 'grammar'),
-    'reached_mastered', count(distinct source_ref) filter (where after_label = 'mastered' and before_label <> 'mastered'),
-    'slipped',          count(distinct source_ref) filter (where after_label = 'at_risk' and before_label <> 'at_risk')
+    'advanced_vocab',      count(distinct source_ref) filter (where ra > rb and bucket = 'vocab'),
+    'advanced_grammar',    count(distinct source_ref) filter (where ra > rb and bucket = 'grammar'),
+    'advanced_morphology', count(distinct source_ref) filter (where ra > rb and bucket = 'morphology'),
+    'reached_mastered',    count(distinct source_ref) filter (where after_label = 'mastered' and before_label <> 'mastered'),
+    'slipped',             count(distinct source_ref) filter (where after_label = 'at_risk' and before_label <> 'at_risk')
   ) from ranked;
 $$;
 

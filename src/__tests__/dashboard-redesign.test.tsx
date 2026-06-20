@@ -65,7 +65,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(0))
   vi.mocked(engagement.dailyActivity).mockResolvedValue([])
-  vi.mocked(getWeeklyMovement).mockResolvedValue({ advancedVocab: 0, advancedGrammar: 0, reachedMastered: 0, slipped: 0 })
+  vi.mocked(getWeeklyMovement).mockResolvedValue({ advancedVocab: 0, advancedGrammar: 0, advancedMorphology: 0, reachedMastered: 0, slipped: 0 })
   vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([])
   vi.mocked(listActivatedLessons).mockResolvedValue(new Set<string>())
   vi.mocked(getCollectionsOverview).mockResolvedValue([])

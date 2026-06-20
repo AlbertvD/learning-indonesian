@@ -18,8 +18,8 @@ import { SkillModeGapsCard } from '@/components/progress/SkillModeGapsCard'
 import { TimeComparisonCard } from '@/components/progress/TimeComparisonCard'
 import classes from './Progress.module.css'
 
-type Tab = 'woorden' | 'grammar' | 'skills' | 'time'
-const TABS: Tab[] = ['woorden', 'grammar', 'skills', 'time']
+type Tab = 'woorden' | 'grammar' | 'morfologie' | 'skills' | 'time'
+const TABS: Tab[] = ['woorden', 'grammar', 'morfologie', 'skills', 'time']
 
 export function Progress() {
   const T = useT()
@@ -47,6 +47,7 @@ export function Progress() {
                 data={[
                   { value: 'woorden', label: T.progress.tabWoordenschat },
                   { value: 'grammar', label: T.progress.tabGrammar },
+                  { value: 'morfologie', label: T.progress.tabMorphology },
                   { value: 'skills', label: T.progress.tabSkills },
                   { value: 'time', label: T.progress.tabTime },
                 ]}
@@ -73,6 +74,13 @@ export function Progress() {
                       ? <GrammarPatternList userId={user.id} lessonNumber={scope.lessonNumber} />
                       : null
                   }
+                />
+              )}
+              {tab === 'morfologie' && (
+                <MasteryFunnelPanel
+                  userId={user.id}
+                  kind="morphology"
+                  unitLabel={T.progress.morphologyUnitAffixes}
                 />
               )}
               {tab === 'skills' && <SkillModeGapsCard userId={user.id} />}

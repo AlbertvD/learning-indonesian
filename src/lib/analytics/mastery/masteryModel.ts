@@ -386,23 +386,26 @@ export type MasteryFunnel = Record<MasteryLabel, number>
 export interface MasteryFunnels {
   vocabulary: MasteryFunnel
   grammar: MasteryFunnel
+  morphology: MasteryFunnel
 }
 
-const GRAMMAR_SOURCE_KINDS = new Set(['grammar_pattern_src', 'word_form_pair_src'])
-
 /**
- * The single source of truth for the vocab/grammar split shared by EVERY
- * mastery-progression surface: the funnel (`deriveMasteryFunnel`), the home
+ * The single source of truth for the vocab / grammar / morphology split shared by
+ * EVERY mastery-progression surface: the funnel (`deriveMasteryFunnel`), the home
  * weekly-movement pulse (`deriveWeeklyMovement`), and the HC28 parity check.
- * `null` = a source kind outside the funnel (`dialogue_line`, `podcast`), which
- * is excluded from both the funnel and movement. The SQL side
- * (`get_weekly_movement`, `get_lessons_overview`) mirrors this same rule and is
- * held in lockstep by the parity tests + HC27/HC28 (ADR 0015). Change the split
- * here and every TS surface follows in one edit.
+ * `null` = a source kind outside the funnel (`dialogue_line`, `podcast`), which is
+ * excluded from both the funnel and movement. Morphology (`word_form_pair_src`) is
+ * its own bucket (capstone item C) — it grows at a different rate than grammar
+ * patterns and has its own Voortgang axis + the per-affix trainer. The SQL side
+ * (`get_weekly_movement`) mirrors this same rule and is held in lockstep by the
+ * HC28 parity check (ADR 0015). `get_lessons_overview` is content-type-agnostic
+ * (it counts mastered/practiced per lesson) so it does NOT mirror this. Change the
+ * split here and every TS surface follows in one edit.
  */
-export function funnelBucket(sourceKind: CapabilitySourceKind): 'vocab' | 'grammar' | null {
+export function funnelBucket(sourceKind: CapabilitySourceKind): 'vocab' | 'grammar' | 'morphology' | null {
   if (sourceKind === 'vocabulary_src') return 'vocab'
-  if (GRAMMAR_SOURCE_KINDS.has(sourceKind)) return 'grammar'
+  if (sourceKind === 'grammar_pattern_src') return 'grammar'
+  if (sourceKind === 'word_form_pair_src') return 'morphology'
   return null
 }
 
@@ -424,10 +427,11 @@ export function deriveMasteryFunnel(input: {
   const now = input.now ?? new Date()
   const vocab = new Map<string, CapabilityMasteryEvidence[]>()
   const grammar = new Map<string, CapabilityMasteryEvidence[]>()
+  const morphology = new Map<string, CapabilityMasteryEvidence[]>()
   for (const e of input.evidence) {
     const b = funnelBucket(e.sourceKind)
     if (!b) continue
-    const bucket = b === 'vocab' ? vocab : grammar
+    const bucket = b === 'vocab' ? vocab : b === 'grammar' ? grammar : morphology
     bucket.set(e.sourceRef, [...(bucket.get(e.sourceRef) ?? []), e])
   }
   const tally = (units: Map<string, CapabilityMasteryEvidence[]>): MasteryFunnel => {
@@ -437,10 +441,10 @@ export function deriveMasteryFunnel(input: {
     }
     return funnel
   }
-  return { vocabulary: tally(vocab), grammar: tally(grammar) }
+  return { vocabulary: tally(vocab), grammar: tally(grammar), morphology: tally(morphology) }
 }
 
-// The same vocab/grammar funnels, split per introducing lesson (order_index).
+// The same vocab/grammar/morphology funnels, split per introducing lesson (order_index).
 // A unit (word / pattern) lands in exactly one lesson bucket — its capabilities
 // share one introducing lesson (ADR 0006) — so this is just deriveMasteryFunnel
 // run over each lesson's slice. Caps with no lessonNumber (podcast) are skipped.
@@ -684,19 +688,22 @@ export interface WeeklyReviewEvent {
   // capability_id — so movement stays in the same unit as the funnel (a word has
   // several capabilities; per-cap counts overstate and can exceed words in play).
   sourceRef: string
-  // Buckets movement into the SAME two groups as the funnel: vocab ('item') vs
-  // grammar ('pattern' + 'word_form_pair_src'). Other kinds (dialogue_line,
-  // podcast) are excluded — they aren't in the funnel either.
+  // Buckets movement into the SAME groups as the funnel: vocab
+  // (`vocabulary_src`) / grammar (`grammar_pattern_src`) / morphology
+  // (`word_form_pair_src`). Other kinds (dialogue_line, podcast) are excluded —
+  // they aren't in the funnel either.
   sourceKind: CapabilitySourceKind
   before: MovementState
   after: MovementState
 }
 
 export interface WeeklyMovement {
-  /** Distinct vocabulary words (source_kind 'item') that advanced a rung. */
+  /** Distinct vocabulary words (`vocabulary_src`) that advanced a rung. */
   advancedVocab: number
-  /** Distinct grammar topics (pattern + word_form_pair_src) that advanced a rung. */
+  /** Distinct grammar topics (`grammar_pattern_src`) that advanced a rung. */
   advancedGrammar: number
+  /** Distinct morphology derivations (`word_form_pair_src`) that advanced a rung. */
+  advancedMorphology: number
   reachedMastered: number
   slipped: number
 }
@@ -742,13 +749,14 @@ export function deriveWeeklyMovement(input: {
   const now = input.now ?? new Date()
   const advancedVocab = new Set<string>()
   const advancedGrammar = new Set<string>()
+  const advancedMorphology = new Set<string>()
   const reachedMastered = new Set<string>()
   const slipped = new Set<string>()
   for (const event of input.events) {
-    // Same vocab/grammar split + scope as the funnel — shared via funnelBucket.
+    // Same vocab/grammar/morphology split + scope as the funnel — via funnelBucket.
     const b = funnelBucket(event.sourceKind)
     if (!b) continue
-    const bucket = b === 'vocab' ? advancedVocab : advancedGrammar
+    const bucket = b === 'vocab' ? advancedVocab : b === 'grammar' ? advancedGrammar : advancedMorphology
     const before = labelFromState(event.before, now)
     const after = labelFromState(event.after, now)
     if (LABEL_RANK[after] > LABEL_RANK[before]) bucket.add(event.sourceRef)
@@ -758,6 +766,7 @@ export function deriveWeeklyMovement(input: {
   return {
     advancedVocab: advancedVocab.size,
     advancedGrammar: advancedGrammar.size,
+    advancedMorphology: advancedMorphology.size,
     reachedMastered: reachedMastered.size,
     slipped: slipped.size,
   }
@@ -998,12 +1007,13 @@ export async function getWeeklyMovement(userId: string, timezone: string): Promi
     .rpc('get_weekly_movement', { p_user_id: userId, p_timezone: timezone })
   if (error) throw error
   const row = (data ?? {}) as {
-    advanced_vocab?: number; advanced_grammar?: number
+    advanced_vocab?: number; advanced_grammar?: number; advanced_morphology?: number
     reached_mastered?: number; slipped?: number
   }
   return {
     advancedVocab: row.advanced_vocab ?? 0,
     advancedGrammar: row.advanced_grammar ?? 0,
+    advancedMorphology: row.advanced_morphology ?? 0,
     reachedMastered: row.reached_mastered ?? 0,
     slipped: row.slipped ?? 0,
   }

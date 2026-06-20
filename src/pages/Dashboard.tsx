@@ -46,6 +46,7 @@ export function Dashboard() {
   const [minutesLastWeek, setMinutesLastWeek] = useState(0)
   const [advancedVocab, setAdvancedVocab] = useState(0)
   const [advancedGrammar, setAdvancedGrammar] = useState(0)
+  const [advancedMorphology, setAdvancedMorphology] = useState(0)
 
   // Welcome line only on the first Dashboard view of the day.
   const [showWelcome] = useState(() => {
@@ -89,6 +90,7 @@ export function Dashboard() {
         setMinutesLastWeek(pt.minutesLastWeek)
         setAdvancedVocab(movement.advancedVocab)
         setAdvancedGrammar(movement.advancedGrammar)
+        setAdvancedMorphology(movement.advancedMorphology)
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
@@ -122,9 +124,13 @@ export function Dashboard() {
       ? T.dashboard.sameAsLastWeek
       : `${weekDelta > 0 ? '+' : ''}${weekDelta} ${T.dashboard.minVsLastWeek}`
   const movementSubtitle =
-    advancedVocab + advancedGrammar === 0
+    advancedVocab + advancedGrammar + advancedMorphology === 0
       ? T.dashboard.movementNone
-      : `${advancedVocab} ${T.dashboard.movementWords} · ${advancedGrammar} ${T.dashboard.movementGrammar}`
+      : [
+          `${advancedVocab} ${T.dashboard.movementWords}`,
+          `${advancedGrammar} ${T.dashboard.movementGrammar}`,
+          ...(advancedMorphology > 0 ? [`${advancedMorphology} ${T.dashboard.movementMorphology}`] : []),
+        ].join(' · ')
 
   return (
     <PageContainer size="lg">

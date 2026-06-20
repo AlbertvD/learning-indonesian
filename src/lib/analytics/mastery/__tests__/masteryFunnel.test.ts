@@ -41,7 +41,7 @@ describe('deriveMasteryFunnel', () => {
     expect(funnel.vocabulary.mastered).toBe(0)
   })
 
-  it('counts grammar patterns + morphology in the grammar funnel, not vocabulary', () => {
+  it('splits grammar patterns and morphology into their own buckets, not vocabulary (item C)', () => {
     const evidence = [
       ev({ sourceKind: 'grammar_pattern_src', sourceRef: 'meN-prefix', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
       ev({ sourceKind: 'word_form_pair_src', sourceRef: 'baca-membaca', reviewCount: 1, stability: 1 }),
@@ -49,8 +49,11 @@ describe('deriveMasteryFunnel', () => {
 
     const funnel = deriveMasteryFunnel({ evidence, now: NOW })
 
+    // grammar pattern → grammar bucket; affixed pair → its own morphology bucket.
     expect(funnel.grammar.mastered).toBe(1)
-    expect(funnel.grammar.learning).toBe(1)
+    expect(funnel.grammar.learning).toBe(0)
+    expect(funnel.morphology.learning).toBe(1)
+    expect(funnel.morphology.mastered).toBe(0)
     expect(funnel.vocabulary.mastered).toBe(0)
     expect(funnel.vocabulary.learning).toBe(0)
   })
