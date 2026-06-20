@@ -42,6 +42,60 @@ related:
 > 3. **Item F′ — the affix SessionMode is NOT added:** `SessionMode = 'standard'|'lesson_practice'|'lesson_review'`
 >    (`model.ts:5`); add the source-ref-scoped mode + `isScopedMode` per §4-F′.
 >
+> **🆕 Grill decisions (2026-06-19) — substrate amendments the re-grounding missed:**
+> - **Catalog seam is published, not deep-imported (Q-grill-A).** `affixCatalog.ts` currently sits inside
+>   `lib/capabilities` but is NOT re-exported by its barrel (`index.ts`); all 6 consumers deep-import
+>   `@/lib/capabilities/affixCatalog`. The plan repeatedly calls this "the sole pipeline↔runtime shared seam"
+>   yet it is an informal deep-path, not the module's published interface. **Decision: formalize it** — export
+>   the catalog's public surface (`AFFIX_CATALOG`, `affixCatalogEntry`, `allomorphClassesFor`, `isCatalogAffix`,
+>   types) through the capabilities barrel; the trainer (`lib/morphology`) **and** the three runtime
+>   `lib/exercise-content/byType/*` callers (`typedRecall.ts`, `cuedRecall.ts`, `decomposeWord.ts`) import from
+>   `@/lib/capabilities`. **Leave the pipeline/scripts deep-imports alone** (`check-supabase-deep.ts`,
+>   `generate-morphology-patterns.ts`, `validators/affixedFormPairs.ts`) — their constraint is "import from
+>   `lib/capabilities`," and a barrel would pull runtime-only code into build scripts. Also update the
+>   `capabilities.md` module-spec roster (it omits `affixCatalog.ts` + `affixDerivation.ts` — spec drift).
+> - **Sequence-rank + CEFR-level gap (Q-grill-1, RESOLVED → add to the catalog).** §1 + the CONTEXT "Affix"
+>   glossary assert the catalog carries "sequence rank, CEFR level"; the built `AffixCatalogEntry` carries
+>   neither, and the array is grouped by type, NOT the research's teaching order — so v1's headline (the
+>   *sequenced* grid + per-affix level) cannot render. **Decision: add `rank: number` (the research teaching
+>   order) + `cefrLevel` to `AffixCatalogEntry`, populate all entries, trainer sorts the grid by `rank`.** The
+>   catalog is the single source per affix (the trainer must import it anyway — for the affix set, gloss, type,
+>   and allomorph classes — so splitting curriculum into a second `lib/morphology` map only buys a two-source
+>   join for facts about one object). The pipeline ignores the new fields (validator checks `isCatalogAffix`
+>   membership only), and the glossary already promised them — no glossary edit, no validator/HC change.
+> - **Build the capstone whole — no v1/v2 phasing (Q-grill-scope).** Drop §5 step 4's "ship a thin first
+>   cut, defer the word-family explorer to v2." That deferral was justified only by content thinness, and
+>   shrinking the deliverable to defer a panel is goal-erosion. All four trainer pieces ship together:
+>   catalog grid, rule card, word-family explorer, scoped-session practice launch.
+> - **Item C is its own slice, NOT coupled to the catalog tiles (Q-grill-3, RESOLVED).** §2/§4-C's claim
+>   that "item C and the catalog tiles are one feature (the morphology funnel at two scopes)" is mechanically
+>   wrong: the per-affix tile is a *per-affix cap roll-up* (the `derivePatternMastery` path,
+>   `masteryModel.ts:333-355`) which **never calls `funnelBucket`** — it's scoped to one affix, so
+>   content-type is implicit. Only the **whole-learner** Voortgang morphology bar needs `funnelBucket`'s
+>   3-way split + SQL mirror + HC27/HC28 parity (`deriveMasteryFunnel`, :420-441). The two **share the
+>   roll-up primitive** (the morphology bar = the tile roll-up aggregated across affixes) but NOT the
+>   content-type split. Consequence: the tiles do not wait on the analytics re-partition. Item C ships in
+>   scope (it's part of the capstone) but is the natural sibling-PR boundary for review (parity-tested,
+>   touches surfaces the trainer doesn't).
+>
+> - **F′ launch contract: affix identity in the URL, resolver in `lib/morphology` (Q-grill-F′).** The
+>   "Practise meN-" hand-off mirrors the existing lesson scope: the affix label travels in the URL
+>   (`/session?mode=<affix-mode>&affix=meN-`), and the Session page resolves it via a new
+>   `loadSelectedAffixScope(affix)` that lives in `lib/morphology` (it owns affix→pairs knowledge) and is
+>   imported by the Session page (runtime→runtime, no `session-builder` import). Symmetric with
+>   `loadSelectedLessonScope` (`Session.tsx:38-53`), survives refresh/bookmark. **Rejected:** resolving
+>   source-refs in the trainer and passing the list through URL/router state (opaque link, breaks on
+>   refresh). The affix-scope resolver is part of the `index.ts` public surface §3 says to pin.
+>
+> - **Word-family explorer substrate VERIFIED against live schema (grill, 2026-06-19).** Un-deferring the
+>   explorer (no v1/v2) made its data dependencies in-scope; all three exist on `affixed_form_pairs`
+>   (`migration.sql:3422-3431`): `root_text`+`affix` (cross-affix grouping), `productive` (NOT NULL — the
+>   frozen/lexicalized marking), `allomorph_rule`+`affix_gloss`+`allomorph_class`+`carrier_text` (rule card +
+>   worked examples). **No second substrate gap** (unlike the catalog rank/CEFR). **One guard:** `affix` is
+>   NULLABLE on the projection table (`SET NOT NULL` at `:3475-3478` covers only grammar_pattern_id/affix_type/
+>   productive); it's NOT NULL on the source + writer-copied, but the trainer's group-by-affix should exclude
+>   nulls defensively, not assume.
+>
 > **⚠️ Stale references below (correct when building):** §5 step 2 cites `recognise_allomorph_from_root_cap`
 > (built then **RETIRED** — `2026-06-17-morphology-nasalization-cap-model-fix.md`) and `build_confix_ex`
 > (**CUT** — ADR 0019). The live morphology exercise roster is **`decompose_word_ex` + `type_form_ex`
@@ -297,12 +351,15 @@ So the trainer cannot render a catalog or explorer until content exists. Build o
    columns + the new cap (`recognise_allomorph_from_root_cap`) + 4 exercises the trainer reads.
 3. **Re-author the affix lessons (L9–16) + ingest book-2's 14 chapters** → populates `affixed_form_pairs`
    broadly across affixes. *This is the trainer's content.*
-4. **The trainer surface** (`lib/morphology/` + `components/morphology/`) **+ the Voortgang axis (C)** —
-   this capstone. **Ship it as a thin first cut, not all at once (staff-engineer):** v1 = the affix
-   **catalog + rule card + per-affix funnel tile** (the highest-value, lowest-risk reuse of existing
-   patterns); **defer the word-family explorer (§2.2)** — the one genuinely-new, most-complex panel — to a
-   v2 once a **second** affix lesson is re-authored, since with one affix it renders "you know N of N" and
-   carries near-zero value. This cuts the riskiest panel out of v1 at almost no cost.
+4. **The trainer surface** (`lib/morphology/` + `components/morphology/`) **+ the Voortgang morphology axis
+   (C)** — this capstone, **built whole — no v1/v2 phasing (grill, 2026-06-19).** All four pieces ship
+   together: the affix **catalog grid**, the **rule card**, the **word-family explorer (§2.2)**, and the
+   **scoped-session practice launch (F′)**, plus morphology as its own progress bar (C). The earlier
+   staff-engineer "defer the explorer to v2" was justified solely by content thinness (one affix → "you
+   know N of N"); the goal is the full capstone, and shrinking it to defer the explorer is goal-erosion
+   (Minimum Mechanism: minimize the means, not the goal). The analytics re-partition (C) MAY land as a
+   sibling commit/PR for clean review — it's a parity-tested analytics change touching weekly-movement +
+   lessons-overview, unrelated to the trainer's reads — but it is **in scope** and ships with the capstone.
 
 This design is **design-ahead**: it is written now so steps 1–3 are built *toward* it (esp. item B,
 which must be decided before step 2), not toward a guess.
@@ -329,17 +386,21 @@ moat) and the novelty; the *architecture* is battle-tested.
 
 ## 7. Open questions for review
 
-1. **Root-vocab prerequisite (item B): block or deprioritize?** Research Q1 leans block (single-unknown
-   card). Decide so phase-b's projector can emit it (resolving the root via `itemSlug()`). If block, it
-   triggers a **phase-b re-review** (data-model change to an approved spec). (Recommend: block — hard
-   prerequisite.)
+1. ✅ **RESOLVED + SHIPPED (ADR 0018): block (hard prerequisite).** Each morphology application cap emits
+   two hard-block `prerequisiteKeys` — rule→application + root→derived (the root one "load-bearing") — the
+   root resolved deterministically via `itemSlug()`. The phase-b re-review this question gated has already
+   happened; the prerequisite is live. The trainer just *reflects* this gate (item E), it does not enforce it.
 2. ✅ **RESOLVED (grill, 2026-06-15): affix catalog = code constant, and it is the controlled vocabulary
    for the `affix` column** (phase-b validator + HC assert `affix ∈ catalog`). "Affix" added to the
    CONTEXT.md glossary. Not a table (curated, fixed, no per-learner state).
-3. **"Morfologie" Voortgang axis (item C): its own slice, or folded into the trainer PR?** Lean its own
-   slice (it's an analytics change with a parity test, independent of the surface).
-4. **"Learn new" introduction seam:** confirm the trainer only surfaces caps from *activated* lessons
-   (no independent introduction). (Recommend: yes — reflect ADR 0006.)
+3. ✅ **RESOLVED (grill, 2026-06-19): own slice, and NOT coupled to the catalog tiles.** §2/§4-C's "one
+   feature at two scopes" was mechanically wrong — the per-affix tile is a per-affix cap roll-up that never
+   touches `funnelBucket`; only the whole-learner morphology bar needs the 3-way split + SQL parity. They
+   share the roll-up primitive, not the content-type split. In scope for the capstone; natural sibling-PR
+   boundary for review. (See the grill-decisions block at the top.)
+4. ✅ **RESOLVED (grill, 2026-06-19): yes — reflect ADR 0006.** The trainer only surfaces caps from
+   *activated* lessons; it introduces nothing independently (item E, a behaviour contract — the activation
+   gate already lives in `learner_lesson_activation` + the session engine).
 
 ## Supabase Requirements
 
