@@ -23,6 +23,27 @@ describe('affix catalog', () => {
     expect(new Set(labels).size).toBe(labels.length)
   })
 
+  it('every entry carries a unique teaching rank + a valid CEFR level', () => {
+    const cefr = new Set(['A1', 'A2', 'B1', 'B2'])
+    const ranks = AFFIX_CATALOG.map((e) => e.rank)
+    expect(new Set(ranks).size).toBe(ranks.length)
+    for (const e of AFFIX_CATALOG) {
+      expect(Number.isInteger(e.rank)).toBe(true)
+      expect(e.rank).toBeGreaterThan(0)
+      expect(cefr.has(e.cefrLevel)).toBe(true)
+    }
+  })
+
+  it('the core affixes follow the research teaching sequence by rank', () => {
+    const byRank = [...AFFIX_CATALOG].sort((a, b) => a.rank - b.rank).map((e) => e.affix)
+    // ber- → di- → meN- → -an → -kan → -i → ter- → se- → peN- lead the order.
+    expect(byRank.slice(0, 9)).toEqual([
+      'ber-', 'di-', 'meN-', '-an', '-kan', '-i', 'ter-', 'se-', 'peN-',
+    ])
+    // reduplication entries are taught last.
+    expect(byRank.at(-1)).toBe('ke-…-an-reduplication')
+  })
+
   it('AFFIX_SET + isCatalogAffix agree with the catalog', () => {
     expect(isCatalogAffix('meN-')).toBe(true)
     expect(isCatalogAffix('-kan')).toBe(true)

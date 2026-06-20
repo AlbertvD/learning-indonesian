@@ -17,7 +17,7 @@ import type { ExerciseItem } from '@/types/learning'
 import { shuffle } from './helpers'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
-import { distractorAffixes } from '@/lib/capabilities/affixCatalog'
+import { distractorAffixes } from '@/lib/capabilities'
 
 export function buildCuedRecall(input: BuilderInputFor<'choose_form_ex'>): BuilderResult {
   // word_form_pair_src path — input.affixedFormPair is populated; learningItem null.

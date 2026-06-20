@@ -10,6 +10,11 @@
 
 export type AffixType = 'prefix' | 'suffix' | 'confix' | 'reduplication'
 
+/** CEFR band an affix is first taught at — curated catalog metadata for the
+ *  Affix Trainer's per-affix level badge (capstone item A). Bare `string`
+ *  elsewhere (lessons.level); typed here because the set is fixed + curated. */
+export type CefrLevel = 'A1' | 'A2' | 'B1' | 'B2'
+
 /**
  * The deterministic composition recipe the derivation engine reads to build the
  * surface form (ADR 0019). One recipe per catalog entry replaces the engine's
@@ -37,6 +42,14 @@ export interface AffixCatalogEntry {
   affixType: AffixType
   /** Short gloss for the catalog UI / dev reference. */
   gloss: string
+  /** Teaching-sequence rank (1-based) — the research's frequency × productivity ×
+   *  transparency order (ber- → di- → meN- → -an → -kan → -i → ter- → se- →
+   *  pe-/peN- → confixes → reduplication; docs/research/2026-06-15-affix-…).
+   *  The Affix Trainer sorts the catalog grid by this; the pipeline ignores it
+   *  (the validator checks membership only). Unique across the catalog. */
+  rank: number
+  /** CEFR band the affix is first introduced at — the per-affix level badge. */
+  cefrLevel: CefrLevel
   /** Spelling variants of an allomorphic prefix (meN-/peN- nasalization). The
    *  prefix string that attaches to the root, e.g. ['me','mem','men','meny','meng','menge'].
    *  Present ONLY for allomorphic affixes. Nasalization is drilled at the rule tier
@@ -47,12 +60,19 @@ export interface AffixCatalogEntry {
   composition?: AffixComposition
 }
 
+// `rank` follows the research teaching sequence (frequency × productivity ×
+// transparency): the nine core affixes first (ber- → di- → meN- → -an → -kan →
+// -i → ter- → se- → peN-), then memper-, then confixes, stacked affixes, and
+// reduplication. The array stays grouped by AffixType (distractorAffixes +
+// BY_AFFIX determinism depend on insertion order); the trainer sorts by `rank`.
 export const AFFIX_CATALOG: readonly AffixCatalogEntry[] = [
   // ── Verbal/nominal prefixes ────────────────────────────────────────────────
   {
     affix: 'meN-',
     affixType: 'prefix',
     gloss: 'active/agent verb-former (nasalising)',
+    rank: 3,
+    cefrLevel: 'A2',
     allomorphClasses: ['me', 'mem', 'men', 'meny', 'meng', 'menge'],
     composition: { prefix: { nasal: 'me' } },
   },
@@ -60,55 +80,63 @@ export const AFFIX_CATALOG: readonly AffixCatalogEntry[] = [
     affix: 'peN-',
     affixType: 'prefix',
     gloss: 'agent/instrument noun-former (nasalising)',
+    rank: 9,
+    cefrLevel: 'B1',
     allomorphClasses: ['pe', 'pem', 'pen', 'peny', 'peng', 'penge'],
     composition: { prefix: { nasal: 'pe' } },
   },
-  { affix: 'ber-', affixType: 'prefix', gloss: 'intransitive / stative / possessive verb-former', composition: { prefix: { fixed: 'ber' } } },
-  { affix: 'di-', affixType: 'prefix', gloss: 'passive verb-former', composition: { prefix: { fixed: 'di' } } },
-  { affix: 'ter-', affixType: 'prefix', gloss: 'accidental / resultative / superlative', composition: { prefix: { fixed: 'ter' } } },
-  { affix: 'se-', affixType: 'prefix', gloss: 'one / same / as…as', composition: { prefix: { fixed: 'se' } } },
-  { affix: 'memper-', affixType: 'prefix', gloss: 'causative (intensifying)', composition: { prefix: { fixed: 'memper' } } },
+  { affix: 'ber-', affixType: 'prefix', gloss: 'intransitive / stative / possessive verb-former', rank: 1, cefrLevel: 'A2', composition: { prefix: { fixed: 'ber' } } },
+  { affix: 'di-', affixType: 'prefix', gloss: 'passive verb-former', rank: 2, cefrLevel: 'A2', composition: { prefix: { fixed: 'di' } } },
+  { affix: 'ter-', affixType: 'prefix', gloss: 'accidental / resultative / superlative', rank: 7, cefrLevel: 'B1', composition: { prefix: { fixed: 'ter' } } },
+  { affix: 'se-', affixType: 'prefix', gloss: 'one / same / as…as', rank: 8, cefrLevel: 'A2', composition: { prefix: { fixed: 'se' } } },
+  { affix: 'memper-', affixType: 'prefix', gloss: 'causative (intensifying)', rank: 10, cefrLevel: 'B2', composition: { prefix: { fixed: 'memper' } } },
   // ── Suffixes ───────────────────────────────────────────────────────────────
-  { affix: '-kan', affixType: 'suffix', gloss: 'causative / benefactive transitiviser', composition: { suffix: 'kan' } },
-  { affix: '-i', affixType: 'suffix', gloss: 'locative / repetitive transitiviser', composition: { suffix: 'i' } },
-  { affix: '-an', affixType: 'suffix', gloss: 'nominaliser (result / object)', composition: { suffix: 'an' } },
+  { affix: '-kan', affixType: 'suffix', gloss: 'causative / benefactive transitiviser', rank: 5, cefrLevel: 'B1', composition: { suffix: 'kan' } },
+  { affix: '-i', affixType: 'suffix', gloss: 'locative / repetitive transitiviser', rank: 6, cefrLevel: 'B1', composition: { suffix: 'i' } },
+  { affix: '-an', affixType: 'suffix', gloss: 'nominaliser (result / object)', rank: 4, cefrLevel: 'A2', composition: { suffix: 'an' } },
   // ── Confixes (circumfixes) ── shape = prefix + suffix (ADR 0019; atomicity is teaching metadata)
-  { affix: 'ke-…-an', affixType: 'confix', gloss: 'abstract noun / adversative state', composition: { prefix: { fixed: 'ke' }, suffix: 'an' } },
+  { affix: 'ke-…-an', affixType: 'confix', gloss: 'abstract noun / adversative state', rank: 11, cefrLevel: 'B1', composition: { prefix: { fixed: 'ke' }, suffix: 'an' } },
   {
     affix: 'pe-…-an',
     affixType: 'confix',
     gloss: 'process / result nominaliser',
+    rank: 12,
+    cefrLevel: 'B1',
     allomorphClasses: ['pe', 'pem', 'pen', 'peny', 'peng', 'penge'],
     composition: { prefix: { nasal: 'pe' }, suffix: 'an' },
   },
-  { affix: 'per-…-an', affixType: 'confix', gloss: 'collective / result nominaliser', composition: { prefix: { fixed: 'per' }, suffix: 'an' } },
+  { affix: 'per-…-an', affixType: 'confix', gloss: 'collective / result nominaliser', rank: 13, cefrLevel: 'B2', composition: { prefix: { fixed: 'per' }, suffix: 'an' } },
   // ── Stacked affixes (prefix + suffix co-occurring; left half allomorphic for meN-) ──
   {
     affix: 'meN-…-kan',
     affixType: 'confix',
     gloss: 'active benefactive/causative transitiviser',
+    rank: 14,
+    cefrLevel: 'B1',
     allomorphClasses: ['me', 'mem', 'men', 'meny', 'meng', 'menge'],
     composition: { prefix: { nasal: 'me' }, suffix: 'kan' },
   },
-  { affix: 'di-…-kan', affixType: 'confix', gloss: 'passive benefactive/causative transitiviser', composition: { prefix: { fixed: 'di' }, suffix: 'kan' } },
+  { affix: 'di-…-kan', affixType: 'confix', gloss: 'passive benefactive/causative transitiviser', rank: 15, cefrLevel: 'B1', composition: { prefix: { fixed: 'di' }, suffix: 'kan' } },
   {
     affix: 'meN-…-i',
     affixType: 'confix',
     gloss: 'active locative/repetitive transitiviser',
+    rank: 16,
+    cefrLevel: 'B1',
     allomorphClasses: ['me', 'mem', 'men', 'meny', 'meng', 'menge'],
     composition: { prefix: { nasal: 'me' }, suffix: 'i' },
   },
-  { affix: 'di-…-i', affixType: 'confix', gloss: 'passive locative/repetitive transitiviser', composition: { prefix: { fixed: 'di' }, suffix: 'i' } },
-  { affix: 'memper-…-kan', affixType: 'confix', gloss: 'causative transitiviser (intensifying)', composition: { prefix: { fixed: 'memper' }, suffix: 'kan' } },
+  { affix: 'di-…-i', affixType: 'confix', gloss: 'passive locative/repetitive transitiviser', rank: 17, cefrLevel: 'B2', composition: { prefix: { fixed: 'di' }, suffix: 'i' } },
+  { affix: 'memper-…-kan', affixType: 'confix', gloss: 'causative transitiviser (intensifying)', rank: 18, cefrLevel: 'B2', composition: { prefix: { fixed: 'memper' }, suffix: 'kan' } },
   // ── Reduplication ───────────────────────────────────────────────────────────
   // Base modifier (ADR 0019, amended L22): double the root, then OPTIONALLY apply the
   // fixed prefix / fixed suffix slots. circumfix_left/right stay null on the row;
   // decompose_word_ex re-derives the wrap pieces from these recipes. The U+2026 in
   // `ke-…-an-reduplication` matches the confix `ke-…-an` char, but the `-reduplication`
   // tail keeps it a distinct key in BY_AFFIX (no collision).
-  { affix: 'reduplication', affixType: 'reduplication', gloss: 'plurality / variety / intensity', composition: { reduplicate: true } },
-  { affix: 'reduplication-an', affixType: 'reduplication', gloss: 'collective/variety reduplication + -an', composition: { reduplicate: true, suffix: 'an' } },
-  { affix: 'ke-…-an-reduplication', affixType: 'reduplication', gloss: 'approximative ("-ish") colour reduplication', composition: { prefix: { fixed: 'ke' }, reduplicate: true, suffix: 'an' } },
+  { affix: 'reduplication', affixType: 'reduplication', gloss: 'plurality / variety / intensity', rank: 19, cefrLevel: 'A2', composition: { reduplicate: true } },
+  { affix: 'reduplication-an', affixType: 'reduplication', gloss: 'collective/variety reduplication + -an', rank: 20, cefrLevel: 'B1', composition: { reduplicate: true, suffix: 'an' } },
+  { affix: 'ke-…-an-reduplication', affixType: 'reduplication', gloss: 'approximative ("-ish") colour reduplication', rank: 21, cefrLevel: 'B2', composition: { prefix: { fixed: 'ke' }, reduplicate: true, suffix: 'an' } },
 ] as const
 
 const BY_AFFIX = new Map<string, AffixCatalogEntry>(AFFIX_CATALOG.map((e) => [e.affix, e]))

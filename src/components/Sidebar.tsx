@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import {
   IconHome, IconBook, IconHeadphones, IconChartBar,
-  IconLayoutList, IconBolt, IconEye,
+  IconLayoutList, IconBolt, IconEye, IconAbc,
   IconSun, IconMoon,
 } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
@@ -36,6 +36,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
     { label: T.nav.lessons,      icon: <IconBook size={17} />,       path: '/lessons' },
     { label: T.nav.podcasts,     icon: <IconHeadphones size={17} />, path: '/podcasts' },
     { label: T.nav.progress,     icon: <IconChartBar size={17} />,   path: '/progress' },
+    { label: T.nav.morphology,   icon: <IconAbc size={17} />,         path: '/morphology' },
     { label: T.nav.sections,     icon: <IconLayoutList size={17} />,  path: '/content/sections' },
     { label: T.nav.exercises,    icon: <IconBolt size={17} />,        path: '/content/exercises' },
   ]

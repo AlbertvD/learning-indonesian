@@ -13,8 +13,7 @@
 import type { BuilderInputFor, BuilderResult } from './types'
 import type { ExerciseItem } from '@/types/learning'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
-import { blankDerivedInCarrier } from '@/lib/capabilities'
-import { affixCatalogEntry } from '@/lib/capabilities/affixCatalog'
+import { blankDerivedInCarrier, affixCatalogEntry } from '@/lib/capabilities'
 
 export function buildTypedRecall(input: BuilderInputFor<'type_form_ex'>): BuilderResult {
   // word_form_pair_src path — input.affixedFormPair is populated; input.learningItem is null.

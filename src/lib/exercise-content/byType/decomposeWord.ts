@@ -11,8 +11,7 @@
 import type { BuilderInputFor, BuilderResult } from './types'
 import type { ExerciseItem } from '@/types/learning'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
-import { deriveAffixedForm } from '@/lib/capabilities'
-import { allomorphClassesFor, affixCatalogEntry } from '@/lib/capabilities/affixCatalog'
+import { deriveAffixedForm, allomorphClassesFor, affixCatalogEntry } from '@/lib/capabilities'
 
 /** The morpheme surface pieces of a derived form: prefix? + root + suffix?. */
 function morphemePieces(

@@ -173,7 +173,7 @@ function dimensionForCapability(type: CapabilityType): MasteryDimension {
   }
 }
 
-function labelForCapability(evidence: CapabilityMasteryEvidence, now: Date): MasteryLabel {
+export function labelForCapability(evidence: CapabilityMasteryEvidence, now: Date): MasteryLabel {
   // Currently failing: distinguish a genuine LAPSE (learned, then forgotten) from a
   // word never learned yet. `lapseCount` is the only counter that survives a
   // failure (stability resets, consecutiveFailureCount is "right now"); FSRS bumps
@@ -217,7 +217,7 @@ function confidenceForDimension(input: {
   return 'low'
 }
 
-function weakestLabel(labels: MasteryLabel[]): MasteryLabel {
+export function weakestLabel(labels: MasteryLabel[]): MasteryLabel {
   const rank: Record<MasteryLabel, number> = {
     not_assessed: 0,
     introduced: 1,

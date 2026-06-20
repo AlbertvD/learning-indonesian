@@ -17,6 +17,7 @@ const Podcasts = lazy(() => import('@/pages/Podcasts').then(m => ({ default: m.P
 const Podcast = lazy(() => import('@/pages/Podcast').then(m => ({ default: m.Podcast })))
 const Profile = lazy(() => import('@/pages/Profile').then(m => ({ default: m.Profile })))
 const Progress = lazy(() => import('@/pages/Progress').then(m => ({ default: m.Progress })))
+const AffixTrainer = lazy(() => import('@/pages/AffixTrainer').then(m => ({ default: m.AffixTrainer })))
 const SectionCoverage = lazy(() => import('@/pages/SectionCoverage').then(m => ({ default: m.SectionCoverage })))
 const ExerciseCoverage = lazy(() => import('@/pages/ExerciseCoverage').then(m => ({ default: m.ExerciseCoverage })))
 const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ default: m.ContentReview })))
@@ -350,6 +351,14 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><Progress /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/morphology"
+          element={
+            <ProtectedRoute>
+              <LazyPage><AffixTrainer /></LazyPage>
             </ProtectedRoute>
           }
         />

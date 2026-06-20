@@ -5,6 +5,7 @@ import type {
 import type { SkillType } from '@/types/learning'
 import { decideLoadBudget, type LoadBudgetDecision } from '@/lib/session-builder/loadBudget'
 import { partitionBuried } from '@/lib/session-builder/siblingBury'
+import { isScopedMode } from '@/lib/session-builder/model'
 import type { SessionMode } from '@/lib/session-builder/model'
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/lib/capabilities'
 
@@ -257,17 +258,15 @@ function buildUnlockedSourceRefs(input: {
   return unlocked
 }
 
-function isLessonScopedMode(mode: SessionMode): boolean {
-  return mode === 'lesson_practice' || mode === 'lesson_review'
-}
-
-function isInSelectedLessonScope(input: {
+// Scope membership for a NEW introduction. Source-ref-keyed so it covers BOTH
+// lesson scope and affix scope — the affix mode has no selectedLessonId, so the
+// (former) Boolean(selectedLessonId) requirement is gone; the lesson modes still
+// pass their lessonId down via selectedSourceRefs derived from that lesson.
+function isInSelectedScope(input: {
   capability: PlannerCapability
-  selectedLessonId?: string
   selectedSourceRefs?: string[]
 }): boolean {
-  return Boolean(input.selectedLessonId)
-    && Boolean(input.selectedSourceRefs?.length)
+  return Boolean(input.selectedSourceRefs?.length)
     && input.selectedSourceRefs!.includes(input.capability.sourceRef)
 }
 
@@ -278,7 +277,6 @@ interface GateContext {
   recentFailures?: PedagogyInput['recentFailures']
   activatedLessons: ReadonlySet<string>
   activatedCollectionRefs: ReadonlySet<string>
-  selectedLessonId?: string
   selectedSourceRefs?: string[]
   satisfiedKeys: ReadonlySet<string>
   unlockedSourceRefs: ReadonlySet<string>
@@ -311,10 +309,9 @@ function gateCandidates(
       continue
     }
     if (
-      isLessonScopedMode(ctx.mode)
-      && !isInSelectedLessonScope({
+      isScopedMode(ctx.mode)
+      && !isInSelectedScope({
         capability,
-        selectedLessonId: ctx.selectedLessonId,
         selectedSourceRefs: ctx.selectedSourceRefs,
       })
     ) {
@@ -521,7 +518,6 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
     recentFailures: input.recentFailures,
     activatedLessons: input.activatedLessons,
     activatedCollectionRefs: input.activatedCollectionRefs ?? new Set(),
-    selectedLessonId: input.selectedLessonId,
     selectedSourceRefs: input.selectedSourceRefs,
     stateByKey: new Map(input.learnerCapabilityStates.map(state => [state.canonicalKey, state])),
     satisfiedKeys: new Set(input.learnerCapabilityStates

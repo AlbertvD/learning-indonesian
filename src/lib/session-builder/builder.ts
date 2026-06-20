@@ -12,6 +12,7 @@ import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/
 import { compose } from '@/lib/session-builder/compose'
 import { buildQueueDryingDiagnostic } from '@/lib/session-builder/drying'
 import { buryThinSiblings } from '@/lib/session-builder/siblingBury'
+import { isLessonScopedMode, isScopedMode } from '@/lib/session-builder/model'
 import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session-builder/model'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 
@@ -101,10 +102,6 @@ function artifactVersionSnapshot(capability: ProjectedCapability | null): Record
   }
 }
 
-function isLessonScopedMode(mode: SessionMode): boolean {
-  return mode === 'lesson_practice' || mode === 'lesson_review'
-}
-
 function lessonScope(input: {
   mode: SessionMode
   selectedLessonId?: string
@@ -113,11 +110,13 @@ function lessonScope(input: {
 }): { selectedLessonId?: string; selectedSourceRefs: string[]; valid: boolean } {
   const selectedLessonId = input.selectedLessonId ?? input.plannerInput.selectedLessonId
   const selectedSourceRefs = input.selectedSourceRefs ?? input.plannerInput.selectedSourceRefs ?? []
-  return {
-    selectedLessonId,
-    selectedSourceRefs,
-    valid: !isLessonScopedMode(input.mode) || (Boolean(selectedLessonId) && selectedSourceRefs.length > 0),
-  }
+  // Lesson modes need a lessonId AND source_refs; the source-ref-only affix mode
+  // is valid on its source_refs alone (an affix has no single lesson).
+  const valid = !isScopedMode(input.mode)
+    || (isLessonScopedMode(input.mode)
+        ? Boolean(selectedLessonId) && selectedSourceRefs.length > 0
+        : selectedSourceRefs.length > 0)
+  return { selectedLessonId, selectedSourceRefs, valid }
 }
 
 function isCapabilityInScope(input: {
@@ -125,7 +124,7 @@ function isCapabilityInScope(input: {
   capability: ProjectedCapability | undefined
   selectedSourceRefs: string[]
 }): boolean {
-  if (!isLessonScopedMode(input.mode)) return true
+  if (!isScopedMode(input.mode)) return true
   return Boolean(input.capability && input.selectedSourceRefs.includes(input.capability.sourceRef))
 }
 
@@ -290,7 +289,7 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     }
   })
 
-  const activePracticeReviewCapabilities = isLessonScopedMode(input.mode)
+  const activePracticeReviewCapabilities = isScopedMode(input.mode)
     ? buryThinSiblings(input.schedulerRows
         .filter(row => (
           row.activationState === 'active'

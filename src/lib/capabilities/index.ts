@@ -77,6 +77,20 @@ export { itemSlug } from './itemSlug'
 export { deriveAffixedForm, UnsupportedAffixError, blankDerivedInCarrier } from './affixDerivation'
 export type { DerivedAffixedForm, MorphologyRoot } from './affixDerivation'
 
+// ─── Affix catalog (controlled vocabulary + curriculum metadata, capstone item A) ─
+// The sole pipeline↔runtime shared seam for affix facts: the pipeline validator +
+// HC deep-import it (build scripts may not pull a runtime barrel); runtime consumers
+// (the byType packagers + the Affix Trainer) import it from this barrel.
+export {
+  AFFIX_CATALOG,
+  AFFIX_SET,
+  isCatalogAffix,
+  affixCatalogEntry,
+  allomorphClassesFor,
+  distractorAffixes,
+} from './affixCatalog'
+export type { AffixCatalogEntry, AffixType, AffixComposition, CefrLevel } from './affixCatalog'
+
 // ─── Alternative-answer separator convention (PR #129) — the single ─────────
 // definition shared by the runtime grader and the pipeline gate/health check.
 export {
