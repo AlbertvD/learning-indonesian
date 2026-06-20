@@ -7,6 +7,7 @@
 // fold into views, and resolves an affix label → its scoped-session source_refs.
 
 import { supabase } from '@/lib/supabase'
+import { chunkedIn } from '@/lib/chunkedQuery'
 import { itemSlug } from '@/lib/capabilities'
 import type {
   CapabilitySourceKind,
@@ -178,17 +179,17 @@ export async function loadMorphologySnapshot(
     rootItemsBySlug,
     rootCapResult,
   ] = await Promise.all([
-    fetchCaps(db, 'id', pairCapIds),
-    fetchStates(db, userId, pairCapIds),
+    fetchCapsById(client, pairCapIds),
+    fetchStates(client, userId, pairCapIds),
     fetchLessonOrder(db),
     listActivatedLessons(userId, client),
-    fetchPatterns(db, patternIds),
-    fetchRootItems(db, rootSlugs),
-    fetchRootCaps(db, rootSlugs),
+    fetchPatterns(client, patternIds),
+    fetchRootItems(client, rootSlugs),
+    fetchRootCaps(client, rootSlugs),
   ])
 
   // Root-cap states (vocabulary_src caps for the roots) for the root-known signal.
-  const rootStates = await fetchStates(db, userId, rootCapResult.map((c) => c.id))
+  const rootStates = await fetchStates(client, userId, rootCapResult.map((c) => c.id))
 
   const statesByCapId = new Map<string, MorphologyStateRow>()
   for (const s of [...pairStates, ...rootStates]) statesByCapId.set(s.capabilityId, s)
@@ -205,50 +206,55 @@ export async function loadMorphologySnapshot(
   }
 }
 
-async function fetchCaps(
-  db: () => { from(table: string): any },
-  column: 'id',
+// All the `.in(...)` reads below go through chunkedIn (CHUNK_SIZE 50) — an
+// un-chunked `.in()` with many UUIDs blows Kong's request-URL length limit and
+// returns "invalid response from upstream server" (the same bug class
+// masteryModel.ts solved; observed live at 126 affixed-pair caps, 2026-06-20).
+
+async function fetchCapsById(
+  client: MorphologyReadClient,
   ids: string[],
 ): Promise<MorphologyCapRow[]> {
-  if (ids.length === 0) return []
-  const { data, error } = await db()
-    .from('learning_capabilities')
-    .select(CAP_COLUMNS)
-    .in(column, ids)
-    .is('retired_at', null)
-  if (error) throw error
-  return ((data ?? []) as RawCapRow[]).map(decodeCap)
+  const rows = await chunkedIn<RawCapRow>(
+    'learning_capabilities',
+    'id',
+    ids,
+    (b) => b.select(CAP_COLUMNS).is('retired_at', null),
+    client,
+  )
+  return rows.map(decodeCap)
 }
 
 async function fetchRootCaps(
-  db: () => { from(table: string): any },
+  client: MorphologyReadClient,
   rootSlugs: string[],
 ): Promise<MorphologyCapRow[]> {
-  if (rootSlugs.length === 0) return []
   const sourceRefs = rootSlugs.map((slug) => `learning_items/${slug}`)
-  const { data, error } = await db()
-    .from('learning_capabilities')
-    .select(CAP_COLUMNS)
-    .eq('source_kind', 'vocabulary_src')
-    .in('source_ref', sourceRefs)
-    .is('retired_at', null)
-  if (error) throw error
-  return ((data ?? []) as RawCapRow[]).map(decodeCap)
+  const rows = await chunkedIn<RawCapRow>(
+    'learning_capabilities',
+    'source_ref',
+    sourceRefs,
+    (b) => b.select(CAP_COLUMNS).eq('source_kind', 'vocabulary_src').is('retired_at', null),
+    client,
+  )
+  return rows.map(decodeCap)
 }
 
 async function fetchStates(
-  db: () => { from(table: string): any },
+  client: MorphologyReadClient,
   userId: string,
   capabilityIds: string[],
 ): Promise<MorphologyStateRow[]> {
-  if (capabilityIds.length === 0) return []
-  const { data, error } = await db()
-    .from('learner_capability_state')
-    .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
-    .eq('user_id', userId)
-    .in('capability_id', capabilityIds)
-  if (error) throw error
-  return ((data ?? []) as Array<Record<string, unknown>>).map((row) => ({
+  const rows = await chunkedIn<Record<string, unknown>>(
+    'learner_capability_state',
+    'capability_id',
+    capabilityIds,
+    (b) => b
+      .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
+      .eq('user_id', userId),
+    client,
+  )
+  return rows.map((row) => ({
     capabilityId: row.capability_id as string,
     reviewCount: (row.review_count as number | null) ?? 0,
     lapseCount: (row.lapse_count as number | null) ?? 0,
@@ -267,41 +273,34 @@ async function fetchLessonOrder(
 }
 
 async function fetchPatterns(
-  db: () => { from(table: string): any },
+  client: MorphologyReadClient,
   patternIds: string[],
 ): Promise<Map<string, PatternInfo>> {
-  if (patternIds.length === 0) return new Map()
-  const { data, error } = await db()
-    .from('grammar_patterns')
-    .select('id, slug, name, short_explanation')
-    .in('id', patternIds)
-  if (error) throw error
-  return new Map(
-    ((data ?? []) as Array<{ id: string; slug: string; name: string; short_explanation: string }>).map((p) => [
-      p.id,
-      { slug: p.slug, name: p.name, shortExplanation: p.short_explanation ?? '' },
-    ]),
+  const rows = await chunkedIn<{ id: string; slug: string; name: string; short_explanation: string }>(
+    'grammar_patterns',
+    'id',
+    patternIds,
+    (b) => b.select('id, slug, name, short_explanation'),
+    client,
   )
+  return new Map(rows.map((p) => [p.id, { slug: p.slug, name: p.name, shortExplanation: p.short_explanation ?? '' }]))
 }
 
 async function fetchRootItems(
-  db: () => { from(table: string): any },
+  client: MorphologyReadClient,
   rootSlugs: string[],
 ): Promise<Map<string, RootItem>> {
-  if (rootSlugs.length === 0) return new Map()
-  const { data, error } = await db()
-    .from('learning_items')
-    .select('normalized_text, base_text, translation_nl, translation_en')
-    .in('normalized_text', rootSlugs)
-  if (error) throw error
-  return new Map(
-    ((data ?? []) as Array<{ normalized_text: string; base_text: string; translation_nl: string | null; translation_en: string | null }>).map(
-      (r) => [
-        r.normalized_text,
-        { normalizedText: r.normalized_text, baseText: r.base_text, meaningNl: r.translation_nl, meaningEn: r.translation_en },
-      ],
-    ),
+  const rows = await chunkedIn<{ normalized_text: string; base_text: string; translation_nl: string | null; translation_en: string | null }>(
+    'learning_items',
+    'normalized_text',
+    rootSlugs,
+    (b) => b.select('normalized_text, base_text, translation_nl, translation_en'),
+    client,
   )
+  return new Map(rows.map((r) => [
+    r.normalized_text,
+    { normalizedText: r.normalized_text, baseText: r.base_text, meaningNl: r.translation_nl, meaningEn: r.translation_en },
+  ]))
 }
 
 /**
