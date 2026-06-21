@@ -1,0 +1,557 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 29: Internet di Indonesia (Het internet in Indonesië)
+
+   Mood: a 1995 dispatch from a wired Indonesia. Cyan/teal screen-glow carries
+   the connectivity; the reading essay sits inside a terminal-window band; the
+   two grammar spreads are accent-coded lens decks (cyan/teal for the active
+   MEMPER-, purple/teal for the nominalising PER-…-AN). An acronym deck closes
+   the lexicon. Each section earns its own colour.
+───────────────────────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band { width: 100%; padding: 56px 0; }
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — screen-glow gradient over a Bali internet-café photo ──────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #0b1a26;
+  background-image:
+    linear-gradient(135deg, rgba(8, 28, 44, 0.90) 0%, rgba(12, 60, 78, 0.80) 52%, rgba(0, 229, 255, 0.22) 100%),
+    url('/lesson-29-hero.webp');
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Network-grid texture — quiet, screen-like */
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 82% 26%, rgba(0, 229, 255, 0.20), transparent 46%),
+    linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
+  background-size: auto, 38px 38px, 38px 38px;
+  pointer-events: none;
+}
+
+.heroInner { composes: container; position: relative; z-index: 1; }
+
+@media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 740px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary-border);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: rgba(0, 199, 190, 0.18);
+  color: var(--teal);
+  border-color: rgba(0, 199, 190, 0.32);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(38px, 5vw, 56px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 640px;
+  font-weight: var(--fw-normal);
+}
+
+/* ─── Editorial lede ──────────────────────────────────────────────────────── */
+
+.ledeBand { composes: band; padding: 64px 0 32px; }
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--accent-primary);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--accent-primary);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Audio band ──────────────────────────────────────────────────────────── */
+
+.audioBand { composes: band; padding: 0 0 8px; }
+.audioInner { composes: container; max-width: 920px; }
+
+/* ─── Main content shell ──────────────────────────────────────────────────── */
+
+.shellBand { composes: band; padding-top: 24px; padding-bottom: 24px; }
+
+.shell {
+  composes: container;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+/* ─── Shared section header ───────────────────────────────────────────────── */
+
+.section { display: flex; flex-direction: column; }
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* ─── Reading essay — the terminal-window dispatch ────────────────────────── */
+
+.readEyebrow { composes: sectionEyebrow; color: var(--accent-primary); }
+.readEyebrow::before { background: var(--accent-primary); }
+
+.readBand {
+  border-radius: var(--r-xl);
+  border: 1px solid var(--card-border);
+  background:
+    radial-gradient(circle at 88% 0%, rgba(0, 229, 255, 0.08), transparent 50%),
+    var(--card-bg);
+  overflow: hidden;
+}
+
+.readChrome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--card-border);
+  background: rgba(0, 229, 255, 0.04);
+}
+
+.readDot { width: 10px; height: 10px; border-radius: 999px; flex-shrink: 0; }
+.readDot[data-c='r'] { background: var(--danger); }
+.readDot[data-c='y'] { background: var(--ring-target); }
+.readDot[data-c='g'] { background: var(--success); }
+
+.readChromeLabel {
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--accent-primary);
+  text-transform: lowercase;
+}
+
+.readBody {
+  padding: 36px 40px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+@media (max-width: 720px) { .readBody { padding: 26px 22px; } }
+
+.readPara {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.78;
+  margin: 0;
+  max-width: 68ch;
+}
+
+.readPara[data-lead='true']::first-letter {
+  font-size: 3.1em;
+  float: left;
+  line-height: 0.82;
+  padding: 6px 12px 0 0;
+  color: var(--accent-primary);
+  font-weight: var(--fw-black);
+}
+
+/* ─── Vocabulary — wired lexicon (cyan-green) ─────────────────────────────── */
+
+.vocabEyebrow { composes: sectionEyebrow; color: var(--success); }
+.vocabEyebrow::before { background: var(--success); }
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 720px) { .itemGrid { grid-template-columns: 1fr; } }
+
+.itemChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(50, 215, 75, 0.05);
+  border: 1px solid rgba(50, 215, 75, 0.18);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.itemChip:hover { transform: translateY(-1px); border-color: var(--success); }
+
+.itemId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  min-width: 7em;
+  flex-shrink: 0;
+}
+
+.itemSep {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.itemNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Acronym deck (amber — the letterwords) ──────────────────────────────── */
+
+.acroEyebrow { composes: sectionEyebrow; color: var(--warning); }
+.acroEyebrow::before { background: var(--warning); }
+
+.acroGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 720px) { .acroGrid { grid-template-columns: 1fr; } }
+
+.acroCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+  background: rgba(255, 149, 0, 0.05);
+  border: 1px solid rgba(255, 149, 0, 0.18);
+  border-radius: var(--r-lg);
+  transition: var(--transition-base);
+}
+
+.acroCard:hover { border-color: var(--warning); transform: translateY(-1px); }
+
+.acroHead { display: flex; align-items: center; gap: 10px; }
+
+.acroGlyph {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-black);
+  color: var(--warning);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.acroNl {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
+.acroEn {
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* ─── Grammar — accent-coded lens decks ───────────────────────────────────── */
+
+.grammarEyebrow {
+  composes: sectionEyebrow;
+  color: var(--teal);
+}
+.grammarEyebrow::before { background: var(--teal); }
+
+.grammarLede {
+  display: flex;
+  align-items: center;
+  padding: 18px 28px;
+  margin-bottom: 24px;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 14% 50%, rgba(0, 199, 190, 0.12), transparent 55%),
+    var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.grammarGlyph {
+  font-family: var(--font-mono);
+  font-size: clamp(34px, 5vw, 52px);
+  font-weight: var(--fw-black);
+  color: var(--teal);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.lensGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 860px) { .lensGrid { grid-template-columns: 1fr; } }
+
+.lensTile {
+  padding: 24px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lensTile[data-accent='cyan']   { --tile-accent: var(--accent-primary); }
+.lensTile[data-accent='teal']   { --tile-accent: var(--teal); }
+.lensTile[data-accent='purple'] { --tile-accent: var(--mix-recall); }
+
+.lensHeader { display: flex; align-items: baseline; gap: 14px; }
+
+.lensNumber {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  color: var(--tile-accent, var(--accent-primary));
+  font-weight: var(--fw-black);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.lensTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.lensRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.lensRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.lensRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--tile-accent, var(--accent-primary));
+  font-weight: var(--fw-bold);
+}
+
+.lensExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.lensExample { display: flex; flex-direction: column; gap: 2px; }
+
+.lensExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  line-height: 1.45;
+}
+
+.lensExampleNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── Inline play button ──────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ────────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 229, 255, 0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner { composes: container; max-width: 720px; text-align: center; }
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation { display: flex; justify-content: center; margin: 0 0 28px; }
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions { display: flex; justify-content: center; }
+.closingActions > * { width: 100%; max-width: 660px; }

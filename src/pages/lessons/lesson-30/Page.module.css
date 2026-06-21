@@ -1,0 +1,765 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 30: Musik Pop di Indonesia (Indonesische popmuziek)
+
+   Mood: a cassette sleeve under warm stage light. Amber/orange display warmth
+   for the reading and the songs; cyan tape-side accents; a multi-accent
+   "foundry" for the borrowed word-formation devices; a rose-pink love lexicon;
+   and a neutral, set-apart band for the recognise-only register material.
+───────────────────────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band { width: 100%; padding: 56px 0; }
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — stage light over a wall of cassettes ─────────────────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #2a1830;
+  background-image:
+    linear-gradient(135deg, rgba(40, 18, 50, 0.86) 0%, rgba(26, 22, 40, 0.82) 52%, rgba(255, 149, 0, 0.30) 100%),
+    url('/lesson-30-hero.webp');
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* A soft amber spotlight + faint tape-reel glow */
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 82% 26%, rgba(255, 196, 25, 0.20), transparent 46%),
+    radial-gradient(circle at 14% 84%, rgba(214, 51, 132, 0.16), transparent 50%);
+  pointer-events: none;
+}
+
+.heroInner { composes: container; position: relative; z-index: 1; }
+
+@media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 196, 25, 0.18);
+  color: var(--ring-target);
+  border: 1px solid rgba(255, 196, 25, 0.34);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(38px, 5.2vw, 58px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 600px;
+  font-weight: var(--fw-normal);
+}
+
+/* ─── Editorial lede ──────────────────────────────────────────────────────── */
+
+.ledeBand { composes: band; padding: 64px 0 32px; }
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--ring-target);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--ring-target);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Audio band ──────────────────────────────────────────────────────────── */
+
+.audioBand { composes: band; padding: 0 0 8px; }
+.audioInner { composes: container; max-width: 920px; }
+
+/* ─── Main content shell ──────────────────────────────────────────────────── */
+
+.shellBand { composes: band; padding-top: 24px; padding-bottom: 24px; }
+
+.shell {
+  composes: container;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+/* ─── Shared section header ───────────────────────────────────────────────── */
+
+.section { display: flex; flex-direction: column; }
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* ─── Reading column — the liner-note essay ───────────────────────────────── */
+
+.readEyebrow { composes: sectionEyebrow; color: var(--ring-target); }
+.readEyebrow::before { background: var(--ring-target); }
+
+.readBand {
+  background: linear-gradient(180deg, rgba(255, 196, 25, 0.05) 0%, transparent 60%);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--card-border);
+  padding: 40px 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+@media (max-width: 720px) { .readBand { padding: 28px 22px; } }
+
+.readPara {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0;
+  max-width: 68ch;
+}
+
+.readPara[data-lead='true']::first-letter {
+  font-size: 3.1em;
+  float: left;
+  line-height: 0.82;
+  padding: 6px 12px 0 0;
+  color: var(--ring-target);
+  font-weight: var(--fw-black);
+}
+
+/* ─── The two keroncong songs — Side A / Side B lyric spread ──────────────── */
+
+.songSpread {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 26px;
+}
+
+@media (max-width: 760px) { .songSpread { grid-template-columns: 1fr; } }
+
+.songCard {
+  position: relative;
+  border-radius: var(--r-lg);
+  padding: 26px 28px 28px;
+  background:
+    radial-gradient(circle at 90% 8%, rgba(255, 149, 0, 0.10), transparent 46%),
+    var(--card-bg);
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+}
+
+/* A thin "tape" stripe across the top — warm for A, cyan for B */
+.songCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.songCard[data-side='a']::before { background: var(--warning); }
+.songCard[data-side='b']::before { background: var(--accent-primary); }
+
+.songHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--card-border);
+}
+
+.songSide {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.songCard[data-side='a'] .songSide { color: var(--warning); }
+.songCard[data-side='b'] .songSide { color: var(--accent-primary); }
+
+.songTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+  font-style: italic;
+}
+
+.songStanzas {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.stanza {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lyricLine {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ─── Vocabulary lexicons (tape = amber/green, love = rose) ───────────────── */
+
+.vocabEyebrow { composes: sectionEyebrow; color: var(--success); }
+.vocabEyebrow::before { background: var(--success); }
+
+.loveEyebrow { composes: sectionEyebrow; color: #f06595; }
+.loveEyebrow::before { background: #f06595; }
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 720px) { .itemGrid { grid-template-columns: 1fr; } }
+
+.itemChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.itemChip:hover { transform: translateY(-1px); }
+
+.itemChip[data-tone='tape'] { background: rgba(50,215,75,0.05); border-color: rgba(50,215,75,0.18); }
+.itemChip[data-tone='love'] { background: rgba(240,101,149,0.05); border-color: rgba(240,101,149,0.18); }
+.itemChip[data-tone='tape']:hover { border-color: var(--success); }
+.itemChip[data-tone='love']:hover { border-color: #f06595; }
+
+.itemId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  min-width: 6em;
+  flex-shrink: 0;
+}
+
+.itemSep {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.itemNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Expressions — love lines, stacked warm chips ────────────────────────── */
+
+.exprEyebrow { composes: sectionEyebrow; color: #f06595; }
+.exprEyebrow::before { background: #f06595; }
+
+.exprGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 720px) { .exprGrid { grid-template-columns: 1fr; } }
+
+.exprChip {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: rgba(240,101,149,0.05);
+  border: 1px solid rgba(240,101,149,0.18);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.exprChip:hover { border-color: #f06595; transform: translateY(-1px); }
+
+.exprIdRow { display: flex; align-items: center; gap: 10px; }
+
+.exprId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.exprNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  padding-left: 36px;
+}
+
+/* ─── Grammar — the neologism foundry ─────────────────────────────────────── */
+
+.grammarEyebrow {
+  composes: sectionEyebrow;
+  color: #b197fc;             /* lavender label; rule below drives mix-recall */
+}
+.grammarEyebrow::before { background: var(--mix-recall); }
+
+/* Framing overview — how new words get standardised */
+.foundryIntro {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+  padding: 28px 32px;
+  margin-bottom: 28px;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 12% 50%, rgba(177,151,252,0.12), transparent 55%),
+    var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+@media (max-width: 720px) {
+  .foundryIntro { grid-template-columns: 1fr; gap: 18px; padding: 24px 20px; }
+}
+
+.foundryGlyph {
+  font-family: var(--font-mono);
+  font-size: clamp(28px, 4.4vw, 44px);
+  font-weight: var(--fw-black);
+  color: var(--mix-recall);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.foundryRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.foundryRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.foundryRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--mix-recall);
+  font-weight: var(--fw-bold);
+}
+
+/* The five productive devices — accent-coded foundry tiles */
+.deviceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 860px) { .deviceGrid { grid-template-columns: 1fr; } }
+
+.deviceTile {
+  padding: 24px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.deviceTile[data-accent='cyan']   { --tile-accent: var(--accent-primary); }
+.deviceTile[data-accent='amber']  { --tile-accent: var(--ring-target); }
+.deviceTile[data-accent='purple'] { --tile-accent: var(--mix-recall); }
+.deviceTile[data-accent='teal']   { --tile-accent: var(--teal); }
+.deviceTile[data-accent='orange'] { --tile-accent: var(--warning); }
+
+.deviceHeader { display: flex; align-items: baseline; gap: 14px; }
+
+.deviceAffix {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  color: var(--tile-accent, var(--accent-primary));
+  font-weight: var(--fw-black);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.deviceTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.deviceRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.deviceRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.deviceRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--tile-accent, var(--accent-primary));
+  font-weight: var(--fw-bold);
+}
+
+/* Example pairs — base → derived, arrows aligned on one vertical line */
+.examplePairs {
+  display: grid;
+  grid-template-columns: minmax(5.5em, max-content) auto minmax(0, 1fr);
+  column-gap: 10px;
+  row-gap: 10px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.examplePair { display: contents; }
+
+.exLeft {
+  grid-column: 1;
+  justify-self: end;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.exArrow {
+  grid-column: 2;
+  color: var(--tile-accent, var(--accent-primary));
+  font-weight: var(--fw-bold);
+  line-height: 1.4;
+}
+
+.exRight {
+  grid-column: 3;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+
+.exNl {
+  grid-column: 3;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: -4px;
+  line-height: 1.4;
+}
+
+/* ─── Register & wordplay — recognise-only, set apart ─────────────────────── */
+
+.registerBand {
+  margin-top: 16px;
+  padding: 26px 28px;
+  border-radius: var(--r-lg);
+  background: var(--bg-surface);
+  border: 1px dashed var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.registerHeader { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+
+.registerTag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  color: var(--text-tertiary);
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  flex-shrink: 0;
+}
+
+.registerTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.registerRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.registerRules li {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 22px;
+  position: relative;
+}
+
+.registerRules li::before {
+  content: '·';
+  position: absolute;
+  left: 6px;
+  color: var(--text-tertiary);
+  font-weight: var(--fw-bold);
+}
+
+.plesetanRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--card-border);
+}
+
+@media (max-width: 720px) { .plesetanRow { grid-template-columns: 1fr; } }
+
+.plesetanChip {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+}
+
+.plesetanId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  line-height: 1.45;
+}
+
+.plesetanNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ─── Inline play button ──────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ────────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,229,255,0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner { composes: container; max-width: 720px; text-align: center; }
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation { display: flex; justify-content: center; margin: 0 0 28px; }
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions { display: flex; justify-content: center; }
+.closingActions > * { width: 100%; max-width: 660px; }
