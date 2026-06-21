@@ -1,0 +1,890 @@
+{
+  "meta": {
+    "id": "53869c8c-8035-45b4-a859-2e4f77e8ca80",
+    "order_index": 29,
+    "title": "Bab 13 - Internet di Indonesia",
+    "level": "B2",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Gacrux",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Pada bulan Agustus 1995 Pos Indonesia meramalkan bisnis penyedia fasilitas (provider) Internet dengan nama Wasantara-Net (W-Net) akan beroperasi. Pada bulan itu juga di empat kota besar di Indonesia, yakni Jakarta, Bandung, Surabaya dan Semarang, disediakan fasilitas ini, mungkin dalam bentuk seperti warung telekomunikasi (wartel). Setelah melalui uji coba pemanfaatan jaringan Internet pada tahap pertama, Pos Indonesia sudah siap beroperasi di kota-kota tersebut.",
+          "Dalam waktu singkat, jasa Internet akan disambungkan dengan 22 kota besar lainnya di Indonesia, antara lain Banda Aceh, Batam, Palangkaraya, Medan, Palembang, Pontianak, Menado, Ujungpandang, Denpasar, Kupang dan Yogyakarta. Untuk itu, PT Pos akan bekerja sama dengan PT Telkom, Sekolah Tinggi Telekomunikasi Telkom dan PT Lintas Arta.",
+          "Apa yang dibutuhkan, andaikata Anda bermaksud mendapat akses ke Internet? Pertama, Anda harus mempunyai komputer, modem dan sambungan telepon. Kemudian Anda harus mendaftarkan diri sebagai peserta pada penyedia fasilitas Internet. Lalu Anda menerima program komputer tertentu dan suatu password, untuk mendapat akses ke jaringan komputer global ini.",
+          "Setelah itu Anda bisa masuk 'realitas virtual' dan secara elektronis dapat menghubungi jutaan peserta lain di seluruh dunia. Apalagi kalau sudah mendaftarkan diri sebagai pelanggan, tidak usah membayar tarif interlokal. Secara 'interaktif' Anda sempat berbicara dengan orang Rusia, orang Turki, orang Muangthai, orang Amerika dan seterusnya, dengan tarif lokal selama 24 jam. Lewat komputer, Anda dapat mengirim atau menerima surat tanpa sehelai kertas pun. Juga Anda dapat ikut berdiskusi mengenai ratusan hal. Yang sulit adalah memilih hal yang mana! Sekarang sudah mudah sekali untuk memesan dan membeli barang apa saja dari rumah, tapi awas ya, jangan tergoda membeli terlalu banyak.",
+          "Revolusi dalam bidang iptek dan telekomunikasi ini mengharuskan penerbit majalah dan koran Indonesia, seperti harian Kompas dan Republika, untuk berada di dalam jalur Internet. Buat para pembaca di luar negeri perkembangan ini memang sangat menyenangkan, sebab sekarang mengakses berita-berita dari Indonesia mudah sekali. Jadi ada gunanya ikut \"surfing\" di ombak-ombak elektronis lewat Internet dalam bentuk World Wide Web (@ w.w.w.)."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "zich bevinden, zijn",
+            "english": "exist, be located",
+            "indonesian": "ada, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ada-ber-5227278e.mp3"
+          },
+          {
+            "dutch": "toegang",
+            "english": "access",
+            "indonesian": "akses",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/akses-cd4c026a.mp3"
+          },
+          {
+            "dutch": "toegang hebben tot",
+            "english": "have access to",
+            "indonesian": "akses, meng~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/akses-meng-49f0c9a0.mp3"
+          },
+          {
+            "dutch": "gesteld dat, indien",
+            "english": "suppose that, if",
+            "indonesian": "andaikata",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/andaikata-0693d955.mp3"
+          },
+          {
+            "dutch": "gebied / vakgebied",
+            "english": "field / domain",
+            "indonesian": "bidang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bidang-8761f033.mp3"
+          },
+          {
+            "dutch": "business",
+            "english": "business",
+            "indonesian": "bisnis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bisnis-c032630a.mp3"
+          },
+          {
+            "dutch": "nodig hebben",
+            "english": "need",
+            "indonesian": "butuh, mem~kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/butuh-memkan-284509a4.mp3"
+          },
+          {
+            "dutch": "discussiëren",
+            "english": "discuss",
+            "indonesian": "diskusi, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/diskusi-ber-b43543d6.mp3"
+          },
+          {
+            "dutch": "elektronisch",
+            "english": "electronic",
+            "indonesian": "elektronis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/elektronis-78c41811.mp3"
+          },
+          {
+            "dutch": "faciliteit",
+            "english": "facility",
+            "indonesian": "fasilitas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/fasilitas-f22ea5b7.mp3"
+          },
+          {
+            "dutch": "wereldwijd",
+            "english": "global",
+            "indonesian": "global",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/global-bcb95ad5.mp3"
+          },
+          {
+            "dutch": "mondialisering",
+            "english": "globalization",
+            "indonesian": "globalisasi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/globalisasi-b105e964.mp3"
+          },
+          {
+            "dutch": "in verleiding gebracht",
+            "english": "tempted",
+            "indonesian": "goda, ter~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/goda-ter-3b6acfbc.mp3"
+          },
+          {
+            "dutch": "nodig achten / verplichten",
+            "english": "require",
+            "indonesian": "harus, meng~kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/harus-mengkan-78d2d2db.mp3"
+          },
+          {
+            "dutch": "contact leggen met",
+            "english": "contact",
+            "indonesian": "hubung, meng~i",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/hubung-mengi-acc086ee.mp3"
+          },
+          {
+            "dutch": "interaktief",
+            "english": "interactive",
+            "indonesian": "interaktif",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/interaktif-9a2b561b.mp3"
+          },
+          {
+            "dutch": "interlocaal",
+            "english": "interlocal",
+            "indonesian": "interlokal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/interlokal-718da8ba.mp3"
+          },
+          {
+            "dutch": "netwerk",
+            "english": "network",
+            "indonesian": "jaring, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jaring-an-582383d7.mp3"
+          },
+          {
+            "dutch": "baan (v. weg) / strook",
+            "english": "route / path",
+            "indonesian": "jalur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jalur-d536e9b9.mp3"
+          },
+          {
+            "dutch": "ontwikkeling",
+            "english": "development",
+            "indonesian": "kembang, per~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kembang-peran-f37e4ab9.mp3"
+          },
+          {
+            "dutch": "communicatie",
+            "english": "communication",
+            "indonesian": "komunikasi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/komunikasi-e6222947.mp3"
+          },
+          {
+            "dutch": "krant",
+            "english": "newspaper",
+            "indonesian": "koran",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/koran-9cfd6d69.mp3"
+          },
+          {
+            "dutch": "via",
+            "english": "via",
+            "indonesian": "lalu, me~i",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/lalu-mei-c8c971ac.mp3"
+          },
+          {
+            "dutch": "klant zijn",
+            "english": "be a customer",
+            "indonesian": "langgan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/langgan-592b47a2.mp3"
+          },
+          {
+            "dutch": "klant",
+            "english": "customer",
+            "indonesian": "langgan, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/langgan-an-0bdc20d8.mp3"
+          },
+          {
+            "dutch": "klant",
+            "english": "customer",
+            "indonesian": "langgan, pe~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/langgan-pe-55a98b6b.mp3"
+          },
+          {
+            "dutch": "locaal",
+            "english": "local",
+            "indonesian": "lokal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/lokal-5bae8f66.mp3"
+          },
+          {
+            "dutch": "van plan zijn",
+            "english": "intend",
+            "indonesian": "maksud, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/maksud-ber-ab0a4f23.mp3"
+          },
+          {
+            "dutch": "gebruikmaking",
+            "english": "use",
+            "indonesian": "manfaat, pe~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/manfaat-pean-817f611a.mp3"
+          },
+          {
+            "dutch": "modem",
+            "english": "modem",
+            "indonesian": "modem",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/modem-2ce95941.mp3"
+          },
+          {
+            "dutch": "Thailand",
+            "english": "Thailand",
+            "indonesian": "Muangthai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/muangthai-e8ce6338.mp3"
+          },
+          {
+            "dutch": "makkelijk",
+            "english": "easy",
+            "indonesian": "mudah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mudah-70a116a3.mp3"
+          },
+          {
+            "dutch": "van plan zijn",
+            "english": "intend to",
+            "indonesian": "niat, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/niat-ber-22a7ae94.mp3"
+          },
+          {
+            "dutch": "operationeel zijn",
+            "english": "be operational",
+            "indonesian": "operasi, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/operasi-ber-3e4e62ce.mp3"
+          },
+          {
+            "dutch": "wachtwoord",
+            "english": "password",
+            "indonesian": "password",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/password-5612ee79.mp3"
+          },
+          {
+            "dutch": "programma (computer)",
+            "english": "program (computer)",
+            "indonesian": "program",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/program-77ddf29c.mp3"
+          },
+          {
+            "dutch": "voorspellen",
+            "english": "predict",
+            "indonesian": "ramal, me~kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ramal-mekan-4c145385.mp3"
+          },
+          {
+            "dutch": "realiteit",
+            "english": "reality",
+            "indonesian": "realitas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/realitas-cb17bdcd.mp3"
+          },
+          {
+            "dutch": "revolutie",
+            "english": "revolution",
+            "indonesian": "revolusi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/revolusi-0edb30a6.mp3"
+          },
+          {
+            "dutch": "Rusland",
+            "english": "Russia",
+            "indonesian": "Rusia",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/rusia-123cb4bd.mp3"
+          },
+          {
+            "dutch": "verbinding",
+            "english": "connection",
+            "indonesian": "sambung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sambung-fb553970.mp3"
+          },
+          {
+            "dutch": "aansluiting",
+            "english": "connection point",
+            "indonesian": "sambung, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sambung-an-02e1fb1d.mp3"
+          },
+          {
+            "dutch": "aansluiten",
+            "english": "connect",
+            "indonesian": "sambung, menyambungkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sambung-menyambungkan-6fac9418.mp3"
+          },
+          {
+            "dutch": "bereid",
+            "english": "ready",
+            "indonesian": "sedia",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sedia-fa267476.mp3"
+          },
+          {
+            "dutch": "aanbieden",
+            "english": "provide",
+            "indonesian": "sedia, menyediakan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sedia-menyediakan-058871c7.mp3"
+          },
+          {
+            "dutch": "provider / aanbieder",
+            "english": "provider",
+            "indonesian": "sedia, penyedia",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sedia-penyedia-d0eb163b.mp3"
+          },
+          {
+            "dutch": "kans / gelegenheid",
+            "english": "opportunity",
+            "indonesian": "sempat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sempat-98da00c0.mp3"
+          },
+          {
+            "dutch": "aandeel / waardepapier",
+            "english": "share / security",
+            "indonesian": "sero",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sero-20ab4e3f.mp3"
+          },
+          {
+            "dutch": "vennootschap",
+            "english": "partnership",
+            "indonesian": "sero, per~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sero-peran-59b5d08d.mp3"
+          },
+          {
+            "dutch": "deelnemer",
+            "english": "participant",
+            "indonesian": "serta, pe~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/serta-pe-34659760.mp3"
+          },
+          {
+            "dutch": "fase",
+            "english": "phase",
+            "indonesian": "tahap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tahap-22f514a6.mp3"
+          },
+          {
+            "dutch": "tarief",
+            "english": "tariff",
+            "indonesian": "tarif",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tarif-5a299064.mp3"
+          },
+          {
+            "dutch": "uitgever",
+            "english": "publisher",
+            "indonesian": "terbit, penerbit",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/terbit-penerbit-5a29076a.mp3"
+          },
+          {
+            "dutch": "enzovoort",
+            "english": "and so on",
+            "indonesian": "terus, dan se~nya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/terus-dan-senya-43ca4382.mp3"
+          },
+          {
+            "dutch": "Turkije",
+            "english": "Turkey",
+            "indonesian": "Turki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/turki-115bafe8.mp3"
+          },
+          {
+            "dutch": "proeftest",
+            "english": "test run",
+            "indonesian": "uji coba",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/uji-coba-56c0ae43.mp3"
+          },
+          {
+            "dutch": "'t is niet nodig",
+            "english": "it is not necessary",
+            "indonesian": "usah, tidak ~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/usah-tidak-f3d48aa3.mp3"
+          },
+          {
+            "dutch": "virtueel",
+            "english": "virtual",
+            "indonesian": "virtual",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/virtual-2d4592f4.mp3"
+          },
+          {
+            "dutch": "namelijk",
+            "english": "namely",
+            "indonesian": "yakni",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/yakni-4a2a2674.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "wetenschap en technologie",
+            "english": "science and technology",
+            "indonesian": "iptek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/iptek-07179507.mp3"
+          },
+          {
+            "dutch": "NV Naamloze Vennootschap",
+            "english": "PT (Limited Liability Company)",
+            "indonesian": "PT",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pt-1d7e3e18.mp3"
+          },
+          {
+            "dutch": "telecommunicatiekantoor",
+            "english": "telecommunications office",
+            "indonesian": "wartel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/wartel-35643453.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Alle MEMPER-vormen zijn transitief, ongeacht het type basiswoord: ze kunnen altijd een patiens (lijdend voorwerp, partij 2) bij zich hebben.",
+              "MEMPER- is de bedrijvende vorm; DIPER- is de bijbehorende lijdende (passieve) tegenhanger.",
+              "De betekenis is intensiever dan de neutralere ME-vorm, vaak met een aspect van herhaling: denk aan 'beter maken → verbeteren' of 'groter maken → vergroten'.",
+              "MEMPER- is opgebouwd uit het hoofdvoorvoegsel mem- plus het secundaire voorvoegsel per-."
+            ],
+            "title": "MEMPER- / DIPER-: de intensieve causatieve werkwoordsvorm",
+            "examples": [
+              {
+                "dutch": "Meneer Safiee maakte dat probleem (nog) groter / blies het op.",
+                "english": "Encik Safiee enlarged that problem / blew it up.",
+                "indonesian": "Encik Safiee memperbesar masalah itu.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/encik-safiee-memperbesar-masalah-03901b1f.mp3"
+              },
+              {
+                "dutch": "Dat probleem werd door meneer Safiee opgeblazen.",
+                "english": "That problem was blown up by Encik Safiee.",
+                "indonesian": "Masalah itu diperbesar oleh Encik Safiee.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/masalah-itu-diperbesar-oleh-360aa459.mp3"
+              }
+            ],
+            "rules_en": [
+              "All MEMPER- forms are transitive, regardless of the base word type: they can always take a patient (direct object, party 2).",
+              "MEMPER- is the active form; DIPER- is the corresponding passive form.",
+              "The meaning is more intensive than the neutral ME- form, often with an aspect of repetition: think of 'make better → improve' or 'make bigger → enlarge'.",
+              "MEMPER- is built from the main prefix mem- plus the secondary prefix per-."
+            ],
+            "title_en": "MEMPER- / DIPER-: the intensive causative verb form"
+          },
+          {
+            "rules": [
+              "MEMPER- / DIPER- komt zowel zonder als met -KAN of -i voor: de mogelijke combinaties zijn memper- / diper-, memper-...-kan / diper-...-kan, en memper-...-i / diper-...-i.",
+              "Het basiswoord kan tot vijf woordklassen behoren: werkwoord, zelfstandig naamwoord, bijvoeglijk naamwoord, woord van plaats (zeldzaam) en telwoord (zeldzaam).",
+              "Werkwoord: ingat → memperingatkan; zelfstandig naamwoord: usaha → memperusahakan; bijvoeglijk naamwoord: kecil → memperkecil; plaats: dalam → memperdalam; telwoord: satu → mempersatukan."
+            ],
+            "title": "Vijf typen basiswoord + de combinaties met -KAN / -i",
+            "examples": [
+              {
+                "dutch": "waarschuwen (basiswoord = werkwoord ingat)",
+                "english": "warn (base word = verb ingat)",
+                "indonesian": "memperingatkan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/memperingatkan-b99948bb.mp3"
+              },
+              {
+                "dutch": "uitoefenen (van een bedrijf) (basiswoord = zelfstandig naamwoord usaha)",
+                "english": "operate (a business) (base word = noun usaha)",
+                "indonesian": "memperusahakan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/memperusahakan-8a59734d.mp3"
+              },
+              {
+                "dutch": "verkleinen (basiswoord = bijvoeglijk naamwoord kecil)",
+                "english": "make smaller (base word = adjective kecil)",
+                "indonesian": "memperkecil",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/memperkecil-5f6bc013.mp3"
+              },
+              {
+                "dutch": "verdiepen (van kennis) (basiswoord = woord van plaats dalam)",
+                "english": "deepen (knowledge) (base word = place word dalam)",
+                "indonesian": "memperdalam",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/memperdalam-ad13ae0b.mp3"
+              },
+              {
+                "dutch": "verenigen, bijeenhouden (basiswoord = telwoord satu)",
+                "english": "unite, hold together (base word = numeral satu)",
+                "indonesian": "mempersatukan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mempersatukan-3ad18777.mp3"
+              }
+            ],
+            "rules_en": [
+              "MEMPER- / DIPER- occurs both without and with -KAN or -i: the possible combinations are memper- / diper-, memper-...-kan / diper-...-kan, and memper-...-i / diper-...-i.",
+              "The base word can belong to five word classes: verb, noun, adjective, place word (rare), and numeral (rare).",
+              "Verb: ingat → memperingatkan; noun: usaha → memperusahakan; adjective: kecil → memperkecil; place: dalam → memperdalam; numeral: satu → mempersatukan."
+            ],
+            "title_en": "Five types of base word + combinations with -KAN / -i"
+          },
+          {
+            "rules": [
+              "Op één werkwoordelijk basiswoord kunnen meerdere afleidingen naast elkaar bestaan, elk met een eigen betekenis en een eigen DI-vorm.",
+              "mengingat = zich herinneren (di-vorm diingat); mengingatkan = iemand herinneren aan (diingatkan); mengingati = vermanen (diingati).",
+              "memperingatkan = waarschuwen (diperingatkan); memperingati = gedenken, herdenken (diperingati).",
+              "De MEMPER-afleidingen voegen de intensieve/nadrukkelijke laag toe boven op de gewone ME-afleidingen."
+            ],
+            "title": "MEMPER- bij een werkwoord (ingat) en de hele afleidingsreeks",
+            "examples": [
+              {
+                "dutch": "Ik waarschuwde hem voor dat gevaar.",
+                "english": "I warned him about that danger.",
+                "indonesian": "Saya memperingatkan dia tentang bahaya itu.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saya-memperingatkan-dia-tentang-ced33ba7.mp3"
+              },
+              {
+                "dutch": "Voor dat gevaar is al gewaarschuwd.",
+                "english": "That danger has already been warned about.",
+                "indonesian": "Bahaya itu sudah diperingatkan.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bahaya-itu-sudah-diperingatkan-45f2824d.mp3"
+              }
+            ],
+            "rules_en": [
+              "Multiple derivations can exist side by side from one verbal base word, each with its own meaning and its own DI- form.",
+              "mengingat = remember (di-form: diingat); mengingatkan = remind someone of (di-form: diingatkan); mengingati = admonish (di-form: diingati).",
+              "memperingatkan = warn (di-form: diperingatkan); memperingati = commemorate (di-form: diperingati).",
+              "The MEMPER- derivations add an intensive/emphatic layer on top of the regular ME- derivations."
+            ],
+            "title_en": "MEMPER- with a verb (ingat) and the complete derivation series"
+          },
+          {
+            "rules": [
+              "Bij een bijvoeglijk basiswoord ontstaan drie vormen met een duidelijk betekenisverschil.",
+              "membesar = uit zichzelf groot/groter worden (intransitief, geen patiens).",
+              "membesarkan = opzettelijk iets groter maken / opvoeden — het object wórdt wat het bijvoeglijk naamwoord zegt (di-vorm dibesarkan).",
+              "memperbesar = iets dat al groot is nóg groter maken / vergroten — een verdere, intensievere graad (di-vorm diperbesar).",
+              "Dezelfde reeks geldt voor lancar: melancar (vlot verlopen) → melancarkan (sneller laten gaan) → memperlancar (continu / nog sneller laten gaan). Vergelijk autorijden van 90 → 120 → 160 km/uur."
+            ],
+            "title": "De drieweg-tegenstelling membesar / membesarkan / memperbesar",
+            "examples": [
+              {
+                "dutch": "Dat kind groeit snel (wordt vanzelf groter).",
+                "english": "That child grows quickly (becomes bigger by itself).",
+                "indonesian": "Anak itu cepat membesar.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/anak-itu-cepat-membesar-bc9df54d.mp3"
+              },
+              {
+                "dutch": "Zij voeden drie kinderen op.",
+                "english": "They raise three children.",
+                "indonesian": "Mereka membesarkan tiga anak.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mereka-membesarkan-tiga-anak-e23a762c.mp3"
+              },
+              {
+                "dutch": "Wij vergroten die afbeelding (die al groot was, nog groter).",
+                "english": "We enlarge that image (which was already large, make it larger).",
+                "indonesian": "Kami memperbesar gambar itu.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kami-memperbesar-gambar-itu-28abaaff.mp3"
+              }
+            ],
+            "rules_en": [
+              "With an adjective base word, three forms arise with a clear meaning difference.",
+              "membesar = become large/larger of its own accord (intransitive, no object).",
+              "membesarkan = intentionally make something larger / raise — the object becomes what the adjective says (di-form: dibesarkan).",
+              "memperbesar = make something that is already large even larger / enlarge — a further, more intensive degree (di-form: diperbesar).",
+              "The same pattern applies to lancar: melancar (run smoothly) → melancarkan (make faster) → memperlancar (continuously/make even faster). Compare driving a car from 90 → 120 → 160 km/hour."
+            ],
+            "title_en": "The three-way contrast membesar / membesarkan / memperbesar"
+          },
+          {
+            "rules": [
+              "Bij de combinatie MEMPER- + bijvoeglijk naamwoord wordt over het algemeen géén -KAN of -i achtergevoegd.",
+              "Dus: kecil → memperkecil (niet *memperkecilkan); besar → memperbesar; lancar → memperlancar.",
+              "Het achtervoegsel -kan/-i blijft wel mogelijk bij MEMPER- op een werkwoord of zelfstandig naamwoord (memperingatkan, memperusahakan)."
+            ],
+            "title": "MEMPER- + bijvoeglijk naamwoord: meestal zónder -KAN of -i",
+            "examples": [
+              {
+                "dutch": "De overheid wil het verkeer vlotter laten verlopen.",
+                "english": "The government wants to facilitate traffic flow.",
+                "indonesian": "Pemerintah ingin memperlancar lalu lintas.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pemerintah-ingin-memperlancar-lalu-1725cb7a.mp3"
+              },
+              {
+                "dutch": "Die winkel verlaagt (verkleint) zijn prijzen.",
+                "english": "That shop lowers (reduces) its prices.",
+                "indonesian": "Toko itu memperkecil harganya.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/toko-itu-memperkecil-harganya-694429de.mp3"
+              }
+            ],
+            "rules_en": [
+              "With the combination MEMPER- + adjective, generally no -KAN or -i is added.",
+              "Thus: kecil → memperkecil (not *memperkecilkan); besar → memperbesar; lancar → memperlancar.",
+              "The suffix -kan/-i remains possible with MEMPER- on a verb or noun (memperingatkan, memperusahakan)."
+            ],
+            "title_en": "MEMPER- + adjective: usually without -KAN or -i"
+          },
+          {
+            "rules": [
+              "In de gebiedende wijs verdwijnt het voorvoegsel meN-/memper-; bij een -kan-vorm blijft -kan staan en blijft per- weg bij de pure imperatief van het ME-stam.",
+              "Bevestigend gebod: gebruik de kale -kan-vorm — Peringatkan Pak Anwar! = Waarschuw meneer Anwar!",
+              "Ontkennend verbod: zet jangan vóór dezelfde vorm — Jangan peringatkan Pak Anwar! = Waarschuw meneer Anwar niet!"
+            ],
+            "title": "De gebiedende wijs (gebod en verbod)",
+            "examples": [
+              {
+                "dutch": "Waarschuw meneer Anwar!",
+                "english": "Warn Mr. Anwar!",
+                "indonesian": "Peringatkan Pak Anwar!",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/peringatkan-pak-anwar-405a28da.mp3"
+              },
+              {
+                "dutch": "Waarschuw meneer Anwar niet!",
+                "english": "Don't warn Mr. Anwar!",
+                "indonesian": "Jangan peringatkan Pak Anwar!",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jangan-peringatkan-pak-anwar-87a111c8.mp3"
+              }
+            ],
+            "rules_en": [
+              "In the imperative mood the prefix meN-/memper- disappears; with a -kan form -kan remains and per- drops in the pure imperative of the ME-stem.",
+              "Affirmative command: use the bare -kan form — Peringatkan Pak Anwar! = Warn Mr. Anwar!",
+              "Negative prohibition: put jangan before the same form — Jangan peringatkan Pak Anwar! = Don't warn Mr. Anwar!"
+            ],
+            "title_en": "The imperative mood (command and prohibition)"
+          }
+        ],
+        "grammar_topics": [
+          "MEMPER- en PER-AN afleidingen"
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "PER-...-AN maakt van het basiswoord een zelfstandig naamwoord, voor zover het basiswoord dat nog niet is.",
+              "PER-...-AN kan, net als MEMPER-, op vijf typen basiswoord worden toegepast: werkwoord, zelfstandig naamwoord, bijvoeglijk naamwoord, woord van plaats (zeldzaam) en telwoord (zeldzaam).",
+              "Werkwoord: ingat → peringatan (waarschuwing); zelfstandig naamwoord: toko → pertokoan (winkelcentrum); bijvoeglijk naamwoord: baik → perbaikan (verbetering, reparatie); plaats: dalam → perdalaman (het verdiepen van kennis); telwoord: empat → perempatan (viersprong)."
+            ],
+            "title": "PER-...-AN: het nominaliserende omhulsel (confix)",
+            "examples": [
+              {
+                "dutch": "waarschuwing (basiswoord = werkwoord ingat)",
+                "english": "warning (base word = verb ingat)",
+                "indonesian": "peringatan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/peringatan-9fb3bbfd.mp3"
+              },
+              {
+                "dutch": "winkelcentrum (basiswoord = zelfstandig naamwoord toko)",
+                "english": "shopping center (base word = noun toko)",
+                "indonesian": "pertokoan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pertokoan-a413c2ef.mp3"
+              },
+              {
+                "dutch": "verbetering, reparatie (basiswoord = bijvoeglijk naamwoord baik)",
+                "english": "improvement, repair (base word = adjective baik)",
+                "indonesian": "perbaikan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/perbaikan-bf148b76.mp3"
+              },
+              {
+                "dutch": "viersprong, kruispunt (basiswoord = telwoord empat)",
+                "english": "crossroads, intersection (base word = numeral empat)",
+                "indonesian": "perempatan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/perempatan-182a49c1.mp3"
+              }
+            ],
+            "rules_en": [
+              "PER-...-AN turns the base word into a noun, provided the base word is not already one.",
+              "PER-...-AN can, like MEMPER-, be applied to five types of base word: verb, noun, adjective, locative word (rare), and numeral (rare).",
+              "Verb: ingat → peringatan (warning); noun: toko → pertokoan (shopping center); adjective: baik → perbaikan (improvement, repair); place: dalam → perdalaman (deepening of knowledge); numeral: empat → perempatan (crossroads)."
+            ],
+            "title_en": "PER-...-AN: the nominalizing infix (confix)"
+          },
+          {
+            "rules": [
+              "Bij hetzelfde basiswoord bestaan vaak twee vormen naast elkaar; meestal noemt de PE-...-AN-vorm het proces of de handeling, en de PER-...-AN-vorm het resultaat, de instelling of de organisatie. Soms bestaat slechts één van beide.",
+              "buat: pembuatan sabun mandi = het maken (proces) van zeep; mencuri adalah perbuatan jelek = stelen is een slechte daad (perbuatan = de daad zelf).",
+              "kumpul: pengumpulan bahan = het verzamelen van materiaal (proces); perkumpulan mahasiswa = de studentenvereniging (organisatie).",
+              "tunjuk: penunjukan jalanan = bewegwijzering (proces van wijzen); pertunjukan wayang = wayangvertoning (het evenement/resultaat)."
+            ],
+            "title": "PER-...-AN tegenover PE-...-AN: resultaat/instelling versus proces",
+            "examples": [
+              {
+                "dutch": "Het verzamelen van materiaal kost veel tijd.",
+                "english": "The collecting of material takes a long time.",
+                "indonesian": "Pengumpulan bahan memakan waktu lama.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pengumpulan-bahan-memakan-waktu-e6b6237e.mp3"
+              },
+              {
+                "dutch": "Hij is lid van de studentenvereniging.",
+                "english": "He is a member of the student association.",
+                "indonesian": "Dia anggota perkumpulan mahasiswa.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/dia-anggota-perkumpulan-mahasiswa-7baab8af.mp3"
+              }
+            ],
+            "rules_en": [
+              "With the same base word, two forms often exist side by side; usually the PE-...-AN form denotes the process or action, and the PER-...-AN form denotes the result, institution, or organization. Sometimes only one of the two exists.",
+              "buat: pembuatan sabun mandi = the making (process) of soap; mencuri adalah perbuatan jelek = stealing is a bad deed (perbuatan = the deed itself).",
+              "kumpul: pengumpulan bahan = the collecting (process) of material; perkumpulan mahasiswa = the student association (organization).",
+              "tunjuk: penunjukan jalanan = road signage (process of pointing); pertunjukan wayang = wayang show (the event/result)."
+            ],
+            "title_en": "PER-...-AN versus PE-...-AN: result/institution versus process"
+          },
+          {
+            "rules": [
+              "Eén basiswoord (usaha) levert drie verwante vormen die scherp te onderscheiden zijn.",
+              "pengusaha (PE-vorm) = de ondernemer — de handelende persoon.",
+              "pengusahaan (PE-...-AN-vorm) = het produceren / het in bedrijf houden — het proces. Vergelijk: pengusahaan batik = het productieproces van batik.",
+              "perusahaan (PER-...-AN-vorm) = de onderneming / de fabriek — de instelling. Vergelijk: perusahaan batik = de batikfabriek."
+            ],
+            "title": "De drieslag pengusaha / pengusahaan / perusahaan",
+            "examples": [
+              {
+                "dutch": "Die ondernemer bezit drie bedrijven.",
+                "english": "That entrepreneur owns three companies.",
+                "indonesian": "Pengusaha itu memiliki tiga perusahaan.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pengusaha-itu-memiliki-tiga-82a4e549.mp3"
+              },
+              {
+                "dutch": "Het produceren van batik vereist vakmensen.",
+                "english": "Batik production requires skilled workers.",
+                "indonesian": "Pengusahaan batik membutuhkan tenaga ahli.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pengusahaan-batik-membutuhkan-tenaga-ff2c8368.mp3"
+              }
+            ],
+            "rules_en": [
+              "One base word (usaha) yields three related forms that are sharply distinguished.",
+              "pengusaha (PE- form) = the entrepreneur — the acting person.",
+              "pengusahaan (PE-...-AN form) = producing / operating — the process. Compare: pengusahaan batik = the batik production process.",
+              "perusahaan (PER-...-AN form) = the enterprise / the factory — the institution. Compare: perusahaan batik = the batik factory."
+            ],
+            "title_en": "The three-way distinction: entrepreneur / entrepreneurship / enterprise"
+          },
+          {
+            "rules": [
+              "Met de PER-...-AN-vorm worden dikwijls abstracte begrippen, sectoren en gebieden gevormd.",
+              "Voorbeelden: perdagangan (handel), perfilman (filmindustrie), perekonomian (economie, economisch systeem), perindustrian (industrie, industrialisatie).",
+              "Ook ruimtelijke complexen: perkantoran (kantoorcomplex), perkotaan (stedelijk gebied), perumahan (huizencomplex, huisvesting)."
+            ],
+            "title": "PER-...-AN voor abstracte begrippen en domeinen",
+            "examples": [
+              {
+                "dutch": "De Indonesische economie groeit snel.",
+                "english": "The Indonesian economy is growing rapidly.",
+                "indonesian": "Perekonomian Indonesia tumbuh cepat.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/perekonomian-indonesia-tumbuh-cepat-b2f9c671.mp3"
+              },
+              {
+                "dutch": "Zij wonen in een nieuwe woonwijk.",
+                "english": "They live in a new residential area.",
+                "indonesian": "Mereka tinggal di daerah perumahan baru.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mereka-tinggal-di-daerah-c82ee295.mp3"
+              }
+            ],
+            "rules_en": [
+              "The PER-...-AN form is often used to form abstract concepts, sectors, and fields.",
+              "Examples: perdagangan (trade), perfilman (film industry), perekonomian (economy, economic system), perindustrian (industry, industrialization).",
+              "Also spatial complexes: perkantoran (office complex), perkotaan (urban area), perumahan (housing complex, housing)."
+            ],
+            "title_en": "PER-...-AN for abstract concepts and domains"
+          }
+        ],
+        "grammar_topics": [
+          "MEMPER- en PER-AN afleidingen"
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "writing",
+            "items": [],
+            "title": "Latihan I",
+            "instruction": "Schrijf een verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van de tekening (een persoon die in bed ligt met een wekker)."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Hampir semua pembaca setuju dengan pendapat itu. — Bijna alle lezers zijn het eens met die mening.",
+                "prompt": "baca, dapat — Hampir semua ............ setuju dengan ............ itu"
+              },
+              {
+                "answer": "Apakah Anda punya sambungan telepon? — Heeft u een telefoonaansluiting?",
+                "prompt": "sambung — Apakah Anda punya ............ telepon?"
+              },
+              {
+                "answer": "Perjalanan kami makan waktu tiga bulan. — Onze reis kostte drie maanden.",
+                "prompt": "jalan — ............ kami makan waktu tiga bulan"
+              },
+              {
+                "answer": "Kapan penduduk kampung ini akan berkumpul? — Wanneer komen de inwoners van dit dorp bijeen?",
+                "prompt": "duduk — Kapan ............ kampung ini akan berkumpul?"
+              },
+              {
+                "answer": "Penjelasan presiden amat benar. — De uitleg van de president is volkomen juist.",
+                "prompt": "jelas — ............ presiden amat benar"
+              },
+              {
+                "answer": "Penerbit majalah itu berniat beroperasi di Sumatra. — De uitgever van dat tijdschrift is van plan in Sumatra te gaan opereren.",
+                "prompt": "terbit — ............ majalah itu berniat beroperasi di Sumatra"
+              },
+              {
+                "answer": "Perbaikan pelabuhan laut ini dikerjakan oleh orang Indonesia bersama dengan orang Muangthai. — De renovatie van deze zeehaven wordt uitgevoerd door Indonesiërs samen met Thai.",
+                "prompt": "baik, labuh — ............ ............ laut ini dikerjakan oleh orang Indonesia bersama dengan orang Muangthai"
+              },
+              {
+                "answer": "Internet langganannya bertambah setiap hari. — Het aantal internetabonnees (abonnementen) groeit elke dag.",
+                "prompt": "langgan — Internet ............ nya bertambah setiap hari"
+              },
+              {
+                "answer": "Pembangunan Indonesia masih diteruskan. — De opbouw/ontwikkeling van Indonesië wordt nog voortgezet.",
+                "prompt": "bangun — ............ Indonesia masih diteruskan"
+              },
+              {
+                "answer": "Fasilitas perusahaan umum itu terbatas. — De faciliteiten van dat openbare bedrijf zijn beperkt.",
+                "prompt": "usaha — Fasilitas .......... umum itu terbatas"
+              }
+            ],
+            "title": "Latihan II",
+            "instruction": "Vul een -an, pe-, pe-...-an of per-...-an vorm in (afgeleid van het opgegeven basiswoord) en vertaal de zin."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Banyak nelayan asing menangkap ikan di perairan Indonesia. — Veel buitenlandse vissers vangen vis in de Indonesische (territoriale) wateren.",
+                "prompt": "Banyak nelayan asing menangkap ikan di (- air -) Indonesia"
+              },
+              {
+                "answer": "Pengairan artinya proses mengairi. — 'Pengairan' (irrigatie) betekent het proces van bevloeien.",
+                "prompt": "(- air -) artinya proses mengairi"
+              },
+              {
+                "answer": "Pemanfaatan air adalah masalah penting zaman ini. — Het gebruik(maken) van water is een belangrijk vraagstuk van deze tijd.",
+                "prompt": "(- manfaat -) air adalah masalah penting zaman ini"
+              },
+              {
+                "answer": "Hari Minggu diadakan pertandingan sepak bola yang penting. — Zondag wordt een belangrijke voetbalwedstrijd gehouden.",
+                "prompt": "Hari Minggu diadakan (- tanding -) sepak bola yang penting"
+              },
+              {
+                "answer": "Kemarin perjanjian dagang antara Indonesia dan Perancis ditandatangani. — Gisteren werd het handelsverdrag tussen Indonesië en Frankrijk ondertekend.",
+                "prompt": "Kemarin (- janji -) dagang antara Indonesia dan Perancis ditandatangani"
+              },
+              {
+                "answer": "Hasil perkebunan sangat penting untuk ekonomi Maluku. — De plantageopbrengst is heel belangrijk voor de economie van de Molukken.",
+                "prompt": "Hasil (- kebun -) sangat penting untuk ekonomi Maluku"
+              },
+              {
+                "answer": "Pemandangan dari permukaan laut indah sekali. — Het uitzicht vanaf het zeeoppervlak is prachtig.",
+                "prompt": "(- pandang -) dari (- muka -) laut indah sekali"
+              },
+              {
+                "answer": "Penerbangan nomor GA 781 akan tiba di Cengkareng jam 07.50. — Vlucht nummer GA 781 zal om 07.50 uur aankomen in Cengkareng.",
+                "prompt": "(- terbang -) nomor GA 781 akan tiba di Cengkareng jam 07.50."
+              },
+              {
+                "answer": "Apakah pertemuan ini ditunda? — Wordt deze bijeenkomst uitgesteld?",
+                "prompt": "Apakah (- temu -) ini ditunda?"
+              },
+              {
+                "answer": "Perencanaan membangun toko itu makan waktu tiga bulan. — De planning om die winkel te bouwen kostte drie maanden.",
+                "prompt": "(- rencana -) membangun toko itu makan waktu tiga bulan"
+              }
+            ],
+            "title": "Latihan III",
+            "instruction": "Vul de juiste pe-...-an of per-...-an vorm in (van het basiswoord tussen haakjes) en vertaal de zin."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"53869c8c-8035-45b4-a859-2e4f77e8ca80\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"53869c8c-8035-45b4-a859-2e4f77e8ca80\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

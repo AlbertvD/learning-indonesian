@@ -1,0 +1,470 @@
+{
+  "lesson": 30,
+  "generatedAt": "2026-06-21T07:08:04.915Z",
+  "sourcePages": 7,
+  "lessonMeta": {
+    "title": "Bab 14 - Musik Pop di Indonesia",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 30
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Cultuur - Musik Pop di Indonesia",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Di Indonesia, juga di negara mana saja, terdapat industri musik pop. Musik pop di Indonesia bukan dalam bahasa Inggris, melainkan dalam bahasa Indonesia. Buat penyanyi diciptakan banyak lagu baru, sehingga orang juga sering mendengar melodi yang baru.",
+        "Di Eropa lagu baru selalu direkam di CD, tetapi di Indonesia lain halnya. Walaupun CD juga menjadi makin populer, tetapi masih mahal. Di Indonesia kasetlah yang paling populer. Tidak hanya karena gampang dipakai dan harganya murah, tetapi juga karena kaset lebih mudah diperbanyak. Sebab itu lebih baik Anda coba memutar kaset dulu, supaya kualitas rekaman dan kualitas pita bisa ditimbangkan.",
+        "Kalau mengunjungi Indonesia, jangan lupa membeli kaset atau CD dengan lagu terbaru. Anda akan selalu mengenang saat-saat sewaktu Anda berada di Indonesia, apabila Anda memutar kembali kaset yang Anda beli di sana.",
+        "Pada saat Anda mendengar kaset itu, bau dan gambar Indonesia pasti akan teringat lagi. Di bawah ini dimuat dua lagu 'pop klasik', yaitu dua lagu keroncong!",
+        "Bengawan Solo\n\nBengawan Solo riwayatmu ini\nsedari dulu jadi perhatian insani\nmusim kemarau tak seberapa airmu\ndi musim hujan air meluap sampai jauh\n\nmata airmu dari Solo\nterkurung gunung seribu\nair mengalir sampai jauh\nakhirnya ke laut\n\nitu perahu riwayatnya dulu\nkaum pedagang selalu naik itu perahu",
+        "Terang bulan\n\nTerang bulan, terang bulan di kali\nbuaya timbul disangkalah mati\n\njangan percaya mulut lelaki\nberani sumpah tapi takut mati (2x)"
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "apabila",
+          "dutch": "wanneer / als",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "bau",
+          "dutch": "geur / reuk",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bengawan",
+          "dutch": "grote rivier",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "berani",
+          "dutch": "dapper / moedig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "berapa, se-",
+          "dutch": "zoveel als",
+          "pos": "question_word"
+        },
+        {
+          "indonesian": "bina, per-an",
+          "dutch": "gebouw / opbouw",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cipta, men-kan",
+          "dutch": "creëeren / scheppen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "CD",
+          "dutch": "compact disc",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "duka",
+          "dutch": "verdrietig / droef",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "hati, per-an",
+          "dutch": "aandacht",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "insani",
+          "dutch": "menselijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "jiwa",
+          "dutch": "ziel / persoon",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kaset",
+          "dutch": "(muziek) cassette",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kaum",
+          "dutch": "klasse / stand",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kembang, pengembangan",
+          "dutch": "bevordering",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kenang, mengenang",
+          "dutch": "terugdenken aan",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "klasik",
+          "dutch": "klassiek",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kurung, ter-",
+          "dutch": "omringd / ingesloten",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "lelaki",
+          "dutch": "man / mannelijk",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mata air",
+          "dutch": "bron",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "melainkan",
+          "dutch": "maar",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "melodi",
+          "dutch": "melodie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "muat, me-",
+          "dutch": "weergeven / opnemen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "musik pop",
+          "dutch": "popmuziek",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "nada",
+          "dutch": "toon / klank",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pancong, kue-",
+          "dutch": "koekje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "perahu",
+          "dutch": "boot / schip",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "percaya (pada)",
+          "dutch": "geloven in",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pita",
+          "dutch": "band / tape",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rekam, -an",
+          "dutch": "opname",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rekam, me-",
+          "dutch": "opnemen (van geluid)",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "riwayat",
+          "dutch": "verhaal / vertelling",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sangka, menyangka",
+          "dutch": "vermoeden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sedari",
+          "dutch": "sinds",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "serani",
+          "dutch": "christen / Portugees / Indo-Europeaan (oud)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "seru, menyeru",
+          "dutch": "roepen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sumpah",
+          "dutch": "eed / vloek",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tepung terigu",
+          "dutch": "tarwemeel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "timbang, menimbangkan",
+          "dutch": "beoordelen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "timbul, menimbul",
+          "dutch": "verschijnen",
+          "pos": "verb"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "grammar",
+      "title": "TATA BAHASA - Nieuwe ontwikkelingen in het Indonesisch",
+      "source_pages": [
+        2,
+        3,
+        4
+      ],
+      "confidence": "high",
+      "raw_text": "Nieuwe ontwikkelingen in het Indonesisch\n\nTen einde tot een standaardisatie van de moderne woordenschat te komen, zijn door het Taalcentrum in Jakarta (Pusat Pembinaan dan Pengembangan Bahasa) regels opgesteld waaraan nieuwe woorden moeten voldoen. Deze nieuwe woorden komen vooral in geschreven taalgebruik veel voor. Vaak worden hierbij voorvoegsels gebruikt die onder meer aan het Sanskriet en het Arabisch zijn ontleend. Hieronder wordt een aantal voorbeelden van deze ontwikkelingen genoemd.\n\nBina, Graha & Loka\n\nBijvoorbeeld de woorden bina, graha en loka, die gebruikt worden in de betekenis van instelling, gebouw.\n\ngraha purna yuddha    tehuis voor veteranen\nbina graha             presidentieel kantoor\ncaraka loka            diplomaten instituut\n\nPra-\n\nEen ander verschijnsel is de voorvoeging van pra-, hetgeen 'voor' betekent.\n\nkata        woord           prakata         voorwoord, voorrede\nlahir        geboren worden  pralahir        prenataal\npendapat    oordeel, mening  prapendapat     vooroordeel, veronderstelling\nrasa        gevoel          prarasa         voorkeur, voorliefde\nsangka      mening, vermoeden prasangka      vooroordeel\nsejarah     historie, geschiedenis prasejarah prehistorie\n\nPramu-\n\nHet voorvoegsel pramu- wordt dikwijls gebruikt als aanduiding voor functies in de dienstensektor. Enkele voorbeelden zijn:\n\nacara       programma       pramuacara      ceremoniemeester\nniaga       handel          pramuniaga      verkoper, verkoopster\nria         vrolijk         pramuria        animeermeisje\nsaji        gerecht         pramusaji       ober, serveerster\nsiwi        kind            pramusiwi       babysitter\ntamu        gast            pramutamu       receptionist\nwisata      toerisme        pramuwisata     (toeristen)gids\nwisma       huis            pramuwisma      huisbediende\n\nTuna-\n\nNiet alleen voor nieuwe begrippen worden op een dergelijke manier woorden geconstrueerd. Ook voor reeds bestaande woorden ontstaan soms nieuwe, meer formele, samenstellingen.\n\nNieuw woord                          Reeds bestaand woord\n\ntuna-          met een gebrek, handicap    cacat\ntunaaksara     analfabeet                  buta huruf\ntunakarya      werkloos                    menganggur\ntunanetra      visueel gehandicapt, blind  buta\ntunarungu      auditief gehandicapt, doof  tuli\ntunasusila     zedenloze vrouw, prostituée pelacur\ntunatata krama onbeschoft                  kurang ajar\n\n-wan\n\nMet behulp van het achtervoegsel -wan kan men een persoon die behoort tot een bepaalde groep of een bepaald beroep heeft aanduiden.\n\ngerilya     guerrilla       gerilyawan      guerrillastrijder\nusaha       onderneming     usahawan        ondernemer\nwarta       bericht         wartawan        journalist\nwisata      toerisme        wisatawan       toerist\n\nIndonesiërs zijn dol op spelletjes met de taal en een geliefd onderdeel van de dagelijkse omgang zijn dan ook woordspelingen en woordgrapjes. Dikwijls is de dubbelzinnige betekenis tegenovergesteld aan de idiomatische betekenis.\n\nTerm           verhulde betekenis               gebruikt om\n\nMonalisa       monyet nangkring lihat saya       te kleineren\nsimpatik       simpanse pakai batik              te bespotten\nbenci          benar-benar cinta                 te versieren\nperek (pèrèk)  perempuan eksperimental           een sexueel 'gewillige' vrouw aan te duiden\n\nScheldwoorden\n\nGeen enkele taal ontkomt aan woorden die in de meeste leerboeken worden vermeden, namelijk scheldwoorden. We geven hier een aantal woorden die u misschien tegen zult komen. Of u ze ook zelf zult gaan gebruiken, laten we aan u over.\n\nanjing      hond\nbangsat     schoft\nbego (bégo) idioot\nblo'on      stommeling\nbuaya       schurk, rokkenjager\ncabo        hoer\ndungu       sufferd\ngoblok      stommeling, sufferd\njahanam     vervloekte\nkunyuk      aap, stommerd\nkurang ajar onbeschoft\nmonyet      aap\npelacur     hoer\nsetan        duivel\nsialan      verdorie\nsinting     idioot\ntolol       domkop"
+    },
+    {
+      "id": 3,
+      "type": "vocabulary",
+      "title": "Woorden over liefde",
+      "source_pages": [
+        5
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "abadi",
+          "dutch": "eeuwig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "bagus",
+          "dutch": "mooi (jongen)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "buah mata",
+          "dutch": "oogappel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cakap, cakep",
+          "dutch": "knap / mooi (man)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "cantik",
+          "dutch": "mooi (vrouw)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "cewek",
+          "dutch": "meisje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cinta",
+          "dutch": "liefde",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cium",
+          "dutch": "zoenen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "cowok",
+          "dutch": "jongen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ganteng",
+          "dutch": "knap (man)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "halus",
+          "dutch": "beschaafd",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "hati",
+          "dutch": "hart",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "indehoi",
+          "dutch": "vrijen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "janji",
+          "dutch": "afspraakje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kekasih",
+          "dutch": "geliefde / liefje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kemesraan",
+          "dutch": "innigheid / intimiteit / tederheid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "keren",
+          "dutch": "knap (gestalte)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "manis",
+          "dutch": "lief",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "naksir",
+          "dutch": "een oogje hebben op",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pacar",
+          "dutch": "vaste vriend(in)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pacaran",
+          "dutch": "verkering hebben",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "putus asa",
+          "dutch": "geen hoop meer hebben",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "puspa hati",
+          "dutch": "hartedief",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rasa rindu",
+          "dutch": "heimwee",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sayang",
+          "dutch": "lieveling / liefje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "surat cinta",
+          "dutch": "liefdesbrief",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "expressions",
+      "title": "Enkele standaardzinnen",
+      "source_pages": [
+        5
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "Aku suka padamu",
+          "dutch": "Ik mag je wel",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Aku jatuh cinta",
+          "dutch": "Ik ben verliefd",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Aku cinta padamu",
+          "dutch": "Ik hou van jou",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Aku ingin memelukmu",
+          "dutch": "Ik wil jou omhelzen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Aku ingin menyentuhmu",
+          "dutch": "Ik wil jou aanraken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Cinta itu memang buta",
+          "dutch": "De liefde is blind",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "Hanya kamu yang selalu dalam hatiku",
+          "dutch": "Jij alleen bent voor altijd in mijn hart",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Pergilah, aku bisa mengerti",
+          "dutch": "Ga weg, ik begrijp het wel",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Jangan putus asa!",
+          "dutch": "Geef de moed niet op!",
+          "pos": "verb"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "exercises",
+      "title": "LATIHAN",
+      "source_pages": [
+        6,
+        7
+      ],
+      "confidence": "high",
+      "raw_text": "Latihan I. Maak een verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van onderstaande tekening.\n[tekening met dialoog: 'Terima kasih, Pak! Sampai jumpa lagi' en 'Selamat jalan dan kirim potret ya, Pak Yance']\n\nLatihan II. Voeg een woord van tijd toe en vertaal de zin.\n1. (Over twee dagen) saya pulang\n2. (Eergisteren) saya ikut dengan seorang pramuwisata ke dalam hutan\n3. (Morgenochtend) pramusiwi, Wiwi namanya, akan datang\n4. (Toen) saya mau berangkat ke Bandung, kereta api (niet op tijd)\n5. Kita mampir (eerst) ke rumah Tin (vervolgens) kita berbelanja\n\nLatihan III. Maak een zin die begint met het gegeven woord:\n1. Pada umumnya ...\n2. Kalau begini ...\n3. Jelas ...\n4. Karena itu ...\n5. Saya rasa ...\n6. Tak ada alasan ...\n7. Jadi ...\n8. Tentu saja ...\n9. Baiklah ...\n10. Sebenarnya ...\n\nLatihan IV. Vul de juiste vorm in en vertaal de zin.\n1. jadi    Apa yang ............... Bu Wanti?\n2. hilang  Saya ............... paspor. Paspor itu ............... dari tas saya\n3. lapor   Kalau begitu Ibu harus ............... ke polisi\n4. letak   Kantor itu ............... di Jalan Cendrawasih no.11\n5. bantu   Terima kasih banyak atas ............... Bapak\n\nLatihan V. Zet in de goede volgorde en vertaal.\n1. dan - panjang - selamat hari ulang tahun - semoga - umurnya - Fandi\n2. minum - kalian - dan - makan - sudah ?\n3. nanti saja - saya - karena - harus - ke rumah sakit - dulu\n4. janji - dengan - pada jam 10.00 - ada - dokter\n5. ooh ya - kembali - tetapi - nanti - kalian - ya\n\nLatihan VI. Vertaal in het Indonesisch.\n1. Degene die jarig is, is (ipar saya), Fandi. Kent u hem nog niet?\n2. (Belum), ik ben met mijn vrouw meegekomen, die (bekerja di) hetzelfde kantoor als uw zwager. Bij de computerverkoop\n3. En waar werkt u zelf?\n4. Ikzelf ben (insinyur) en mijn vakgebied is tuinbouw\n5. Kom, (masuk saja), het feest is al begonnen\n\nLatihan VII. Vul de juiste grammaticale vorm in en vertaal de zin.\n1. tuju     Bali bukan ............... wisata satu-satunya di Indonesia\n2. kembang  Masih banyak daerah lain yang bisa ...............\n3. keliling Danau Toba misalnya yang ............... pegunungan yang tinggi\n4. bangun   Sekarang ini direncanakan ............... hotel mewah di sana\n5. cuci, rasa  Menurut kepercayaan setempat, jika ............... muka dengan air Danau Toba akan mempunyai ............... selalu ingin kembali\n6. seberang Dari Sumatra mudah sekali ............... ke pulau Jawa\n7. tumpang  Orang bisa ............... feri, naik pesawat atau kapal laut 'Pelni'\n8. pulau    Tujuan lain adalah ............... Riau dekat Singapura\n9. kunjung  Dari Singapura Anda dapat ............... pulau Batam\n10. kembang Sekarang ini di pulau Batam ............... zona ekonomis khusus"
+    }
+  ],
+  "flags": [
+    "Image IMG_1713.jpg: Full text of 'Terang bulan' song recovered from image — OCR page 1 only captured 'Bengawan Solo' partially.",
+    "Image IMG_1714.jpg: Full vocabulary list (Daftar kata-kata baru) recovered from image including items missing from OCR page 2: apabila, bau, bengawan, berani, berapa se-, bina per-an, cipta men-kan, CD, duka, melainkan, melodi, muat me-, musik pop, nada, pancong kue-, perahu, percaya (pada), pita, rekam.",
+    "Image IMG_1715.jpg: Full Tuna- section recovered from image with complete table (tunaaksara, tunakarya, tunanetra, tunarungu, tunasusila, tunatata krama) not present in OCR.",
+    "Image IMG_1716.jpg: -wan section and full Scheldwoorden list recovered from image including: cabo, dungu, goblok, jahanam, kunyuk, kurang ajar, monyet, pelacur, setan, sialan, sinting, tolol — partially missing from OCR page 4.",
+    "Image IMG_1717.jpg: Full 'Woorden over liefde' section and complete standaardzinnen table recovered from image (Aku cinta padamu, Aku ingin memelukmu, Aku ingin menyentuhmu, Cinta itu memang buta, Hanya kamu yang selalu dalam hatiku, Pergilah aku bisa mengerti, Jangan putus asa!) — partially missing from OCR page 5.",
+    "Image IMG_1718.jpg: Latihan IV items recovered fully from image — OCR page 6 was garbled for that exercise."
+  ],
+  "sourceImages": 7
+}

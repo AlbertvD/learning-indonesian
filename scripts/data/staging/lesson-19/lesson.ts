@@ -2,7 +2,7 @@
 export const lesson = {
   "title": "Zinsbouw",
   "description": "",
-  "level": "A1",
+  "level": "B1",
   "module_id": "module-1",
   "order_index": 19,
   "sections": [

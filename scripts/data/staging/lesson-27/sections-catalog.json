@@ -1,0 +1,361 @@
+{
+  "lesson": 27,
+  "generatedAt": "2026-06-19T13:40:49.722Z",
+  "sourcePages": 6,
+  "lessonMeta": {
+    "title": "Bab 11 - Sewa Rumah",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 27
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Sewa Rumah",
+      "source_pages": [
+        1,
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Insinyur Kramer baru seminggu bekerja di Palembang. Sekarang dia masih sendirian dan tinggal di hotel. Bulan depan keluarganya yang ditinggalkannya di Jakarta, juga akan tiba di Palembang. Itu sebabnya dia mencari sebuah rumah.",
+        "Kemarin dia mendengar ada sebuah rumah di bagian kota lama. Letaknya bagus, kebunnya besar, dan lalu lintas di jalanan belum begitu ramai. Ongkos sewanya 18 juta rupiah setahun, jadi tidak terlalu mahal. Pemilik rumah itu namanya Bapak Muhammad Hasan.",
+        "Yang dicarinya ialah rumah yang lengkap dengan segala isinya. Perabot rumah harus lengkap, karena dia tidak ingin memindahkan barang-barang dari rumahnya di Jakarta. Kalau sewaktu-waktu dia dikirim kembali dan rumahnya di Jakarta kosong, tidak enak 'kan? Dan kalau kosong, dia juga tidak dapat menyewakannya kepada orang lain.",
+        "Dua hari setelah dia menelepon pemilik rumah itu, dia dikirimi daftar isi rumah. Supaya pemilik rumah dapat mengecek, apa semuanya masih lengkap jikalau Bapak Kramer mau kembali ke Jakarta.",
+        "Memang rumah itu komplit.\nLantainya dari tegel, dan warna gorden tidak terlalu nyentrik. Tentu saja ada kursi, meja dan tempat tidur. Barang pecah belah, perkakas makan, kompor serta oven ada, lagipula lemari es dan mesin pencuci juga tersedia. Pokoknya, apa saja yang dikehendaki istrinya untuk dapur semua ada.",
+        "Di setiap kamar ada kipas angin supaya tidak terlalu panas.\nSayang sekali tidak ada AC, tetapi Bapak Kramer tidak keberatan. Katanya: 'Pakai AC cuma jadi pilek terus. Lebih baik tidak punya AC, itu lebih sehat'. Rumah itu mempunyai jendela yang besar dan berwarna.\nDi sebelah muka rumah, ada teras yang luas dengan kursi malas. Kebunnya bagus sekali. Ada pohon palem, kembang sepatu, dan berjenis-jenis tumbuhan lain yang belum diketahuinya namanya."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "text",
+      "title": "Surat - Rumah di Jalan Ismail Marzuki",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Ir. K.L. Kramer,\nHotel Ambara,\nPalembang\n\nNomor: 1\n\nPalembang, 22 Mei 1996\n\nKepada: Yth. Bapak Muhammad Hasan\nJl. Cik di Tiro 12\nPalembang, Sumsel\n\nHal: Rumah di Jalan Ismail Marzuki",
+        "Dengan hormat,",
+        "Dengan surat ini saya memberitahukan, bahwa saya telah menengok rumah Bapak di Jl. Ismail Marzuki nomor 23. Saya senang dengan keadaan dan letak rumah itu. Walaupun demikian, di sana-sini masih ada yang perlu diperbaiki, yaitu:\n1. seluruh rumah harus dikapur dan dicat lagi,\n2. saluran air harus dibersihkan,\n3. keran-keran air harus bekerja dengan baik,\n4. kamar mandi harus diperbaiki,\n5. atapnya di sana-sini bocor, sehingga harus disisip,\n6. rumput harus dipotong,\n7. kabel-kabel listrik yang rusak harus diganti.",
+        "Kalau syarat-syarat di atas ini sudah selesai dipenuhi, saya bersedia menandatangani kontrak sewa-menyewa. Terima kasih,\n\nHormat saya,\n\nIr. K.L. Kramer"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2,
+        3
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "atap",
+          "dutch": "dak",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "batas, ter-~",
+          "dutch": "beperkt",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "berat, ke-~an",
+          "dutch": "bezwaar(lijk)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bocor",
+          "dutch": "lek",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "cat, menge-~",
+          "dutch": "verven",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "cek, menge-~",
+          "dutch": "controleren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "cucur, ~an",
+          "dutch": "stroom, straal",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cuma",
+          "dutch": "slechts, alleen maar",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "dikehendaki",
+          "dutch": "gewenst, gewild",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "diketahui",
+          "dutch": "weten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "diperbaiki",
+          "dutch": "verbeterd",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "diperkirakan",
+          "dutch": "vermoed, geschat",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "gorden (gordèn)",
+          "dutch": "gordijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jendela (jendéla)",
+          "dutch": "raam",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jenis, ber- - ~",
+          "dutch": "allerlei soorten hebben",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kabel",
+          "dutch": "kabel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kapur, mengapur",
+          "dutch": "kalken, witten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kembang sepatu",
+          "dutch": "Chinese roos, Hibiscus",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "keringat",
+          "dutch": "zweet",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "keran",
+          "dutch": "kraan",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kipas",
+          "dutch": "waaier",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kipas angin",
+          "dutch": "ventilator",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "komplit",
+          "dutch": "compleet",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kompor",
+          "dutch": "fornuis",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kontrak",
+          "dutch": "kontrakt",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kursi malas",
+          "dutch": "luie stoel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lagipula",
+          "dutch": "bovendien, en ook",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "lemari es",
+          "dutch": "koelkast",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lengkap",
+          "dutch": "compleet, volledig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "luas",
+          "dutch": "ruim",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "mesin pencuci",
+          "dutch": "wasmachine",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "milik, pe-~",
+          "dutch": "eigenaar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "nyentrik",
+          "dutch": "excentriek, raar",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "oven",
+          "dutch": "oven",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "palem",
+          "dutch": "palm",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "perkakas makan",
+          "dutch": "eetgerei",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "perabot rumah",
+          "dutch": "huisraad",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pilek",
+          "dutch": "verkouden",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "pindah, memindahkan",
+          "dutch": "verhuizen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "rumput",
+          "dutch": "gras",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "saluran air",
+          "dutch": "waterleiding",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sedia, ber-~",
+          "dutch": "bereid zijn",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sewa, menyewakan",
+          "dutch": "verhuren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sewa-menyewa",
+          "dutch": "huur en verhuur",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sisip, menyisip",
+          "dutch": "iets steken in",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "syarat",
+          "dutch": "voorwaarde",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tegel (tégel)",
+          "dutch": "tegel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tengok, menengok",
+          "dutch": "bekijken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "teras (tèras)",
+          "dutch": "terras",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tiada (tidak ada)",
+          "dutch": "er is niet, geen",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "tumbuhan",
+          "dutch": "plant",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "waktu, se- - ~",
+          "dutch": "op ieder moment",
+          "pos": "adverb"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "text",
+      "title": "Pepatah",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Tiada kesuksesan tanpa cucuran keringat dan air mata\nZonder zweet en tranen bereikt men geen sukses"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "grammar",
+      "title": "TATA BAHASA - KE-AN",
+      "source_pages": [
+        3,
+        4,
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "TATA BAHASA\n\nKE - AN\n\nDe belangrijkste functies van KE - AN zijn:\n  A. het vormen van een zelfstandig naamwoord met een abstracte betekenis\n  B. het vormen van een werkwoordsvorm met accidenteel karakter\n\nKE - AN kan gecombineerd worden met de volgende typen basiswoorden:\n\n                        A                          B\n1. werkwoord         kehidupan  het leven       kelihatan   zichtbaar\n2. zelfstandig naamwoord  kerajaan  koninkrijk  keracunan   vergiftigd\n3. bijvoeglijk naamwoord  kebaikan  goedheid    kepanasan   door hitte bevangen\n\n---\n\nFunctie A: het maken van een zelfstandig naamwoord met een abstracte betekenis.\n\ndatang - kedatangan                                komen - de komst\nKedatangan Ratu Beatrix ke Indonesia               De komst van koningin Beatrix naar\ndirencanakan pada bulan Agustus 1995               Indonesië was gepland in augustus 1995\n\nraja - kerajaan                                    koning - koninkrijk\nKerajaan Raja Ibrahim kecil                        Het koninkrijk van koning Ibrahim is klein\n\nbersih - kebersihan                                schoon - hygiëne\nJagalah kebersihan                                 Let op de hygiëne\n\n---\n\nFunctie B: het maken van een werkwoordsvorm met een accidenteel accent.\n\nlihat - kelihatan                                  zien - zichtbaar\nGunung itu kelihatan dari sini                     Van hieruit is de berg zichtbaar\n\nhujan - kehujanan                                  regen - overvallen door regen\nKemarin saya kehujanan                             Gisteren werd ik verrast door een regenbui\n\nkurang - kekurangan                                te weinig - getroffen door gebrek\nDesa ini kekurangan air                            Dit dorp heeft gebrek aan water\n\n---\n\nFunctie C: het gevormde zelfstandig naamwoord krijgt de bijbetekenis van toevallige excessiviteit. In feite een combinatie van functie 1 en 2.\n\nbesar - kebesaran                                  groot - te groot\nUntuk saudara kemeja ini kebesaran                 Voor jou is dit hemd te groot\n\n---\n\nKE - AN + verdubbeld bijvoeglijk naamwoord geeft de betekenis 'ergens op lijken'\nputih - keputih-putihan                            wit - witachtig\nGorden berwarna kehijau-hijauan                    Het gordijn heeft een groene glans\n\n---\n\nKE - AN vergeleken met andere vormen\n\nSaya mendengar gamelan di kamar                    Ik hoor de gamelan in de kamer\nDi kamar saya terdengar gamelan                    In mijn kamer is de gamelan te horen\nSuara gamelan kedengaran di kamar saya             In mijn kamer is gamelanmuziek hoorbaar\n\nGunung itu dapat dilihat dari rumah                Vanuit het huis kan men de berg zien\nDari rumah terlihat gunung itu                     Vanuit het huis is de berg te zien\nGunung itu kelihatan dari rumah                    Vanuit het huis is de berg zichtbaar\n\n---\n\nTER- en KE-AN vormen laten zich niet gemakkelijk vertalen in het Nederlands.\nHet onderscheid in betekenis is in onze taal moeilijk weer te geven. Deze nuances zijn in het Indonesisch echter duidelijk. Een hulpmiddel bij het vertalen is:\n\nTER-    terlihat: te zien door\nKE-AN   kelihatan: zichtbaar voor"
+    },
+    {
+      "id": 5,
+      "type": "exercises",
+      "title": "LATIHAN",
+      "source_pages": [
+        5,
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "Latihan I. Schrijf een verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van onderstaande tekeningen.\n\n[Tekening: Bapak Bambang (pemilik rumah) en Pak Sukardi (tukang kebun)]\n\nLatihan II. Maak van de volgende woorden een KE - AN vorm en pas de vorm toe in een zin. Voorbeeld:\naman    Di Indonesia keamanan adalah hal yang penting\n\n1. dingin\n2. kurang\n3. miskin\n4. rugi\n5. hilang\n6. curi\n7. aman\n8. datang\n9. sehat\n10. banyak\n\nLatihan III. Vertaal onderstaand verhaal in het Indonesisch.\n\nIn Nederland gaan veel mensen op de fiets naar hun werk. Een fiets is ook makkelijk om boodschappen te doen. Vooral in de stad is een fiets handig. Men kan overal makkelijk parkeren. Bovendien zijn er speciale fietspaden voor de veiligheid van de fietsers.\nAlleen als het regent is het niet zo prettig. Om niet helemaal nat te worden moet je dan goede regenkleding dragen. Alhoewel het dikwijls regent, vooral in de herfst, is de fiets bijzonder populair. Zelfs tijdens de vakantie nemen sommige gezinnen fietsen mee.\nVolgens schattingen bezitten de Nederlanders 14 miljoen fietsen.\n\nLatihan IV. Vertaal de volgende zinnen naar het Nederlands.\n\n1. Kenaikan harga sepatu mengikuti inflasi\n2. Keuntungan perusahaan sepatu tergantung hasil ekspornya\n3. Kemungkinan mencari pasar di luar negeri masih kurang\n4. Sepatu dibeli kebanyakan penduduk Indonesia\n5. Keluasan pasar dalam negeri besar sekali\n6. Kepentingan ini tidak dapat dilupakan\n7. Buat perusahaan Indonesia kebebasan mengimpor barang dari luar negeri terbatas\n8. Keadaan ini merupakan satu faktor lain sebabnya kerendahan hasilnya\n9. Untuk mendapat sukses, kwalitas pimpinan sangat penting\n10. Tapi, menurut keterangan terakhir, perindustrian Indonesia berkembang terus"
+    }
+  ],
+  "flags": [
+    "OCR page 1 was missing the opening paragraphs of the Sewa Rumah text; full text recovered from image IMG_1672.jpg",
+    "OCR page 2 was missing the sender details (Ir. K.L. Kramer, Hotel Ambara, Palembang) and the full letter opening sentence; recovered from image IMG_1673.jpg",
+    "OCR page 3 was missing the left column of vocabulary (kipas through pilek) and the KE-AN table with three word-type rows; recovered from image IMG_1674.jpg",
+    "OCR page 5 (Latihan) was missing Latihan II entirely; recovered from image IMG_1677.jpg",
+    "OCR page 6 Latihan IV items 8-10 were garbled; corrected from image IMG_1677.jpg"
+  ],
+  "sourceImages": 6
+}

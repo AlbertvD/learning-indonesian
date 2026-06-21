@@ -1,0 +1,1002 @@
+{
+  "meta": {
+    "id": "64f62c89-b2ab-4275-93cc-86b8637d828e",
+    "order_index": 30,
+    "title": "Bab 14 - Musik Pop di Indonesia",
+    "level": "B2",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Orus",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Di Indonesia, juga di negara mana saja, terdapat industri musik pop. Musik pop di Indonesia bukan dalam bahasa Inggris, melainkan dalam bahasa Indonesia. Buat penyanyi diciptakan banyak lagu baru, sehingga orang juga sering mendengar melodi yang baru.",
+          "Di Eropa lagu baru selalu direkam di CD, tetapi di Indonesia lain halnya. Walaupun CD juga menjadi makin populer, tetapi masih mahal. Di Indonesia kasetlah yang paling populer. Tidak hanya karena gampang dipakai dan harganya murah, tetapi juga karena kaset lebih mudah diperbanyak. Sebab itu lebih baik Anda coba memutar kaset dulu, supaya kualitas rekaman dan kualitas pita bisa ditimbangkan.",
+          "Kalau mengunjungi Indonesia, jangan lupa membeli kaset atau CD dengan lagu terbaru. Anda akan selalu mengenang saat-saat sewaktu Anda berada di Indonesia, apabila Anda memutar kembali kaset yang Anda beli di sana.",
+          "Pada saat Anda mendengar kaset itu, bau dan gambar Indonesia pasti akan teringat lagi. Di bawah ini dimuat dua lagu 'pop klasik', yaitu dua lagu keroncong!",
+          "Bengawan Solo\n\nBengawan Solo riwayatmu ini\nsedari dulu jadi perhatian insani\nmusim kemarau tak seberapa airmu\ndi musim hujan air meluap sampai jauh\n\nmata airmu dari Solo\nterkurung gunung seribu\nair mengalir sampai jauh\nakhirnya ke laut\n\nitu perahu riwayatnya dulu\nkaum pedagang selalu naik itu perahu",
+          "Terang bulan\n\nTerang bulan, terang bulan di kali\nbuaya timbul disangkalah mati\n\njangan percaya mulut lelaki\nberani sumpah tapi takut mati (2x)"
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "wanneer / als",
+            "english": "when / if",
+            "indonesian": "apabila",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/apabila-619a96cd.mp3"
+          },
+          {
+            "dutch": "geur / reuk",
+            "english": "smell / odor",
+            "indonesian": "bau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bau-2c62ae06.mp3"
+          },
+          {
+            "dutch": "grote rivier",
+            "english": "large river",
+            "indonesian": "bengawan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bengawan-5b6025c3.mp3"
+          },
+          {
+            "dutch": "dapper / moedig",
+            "english": "brave / courageous",
+            "indonesian": "berani",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/berani-31838665.mp3"
+          },
+          {
+            "dutch": "zoveel als",
+            "english": "as much as",
+            "indonesian": "berapa, se-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/berapa-se-f50f0801.mp3"
+          },
+          {
+            "dutch": "gebouw / opbouw",
+            "english": "building / construction",
+            "indonesian": "bina, per-an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bina-peran-353ea180.mp3"
+          },
+          {
+            "dutch": "creëeren / scheppen",
+            "english": "create / compose",
+            "indonesian": "cipta, men-kan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cipta-menkan-ceb9a5d3.mp3"
+          },
+          {
+            "dutch": "compact disc",
+            "english": "compact disc",
+            "indonesian": "CD",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cd-cd966b82.mp3"
+          },
+          {
+            "dutch": "verdrietig / droef",
+            "english": "sad / sorrowful",
+            "indonesian": "duka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/duka-9b9e408b.mp3"
+          },
+          {
+            "dutch": "aandacht",
+            "english": "attention",
+            "indonesian": "hati, per-an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hati-peran-5b2c8ed1.mp3"
+          },
+          {
+            "dutch": "menselijk",
+            "english": "human / humane",
+            "indonesian": "insani",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/insani-6e3153cc.mp3"
+          },
+          {
+            "dutch": "ziel / persoon",
+            "english": "soul / person",
+            "indonesian": "jiwa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jiwa-70f1f92e.mp3"
+          },
+          {
+            "dutch": "(muziek) cassette",
+            "english": "cassette",
+            "indonesian": "kaset",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kaset-b7ee415a.mp3"
+          },
+          {
+            "dutch": "klasse / stand",
+            "english": "class / group",
+            "indonesian": "kaum",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kaum-61fa154d.mp3"
+          },
+          {
+            "dutch": "bevordering",
+            "english": "promotion / development",
+            "indonesian": "kembang, pengembangan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kembang-pengembangan-104857a6.mp3"
+          },
+          {
+            "dutch": "terugdenken aan",
+            "english": "remember / recall",
+            "indonesian": "kenang, mengenang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kenang-mengenang-3e5ce9a1.mp3"
+          },
+          {
+            "dutch": "klassiek",
+            "english": "classical",
+            "indonesian": "klasik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/klasik-1d3158b4.mp3"
+          },
+          {
+            "dutch": "omringd / ingesloten",
+            "english": "surrounded / enclosed",
+            "indonesian": "kurung, ter-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kurung-ter-7344274d.mp3"
+          },
+          {
+            "dutch": "man / mannelijk",
+            "english": "man / male",
+            "indonesian": "lelaki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lelaki-78908cbd.mp3"
+          },
+          {
+            "dutch": "bron",
+            "english": "spring / source",
+            "indonesian": "mata air",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mata-air-872d7124.mp3"
+          },
+          {
+            "dutch": "maar",
+            "english": "but",
+            "indonesian": "melainkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/melainkan-a5bfe85c.mp3"
+          },
+          {
+            "dutch": "melodie",
+            "english": "melody",
+            "indonesian": "melodi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/melodi-77aae5d5.mp3"
+          },
+          {
+            "dutch": "weergeven / opnemen",
+            "english": "feature / record",
+            "indonesian": "muat, me-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/muat-me-7cde8f59.mp3"
+          },
+          {
+            "dutch": "popmuziek",
+            "english": "pop music",
+            "indonesian": "musik pop",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/musik-pop-04d6c8cb.mp3"
+          },
+          {
+            "dutch": "toon / klank",
+            "english": "tone / sound",
+            "indonesian": "nada",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/nada-95c84bf9.mp3"
+          },
+          {
+            "dutch": "koekje",
+            "english": "cookie",
+            "indonesian": "pancong, kue-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pancong-kue-80b52592.mp3"
+          },
+          {
+            "dutch": "boot / schip",
+            "english": "boat / ship",
+            "indonesian": "perahu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/perahu-8cf6ec6d.mp3"
+          },
+          {
+            "dutch": "geloven in",
+            "english": "believe in",
+            "indonesian": "percaya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/percaya-f44e2c9d.mp3"
+          },
+          {
+            "dutch": "band / tape",
+            "english": "tape / band",
+            "indonesian": "pita",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pita-524f7e26.mp3"
+          },
+          {
+            "dutch": "opname",
+            "english": "recording",
+            "indonesian": "rekam, -an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/rekam-an-591c67da.mp3"
+          },
+          {
+            "dutch": "opnemen (van geluid)",
+            "english": "record, me- | record (sound)",
+            "indonesian": "rekam, me-",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/rekam-me-48935fca.mp3"
+          },
+          {
+            "dutch": "verhaal / vertelling",
+            "english": "riwayat | story / narrative",
+            "indonesian": "riwayat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/riwayat-bb995fb6.mp3"
+          },
+          {
+            "dutch": "vermoeden",
+            "english": "sangka, menyangka | suspect",
+            "indonesian": "sangka, menyangka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sangka-menyangka-b386548d.mp3"
+          },
+          {
+            "dutch": "sinds",
+            "english": "sedari | since",
+            "indonesian": "sedari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sedari-7e2873ce.mp3"
+          },
+          {
+            "dutch": "christen / Portugees / Indo-Europeaan (oud)",
+            "english": "serani | Christian / Portuguese / Indo-European (archaic)",
+            "indonesian": "serani",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/serani-b6861ea6.mp3"
+          },
+          {
+            "dutch": "roepen",
+            "english": "seru, menyeru | call out",
+            "indonesian": "seru, menyeru",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/seru-menyeru-761c2917.mp3"
+          },
+          {
+            "dutch": "eed / vloek",
+            "english": "sumpah | oath / curse",
+            "indonesian": "sumpah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sumpah-d8e3ae69.mp3"
+          },
+          {
+            "dutch": "tarwemeel",
+            "english": "tepung terigu | wheat flour",
+            "indonesian": "tepung terigu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tepung-terigu-2f94743c.mp3"
+          },
+          {
+            "dutch": "beoordelen",
+            "english": "timbang, menimbangkan | assess",
+            "indonesian": "timbang, menimbangkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/timbang-menimbangkan-9ed27517.mp3"
+          },
+          {
+            "dutch": "verschijnen",
+            "english": "timbul, menimbul | appear",
+            "indonesian": "timbul, menimbul",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/timbul-menimbul-9ec2e8b3.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Het Taalcentrum in Jakarta (Pusat Pembinaan dan Pengembangan Bahasa) stelt regels op waaraan nieuwe woorden moeten voldoen, met als doel een gestandaardiseerde moderne woordenschat.",
+              "Deze nieuwgevormde woorden komen vooral in de geschreven, formele taal voor — niet zozeer in de dagelijkse spreektaal.",
+              "Veel van de gebruikte voor- en achtervoegsels zijn ontleend aan het Sanskriet en het Arabisch (bv. pra-, tuna-, -wan), niet aan de inheemse me-/di-/ber-affixen.",
+              "De devices zijn productief: men kan er naar analogie steeds nieuwe vakwoorden mee vormen."
+            ],
+            "title": "Standaardisatie: hoe nieuwe woorden ontstaan",
+            "examples": [
+              {
+                "dutch": "het Centrum voor Taalopbouw en Taalontwikkeling (het Taalcentrum in Jakarta)",
+                "english": "Pusat Pembinaan dan Pengembangan Bahasa | Center for Language Development and Cultivation (the Language Center in Jakarta)",
+                "indonesian": "Pusat Pembinaan dan Pengembangan Bahasa",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pusat-pembinaan-dan-pengembangan-9cf304ca.mp3"
+              }
+            ],
+            "rules_en": [
+              "The Language Center in Jakarta (Pusat Pembinaan dan Pengembangan Bahasa) establishes rules that new words must meet, with the aim of creating a standardized modern vocabulary.",
+              "These newly formed words appear mainly in written, formal language — less so in everyday speech.",
+              "Many of the prefixes and suffixes used are borrowed from Sanskrit and Arabic (e.g. pra-, tuna-, -wan), not from native me-/di-/ber- affixes.",
+              "The devices are productive: one can continually form new technical terms by analogy with them."
+            ],
+            "title_en": "Standardization: how new words emerge"
+          },
+          {
+            "rules": [
+              "De woorden bina, graha en loka worden gebruikt in de betekenis van 'instelling' of 'gebouw' en vormen samen met een tweede woord de naam van een officiële instelling.",
+              "Het zijn vaste samenstellingen uit het ambtelijke en officiële register; de afzonderlijke delen worden niet vrij gecombineerd zoals een productief affix."
+            ],
+            "title": "Bina, Graha & Loka — ontleende woorden voor 'instelling, gebouw'",
+            "examples": [
+              {
+                "dutch": "presidentieel kantoor",
+                "english": "bina graha | presidential office",
+                "indonesian": "bina graha",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bina-graha-272e134e.mp3"
+              },
+              {
+                "dutch": "tehuis voor veteranen",
+                "english": "graha purna yuddha | veterans' home",
+                "indonesian": "graha purna yuddha",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/graha-purna-yuddha-1dae60b1.mp3"
+              },
+              {
+                "dutch": "diplomateninstituut",
+                "english": "caraka loka | diplomatic institute",
+                "indonesian": "caraka loka",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/caraka-loka-5149a11c.mp3"
+              }
+            ],
+            "rules_en": [
+              "The words bina, graha and loka are used to mean 'institution' or 'building' and together with a second word form the name of an official institution.",
+              "They are fixed compounds from the administrative and official register; the individual parts are not freely combined like a productive affix."
+            ],
+            "title_en": "Bina, Graha & Loka — borrowed words for 'institution, building'"
+          },
+          {
+            "rules": [
+              "Het voorvoegsel pra- (ontleend aan het Sanskriet, vergelijkbaar met het Engelse 'pre-') betekent 'voor', 'vóór in de tijd' of 'voorafgaand aan'.",
+              "Het wordt direct vóór een zelfstandig naamwoord of basiswoord geplaatst en vormt zo een nieuw, vaak formeel of vakmatig begrip.",
+              "De betekenis is meestal temporeel of ruimtelijk-voorafgaand (prasejarah = prehistorie, pralahir = prenataal), maar kan ook overdrachtelijk zijn (prasangka = vooroordeel)."
+            ],
+            "title": "PRA- — het voorvoegsel 'voor / pre-'",
+            "examples": [
+              {
+                "dutch": "woord → voorwoord, voorrede",
+                "english": "kata → prakata | word → foreword, preface",
+                "indonesian": "kata → prakata",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kata-prakata-144cf3f9.mp3"
+              },
+              {
+                "dutch": "geboren worden → prenataal",
+                "english": "lahir → pralahir | to be born → prenatal",
+                "indonesian": "lahir → pralahir",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lahir-pralahir-e453acbf.mp3"
+              },
+              {
+                "dutch": "vermoeden → vooroordeel",
+                "english": "sangka → prasangka | suspicion → prejudice",
+                "indonesian": "sangka → prasangka",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sangka-prasangka-2305e648.mp3"
+              },
+              {
+                "dutch": "geschiedenis → prehistorie",
+                "english": "sejarah → prasejarah | history → prehistory",
+                "indonesian": "sejarah → prasejarah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sejarah-prasejarah-f736d13b.mp3"
+              }
+            ],
+            "rules_en": [
+              "The prefix pra- (borrowed from Sanskrit, comparable to English 'pre-') means 'before', 'before in time' or 'preceding'.",
+              "It is placed directly before a noun or base word, forming a new, often formal or technical concept.",
+              "The meaning is usually temporal or spatially-preceding (prasejarah = prehistory, pralahir = prenatal), but can also be figurative (prasangka = prejudice)."
+            ],
+            "title_en": "PRA- — the prefix 'before / pre-'"
+          },
+          {
+            "rules": [
+              "Het voorvoegsel pramu- duidt een persoon aan die in de dienstensector werkt; het is een back-formation uit pramugari (stewardess) en is zeer productief geworden.",
+              "Het wordt vóór een zelfstandig naamwoord geplaatst dat het werkterrein noemt: pramu- + saji (gerecht) → pramusaji (ober).",
+              "Het hoort thuis in het neutrale tot formele register en wordt vooral in beroepsbenamingen en advertenties gebruikt."
+            ],
+            "title": "PRAMU- — functies in de dienstensector",
+            "examples": [
+              {
+                "dutch": "handel → verkoper, verkoopster",
+                "english": "commerce → shop assistant",
+                "indonesian": "niaga → pramuniaga",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/niaga-pramuniaga-c5144372.mp3"
+              },
+              {
+                "dutch": "gerecht → ober, serveerster",
+                "english": "dish → waiter, waitress",
+                "indonesian": "saji → pramusaji",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/saji-pramusaji-771f0919.mp3"
+              },
+              {
+                "dutch": "toerisme → (toeristen)gids",
+                "english": "tourism → tour guide",
+                "indonesian": "wisata → pramuwisata",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/wisata-pramuwisata-2e2e93ed.mp3"
+              },
+              {
+                "dutch": "gast → receptionist",
+                "english": "guest → receptionist",
+                "indonesian": "tamu → pramutamu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tamu-pramutamu-e19ea720.mp3"
+              },
+              {
+                "dutch": "kind → babysitter",
+                "english": "child → babysitter",
+                "indonesian": "siwi → pramusiwi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/siwi-pramusiwi-27eade2a.mp3"
+              }
+            ],
+            "rules_en": [
+              "The prefix pramu- denotes a person who works in the service sector; it is a back-formation from pramugari (stewardess) and has become highly productive.",
+              "It is placed before a noun naming the field of work: pramu- + saji (dish) → pramusaji (waiter).",
+              "It belongs in the neutral to formal register and is used especially in job titles and advertisements."
+            ],
+            "title_en": "PRAMU- — service sector occupations"
+          },
+          {
+            "rules": [
+              "Het voorvoegsel tuna- (uit het Oud-Javaans/Sanskriet) betekent 'met een gebrek' of 'zonder' en vormt formele, beleefde benamingen voor mensen met een handicap of tekortkoming.",
+              "Het tuna-woord is het nette, formele register-alternatief voor een ouder, direct(er) alledaags woord: tunanetra náást buta ('blind'), tunarungu náást tuli ('doof').",
+              "Het cursusboek presenteert telkens een register-paar (formeel tuna-woord ↔ alledaags/direct woord); ken het verschil in toon, niet alleen de betekenis."
+            ],
+            "title": "TUNA- — formeel eufemisme voor 'met een gebrek/handicap'",
+            "examples": [
+              {
+                "dutch": "analfabeet (formeel ↔ alledaags)",
+                "english": "illiterate (formal ↔ everyday)",
+                "indonesian": "tunaaksara (≠ buta huruf)",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tunaaksara-buta-huruf-9d39f8e0.mp3"
+              },
+              {
+                "dutch": "werkloos (formeel ↔ alledaags)",
+                "english": "unemployed (formal ↔ everyday)",
+                "indonesian": "tunakarya (≠ menganggur)",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tunakarya-menganggur-5a213426.mp3"
+              },
+              {
+                "dutch": "blind (formeel ↔ direct)",
+                "english": "blind (formal ↔ direct)",
+                "indonesian": "tunanetra (≠ buta)",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tunanetra-buta-d99309db.mp3"
+              },
+              {
+                "dutch": "doof (formeel ↔ direct)",
+                "english": "deaf (formal ↔ direct)",
+                "indonesian": "tunarungu (≠ tuli)",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tunarungu-tuli-f9e4e035.mp3"
+              }
+            ],
+            "rules_en": [
+              "The prefix tuna- (from Old Javanese/Sanskrit) means 'with a defect' or 'without' and forms formal, polite terms for people with a disability or limitation.",
+              "The tuna- word is the proper, formal register alternative to an older, more direct everyday word: tunanetra alongside buta ('blind'), tunarungu alongside tuli ('deaf').",
+              "The coursebook presents a register pair each time (formal tuna- word ↔ everyday/direct word); learn the difference in tone, not just meaning."
+            ],
+            "title_en": "TUNA- — formal euphemism for 'disabled/with a handicap'"
+          },
+          {
+            "rules": [
+              "Met het achtervoegsel -wan vormt men een zelfstandig naamwoord dat een persoon aanduidt die tot een bepaalde groep behoort of een bepaald beroep uitoefent.",
+              "Het wordt achter een zelfstandig naamwoord geplaatst dat het vakgebied noemt: warta (bericht) + -wan → wartawan (journalist).",
+              "De vrouwelijke tegenhanger is -wati (bv. wartawati); -wan is van oorsprong mannelijk maar wordt vaak geslachtsneutraal gebruikt."
+            ],
+            "title": "-WAN — achtervoegsel voor persoon van een groep of beroep",
+            "examples": [
+              {
+                "dutch": "onderneming → ondernemer",
+                "english": "enterprise → entrepreneur",
+                "indonesian": "usaha → usahawan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/usaha-usahawan-86e18f8f.mp3"
+              },
+              {
+                "dutch": "bericht → journalist",
+                "english": "news → journalist",
+                "indonesian": "warta → wartawan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/warta-wartawan-457f1464.mp3"
+              },
+              {
+                "dutch": "toerisme → toerist",
+                "english": "tourism → tourist",
+                "indonesian": "wisata → wisatawan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/wisata-wisatawan-25c7af2a.mp3"
+              },
+              {
+                "dutch": "guerrilla → guerrillastrijder",
+                "english": "guerrilla → guerrilla fighter",
+                "indonesian": "gerilya → gerilyawan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/gerilya-gerilyawan-fde34b2a.mp3"
+              }
+            ],
+            "rules_en": [
+              "With the suffix -wan one forms a noun denoting a person who belongs to a particular group or practices a particular profession.",
+              "It is placed after a noun naming the field: warta (news) + -wan → wartawan (journalist).",
+              "The feminine counterpart is -wati (e.g. wartawati); -wan is originally masculine but is often used in a gender-neutral way."
+            ],
+            "title_en": "-WAN — suffix for person of a group or profession"
+          },
+          {
+            "rules": [
+              "Naast de formele schrijftaal kent het Indonesisch een levendige spreektaal vol woordspelingen (plesetan): bestaande woorden worden 'heruitgelegd' als grappige acroniemen, vaak met een betekenis die tegengesteld is aan het origineel.",
+              "Voorbeelden zijn schertsende acroniemen zoals Monalisa = 'monyet nangkring lihat saya', simpatik = 'simpanse pakai batik', benci = 'benar-benar cinta' en perek = 'perempuan eksperimental'.",
+              "Het cursusboek vermeldt ook scheldwoorden (anjing, bangsat, goblok, setan, sialan, sinting, tolol e.d.) zodat je ze hérkent — dit is taboe/informeel register dat je begrijpt maar niet zelf actief hoeft te gebruiken.",
+              "Dit is een register-bewustzijnscategorie: leer het verschil tussen formeel/neutraal en informeel/taboe taalgebruik herkennen; deze stof is bedoeld om passief te begrijpen, niet om in te oefenen of te produceren."
+            ],
+            "title": "Register & woordspel: van plesetan tot scheldwoorden",
+            "examples": [
+              {
+                "dutch": "letterlijk 'haat', schertsend heruitgelegd als 'echt heel erg verliefd' (om iemand te versieren)",
+                "english": "hate → 'truly in love'",
+                "indonesian": "benci → 'benar-benar cinta'",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/benci-benarbenar-cinta-b9767bf4.mp3"
+              },
+              {
+                "dutch": "letterlijk 'sympathiek', schertsend 'een chimpansee in batik' (spot)",
+                "english": "sympathetic → 'a chimpanzee in batik'",
+                "indonesian": "simpatik → 'simpanse pakai batik'",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/simpatik-simpanse-pakai-batik-7c9094dd.mp3"
+              }
+            ],
+            "rules_en": [
+              "Alongside formal written Indonesian, spoken Indonesian has a lively register full of wordplay (plesetan): existing words are 'reinterpreted' as funny acronyms, often with a meaning opposite to the original.",
+              "Examples are joking acronyms such as Monalisa = 'monyet nangkring lihat saya', simpatik = 'simpanse pakai batik', benci = 'benar-benar cinta' and perek = 'perempuan eksperimental'.",
+              "The coursebook also mentions swear words (anjing, bangsat, goblok, setan, sialan, sinting, tolol etc.) so you can recognize them — this is taboo/informal register that you understand but don't need to use yourself.",
+              "This is a register-awareness category: learn to recognize the difference between formal/neutral and informal/taboo language use; this material is meant to be understood passively, not to be practiced or produced."
+            ],
+            "title_en": "Register & wordplay: from plesetan to swear words"
+          }
+        ],
+        "grammar_topics": [
+          "Woordvorming en affixen"
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "eeuwig",
+            "english": "eternal",
+            "indonesian": "abadi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/abadi-b2e8c6a9.mp3"
+          },
+          {
+            "dutch": "mooi (jongen)",
+            "english": "handsome (boy)",
+            "indonesian": "bagus",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bagus-08e2a982.mp3"
+          },
+          {
+            "dutch": "oogappel",
+            "english": "apple of one's eye",
+            "indonesian": "buah mata",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/buah-mata-a2a87269.mp3"
+          },
+          {
+            "dutch": "knap / mooi (man)",
+            "english": "handsome / good-looking (man)",
+            "indonesian": "cakap, cakep",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cakap-cakep-379abf00.mp3"
+          },
+          {
+            "dutch": "mooi (vrouw)",
+            "english": "beautiful (woman)",
+            "indonesian": "cantik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cantik-4ce01135.mp3"
+          },
+          {
+            "dutch": "meisje",
+            "english": "girl",
+            "indonesian": "cewek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cewek-7d5f6b56.mp3"
+          },
+          {
+            "dutch": "liefde",
+            "english": "love",
+            "indonesian": "cinta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cinta-e2d60eef.mp3"
+          },
+          {
+            "dutch": "zoenen",
+            "english": "kiss",
+            "indonesian": "cium",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cium-9b79fd29.mp3"
+          },
+          {
+            "dutch": "jongen",
+            "english": "boy",
+            "indonesian": "cowok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cowok-7b9de787.mp3"
+          },
+          {
+            "dutch": "knap (man)",
+            "english": "handsome (man)",
+            "indonesian": "ganteng",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ganteng-9409e5b8.mp3"
+          },
+          {
+            "dutch": "beschaafd",
+            "english": "refined",
+            "indonesian": "halus",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/halus-6555fa21.mp3"
+          },
+          {
+            "dutch": "hart",
+            "english": "heart",
+            "indonesian": "hati",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hati-c7990fbe.mp3"
+          },
+          {
+            "dutch": "vrijen",
+            "english": "make out",
+            "indonesian": "indehoi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/indehoi-b427b538.mp3"
+          },
+          {
+            "dutch": "afspraakje",
+            "english": "date",
+            "indonesian": "janji",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/janji-995080a6.mp3"
+          },
+          {
+            "dutch": "geliefde / liefje",
+            "english": "beloved / sweetheart",
+            "indonesian": "kekasih",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kekasih-d46ae575.mp3"
+          },
+          {
+            "dutch": "innigheid / intimiteit / tederheid",
+            "english": "intimacy / tenderness",
+            "indonesian": "kemesraan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kemesraan-a6578bfd.mp3"
+          },
+          {
+            "dutch": "knap (gestalte)",
+            "english": "good-looking (figure)",
+            "indonesian": "keren",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/keren-4e9fa3bc.mp3"
+          },
+          {
+            "dutch": "lief",
+            "english": "sweet",
+            "indonesian": "manis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/manis-48bfda4c.mp3"
+          },
+          {
+            "dutch": "een oogje hebben op",
+            "english": "have a crush on",
+            "indonesian": "naksir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/naksir-0a1d994a.mp3"
+          },
+          {
+            "dutch": "vaste vriend(in)",
+            "english": "steady girlfriend/boyfriend",
+            "indonesian": "pacar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pacar-9ef0e39e.mp3"
+          },
+          {
+            "dutch": "verkering hebben",
+            "english": "be in a relationship",
+            "indonesian": "pacaran",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pacaran-605efc74.mp3"
+          },
+          {
+            "dutch": "geen hoop meer hebben",
+            "english": "lose hope",
+            "indonesian": "putus asa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/putus-asa-dada0f28.mp3"
+          },
+          {
+            "dutch": "hartedief",
+            "english": "heartbreaker",
+            "indonesian": "puspa hati",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/puspa-hati-4aebf778.mp3"
+          },
+          {
+            "dutch": "heimwee",
+            "english": "longing",
+            "indonesian": "rasa rindu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/rasa-rindu-f2c851ee.mp3"
+          },
+          {
+            "dutch": "lieveling / liefje",
+            "english": "sweetheart / darling",
+            "indonesian": "sayang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sayang-56022c7a.mp3"
+          },
+          {
+            "dutch": "liefdesbrief",
+            "english": "love letter",
+            "indonesian": "surat cinta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/surat-cinta-096a0aa4.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "expressions",
+        "items": [
+          {
+            "dutch": "Ik mag je wel",
+            "english": "I like you",
+            "indonesian": "Aku suka padamu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/aku-suka-padamu-c9d4ecbb.mp3"
+          },
+          {
+            "dutch": "Ik ben verliefd",
+            "english": "I'm in love",
+            "indonesian": "Aku jatuh cinta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/aku-jatuh-cinta-0eb493a0.mp3"
+          },
+          {
+            "dutch": "Ik hou van jou",
+            "english": "I love you",
+            "indonesian": "Aku cinta padamu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/aku-cinta-padamu-8acecb14.mp3"
+          },
+          {
+            "dutch": "Ik wil jou omhelzen",
+            "english": "I want to hold you",
+            "indonesian": "Aku ingin memelukmu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/aku-ingin-memelukmu-e8b0e46f.mp3"
+          },
+          {
+            "dutch": "Ik wil jou aanraken",
+            "english": "I want to touch you",
+            "indonesian": "Aku ingin menyentuhmu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/aku-ingin-menyentuhmu-e07a5a46.mp3"
+          },
+          {
+            "dutch": "De liefde is blind",
+            "english": "Love is blind",
+            "indonesian": "Cinta itu memang buta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cinta-itu-memang-buta-911fd0d7.mp3"
+          },
+          {
+            "dutch": "Jij alleen bent voor altijd in mijn hart",
+            "english": "Only you are forever in my heart",
+            "indonesian": "Hanya kamu yang selalu dalam hatiku",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hanya-kamu-yang-selalu-dd306b34.mp3"
+          },
+          {
+            "dutch": "Ga weg, ik begrijp het wel",
+            "english": "Go away, I understand",
+            "indonesian": "Pergilah, aku bisa mengerti",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pergilah-aku-bisa-mengerti-5b5686db.mp3"
+          },
+          {
+            "dutch": "Geef de moed niet op!",
+            "english": "Don't lose hope!",
+            "indonesian": "Jangan putus asa!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jangan-putus-asa-cc7d21fb.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "writing",
+            "items": [
+              {
+                "prompt": "Schrijf een verhaal van maximaal 10 zinnen bij de tekening waarop iemand afscheid neemt van Pak Yance ('Terima kasih, Pak! Sampai jumpa lagi' / 'Selamat jalan dan kirim potret ya, Pak Yance')."
+              }
+            ],
+            "title": "Latihan I",
+            "instruction": "Maak een verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van de tekening (afscheid: 'Terima kasih, Pak! Sampai jumpa lagi' en 'Selamat jalan dan kirim potret ya, Pak Yance'). Open schrijfopdracht."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Dua hari lagi saya pulang. — Over twee dagen ga ik naar huis.",
+                "prompt": "(Over twee dagen) saya pulang"
+              },
+              {
+                "answer": "Kemarin dulu saya ikut dengan seorang pramuwisata ke dalam hutan. — Eergisteren ging ik met een gids het bos in.",
+                "prompt": "(Eergisteren) saya ikut dengan seorang pramuwisata ke dalam hutan"
+              },
+              {
+                "answer": "Besok pagi pramusiwi, Wiwi namanya, akan datang. — Morgenochtend komt de babysitter, Wiwi heet ze.",
+                "prompt": "(Morgenochtend) pramusiwi, Wiwi namanya, akan datang"
+              },
+              {
+                "answer": "Ketika saya mau berangkat ke Bandung, kereta api tidak tepat waktu. — Toen ik naar Bandung wilde vertrekken, was de trein niet op tijd.",
+                "prompt": "(Toen) saya mau berangkat ke Bandung, kereta api (niet op tijd)"
+              },
+              {
+                "answer": "Kita mampir dulu ke rumah Tin, kemudian kita berbelanja. — We gaan eerst even langs bij Tin, vervolgens gaan we boodschappen doen.",
+                "prompt": "Kita mampir (eerst) ke rumah Tin (vervolgens) kita berbelanja"
+              }
+            ],
+            "title": "Latihan II",
+            "instruction": "Voeg een woord van tijd toe op de aangegeven plaats en vertaal de hele zin."
+          },
+          {
+            "type": "writing",
+            "items": [
+              {
+                "answer": "Model: Pada umumnya orang Indonesia ramah terhadap turis. — Over het algemeen zijn Indonesiërs vriendelijk tegen toeristen.",
+                "prompt": "Pada umumnya ..."
+              },
+              {
+                "answer": "Model: Kalau begini, lebih baik kita tinggal di rumah saja. — Als het zo is, kunnen we beter gewoon thuisblijven.",
+                "prompt": "Kalau begini ..."
+              },
+              {
+                "answer": "Model: Jelas dia belum mengerti masalahnya. — Het is duidelijk dat hij het probleem nog niet begrijpt.",
+                "prompt": "Jelas ..."
+              },
+              {
+                "answer": "Model: Karena itu saya memutuskan untuk pulang lebih awal. — Daarom besloot ik eerder naar huis te gaan.",
+                "prompt": "Karena itu ..."
+              },
+              {
+                "answer": "Model: Saya rasa harga kaset itu terlalu mahal. — Ik vind dat die cassette te duur is.",
+                "prompt": "Saya rasa ..."
+              },
+              {
+                "answer": "Model: Tak ada alasan untuk marah kepadanya. — Er is geen reden om boos op hem te zijn.",
+                "prompt": "Tak ada alasan ..."
+              },
+              {
+                "answer": "Model: Jadi, kita berangkat besok pagi. — Dus, we vertrekken morgenochtend.",
+                "prompt": "Jadi ..."
+              },
+              {
+                "answer": "Model: Tentu saja saya mau membantu Anda. — Natuurlijk wil ik u helpen.",
+                "prompt": "Tentu saja ..."
+              },
+              {
+                "answer": "Model: Baiklah, saya akan menunggu di sini. — Goed dan, ik wacht hier wel.",
+                "prompt": "Baiklah ..."
+              },
+              {
+                "answer": "Model: Sebenarnya saya tidak suka musik pop. — Eigenlijk hou ik niet van popmuziek.",
+                "prompt": "Sebenarnya ..."
+              }
+            ],
+            "title": "Latihan III",
+            "instruction": "Maak een zin die begint met het gegeven woord (open opdracht — onder elk item staat een natuurlijke voorbeeldzin als model)."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Apa yang terjadi, Bu Wanti? — Wat is er gebeurd, mevrouw Wanti?",
+                "prompt": "jadi — Apa yang ............... Bu Wanti?"
+              },
+              {
+                "answer": "Saya kehilangan paspor. Paspor itu hilang dari tas saya. — Ik ben mijn paspoort kwijt. Het paspoort is uit mijn tas verdwenen.",
+                "prompt": "hilang — Saya ............... paspor. Paspor itu ............... dari tas saya"
+              },
+              {
+                "answer": "Kalau begitu Ibu harus melapor ke polisi. — Dan moet u aangifte doen bij de politie.",
+                "prompt": "lapor — Kalau begitu Ibu harus ............... ke polisi"
+              },
+              {
+                "answer": "Kantor itu terletak di Jalan Cendrawasih no.11. — Dat kantoor ligt aan de Jalan Cendrawasih nr. 11.",
+                "prompt": "letak — Kantor itu ............... di Jalan Cendrawasih no.11"
+              },
+              {
+                "answer": "Terima kasih banyak atas bantuan Bapak. — Hartelijk dank voor uw hulp, meneer.",
+                "prompt": "bantu — Terima kasih banyak atas ............... Bapak"
+              }
+            ],
+            "title": "Latihan IV",
+            "instruction": "Vul de juiste vorm van het gegeven basiswoord in en vertaal de zin."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Selamat hari ulang tahun, Fandi, dan semoga panjang umurnya. — Gefeliciteerd met je verjaardag, Fandi, en moge je lang leven.",
+                "prompt": "dan - panjang - selamat hari ulang tahun - semoga - umurnya - Fandi"
+              },
+              {
+                "answer": "Kalian sudah makan dan minum? — Hebben jullie al gegeten en gedronken?",
+                "prompt": "minum - kalian - dan - makan - sudah ?"
+              },
+              {
+                "answer": "Saya nanti saja, karena harus ke rumah sakit dulu. — Ik kom straks pas, want ik moet eerst naar het ziekenhuis.",
+                "prompt": "nanti saja - saya - karena - harus - ke rumah sakit - dulu"
+              },
+              {
+                "answer": "Ada janji dengan dokter pada jam 10.00. — Ik heb om 10.00 uur een afspraak met de dokter.",
+                "prompt": "janji - dengan - pada jam 10.00 - ada - dokter"
+              },
+              {
+                "answer": "Ooh ya, tetapi nanti kalian kembali ya. — O ja, maar komen jullie straks wel terug, hè.",
+                "prompt": "ooh ya - kembali - tetapi - nanti - kalian - ya"
+              }
+            ],
+            "title": "Latihan V",
+            "instruction": "Zet de woorden in de goede volgorde tot een correcte zin en vertaal."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Yang berulang tahun adalah ipar saya, Fandi. Apakah Bapak/Ibu belum mengenalnya?",
+                "prompt": "Degene die jarig is, is (ipar saya), Fandi. Kent u hem nog niet?"
+              },
+              {
+                "answer": "Belum, saya ikut dengan istri saya, yang bekerja di kantor yang sama dengan ipar Anda. Di bagian penjualan komputer.",
+                "prompt": "(Belum), ik ben met mijn vrouw meegekomen, die (bekerja di) hetzelfde kantoor als uw zwager. Bij de computerverkoop"
+              },
+              {
+                "answer": "Dan Bapak/Ibu sendiri bekerja di mana?",
+                "prompt": "En waar werkt u zelf?"
+              },
+              {
+                "answer": "Saya sendiri insinyur dan bidang saya adalah pertanian/perkebunan.",
+                "prompt": "Ikzelf ben (insinyur) en mijn vakgebied is tuinbouw"
+              },
+              {
+                "answer": "Ayo, masuk saja, pestanya sudah mulai.",
+                "prompt": "Kom, (masuk saja), het feest is al begonnen"
+              }
+            ],
+            "title": "Latihan VI",
+            "instruction": "Vertaal de zinnen in het Indonesisch (de tussen haakjes gegeven Indonesische woorden mag je gebruiken)."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Bali bukan tujuan wisata satu-satunya di Indonesia. — Bali is niet de enige toeristenbestemming in Indonesië.",
+                "prompt": "tuju — Bali bukan ............... wisata satu-satunya di Indonesia"
+              },
+              {
+                "answer": "Masih banyak daerah lain yang bisa dikembangkan. — Er zijn nog veel andere gebieden die ontwikkeld kunnen worden.",
+                "prompt": "kembang — Masih banyak daerah lain yang bisa ..............."
+              },
+              {
+                "answer": "Danau Toba misalnya yang dikelilingi pegunungan yang tinggi. — Het Tobameer bijvoorbeeld, dat door hoge bergen omringd wordt.",
+                "prompt": "keliling — Danau Toba misalnya yang ............... pegunungan yang tinggi"
+              },
+              {
+                "answer": "Sekarang ini direncanakan dibangun hotel mewah di sana. — Nu is gepland dat daar luxehotels gebouwd worden.",
+                "prompt": "bangun — Sekarang ini direncanakan ............... hotel mewah di sana"
+              },
+              {
+                "answer": "Menurut kepercayaan setempat, jika mencuci muka dengan air Danau Toba akan mempunyai rasa selalu ingin kembali. — Volgens het plaatselijke geloof zal men, als men het gezicht met water van het Tobameer wast, het gevoel krijgen altijd terug te willen komen.",
+                "prompt": "cuci, rasa — Menurut kepercayaan setempat, jika ............... muka dengan air Danau Toba akan mempunyai ............... selalu ingin kembali"
+              },
+              {
+                "answer": "Dari Sumatra mudah sekali menyeberang ke pulau Jawa. — Vanuit Sumatra is het heel makkelijk over te steken naar het eiland Java.",
+                "prompt": "seberang — Dari Sumatra mudah sekali ............... ke pulau Jawa"
+              },
+              {
+                "answer": "Orang bisa menumpang feri, naik pesawat atau kapal laut 'Pelni'. — Men kan een veerboot nemen, het vliegtuig of de 'Pelni'-zeeboot.",
+                "prompt": "tumpang — Orang bisa ............... feri, naik pesawat atau kapal laut 'Pelni'"
+              },
+              {
+                "answer": "Tujuan lain adalah kepulauan Riau dekat Singapura. — Een ander reisdoel is de Riau-archipel bij Singapore.",
+                "prompt": "pulau — Tujuan lain adalah ............... Riau dekat Singapura"
+              },
+              {
+                "answer": "Dari Singapura Anda dapat mengunjungi pulau Batam. — Vanuit Singapore kunt u het eiland Batam bezoeken.",
+                "prompt": "kunjung — Dari Singapura Anda dapat ............... pulau Batam"
+              },
+              {
+                "answer": "Sekarang ini di pulau Batam dikembangkan zona ekonomis khusus. — Nu wordt op het eiland Batam een speciale economische zone ontwikkeld.",
+                "prompt": "kembang — Sekarang ini di pulau Batam ............... zona ekonomis khusus"
+              }
+            ],
+            "title": "Latihan VII",
+            "instruction": "Vul de juiste grammaticale vorm van het gegeven basiswoord in en vertaal de zin."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"64f62c89-b2ab-4275-93cc-86b8637d828e\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"64f62c89-b2ab-4275-93cc-86b8637d828e\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}
