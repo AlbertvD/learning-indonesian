@@ -31,8 +31,8 @@ interface AffixConfig {
   pos: string[]
   /** invariant affix: one category for all pairs. */
   category?: string
-  /** allomorphic affix: root → category (stratified by class). */
-  classify?: (root: string) => string
+  /** allomorphic / POS-stratified affix: (root, pos) → category. */
+  classify?: (root: string, pos?: string) => string
   /** morph-index affix base (kaikki lemma): ber-→ber, meN-→meng, peN-→peng. */
   affixBase?: string
   /** per-root illustratesCategory override (spelling exceptions). */
@@ -75,6 +75,53 @@ const CONFIG: Record<string, AffixConfig> = {
       : inSet(r, 'aeiough') ? 'PENG- voor de klinkers (A, E, I, O, U) en voor G, H'
       : 'A. Voorvoeging zonder verandering van het basiswoord (L, M, N, NY, R, W, Y)',
   },
+  'di-': {
+    lesson: 18,
+    pos: ['verb'],
+    affixBase: 'di',
+    category: 'Passieve zin met de DI-vorm (3e persoon, agens onbenoemd)',
+  },
+  '-i': {
+    lesson: 23,
+    pos: ['verb', 'noun', 'adjective'],
+    affixBase: 'i',
+    category: 'Hoofdfunctie van de werkwoordsvorm met -i',
+  },
+  'pe-…-an': {
+    lesson: 25,
+    pos: ['verb', 'noun', 'adjective'],
+    affixBase: 'peng',
+    category: 'De PE-...-AN vorm: van basiswoord naar zelfstandig naamwoord',
+  },
+  'ter-': {
+    lesson: 26,
+    pos: ['verb', 'adjective'],
+    affixBase: 'ter',
+    category: 'Het voorvoegsel TER- — twee posities, twee basiswoordklassen',
+  },
+  'ke-…-an': {
+    lesson: 27,
+    pos: ['noun', 'adjective', 'verb'],
+    affixBase: 'ke',
+    category: 'KE-...-AN — overzicht en basiswoordtypen',
+  },
+  reduplication: {
+    lesson: 22,
+    pos: ['noun', 'verb', 'adjective'],
+    affixBase: 'reduplication',
+    // POS-stratified: verb / noun-plurality / adjective-intensifier reduplication.
+    classify: (_r, pos) =>
+      pos === 'verb' ? '1. Verdubbeling van het werkwoord'
+      : pos === 'adjective' ? '3. Verdubbeling van het bijvoeglijk naamwoord — versterking'
+      : '2. Verdubbeling van het zelfstandig naamwoord — meervoud mét diversiteit',
+    // LEXICALISED / frozen reduplications — vocab, NOT productive morphology (CONTEXT.md):
+    // lexicalised nouns (the reduplicated form IS the word) + frozen adverbs. The oracle
+    // can't detect semantic lexicalisation, so these are curated out by hand.
+    exclude: [
+      'mata', 'paru', 'laki', 'langit', 'layang', 'gula', 'kuda', // mata-mata=spy, paru-paru=lungs, laki-laki=man, …
+      'hati', 'tiba', 'tiap', 'masing', 'mula', 'benar', 'sama', 'tahu', 'pagi', 'kira', 'moga', 'ada', 'salah', // frozen adverbs
+    ],
+  },
 }
 
 const affix = process.argv[2]
@@ -83,7 +130,9 @@ const cap = capArg >= 0 ? Number(process.argv[capArg + 1]) : 22
 if (!affix || !isCatalogAffix(affix)) throw new Error(`pass a catalog affix (got "${affix}")`)
 const cfg = CONFIG[affix]
 if (!cfg) throw new Error(`no config for ${affix} yet`)
-const catFor = (r: string) => cfg.categoryOverride?.[r] ?? (cfg.classify ? cfg.classify(r) : cfg.category!)
+const posByRoot = new Map<string, string>()
+const catFor = (r: string, pos?: string) =>
+  cfg.categoryOverride?.[r] ?? (cfg.classify ? cfg.classify(r, pos ?? posByRoot.get(r)) : cfg.category!)
 const affixBase = cfg.affixBase ?? affix.replace(/-/g, '').toLowerCase()
 
 // ── Attestation oracle (etymology-based + loanword-reject, ADR 0020) ────────────
@@ -118,8 +167,9 @@ const flagged: { root: string; engine: string; attested: string }[] = []
 let skipped = 0, rejected = 0
 
 const excludeSet = new Set(cfg.exclude ?? [])
-for (const row of (data ?? []) as Array<{ normalized_text: string; frequency_rank: number | null }>) {
+for (const row of (data ?? []) as Array<{ normalized_text: string; pos: string; frequency_rank: number | null }>) {
   const root = row.normalized_text
+  posByRoot.set(root, row.pos)
   if (excludeSet.has(root)) continue
   let derived: string
   try { derived = deriveAffixedForm(root, affix).derived } catch { skipped++; continue }
@@ -183,9 +233,28 @@ if (process.argv.includes('--write')) {
 
   const groups = new Map<string, string[]>()
   for (const r of keep) { const c = catFor(r); groups.set(c, [...(groups.get(c) ?? []), r]) }
+
+  // Multi-affix lessons (e.g. L22's reduplication family) host >1 affix in one file.
+  // Preserve entries for OTHER affixes verbatim — we only regenerate THIS affix's set.
+  const path = `scripts/data/staging/lesson-${cfg.lesson}/morphology-roots.ts`
+  const foreign: { root: string; affix: string; cat: string }[] = []
+  if (fs.existsSync(path)) {
+    const text = fs.readFileSync(path, 'utf8')
+    const consts = new Map<string, string>()
+    for (const m of text.matchAll(/const (\w+)\s*=\s*(['"])([\s\S]*?)\2/g)) consts.set(m[1], m[3])
+    for (const m of text.matchAll(/\{\s*root:\s*'([^']*)',\s*affix:\s*'([^']*)',\s*illustratesCategory:\s*([^}]+?)\s*\}/g)) {
+      const [, r, afx, expr] = m
+      if (afx === affix) continue
+      const lit = expr.trim().match(/^(['"])([\s\S]*)\1$/)
+      const cat = lit ? lit[2] : consts.get(expr.trim())
+      if (cat) foreign.push({ root: r, affix: afx, cat })
+    }
+  }
+
   const lines: string[] = [`import type { MorphologyRoot } from '@/lib/capabilities'`, '']
   lines.push(`// GENERATED by scripts/propose-morphology-roots.ts — affix ${affix}, home L${cfg.lesson} (ADR 0020).`)
   lines.push(`// Roots = taught learning_items whose ${affix} form kaikki attests (not a loanword). Re-run additive.`)
+  if (foreign.length) lines.push(`// Entries for other affixes in this lesson are preserved verbatim below.`)
   lines.push('')
   const cats = [...groups.keys()]
   cats.forEach((c, i) => lines.push(`const CAT_${i} = ${JSON.stringify(c)}`))
@@ -194,8 +263,11 @@ if (process.argv.includes('--write')) {
     lines.push(`  // ── ${c} ──`)
     for (const r of groups.get(c)!) lines.push(`  { root: '${r}', affix: '${affix}', illustratesCategory: CAT_${i} }, // ${deriveAffixedForm(r, affix).derived}`)
   })
+  if (foreign.length) {
+    lines.push(`  // ── preserved: other affixes taught in this lesson ──`)
+    for (const f of foreign) lines.push(`  { root: '${f.root}', affix: '${f.affix}', illustratesCategory: ${JSON.stringify(f.cat)} }, // ${deriveAffixedForm(f.root, f.affix).derived}`)
+  }
   lines.push(']', '')
-  const path = `scripts/data/staging/lesson-${cfg.lesson}/morphology-roots.ts`
   fs.writeFileSync(path, lines.join('\n'))
-  console.log(`\n✍  wrote ${keep.length} roots → ${path}  (preserved ${published.size} published + ${keep.length - published.size} new)`)
+  console.log(`\n✍  wrote ${keep.length} ${affix} roots + ${foreign.length} preserved (other affixes) → ${path}  (${published.size} published this affix preserved + ${keep.length - published.size} new)`)
 }
