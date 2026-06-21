@@ -2,7 +2,7 @@
 export const lesson = {
   "title": "Berdisko di Jakarta",
   "description": "",
-  "level": "A1",
+  "level": "B1",
   "module_id": "module-1",
   "order_index": 23,
   "sections": [

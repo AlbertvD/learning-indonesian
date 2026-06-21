@@ -287,7 +287,7 @@ export default function Lesson16Page() {
             <em>Dia mengirim paket pos</em> — zij stuurt een pakket. Draai het om en het pakket neemt de hoofdrol over:
             <em> paket pos dikirimnya</em>. Niet de doener, maar de zaak die de handeling ondergaat, staat nu vooraan.
           </p>
-          <p className={classes.ledeMeta}>Les 16 · A1 · Bahasa Indonesia</p>
+          <p className={classes.ledeMeta}>Les 16 · B1 · Bahasa Indonesia</p>
         </div>
       </section>
 
