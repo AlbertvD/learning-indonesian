@@ -281,7 +281,7 @@ export default function Lesson19Page() {
           <p className={classes.ledeQuote}>
             Indonesisch verbuigt niet — het <em>ordent</em>. Welke partij vooraan staat, bepaalt waar de nadruk ligt; welke werkwoordsvorm je kiest, bepaalt de volgorde. Begin een zin met <em>Di Denpasar …</em> en je zegt: de plaats is het belangrijkst.
           </p>
-          <p className={classes.ledeMeta}>Les 19 · A1 · Grammatica · Bahasa Indonesia</p>
+          <p className={classes.ledeMeta}>Les 19 · B1 · Grammatica · Bahasa Indonesia</p>
         </div>
       </section>
 

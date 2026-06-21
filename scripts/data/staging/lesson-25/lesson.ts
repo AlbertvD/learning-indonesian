@@ -2,7 +2,7 @@
 export const lesson = {
   "title": "Ambon sebagai obyek pariwisata",
   "description": "",
-  "level": "A1",
+  "level": "B2",
   "module_id": "module-1",
   "order_index": 25,
   "sections": [
