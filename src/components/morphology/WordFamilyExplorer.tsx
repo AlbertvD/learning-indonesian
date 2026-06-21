@@ -21,7 +21,7 @@ const LABEL_COLOR: Record<MasteryLabel, string> = {
 
 const SOLID = new Set<MasteryLabel>(['mastered', 'strengthening'])
 
-export function WordFamilyExplorer({ families }: { families: WordFamily[] }) {
+export function WordFamilyExplorer({ families, affix }: { families: WordFamily[]; affix: string }) {
   const T = useT()
 
   if (families.length === 0) {
@@ -52,18 +52,23 @@ export function WordFamilyExplorer({ families }: { families: WordFamily[] }) {
               </Group>
 
               <Stack gap={4}>
-                {family.forms.map((form) => (
-                  <Group key={`${form.affix}:${form.derivedText}`} gap={8} wrap="nowrap" align="center">
-                    <Tooltip label={form.label.replace('_', ' ')} withArrow>
-                      <Badge size="xs" circle color={LABEL_COLOR[form.label]} />
-                    </Tooltip>
-                    <Text size="sm" fw={500}>{form.derivedText}</Text>
-                    <Badge size="xs" variant="outline" color="gray">{form.affix}</Badge>
-                    {!form.productive && (
-                      <Text size="xs" c="dimmed" fs="italic">({T.morphology.frozen})</Text>
-                    )}
-                  </Group>
-                ))}
+                {family.forms.map((form) => {
+                  // Anchor the learner to "the affix you're on": the current affix's
+                  // form is emphasised; the rest read as its cross-affix family.
+                  const isCurrent = form.affix === affix
+                  return (
+                    <Group key={`${form.affix}:${form.derivedText}`} gap={8} wrap="nowrap" align="center">
+                      <Tooltip label={form.label.replace('_', ' ')} withArrow>
+                        <Badge size="xs" circle color={LABEL_COLOR[form.label]} />
+                      </Tooltip>
+                      <Text size="sm" fw={isCurrent ? 700 : 500} c={isCurrent ? 'indigo' : undefined}>{form.derivedText}</Text>
+                      <Badge size="xs" variant={isCurrent ? 'filled' : 'outline'} color={isCurrent ? 'indigo' : 'gray'}>{form.affix}</Badge>
+                      {!form.productive && (
+                        <Text size="xs" c="dimmed" fs="italic">({T.morphology.frozen})</Text>
+                      )}
+                    </Group>
+                  )
+                })}
               </Stack>
             </Stack>
           </Card>

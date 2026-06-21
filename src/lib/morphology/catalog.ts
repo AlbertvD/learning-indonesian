@@ -20,6 +20,8 @@ import {
 } from './adapter'
 import type { AffixCatalogTile, AffixProgress } from './model'
 
+type Language = 'nl' | 'en'
+
 const EMPTY_FUNNEL = (): Record<MasteryLabel, number> => ({
   not_assessed: 0,
   introduced: 0,
@@ -126,7 +128,11 @@ function introLessonNumber(
  * the research teaching rank. Affixes with no content yet still appear (progress
  * all-zero, unavailable) so the grid shows the full curriculum.
  */
-export function buildAffixCatalog(snapshot: MorphologySnapshot, now: Date = new Date()): AffixCatalogTile[] {
+export function buildAffixCatalog(
+  snapshot: MorphologySnapshot,
+  language: Language,
+  now: Date = new Date(),
+): AffixCatalogTile[] {
   return [...AFFIX_CATALOG]
     .sort((a, b) => a.rank - b.rank)
     .map((entry) => {
@@ -135,7 +141,7 @@ export function buildAffixCatalog(snapshot: MorphologySnapshot, now: Date = new 
       return {
         affix: entry.affix,
         affixType: entry.affixType,
-        gloss: entry.gloss,
+        gloss: language === 'nl' ? entry.glossNl : entry.glossEn,
         rank: entry.rank,
         cefrLevel: entry.cefrLevel,
         available: affixAvailable(caps, snapshot.activatedLessonIds),
@@ -148,8 +154,9 @@ export function buildAffixCatalog(snapshot: MorphologySnapshot, now: Date = new 
 /** Impure entry point: load the snapshot + fold the catalog grid. */
 export async function getAffixCatalog(
   userId: string,
+  language: Language,
   client?: MorphologyReadClient,
 ): Promise<AffixCatalogTile[]> {
   const snapshot = await loadMorphologySnapshot(userId, client)
-  return buildAffixCatalog(snapshot)
+  return buildAffixCatalog(snapshot, language)
 }

@@ -88,7 +88,7 @@ function fixture(): MorphologySnapshot {
 
 describe('buildAffixCatalog', () => {
   it('returns every catalog affix, sorted by teaching rank', () => {
-    const tiles = buildAffixCatalog(fixture(), now)
+    const tiles = buildAffixCatalog(fixture(), 'nl', now)
     expect(tiles.length).toBeGreaterThanOrEqual(21)
     const ranks = tiles.map(t => t.rank)
     expect(ranks).toEqual([...ranks].sort((a, b) => a - b))
@@ -96,7 +96,7 @@ describe('buildAffixCatalog', () => {
   })
 
   it('rolls up per-affix progress weakest-wins per derivation', () => {
-    const tiles = buildAffixCatalog(fixture(), now)
+    const tiles = buildAffixCatalog(fixture(), 'nl', now)
     const meN = tiles.find(t => t.affix === 'meN-')!
     // 2 derivations: mengajar (mastered) + menulis (introduced, L13 activated, 0 reviews).
     expect(meN.progress.totalCount).toBe(2)
@@ -110,15 +110,23 @@ describe('buildAffixCatalog', () => {
   })
 
   it('marks an affix unavailable when its introducing lesson is not activated', () => {
-    const peN = buildAffixCatalog(fixture(), now).find(t => t.affix === 'peN-')!
+    const peN = buildAffixCatalog(fixture(), 'nl', now).find(t => t.affix === 'peN-')!
     expect(peN.available).toBe(false)
     expect(peN.progress.funnel.not_assessed).toBe(1)
   })
 
   it('shows zero-content affixes (e.g. -i) as empty, unavailable tiles', () => {
-    const minusI = buildAffixCatalog(fixture(), now).find(t => t.affix === '-i')!
+    const minusI = buildAffixCatalog(fixture(), 'nl', now).find(t => t.affix === '-i')!
     expect(minusI.progress.totalCount).toBe(0)
     expect(minusI.available).toBe(false)
+  })
+
+  it('language-selects the affix rule gloss (bilingual — no English in the NL grid)', () => {
+    const nl = buildAffixCatalog(fixture(), 'nl', now).find(t => t.affix === 'di-')!
+    const en = buildAffixCatalog(fixture(), 'en', now).find(t => t.affix === 'di-')!
+    expect(nl.gloss).toMatch(/lijdende|passieve/i)
+    expect(en.gloss).toMatch(/passive/i)
+    expect(nl.gloss).not.toBe(en.gloss)
   })
 })
 
@@ -158,6 +166,19 @@ describe('buildAffixDetail', () => {
     const tulis = detail.families.find(f => f.rootText === 'tulis')!
     expect(tulis.rootKnown).toBe(false) // item exists but no solid recognition cap
     expect(tulis.rootMeaning).toBe('to write')
+  })
+
+  it('language-selects the rule gloss on the detail view (bilingual)', () => {
+    expect(buildAffixDetail(fixture(), 'di-', 'nl', now)!.gloss).toMatch(/lijdende|passieve/i)
+    expect(buildAffixDetail(fixture(), 'di-', 'en', now)!.gloss).toMatch(/passive/i)
+  })
+
+  it('does NOT cross-language-fall-back the root meaning (no English leak in NL)', () => {
+    const snap = fixture()
+    // tulis loses its EN meaning: an EN UI must show null, never the Dutch 'schrijven'.
+    snap.rootItemsBySlug.set('tulis', { normalizedText: 'tulis', baseText: 'tulis', meaningNl: 'schrijven', meaningEn: null })
+    const tulis = buildAffixDetail(snap, 'meN-', 'en', now)!.families.find(f => f.rootText === 'tulis')!
+    expect(tulis.rootMeaning).toBeNull()
   })
 
   it('exposes only ready+published source_refs for the practice scope', () => {

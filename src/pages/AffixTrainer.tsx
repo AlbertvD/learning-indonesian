@@ -41,7 +41,7 @@ export function AffixTrainer() {
           if (!result) setNotFound(true)
           setDetail(result)
         } else {
-          const result = await getAffixCatalog(user.id)
+          const result = await getAffixCatalog(user.id, language)
           if (cancelled) return
           setTiles(result)
         }

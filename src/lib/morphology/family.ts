@@ -29,7 +29,9 @@ function isRootKnown(snapshot: MorphologySnapshot, rootText: string, now: Date):
 function rootMeaning(snapshot: MorphologySnapshot, rootText: string, language: Language): string | null {
   const item = snapshot.rootItemsBySlug.get(itemSlug(rootText))
   if (!item) return null
-  return (language === 'nl' ? item.meaningNl : item.meaningEn) ?? item.meaningNl ?? item.meaningEn ?? null
+  // No cross-language fallback: a Dutch UI shows Dutch or nothing, never a silent
+  // English string (and vice-versa) — the bilingual-leak fix.
+  return (language === 'nl' ? item.meaningNl : item.meaningEn) ?? null
 }
 
 /** All derived forms of one root, across affixes, status-marked + deduped by the
@@ -131,7 +133,7 @@ export function buildAffixDetail(
   return {
     affix: entry.affix,
     affixType: entry.affixType,
-    gloss: entry.gloss,
+    gloss: language === 'nl' ? entry.glossNl : entry.glossEn,
     rank: entry.rank,
     cefrLevel: entry.cefrLevel,
     available: caps.some((c) => c.lessonId != null && snapshot.activatedLessonIds.has(c.lessonId)),
