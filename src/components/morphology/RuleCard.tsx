@@ -20,6 +20,10 @@ export function RuleCard({ detail }: { detail: AffixDetail }) {
 
         <Text>{detail.gloss}</Text>
 
+        {detail.rule.patternName && (
+          <Text size="sm" c="dimmed">{detail.rule.patternName}</Text>
+        )}
+
         {detail.allomorphClasses.length > 0 && (
           <div>
             <Text size="sm" fw={600} c="dimmed" mb={4}>{T.morphology.allomorphsTitle}</Text>
@@ -56,7 +60,6 @@ export function RuleCard({ detail }: { detail: AffixDetail }) {
         {detail.rule.lessonId && detail.rule.lessonNumber != null && (
           <Anchor component={Link} to={`/lesson/${detail.rule.lessonId}`} size="sm">
             {T.morphology.introLesson} {detail.rule.lessonNumber}
-            {detail.rule.patternName ? ` — ${detail.rule.patternName}` : ''}
           </Anchor>
         )}
       </Stack>

@@ -55,7 +55,7 @@ export function AffixDetailView({ detail }: { detail: AffixDetail }) {
         <SectionHeading>{T.morphology.familiesTitle}</SectionHeading>
         <Text size="sm" c="dimmed" mt={4}>{T.morphology.familiesSubtitle}</Text>
       </div>
-      <WordFamilyExplorer families={detail.families} />
+      <WordFamilyExplorer families={detail.families} affix={detail.affix} />
     </Stack>
   )
 }
