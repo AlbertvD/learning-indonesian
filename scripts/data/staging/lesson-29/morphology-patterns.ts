@@ -16,6 +16,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "memper",
     circumfixRight: "kan",
+    derivedGlossNl: "behandelen",
+    derivedGlossEn: "to treat (someone)",
   },
   {
     sourceRef: "lesson-29/morphology/memper-…-kanlain-memperlainkan",
@@ -30,6 +32,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "memper",
     circumfixRight: "kan",
+    derivedGlossNl: "onderscheiden, differentiëren",
+    derivedGlossEn: "to differentiate, distinguish",
   },
   {
     sourceRef: "lesson-29/morphology/memper-…-kanjalan-memperjalankan",
@@ -44,6 +48,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "memper",
     circumfixRight: "kan",
+    derivedGlossNl: "laten rijden, in werking stellen",
+    derivedGlossEn: "to operate, run (a vehicle or process)",
   },
   {
     sourceRef: "lesson-29/morphology/memper-…-kanlihat-memperlihatkan",
@@ -58,6 +64,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "memper",
     circumfixRight: "kan",
+    derivedGlossNl: "tonen, laten zien",
+    derivedGlossEn: "to show, display",
   },
   {
     sourceRef: "lesson-29/morphology/memper-…-kansalah-mempersalahkan",
@@ -72,6 +80,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "memper",
     circumfixRight: "kan",
+    derivedGlossNl: "de schuld geven, beschuldigen",
+    derivedGlossEn: "to blame, accuse",
   },
   {
     sourceRef: "lesson-29/morphology/memper-…-kankenal-memperkenalkan",
@@ -86,6 +96,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "memper",
     circumfixRight: "kan",
+    derivedGlossNl: "voorstellen, introduceren",
+    derivedGlossEn: "to introduce",
   },
   {
     sourceRef: "lesson-29/morphology/memper-…-kantanya-mempertanyakan",
@@ -100,6 +112,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "memper",
     circumfixRight: "kan",
+    derivedGlossNl: "in twijfel trekken, bevragen",
+    derivedGlossEn: "to question, call into question",
   },
   {
     sourceRef: "lesson-29/morphology/memper-…-kankira-memperkirakan",
@@ -114,6 +128,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "memper",
     circumfixRight: "kan",
+    derivedGlossNl: "schatten, ramen",
+    derivedGlossEn: "to estimate, reckon",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-anbanyak-perbanyakan",
@@ -128,6 +144,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "vermenigvuldiging, uitbreiding",
+    derivedGlossEn: "multiplication, proliferation",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-antolong-pertolongan",
@@ -142,6 +160,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "hulp, bijstand",
+    derivedGlossEn: "help, assistance",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-anorang-perorangan",
@@ -156,6 +176,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "individu, per persoon",
+    derivedGlossEn: "individual, per person",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-ankata-perkataan",
@@ -170,6 +192,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "woord, uitspraak",
+    derivedGlossEn: "word, utterance",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-anlaku-perlakuan",
@@ -184,6 +208,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "behandeling, gedrag jegens iemand",
+    derivedGlossEn: "treatment, behaviour toward someone",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-anlain-perlainan",
@@ -198,6 +224,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "verschil, onderscheid",
+    derivedGlossEn: "difference, distinction",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-anbaik-perbaikan",
@@ -212,6 +240,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "verbetering, reparatie",
+    derivedGlossEn: "improvement, repair",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-anjalan-perjalanan",
@@ -226,6 +256,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "reis, tocht",
+    derivedGlossEn: "journey, trip",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-ansama-persamaan",
@@ -240,6 +272,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "overeenkomst, gelijkheid",
+    derivedGlossEn: "similarity, equality",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-ananak-peranakan",
@@ -254,6 +288,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "nakomeling, gemengd bloed",
+    derivedGlossEn: "offspring, person of mixed descent",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-ankota-perkotaan",
@@ -268,6 +304,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "stedelijk gebied",
+    derivedGlossEn: "urban area",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-anmula-permulaan",
@@ -282,6 +320,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "begin, aanvang",
+    derivedGlossEn: "beginning, start",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-antemu-pertemuan",
@@ -297,6 +337,8 @@ export const affixedFormPairs = [
     circumfixLeft: "per",
     circumfixRight: "an",
     carrierText: "Apakah pertemuan ini ditunda",
+    derivedGlossNl: "ontmoeting / vergadering",
+    derivedGlossEn: "meeting / gathering",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-annyata-pernyataan",
@@ -311,6 +353,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "verklaring / mededeling",
+    derivedGlossEn: "statement / declaration",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-ansekolah-persekolahan",
@@ -325,6 +369,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "schoolwezen / onderwijsstelsel",
+    derivedGlossEn: "schooling / educational system",
   },
   {
     sourceRef: "lesson-29/morphology/per-…-anmain-permainan",
@@ -339,6 +385,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "per",
     circumfixRight: "an",
+    derivedGlossNl: "spel / spelletje",
+    derivedGlossEn: "game / play",
   },
   {
     sourceRef: "lesson-29/morphology/memper-lain-memperlain",
@@ -351,6 +399,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "onderscheiden / anders maken",
+    derivedGlossEn: "to differentiate / to make different",
   },
   {
     sourceRef: "lesson-29/morphology/memper-besar-memperbesar",
@@ -364,6 +414,8 @@ export const affixedFormPairs = [
     allomorphClass: null,
     productive: true,
     carrierText: "Kami memperbesar gambar itu",
+    derivedGlossNl: "vergroten",
+    derivedGlossEn: "to enlarge",
   },
   {
     sourceRef: "lesson-29/morphology/memper-baru-memperbaru",
@@ -376,6 +428,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "vernieuwen",
+    derivedGlossEn: "to renew / to modernize",
   },
   {
     sourceRef: "lesson-29/morphology/memper-salah-mempersalah",
@@ -388,6 +442,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "beschuldigen / de schuld geven",
+    derivedGlossEn: "to blame / to accuse",
   },
   {
     sourceRef: "lesson-29/morphology/memper-mudah-mempermudah",
@@ -400,6 +456,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "vergemakkelijken",
+    derivedGlossEn: "to simplify / to make easier",
   },
   {
     sourceRef: "lesson-29/morphology/memper-cepat-mempercepat",
@@ -412,6 +470,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "versnellen",
+    derivedGlossEn: "to accelerate / to speed up",
   },
   {
     sourceRef: "lesson-29/morphology/memper-panjang-memperpanjang",
@@ -424,6 +484,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "verlengen",
+    derivedGlossEn: "to lengthen / to extend",
   },
   {
     sourceRef: "lesson-29/morphology/memper-bagus-memperbagus",
@@ -436,6 +498,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "verfraaien / mooier maken",
+    derivedGlossEn: "to improve / to make nicer",
   },
   {
     sourceRef: "lesson-29/morphology/memper-murah-mempermurah",
@@ -448,6 +512,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "goedkoper maken",
+    derivedGlossEn: "to make cheaper / to reduce the price of",
   },
   {
     sourceRef: "lesson-29/morphology/memper-indah-memperindah",
@@ -460,6 +526,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "verfraaien / mooier maken",
+    derivedGlossEn: "to beautify",
   },
   {
     sourceRef: "lesson-29/morphology/memper-miskin-mempermiskin",
@@ -472,6 +540,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "verarmen / armer maken",
+    derivedGlossEn: "to impoverish / to make poorer",
   },
   {
     sourceRef: "lesson-29/morphology/memper-kaya-memperkaya",
@@ -484,6 +554,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "verrijken / rijker maken",
+    derivedGlossEn: "to enrich",
   },
   {
     sourceRef: "lesson-29/morphology/memper-buruk-memperburuk",
@@ -496,6 +568,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "verslechteren / slechter of lelijker maken",
+    derivedGlossEn: "to worsen / to make worse",
   },
   {
     sourceRef: "lesson-29/morphology/memper-lambat-memperlambat",
@@ -508,6 +582,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "vertragen",
+    derivedGlossEn: "to slow down / to delay",
   },
   {
     sourceRef: "lesson-29/morphology/memper-cantik-mempercantik",
@@ -520,6 +596,8 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "verfraaien / mooier maken (v.e. vrouw)",
+    derivedGlossEn: "to beautify / to make more attractive",
   },
   {
     sourceRef: "lesson-29/morphology/memper-mahal-mempermahal",
@@ -532,5 +610,7 @@ export const affixedFormPairs = [
     affixGloss: "causative (intensifying)",
     allomorphClass: null,
     productive: true,
+    derivedGlossNl: "duurder maken",
+    derivedGlossEn: "to make more expensive",
   },
 ]

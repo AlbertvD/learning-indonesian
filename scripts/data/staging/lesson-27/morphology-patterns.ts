@@ -17,6 +17,8 @@ export const affixedFormPairs = [
     circumfixLeft: "ke",
     circumfixRight: "an",
     carrierText: "Saya senang dengan keadaan dan letak rumah itu",
+    derivedGlossNl: "toestand, situatie",
+    derivedGlossEn: "situation, condition",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-andapat-kedapatan",
@@ -31,6 +33,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "betrapt worden, aangetroffen worden",
+    derivedGlossEn: "to be caught, to be found out",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anbisa-kebisaan",
@@ -45,6 +49,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "bekwaamheid, vaardigheid",
+    derivedGlossEn: "ability, skill",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anbanyak-kebanyakan",
@@ -59,6 +65,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "meerderheid, de meeste",
+    derivedGlossEn: "majority, most of",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anharus-keharusan",
@@ -73,6 +81,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "verplichting, noodzakelijkheid",
+    derivedGlossEn: "obligation, necessity",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anmungkin-kemungkinan",
@@ -87,6 +97,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "mogelijkheid, kans",
+    derivedGlossEn: "possibility, chance",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anselamat-keselamatan",
@@ -102,6 +114,8 @@ export const affixedFormPairs = [
     circumfixLeft: "ke",
     circumfixRight: "an",
     carrierText: "Selain itu, ada jalur sepeda khusus untuk keselamatan para pengendara sepeda",
+    derivedGlossNl: "veiligheid, welzijn",
+    derivedGlossEn: "safety, well-being",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anlaku-kelakuan",
@@ -116,6 +130,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "gedrag, houding",
+    derivedGlossEn: "behaviour, conduct",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anlain-kelainan",
@@ -130,6 +146,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "afwijking, verschil, bijzonderheid",
+    derivedGlossEn: "difference, abnormality, peculiarity",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anbaik-kebaikan",
@@ -145,6 +163,8 @@ export const affixedFormPairs = [
     circumfixLeft: "ke",
     circumfixRight: "an",
     carrierText: "bijvoeglijk naamwoord: kebaikan / kepanasan",
+    derivedGlossNl: "goedheid",
+    derivedGlossEn: "goodness",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anbesar-kebesaran",
@@ -160,6 +180,8 @@ export const affixedFormPairs = [
     circumfixLeft: "ke",
     circumfixRight: "an",
     carrierText: "Untuk saudara kemeja ini kebesaran",
+    derivedGlossNl: "te groot",
+    derivedGlossEn: "too big",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-ansama-kesamaan",
@@ -174,6 +196,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "gelijkheid, overeenkomst",
+    derivedGlossEn: "equality, similarity",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anmasuk-kemasukan",
@@ -188,6 +212,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "binnengedrongen worden, last hebben van iets dat binnenkomt",
+    derivedGlossEn: "to be entered, to be infiltrated",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anlihat-kelihatan",
@@ -203,6 +229,8 @@ export const affixedFormPairs = [
     circumfixLeft: "ke",
     circumfixRight: "an",
     carrierText: "Gunung itu kelihatan dari sini",
+    derivedGlossNl: "zichtbaar",
+    derivedGlossEn: "visible",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-ansalah-kesalahan",
@@ -217,6 +245,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "fout, vergissing",
+    derivedGlossEn: "mistake, error",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-antahu-ketahuan",
@@ -231,6 +261,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "ontdekt worden, uitkomen",
+    derivedGlossEn: "to be found out, to be discovered",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anmau-kemauan",
@@ -245,6 +277,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "wil, verlangen",
+    derivedGlossEn: "will, desire",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anbangun-kebangunan",
@@ -259,6 +293,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "ontwaken, het wakker worden",
+    derivedGlossEn: "awakening, waking up",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-ankota-kekotaan",
@@ -273,6 +309,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "stedelijkheid, stadse sfeer",
+    derivedGlossEn: "urbanity, city character",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-annyata-kenyataan",
@@ -287,6 +325,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "werkelijkheid, realiteit",
+    derivedGlossEn: "reality, fact",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anhidup-kehidupan",
@@ -302,6 +342,8 @@ export const affixedFormPairs = [
     circumfixLeft: "ke",
     circumfixRight: "an",
     carrierText: "werkwoord: kehidupan / kelihatan",
+    derivedGlossNl: "het leven",
+    derivedGlossEn: "life",
   },
   {
     sourceRef: "lesson-27/morphology/ke-…-anperlu-keperluan",
@@ -316,5 +358,7 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    derivedGlossNl: "behoefte; noodzaak",
+    derivedGlossEn: "need; necessity",
   },
 ]
