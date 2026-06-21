@@ -22,15 +22,20 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
+import Anthropic from '@anthropic-ai/sdk'
 import { deriveAffixedForm, UnsupportedAffixError, itemSlug, blankDerivedInCarrier, type MorphologyRoot } from '@/lib/capabilities'
-import { isCatalogAffix, allomorphClassesFor } from '@/lib/capabilities/affixCatalog'
+import { isCatalogAffix, allomorphClassesFor, affixCatalogEntry } from '@/lib/capabilities/affixCatalog'
 import { stableSlug } from './lib/content-pipeline-output'
 
 // ── Pure core ────────────────────────────────────────────────────────────────
 
-/** One example as authored in lesson.ts content.categories[].examples. */
+/** One example as authored in lesson.ts content.categories[].examples. The Dutch
+ *  + English fields carry the coursebook's own tuned gloss (e.g. indonesian
+ *  "pembuka" → dutch "opener (alat untuk membuka)") — grounding for the gloss pass. */
 export interface CategoryExample {
   indonesian: string
+  dutch?: string
+  english?: string
 }
 
 /** A grammar category pooled from the lesson's grammar sections. */
@@ -70,6 +75,12 @@ export interface GeneratedPair {
   circumfixRight: string | null
   /** Harvested carrier sentence containing `derived` verbatim, or null (isolated). */
   carrierText: string | null
+  /** Bilingual meaning of the derived form, LLM-authored by the gloss pass below
+   *  (the pure core leaves these null — gloss authoring is non-deterministic, so it
+   *  is a SEPARATE injectable step, presence-cached, mirroring enrichEnTranslations).
+   *  Nullable: an un-glossed pair is valid during rollout (NULL-tolerant gate). */
+  derivedGlossNl: string | null
+  derivedGlossEn: string | null
 }
 
 export interface GenerateResult {
@@ -219,6 +230,10 @@ export function generateMorphologyPatterns(input: GenerateInput): GenerateResult
       circumfixLeft: derived.circumfixLeft,
       circumfixRight: derived.circumfixRight,
       carrierText: harvestCarrier(derived.derived, carrierTiers),
+      // The deterministic core leaves the bilingual derived-form meaning empty; the
+      // injectable gloss pass (enrichDerivedGlosses, below) fills it presence-cached.
+      derivedGlossNl: null,
+      derivedGlossEn: null,
     })
   }
 
@@ -248,6 +263,10 @@ export function serializePairs(lessonNumber: number, pairs: GeneratedPair[]): st
       if (p.circumfixLeft !== null) lines.push(`    circumfixLeft: ${q(p.circumfixLeft)},`)
       if (p.circumfixRight !== null) lines.push(`    circumfixRight: ${q(p.circumfixRight)},`)
       if (p.carrierText !== null) lines.push(`    carrierText: ${q(p.carrierText)},`)
+      // Glosses emitted only when authored — un-glossed pairs serialise as before,
+      // so the gloss pass is purely additive over existing snapshots (presence-cache).
+      if (p.derivedGlossNl !== null) lines.push(`    derivedGlossNl: ${q(p.derivedGlossNl)},`)
+      if (p.derivedGlossEn !== null) lines.push(`    derivedGlossEn: ${q(p.derivedGlossEn)},`)
       lines.push('  },')
       return lines.join('\n')
     })
@@ -259,6 +278,221 @@ export function serializePairs(lessonNumber: number, pairs: GeneratedPair[]): st
     `// docs/plans/2026-06-18-morphology-authoring-capability.md\n` +
     `export const affixedFormPairs = [\n${body}\n]\n`
   )
+}
+
+// ── Derived-form gloss authoring (Fix 3) ─────────────────────────────────────
+//
+// affixed_form_pairs is a REGENERABLE projection (delete + reinsert on every
+// publish, ADR 0011) — NOT DB-authoritative. So a derived gloss is corrected by
+// editing the authoring source + regenerating morphology-patterns.ts +
+// republishing, NEVER by a live DB edit (the next publish would wipe it). This is
+// the same source-of-truth regime carrier_text already follows.
+//
+// Gloss authoring is non-deterministic (an LLM call) and costs tokens, so it is a
+// SEPARATE injectable step from the deterministic core: the pure core leaves the
+// glosses null; this pass fills them, presence-cached (a re-run never re-LLMs an
+// already-glossed pair — additive, like propose-morphology-roots.ts). Mirrors
+// lesson-stage/enrichEnTranslations.ts in shape (collect → translate → apply),
+// which is used only as a prompt/caching pattern reference, not as the seam.
+
+/** One pair needing a gloss, with all its grounding. */
+export interface GlossNeed {
+  sourceRef: string
+  derived: string
+  affix: string
+  root: string
+  rootMeaningNl: string | null
+  rootMeaningEn: string | null
+  affixRuleNl: string | null
+  affixRuleEn: string | null
+  carrierText: string | null
+  /** Coursebook grammar example mentioning the form (its own tuned NL/EN phrasing). */
+  descriptionSnippet: string | null
+}
+
+export interface GlossGrounding {
+  /** itemSlug(root) → the root's bilingual meaning (from learning_items). */
+  rootMeanings: ReadonlyMap<string, { nl: string | null; en: string | null }>
+  /** sourceRef → coursebook snippet mentioning the derived form. */
+  descriptionByRef: ReadonlyMap<string, string>
+}
+
+/** Translate a batch of needs → Map<sourceRef, {nl, en}>. Injectable for tests. */
+export type GlossTranslator = (needs: GlossNeed[]) => Promise<Map<string, { nl: string; en: string }>>
+
+/**
+ * Presence-cache: copy already-authored glosses from a prior snapshot onto the
+ * freshly generated pairs (matched by sourceRef), so a re-run never re-LLMs an
+ * existing gloss. Pure (mutates the passed pairs). Both-or-neither is preserved —
+ * each field is copied independently only when the fresh pair lacks it.
+ */
+export function mergeCachedGlosses(
+  pairs: GeneratedPair[],
+  cached: ReadonlyArray<{ sourceRef?: unknown; derivedGlossNl?: unknown; derivedGlossEn?: unknown }>,
+): void {
+  const byRef = new Map<string, { nl?: unknown; en?: unknown }>()
+  for (const c of cached) {
+    if (typeof c.sourceRef === 'string') byRef.set(c.sourceRef, { nl: c.derivedGlossNl, en: c.derivedGlossEn })
+  }
+  for (const p of pairs) {
+    const prev = byRef.get(p.sourceRef)
+    if (!prev) continue
+    if (p.derivedGlossNl === null && typeof prev.nl === 'string') p.derivedGlossNl = prev.nl
+    if (p.derivedGlossEn === null && typeof prev.en === 'string') p.derivedGlossEn = prev.en
+  }
+}
+
+/**
+ * Harvest, per pair, a coursebook grammar example that mentions the derived form
+ * (case-insensitive substring of `indonesian`), combining the book's own Dutch +
+ * English phrasing into one snippet. Pure. Unlike the carrier (whole-word, ≥3-word
+ * sentence), this keeps arrow examples + parenthetical glosses — that is exactly
+ * where the book's tuned phrasing lives. Shortest indonesian match wins.
+ */
+export function harvestDescriptionSnippets(
+  pairs: ReadonlyArray<GeneratedPair>,
+  categories: ReadonlyArray<LessonCategory>,
+): Map<string, string> {
+  const examples = categories.flatMap((c) => c.examples ?? []).filter((e) => typeof e.indonesian === 'string')
+  const out = new Map<string, string>()
+  for (const p of pairs) {
+    const needle = p.derived.toLowerCase()
+    const hits = examples.filter((e) => e.indonesian.toLowerCase().includes(needle))
+    if (hits.length === 0) continue
+    const best = hits.reduce((a, b) => (b.indonesian.length < a.indonesian.length ? b : a))
+    const parts = [best.indonesian.trim()]
+    if (best.dutch?.trim()) parts.push(`NL: ${best.dutch.trim()}`)
+    if (best.english?.trim()) parts.push(`EN: ${best.english.trim()}`)
+    out.set(p.sourceRef, parts.join(' — '))
+  }
+  return out
+}
+
+/** Build the gloss needs for every pair still missing a gloss (either field null).
+ *  Pure: pulls grounding from the supplied maps + the affix catalog. */
+export function collectGlossNeeds(pairs: ReadonlyArray<GeneratedPair>, grounding: GlossGrounding): GlossNeed[] {
+  const needs: GlossNeed[] = []
+  for (const p of pairs) {
+    if (p.derivedGlossNl !== null && p.derivedGlossEn !== null) continue // presence-cache hit
+    const rule = affixCatalogEntry(p.affix)
+    const rootMeaning = grounding.rootMeanings.get(itemSlug(p.root))
+    needs.push({
+      sourceRef: p.sourceRef,
+      derived: p.derived,
+      affix: p.affix,
+      root: p.root,
+      rootMeaningNl: rootMeaning?.nl ?? null,
+      rootMeaningEn: rootMeaning?.en ?? null,
+      affixRuleNl: rule?.glossNl ?? null,
+      affixRuleEn: rule?.glossEn ?? null,
+      carrierText: p.carrierText,
+      descriptionSnippet: grounding.descriptionByRef.get(p.sourceRef) ?? null,
+    })
+  }
+  return needs
+}
+
+/** Apply authored glosses back onto the pairs (matched by sourceRef). Pure; sets
+ *  both fields together (the translator returns {nl, en} as a unit). */
+export function applyGlosses(pairs: GeneratedPair[], byRef: ReadonlyMap<string, { nl: string; en: string }>): number {
+  let n = 0
+  for (const p of pairs) {
+    const g = byRef.get(p.sourceRef)
+    if (!g) continue
+    if (g.nl.trim() && g.en.trim()) {
+      p.derivedGlossNl = g.nl.trim()
+      p.derivedGlossEn = g.en.trim()
+      n++
+    }
+  }
+  return n
+}
+
+const GLOSS_MODEL = 'claude-sonnet-4-6'
+const GLOSS_BATCH_SIZE = 20
+
+/**
+ * Default gloss translator — Claude (Sonnet, this is creative linguistic work, the
+ * permitted LLM carve-out), batched. The form is already kaikki-attested, so the
+ * model glosses a KNOWN real word, it does not invent one. Returns {nl, en} per
+ * sourceRef; missing/blank entries are simply not set (left null → un-glossed).
+ */
+async function defaultGlossTranslate(needs: GlossNeed[]): Promise<Map<string, { nl: string; en: string }>> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  const out = new Map<string, { nl: string; en: string }>()
+  if (!apiKey) {
+    console.warn(`   ⚠ ANTHROPIC_API_KEY not set — skipping derived-gloss authoring (${needs.length} pairs stay un-glossed)`)
+    return out
+  }
+  const client = new Anthropic({ apiKey })
+
+  for (let i = 0; i < needs.length; i += GLOSS_BATCH_SIZE) {
+    const batch = needs.slice(i, i + GLOSS_BATCH_SIZE)
+    const entries = batch
+      .map((n, j) => {
+        const ctx = [
+          `root "${n.root}"${n.rootMeaningNl ? ` (NL: ${n.rootMeaningNl})` : ''}${n.rootMeaningEn ? ` (EN: ${n.rootMeaningEn})` : ''}`,
+          `affix ${n.affix}${n.affixRuleNl ? ` — ${n.affixRuleNl}` : ''}`,
+          n.carrierText ? `used in: "${n.carrierText}"` : null,
+          n.descriptionSnippet ? `coursebook: ${n.descriptionSnippet}` : null,
+        ].filter(Boolean).join('; ')
+        return `${j + 1}. derived form "${n.derived}" [${ctx}]`
+      })
+      .join('\n')
+
+    const response = await client.messages.create({
+      model: GLOSS_MODEL,
+      max_tokens: 4096,
+      messages: [{
+        role: 'user',
+        content: `You are glossing Indonesian affixed (derived) word forms for a Dutch-speaking learner. Each numbered entry is a real, attested derived form with its root meaning, the affix rule, and (when available) a usage sentence and the coursebook's own phrasing.
+
+For each entry, give the meaning of the DERIVED form (not the root) in:
+- "nl": Dutch — a concise dictionary-style gloss (a word or short phrase, no sentence, no explanation).
+- "en": English — the same, concise.
+
+Prefer the coursebook's tuned phrasing when it gives one; otherwise compose a fresh gloss from the root meaning + the affix rule. Do not restate the root; give the derived form's actual meaning.
+
+Return ONLY a JSON object mapping each number to {"nl": "...", "en": "..."}. No prose, no markdown fences.
+
+${entries}
+
+Respond with only valid JSON, e.g.: {"1": {"nl": "...", "en": "..."}}`,
+      }],
+    })
+
+    const text = response.content[0]?.type === 'text' ? response.content[0].text : ''
+    const match = text.match(/\{[\s\S]*\}/)
+    if (!match) continue
+    let parsed: Record<string, { nl?: unknown; en?: unknown }>
+    try {
+      parsed = JSON.parse(match[0]) as Record<string, { nl?: unknown; en?: unknown }>
+    } catch {
+      continue
+    }
+    batch.forEach((n, j) => {
+      const g = parsed[String(j + 1)]
+      if (g && typeof g.nl === 'string' && typeof g.en === 'string' && g.nl.trim() && g.en.trim()) {
+        out.set(n.sourceRef, { nl: g.nl.trim(), en: g.en.trim() })
+      }
+    })
+    console.log(`     gloss batch ${Math.floor(i / GLOSS_BATCH_SIZE) + 1}/${Math.ceil(needs.length / GLOSS_BATCH_SIZE)}: ${batch.filter((n) => out.has(n.sourceRef)).length} authored`)
+  }
+  return out
+}
+
+/** Collect → translate → apply. Presence-cached upstream (mergeCachedGlosses), so
+ *  `needs` already excludes glossed pairs. Returns the count of pairs glossed. */
+export async function enrichDerivedGlosses(
+  pairs: GeneratedPair[],
+  grounding: GlossGrounding,
+  translate: GlossTranslator = defaultGlossTranslate,
+): Promise<number> {
+  const needs = collectGlossNeeds(pairs, grounding)
+  if (needs.length === 0) return 0
+  console.log(`   ► Authoring bilingual derived-form meanings for ${needs.length} pair(s) via Claude (${GLOSS_MODEL})...`)
+  const byRef = await translate(needs)
+  return applyGlosses(pairs, byRef)
 }
 
 // ── CLI wrapper ──────────────────────────────────────────────────────────────
@@ -319,25 +553,35 @@ function carrierTiersFromLesson(lesson: any, categories: LessonCategory[]): stri
   return [grammar, story, exercise]
 }
 
-async function fetchKnownItemSlugs(): Promise<Set<string>> {
+/** All learning_items keyed by normalized_text (== itemSlug form), with bilingual
+ *  meanings. Serves BOTH the root-vocab prereq (keys → knownItemSlugs) AND the gloss
+ *  pass's root-meaning grounding (values) in one fetch. */
+async function fetchKnownItems(): Promise<Map<string, { nl: string | null; en: string | null }>> {
   const url = process.env.VITE_SUPABASE_URL || 'https://api.supabase.duin.home'
   const serviceKey = process.env.SUPABASE_SERVICE_KEY
   if (!serviceKey) throw new Error('SUPABASE_SERVICE_KEY is required (root-vocab prereq check)')
   const client = createClient(url, serviceKey)
-  const slugs = new Set<string>()
+  const items = new Map<string, { nl: string | null; en: string | null }>()
   const pageSize = 1000
   for (let from = 0; ; from += pageSize) {
     const { data, error } = await client
       .schema('indonesian')
       .from('learning_items')
-      .select('normalized_text')
+      .select('normalized_text, translation_nl, translation_en')
       .range(from, from + pageSize - 1)
     if (error) throw error
     const rows = data ?? []
-    for (const r of rows) if (r.normalized_text) slugs.add(r.normalized_text as string)
+    for (const r of rows) {
+      if (r.normalized_text) {
+        items.set(r.normalized_text as string, {
+          nl: (r.translation_nl as string | null) ?? null,
+          en: (r.translation_en as string | null) ?? null,
+        })
+      }
+    }
     if (rows.length < pageSize) break
   }
-  return slugs
+  return items
 }
 
 async function main() {
@@ -347,7 +591,8 @@ async function main() {
     process.exit(1)
   }
 
-  const knownItemSlugs = await fetchKnownItemSlugs()
+  const knownItems = await fetchKnownItems()
+  const knownItemSlugs = new Set(knownItems.keys())
   let anyError = false
 
   for (const lessonNumber of lessons) {
@@ -369,9 +614,22 @@ async function main() {
       continue
     }
 
+    // Presence-cache: carry forward already-authored glosses from the prior
+    // committed snapshot so this re-run only LLMs newly-added (un-glossed) pairs.
     const outPath = path.join(dir, 'morphology-patterns.ts')
+    const cached = ((await readExport(outPath)) as Array<Record<string, unknown>> | null) ?? []
+    mergeCachedGlosses(pairs, cached)
+
+    // Bilingual derived-form meanings (Fix 3) — grounded on root meaning, affix
+    // rule, harvested carrier, and the coursebook's own phrasing for the form.
+    const glossed = await enrichDerivedGlosses(pairs, {
+      rootMeanings: knownItems,
+      descriptionByRef: harvestDescriptionSnippets(pairs, categories),
+    })
+
     fs.writeFileSync(outPath, serializePairs(lessonNumber, pairs))
-    console.log(`lesson-${lessonNumber}: wrote ${pairs.length} pair(s) → ${path.relative(process.cwd(), outPath)}`)
+    const totalGlossed = pairs.filter((p) => p.derivedGlossNl !== null).length
+    console.log(`lesson-${lessonNumber}: wrote ${pairs.length} pair(s) (${totalGlossed} glossed, ${glossed} new) → ${path.relative(process.cwd(), outPath)}`)
   }
 
   if (anyError) process.exit(1)

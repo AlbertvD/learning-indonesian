@@ -1,6 +1,17 @@
 ---
-status: approved
+status: shipped
 reviewed_by: [architect, data-architect, staff-engineer]   # both required lenses signed off 2026-06-21 (schema + writer/reader/validator + module/seam/ADR fit); staff-engineer soundness pass
+implementation: PR #270 (fixes 1/2/5) + PR #271 (fix 3)
+merged_at: 2026-06-21
+implementation_paths:
+  - scripts/generate-morphology-patterns.ts          # fix 3 gloss authoring pass
+  - scripts/lib/pipeline/lesson-stage/projectSections.ts
+  - scripts/lib/pipeline/capability-stage/projectors/morphology.ts
+  - scripts/lib/pipeline/capability-stage/validators/affixedFormPairs.ts   # Layer-2 both-or-neither
+  - scripts/check-supabase-deep.ts                    # HC33 parity gate
+  - src/lib/morphology/family.ts                      # language-resolve derivedMeaning + glossNl/glossEn
+  - src/components/morphology/                        # RuleCard + WordFamilyExplorer render
+  - src/lib/capabilities/affixCatalog.ts             # glossNl/glossEn (fixes 1/2)
 supersedes: []
 ---
 

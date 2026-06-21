@@ -1093,6 +1093,50 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
 }
 
+// ── HC33 (Fix 3): derived-form gloss parity between the source table
+//        (lesson_section_affixed_pairs) and the projection (affixed_form_pairs).
+//        The projection is regenerated from source on every publish (ADR 0011), so
+//        every projected row's derived_gloss_nl/_en must equal its source row's
+//        (joined on source_ref; the projection carries 2 rows per source_ref — both
+//        must match). NULL-TOLERANT by design: null-on-both is valid (un-glossed
+//        pairs are legal during rollout) — this gate catches DRIFT (projection ≠
+//        source), never the mere absence of a gloss. This is the real source↔
+//        projection equality gate (the Layer-2 validator only checks both-or-neither
+//        on the projected row, since a pre-write equality there is tautological).
+{
+  const HC33 = 'HC33 derived-form gloss parity: affixed_form_pairs mirrors lesson_section_affixed_pairs'
+  const norm = (v: unknown): string | null => (typeof v === 'string' && v.trim() ? v.trim() : null)
+  const [srcRes, projRes] = await Promise.all([
+    supabase.schema('indonesian').from('lesson_section_affixed_pairs').select('source_ref, derived_gloss_nl, derived_gloss_en'),
+    supabase.schema('indonesian').from('affixed_form_pairs').select('source_ref, derived_gloss_nl, derived_gloss_en'),
+  ])
+  if (srcRes.error || projRes.error) {
+    fail(HC33, (srcRes.error ?? projRes.error)!.message)
+  } else {
+    const srcByRef = new Map<string, { nl: string | null; en: string | null }>()
+    for (const r of (srcRes.data ?? []) as Array<Record<string, unknown>>) {
+      srcByRef.set(r.source_ref as string, { nl: norm(r.derived_gloss_nl), en: norm(r.derived_gloss_en) })
+    }
+    const projRows = (projRes.data ?? []) as Array<Record<string, unknown>>
+    const offenders: string[] = []
+    for (const r of projRows) {
+      const ref = r.source_ref as string
+      const src = srcByRef.get(ref) ?? { nl: null, en: null }
+      const projNl = norm(r.derived_gloss_nl)
+      const projEn = norm(r.derived_gloss_en)
+      if (projNl !== src.nl || projEn !== src.en) {
+        offenders.push(`${ref}: proj(nl=${projNl ?? '∅'}, en=${projEn ?? '∅'}) ≠ src(nl=${src.nl ?? '∅'}, en=${src.en ?? '∅'})`)
+      }
+    }
+    if (offenders.length === 0) {
+      const glossed = [...srcByRef.values()].filter((g) => g.nl || g.en).length
+      pass(`${HC33} (${projRows.length} projected row(s) checked; ${glossed}/${srcByRef.size} source pairs glossed)`)
+    } else {
+      fail(HC33, `${offenders.length} drifted row(s). Sample: ${offenders.slice(0, 5).join(' | ')}${offenders.length > 5 ? ' …' : ''}`)
+    }
+  }
+}
+
 // ── HC19 + HC20 (PR 4 of 2026-05-22-data-model-migration.md): every active
 //        pattern capability resolves to typed grammar-exercise rows.
 //

@@ -561,6 +561,8 @@ export async function runCapabilityStage(
         circumfixRight: p.circumfix_right,
         productive: p.productive,
         carrierText: p.carrier_text,
+        derivedGlossNl: p.derived_gloss_nl,
+        derivedGlossEn: p.derived_gloss_en,
       },
     ]),
   )

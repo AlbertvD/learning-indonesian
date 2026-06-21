@@ -34,10 +34,16 @@ function rootMeaning(snapshot: MorphologySnapshot, rootText: string, language: L
   return (language === 'nl' ? item.meaningNl : item.meaningEn) ?? null
 }
 
+/** The derived form's meaning in the learner's language (Fix 3). Same no-cross-
+ *  language-fallback rule as rootMeaning: Dutch UI shows Dutch or nothing. */
+function derivedMeaning(pair: { derivedGlossNl: string | null; derivedGlossEn: string | null }, language: Language): string | null {
+  return (language === 'nl' ? pair.derivedGlossNl : pair.derivedGlossEn) ?? null
+}
+
 /** All derived forms of one root, across affixes, status-marked + deduped by the
  *  derived surface form (a form's status is weakest-wins across its caps). */
-function formsForRoot(snapshot: MorphologySnapshot, rootText: string, now: Date): DerivedForm[] {
-  const byDerived = new Map<string, { affix: string; productive: boolean; carrierText: string | null; caps: MorphologyCapRow[] }>()
+function formsForRoot(snapshot: MorphologySnapshot, rootText: string, language: Language, now: Date): DerivedForm[] {
+  const byDerived = new Map<string, { affix: string; productive: boolean; carrierText: string | null; derivedMeaning: string | null; caps: MorphologyCapRow[] }>()
   for (const pair of snapshot.pairs) {
     if (pair.rootText !== rootText) continue
     if (!pair.affix) continue // defensive: affix is nullable on the projection table
@@ -46,9 +52,11 @@ function formsForRoot(snapshot: MorphologySnapshot, rootText: string, now: Date)
       affix: pair.affix,
       productive: pair.productive,
       carrierText: pair.carrierText,
+      derivedMeaning: derivedMeaning(pair, language),
       caps: [] as MorphologyCapRow[],
     }
     entry.carrierText = entry.carrierText ?? pair.carrierText
+    entry.derivedMeaning = entry.derivedMeaning ?? derivedMeaning(pair, language)
     if (cap) entry.caps.push(cap)
     byDerived.set(pair.derivedText, entry)
   }
@@ -59,6 +67,7 @@ function formsForRoot(snapshot: MorphologySnapshot, rootText: string, now: Date)
       productive: e.productive,
       label: weakestLabel(e.caps.map((cap) => labelForCapability(buildEvidence(cap, snapshot), now))),
       carrierText: e.carrierText,
+      derivedMeaning: e.derivedMeaning,
     }))
     .sort((a, b) => a.derivedText.localeCompare(b.derivedText))
 }
@@ -78,7 +87,7 @@ export function buildWordFamiliesForAffix(
       rootText,
       rootMeaning: rootMeaning(snapshot, rootText, language),
       rootKnown: isRootKnown(snapshot, rootText, now),
-      forms: formsForRoot(snapshot, rootText, now),
+      forms: formsForRoot(snapshot, rootText, language, now),
     }))
 }
 
@@ -120,7 +129,7 @@ export function buildAffixDetail(
 
   const examples: AffixExample[] = affixPairs
     .slice(0, 3)
-    .map((p) => ({ rootText: p.rootText, derivedText: p.derivedText, carrierText: p.carrierText }))
+    .map((p) => ({ rootText: p.rootText, derivedText: p.derivedText, carrierText: p.carrierText, derivedMeaning: derivedMeaning(p, language) }))
 
   const practiceSourceRefs = [
     ...new Set(

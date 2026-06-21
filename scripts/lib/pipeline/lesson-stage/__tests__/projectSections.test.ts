@@ -175,6 +175,8 @@ describe('projectSections', () => {
         circumfix_right: null,
         productive: true,
         carrier_text: null,
+        derived_gloss_nl: null,
+        derived_gloss_en: null,
       },
       {
         source_ref: 'lesson-9/morphology/meN-tulis-menulis',
@@ -190,6 +192,8 @@ describe('projectSections', () => {
         circumfix_right: null,
         productive: null,
         carrier_text: null,
+        derived_gloss_nl: null,
+        derived_gloss_en: null,
       },
     ])
   })

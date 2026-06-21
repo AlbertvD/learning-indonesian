@@ -48,6 +48,16 @@ export function affixedPayloadFindings(row: AffixedFormPairRowInput): Validation
   if (row.carrier_text && blankDerivedInCarrier(row.carrier_text, row.derived_text) === null) {
     push(`${where} carrier_text "${row.carrier_text}" does not contain derived_text "${row.derived_text}" as a whole word — it would mis-blank at render`)
   }
+  // Fix 3 derived gloss: NULL-tolerant (un-glossed is valid during rollout), but a
+  // gloss is authored bilingually as a unit — both-or-neither, never half. (True
+  // source↔projection equality is the Layer-3 cross-join HC, not checkable here:
+  // the projector copies the gloss from source, so a pre-write equality would be
+  // tautological — exactly as carrier_text's parity is HC-only.)
+  const hasNl = !!(row.derived_gloss_nl && row.derived_gloss_nl.trim())
+  const hasEn = !!(row.derived_gloss_en && row.derived_gloss_en.trim())
+  if (hasNl !== hasEn) {
+    push(`${where} has a half-authored derived gloss (nl=${hasNl ? 'set' : 'null'}, en=${hasEn ? 'set' : 'null'}) — glosses are authored bilingually, both or neither`)
+  }
   return findings
 }
 

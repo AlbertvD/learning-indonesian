@@ -64,6 +64,10 @@ export interface ProjectedAffixedPair {
   productive: boolean | null
   /** Harvested carrier sentence containing derived_text (ADR 0019 option B); null = isolated. */
   carrier_text: string | null
+  /** Bilingual meaning of the derived form (LLM-authored at authoring time; null =
+   *  un-glossed, valid during rollout). Regenerable projection, not DB-authoritative. */
+  derived_gloss_nl: string | null
+  derived_gloss_en: string | null
 }
 
 export interface SectionMeta {
@@ -94,6 +98,10 @@ export interface AffixedPairInput {
   productive?: boolean | null
   /** Harvested carrier sentence (ADR 0019 option B); null/absent = isolated prompt. */
   carrierText?: string | null
+  /** Bilingual meaning of the derived form (authored in morphology-patterns.ts;
+   *  null/absent = un-glossed). */
+  derivedGlossNl?: string | null
+  derivedGlossEn?: string | null
 }
 
 export interface ProjectSectionsInput {
@@ -247,6 +255,8 @@ export function projectSections(input: ProjectSectionsInput): ProjectSectionsOut
     circumfix_right: p.circumfixRight ?? null,
     productive: p.productive ?? null,
     carrier_text: p.carrierText ?? null,
+    derived_gloss_nl: p.derivedGlossNl ?? null,
+    derived_gloss_en: p.derivedGlossEn ?? null,
   }))
 
   return { sectionMeta, itemRows, grammarCategories, grammarTopics, affixedPairs }

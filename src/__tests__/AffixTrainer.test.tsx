@@ -89,15 +89,15 @@ describe('AffixTrainer page', () => {
       allomorphClasses: ['me', 'mem', 'men'],
       ruleNote: 'ajar → mengajar',
       rule: { lessonNumber: 9, lessonId: 'lesson-9', patternSlug: 'l9-men', patternName: 'meN- prefix', patternExplanation: 'Forms active verbs.' },
-      examples: [{ rootText: 'ajar', derivedText: 'mengajar', carrierText: 'Saya mengajar.' }],
+      examples: [{ rootText: 'ajar', derivedText: 'mengajar', carrierText: 'Saya mengajar.', derivedMeaning: 'to teach' }],
       families: [
         {
           rootText: 'ajar',
           rootMeaning: 'to teach',
           rootKnown: true,
           forms: [
-            { derivedText: 'mengajar', affix: 'meN-', productive: true, label: 'mastered', carrierText: null },
-            { derivedText: 'pengajar', affix: 'peN-', productive: false, label: 'not_assessed', carrierText: null },
+            { derivedText: 'mengajar', affix: 'meN-', productive: true, label: 'mastered', carrierText: null, derivedMeaning: 'to teach' },
+            { derivedText: 'pengajar', affix: 'peN-', productive: false, label: 'not_assessed', carrierText: null, derivedMeaning: null },
           ],
         },
       ],

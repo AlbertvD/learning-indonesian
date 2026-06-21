@@ -5,7 +5,14 @@ import {
   coveredClasses,
   extractSentences,
   harvestCarrier,
+  mergeCachedGlosses,
+  harvestDescriptionSnippets,
+  collectGlossNeeds,
+  applyGlosses,
+  enrichDerivedGlosses,
+  serializePairs,
   type LessonCategory,
+  type GeneratedPair,
 } from '../generate-morphology-patterns'
 import { morphologyRoots } from '../data/staging/lesson-13/morphology-roots'
 
@@ -188,5 +195,108 @@ describe('carrier harvest (option B)', () => {
   })
   it('does NOT harvest a clitic-attached surface, and falls back to null', () => {
     expect(harvestCarrier('dinaikkan', [['Bendera dinaikkannya tinggi sekali']])).toBeNull()
+  })
+})
+
+// ── Derived-form gloss authoring (Fix 3) ─────────────────────────────────────
+
+function genPair(over: Partial<GeneratedPair> & { sourceRef: string; affix: string; root: string; derived: string }): GeneratedPair {
+  return {
+    patternSourceRef: 'l13-x', allomorphRule: '', affixType: 'prefix', affixGloss: '',
+    allomorphClass: null, productive: true, circumfixLeft: null, circumfixRight: null,
+    carrierText: null, derivedGlossNl: null, derivedGlossEn: null, ...over,
+  }
+}
+
+describe('mergeCachedGlosses (presence-cache)', () => {
+  it('carries forward glosses from a prior snapshot, matched by sourceRef', () => {
+    const pairs = [genPair({ sourceRef: 'r1', affix: 'meN-', root: 'baca', derived: 'membaca' })]
+    mergeCachedGlosses(pairs, [{ sourceRef: 'r1', derivedGlossNl: 'lezen', derivedGlossEn: 'to read' }])
+    expect(pairs[0]).toMatchObject({ derivedGlossNl: 'lezen', derivedGlossEn: 'to read' })
+  })
+  it('does not overwrite a gloss already present on the fresh pair', () => {
+    const pairs = [genPair({ sourceRef: 'r1', affix: 'meN-', root: 'baca', derived: 'membaca', derivedGlossNl: 'NEW', derivedGlossEn: 'NEW' })]
+    mergeCachedGlosses(pairs, [{ sourceRef: 'r1', derivedGlossNl: 'old', derivedGlossEn: 'old' }])
+    expect(pairs[0].derivedGlossNl).toBe('NEW')
+  })
+  it('ignores cache entries with no matching sourceRef', () => {
+    const pairs = [genPair({ sourceRef: 'r1', affix: 'meN-', root: 'baca', derived: 'membaca' })]
+    mergeCachedGlosses(pairs, [{ sourceRef: 'other', derivedGlossNl: 'x', derivedGlossEn: 'y' }])
+    expect(pairs[0].derivedGlossNl).toBeNull()
+  })
+})
+
+describe('harvestDescriptionSnippets', () => {
+  const categories: LessonCategory[] = [{
+    title: 'PE-', examples: [
+      { indonesian: 'pembuka', dutch: 'opener (alat untuk membuka)', english: 'opener (tool for opening)' },
+      { indonesian: 'lapor → pelapor', dutch: 'rapporteren → rapporteur', english: 'report → reporter' },
+    ],
+  }]
+  it('matches the derived form (substring) and combines the book NL + EN phrasing', () => {
+    const pairs = [genPair({ sourceRef: 'r1', affix: 'peN-', root: 'buka', derived: 'pembuka' })]
+    const snips = harvestDescriptionSnippets(pairs, categories)
+    expect(snips.get('r1')).toBe('pembuka — NL: opener (alat untuk membuka) — EN: opener (tool for opening)')
+  })
+  it('matches arrow examples too (the form on the right of the arrow)', () => {
+    const pairs = [genPair({ sourceRef: 'r2', affix: 'peN-', root: 'lapor', derived: 'pelapor' })]
+    expect(harvestDescriptionSnippets(pairs, categories).get('r2')).toContain('rapporteur')
+  })
+  it('returns no entry when nothing mentions the form', () => {
+    const pairs = [genPair({ sourceRef: 'r3', affix: 'peN-', root: 'tidak', derived: 'penidak' })]
+    expect(harvestDescriptionSnippets(pairs, categories).has('r3')).toBe(false)
+  })
+})
+
+describe('collectGlossNeeds', () => {
+  const grounding = {
+    rootMeanings: new Map([['baca', { nl: 'lezen', en: 'to read' }]]),
+    descriptionByRef: new Map([['r1', 'pembaca — NL: lezer']]),
+  }
+  it('builds a need (with grounding) only for pairs missing a gloss', () => {
+    const pairs = [
+      genPair({ sourceRef: 'r1', affix: 'meN-', root: 'baca', derived: 'membaca' }),
+      genPair({ sourceRef: 'r2', affix: 'meN-', root: 'baca', derived: 'pembaca', derivedGlossNl: 'x', derivedGlossEn: 'y' }),
+    ]
+    const needs = collectGlossNeeds(pairs, grounding)
+    expect(needs).toHaveLength(1)
+    expect(needs[0]).toMatchObject({
+      sourceRef: 'r1', derived: 'membaca', rootMeaningNl: 'lezen', rootMeaningEn: 'to read',
+      descriptionSnippet: 'pembaca — NL: lezer',
+    })
+    // affix rule comes from the catalog (meN- has a Dutch rule).
+    expect(needs[0].affixRuleNl).toBeTruthy()
+  })
+})
+
+describe('applyGlosses', () => {
+  it('sets both fields together; ignores half/blank results', () => {
+    const pairs = [
+      genPair({ sourceRef: 'r1', affix: 'meN-', root: 'baca', derived: 'membaca' }),
+      genPair({ sourceRef: 'r2', affix: 'meN-', root: 'tulis', derived: 'menulis' }),
+    ]
+    const n = applyGlosses(pairs, new Map([
+      ['r1', { nl: 'lezen', en: 'to read' }],
+      ['r2', { nl: 'schrijven', en: '  ' }], // blank en → skipped
+    ]))
+    expect(n).toBe(1)
+    expect(pairs[0]).toMatchObject({ derivedGlossNl: 'lezen', derivedGlossEn: 'to read' })
+    expect(pairs[1].derivedGlossNl).toBeNull()
+  })
+})
+
+describe('enrichDerivedGlosses (collect → translate → apply, injectable)', () => {
+  it('glosses only un-glossed pairs and round-trips through serialize', async () => {
+    const pairs = [
+      genPair({ sourceRef: 'lesson-13/morphology/meN-baca-membaca', affix: 'meN-', root: 'baca', derived: 'membaca' }),
+      genPair({ sourceRef: 'lesson-13/morphology/meN-tulis-menulis', affix: 'meN-', root: 'tulis', derived: 'menulis', derivedGlossNl: 'schrijven', derivedGlossEn: 'to write' }),
+    ]
+    const stub = async (needs: { sourceRef: string }[]) =>
+      new Map(needs.map((nd) => [nd.sourceRef, { nl: 'lezen', en: 'to read' }]))
+    const glossed = await enrichDerivedGlosses(pairs, { rootMeanings: new Map(), descriptionByRef: new Map() }, stub)
+    expect(glossed).toBe(1) // only the un-glossed one
+    const out = serializePairs(13, pairs)
+    expect(out).toContain('derivedGlossNl: "lezen"')
+    expect(out).toContain('derivedGlossEn: "to write"') // cached one preserved
   })
 })

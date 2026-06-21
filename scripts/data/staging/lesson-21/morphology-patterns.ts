@@ -17,6 +17,8 @@ export const affixedFormPairs = [
     circumfixLeft: "mem",
     circumfixRight: "kan",
     carrierText: "Ibu membelikan anaknya buku",
+    derivedGlossNl: "voor iemand kopen",
+    derivedGlossEn: "buy (something) for someone",
   },
   {
     sourceRef: "lesson-21/morphology/meN-…-kannaik-menaikkan",
@@ -32,6 +34,8 @@ export const affixedFormPairs = [
     circumfixLeft: "me",
     circumfixRight: "kan",
     carrierText: "Dia menaikkan bendera",
+    derivedGlossNl: "hijsen, omhooghalen",
+    derivedGlossEn: "hoist, raise",
   },
   {
     sourceRef: "lesson-21/morphology/meN-…-kanturun-menurunkan",
@@ -47,6 +51,8 @@ export const affixedFormPairs = [
     circumfixLeft: "men",
     circumfixRight: "kan",
     carrierText: "Saya menurunkan koper",
+    derivedGlossNl: "naar beneden halen",
+    derivedGlossEn: "take down, lower",
   },
   {
     sourceRef: "lesson-21/morphology/meN-…-kanbersih-membersihkan",
@@ -62,6 +68,8 @@ export const affixedFormPairs = [
     circumfixLeft: "mem",
     circumfixRight: "kan",
     carrierText: "Pak sopir membersihkan mobil",
+    derivedGlossNl: "schoonmaken",
+    derivedGlossEn: "clean (something)",
   },
   {
     sourceRef: "lesson-21/morphology/meN-…-kankering-mengeringkan",
@@ -77,6 +85,8 @@ export const affixedFormPairs = [
     circumfixLeft: "meng",
     circumfixRight: "kan",
     carrierText: "Dia mengeringkan pakaian yang basah",
+    derivedGlossNl: "droogmaken, laten drogen",
+    derivedGlossEn: "dry (something)",
   },
   {
     sourceRef: "lesson-21/morphology/meN-…-kantempat-menempatkan",
@@ -92,6 +102,8 @@ export const affixedFormPairs = [
     circumfixLeft: "men",
     circumfixRight: "kan",
     carrierText: "Mereka menempatkan koper di kamar",
+    derivedGlossNl: "neerzetten, plaatsen",
+    derivedGlossEn: "put (something) down, place",
   },
   {
     sourceRef: "lesson-21/morphology/meN-…-kanduduk-mendudukkan",
@@ -107,6 +119,8 @@ export const affixedFormPairs = [
     circumfixLeft: "men",
     circumfixRight: "kan",
     carrierText: "Ibu mendudukkan anaknya di kursi",
+    derivedGlossNl: "doen zitten, neerzetten",
+    derivedGlossEn: "seat (someone), sit (someone) down",
   },
   {
     sourceRef: "lesson-21/morphology/meN-…-kanambil-mengambilkan",
@@ -122,6 +136,8 @@ export const affixedFormPairs = [
     circumfixLeft: "meng",
     circumfixRight: "kan",
     carrierText: "Ibu mengambilkan saya minum",
+    derivedGlossNl: "voor iemand halen of pakken",
+    derivedGlossEn: "fetch (something) for someone",
   },
   {
     sourceRef: "lesson-21/morphology/meN-…-kanjatuh-menjatuhkan",
@@ -137,6 +153,8 @@ export const affixedFormPairs = [
     circumfixLeft: "men",
     circumfixRight: "kan",
     carrierText: "Utun menjatuhkan mata kailnya ke dalam air",
+    derivedGlossNl: "laten vallen, neergooien",
+    derivedGlossEn: "drop, let fall",
   },
   {
     sourceRef: "lesson-21/morphology/meN-…-kanguna-menggunakan",
@@ -151,6 +169,8 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "meng",
     circumfixRight: "kan",
+    derivedGlossNl: "gebruiken",
+    derivedGlossEn: "use",
   },
   {
     sourceRef: "lesson-21/morphology/di-…-kanbeli-dibelikan",
@@ -166,6 +186,8 @@ export const affixedFormPairs = [
     circumfixLeft: "di",
     circumfixRight: "kan",
     carrierText: "Anaknya dibelikan ibu buku",
+    derivedGlossNl: "voor iemand gekocht worden",
+    derivedGlossEn: "be bought for someone",
   },
   {
     sourceRef: "lesson-21/morphology/di-…-kannaik-dinaikkan",
@@ -181,6 +203,8 @@ export const affixedFormPairs = [
     circumfixLeft: "di",
     circumfixRight: "kan",
     carrierText: "Bendera dinaikkan Pak guru",
+    derivedGlossNl: "gehesen worden, omhooggehaald worden",
+    derivedGlossEn: "be hoisted, be raised",
   },
   {
     sourceRef: "lesson-21/morphology/di-…-kanturun-diturunkan",
@@ -196,6 +220,8 @@ export const affixedFormPairs = [
     circumfixLeft: "di",
     circumfixRight: "kan",
     carrierText: "Koper diturunkan Yono dari lemari",
+    derivedGlossNl: "naar beneden gehaald worden",
+    derivedGlossEn: "be lowered, be taken down",
   },
   {
     sourceRef: "lesson-21/morphology/di-…-kanbersih-dibersihkan",
@@ -211,6 +237,8 @@ export const affixedFormPairs = [
     circumfixLeft: "di",
     circumfixRight: "kan",
     carrierText: "Mobil dibersihkan Pak sopir",
+    derivedGlossNl: "schoongemaakt worden",
+    derivedGlossEn: "be cleaned",
   },
   {
     sourceRef: "lesson-21/morphology/di-…-kankering-dikeringkan",
@@ -226,6 +254,8 @@ export const affixedFormPairs = [
     circumfixLeft: "di",
     circumfixRight: "kan",
     carrierText: "Di rumah pakaian mereka harus dikeringkan dulu",
+    derivedGlossNl: "gedroogd worden",
+    derivedGlossEn: "be dried",
   },
   {
     sourceRef: "lesson-21/morphology/di-…-kantempat-ditempatkan",
@@ -241,6 +271,8 @@ export const affixedFormPairs = [
     circumfixLeft: "di",
     circumfixRight: "kan",
     carrierText: "Koper itu ditempatkan di kamar",
+    derivedGlossNl: "neergezet worden, geplaatst worden",
+    derivedGlossEn: "be placed, be put down",
   },
   {
     sourceRef: "lesson-21/morphology/di-…-kanduduk-didudukkan",
@@ -256,6 +288,8 @@ export const affixedFormPairs = [
     circumfixLeft: "di",
     circumfixRight: "kan",
     carrierText: "Anak itu didudukkan di kursi",
+    derivedGlossNl: "neergezet worden, doen zitten worden",
+    derivedGlossEn: "be seated, be sat down",
   },
   {
     sourceRef: "lesson-21/morphology/di-…-kanambil-diambilkan",
@@ -271,5 +305,7 @@ export const affixedFormPairs = [
     circumfixLeft: "di",
     circumfixRight: "kan",
     carrierText: "Saya diambilkan ibu minum",
+    derivedGlossNl: "voor iemand gehaald worden",
+    derivedGlossEn: "be fetched for someone",
   },
 ]

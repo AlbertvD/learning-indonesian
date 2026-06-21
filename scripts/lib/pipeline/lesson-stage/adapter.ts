@@ -323,6 +323,9 @@ export interface AffixedPairRowInput {
   circumfix_right: string | null
   productive: boolean | null
   carrier_text: string | null
+  /** Bilingual derived-form meaning (authored; null = un-glossed). */
+  derived_gloss_nl: string | null
+  derived_gloss_en: string | null
 }
 
 /**

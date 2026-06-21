@@ -49,6 +49,7 @@ export function RuleCard({ detail }: { detail: AffixDetail }) {
                     <Text span c="dimmed">{ex.rootText}</Text>
                     {' → '}
                     <Text span fw={600}>{ex.derivedText}</Text>
+                    {ex.derivedMeaning && <Text span c="dimmed"> — {ex.derivedMeaning}</Text>}
                   </Text>
                   {ex.carrierText && <Text size="xs" c="dimmed" fs="italic">{ex.carrierText}</Text>}
                 </div>
