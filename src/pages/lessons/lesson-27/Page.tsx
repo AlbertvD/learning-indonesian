@@ -211,6 +211,38 @@ function GrammarCircumfix({ section }: { section: typeof sections[number] }) {
 
 // ─── Page composition ────────────────────────────────────────────────────────
 
+// ─── Exercises — the Latihan, as a study reference ───────────────────────────
+
+function Exercises({ section }: { section: typeof sections[number] }) {
+  const c = section.content as {
+    sections: { title: string; instruction: string; items: { prompt: string; answer?: string }[] }[]
+  }
+  return (
+    <section className={classes.section} aria-labelledby="s-exercises">
+      <p className={classes.grammarEyebrow}>Oefeningen · Latihan</p>
+      <h2 id="s-exercises" className={classes.sectionTitle}>Oefeningen</h2>
+      <div className={classes.exerciseList}>
+        {c.sections.map((blk, i) => (
+          <article key={i} className={classes.exerciseBlock}>
+            <h3 className={classes.exerciseBlockTitle}>{blk.title}</h3>
+            <p className={classes.exerciseInstruction}>{blk.instruction}</p>
+            {blk.items.length > 0 && (
+              <ol className={classes.exerciseItems}>
+                {blk.items.map((it, j) => (
+                  <li key={j} className={classes.exerciseItem}>
+                    <span className={classes.exercisePrompt}>{it.prompt}</span>
+                    {it.answer && <span className={classes.exerciseAnswer}>{it.answer}</span>}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 export default function Lesson27Page() {
   const activation = useLessonActivation(meta.id)
   return (
@@ -267,6 +299,7 @@ export default function Lesson27Page() {
           <ProverbBand      section={sections[3]} />
           <GrammarCircumfix section={sections[4]} />
           <Inventory        section={sections[2]} />
+          <Exercises        section={sections[5]} />
         </main>
       </section>
 
