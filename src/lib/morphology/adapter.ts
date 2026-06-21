@@ -38,6 +38,9 @@ export interface MorphologyPairRow {
   allomorphRule: string
   productive: boolean
   carrierText: string | null
+  /** Bilingual derived-form meaning (Fix 3; family.ts language-resolves these). */
+  derivedGlossNl: string | null
+  derivedGlossEn: string | null
   grammarPatternId: string | null
 }
 
@@ -143,7 +146,7 @@ export async function loadMorphologySnapshot(
   const { data: pairData, error: pairError } = await db()
     .from('affixed_form_pairs')
     .select(
-      'capability_id, root_text, derived_text, affix, affix_type, affix_gloss, allomorph_class, allomorph_rule, productive, carrier_text, grammar_pattern_id',
+      'capability_id, root_text, derived_text, affix, affix_type, affix_gloss, allomorph_class, allomorph_rule, productive, carrier_text, derived_gloss_nl, derived_gloss_en, grammar_pattern_id',
     )
   if (pairError) throw pairError
 
@@ -159,6 +162,8 @@ export async function loadMorphologySnapshot(
       allomorphRule: (row.allomorph_rule as string) ?? '',
       productive: Boolean(row.productive),
       carrierText: (row.carrier_text as string | null) ?? null,
+      derivedGlossNl: (row.derived_gloss_nl as string | null) ?? null,
+      derivedGlossEn: (row.derived_gloss_en as string | null) ?? null,
       grammarPatternId: (row.grammar_pattern_id as string | null) ?? null,
     }),
   )

@@ -297,6 +297,9 @@ const AFFIXED_PAIRS: TypedAffixedPair[] = [
     circumfix_left: null,
     circumfix_right: null,
     productive: true,
+    carrier_text: null,
+    derived_gloss_nl: null,
+    derived_gloss_en: null,
   },
 ]
 

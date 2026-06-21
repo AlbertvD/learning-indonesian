@@ -39,6 +39,8 @@ function pair(overrides: Partial<MorphologyPairRow> & { capabilityId: string; ro
     allomorphRule: '',
     productive: true,
     carrierText: null,
+    derivedGlossNl: null,
+    derivedGlossEn: null,
     grammarPatternId: null,
     ...overrides,
   }
@@ -52,7 +54,7 @@ function masteredState(capabilityId: string): MorphologyStateRow {
 // ber- (ajar→belajar L7), peN- (ajar→pengajar L20, unavailable).
 function fixture(): MorphologySnapshot {
   const pairs: MorphologyPairRow[] = [
-    pair({ capabilityId: 'cap-men-ajar', rootText: 'ajar', derivedText: 'mengajar', affix: 'meN-', allomorphRule: 'ajar → mengajar (ng-)', carrierText: 'Saya mengajar di sekolah.', grammarPatternId: 'pat-men' }),
+    pair({ capabilityId: 'cap-men-ajar', rootText: 'ajar', derivedText: 'mengajar', affix: 'meN-', allomorphRule: 'ajar → mengajar (ng-)', carrierText: 'Saya mengajar di sekolah.', derivedGlossNl: 'lesgeven', derivedGlossEn: 'to teach', grammarPatternId: 'pat-men' }),
     pair({ capabilityId: 'cap-men-tulis', rootText: 'tulis', derivedText: 'menulis', affix: 'meN-', allomorphRule: 'tulis → menulis (n-)', grammarPatternId: 'pat-men' }),
     pair({ capabilityId: 'cap-ber-ajar', rootText: 'ajar', derivedText: 'belajar', affix: 'ber-', productive: true }),
     pair({ capabilityId: 'cap-pen-ajar', rootText: 'ajar', derivedText: 'pengajar', affix: 'peN-', productive: false }),
@@ -179,6 +181,30 @@ describe('buildAffixDetail', () => {
     snap.rootItemsBySlug.set('tulis', { normalizedText: 'tulis', baseText: 'tulis', meaningNl: 'schrijven', meaningEn: null })
     const tulis = buildAffixDetail(snap, 'meN-', 'en', now)!.families.find(f => f.rootText === 'tulis')!
     expect(tulis.rootMeaning).toBeNull()
+  })
+
+  it('language-selects the derived-form meaning on examples + family forms (Fix 3)', () => {
+    const nl = buildAffixDetail(fixture(), 'meN-', 'nl', now)!
+    const nlEx = nl.examples.find(e => e.derivedText === 'mengajar')!
+    expect(nlEx.derivedMeaning).toBe('lesgeven')
+    const nlForm = nl.families.find(f => f.rootText === 'ajar')!.forms.find(f => f.derivedText === 'mengajar')!
+    expect(nlForm.derivedMeaning).toBe('lesgeven')
+
+    const en = buildAffixDetail(fixture(), 'meN-', 'en', now)!
+    expect(en.examples.find(e => e.derivedText === 'mengajar')!.derivedMeaning).toBe('to teach')
+
+    // Un-glossed pair → null, never a stale fallback.
+    const nlForms = nl.families.find(f => f.rootText === 'tulis')!.forms.find(f => f.derivedText === 'menulis')!
+    expect(nlForms.derivedMeaning).toBeNull()
+  })
+
+  it('does NOT cross-language-fall-back the derived meaning (no EN leak in NL)', () => {
+    const snap = fixture()
+    // mengajar loses its EN gloss: an EN UI must show null, never the Dutch 'lesgeven'.
+    const p = snap.pairs.find(x => x.derivedText === 'mengajar')!
+    p.derivedGlossEn = null
+    const ex = buildAffixDetail(snap, 'meN-', 'en', now)!.examples.find(e => e.derivedText === 'mengajar')!
+    expect(ex.derivedMeaning).toBeNull()
   })
 
   it('exposes only ready+published source_refs for the practice scope', () => {

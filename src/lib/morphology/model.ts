@@ -60,6 +60,9 @@ export interface DerivedForm {
   label: MasteryLabel
   /** Harvested example sentence containing the derived form (ADR 0019, nullable). */
   carrierText: string | null
+  /** The derived form's meaning in the learner's language (Fix 3; language-resolved
+   *  from derived_gloss_nl/_en, no cross-language fallback). Null when un-glossed. */
+  derivedMeaning: string | null
 }
 
 /** A root and every derivation of it the learner can encounter (cross-affix). */
@@ -82,6 +85,8 @@ export interface AffixExample {
   rootText: string
   derivedText: string
   carrierText: string | null
+  /** The derived form's meaning in the learner's language (Fix 3; null = un-glossed). */
+  derivedMeaning: string | null
 }
 
 /** The introducing lesson + its grammar rule for an affix. */

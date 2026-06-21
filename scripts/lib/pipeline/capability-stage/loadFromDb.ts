@@ -841,6 +841,9 @@ export interface TypedAffixedPair {
   circumfix_right: string | null
   productive: boolean | null
   carrier_text: string | null
+  /** Bilingual derived-form meaning (source column; null = un-glossed). */
+  derived_gloss_nl: string | null
+  derived_gloss_en: string | null
 }
 
 /** Entry in the existing affixed-caps map (keyed by canonical_key). */
@@ -878,7 +881,7 @@ export async function fetchAffixedPairsFromDb(
   const { data, error } = await supabase
     .schema('indonesian')
     .from('lesson_section_affixed_pairs')
-    .select('id, lesson_id, section_id, source_ref, pattern_source_ref, affix, root_text, derived_text, allomorph_rule, affix_type, affix_gloss, allomorph_class, circumfix_left, circumfix_right, productive, carrier_text')
+    .select('id, lesson_id, section_id, source_ref, pattern_source_ref, affix, root_text, derived_text, allomorph_rule, affix_type, affix_gloss, allomorph_class, circumfix_left, circumfix_right, productive, carrier_text, derived_gloss_nl, derived_gloss_en')
     .eq('lesson_id', lessonId)
 
   if (error) {
@@ -904,6 +907,8 @@ export async function fetchAffixedPairsFromDb(
     circumfix_right: (row['circumfix_right'] as string | null | undefined) ?? null,
     productive: (row['productive'] as boolean | null | undefined) ?? null,
     carrier_text: (row['carrier_text'] as string | null | undefined) ?? null,
+    derived_gloss_nl: (row['derived_gloss_nl'] as string | null | undefined) ?? null,
+    derived_gloss_en: (row['derived_gloss_en'] as string | null | undefined) ?? null,
   }))
 }
 

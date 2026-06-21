@@ -349,6 +349,8 @@ export async function runLessonStage(
     circumfix_right: p.circumfix_right,
     productive: p.productive,
     carrier_text: p.carrier_text,
+    derived_gloss_nl: p.derived_gloss_nl,
+    derived_gloss_en: p.derived_gloss_en,
   }))
   const affixedPairCount = await replaceLessonSectionAffixedPairs(
     supabase,

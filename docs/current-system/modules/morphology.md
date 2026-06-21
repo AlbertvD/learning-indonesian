@@ -1,7 +1,7 @@
 ---
 module: morphology
 surface: src/lib/morphology/
-last_verified_against_code: 2026-06-19
+last_verified_against_code: 2026-06-21
 status: stable
 ---
 
@@ -48,6 +48,13 @@ Session player filtered to the affix. Design: `docs/plans/2026-06-15-affix-train
 View-model types (`model.ts`): `AffixCatalogTile`, `AffixDetail`, `AffixProgress`,
 `AffixRuleSource`, `AffixExample`, `WordFamily`, `DerivedForm`, `AffixScope`.
 
+- **`AffixExample.derivedMeaning` / `DerivedForm.derivedMeaning`** (Fix 3) — the
+  derived form's meaning in the learner's language, language-resolved in `family.ts`
+  from `affixed_form_pairs.derived_gloss_nl/_en` with **no cross-language fallback**
+  (Dutch UI shows Dutch or nothing). Null = un-glossed (valid during rollout).
+  `gloss` itself is language-resolved too (catalog/family resolve `glossNl`/`glossEn`,
+  not the terse English catalog passthrough).
+
 ## 3. Internal flow
 
 ```
@@ -72,6 +79,12 @@ catalog.rollUpProgress (group by source_ref/derivation, weakest-wins, tally rung
   by the session engine; the trainer only reflects it. `family.ts:isRootKnown`.
 - **`productive`** drives the "vocab, not rule-formed" marking on frozen forms
   (research open-Q3). Sourced from `affixed_form_pairs.productive` (NOT NULL).
+- **`derivedMeaning`** (Fix 3) — `adapter.ts` selects `derived_gloss_nl, derived_gloss_en`
+  onto `MorphologyPairRow`; `family.ts` language-resolves them onto the rule-card
+  examples (`buildAffixDetail`) and the family forms (`formsForRoot`). These columns
+  are a **regenerable projection** (re-derived from the authoring source on every
+  publish, ADR 0011) — corrected by editing the source + re-running
+  `generate-morphology-patterns.ts` + republishing, never by a live DB edit.
 - **Null-affix guard:** `affix` is nullable on the projection table; every
   group-by-affix excludes nulls defensively (`catalog.ts:capsForAffix`,
   `family.ts:formsForRoot`, `practice.ts:affixScopeFromSnapshot`).

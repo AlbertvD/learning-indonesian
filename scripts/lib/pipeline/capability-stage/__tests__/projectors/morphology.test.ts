@@ -64,6 +64,8 @@ const afpFullRow = {
   circumfix_right: null,
   productive: true,
   carrier_text: null,
+  derived_gloss_nl: null,
+  derived_gloss_en: null,
 }
 
 describe('projectAffixedFormPairs — happy path', () => {
@@ -91,6 +93,22 @@ describe('projectAffixedFormPairs — happy path', () => {
     expect(out.findings).toEqual([])
     expect(out.rows).toHaveLength(1)
     expect(out.rows[0].capability_id).toBe('cap-recall-id')
+  })
+
+  it('projects the bilingual derived gloss from source onto every row (Fix 3)', () => {
+    const out = projectAffixedFormPairs(baseInput({
+      pairsBySourceRef: new Map([[afpSourceRef, { ...basePair(), derivedGlossNl: 'lezen', derivedGlossEn: 'to read' }]]),
+    }))
+    expect(out.findings).toEqual([])
+    expect(out.rows.every((r) => r.derived_gloss_nl === 'lezen' && r.derived_gloss_en === 'to read')).toBe(true)
+  })
+
+  it('emits null glosses (un-glossed) when source has none — empty-string trims to null', () => {
+    const out = projectAffixedFormPairs(baseInput({
+      pairsBySourceRef: new Map([[afpSourceRef, { ...basePair(), derivedGlossNl: '  ', derivedGlossEn: undefined }]]),
+    }))
+    expect(out.rows[0].derived_gloss_nl).toBeNull()
+    expect(out.rows[0].derived_gloss_en).toBeNull()
   })
 
   it('trims surrounding whitespace on each field', () => {

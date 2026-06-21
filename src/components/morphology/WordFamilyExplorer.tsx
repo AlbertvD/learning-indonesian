@@ -63,6 +63,9 @@ export function WordFamilyExplorer({ families, affix }: { families: WordFamily[]
                       </Tooltip>
                       <Text size="sm" fw={isCurrent ? 700 : 500} c={isCurrent ? 'indigo' : undefined}>{form.derivedText}</Text>
                       <Badge size="xs" variant={isCurrent ? 'filled' : 'outline'} color={isCurrent ? 'indigo' : 'gray'}>{form.affix}</Badge>
+                      {form.derivedMeaning && (
+                        <Text size="xs" c="dimmed">{form.derivedMeaning}</Text>
+                      )}
                       {!form.productive && (
                         <Text size="xs" c="dimmed" fs="italic">({T.morphology.frozen})</Text>
                       )}

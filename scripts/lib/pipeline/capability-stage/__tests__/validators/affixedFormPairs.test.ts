@@ -21,6 +21,8 @@ function row(overrides: Partial<AffixedFormPairRowInput> = {}): AffixedFormPairR
     circumfix_right: null,
     productive: true,
     carrier_text: null,
+    derived_gloss_nl: null,
+    derived_gloss_en: null,
     ...overrides,
   }
 }
@@ -121,5 +123,18 @@ describe('affixedPayloadFindings (Layer-1 morphology payload invariants)', () =>
       circumfix_left: 'mem', circumfix_right: 'kan', root_text: 'beli', derived_text: 'membelikan',
       carrier_text: 'Ibu membelikan anaknya buku',
     }))).toEqual([])
+  })
+
+  it('derived gloss is NULL-tolerant (both null passes — un-glossed is valid)', () => {
+    expect(affixedPayloadFindings(row({ derived_gloss_nl: null, derived_gloss_en: null }))).toEqual([])
+  })
+
+  it('passes a fully bilingual derived gloss (both set)', () => {
+    expect(affixedPayloadFindings(row({ derived_gloss_nl: 'lezen', derived_gloss_en: 'to read' }))).toEqual([])
+  })
+
+  it('flags a half-authored derived gloss (one set, one null) as both-or-neither', () => {
+    expect(affixedPayloadFindings(row({ derived_gloss_nl: 'lezen', derived_gloss_en: null }))[0].message).toContain('half-authored derived gloss')
+    expect(affixedPayloadFindings(row({ derived_gloss_nl: '  ', derived_gloss_en: 'to read' }))[0].message).toContain('half-authored derived gloss')
   })
 })

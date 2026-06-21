@@ -456,6 +456,9 @@ export interface AffixedFormPairRowInput {
   circumfix_right: string | null
   productive: boolean | null
   carrier_text: string | null
+  /** Bilingual derived-form meaning (projected from source; null = un-glossed). */
+  derived_gloss_nl: string | null
+  derived_gloss_en: string | null
 }
 
 /**
@@ -503,6 +506,8 @@ export async function replaceAffixedFormPairs(
         circumfix_right: r.circumfix_right,
         productive: r.productive,
         carrier_text: r.carrier_text,
+        derived_gloss_nl: r.derived_gloss_nl,
+        derived_gloss_en: r.derived_gloss_en,
       })),
     )
   if (insertError) throw insertError

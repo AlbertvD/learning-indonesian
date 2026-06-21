@@ -47,6 +47,9 @@ export interface AffixedPairSource {
   circumfixRight?: string | null
   productive?: boolean | null
   carrierText?: string | null
+  /** Bilingual derived-form meaning (from lesson_section_affixed_pairs; nullable). */
+  derivedGlossNl?: string | null
+  derivedGlossEn?: string | null
 }
 
 export interface AffixedFormPairsProjectionInput {
@@ -161,6 +164,8 @@ export function projectAffixedFormPairs(
       circumfix_right: ((pair.circumfixRight ?? '').trim()) || null,
       productive: pair.productive ?? null,
       carrier_text: ((pair.carrierText ?? '').trim()) || null,
+      derived_gloss_nl: ((pair.derivedGlossNl ?? '').trim()) || null,
+      derived_gloss_en: ((pair.derivedGlossEn ?? '').trim()) || null,
     })
   }
 
