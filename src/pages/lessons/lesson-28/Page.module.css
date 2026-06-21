@@ -1,0 +1,634 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 28: Di Kantor (Op kantoor)
+
+   Mood: a crisp, modern Indonesian boardroom. Slate-blue hero over a real
+   meeting room; the meeting transcript carries colour-coded speakers (the chair
+   in cyan, colleagues in teal/amber/green). The grammar is a "ledger of laws" —
+   one economy principle, three accent-coded laws of conservation.
+───────────────────────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band { width: 100%; padding: 56px 0; }
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — boardroom slate over a meeting-room photo ─────────────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #16202e;
+  background-image:
+    linear-gradient(115deg, rgba(18, 32, 48, 0.92) 0%, rgba(20, 44, 64, 0.82) 52%, rgba(0, 229, 255, 0.18) 100%),
+    url('/lesson-28-hero.webp');
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* A quiet ruled-grid texture — like graph paper on a boardroom wall */
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 82% 22%, rgba(0, 229, 255, 0.14), transparent 46%),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: auto, 38px 38px, 38px 38px;
+  pointer-events: none;
+}
+
+.heroInner { composes: container; position: relative; z-index: 1; }
+
+@media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(252, 196, 25, 0.18);
+  color: var(--ring-target);
+  border: 1px solid rgba(252, 196, 25, 0.32);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(40px, 5.5vw, 60px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 620px;
+  font-weight: var(--fw-normal);
+}
+
+/* ─── Editorial lede ──────────────────────────────────────────────────────── */
+
+.ledeBand { composes: band; padding: 64px 0 32px; }
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--accent-primary);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--accent-primary);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Audio band ──────────────────────────────────────────────────────────── */
+
+.audioBand { composes: band; padding: 0 0 8px; }
+.audioInner { composes: container; max-width: 920px; }
+
+/* ─── Main content shell ──────────────────────────────────────────────────── */
+
+.shellBand { composes: band; padding-top: 24px; padding-bottom: 24px; }
+
+.shell {
+  composes: container;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+/* ─── Shared section header ───────────────────────────────────────────────── */
+
+.section { display: flex; flex-direction: column; }
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* ─── 1. Meeting transcript ───────────────────────────────────────────────── */
+
+.meetingEyebrow { composes: sectionEyebrow; color: var(--accent-primary); }
+.meetingEyebrow::before { background: var(--accent-primary); }
+
+/* Narrator prologue — the brief that opens the meeting file */
+.brief {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px 30px;
+  margin-bottom: 24px;
+  border-radius: var(--r-lg);
+  background:
+    linear-gradient(180deg, var(--accent-primary-subtle) 0%, transparent 70%),
+    var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--accent-primary);
+}
+
+@media (max-width: 720px) { .brief { padding: 22px 20px; } }
+
+.briefPara { display: flex; flex-direction: column; gap: 4px; }
+
+.briefId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.briefId .playButton { margin-left: 8px; transform: translateY(2px); }
+
+.briefNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* The transcript proper */
+.transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.turn {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 16px 18px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.turn:hover { border-color: var(--card-hover-border); }
+
+@media (max-width: 720px) { .turn { grid-template-columns: 1fr; gap: 6px; } }
+
+.turnSpeaker {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.turn[data-speaker-tone='chair'] .turnSpeaker { color: var(--accent-primary); }
+.turn[data-speaker-tone='oka']   .turnSpeaker { color: var(--teal); }
+.turn[data-speaker-tone='rai']   .turnSpeaker { color: var(--ring-target); }
+.turn[data-speaker-tone='staff'] .turnSpeaker { color: var(--success); }
+
+.turnBody { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.turnIdRow { display: flex; align-items: flex-start; gap: 12px; }
+
+.turnId {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  line-height: 1.55;
+  flex: 1;
+  min-width: 0;
+}
+
+.turnNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+/* ─── 2. Vocabulary — office lexicon ──────────────────────────────────────── */
+
+.vocabEyebrow { composes: sectionEyebrow; color: var(--success); }
+.vocabEyebrow::before { background: var(--success); }
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 720px) { .itemGrid { grid-template-columns: 1fr; } }
+
+.itemChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(50, 215, 75, 0.05);
+  border: 1px solid rgba(50, 215, 75, 0.18);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.itemChip:hover { transform: translateY(-1px); border-color: var(--success); }
+
+.itemId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  min-width: 7em;
+  flex-shrink: 0;
+}
+
+.itemSep {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.itemNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── 3. Expression — single idiom, given its own moment ──────────────────── */
+
+.exprEyebrow { composes: sectionEyebrow; color: var(--warning); }
+.exprEyebrow::before { background: var(--warning); }
+
+.expr {
+  margin: 0;
+  padding: 32px 34px;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 88% 16%, rgba(255, 149, 0, 0.12), transparent 55%),
+    var(--card-bg);
+  border: 1px solid rgba(255, 149, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 720px) { .expr { padding: 26px 22px; } }
+
+.exprIdRow { display: flex; align-items: center; gap: 12px; }
+
+.exprId {
+  font-size: clamp(24px, 3.2vw, 32px);
+  font-weight: var(--fw-black);
+  color: var(--warning);
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.exprNl {
+  font-size: var(--fs-lg);
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
+.exprGloss {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 6px 0 0;
+  max-width: 70ch;
+}
+
+.exprGloss em { font-style: italic; color: var(--text-primary); }
+
+/* ─── 4. Grammar — economy of language, ledger of conservation laws ───────── */
+
+.grammarEyebrow {
+  composes: sectionEyebrow;
+  color: #b197fc;             /* lavender label; rule below drives mix-recall */
+}
+.grammarEyebrow::before { background: var(--mix-recall); }
+
+/* The governing principle */
+.principle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 26px;
+  align-items: start;
+  padding: 28px 32px;
+  margin-bottom: 28px;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 10% 30%, rgba(177, 151, 252, 0.12), transparent 55%),
+    var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+@media (max-width: 720px) {
+  .principle { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px; }
+}
+
+.principleGlyph {
+  font-family: var(--font-mono);
+  font-size: clamp(44px, 6vw, 68px);
+  font-weight: var(--fw-black);
+  color: var(--mix-recall);
+  line-height: 0.9;
+}
+
+.principleBody { display: flex; flex-direction: column; gap: 14px; }
+
+.principleTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.principleRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.principleRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.principleRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--mix-recall);
+  font-weight: var(--fw-bold);
+}
+
+/* The three laws — a numbered ledger, stacked full-width */
+.lawList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.law {
+  padding: 26px 28px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 720px) { .law { padding: 22px 20px; } }
+
+.law[data-accent='cyan']  { --law-accent: var(--accent-primary); }
+.law[data-accent='teal']  { --law-accent: var(--teal); }
+.law[data-accent='amber'] { --law-accent: var(--ring-target); }
+
+.lawHeader { display: flex; align-items: baseline; gap: 14px; }
+
+.lawNumber {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xl);
+  color: var(--law-accent, var(--accent-primary));
+  font-weight: var(--fw-black);
+  letter-spacing: 0.02em;
+}
+
+.lawTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.lawRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.lawRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.lawRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--law-accent, var(--accent-primary));
+  font-weight: var(--fw-bold);
+}
+
+.lawExamples {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--card-border);
+}
+
+@media (max-width: 720px) { .lawExamples { grid-template-columns: 1fr; } }
+
+.lawExample { display: flex; flex-direction: column; gap: 3px; }
+
+.lawExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  line-height: 1.5;
+}
+
+.lawExampleNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ─── Inline play button ──────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ────────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 229, 255, 0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner { composes: container; max-width: 720px; text-align: center; }
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation { display: flex; justify-content: center; margin: 0 0 28px; }
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions { display: flex; justify-content: center; }
+.closingActions > * { width: 100%; max-width: 660px; }

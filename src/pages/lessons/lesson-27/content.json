@@ -1,0 +1,707 @@
+{
+  "meta": {
+    "id": "ba8f4ebe-b157-44cc-8248-98171183315c",
+    "order_index": 27,
+    "title": "Bab 11 - Sewa Rumah",
+    "level": "B1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Sulafat",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Insinyur Kramer baru seminggu bekerja di Palembang. Sekarang dia masih sendirian dan tinggal di hotel. Bulan depan keluarganya yang ditinggalkannya di Jakarta, juga akan tiba di Palembang. Itu sebabnya dia mencari sebuah rumah.",
+          "Kemarin dia mendengar ada sebuah rumah di bagian kota lama. Letaknya bagus, kebunnya besar, dan lalu lintas di jalanan belum begitu ramai. Ongkos sewanya 18 juta rupiah setahun, jadi tidak terlalu mahal. Pemilik rumah itu namanya Bapak Muhammad Hasan.",
+          "Yang dicarinya ialah rumah yang lengkap dengan segala isinya. Perabot rumah harus lengkap, karena dia tidak ingin memindahkan barang-barang dari rumahnya di Jakarta. Kalau sewaktu-waktu dia dikirim kembali dan rumahnya di Jakarta kosong, tidak enak 'kan? Dan kalau kosong, dia juga tidak dapat menyewakannya kepada orang lain.",
+          "Dua hari setelah dia menelepon pemilik rumah itu, dia dikirimi daftar isi rumah. Supaya pemilik rumah dapat mengecek, apa semuanya masih lengkap jikalau Bapak Kramer mau kembali ke Jakarta.",
+          "Memang rumah itu komplit.\nLantainya dari tegel, dan warna gorden tidak terlalu nyentrik. Tentu saja ada kursi, meja dan tempat tidur. Barang pecah belah, perkakas makan, kompor serta oven ada, lagipula lemari es dan mesin pencuci juga tersedia. Pokoknya, apa saja yang dikehendaki istrinya untuk dapur semua ada.",
+          "Di setiap kamar ada kipas angin supaya tidak terlalu panas.\nSayang sekali tidak ada AC, tetapi Bapak Kramer tidak keberatan. Katanya: 'Pakai AC cuma jadi pilek terus. Lebih baik tidak punya AC, itu lebih sehat'. Rumah itu mempunyai jendela yang besar dan berwarna.\nDi sebelah muka rumah, ada teras yang luas dengan kursi malas. Kebunnya bagus sekali. Ada pohon palem, kembang sepatu, dan berjenis-jenis tumbuhan lain yang belum diketahuinya namanya."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Ir. K.L. Kramer,\nHotel Ambara,\nPalembang\n\nNomor: 1\n\nPalembang, 22 Mei 1996\n\nKepada: Yth. Bapak Muhammad Hasan\nJl. Cik di Tiro 12\nPalembang, Sumsel\n\nHal: Rumah di Jalan Ismail Marzuki",
+          "Dengan hormat,",
+          "Dengan surat ini saya memberitahukan, bahwa saya telah menengok rumah Bapak di Jl. Ismail Marzuki nomor 23. Saya senang dengan keadaan dan letak rumah itu. Walaupun demikian, di sana-sini masih ada yang perlu diperbaiki, yaitu:\n1. seluruh rumah harus dikapur dan dicat lagi,\n2. saluran air harus dibersihkan,\n3. keran-keran air harus bekerja dengan baik,\n4. kamar mandi harus diperbaiki,\n5. atapnya di sana-sini bocor, sehingga harus disisip,\n6. rumput harus dipotong,\n7. kabel-kabel listrik yang rusak harus diganti.",
+          "Kalau syarat-syarat di atas ini sudah selesai dipenuhi, saya bersedia menandatangani kontrak sewa-menyewa. Terima kasih,\n\nHormat saya,\n\nIr. K.L. Kramer"
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "dak",
+            "english": "roof",
+            "indonesian": "atap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/atap-c058e563.mp3"
+          },
+          {
+            "dutch": "beperkt",
+            "english": "limited",
+            "indonesian": "batas, ter-~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/batas-ter-83034f3c.mp3"
+          },
+          {
+            "dutch": "bezwaar(lijk)",
+            "english": "difficulty, objection",
+            "indonesian": "berat, ke-~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/berat-kean-69f0a2ee.mp3"
+          },
+          {
+            "dutch": "lek",
+            "english": "leak",
+            "indonesian": "bocor",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bocor-82ee1ae6.mp3"
+          },
+          {
+            "dutch": "verven",
+            "english": "paint",
+            "indonesian": "cat, menge-~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/cat-menge-f4e1ef6f.mp3"
+          },
+          {
+            "dutch": "controleren",
+            "english": "check, control",
+            "indonesian": "cek, menge-~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/cek-menge-69723ea7.mp3"
+          },
+          {
+            "dutch": "stroom, straal",
+            "english": "stream, jet",
+            "indonesian": "cucur, ~an",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/cucur-an-b26be13c.mp3"
+          },
+          {
+            "dutch": "slechts, alleen maar",
+            "english": "only, merely",
+            "indonesian": "cuma",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/cuma-109a4c59.mp3"
+          },
+          {
+            "dutch": "gewenst, gewild",
+            "english": "desired, wanted",
+            "indonesian": "dikehendaki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/dikehendaki-a107c4ba.mp3"
+          },
+          {
+            "dutch": "weten",
+            "english": "known",
+            "indonesian": "diketahui",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/diketahui-80f326d2.mp3"
+          },
+          {
+            "dutch": "verbeterd",
+            "english": "improved",
+            "indonesian": "diperbaiki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/diperbaiki-3c00d76d.mp3"
+          },
+          {
+            "dutch": "vermoed, geschat",
+            "english": "presumed, estimated",
+            "indonesian": "diperkirakan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/diperkirakan-7c66a5c6.mp3"
+          },
+          {
+            "dutch": "gordijn",
+            "english": "curtain",
+            "indonesian": "gorden",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/gorden-62b67709.mp3"
+          },
+          {
+            "dutch": "raam",
+            "english": "window",
+            "indonesian": "jendela",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/jendela-03ad4009.mp3"
+          },
+          {
+            "dutch": "allerlei soorten hebben",
+            "english": "have various kinds",
+            "indonesian": "jenis, ber- - ~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/jenis-ber-8b832996.mp3"
+          },
+          {
+            "dutch": "kabel",
+            "english": "cable",
+            "indonesian": "kabel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kabel-794d5e42.mp3"
+          },
+          {
+            "dutch": "kalken, witten",
+            "english": "whitewash, lime",
+            "indonesian": "kapur, mengapur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kapur-mengapur-a866dbda.mp3"
+          },
+          {
+            "dutch": "Chinese roos, Hibiscus",
+            "english": "hibiscus",
+            "indonesian": "kembang sepatu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kembang-sepatu-ee8c8b18.mp3"
+          },
+          {
+            "dutch": "zweet",
+            "english": "sweat",
+            "indonesian": "keringat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/keringat-408ef51e.mp3"
+          },
+          {
+            "dutch": "kraan",
+            "english": "tap, faucet",
+            "indonesian": "keran",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/keran-25b1f6a3.mp3"
+          },
+          {
+            "dutch": "waaier",
+            "english": "fan",
+            "indonesian": "kipas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kipas-76418e4d.mp3"
+          },
+          {
+            "dutch": "ventilator",
+            "english": "electric fan, ventilator",
+            "indonesian": "kipas angin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kipas-angin-da42de51.mp3"
+          },
+          {
+            "dutch": "compleet",
+            "english": "complete",
+            "indonesian": "komplit",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/komplit-926ffbed.mp3"
+          },
+          {
+            "dutch": "fornuis",
+            "english": "stove",
+            "indonesian": "kompor",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kompor-2d55c668.mp3"
+          },
+          {
+            "dutch": "kontrakt",
+            "english": "contract",
+            "indonesian": "kontrak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kontrak-7e24ac82.mp3"
+          },
+          {
+            "dutch": "luie stoel",
+            "english": "easy chair, recliner",
+            "indonesian": "kursi malas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kursi-malas-a8131e7a.mp3"
+          },
+          {
+            "dutch": "bovendien, en ook",
+            "english": "moreover, besides",
+            "indonesian": "lagipula",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lagipula-a6af24de.mp3"
+          },
+          {
+            "dutch": "koelkast",
+            "english": "refrigerator",
+            "indonesian": "lemari es",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lemari-es-983965db.mp3"
+          },
+          {
+            "dutch": "compleet, volledig",
+            "english": "complete, full",
+            "indonesian": "lengkap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lengkap-66be5c7a.mp3"
+          },
+          {
+            "dutch": "ruim",
+            "english": "spacious, ample",
+            "indonesian": "luas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/luas-92f39970.mp3"
+          },
+          {
+            "dutch": "wasmachine",
+            "english": "washing machine",
+            "indonesian": "mesin pencuci",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/mesin-pencuci-d80c68c5.mp3"
+          },
+          {
+            "dutch": "eigenaar",
+            "english": "owner",
+            "indonesian": "milik, pe-~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/milik-pe-85b49eb4.mp3"
+          },
+          {
+            "dutch": "excentriek, raar",
+            "english": "eccentric, odd",
+            "indonesian": "nyentrik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/nyentrik-1be53126.mp3"
+          },
+          {
+            "dutch": "oven",
+            "english": "oven",
+            "indonesian": "oven",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/oven-9ec7f52f.mp3"
+          },
+          {
+            "dutch": "palm",
+            "english": "palm",
+            "indonesian": "palem",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/palem-f5a26656.mp3"
+          },
+          {
+            "dutch": "eetgerei",
+            "english": "eating utensils",
+            "indonesian": "perkakas makan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/perkakas-makan-8d744382.mp3"
+          },
+          {
+            "dutch": "huisraad",
+            "english": "household furniture",
+            "indonesian": "perabot rumah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/perabot-rumah-b6cd1eea.mp3"
+          },
+          {
+            "dutch": "verkouden",
+            "english": "cold (illness)",
+            "indonesian": "pilek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pilek-e6080b94.mp3"
+          },
+          {
+            "dutch": "verhuizen",
+            "english": "move, relocate",
+            "indonesian": "pindah, memindahkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pindah-memindahkan-ad7edc97.mp3"
+          },
+          {
+            "dutch": "gras",
+            "english": "grass",
+            "indonesian": "rumput",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/rumput-9bde3211.mp3"
+          },
+          {
+            "dutch": "waterleiding",
+            "english": "water pipe",
+            "indonesian": "saluran air",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/saluran-air-6840161f.mp3"
+          },
+          {
+            "dutch": "bereid zijn",
+            "english": "be ready",
+            "indonesian": "sedia, ber-~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sedia-ber-8216a86d.mp3"
+          },
+          {
+            "dutch": "verhuren",
+            "english": "rent out",
+            "indonesian": "sewa, menyewakan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sewa-menyewakan-0e8e3f0d.mp3"
+          },
+          {
+            "dutch": "huur en verhuur",
+            "english": "renting and hiring",
+            "indonesian": "sewa-menyewa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sewamenyewa-9c180e49.mp3"
+          },
+          {
+            "dutch": "iets steken in",
+            "english": "insert, stick in",
+            "indonesian": "sisip, menyisip",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sisip-menyisip-824b1f76.mp3"
+          },
+          {
+            "dutch": "voorwaarde",
+            "english": "condition",
+            "indonesian": "syarat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/syarat-627fb555.mp3"
+          },
+          {
+            "dutch": "tegel",
+            "english": "tile",
+            "indonesian": "tegel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tegel-27a801df.mp3"
+          },
+          {
+            "dutch": "bekijken",
+            "english": "look at, view",
+            "indonesian": "tengok, menengok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tengok-menengok-869fabba.mp3"
+          },
+          {
+            "dutch": "terras",
+            "english": "terrace",
+            "indonesian": "teras",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/teras-0fe5ecb4.mp3"
+          },
+          {
+            "dutch": "er is niet, geen",
+            "english": "there is not, no",
+            "indonesian": "tiada",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tiada-130d7aef.mp3"
+          },
+          {
+            "dutch": "plant",
+            "english": "plant",
+            "indonesian": "tumbuhan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tumbuhan-d60b125b.mp3"
+          },
+          {
+            "dutch": "op ieder moment",
+            "english": "at any moment",
+            "indonesian": "waktu, se- - ~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/waktu-se-acf33639.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Tiada kesuksesan tanpa cucuran keringat dan air mata\nZonder zweet en tranen bereikt men geen sukses"
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Het circumfix KE-...-AN heeft twee hoofdfuncties: (A) het vormen van een abstract zelfstandig naamwoord, en (B) het vormen van een werkwoordsvorm met accidenteel/adversatief karakter.",
+              "KE-...-AN kan op drie typen basiswoorden worden toegepast: een werkwoord, een zelfstandig naamwoord en een bijvoeglijk naamwoord.",
+              "Dezelfde vorm kan, afhankelijk van de context, zowel de A- als de B-betekenis dragen — zinspositie en betekenis (onderwerp/object versus predikaat) maken het onderscheid."
+            ],
+            "title": "KE-...-AN — overzicht en basiswoordtypen",
+            "examples": [
+              {
+                "dutch": "A: het leven — B: zichtbaar",
+                "english": "verb: the life / visible",
+                "indonesian": "werkwoord: kehidupan / kelihatan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/werkwoord-kehidupan-kelihatan-d52d8b21.mp3"
+              },
+              {
+                "dutch": "A: koninkrijk — B: vergiftigd",
+                "english": "noun: kingdom / poisoned",
+                "indonesian": "zelfstandig naamwoord: kerajaan / keracunan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/zelfstandig-naamwoord-kerajaan-keracunan-b18c4470.mp3"
+              },
+              {
+                "dutch": "A: goedheid — B: door hitte bevangen",
+                "english": "adjective: goodness / overcome by heat",
+                "indonesian": "bijvoeglijk naamwoord: kebaikan / kepanasan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bijvoeglijk-naamwoord-kebaikan-kepanasan-08c96729.mp3"
+              }
+            ],
+            "rules_en": [
+              "The circumfix KE-...-AN has two main functions: (A) forming an abstract noun, and (B) forming a verb form with accidental/adversative character.",
+              "KE-...-AN can be applied to three types of base words: a verb, a noun, and an adjective.",
+              "The same form can carry both A and B meanings depending on context — sentence position and meaning (subject/object versus predicate) make the distinction."
+            ],
+            "title_en": "KE-...-AN — overview and base word types"
+          },
+          {
+            "rules": [
+              "Functie A vormt uit het basiswoord een abstract zelfstandig naamwoord met een algemene betekenis.",
+              "In het Nederlands komt er meestal -heid, -schap, -ing of een infinitief-als-nomen uit (kebaikan = goedheid, kehidupan = het leven)."
+            ],
+            "title": "Functie A — abstract zelfstandig naamwoord",
+            "examples": [
+              {
+                "dutch": "komen → de komst — De komst van koningin Beatrix naar Indonesië was gepland in augustus 1995",
+                "english": "arrive → arrival — Queen Beatrix's arrival in Indonesia was planned for August 1995",
+                "indonesian": "datang → kedatangan — Kedatangan Ratu Beatrix ke Indonesia direncanakan pada bulan Agustus 1995",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/datang-kedatangan-kedatangan-ratu-d4170d16.mp3"
+              },
+              {
+                "dutch": "koning → koninkrijk — Het koninkrijk van koning Ibrahim is klein",
+                "english": "king → kingdom — King Ibrahim's kingdom is small",
+                "indonesian": "raja → kerajaan — Kerajaan Raja Ibrahim kecil",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/raja-kerajaan-kerajaan-raja-62b42276.mp3"
+              },
+              {
+                "dutch": "schoon → hygiëne — Let op de hygiëne",
+                "english": "clean → cleanliness — Maintain cleanliness",
+                "indonesian": "bersih → kebersihan — Jagalah kebersihan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bersih-kebersihan-jagalah-kebersihan-186d7a9a.mp3"
+              }
+            ],
+            "rules_en": [
+              "Function A forms an abstract noun from the base word with a general meaning.",
+              "In Dutch, this usually produces -heid, -schap, -ing or an infinitive-as-noun (kebaikan = goodness, kehidupan = life)."
+            ],
+            "title_en": "Function A — abstract noun"
+          },
+          {
+            "rules": [
+              "Functie B vormt een werkwoordsvorm met accidenteel/adversatief karakter: het onderwerp ondergaat iets onbedoeld of wordt ergens door getroffen en heeft géén controle over die toestand.",
+              "Vertaal met de Nederlandse lijdende vorm of met 'overvallen/getroffen door'; lees kelihatan dus niet actief ('hij ziet') maar statief ('het is zichtbaar')."
+            ],
+            "title": "Functie B — accidenteel/adversatief werkwoord",
+            "examples": [
+              {
+                "dutch": "zien → zichtbaar — Van hieruit is de berg zichtbaar",
+                "english": "see → visible — The mountain is visible from here",
+                "indonesian": "lihat → kelihatan — Gunung itu kelihatan dari sini",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lihat-kelihatan-gunung-itu-41b5d183.mp3"
+              },
+              {
+                "dutch": "regen → door regen overvallen — Gisteren werd ik verrast door een regenbui",
+                "english": "rain → caught in rain — Yesterday I got caught in the rain",
+                "indonesian": "hujan → kehujanan — Kemarin saya kehujanan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/hujan-kehujanan-kemarin-saya-8a70a509.mp3"
+              },
+              {
+                "dutch": "te weinig → getroffen door gebrek — Dit dorp heeft gebrek aan water",
+                "english": "lack → lacking — This village lacks water",
+                "indonesian": "kurang → kekurangan — Desa ini kekurangan air",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kurang-kekurangan-desa-ini-fefe5f55.mp3"
+              }
+            ],
+            "rules_en": [
+              "Function B forms a verb form with accidental/adversative character: the subject undergoes something unintended or is struck by it and has no control over that state.",
+              "Translate with the Dutch passive form or with 'struck by/caught by'; read kelihatan not as active ('he sees') but as stative ('it is visible')."
+            ],
+            "title_en": "Function B — accidental/adversative verb"
+          },
+          {
+            "rules": [
+              "Functie C is een combinatie van A en B: ke-...-an op een bijvoeglijk naamwoord krijgt de betekenis 'te (veel)'.",
+              "Dezelfde vorm kan ook het neutrale abstracte nomen zijn (kebesaran = 'grootte'); alleen de predikaatpositie met een ervaarder, vaak met untuk ('voor X'), geeft de excessieve lezing 'te groot'.",
+              "Naast het al bekende analytische terlalu besar ('te groot') voegt de ke-...-an-vorm een nuance van 'toevallig/ongewenst te' toe."
+            ],
+            "title": "Functie C — toevallige excessiviteit ('te ...')",
+            "examples": [
+              {
+                "dutch": "groot → te groot — Voor jou is dit hemd te groot",
+                "english": "big → too big — For you this shirt is too big",
+                "indonesian": "besar → kebesaran — Untuk saudara kemeja ini kebesaran",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/besar-kebesaran-untuk-saudara-fe4bf79a.mp3"
+              }
+            ],
+            "rules_en": [
+              "Function C is a combination of A and B: ke-...-an on an adjective takes the meaning 'too (much)'.",
+              "The same form can also be the neutral abstract noun (kebesaran = 'size'); only the predicate position with an experiencer, often with untuk ('for'), gives the excessive reading 'too big'.",
+              "Alongside the already familiar analytical terlalu besar ('too big'), the ke-...-an form adds a nuance of 'accidentally/unwantedly too'."
+            ],
+            "title_en": "Function C — accidental excessiveness ('too ...')"
+          },
+          {
+            "rules": [
+              "Ke-...-an om een verdubbeld bijvoeglijk naamwoord geeft de betekenis 'ergens op lijken' / '-achtig'.",
+              "Dit is de enige KE-...-AN-vorm die verdubbeling vereist en is vooral productief bij kleuren (vergelijk les 22)."
+            ],
+            "title": "KE-...-AN + verdubbeling = '-achtig'",
+            "examples": [
+              {
+                "dutch": "wit → witachtig",
+                "english": "white → whitish",
+                "indonesian": "putih → keputih-putihan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/putih-keputihputihan-ff796b9f.mp3"
+              },
+              {
+                "dutch": "Het gordijn heeft een groene glans (is groenachtig)",
+                "english": "The curtain has a greenish tint (is greenish)",
+                "indonesian": "Gorden berwarna kehijau-hijauan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/gorden-berwarna-kehijauhijauan-014f0f16.mp3"
+              }
+            ],
+            "rules_en": [
+              "Ke-...-an on a reduplicated adjective gives the meaning 'resemble something' / '-ish'.",
+              "This is the only KE-...-AN form that requires reduplication and is especially productive with colors (compare lesson 22)."
+            ],
+            "title_en": "KE-...-AN + reduplication = '-ish'"
+          },
+          {
+            "rules": [
+              "Dezelfde waarneming kan met ME- (actief), TER- (resultaat/toestand) of KE-...-AN (waarnemersgericht) worden uitgedrukt; in het Nederlands vallen deze nuances grotendeels samen.",
+              "Hulpregel bij het vertalen: TER- = 'te zien/horen door', KE-...-AN = 'zichtbaar/hoorbaar voor'.",
+              "Bied de vormen altijd als triade aan — het contrast is de les, niet de losse vorm."
+            ],
+            "title": "KE-...-AN vergeleken met ME- en TER-",
+            "examples": [
+              {
+                "dutch": "Ik hoor de gamelan in de kamer (ME-, actief)",
+                "english": "I hear the gamelan in the room (ME-, active)",
+                "indonesian": "Saya mendengar gamelan di kamar",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/saya-mendengar-gamelan-di-8079ee17.mp3"
+              },
+              {
+                "dutch": "In mijn kamer is de gamelan te horen (TER-, resultaat)",
+                "english": "In my room the gamelan is to be heard (TER-, result)",
+                "indonesian": "Di kamar saya terdengar gamelan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/di-kamar-saya-terdengar-703e946a.mp3"
+              },
+              {
+                "dutch": "In mijn kamer is gamelanmuziek hoorbaar (KE-...-AN, waarnemersgericht)",
+                "english": "In my room gamelan music is audible (KE-...-AN, perceiver-oriented)",
+                "indonesian": "Suara gamelan kedengaran di kamar saya",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/suara-gamelan-kedengaran-di-b896b7da.mp3"
+              },
+              {
+                "dutch": "Vanuit het huis is de berg te zien (TER-) / zichtbaar (KE-...-AN)",
+                "english": "From the house the mountain is to be seen (TER-) / visible (KE-...-AN)",
+                "indonesian": "Dari rumah terlihat gunung itu / Gunung itu kelihatan dari rumah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/dari-rumah-terlihat-gunung-4948d417.mp3"
+              }
+            ],
+            "rules_en": [
+              "The same observation can be expressed with ME- (active), TER- (result/state) or KE-...-AN (perceiver-oriented); in Dutch these nuances largely coincide.",
+              "Translation aid: TER- = 'to be seen/heard by', KE-...-AN = 'visible/audible to'.",
+              "Always present the forms as a triad — the contrast is the lesson, not the individual form."
+            ],
+            "title_en": "KE-...-AN compared with ME- and TER-"
+          }
+        ],
+        "grammar_topics": [
+          "KE-...-AN constructies"
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "writing",
+            "items": [
+              {
+                "answer": "Bapak Bambang memiliki sebuah rumah yang ingin disewakan. Pak Sukardi adalah tukang kebun. Kebun rumah itu kotor dan rumputnya panjang. Pak Sukardi memotong rumput dan menyiram tanaman. Sekarang kebun itu bersih dan rapi. Bapak Bambang sangat senang dengan hasil kerjanya. (modelantwoord — vrije compositie)",
+                "prompt": "Tekening: Bapak Bambang (pemilik rumah) en Pak Sukardi (tukang kebun) — beschrijf hoe de tuin van het te verhuren huis wordt opgeknapt."
+              }
+            ],
+            "title": "Latihan I",
+            "instruction": "Schrijf een verhaal van maximaal 10 zinnen in het Indonesisch naar aanleiding van de tekeningen (Bapak Bambang, pemilik rumah, en Pak Sukardi, tukang kebun)."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "kedinginan — Tadi malam saya kedinginan karena tidak ada selimut.",
+                "prompt": "dingin"
+              },
+              {
+                "answer": "kekurangan — Desa itu kekurangan air bersih.",
+                "prompt": "kurang"
+              },
+              {
+                "answer": "kemiskinan — Pemerintah berusaha mengurangi kemiskinan.",
+                "prompt": "miskin"
+              },
+              {
+                "answer": "kerugian — Banjir itu menyebabkan kerugian besar.",
+                "prompt": "rugi"
+              },
+              {
+                "answer": "kehilangan — Dia kehilangan dompetnya di pasar.",
+                "prompt": "hilang"
+              },
+              {
+                "answer": "kecurian — Tetangga saya kecurian tadi malam.",
+                "prompt": "curi"
+              },
+              {
+                "answer": "keamanan — Keamanan di kota ini sudah lebih baik.",
+                "prompt": "aman"
+              },
+              {
+                "answer": "kedatangan — Kedatangan tamu itu tidak kami duga.",
+                "prompt": "datang"
+              },
+              {
+                "answer": "kesehatan — Kesehatan lebih penting daripada uang.",
+                "prompt": "sehat"
+              },
+              {
+                "answer": "kebanyakan — Kebanyakan orang di sini bekerja di sawah.",
+                "prompt": "banyak"
+              }
+            ],
+            "title": "Latihan II",
+            "instruction": "Maak van de volgende woorden een KE-...-AN vorm en gebruik die in een zin. Voorbeeld: aman → Di Indonesia keamanan adalah hal yang penting."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Di Belanda banyak orang pergi ke tempat kerja dengan sepeda. Sepeda juga praktis untuk berbelanja. Terutama di kota sepeda sangat berguna. Orang dapat memarkir di mana saja dengan mudah. Selain itu, ada jalur sepeda khusus untuk keselamatan para pengendara sepeda. Hanya kalau hujan keadaannya kurang menyenangkan. Supaya tidak basah kuyup, kita harus memakai pakaian hujan yang baik. Walaupun sering hujan, terutama pada musim gugur, sepeda tetap sangat populer. Bahkan selama liburan beberapa keluarga membawa sepeda. Menurut perkiraan, orang Belanda memiliki empat belas juta sepeda.",
+                "prompt": "In Nederland gaan veel mensen op de fiets naar hun werk. Een fiets is ook makkelijk om boodschappen te doen. Vooral in de stad is een fiets handig. Men kan overal makkelijk parkeren. Bovendien zijn er speciale fietspaden voor de veiligheid van de fietsers. Alleen als het regent is het niet zo prettig. Om niet helemaal nat te worden moet je dan goede regenkleding dragen. Alhoewel het dikwijls regent, vooral in de herfst, is de fiets bijzonder populair. Zelfs tijdens de vakantie nemen sommige gezinnen fietsen mee. Volgens schattingen bezitten de Nederlanders 14 miljoen fietsen."
+              }
+            ],
+            "title": "Latihan III",
+            "instruction": "Vertaal het volgende verhaal in het Indonesisch."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "De prijsstijging van schoenen volgt de inflatie.",
+                "prompt": "Kenaikan harga sepatu mengikuti inflasi."
+              },
+              {
+                "answer": "De winst van het schoenenbedrijf hangt af van zijn exportresultaat.",
+                "prompt": "Keuntungan perusahaan sepatu tergantung hasil ekspornya."
+              },
+              {
+                "answer": "De mogelijkheid om een markt in het buitenland te zoeken is nog gering.",
+                "prompt": "Kemungkinan mencari pasar di luar negeri masih kurang."
+              },
+              {
+                "answer": "Schoenen worden door de meeste inwoners van Indonesië gekocht.",
+                "prompt": "Sepatu dibeli kebanyakan penduduk Indonesia."
+              },
+              {
+                "answer": "De omvang van de binnenlandse markt is enorm groot.",
+                "prompt": "Keluasan pasar dalam negeri besar sekali."
+              },
+              {
+                "answer": "Dit belang mag niet vergeten worden.",
+                "prompt": "Kepentingan ini tidak dapat dilupakan."
+              },
+              {
+                "answer": "Voor Indonesische bedrijven is de vrijheid om goederen uit het buitenland te importeren beperkt.",
+                "prompt": "Buat perusahaan Indonesia kebebasan mengimpor barang dari luar negeri terbatas."
+              },
+              {
+                "answer": "Deze situatie vormt een andere factor als oorzaak van de lage opbrengst.",
+                "prompt": "Keadaan ini merupakan satu faktor lain sebabnya kerendahan hasilnya."
+              },
+              {
+                "answer": "Om succes te behalen is de kwaliteit van het leiderschap zeer belangrijk.",
+                "prompt": "Untuk mendapat sukses, kwalitas pimpinan sangat penting."
+              },
+              {
+                "answer": "Maar volgens de laatste informatie blijft de Indonesische industrie zich ontwikkelen.",
+                "prompt": "Tapi, menurut keterangan terakhir, perindustrian Indonesia berkembang terus."
+              }
+            ],
+            "title": "Latihan IV",
+            "instruction": "Vertaal de volgende zinnen naar het Nederlands. (Let op de KE-...-AN nominalisaties.)"
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"ba8f4ebe-b157-44cc-8248-98171183315c\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"ba8f4ebe-b157-44cc-8248-98171183315c\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}
