@@ -5,7 +5,7 @@ import type {
 import type { SkillType } from '@/types/learning'
 import { decideLoadBudget, type LoadBudgetDecision } from '@/lib/session-builder/loadBudget'
 import { partitionBuried } from '@/lib/session-builder/siblingBury'
-import { isScopedMode } from '@/lib/session-builder/model'
+import { isScopedMode, isSourceRefScopedMode } from '@/lib/session-builder/model'
 import type { SessionMode } from '@/lib/session-builder/model'
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/lib/capabilities'
 
@@ -323,7 +323,18 @@ function gateCandidates(
       suppress('already_active_or_retired')
       continue
     }
-    if (capability.prerequisiteKeys.some(key => !ctx.satisfiedKeys.has(key))) {
+    // Affix-trainer relaxation: in affix_practice mode the learner has explicitly
+    // chosen to drill this affix, so we DON'T require its grammar pattern to have
+    // been formally studied first — recognising "berjalan = ber- + jalan" is itself
+    // how you meet the pattern, and gating an affix drill behind a separate grammar
+    // lesson is the circular over-strictness that left the trainer with "no cards".
+    // The root-vocab prerequisite is KEPT (you still build the affixed form on a base
+    // word you actually know — ADR 0018), as is the within-pair recognise→produce
+    // ladder. So an affix drill surfaces the forms whose roots you know, immediately.
+    const prereqKeys = isSourceRefScopedMode(ctx.mode)
+      ? capability.prerequisiteKeys.filter(key => !key.includes(':grammar_pattern_src:'))
+      : capability.prerequisiteKeys
+    if (prereqKeys.some(key => !ctx.satisfiedKeys.has(key))) {
       suppress('missing_prerequisite')
       continue
     }

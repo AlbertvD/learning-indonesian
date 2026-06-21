@@ -182,6 +182,67 @@ describe('pedagogy planner', () => {
     })
   })
 
+  // Affix-trainer relaxation: affix_practice drops the grammar-pattern prerequisite
+  // (you meet the pattern by recognising the link) but keeps the root-vocab one.
+  const GRAMMAR_PREREQ = 'cap:v1:grammar_pattern_src:lesson-11/pattern-l11-ber:recognise_grammar_pattern_cap:none:text:none'
+  const ROOT_PREREQ = 'cap:v1:vocabulary_src:learning_items/jalan:recognise_meaning_from_text_cap:id_to_l1:text:nl'
+  const berCap = (over = {}) => capability({
+    id: 'ber-jalan-recognise',
+    canonicalKey: 'cap:v1:word_form_pair_src:lesson-11/morphology/ber-jalan-berjalan:recognise_word_form_link_cap:derived_to_root:text:none',
+    sourceKind: 'word_form_pair_src',
+    sourceRef: 'lesson-11/morphology/ber-jalan-berjalan',
+    capabilityType: 'recognise_word_form_link_cap',
+    prerequisiteKeys: [GRAMMAR_PREREQ, ROOT_PREREQ],
+    lessonId: 'lesson-11',
+    ...over,
+  })
+  const rootSatisfied = [{ canonicalKey: ROOT_PREREQ, activationState: 'active' as const, reviewCount: 1, successfulReviewCount: 1, stability: 2.4 }]
+
+  it('affix_practice: unlocks an affix form when the root is known, even if the grammar pattern is unpractised', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'affix_practice',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [berCap()],
+      learnerCapabilityStates: rootSatisfied, // grammar prereq deliberately absent
+      activatedLessons: new Set(['lesson-11']),
+      selectedSourceRefs: ['lesson-11/morphology/ber-jalan-berjalan'],
+    })
+    expect(plan.suppressedCapabilities).toEqual([])
+    expect(plan.eligibleNewCapabilities.map(c => c.capability.canonicalKey)).toContain(berCap().canonicalKey)
+  })
+
+  it('affix_practice: STILL requires the root vocab (the kept guardrail) — suppressed when the root is unknown', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'affix_practice',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [berCap()],
+      learnerCapabilityStates: [], // neither prereq satisfied
+      activatedLessons: new Set(['lesson-11']),
+      selectedSourceRefs: ['lesson-11/morphology/ber-jalan-berjalan'],
+    })
+    expect(plan.suppressedCapabilities[0]).toEqual({ canonicalKey: berCap().canonicalKey, reason: 'missing_prerequisite' })
+  })
+
+  it('standard mode does NOT relax the grammar-pattern prerequisite', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [berCap()],
+      learnerCapabilityStates: rootSatisfied, // root known, grammar pattern not
+      activatedLessons: new Set(['lesson-11']),
+    })
+    expect(plan.suppressedCapabilities[0]).toEqual({ canonicalKey: berCap().canonicalKey, reason: 'missing_prerequisite' })
+  })
+
   it('fails closed if prerequisite success evidence is omitted', () => {
     const prerequisite = 'cap:v1:item:learning_items/item-1:recognise_meaning_from_text_cap:id_to_l1:text:nl'
     const plan = planLearningPath({
