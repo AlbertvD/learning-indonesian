@@ -1,0 +1,149 @@
+{
+  "lesson_number": 29,
+  "cefr_level": "B2",
+  "lesson_topic": "Internet di Indonesia (Bab 13) — uitrol internet/telecom in Indonesië door PT Pos; afgeleide woordvorming met MEMPER- en PER-...-AN",
+  "grammar_patterns": [
+    {
+      "slug": "l29-memper-diper-intensieve-causatief",
+      "name": "MEMPER- / DIPER-: de intensieve causatieve werkwoordsvorm",
+      "description": "MEMPER- (bedrijvend) en DIPER- (lijdend) vormen altijd transitieve werkwoorden met een intensievere, vaak iteratieve betekenis dan de neutralere ME-vorm.",
+      "confusion_group": "memper-derivation",
+      "key_contrast": "memper- (intensief/herhalend, altijd transitief) vs de neutrale me-vorm (L13-15); memper- is opgebouwd als mem- + per-",
+      "research_notes": "memper- = mem- + per-; per- op een bijvoeglijke stam is causatief in de zin van 'een trap hoger maken' (object gaat hoger dan zijn vorige staat), te onderscheiden van -kan dat het object 'tot' de eigenschap maakt (Wiktionary memper-; tutorialbahasa). Nederlandstaligen verwarren memper- snel met de gewone me-causatief; benadruk dat ALLE memper-vormen transitief zijn en een patiens vragen, en dat de betekenis nadrukkelijker/iteratief is. DIPER- is de passieve spiegelvorm — koppel elke memper-vorm aan zijn diper-vorm.",
+      "example_sentences": [
+        { "id": "Encik Safiee memperbesar masalah itu.", "nl": "Meneer Safiee blies dat probleem op (maakte het nog groter)." },
+        { "id": "Masalah itu diperbesar oleh Encik Safiee.", "nl": "Dat probleem werd door meneer Safiee opgeblazen." },
+        { "id": "Saya memperingatkan dia tentang bahaya itu.", "nl": "Ik waarschuwde hem voor dat gevaar." },
+        { "id": "Mereka ingin mempersatukan kedua partai itu.", "nl": "Zij willen die twee partijen verenigen." }
+      ]
+    },
+    {
+      "slug": "l29-memper-kan-i-versus-kaal",
+      "name": "MEMPER- met en zonder -KAN / -i over vijf woordklassen",
+      "description": "MEMPER-/DIPER- combineert met -KAN of -i of staat kaal, afhankelijk van het type basiswoord (werkwoord, zelfstandig naamwoord, bijvoeglijk naamwoord, plaats, telwoord).",
+      "confusion_group": "memper-derivation",
+      "key_contrast": "memper-...-kan/-i (werkwoord, zelfstandig naamwoord: memperingatkan, memperusahakan) vs kaal memper- (bijvoeglijk naamwoord: memperkecil, memperbesar, memperlancar — niet *memperkecilkan)",
+      "research_notes": "De vuistregel die studenten het vaakst missen: MEMPER- + bijvoeglijk naamwoord neemt GEEN -kan/-i (memperbesar, niet memperbesarkan); -kan/-i verschijnt wel bij werkwoord- en naamwoordstammen. Vijf basiswoordtypen: ingat (werkwoord), usaha (zelfst. nw), kecil (bijv. nw), dalam (plaats, zeldzaam), satu (telwoord, zeldzaam). Plaats- en telwoordstammen zijn zeldzaam — markeer ze als zodanig.",
+      "example_sentences": [
+        { "id": "Pemerintah ingin memperlancar lalu lintas.", "nl": "De overheid wil het verkeer vlotter laten verlopen." },
+        { "id": "Toko itu memperkecil harganya.", "nl": "Die winkel verlaagt (verkleint) zijn prijzen." },
+        { "id": "Mahasiswa itu ingin memperdalam ilmunya.", "nl": "Die student wil zijn kennis verdiepen." },
+        { "id": "Kita harus mempersatukan bangsa ini.", "nl": "Wij moeten dit volk verenigen." }
+      ]
+    },
+    {
+      "slug": "l29-membesar-membesarkan-memperbesar",
+      "name": "De drieweg-tegenstelling membesar / membesarkan / memperbesar",
+      "description": "Eén bijvoeglijk basiswoord levert drie verschillende werkwoorden op: intransitief vanzelf-groter-worden, causatief -kan, en de intensieve memper-causatief.",
+      "confusion_group": "causatief-membesarkan-memperbesar",
+      "key_contrast": "membesar (uit zichzelf groter worden, intransitief) vs membesarkan (iets opzettelijk groot maken, object wordt groot) vs memperbesar (iets dat al groot is nóg verder vergroten)",
+      "research_notes": "Wiktionary/onderzoek bevestigen het kernverschil: membesarkan = van klein naar groot (object wórdt groot); memperbesar = al groot, en nóg groter/verder (extra graad). De auteurs van het hoofdstuk illustreren dit met lancar → melancarkan → memperlancar (autorijden 90 → 120 → 160 km/uur). Nederlandstaligen vertalen beide als 'vergroten' en missen de graad-nuance; gebruik de auto-snelheidsmetafoor als ezelsbruggetje.",
+      "example_sentences": [
+        { "id": "Anak itu cepat membesar.", "nl": "Dat kind groeit snel (wordt vanzelf groter)." },
+        { "id": "Mereka membesarkan tiga anak.", "nl": "Zij voeden drie kinderen op." },
+        { "id": "Kami memperbesar gambar itu.", "nl": "Wij vergroten die afbeelding (die al groot was, nog verder)." },
+        { "id": "Sopir itu memperlancar perjalanan kami.", "nl": "Die chauffeur liet onze reis vlotter verlopen." }
+      ]
+    },
+    {
+      "slug": "l29-gebiedende-wijs-memper-kan",
+      "name": "Gebiedende wijs met MEMPER- / -kan (gebod en verbod)",
+      "description": "In de imperatief valt het voorvoegsel weg en blijft de kale -kan-vorm; het verbod gebruikt jangan vóór dezelfde vorm.",
+      "confusion_group": "imperatief",
+      "key_contrast": "gebod: Peringatkan Pak Anwar! (kale -kan-vorm, geen memper-) vs verbod: Jangan peringatkan Pak Anwar!",
+      "research_notes": "Sluit aan bij de eerder geleerde imperatief met -kan (L21 'Gebiedende wijs met -KAN'). De val: studenten laten het voorvoegsel staan (*Memperingatkan...!). In de imperatief verdwijnen meN-/memper-; alleen het achtervoegsel -kan blijft. Het verbod is mechanisch jangan + dezelfde imperatiefvorm.",
+      "example_sentences": [
+        { "id": "Peringatkan Pak Anwar!", "nl": "Waarschuw meneer Anwar!" },
+        { "id": "Jangan peringatkan Pak Anwar!", "nl": "Waarschuw meneer Anwar niet!" },
+        { "id": "Perbesar gambar ini, ya!", "nl": "Vergroot deze afbeelding, oké!" }
+      ]
+    },
+    {
+      "slug": "l29-per-an-nominaliserend-confix",
+      "name": "PER-...-AN: het nominaliserende confix",
+      "description": "Het omhulsel PER-...-AN maakt van een basiswoord een zelfstandig naamwoord, toepasbaar op vijf woordklassen, en vormt vaak abstracte begrippen en sectoren.",
+      "confusion_group": "nominalisatie-per-an-versus-pe-an",
+      "key_contrast": "PER-...-AN (nominaliserend confix → instelling/resultaat/abstract begrip) vs de verbale memper-tak van dezelfde stam",
+      "research_notes": "Vijf basiswoordtypen: ingat→peringatan, toko→pertokoan, baik→perbaikan, dalam→perdalaman (zeldzaam), empat→perempatan (zeldzaam). PER-...-AN vormt productief abstracte domeinen: perdagangan (handel), perfilman, perekonomian, perindustrian, en ruimtelijke complexen perkantoran, perkotaan, perumahan. Komt ~1 op 108 woorden voor in publicaties (minder frequent dan pe-...-an, ~1 op 75). Let op: dit is GEEN herhaling van het pe-...-an confix uit L25 — het per-an confix is een aparte vorm; zie het contrastpatroon hieronder.",
+      "example_sentences": [
+        { "id": "Perekonomian Indonesia tumbuh cepat.", "nl": "De Indonesische economie groeit snel." },
+        { "id": "Mereka tinggal di daerah perumahan baru.", "nl": "Zij wonen in een nieuwe woonwijk." },
+        { "id": "Perbaikan jalan itu memakan waktu lama.", "nl": "De reparatie van die weg duurt lang." },
+        { "id": "Ada perempatan besar di depan kantor.", "nl": "Voor het kantoor ligt een groot kruispunt." }
+      ]
+    },
+    {
+      "slug": "l29-per-an-versus-pe-an-resultaat-proces",
+      "name": "PER-...-AN tegenover PE-...-AN: resultaat/instelling versus proces",
+      "description": "Bij hetzelfde basiswoord noemt de PE-...-AN-vorm meestal het proces/de handeling en de PER-...-AN-vorm het resultaat, de instelling of de organisatie.",
+      "confusion_group": "nominalisatie-per-an-versus-pe-an",
+      "key_contrast": "PE-...-AN = proces/handeling (pengumpulan, pengusahaan) vs PER-...-AN = resultaat/instelling (perkumpulan, perusahaan); plus de drieslag pengusaha (uitvoerder) / pengusahaan (proces) / perusahaan (instelling)",
+      "research_notes": "Onderzoek bevestigt: pe-...-an = proces/handeling, per-...-an = resultaat/instelling. Kerncontrasten: pengumpulan bahan (het verzamelen) vs perkumpulan mahasiswa (de vereniging); penunjukan jalanan (bewegwijzering) vs pertunjukan wayang (de vertoning/het evenement); pembuatan sabun (het maken) vs perbuatan jelek (de daad). De drieslag pengusaha/pengusahaan/perusahaan is het beste anker. Vaak bestaat slechts één van beide vormen. Dit pattern bouwt voort op L25 (pe-...-an) en L20 (pe-): herhaal die NIET; het nieuwe leerpunt is uitsluitend het per-an-contrast. FLAG VOOR REVIEWER: confusion_group 'nominalisatie-per-an-versus-pe-an' overlapt bewust met L25's pe-...-an stof; de L29-patronen zijn gescoped op MEMPER-/PER-AN en mogen pe-/pe-an niet opnieuw onderwijzen.",
+      "example_sentences": [
+        { "id": "Pengusaha itu memiliki tiga perusahaan.", "nl": "Die ondernemer bezit drie bedrijven." },
+        { "id": "Pengusahaan batik membutuhkan tenaga ahli.", "nl": "Het produceren van batik vereist vakmensen." },
+        { "id": "Pengumpulan bahan memakan waktu lama.", "nl": "Het verzamelen van materiaal kost veel tijd." },
+        { "id": "Dia anggota perkumpulan mahasiswa.", "nl": "Hij is lid van de studentenvereniging." }
+      ]
+    }
+  ],
+  "vocabulary_pool": [
+    { "base_text": "baik", "translation_nl": "goed", "item_type": "word", "lesson": 1 },
+    { "base_text": "besar", "translation_nl": "groot", "item_type": "word", "lesson": 1 },
+    { "base_text": "empat", "translation_nl": "vier", "item_type": "word", "lesson": 1 },
+    { "base_text": "rumah", "translation_nl": "huis", "item_type": "word", "lesson": 1 },
+    { "base_text": "satu", "translation_nl": "een (1)", "item_type": "word", "lesson": 1 },
+    { "base_text": "jalan", "translation_nl": "rijden / gaan / lopen / weg", "item_type": "word", "lesson": 2 },
+    { "base_text": "kantor", "translation_nl": "kantoor", "item_type": "word", "lesson": 2 },
+    { "base_text": "kecil", "translation_nl": "klein", "item_type": "word", "lesson": 2 },
+    { "base_text": "duduk", "translation_nl": "zitten", "item_type": "word", "lesson": 3 },
+    { "base_text": "muka", "translation_nl": "voor / voorkant / oppervlak", "item_type": "word", "lesson": 3 },
+    { "base_text": "terbang", "translation_nl": "vliegen", "item_type": "word", "lesson": 3 },
+    { "base_text": "air", "translation_nl": "water", "item_type": "word", "lesson": 4 },
+    { "base_text": "janji", "translation_nl": "afspraak / belofte", "item_type": "word", "lesson": 6 },
+    { "base_text": "tinggi", "translation_nl": "hoog", "item_type": "word", "lesson": 7 },
+    { "base_text": "kumpul", "translation_nl": "verzamelen", "item_type": "word", "lesson": 9 },
+    { "base_text": "bangun", "translation_nl": "opstaan / opbouwen", "item_type": "word", "lesson": 10 },
+    { "base_text": "ingat", "translation_nl": "(zich) herinneren", "item_type": "word", "lesson": 10 },
+    { "base_text": "pandang", "translation_nl": "blik / kijken naar", "item_type": "word", "lesson": 12 },
+    { "base_text": "baca", "translation_nl": "lezen", "item_type": "word", "lesson": 13 },
+    { "base_text": "sambung", "translation_nl": "verlengen / verbinden", "item_type": "word", "lesson": 15 },
+    { "base_text": "buat", "translation_nl": "voor / maken", "item_type": "word", "lesson": 16 },
+    { "base_text": "dagang", "translation_nl": "handel", "item_type": "word", "lesson": 20 },
+    { "base_text": "dalam", "translation_nl": "diep / in", "item_type": "word", "lesson": 21 }
+  ],
+  "current_lesson_items": [
+    { "base_text": "akses", "translation_nl": "toegang", "item_type": "word" },
+    { "base_text": "bidang", "translation_nl": "gebied / vakgebied", "item_type": "word" },
+    { "base_text": "bisnis", "translation_nl": "business", "item_type": "word" },
+    { "base_text": "fasilitas", "translation_nl": "faciliteit", "item_type": "word" },
+    { "base_text": "global", "translation_nl": "wereldwijd", "item_type": "word" },
+    { "base_text": "globalisasi", "translation_nl": "mondialisering", "item_type": "word" },
+    { "base_text": "jaring, ~an", "translation_nl": "netwerk", "item_type": "word" },
+    { "base_text": "jalur", "translation_nl": "baan (v. weg) / strook", "item_type": "word" },
+    { "base_text": "kembang, per~an", "translation_nl": "ontwikkeling", "item_type": "word" },
+    { "base_text": "komunikasi", "translation_nl": "communicatie", "item_type": "word" },
+    { "base_text": "koran", "translation_nl": "krant", "item_type": "word" },
+    { "base_text": "langgan", "translation_nl": "klant zijn", "item_type": "word" },
+    { "base_text": "langgan, ~an", "translation_nl": "klant", "item_type": "word" },
+    { "base_text": "langgan, pe~", "translation_nl": "klant", "item_type": "word" },
+    { "base_text": "lokal", "translation_nl": "locaal", "item_type": "word" },
+    { "base_text": "manfaat, pe~an", "translation_nl": "gebruikmaking", "item_type": "word" },
+    { "base_text": "ramal, me~kan", "translation_nl": "voorspellen", "item_type": "word" },
+    { "base_text": "revolusi", "translation_nl": "revolutie", "item_type": "word" },
+    { "base_text": "sambung", "translation_nl": "verbinding", "item_type": "word" },
+    { "base_text": "sambung, ~an", "translation_nl": "aansluiting", "item_type": "word" },
+    { "base_text": "sambung, menyambungkan", "translation_nl": "aansluiten", "item_type": "word" },
+    { "base_text": "sedia, menyediakan", "translation_nl": "aanbieden", "item_type": "word" },
+    { "base_text": "sedia, penyedia", "translation_nl": "provider / aanbieder", "item_type": "word" },
+    { "base_text": "sero, per~an", "translation_nl": "vennootschap", "item_type": "word" },
+    { "base_text": "serta, pe~", "translation_nl": "deelnemer", "item_type": "word" },
+    { "base_text": "tahap", "translation_nl": "fase", "item_type": "word" },
+    { "base_text": "tarif", "translation_nl": "tarief", "item_type": "word" },
+    { "base_text": "terbit, penerbit", "translation_nl": "uitgever", "item_type": "word" },
+    { "base_text": "uji coba", "translation_nl": "proeftest", "item_type": "word" },
+    { "base_text": "iptek (ilmu pengetahuan dan teknologi)", "translation_nl": "wetenschap en technologie", "item_type": "phrase" },
+    { "base_text": "PT (Perseroan Terbatas)", "translation_nl": "NV Naamloze Vennootschap", "item_type": "phrase" },
+    { "base_text": "wartel (warung telekomunikasi)", "translation_nl": "telecommunicatiekantoor", "item_type": "phrase" }
+  ]
+}
