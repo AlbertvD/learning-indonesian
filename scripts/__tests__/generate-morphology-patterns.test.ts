@@ -54,22 +54,39 @@ const L13_CATEGORIES: LessonCategory[] = [
 // Every L13 root exists as a learning_item (the pilot verified this).
 const KNOWN = new Set(morphologyRoots.map((r) => r.root))
 
-// Expected derived + class + patternSourceRef from the hand-authored pilot.
+// Expected derived + class + patternSourceRef for the CURRENT L13 staging
+// (morphology-roots.ts; kept in sync with that file — extend when roots are added).
+const REF_A1 = 'l13-a1-me-zonder-verandering-me'
+const REF_A2 = 'l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng'
+const REF_B = 'l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t'
 const EXPECT: Record<string, { derived: string; cls: string; ref: string }> = {
-  masak: { derived: 'memasak', cls: 'me', ref: 'l13-a1-me-zonder-verandering-me' },
-  lihat: { derived: 'melihat', cls: 'me', ref: 'l13-a1-me-zonder-verandering-me' },
-  baca: { derived: 'membaca', cls: 'mem', ref: 'l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng' },
-  beli: { derived: 'membeli', cls: 'mem', ref: 'l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng' },
-  cari: { derived: 'mencari', cls: 'men', ref: 'l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng' },
-  dengar: { derived: 'mendengar', cls: 'men', ref: 'l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng' },
-  jual: { derived: 'menjual', cls: 'men', ref: 'l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng' },
-  ganti: { derived: 'mengganti', cls: 'meng', ref: 'l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng' },
-  ambil: { derived: 'mengambil', cls: 'meng', ref: 'l13-a2-me-met-aangepast-voorvoegsel-mem-men-meng' },
-  tulis: { derived: 'menulis', cls: 'men', ref: 'l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t' },
-  tukar: { derived: 'menukar', cls: 'men', ref: 'l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t' },
-  pukul: { derived: 'memukul', cls: 'mem', ref: 'l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t' },
-  potong: { derived: 'memotong', cls: 'mem', ref: 'l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t' },
-  kirim: { derived: 'mengirim', cls: 'meng', ref: 'l13-b-me-met-verandering-van-de-eerste-klank-k-p-s-t' },
+  // A1 — meN- stays me- (l, m, n, r, w, y …)
+  masak: { derived: 'memasak', cls: 'me', ref: REF_A1 },
+  lihat: { derived: 'melihat', cls: 'me', ref: REF_A1 },
+  rasa: { derived: 'merasa', cls: 'me', ref: REF_A1 },
+  // A2 — meN- adapts (mem-/men-/meng-)
+  baca: { derived: 'membaca', cls: 'mem', ref: REF_A2 },
+  beli: { derived: 'membeli', cls: 'mem', ref: REF_A2 },
+  baik: { derived: 'membaik', cls: 'mem', ref: REF_A2 },
+  besar: { derived: 'membesar', cls: 'mem', ref: REF_A2 },
+  beri: { derived: 'memberi', cls: 'mem', ref: REF_A2 },
+  bangun: { derived: 'membangun', cls: 'mem', ref: REF_A2 },
+  cari: { derived: 'mencari', cls: 'men', ref: REF_A2 },
+  dengar: { derived: 'mendengar', cls: 'men', ref: REF_A2 },
+  dapat: { derived: 'mendapat', cls: 'men', ref: REF_A2 },
+  jual: { derived: 'menjual', cls: 'men', ref: REF_A2 },
+  ganti: { derived: 'mengganti', cls: 'meng', ref: REF_A2 },
+  ambil: { derived: 'mengambil', cls: 'meng', ref: REF_A2 },
+  hadap: { derived: 'menghadap', cls: 'meng', ref: REF_A2 },
+  ajar: { derived: 'mengajar', cls: 'meng', ref: REF_A2 },
+  // B — meN- elides the initial k/p/s/t
+  tulis: { derived: 'menulis', cls: 'men', ref: REF_B },
+  tukar: { derived: 'menukar', cls: 'men', ref: REF_B },
+  tolong: { derived: 'menolong', cls: 'men', ref: REF_B },
+  turut: { derived: 'menurut', cls: 'men', ref: REF_B },
+  pukul: { derived: 'memukul', cls: 'mem', ref: REF_B },
+  potong: { derived: 'memotong', cls: 'mem', ref: REF_B },
+  kirim: { derived: 'mengirim', cls: 'meng', ref: REF_B },
 }
 
 describe('generateMorphologyPatterns — L13 golden proof (file scope)', () => {
