@@ -1,0 +1,296 @@
+{
+  "lesson": 28,
+  "generatedAt": "2026-06-19T14:16:04.263Z",
+  "sourcePages": 5,
+  "lessonMeta": {
+    "title": "Bab 12 - Di Kantor",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 28
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "dialogue",
+      "title": "Dialoog - Di Kantor",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "lines": [
+        {
+          "speaker": "narrator",
+          "text": "Pak Ketut Wija bekerja lima hari seminggu di kantor di Denpasar Bali. Tiap hari kantor buka pada jam 8.00 pagi dan tutup pada jam 17.00, kecuali hari Jumat. Hari Jumat kantor tutup pada jam 12.00 siang."
+        },
+        {
+          "speaker": "narrator",
+          "text": "Hari ini Pak Ketut Wija mengadakan rapat tentang pembukaan cabang kantor baru di Singaraja. Semua orang yang harus menghadiri rapat sudah hadir, dan rapat dapat dimulai. Tentu saja ada ruangan tertentu untuk tempat rapat. Rapat diketuai Pak Wija sendiri. Biasanya dia tidak mengetuai rapat, karena dia sebenarnya bukan kepala kantor, tapi hanya sekretaris. Hari ini kebetulan kepala kantor dipanggil ke Jakarta untuk berunding dengan direktur perusahaan."
+        },
+        {
+          "speaker": "Pak Wija",
+          "text": "Sekarang rapat ini saya mulai. Apakah Anda semua sudah menerima kertas-kertas bersangkutan?"
+        },
+        {
+          "speaker": "Pak Oka",
+          "text": "Sebenarnya saya belum menerima acara rapat, tetapi mungkin hanya saya yang belum menerimanya?"
+        },
+        {
+          "speaker": "Pak Wija",
+          "text": "Mungkin juga, coba saya tanya dulu kepada sekretaris. Eh, Tri, Tri, mana acara untuk Pak Oka?"
+        },
+        {
+          "speaker": "Sulastri",
+          "text": "Oh, mungkin saya lupa mengirimnya. Maaf Pak, ini dia."
+        },
+        {
+          "speaker": "Pak Wija",
+          "text": "Ada baiknya saya meringkaskan dulu garis besar persoalan rapat ini. Seperti Anda ketahui, ada beberapa masalah dengan sponsor kita di Jakarta. Katanya uang untuk membangunkan gedung kantor sudah dikirimkannya dari sana. Tetapi sampai saat ini belum kita terima. Kalau uang itu tidak datang pada waktunya, jelas kita tidak mungkin dapat meneruskan pembukaan cabang kantor di Singaraja. Kecuali kalau kita dapat mencari uang dulu, walaupun untuk sementara saja."
+        },
+        {
+          "speaker": "Ibu Rai",
+          "text": "Menurut saya lebih baik kita kirim faks mengenai pengiriman uang kepada pimpinan kita di Jakarta. Mungkin saja sudah dikirim, namun belum sampai di bank. Itu lebih baik kita tanya dulu ke bank."
+        },
+        {
+          "speaker": "Pak Wija",
+          "text": "Gagasan itu baik. Tetapi kalau belum, apa yang dapat kita putuskan? Sudah saya cek pada wakil setempat, dan menurut dia tidak ada yang dapat kita lakukan."
+        },
+        {
+          "speaker": "Pak Oka",
+          "text": "Sebaiknya kita menyusun laporan sebagai bukti. Nanti laporan itu kita kirimkan kepada panitia yayasan, supaya mereka tahu."
+        },
+        {
+          "speaker": "Pak Wija",
+          "text": "Jadi, kita putuskan saja menunggu jawaban dari Jakarta. Karena itu rapat ini saya tunda dulu. Besok pagi kita berkumpul lagi di sini."
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "acara",
+          "dutch": "programma, agenda",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bangun, mem~kan",
+          "dutch": "bouwen, oprichten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "bersangkutan",
+          "dutch": "betreffende",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "biasa, ~nya",
+          "dutch": "gewoonlijk",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "buka, pem~an",
+          "dutch": "opening",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bukti",
+          "dutch": "bewijs",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cabang",
+          "dutch": "filiaal",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "faks",
+          "dutch": "fax",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gagas, ~an",
+          "dutch": "gedachte, idee",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "garis",
+          "dutch": "lijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hadir, meng~i",
+          "dutch": "aanwezig zijn / bijwonen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "jelas",
+          "dutch": "helder / duidelijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kecuali",
+          "dutch": "behalve",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "ketua, mengetuai",
+          "dutch": "voorzitter / voorzitten",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "laku, me~kan",
+          "dutch": "doen / uitvoeren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "lapor, ~an",
+          "dutch": "rapport / verslag",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "panitia",
+          "dutch": "commissie / comité",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pimpin, ~an",
+          "dutch": "leiding / leider",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "putus, memutuskan",
+          "dutch": "besluiten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "rapat",
+          "dutch": "vergadering",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ringkas, me~kan",
+          "dutch": "beknopt / kort / samenvatten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "ruang, ~an",
+          "dutch": "ruimte / vertrek",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "runding, be~",
+          "dutch": "overleggen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sekretaris",
+          "dutch": "secretaris / secretaresse",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sementara",
+          "dutch": "tijdelijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "soal, per~an",
+          "dutch": "probleem",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sponsor",
+          "dutch": "sponsor",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "susun, menyusun",
+          "dutch": "samenstellen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "tempat, se~",
+          "dutch": "plaatselijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "tentu, ter~",
+          "dutch": "bepaald(e)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "terus, meneruskan",
+          "dutch": "voortzetten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "tunda, menunda",
+          "dutch": "verdagen / uitstellen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "wakil",
+          "dutch": "vertegenwoordiger",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "yayasan",
+          "dutch": "stichting / instituut",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "expressions",
+      "title": "Ungkapan",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "ada baiknya",
+          "dutch": "het is beter dat ...",
+          "pos": "particle"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "grammar",
+      "title": "TATA BAHASA - Spreken en schrijven in het Indonesisch: enkele aanwijzingen",
+      "source_pages": [
+        2,
+        3,
+        4
+      ],
+      "confidence": "high",
+      "raw_text": "Spreken en schrijven in het Indonesisch: enkele aanwijzingen\n\nIn het algemeen is het goed om in het Indonesisch korte zinnen te maken. Zinnen met veel bijzinnen zijn erg on-Indonesisch. Het Indonesisch is een vrij economische taal. Er wordt niet herhaald wat niet expliciet herhaald hoeft te worden.\n\nWet van behoud van onderwerp, tijd, enkelvoud en meervoud\n\nBij het spreken en schrijven van het Indonesisch is er sprake van wetten van behoud van onderwerp, tijd, enkelvoud en meervoud.\n\na. Wet van behoud van onderwerp\n\nIn het Indonesisch hoeft het onderwerp niet steeds te worden herhaald. Wanneer het onderwerp al eerder is genoemd, is het duidelijk dat daarnaar verwezen wordt.\nVoorbeeld:\n\nSaya dulu ke Jakarta. Sering ke mana-mana. Menginap di hotel. Ayah juga sering ke sana. Tinggal di hotel juga.\n\nVroeger ben IK in Jakarta geweest. Vaak ging IK overal heen. IK logeerde er in een hotel. VADER gaat ook vaak daarheen. HIJ logeert ook in een hotel.\n\nb. Wet van behoud van tijd\n\nIn Indonesische werkwoorden komt het tijdsaspect waarin de handeling zich afspeelt niet tot uiting. De tijd wordt aangegeven door extra informatie te geven: gisteren, nu, morgen of wanneer ook maar. Ook kan de tijd waarin de handeling zich afspeelt, aangegeven worden door woorden als belum, baru, sedang, sudah. Deze informatie wordt maar één keer gegeven en geldt dan tot een andere tijdsbepaling wordt vermeld.\n\nDulu saya ke Jakarta. Sering ke mana-mana. Menginap di hotel. Besok ayah juga mau ke sana. Tinggal di hotel juga.\n\nIN HET VERLEDEN ben ik in Jakarta geweest. Vaak GING ik overal naar toe. Ik LOGEERDE in een hotel. MORGEN gaat vader daar ook heen. Hij ZAL ook in een hotel verblijven.\n\nc. Wet van behoud van enkelvoud en meervoud\n\nIn het Indonesisch is in principe geen onderscheid te zien tussen enkelvoud en meervoud. Toch wordt daarover dikwijls informatie verstrekt.\nWordt over een bepaalde zaak gesproken dan is er veelal sprake van enkelvoud.\n\nKucing itu nakal     Die kat is stout\n\nIn het algemeen zijn onbepaalde uitspraken in het meervoud:\n\nKucing nakal     Katten zijn ondeugend\n\nAls men, sprekend over een bepaalde zaak, meervoud wil aangeven, gebruikt men een verdubbeling of voegt men een woord toe dat meervoud aanduidt, bijvoorbeeld een telwoord, het persoonlijk lidwoord para of een woord van hoeveelheid: banyak, beberapa, berbagai.\n\nKucing-kucing itu nakal          Die katten zijn stout\nPara pengusaha berkumpul di hotel     De ondernemers verzamelen zich in het hotel\nBanyak kucing nakal               Veel katten zijn stout\n\nMaar nooit: Banyak kucing-kucing nakal\n\nIs het echter al duidelijk of enkelvoud of meervoud bedoeld wordt, dan blijft dit gelden tot iets anders wordt geïntroduceerd:\n\nKucing-kucing saya nakal sekali. Selalu mau ke luar rumah. Juga sering mau menyeberang jalan besar. Aduh. Kucing saya yang bernama Meng tidak mau ke luar. Di rumah terus.\n\nMijn poezen zijn erg ondeugend. Altijd willen ZE naar buiten. Ook steken ZE vaak de grote weg over. Ach jee. Mijn kat die Meng heet, wil niet naar buiten. HIJ wil steeds binnen blijven."
+    },
+    {
+      "id": 4,
+      "type": "exercises",
+      "title": "LATIHAN",
+      "source_pages": [
+        4,
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "Latihan I. Zet de dialoog om in Indonesische zinnen.\nMaak bij de reactie van persoon B gebruik van de woorden die gegeven zijn.\n\nDialoog: Ke dokter gigi.\n\nPersoon A                                          Persoon B\n1. Goedenavond. Wat is er aan de hand?             pijn, tanden\n2. Hoe lang heeft u dat al?                        2 dagen\n3. Heeft u dat al eens eerder gehad?               nee\n4. Gaat u zitten. Waar doet het pijn?              tand voorin\n5. Ja, inderdaad. Een infectie*. U moet medicijnen slikken    kosten?\n6. Het consult* kost Rp 20.000                     nu open?\n   De medicijnen koopt u bij de apotheek\n7. Die is 24 uur open                              waar?\n8. Het adres van de apotheek is Alimstraat 24      terugkomen?\n9. Als de infectie overmorgen nog niet weg is, moet u\n   weer een afspraak maken                         wanneer open?\n10. Wij zijn iedere dag open van 8 tot 12 uur.     goed, dank u wel\n\n*infectie = infeksi     *consult = konsultasi\n\nLatihan II. Pas de volgende woorden toe in een korte zin:\n1. memutuskan\n2. mengadakan\n3. menyusun\n4. dibanggakan\n5. berkunjung\n6. mengunjungi\n7. memberitahukan\n8. diringkaskan\n9. tulis-menulis\n10. meneruskan\n\nLatihan III. Welk woord hoort niet in de rij? Geef de reden en vertaal de woorden.\n1. terlihat       terjelas        terpotong       terangkat\n2. meloncatkan    menurunkan      membelikan      mendirikan\n3. kedengaran     kerajaan        ketakutan       ketolongan\n4. tutupan        ingatan         pengiriman      kemudian\n5. mengecat       mengurang       menjauh         memanjang\n6. perut          hidung          lengan          sepatu\n7. seperempat     ketiga          berdua          delapan\n8. berwarna       berusia         berpakaian      berenang\n9. perekam kaset  alat pendingin  mesin penghitung  barang curian\n10. kepanasan     kelihatan       kedinginan      kebesaran\n\nLatihan IV. Vul in een vorm met me-kan, di-kan, me-i of di-i.\nVertaal daarna de zin.\n1. lewat    Setiap hari orang itu ............ rumah saya\n2. lewat    Kalau Anda di Yogya jangan ............... kemungkinan beli batik\n3. tunjuk   Bapak Andi bisa ................ jalan ke sana\n4. tunjuk   Bisa Bapak ................ batik yang mana Bapak mau beli?\n5. habis    Sambil bercakap-cakap pemuda-pemudi ...................... waktunya\n6. habis    Pak direktur sudah ............... soal sulit itu\n7. masuk    Nina ............ pakaiannya ke dalam koper\n8. masuk    Ruangan ini tidak boleh ...............\n9. kurang   Pemakaian kompor listrik ............... bahaya kebakaran\n10. kurang  Dokter, kapan meminum obat ini boleh ............... sedikit?"
+    }
+  ],
+  "flags": [
+    "Image page 1 (IMG_1678): Dialogue recovered fully from image. OCR missed final turn by Pak Wija: 'Jadi, kita putuskan saja menunggu jawaban dari Jakarta. Karena itu rapat ini saya tunda dulu. Besok pagi kita berkumpul lagi di sini.'",
+    "Image page 2 (IMG_1679): Vocabulary header is 'Daftar kata-kata baru' (not 'Woordenlijst'). Full vocabulary recovered from image including items missed/garbled by OCR.",
+    "Image page 2 (IMG_1679): Grammar section header includes introductory paragraph 'Wet van behoud van onderwerp, tijd, enkelvoud en meervoud' recovered from image.",
+    "Image page 4 (IMG_1681): Latihan I items 6-10 recovered from image; OCR missed items 7-10.",
+    "Image page 5 (IMG_1682): Latihan II item 1 (memutuskan) and item 6 (mengunjungi) recovered from image; OCR had partial list."
+  ],
+  "sourceImages": 5
+}

@@ -1,0 +1,404 @@
+{
+  "lesson": 29,
+  "generatedAt": "2026-06-21T06:56:37.681Z",
+  "sourcePages": 6,
+  "lessonMeta": {
+    "title": "Bab 13 - Internet di Indonesia",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 29
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Tekst - Internet di Indonesia",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Pada bulan Agustus 1995 Pos Indonesia meramalkan bisnis penyedia fasilitas (provider) Internet dengan nama Wasantara-Net (W-Net) akan beroperasi. Pada bulan itu juga di empat kota besar di Indonesia, yakni Jakarta, Bandung, Surabaya dan Semarang, disediakan fasilitas ini, mungkin dalam bentuk seperti warung telekomunikasi (wartel). Setelah melalui uji coba pemanfaatan jaringan Internet pada tahap pertama, Pos Indonesia sudah siap beroperasi di kota-kota tersebut.",
+        "Dalam waktu singkat, jasa Internet akan disambungkan dengan 22 kota besar lainnya di Indonesia, antara lain Banda Aceh, Batam, Palangkaraya, Medan, Palembang, Pontianak, Menado, Ujungpandang, Denpasar, Kupang dan Yogyakarta. Untuk itu, PT Pos akan bekerja sama dengan PT Telkom, Sekolah Tinggi Telekomunikasi Telkom dan PT Lintas Arta.",
+        "Apa yang dibutuhkan, andaikata Anda bermaksud mendapat akses ke Internet? Pertama, Anda harus mempunyai komputer, modem dan sambungan telepon. Kemudian Anda harus mendaftarkan diri sebagai peserta pada penyedia fasilitas Internet. Lalu Anda menerima program komputer tertentu dan suatu password, untuk mendapat akses ke jaringan komputer global ini.",
+        "Setelah itu Anda bisa masuk 'realitas virtual' dan secara elektronis dapat menghubungi jutaan peserta lain di seluruh dunia. Apalagi kalau sudah mendaftarkan diri sebagai pelanggan, tidak usah membayar tarif interlokal. Secara 'interaktif' Anda sempat berbicara dengan orang Rusia, orang Turki, orang Muangthai, orang Amerika dan seterusnya, dengan tarif lokal selama 24 jam. Lewat komputer, Anda dapat mengirim atau menerima surat tanpa sehelai kertas pun. Juga Anda dapat ikut berdiskusi mengenai ratusan hal. Yang sulit adalah memilih hal yang mana! Sekarang sudah mudah sekali untuk memesan dan membeli barang apa saja dari rumah, tapi awas ya, jangan tergoda membeli terlalu banyak.",
+        "Revolusi dalam bidang iptek dan telekomunikasi ini mengharuskan penerbit majalah dan koran Indonesia, seperti harian Kompas dan Republika, untuk berada di dalam jalur Internet. Buat para pembaca di luar negeri perkembangan ini memang sangat menyenangkan, sebab sekarang mengakses berita-berita dari Indonesia mudah sekali. Jadi ada gunanya ikut \"surfing\" di ombak-ombak elektronis lewat Internet dalam bentuk World Wide Web (@ w.w.w.)."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Daftar kata-kata baru",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "ada, ber~",
+          "dutch": "zich bevinden, zijn",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "akses",
+          "dutch": "toegang",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "akses, meng~",
+          "dutch": "toegang hebben tot",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "andaikata",
+          "dutch": "gesteld dat, indien",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "bidang",
+          "dutch": "gebied / vakgebied",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bisnis",
+          "dutch": "business",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "butuh, mem~kan",
+          "dutch": "nodig hebben",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "diskusi, ber~",
+          "dutch": "discussiëren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "elektronis",
+          "dutch": "elektronisch",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "fasilitas",
+          "dutch": "faciliteit",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "global",
+          "dutch": "wereldwijd",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "globalisasi",
+          "dutch": "mondialisering",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "goda, ter~",
+          "dutch": "in verleiding gebracht",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "harus, meng~kan",
+          "dutch": "nodig achten / verplichten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "hubung, meng~i",
+          "dutch": "contact leggen met",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "interaktif",
+          "dutch": "interaktief",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "interlokal",
+          "dutch": "interlocaal",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "jaring, ~an",
+          "dutch": "netwerk",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jalur",
+          "dutch": "baan (v. weg) / strook",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kembang, per~an",
+          "dutch": "ontwikkeling",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "komunikasi",
+          "dutch": "communicatie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "koran",
+          "dutch": "krant",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lalu, me~i",
+          "dutch": "via",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "langgan",
+          "dutch": "klant zijn",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "langgan, ~an",
+          "dutch": "klant",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "langgan, pe~",
+          "dutch": "klant",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lokal",
+          "dutch": "locaal",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "maksud, ber~",
+          "dutch": "van plan zijn",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "manfaat, pe~an",
+          "dutch": "gebruikmaking",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "modem",
+          "dutch": "modem",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "Muangthai",
+          "dutch": "Thailand",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mudah",
+          "dutch": "makkelijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "niat, ber~",
+          "dutch": "van plan zijn",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "operasi, ber~",
+          "dutch": "operationeel zijn",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "password",
+          "dutch": "wachtwoord",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "program",
+          "dutch": "programma (computer)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ramal, me~kan",
+          "dutch": "voorspellen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "realitas",
+          "dutch": "realiteit",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "revolusi",
+          "dutch": "revolutie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "Rusia",
+          "dutch": "Rusland",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sambung",
+          "dutch": "verbinding",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sambung, ~an",
+          "dutch": "aansluiting",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sambung, menyambungkan",
+          "dutch": "aansluiten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sedia",
+          "dutch": "bereid",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "sedia, menyediakan",
+          "dutch": "aanbieden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sedia, penyedia",
+          "dutch": "provider / aanbieder",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sempat",
+          "dutch": "kans / gelegenheid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sero",
+          "dutch": "aandeel / waardepapier",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sero, per~an",
+          "dutch": "vennootschap",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "serta, pe~",
+          "dutch": "deelnemer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tahap",
+          "dutch": "fase",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tarif",
+          "dutch": "tarief",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "terbit, penerbit",
+          "dutch": "uitgever",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "terus, dan se~nya",
+          "dutch": "enzovoort",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "Turki",
+          "dutch": "Turkije",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "uji coba",
+          "dutch": "proeftest",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "usah, tidak ~",
+          "dutch": "'t is niet nodig",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "virtual",
+          "dutch": "virtueel",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "yakni",
+          "dutch": "namelijk",
+          "pos": "adverb"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "vocabulary",
+      "title": "Akronim dan singkatan",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "iptek (ilmu pengetahuan dan teknologi)",
+          "dutch": "wetenschap en technologie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "PT (Perseroan Terbatas)",
+          "dutch": "NV Naamloze Vennootschap",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "wartel (warung telekomunikasi)",
+          "dutch": "telecommunicatiekantoor",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "grammar",
+      "title": "Tata Bahasa - De werkwoordsvorm met MEMPER-",
+      "source_pages": [
+        3,
+        4
+      ],
+      "confidence": "high",
+      "raw_text": "TATA BAHASA\n\nDe werkwoordsvorm met MEMPER-\n\n△  Alle MEMPER-vormen zijn transitieve werkwoordsvormen - ongeacht het type basiswoord - en kunnen derhalve een patiens (partij 2) bij zich hebben.\n\n△  MEMPER-vormen komen zowel met als zonder -KAN / -i voor.\n\n△  De betekenis van de MEMPER-vormen ten opzichte van de wat neutralere ME-vormen, gaat in de richting van een meer intensieve handeling, vaak met een aspect van herhaling. Denk aan betekenissen als:\n'beter maken - verbeteren' of 'groter maken - vergroten'.\n\nDe volgende combinaties zijn mogelijk:\nmemper-          diper-\nmemper - kan     diper - kan\nmemper - i       diper - i\n\nMEMPER- / DIPER- kan worden gecombineerd met de volgende basiswoorden:\n1. werkwoord               ingat    memperingatkan    waarschuwen\n2. zelfstandig naamwoord   usaha    memperusahakan    uitoefenen (van bedrijf)\n3. bijvoeglijk naamwoord   kecil    memperkecil       verkleinen\n4. woord van plaats (zeldzaam)  dalam   memperdalam   verdiepen (van kennis)\n5. telwoord (zeldzaam)     satu     mempersatukan     verenigen, bijeenhouden\n\n1. MEMPER- + werkwoord\n\n                                    Di-vorm\nmengingat        zich herinneren     diingat\nmengingatkan     iemand herinneren aan   diingatkan\nmengingati       vermanen            diingati\nmemperingatkan   waarschuwen         diperingatkan\nmemperingati     gedenken, herdenken diperingati\n\n2. MEMPER- + zelfstandig naamwoord\n\n                                    Di-vorm\nmengajar         onderwijzen         diajar\nmengajarkan      (iets) onderwijzen  diajarkan\nmengajari        iemand onderrichten diajari\nmempelajari      bestuderen, zich verdiepen in   dipelajari\n\n3. MEMPER- + bijvoeglijk naamwoord\n\n                                    Di-vorm\nmembesar         groot / groter worden    -\nmembesarkan      groot laten worden, opvoeden    dibesarkan\nmemperbesar      (nog) groter maken, vergroten   diperbesar\n\nBij de combinatie MEMPER- + bijvoeglijk naamwoord wordt, over het algemeen, géén -KAN of -i achtergevoegd. Voorbeelden:\n\nbesar\n  → membesar (groot worden uit zichzelf)\n  → membesarkan (opzettelijk iets groter maken)\n  → memperbesar (nog groter maken)\n\nlancar → melancar → melancarkan → memperlancar\nvlot, vlug, snel   vlot verlopen; goed opschieten   sneller laten gaan; versnellen   [nog] sneller laten gaan; continu versnellen\n\nBijv.: autorijden   (90 km/uur)   (120 km/uur)   (160 km/uur)\n\nGebiedende wijs\n\nPeringatkan Pak Anwar!           Waarschuw meneer Anwar!\nJangan peringatkan Pak Anwar!    Waarschuw meneer Anwar niet!"
+    },
+    {
+      "id": 4,
+      "type": "grammar",
+      "title": "Tata Bahasa - PER-AN",
+      "source_pages": [
+        4,
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "PER - AN\n\n△  PER - AN maakt van het gebruikte basiswoord een zelfstandig naamwoord, voorzover het basiswoord dit niet al is.\n\nDe vorm PER - AN kan afgeleid worden van het volgende type basiswoord:\n\n1. werkwoord               ingat    peringatan     waarschuwing\n2. zelfstandig naamwoord   toko     pertokoan      winkelcentrum\n3. bijvoeglijk naamwoord   baik     perbaikan      verbetering, reparatie\n4. woord van plaats (zeldzaam)  dalam   perdalaman   het verdiepen (van kennis)\n5. telwoord (zeldzaam)     empat    perempatan     viersprong\n\nDe betekenis van de PER - AN ten opzichte van de PE - AN vormen laat zich het beste illustreren aan de hand van voorbeelden. Overigens is het niet zo dat beide vormen altijd kunnen worden afgeleid. Vaak bestaat slechts één van deze vormen.\n\nbuat\npembuatan sabun mandi          maken / het (proces van het) maken van zeep\nmencuri adalah perbuatan jelek  stelen is een slechte daad\n\nkumpul\npengumpulan bahan               verzamelen / het verzamelen van materiaal\nperkumpulan mahasiswa           de vereniging van studenten\n\nmenunjuk\npenunjukan jalanan              wijzen / bewegwijzering\npertunjukan wayang              wayangvertoning\n\nusaha\npengusahaan batik               inspanning / het produceren (de productie) van batik\nperusahaan batik                de batikonderneming\n\n[Illustraties: pengusaha = ondernemer; pengusahaan batik = het proces van de productie van batik; perusahaan batik = de batikfabriek]\n\nMet behulp van de vorm met PER-AN, worden dikwijls abstracte begrippen gevormd. Voorbeelden:\n\nperdagangan     handel\nperfilman        filmindustrie\nperekonomian    economie, economisch systeem\nperindustrian    industrie, industrialisatie\nperkantoran     kantoorcomplex\nperkotaan       stedelijk gebied\nperumahan       huizencomplex, huisvesting"
+    },
+    {
+      "id": 5,
+      "type": "exercises",
+      "title": "Latihan",
+      "source_pages": [
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "LATIHAN\n\nLatihan I.  Schrijf een verhaal in het Indonesisch van maximaal 10 zinnen naar aanleiding van onderstaande tekening.\n[tekening: persoon liggend in bed met wekker]\n\nLatihan II.  Vul een -an, pe-, pe - an, of per - an vorm in en vertaal de zin.\n\n1.  baca, dapat    Hampir semua ............ setuju dengan ............ itu\n2.  sambung        Apakah Anda punya ............ telepon?\n3.  jalan          ............ kami makan waktu tiga bulan\n4.  duduk          Kapan ............ kampung ini akan berkumpul?\n5.  jelas          ............ presiden amat benar\n6.  terbit         ............ majalah itu berniat beroperasi di Sumatra\n7.  baik, labuh    ............ ............ laut ini dikerjakan oleh orang Indonesia bersama dengan orang Muangthai\n8.  langgan        Internet ............ nya bertambah setiap hari\n9.  bangun         ............ Indonesia masih diteruskan\n10. usaha          Fasilitas .......... umum itu terbatas\n\nLatihan III.  Vul in pe - an of per - an en vertaal de zin.\n\n1.  Banyak nelayan asing menangkap ikan di (- air -) Indonesia\n2.  (- air -) artinya proses mengairi\n3.  (- manfaat -) air adalah masalah penting zaman ini\n4.  Hari Minggu diadakan (- tanding -) sepak bola yang penting\n5.  Kemarin (- janji -) dagang antara Indonesia dan Perancis ditandatangani\n6.  Hasil (- kebun -) sangat penting untuk ekonomi Maluku\n7.  (- pandang -) dari (- muka -) laut indah sekali\n8.  (-terbang -) nomor GA 781 akan tiba di Cengkareng jam 07.50.\n9.  Apakah (- temu -) ini ditunda?\n10. (- rencana -) membangun toko itu makan waktu tiga bulan"
+    }
+  ],
+  "flags": [
+    "Image IMG_1707.jpg: Full text of the Tekst section recovered from image; OCR page 1 was incomplete/garbled.",
+    "Image IMG_1708.jpg: Vocabulary item 'mudah = makkelijk' and 'yakni = namelijk' recovered from image (OCR had 'mudah' without translation and missed 'yakni').",
+    "Image IMG_1708.jpg: Section header confirmed as 'Daftar kata-kata baru' (not 'Woordenlijst').",
+    "Image IMG_1708.jpg: 'Akronim dan singkatan' section recovered entirely from image.",
+    "Image IMG_1709.jpg: Grammar section header confirmed as 'TATA BAHASA'; full MEMPER- section including MEMPER- + zelfstandig naamwoord subsection recovered from image (OCR page 3 was incomplete).",
+    "Image IMG_1710.jpg: PER-AN grammar section recovered from image; OCR pages 4-5 were incomplete.",
+    "Image IMG_1711.jpg: PER-AN examples with illustrations (pengusaha, pengusahaan batik, perusahaan batik) and abstract begrippen list recovered from image.",
+    "Image IMG_1712.jpg: Latihan I full instruction and all items of Latihan II and III recovered from image; OCR page 6 was incomplete."
+  ],
+  "sourceImages": 6
+}
