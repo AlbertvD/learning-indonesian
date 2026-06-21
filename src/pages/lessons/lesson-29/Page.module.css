@@ -555,3 +555,49 @@
 
 .closingActions { display: flex; justify-content: center; }
 .closingActions > * { width: 100%; max-width: 660px; }
+
+/* ─── Exercises (Latihan) ────────────────────────────────────────────────── */
+.exerciseList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.exerciseBlock {
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--accent-primary-border, rgba(148, 163, 184, 0.28));
+  border-radius: 14px;
+  background: rgba(148, 163, 184, 0.06);
+}
+.exerciseBlockTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.exerciseInstruction {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  opacity: 0.72;
+}
+.exerciseItems {
+  margin: 0.9rem 0 0;
+  padding-left: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.exerciseItem {
+  line-height: 1.5;
+}
+.exercisePrompt {
+  display: block;
+  font-size: 0.92rem;
+}
+.exerciseAnswer {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--accent-primary, #0891b2);
+}
