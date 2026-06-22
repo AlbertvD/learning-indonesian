@@ -298,8 +298,8 @@ const AFFIXED_PAIRS: TypedAffixedPair[] = [
     circumfix_right: null,
     productive: true,
     carrier_text: null,
-    derived_gloss_nl: null,
-    derived_gloss_en: null,
+    derived_gloss_nl: 'lopen',
+    derived_gloss_en: 'to walk',
   },
 ]
 

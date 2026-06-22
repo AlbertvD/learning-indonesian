@@ -179,3 +179,54 @@ describe('projectAffixedFormPairs — fail-loud (CS12) error cases', () => {
     expect(out.findings[0].message).toContain('grammar_pattern_id')
   })
 })
+
+describe('projectAffixedFormPairs — morphology_meaning_gloss_missing gate (Task 6 / ADR 0021)', () => {
+  const berRef = 'lesson-11/morphology/ber-jalan-berjalan'
+  const berMeaningKey =
+    'cap:v1:word_form_pair_src:lesson-11/morphology/ber-jalan-berjalan:recognise_meaning_from_text_cap:id_to_l1:text:nl'
+
+  function berPair(glossed: boolean) {
+    return {
+      root: 'jalan',
+      derived: 'berjalan',
+      allomorphRule: 'no allomorphy',
+      affix: 'ber-',
+      patternSourceRef: 'l11-ber',
+      affixType: 'prefix',
+      affixGloss: null,
+      allomorphClass: null,
+      circumfixLeft: null,
+      circumfixRight: null,
+      productive: true,
+      ...(glossed ? { derivedGlossNl: 'lopen', derivedGlossEn: 'to walk' } : {}),
+    }
+  }
+  function berInput(glossed: boolean): AffixedFormPairsProjectionInput {
+    return {
+      capabilities: [{ canonicalKey: berMeaningKey, sourceKind: 'word_form_pair_src', sourceRef: berRef }],
+      capabilityIdsByKey: new Map([[berMeaningKey, 'cap-ber-meaning']]),
+      pairsBySourceRef: new Map([[berRef, berPair(glossed)]]),
+      patternIdsBySlug: new Map([['l11-ber', 'gp-ber-id']]),
+      lessonId: 'lesson-11-uuid',
+    } as AffixedFormPairsProjectionInput
+  }
+
+  it('errors when a TRANSPARENT pair has no derived gloss (meaning-card substrate missing)', () => {
+    const out = projectAffixedFormPairs(berInput(false))
+    expect(out.findings.some((f) => f.severity === 'error' && /gloss/i.test(f.message))).toBe(true)
+    expect(out.rows).toEqual([]) // bad row not written
+  })
+
+  it('passes (and writes the gloss) when the transparent pair carries a gloss', () => {
+    const out = projectAffixedFormPairs(berInput(true))
+    expect(out.findings).toEqual([])
+    expect(out.rows).toHaveLength(1)
+    expect(out.rows[0].derived_gloss_nl).toBe('lopen')
+  })
+
+  it('does NOT require a gloss for an allomorphic (formation) pair', () => {
+    // baseInput uses meN- with no gloss — formation track, gloss not needed.
+    const out = projectAffixedFormPairs(baseInput())
+    expect(out.findings).toEqual([])
+  })
+})

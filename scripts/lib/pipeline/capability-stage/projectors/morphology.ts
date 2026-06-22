@@ -28,6 +28,7 @@
 // HC17, and readiness requires no artifact bag (renderContracts: [] — mirror of
 // the dialogue_line PR 2 end-state). Mirrors projectors/dialogueArtifacts.ts.
 
+import { routesToMeaningUsage } from '@/lib/capabilities'
 import type { ValidationFinding } from '../model'
 import type { AffixedFormPairRowInput } from '../adapter'
 
@@ -127,6 +128,27 @@ export function projectAffixedFormPairs(
         context: { capabilityKey: cap.canonicalKey },
       })
       continue
+    }
+
+    // ADR 0021 — morphology_meaning_gloss_missing: a TRANSPARENT pair (routesToMeaningUsage)
+    // renders the MEANING card, whose substrate is derived_gloss_nl/_en. The form path
+    // gets its NOT-NULL guarantee from root/derived/rule above; the meaning path gets
+    // the equivalent guarantee here. Require BOTH glosses (an EN learner reads _en).
+    if (routesToMeaningUsage(pair.affix ?? '')) {
+      const glossNl = (pair.derivedGlossNl ?? '').trim()
+      const glossEn = (pair.derivedGlossEn ?? '').trim()
+      if (!glossNl || !glossEn) {
+        findings.push({
+          gate: 'CS12',
+          severity: 'error',
+          message:
+            `word_form_pair_src cap "${cap.canonicalKey}" (transparent affix "${pair.affix}") is missing its ` +
+            `derived meaning gloss (${!glossNl ? 'nl ' : ''}${!glossEn ? 'en' : ''}`.trim() +
+            `) — the meaning card has no substrate (morphology_meaning_gloss_missing). Author it in morphology-glosses.ts.`,
+          context: { capabilityKey: cap.canonicalKey },
+        })
+        continue
+      }
     }
 
     // Resolve the rule's grammar_pattern_id from the authored slug. grammar_patterns

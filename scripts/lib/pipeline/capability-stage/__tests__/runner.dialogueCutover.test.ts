@@ -287,7 +287,7 @@ describe('runner dialogue cutover (Task 7)', () => {
         generateClozeFn: goodClozeFn,
         generateGrammarFn: berGrammarFn,
         fetchAffixedPairsFromDb: async () => [
-          { id: 'afp-1', lesson_id: 'lesson-uuid', section_id: null, source_ref: 'lesson-1/morphology/ber-jalan', pattern_source_ref: 'l1-ber-werkwoorden', affix: 'ber-', root_text: 'jalan', derived_text: 'berjalan', allomorph_rule: 'ber- + jalan -> berjalan', affix_type: 'prefix', affix_gloss: null, allomorph_class: null, circumfix_left: null, circumfix_right: null, productive: true },
+          { id: 'afp-1', lesson_id: 'lesson-uuid', section_id: null, source_ref: 'lesson-1/morphology/ber-jalan', pattern_source_ref: 'l1-ber-werkwoorden', affix: 'ber-', root_text: 'jalan', derived_text: 'berjalan', allomorph_rule: 'ber- + jalan -> berjalan', affix_type: 'prefix', affix_gloss: null, allomorph_class: null, circumfix_left: null, circumfix_right: null, productive: true, derived_gloss_nl: 'lopen', derived_gloss_en: 'to walk' },
         ],
       }),
     )
