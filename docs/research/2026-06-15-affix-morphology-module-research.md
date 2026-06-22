@@ -5,6 +5,12 @@
 > 15+ sourced findings on Indonesian morphology pedagogy, atomic learnable unit,
 > exercise formats, sequencing, and FSRS/capability modeling. Inline cites `[n]`
 > map to the Sources section.
+>
+> **2026-06-22 — SLA evidence update appended** (see the dated section after
+> "Morphology Pedagogy Findings"): a multi-agent deep-research pass put 25 claims
+> through 3-vote adversarial verification (14 survived). It corroborates the
+> recommendations below and sharpens the exercise design for transparent vs
+> allomorphic affixes. Sources [26]–[33].
 
 ## Executive Summary (load-bearing recommendations)
 
@@ -27,6 +33,30 @@
 **Semantic predictability is uneven — flag it.** ber- + noun ("having/doing X") is transparent; pe-/peN- realize agents but peN- is also productive for instruments [16][17]; -i carries four productive functions [18]. Teach transparent affixes as confident rules; teach low-predictability affixes (-i, -kan contrast, confixes) with worked examples and explicit "this one is contextual" framing — BIPA advanced teaching's job "shifts from introducing affixes to clarifying their semantic and syntactic constraints" [3].
 
 **Frequency anchors the curriculum** (running-text, indodic [1]): meN- ~1/13 · -kan ~1/20 · -an ~1/34 · di- ~1/40 · se- ~1/42 · ber- ~1/44 · ter- ~1/54 · ke-…-an ~1/65 · -i ~1/70 · peN-…-an ~1/75 · per-…-an ~1/108 · pe- ~1/110.
+
+## SLA Evidence Update — adversarially verified (2026-06-22)
+
+> Follow-up deep-research pass (24 sources, 103 extracted claims; top 25 put through
+> 3-vote adversarial verification, 14 upheld). Triggered by a live design question —
+> the Affix Trainer's "which affix formed this word?" MCQ felt trivial for transparent
+> prefixes (ber-). These findings **corroborate** the recommendations above and sharpen
+> three of them. Confidence shown as the adversarial vote (3-0 = all verifiers upheld).
+
+**Explicit instruction beats incidental — now replicated, with effect sizes.** Explicit > implicit > control on all post-tests, 170 Korean EFL learners [27, 3-0]; explicit instruction benefits L2 derivational learning [26, 3-0]; experimental > control on all three derivational-awareness tasks, n=129 [29, 3-0]. Incidental exposure helps but only small–medium effect [27, 3-0]. The payoff is real but **modest**: overall literacy d≈0.33 [30, 2-1]; spelling SMD≈0.38 [31, 2-1]. → Keep the explicit rule card; a couple of good item types per affix beats an elaborate engine.
+
+**Recognition develops before production; production is a distinct, harder skill** [26, 3-0] — learners identify real derived words easily but fail to *produce/judge* novel derivations. Validates the receptive→productive ladder (recognise_word_form_link before produce_derived_form, ADR 0007). Caveat: input-processing (receptive) and pushed-output (productive) *practice* gave statistically **equivalent gains** [26, 3-0] — neither modality is superior; because production lags developmentally, it just needs its own deliberate practice, not a different method.
+
+**Why affixes are hard — and what a drill is actually for.** Bound morphemes are inherently low-salience (frequent → phonologically reduced/fused, hard to perceive) [28, 3-0]; "learned attention / blocking" makes learners ignore morphology when a more salient cue already carries the meaning [28, 3-0]; form-focused instruction works by "drawing learners' attention to forms that might otherwise be ignored" [28, 3-0]. → **The purpose of an affix exercise is to force *noticing* of the form↔meaning link.** A "which affix formed *berjalan*?" item fails this for a transparent prefix: the "ber" on the front is the one high-salience cue, so it trains string-matching, not morphology.
+
+**Morphological awareness is multidimensional — relational, syntactic, distributional** [29, 3-0] — and correlates with productive vocabulary breadth [7, 3-0]. → Exercises should test what the affix *does* (meaning, word-class change, which roots it attaches to), not form-identification alone.
+
+**Transparent vs allomorphic affixes warrant different treatment.** Bauer & Nation's (1993) affix-levels framework grades affixes by frequency, productivity, predictability of meaning, and **regularity of the affix's form**, staging invariant affixes early and allomorphic ones late [32]. (Verifiers *abstained* here — cut off by a session limit, not a refutation — so treat as well-established-but-unverified-in-this-run; it aligns with the salience finding [28] and the sequencing in this report [11].) → ber- (near-invariant) is genuinely easier than meN-/peN- (nasal allomorphy); they should not carry equal exercise weight.
+
+**Genuinely refuted — do NOT rely on:** "morphology training transfers far better to trained than to untrained items" was rejected 0-3 [31]. So the evidence does *not* say SRS affix drills only strengthen the exact words practised — teaching the rule/pattern is expected to **generalize** to new roots, which is the justification for a rule-based trainer.
+
+**Design implications (sharpen the Exercise-Type Catalog below; supersede nothing):**
+- **Transparent affixes (ber-, di-, se-):** de-emphasize the pick-the-affix / formation MCQ (it tests the high-salience surface); prefer **meaning** ("what does *berjalan* mean?") + **usage-in-carrier** items — the relational/syntactic dimensions [29], powered by the now-shipped `derived_gloss` + `carrier_text`.
+- **Allomorphic affixes (meN-, peN-):** keep form-focused drilling — there the form *is* the low-salience hard part [28], so "which allomorph?" genuinely trains noticing. This is exactly where the formation MCQ earns its keep.
 
 ## Atomic-Unit Recommendation
 
@@ -135,5 +165,16 @@ Specifics:
 23. *Duolingo Intermediate Turkish* (Clozemaster) — https://www.clozemaster.com/blog/duolingo-intermediate-turkish/
 24. *Turkish for English* (Duolingo Wiki) — https://duolingo.fandom.com/wiki/Turkish_for_English
 25. Talkpal — *What are the most common prefixes in Indonesian?* — https://talkpal.ai/culture/what-are-the-most-common-prefixes-in-indonesian/
+
+### Added 2026-06-22 (deep-research verification pass)
+
+26. Friedline, B. E. (2011) — *Challenges in the Second Language Acquisition of Derivational Morphology* (PhD diss., Univ. of Pittsburgh) — https://d-scholarship.pitt.edu/8351/1/Friedline_ETD_8-15-2011_FINAL.pdf — *[explicit instruction benefits L2 derivation; recognition > production; receptive ≈ productive practice gains]*
+27. *Effects of Implicit and Explicit Instruction on Morphological Awareness and Knowledge* (170 Korean EFL learners) — https://www.researchgate.net/publication/340316125 — *[explicit > implicit > control on all post-tests]*
+28. Ellis, N. C. — *salience, learned attention/blocking, and form-focused instruction* (PMC) — https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5002427/ — *[why bound morphology is under-learned; what FFI is for]*
+29. *Effect of explicit morphological instruction on derivational morphological awareness* (n=129, randomized quasi-experiment) — https://www.tandfonline.com/doi/full/10.1080/2331186X.2018.1523975 — *[gains on relational/syntactic/distributional awareness]*
+30. Bowers, Kirby & Deacon (2010) — *The Effects of Morphological Instruction on Literacy Skills: A Systematic Review* (meta-analysis, d=0.33) — https://pubmed.ncbi.nlm.nih.gov/20799003/
+31. *Meta-analysis of morphological instruction effects on reading and spelling* (2024) — https://link.springer.com/article/10.1007/s10648-024-09953-3 — *[small–moderate effects; spelling SMD≈0.38; refuted the trained-only-transfer claim]*
+32. Bauer, L. & Nation, P. (1993) — *Word Families* (affix-levels framework) — https://www.lextutor.ca/morpho/fam_affix/bauer_nation_1993.pdf — *[grades affixes by regularity/predictability → stage transparent before allomorphic]*
+33. *Affixal neutrality and L2 derivational knowledge* (MDPI Languages, 2026) — https://doi.org/10.3390/languages11030046 — *[neutral/transparent affixes aid relational tasks; sequence them earlier]*
 
 **Method note:** Several academic PDFs returned encoded content on direct fetch; those claims are grounded in indexed abstracts plus corroborating accessible sources. The two most load-bearing data sources — indodic's affix-frequency table [1] and the Talkpal beginner ordering [25] — fetched cleanly in full.
