@@ -245,3 +245,97 @@ describe('projectAffixedCapabilities', () => {
     expect(keys).toContain(RECALL_KEY_2)
   })
 })
+
+// ADR 0021: transparent affixes (single invariant prefix/suffix) route to a
+// MEANING cap + a carrier-conditional USAGE cap, reusing the vocab cap types.
+describe('projectAffixedCapabilities — transparent affixes → meaning/usage (ADR 0021)', () => {
+  const berWithCarrier: TypedAffixedPair = {
+    id: 'uuid-b1',
+    lesson_id: 'lesson-11-uuid',
+    section_id: null,
+    source_ref: 'lesson-11/morphology/ber-jalan-berjalan',
+    pattern_source_ref: null,
+    affix: 'ber-',
+    root_text: 'jalan',
+    derived_text: 'berjalan',
+    allomorph_rule: 'no allomorphy',
+    affix_type: 'prefix',
+    affix_gloss: null,
+    allomorph_class: null,
+    circumfix_left: null,
+    circumfix_right: null,
+    productive: true,
+    carrier_text: 'Saya berjalan ke pasar',
+    derived_gloss_nl: 'lopen',
+    derived_gloss_en: 'to walk',
+  }
+  const berNoCarrier: TypedAffixedPair = {
+    ...berWithCarrier,
+    source_ref: 'lesson-11/morphology/ber-lari-berlari',
+    root_text: 'lari',
+    derived_text: 'berlari',
+    carrier_text: null,
+  }
+
+  const MEANING_KEY = buildCanonicalKey({
+    sourceKind: 'word_form_pair_src',
+    sourceRef: berWithCarrier.source_ref,
+    capabilityType: 'recognise_meaning_from_text_cap',
+    direction: 'id_to_l1',
+    modality: 'text',
+    learnerLanguage: 'nl',
+  })
+  const USAGE_KEY = buildCanonicalKey({
+    sourceKind: 'word_form_pair_src',
+    sourceRef: berWithCarrier.source_ref,
+    capabilityType: 'produce_form_from_context_cap',
+    direction: 'id_to_l1',
+    modality: 'text',
+    learnerLanguage: 'none',
+  })
+  const ROOT_JALAN = rootVocabKey('jalan')
+
+  it('emits meaning + usage caps for a transparent pair WITH a carrier', () => {
+    const caps = projectAffixedCapabilities({ pairs: [berWithCarrier], lessonId: 'lesson-11-uuid' })
+    expect(caps.map((c) => c.capabilityType).sort()).toEqual([
+      'produce_form_from_context_cap',
+      'recognise_meaning_from_text_cap',
+    ])
+    const meaning = caps.find((c) => c.capabilityType === 'recognise_meaning_from_text_cap')!
+    expect(meaning.canonicalKey).toBe(MEANING_KEY)
+    // Literal pin — the meaning cap's tuple must match the vocab convention.
+    expect(MEANING_KEY).toBe(
+      'cap:v1:word_form_pair_src:lesson-11/morphology/ber-jalan-berjalan:recognise_meaning_from_text_cap:id_to_l1:text:nl',
+    )
+    expect(meaning.learnerLanguage).toBe('nl')
+    expect(meaning.prerequisiteKeys).toEqual([ROOT_JALAN])
+
+    const usage = caps.find((c) => c.capabilityType === 'produce_form_from_context_cap')!
+    expect(usage.canonicalKey).toBe(USAGE_KEY)
+    expect(USAGE_KEY).toBe(
+      'cap:v1:word_form_pair_src:lesson-11/morphology/ber-jalan-berjalan:produce_form_from_context_cap:id_to_l1:text:none',
+    )
+    expect(usage.learnerLanguage).toBe('none')
+    // usage gates on the within-pair meaning cap + the root-vocab cross prereq.
+    expect(usage.prerequisiteKeys).toEqual([MEANING_KEY, ROOT_JALAN])
+  })
+
+  it('emits MEANING-ONLY for a transparent pair WITHOUT a carrier', () => {
+    const caps = projectAffixedCapabilities({ pairs: [berNoCarrier], lessonId: 'lesson-11-uuid' })
+    expect(caps.map((c) => c.capabilityType)).toEqual(['recognise_meaning_from_text_cap'])
+  })
+
+  it('skips the usage cap for a productive=false transparent pair even with a carrier', () => {
+    const lex = { ...berWithCarrier, productive: false } as TypedAffixedPair
+    const caps = projectAffixedCapabilities({ pairs: [lex], lessonId: 'lesson-11-uuid' })
+    expect(caps.map((c) => c.capabilityType)).toEqual(['recognise_meaning_from_text_cap'])
+  })
+
+  it('keeps FORMATION caps for an allomorphic pair (meN- unchanged)', () => {
+    const caps = projectAffixedCapabilities({ pairs: [pair1], lessonId: 'lesson-9-uuid' })
+    expect(caps.map((c) => c.capabilityType).sort()).toEqual([
+      'produce_derived_form_cap',
+      'recognise_word_form_link_cap',
+    ])
+  })
+})

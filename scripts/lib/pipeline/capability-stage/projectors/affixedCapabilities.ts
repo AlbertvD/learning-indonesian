@@ -22,7 +22,7 @@
  * emitter + its unit test (inertness constraint — do not add side effects).
  */
 
-import { buildCanonicalKey, CAPABILITY_PROJECTION_VERSION } from '@/lib/capabilities'
+import { buildCanonicalKey, CAPABILITY_PROJECTION_VERSION, routesToMeaningUsage } from '@/lib/capabilities'
 import { sourceRefForLearningItem } from '../../../content-pipeline-output'
 import type { CapabilityInput } from '../adapter'
 import type { TypedAffixedPair } from '../loadFromDb'
@@ -90,6 +90,65 @@ export function projectAffixedCapabilities(
     const crossPrereqs = [ruleCapKey, rootVocabPrereqKey(pair.root_text)]
       .filter((k): k is string => typeof k === 'string' && k.length > 0)
 
+    // ADR 0021 — TRANSPARENT track: a single invariant prefix/suffix is one trivial
+    // prepend/append, so drilling the form is busywork. Reuse the vocabulary cap
+    // types: a MEANING cap (always) + a USAGE cap (only when a real carrier exists).
+    // Tuples are pinned to the existing conventions (meaning = vocab.ts id_to_l1/text/nl;
+    // usage = dialogueCloze.ts id_to_l1/text/none), so they are collision-free by
+    // sourceKind+sourceRef and analytics-safe (funnel keys on source_kind, ADR 0021).
+    if (routesToMeaningUsage(pair.affix)) {
+      const meaningKey = buildCanonicalKey({
+        sourceKind: 'word_form_pair_src',
+        sourceRef,
+        capabilityType: 'recognise_meaning_from_text_cap',
+        direction: 'id_to_l1',
+        modality: 'text',
+        learnerLanguage: 'nl',
+      })
+      caps.push({
+        canonicalKey: meaningKey,
+        sourceKind: 'word_form_pair_src',
+        sourceRef,
+        capabilityType: 'recognise_meaning_from_text_cap',
+        direction: 'id_to_l1',
+        modality: 'text',
+        learnerLanguage: 'nl',
+        projectionVersion: CAPABILITY_PROJECTION_VERSION,
+        lessonId: input.lessonId,
+        requiredArtifacts: [],
+        prerequisiteKeys: [...crossPrereqs],
+      })
+
+      // USAGE cap (carrier cloze) only when a real carrier was harvested AND the
+      // form is productive — a frozen form gets no "use it in a sentence" drill.
+      const hasCarrier = typeof pair.carrier_text === 'string' && pair.carrier_text.trim().length > 0
+      if (hasCarrier && pair.productive !== false) {
+        caps.push({
+          canonicalKey: buildCanonicalKey({
+            sourceKind: 'word_form_pair_src',
+            sourceRef,
+            capabilityType: 'produce_form_from_context_cap',
+            direction: 'id_to_l1',
+            modality: 'text',
+            learnerLanguage: 'none',
+          }),
+          sourceKind: 'word_form_pair_src',
+          sourceRef,
+          capabilityType: 'produce_form_from_context_cap',
+          direction: 'id_to_l1',
+          modality: 'text',
+          learnerLanguage: 'none',
+          projectionVersion: CAPABILITY_PROJECTION_VERSION,
+          lessonId: input.lessonId,
+          requiredArtifacts: [],
+          prerequisiteKeys: [meaningKey, ...crossPrereqs],
+        })
+      }
+      continue
+    }
+
+    // FORMATION track (allomorphic meN-/peN-, confixes, reduplication) — the form
+    // IS the hard skill; unchanged 2-cap recognise_word_form_link_cap + produce_derived_form_cap.
     const recognitionDraft = {
       sourceKind: 'word_form_pair_src' as const,
       sourceRef,

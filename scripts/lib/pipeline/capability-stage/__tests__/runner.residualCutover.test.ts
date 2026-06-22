@@ -428,8 +428,12 @@ describe('runner residual cutover (5a.5 / #147)', () => {
         .filter((r) => r?.source_kind === 'word_form_pair_src')
         .map((r) => r?.canonical_key as string),
     )
-    // 2 caps per affixed pair (recognise_word_form_link_cap + produce_derived_form_cap)
-    expect(legacyAffixedKeys.length).toBe(2)
+    // ADR 0021: this ber- pair is TRANSPARENT and carries no carrier_text, so it
+    // emits exactly 1 cap — recognise_meaning_from_text_cap (meaning-only; the usage
+    // cap is carrier-conditional). The point of THIS guard is unchanged: affixed caps
+    // flow through the legacy upsertCapabilities writer (not skip-if-exists).
+    expect(legacyAffixedKeys.length).toBe(1)
+    expect(legacyAffixedKeys[0]).toContain('recognise_meaning_from_text_cap')
   })
 
   // ---------------------------------------------------------------------------
