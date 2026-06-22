@@ -190,6 +190,14 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
   // callers of projectCapabilities concatenate the podcast rule's output
   // with the array returned by this function.
 
+  // ⚠ NOT the live routing source of truth (ADR 0021). The capability stage seeds
+  // affixed caps via scripts/.../projectors/affixedCapabilities.ts (runner.ts:279),
+  // which FORKS by form-regularity (transparent → meaning/usage caps). This loop is
+  // reached only by the non-publish diagnostics materialize-capabilities.ts (dry-run)
+  // and check-capability-health.ts (read-only) — neither writes learning_capabilities
+  // and neither is wired into a gate, so its pre-fork "always 2 form caps" shape is a
+  // tolerated staleness, not a second writer. Do NOT treat this as the cap-type router;
+  // if either tool ever gains a DB-compare against live caps, mirror the fork here.
   for (const pair of input.affixedFormPairs ?? []) {
     // PR 3 slice: word_form_pair_src caps render from the typed `affixed_form_pairs`
     // table; structure is guaranteed by that table's NOT NULL columns +
