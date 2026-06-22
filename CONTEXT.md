@@ -52,6 +52,17 @@ Two facts pin the data model and follow from grounding the design against L22's 
 
 The **one shape that is NOT engine-derived** is the asymmetric reciprocal `root-meN(root)` (`sewa-menyewa`, `surat-menyurat`): only the second half is affixed, so it does not fit "double the base then wrap." It is **recognition-only / vocab** — deriving it by rule would teach a false generalisation (research §106). Likewise **sound-change** (`sayur-mayur`, `warna-warni`), **lexicalised** (`alun-alun`, `kura-kura`) and **fixed-adverb** (`hati-hati`, `tiba-tiba`) reduplications are **frozen vocabulary**, not morphology pairs; only *compositional, productive* reduplications become rule-drilled pairs (research §25/§106). First exercised by **lesson 22**; see **ADR 0019** (amended for the base-modifier refinement).
 
+### Form-regularity routing — what the trainer drills per affix
+
+The **form-regularity of the affix decides whether a pair's exercises drill its *form* or its *meaning/usage*.** The discriminator is the affix's own shape, not the word:
+
+- **Single invariant prefix or suffix** (`ber-`, `di-`, `ter-`, `se-`, `memper-`; `-an`, `-kan`, `-i`) — forming the word is one trivial move (prepend/append a fixed string), so drilling the form is busywork. These pairs drill **meaning + usage** instead: a *recognise-the-meaning* card ("what does `berjalan` mean?") and, where a real carrier sentence exists, a *usage* cloze. For suffixes especially this drills the genuinely hard part — `-kan`/`-i` are formally trivial but semantically the hardest discrimination in the language (research [18][2]).
+- **Allomorphic prefixes** (`meN-`, `peN-` family — `allomorphClasses` non-empty), **confixes** (`ke-…-an`, `meN-…-kan`, …), and **reduplication** — the *form* is the hard, low-salience skill (nasalization; wrap-boundary; doubling). These **keep formation drilling** (`decompose_word_ex` + `type_form_ex`), unchanged — this preserves the reduplication/confix split decided above and in **ADR 0019**.
+
+The discriminator: route to meaning/usage iff `affixType ∈ {prefix, suffix}` **and** `allomorphClassesFor(affix)` is empty — both fields already on the catalog entry.
+
+The decision is made **once, at the capability stage** (the projector holds the affix), and **encoded in the capability type** (the existing render router), so the runtime stays affix-blind. Transparent pairs **reuse** the vocabulary cap types `recognise_meaning_from_text_cap` (meaning) + `produce_form_from_context_cap` (usage); allomorphic/confix/reduplication pairs keep `recognise_word_form_link_cap` + `produce_derived_form_cap`. The vocab/grammar/morphology analytics split keys on `source_kind` (`word_form_pair_src` → morphology), so a reused vocabulary cap type on a morphology pair still counts as morphology and never leaks into vocabulary-size counts. **Planned additive follow-on:** give the allomorphic/confix/reduplication track a meaning card *alongside* its form cards (so every affix practises meaning), gated on a check that the derived form isn't already a vocabulary `learning_item`. See **ADR 0021**.
+
 ## Content Unit
 
 A stable, publishable unit derived from a content source. Content units preserve source refs, section refs, ordering, and relationships to lesson page blocks and learning capabilities.
