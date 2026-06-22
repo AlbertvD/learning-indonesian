@@ -6,7 +6,34 @@ import {
   affixCatalogEntry,
   allomorphClassesFor,
   distractorAffixes,
+  routesToMeaningUsage,
 } from '../affixCatalog'
+
+describe('routesToMeaningUsage — form-regularity routing (ADR 0021)', () => {
+  it('routes single invariant prefix/suffix affixes to meaning/usage', () => {
+    for (const a of ['ber-', 'di-', 'ter-', 'se-', 'memper-', '-an', '-kan', '-i']) {
+      expect(routesToMeaningUsage(a), a).toBe(true)
+    }
+  })
+
+  it('keeps allomorphic, confix, and reduplication affixes on formation', () => {
+    for (const a of ['meN-', 'peN-', 'ke-…-an', 'meN-…-kan', 'meN-…-i', 'pe-…-an', 'per-…-an', 'di-…-kan', 'reduplication', 'reduplication-an', 'ke-…-an-reduplication']) {
+      expect(routesToMeaningUsage(a), a).toBe(false)
+    }
+  })
+
+  it('fails safe to formation for an unknown affix', () => {
+    expect(routesToMeaningUsage('zz-')).toBe(false)
+  })
+
+  it('partitions the whole catalog with no overlap or gap', () => {
+    for (const e of AFFIX_CATALOG) {
+      const meaning = routesToMeaningUsage(e.affix)
+      const isInvariantAffix = (e.affixType === 'prefix' || e.affixType === 'suffix') && (e.allomorphClasses?.length ?? 0) === 0
+      expect(meaning).toBe(isInvariantAffix)
+    }
+  })
+})
 
 describe('affix catalog', () => {
   it('every entry has a non-empty affix + a valid affix_type', () => {

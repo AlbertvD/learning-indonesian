@@ -87,6 +87,7 @@ export {
   isCatalogAffix,
   affixCatalogEntry,
   allomorphClassesFor,
+  routesToMeaningUsage,
   distractorAffixes,
 } from './affixCatalog'
 export type { AffixCatalogEntry, AffixType, AffixComposition, CefrLevel } from './affixCatalog'

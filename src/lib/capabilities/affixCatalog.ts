@@ -175,6 +175,21 @@ export function allomorphClassesFor(affix: string): string[] {
 }
 
 /**
+ * ADR 0021: does this affix route to MEANING/USAGE exercises (vs. FORMATION)?
+ * True iff the affix is a SINGLE INVARIANT prefix or suffix — one trivial
+ * prepend/append, so drilling the form is busywork and we drill meaning + usage
+ * instead. Allomorphic prefixes (meN-/peN- family — non-empty allomorphClasses),
+ * confixes, and reduplication keep FORMATION drilling (their form is the hard,
+ * low-salience skill). Unknown affix ⇒ false (fail safe to formation).
+ */
+export function routesToMeaningUsage(affix: string): boolean {
+  const entry = BY_AFFIX.get(affix)
+  if (!entry) return false
+  return (entry.affixType === 'prefix' || entry.affixType === 'suffix')
+    && (entry.allomorphClasses?.length ?? 0) === 0
+}
+
+/**
  * Distractor affixes for the recognise_word_form_link_cap MCQ ("pick the affix"):
  * other catalog affixes, same affix_type first (closer confusables), then the rest.
  * Deterministic order (catalog order) — the packager shuffles + slices.
