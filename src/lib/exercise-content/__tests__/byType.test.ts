@@ -811,3 +811,86 @@ describe('buildDecomposeWord — morpheme breakdown MCQ', () => {
     expect(r.exerciseItem.decomposeData?.correctOptionId).toBe('ke + biru-biru + an')
   })
 })
+
+// ADR 0021 — the morphology MEANING + USAGE render paths (transparent affixes).
+describe('buildRecognitionMCQ — word_form_pair_src MEANING card', () => {
+  function meaningInput(overrides: Record<string, unknown> = {}): RawProjectorInput {
+    return baseInput({
+      learningItem: null,
+      meanings: [],
+      affixedFormPair: {
+        root: 'jalan',
+        derived: 'berjalan',
+        direction: 'derived_to_root',
+        allomorphRule: 'no allomorphy',
+        affix: 'ber-',
+        sourceRef: 'lesson-11/morphology/ber-jalan-berjalan',
+        derivedGloss: 'to walk',
+        rootMeaning: 'road',
+        siblingGlosses: ['journey'],
+        poolGlosses: ['to run', 'to eat', 'to sleep'],
+        ...overrides,
+      } as never,
+    })
+  }
+
+  it('renders the derived form as prompt with its gloss + 3 distractors (learningItem null)', () => {
+    const r = buildForExerciseType('choose_meaning_ex', meaningInput())
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.exerciseType).toBe('choose_meaning_ex')
+    expect(r.exerciseItem.learningItem).toBeNull()
+    expect(r.exerciseItem.cuedRecallData?.promptMeaningText).toBe('berjalan')
+    expect(r.exerciseItem.cuedRecallData?.correctOptionId).toBe('to walk')
+    expect(r.exerciseItem.cuedRecallData?.options).toHaveLength(4)
+    expect(r.exerciseItem.cuedRecallData?.options).toContain('to walk')
+    expect(r.exerciseItem.cuedRecallData?.options).toContain('road') // root-meaning distractor
+  })
+
+  it('is direction-agnostic — same options regardless of the pair direction', () => {
+    const a = buildForExerciseType('choose_meaning_ex', meaningInput({ direction: 'derived_to_root' }))
+    const b = buildForExerciseType('choose_meaning_ex', meaningInput({ direction: 'root_to_derived' }))
+    if (a.kind !== 'ok' || b.kind !== 'ok') throw new Error('expected ok')
+    expect(new Set(a.exerciseItem.cuedRecallData?.options)).toEqual(new Set(b.exerciseItem.cuedRecallData?.options))
+  })
+
+  it('fails loud when the gloss is missing (no answer)', () => {
+    const r = buildForExerciseType('choose_meaning_ex', meaningInput({ derivedGloss: null }))
+    expect(r.kind).toBe('fail')
+  })
+})
+
+describe('buildCloze — word_form_pair_src USAGE card', () => {
+  function usageInput(overrides: Record<string, unknown> = {}): RawProjectorInput {
+    return baseInput({
+      learningItem: null,
+      meanings: [],
+      affixedFormPair: {
+        root: 'jalan',
+        derived: 'berjalan',
+        direction: 'root_to_derived',
+        allomorphRule: 'no allomorphy',
+        affix: 'ber-',
+        sourceRef: 'lesson-11/morphology/ber-jalan-berjalan',
+        carrierText: 'Saya berjalan ke pasar',
+        derivedGloss: 'to walk',
+        ...overrides,
+      } as never,
+    })
+  }
+
+  it('blanks the derived form in its carrier (targetWord = derived form)', () => {
+    const r = buildForExerciseType('type_missing_word_ex', usageInput())
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.exerciseType).toBe('type_missing_word_ex')
+    expect(r.exerciseItem.clozeContext?.sentence).toBe('Saya ___ ke pasar')
+    expect(r.exerciseItem.clozeContext?.targetWord).toBe('berjalan')
+    expect(r.exerciseItem.clozeContext?.translation).toBe('to walk')
+  })
+
+  it('fails loud when the carrier no longer contains the derived form', () => {
+    const r = buildForExerciseType('type_missing_word_ex', usageInput({ carrierText: 'Saya pergi ke pasar' }))
+    expect(r.kind).toBe('fail')
+  })
+})

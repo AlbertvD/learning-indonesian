@@ -58,9 +58,12 @@ export const RENDER_CONTRACTS = {
     // Decision R (PR 1): item translations read from learning_items.translation_{nl,en}
     // directly. No capability_artifacts required for item caps. requiredArtifacts.item=[]
     // so validateCapability passes without artifact rows.
+    // ADR 0021: also serves the morphology MEANING card — recognise_meaning_from_text_cap
+    // on word_form_pair_src (transparent affixes). Prompt = derived form, options = its
+    // gloss + deterministic distractors; reader supplies derived_gloss + root/sibling glosses.
     capabilityTypes: ['recognise_meaning_from_text_cap'],
-    supportedSourceKinds: ['vocabulary_src'],
-    requiredArtifacts: { vocabulary_src: [] },
+    supportedSourceKinds: ['vocabulary_src', 'word_form_pair_src'],
+    requiredArtifacts: { vocabulary_src: [], word_form_pair_src: [] },
   },
   decompose_word_ex: {
     // ADR 0019: the morphology segmentation drill. Serves recognise_word_form_link_cap
@@ -121,7 +124,7 @@ export const RENDER_CONTRACTS = {
   },
   type_missing_word_ex: {
     capabilityTypes: ['produce_form_from_context_cap'],
-    supportedSourceKinds: ['vocabulary_src', 'dialogue_line_src'],
+    supportedSourceKinds: ['vocabulary_src', 'dialogue_line_src', 'word_form_pair_src'],
     requiredArtifacts: {
       // Decision R (PR 1): item cloze data from item_contexts directly.
       vocabulary_src: [],
@@ -130,6 +133,10 @@ export const RENDER_CONTRACTS = {
       // columns + the pre-write validateDialogueClozes gate + HC15 — not by
       // capability_artifacts. Readiness needs no artifact bag, mirroring item.
       dialogue_line_src: [],
+      // ADR 0021: the morphology USAGE card — produce_form_from_context_cap on
+      // word_form_pair_src (transparent affixes with a carrier). The carrier comes
+      // from affixed_form_pairs.carrier_text; no item_contexts row is needed.
+      word_form_pair_src: [],
     },
   },
   choose_missing_word_ex: {
@@ -346,6 +353,20 @@ export interface AffixedFormPairInput {
   /** The cap's source_ref of shape `lesson-N/morphology/<slug>`. Carried for
    *  audit/debug; the builder does not parse it. */
   sourceRef: string
+  /** ADR 0021 — the MEANING card's substrate: the derived form's gloss in the
+   *  user's language (reader picks nl/en). Present for transparent affixes; null
+   *  on the formation path (which never reads it). */
+  derivedGloss?: string | null
+  /** The root's own bare meaning (user language), e.g. "road" for jalan — the
+   *  richest meaning-MCQ distractor (drills the affix's meaning-shift). Guaranteed
+   *  present for a transparent pair (the root is always a learning_item, ADR 0018). */
+  rootMeaning?: string | null
+  /** Glosses of OTHER derived forms sharing this root (the word family) — the
+   *  preferred meaning-MCQ distractors (force discriminating affixes by meaning). */
+  siblingGlosses?: string[]
+  /** Lesson-scoped glosses of derived forms with a DIFFERENT root — the backfill
+   *  pool the distractor builder draws from to guarantee 3 when the family is thin. */
+  poolGlosses?: string[]
 }
 
 /**
@@ -441,14 +462,14 @@ interface BuilderBase {
  * (pattern caps are not item-rooted).
  */
 export interface ContractInputShapes {
-  choose_meaning_ex: BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
+  choose_meaning_ex: BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
   choose_form_ex:     BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
   type_form_ex:    BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
   decompose_word_ex: BuilderBase & { affixedFormPair: AffixedFormPairInput }
   type_meaning_ex:  BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   choose_meaning_from_audio_ex:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   type_form_from_audio_ex:       BuilderBase & { learningItem: LearningItem }
-  type_missing_word_ex:           BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; dialogueLine: DialogueLineInput | null }
+  type_missing_word_ex:           BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; dialogueLine: DialogueLineInput | null; affixedFormPair: AffixedFormPairInput | null }
   choose_missing_word_ex:       BuilderBase & { exercise: ClozeMcqExercisesRow }
   choose_correct_form_ex:   BuilderBase & { exercise: ContrastPairExercisesRow }
   transform_sentence_ex: BuilderBase & { exercise: SentenceTransformationExercisesRow }
@@ -552,10 +573,10 @@ export function projectBuilderInput<T extends ExerciseType>(
   ])
   let primaryMeaning: ItemMeaning | undefined
   if (needsPrimaryMeaning.has(exerciseType)) {
-    if ((exerciseType === 'type_form_ex' || exerciseType === 'choose_form_ex') && raw.affixedFormPair) {
+    if ((exerciseType === 'type_form_ex' || exerciseType === 'choose_form_ex' || exerciseType === 'choose_meaning_ex') && raw.affixedFormPair) {
       // word_form_pair_src path — no learningItem, no item meanings. The morphology
-      // MCQ prompt/options come from the pair (root/derived/affix) + the affix
-      // catalog, not from a translation. Skip the item-meaning lookup.
+      // prompt/options come from the pair (derived form) + its gloss (ADR 0021) or
+      // the affix catalog, not from an item translation. Skip the item-meaning lookup.
     } else {
       primaryMeaning = raw.meanings.find(m => m.translation_language === raw.userLanguage && m.is_primary)
         ?? raw.meanings.find(m => m.translation_language === raw.userLanguage)
@@ -581,6 +602,11 @@ export function projectBuilderInput<T extends ExerciseType>(
     if (raw.dialogueLine) {
       // dialogue_line path — sentence comes from dialogueLine.sourceText; no
       // item_contexts row is required (or available).
+    } else if (raw.affixedFormPair) {
+      // ADR 0021 word_form_pair_src path — the carrier comes from the pair's
+      // carrier_text (byKind/affixedFormPair.ts); no item_contexts row exists.
+      // Skip the cloze-context lookup (without this guard the else branch below
+      // would fail with malformed_cloze, leaving the usage cap unrenderable — M2).
     } else {
       clozeContext = raw.contexts.find(c => c.context_type === 'cloze') ?? null
       if (!clozeContext) {
@@ -634,7 +660,7 @@ export function projectBuilderInput<T extends ExerciseType>(
       // here. The projector has proven that exactly one of learningItem (with
       // its clozeContext) OR dialogueLine is populated. The byType packager
       // branches on which is present.
-      return { ok: true, input: { ...base, learningItem, clozeContext, dialogueLine: raw.dialogueLine } as BuilderInputFor<T> }
+      return { ok: true, input: { ...base, learningItem, clozeContext, dialogueLine: raw.dialogueLine, affixedFormPair: raw.affixedFormPair } as BuilderInputFor<T> }
     case 'choose_missing_word_ex':
     case 'choose_correct_form_ex':
     case 'transform_sentence_ex':
@@ -647,9 +673,11 @@ export function projectBuilderInput<T extends ExerciseType>(
       return { ok: true, input: { ...base, learningItem: learningItem! } as BuilderInputFor<T> }
     case 'type_form_ex':
     case 'choose_form_ex':
-      // type_form_ex + choose_form_ex accept item OR word_form_pair_src. The
-      // projector has proven that exactly one is populated. The byType packager
-      // (buildTypedRecall / buildCuedRecall) branches on which.
+    case 'choose_meaning_ex':
+      // type_form_ex + choose_form_ex + choose_meaning_ex accept item OR
+      // word_form_pair_src (ADR 0021 — choose_meaning_ex serves the morphology MEANING
+      // card). The projector has proven exactly one is populated; the byType packager
+      // (buildTypedRecall / buildCuedRecall / buildRecognitionMCQ) branches on which.
       return { ok: true, input: {
         ...base,
         learningItem,
@@ -664,7 +692,6 @@ export function projectBuilderInput<T extends ExerciseType>(
         return { ok: false, reasonCode: 'item_not_found', message: 'decompose_word_ex requires an affixedFormPair' }
       }
       return { ok: true, input: { ...base, affixedFormPair: raw.affixedFormPair } as BuilderInputFor<T> }
-    case 'choose_meaning_ex':
     case 'type_meaning_ex':
     case 'choose_meaning_from_audio_ex':
       return { ok: true, input: { ...base, learningItem: learningItem!, primaryMeaning: primaryMeaning! } as BuilderInputFor<T> }

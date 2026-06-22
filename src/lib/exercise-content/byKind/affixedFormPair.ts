@@ -29,6 +29,7 @@ import {
   type SupabaseSchemaClient,
   makeFailContext,
 } from '../adapter'
+import { itemSlug } from '@/lib/capabilities'
 
 /**
  * Shape returned by the affixed_form_pairs query. Every column has a NOT NULL
@@ -37,6 +38,7 @@ import {
  */
 interface AffixedFormPairRow {
   capability_id: string
+  lesson_id: string
   root_text: string
   derived_text: string
   allomorph_rule: string
@@ -46,6 +48,9 @@ interface AffixedFormPairRow {
   circumfix_left: string | null
   circumfix_right: string | null
   carrier_text: string | null
+  // ADR 0021: the meaning card's substrate (transparent affixes).
+  derived_gloss_nl: string | null
+  derived_gloss_en: string | null
 }
 
 export async function fetchForAffixedFormPairBlocks(
@@ -59,13 +64,44 @@ export async function fetchForAffixedFormPairBlocks(
   const capabilityIds = [...new Set(affixedBlocks.map(b => b.block.capabilityId))]
   const { data, error } = await client.schema('indonesian')
     .from('affixed_form_pairs')
-    .select('capability_id, root_text, derived_text, allomorph_rule, affix, circumfix_left, circumfix_right, carrier_text')
+    .select('capability_id, lesson_id, root_text, derived_text, allomorph_rule, affix, circumfix_left, circumfix_right, carrier_text, derived_gloss_nl, derived_gloss_en')
     .in('capability_id', capabilityIds)
   if (error) throw error
 
   const rowByCapability = new Map<string, AffixedFormPairRow>()
   for (const row of (data ?? []) as AffixedFormPairRow[]) {
     rowByCapability.set(row.capability_id, row)
+  }
+
+  // ADR 0021 — the MEANING card's distractor substrate, fetched in two batched
+  // reads over this block set: (1) each root's own bare meaning (the richest
+  // distractor — drills the affix's meaning-shift), and (2) a LESSON-scoped pool of
+  // every other derived gloss, which the builder splits into same-root family
+  // (preferred) + backfill. Best-effort: the formation path ignores all of this.
+  const rows = [...rowByCapability.values()]
+  const rootTexts = [...new Set(rows.map(r => r.root_text))]
+  const lessonIds = [...new Set(rows.map(r => r.lesson_id))]
+  const rootMeaningBySlug = new Map<string, string>()
+  // gloss pool entries keyed by lesson: { root_text, derived_text, gloss } in the user language.
+  const glossPool: Array<{ root_text: string; derived_text: string; gloss: string }> = []
+  if (rootTexts.length > 0) {
+    const rootSlugs = [...new Set(rootTexts.map(itemSlug))]
+    const { data: itemRows } = await client.schema('indonesian')
+      .from('learning_items')
+      .select('normalized_text, translation_nl, translation_en')
+      .in('normalized_text', rootSlugs)
+    for (const r of (itemRows ?? []) as Array<{ normalized_text: string; translation_nl: string | null; translation_en: string | null }>) {
+      const m = userLanguage === 'nl' ? r.translation_nl : r.translation_en
+      if (r.normalized_text && m) rootMeaningBySlug.set(r.normalized_text, m)
+    }
+    const { data: poolRows } = await client.schema('indonesian')
+      .from('affixed_form_pairs')
+      .select('root_text, derived_text, derived_gloss_nl, derived_gloss_en')
+      .in('lesson_id', lessonIds)
+    for (const r of (poolRows ?? []) as Array<{ root_text: string; derived_text: string; derived_gloss_nl: string | null; derived_gloss_en: string | null }>) {
+      const g = userLanguage === 'nl' ? r.derived_gloss_nl : r.derived_gloss_en
+      if (g) glossPool.push({ root_text: r.root_text, derived_text: r.derived_text, gloss: g })
+    }
   }
 
   for (const { block, sourceRef, direction } of affixedBlocks) {
@@ -132,6 +168,15 @@ export async function fetchForAffixedFormPairBlocks(
           circumfixRight: row.circumfix_right,
           carrierText: row.carrier_text,
           sourceRef,
+          // ADR 0021 meaning-card substrate (null/empty on the formation path).
+          derivedGloss: userLanguage === 'nl' ? row.derived_gloss_nl : row.derived_gloss_en,
+          rootMeaning: rootMeaningBySlug.get(itemSlug(root)) ?? null,
+          siblingGlosses: glossPool
+            .filter(g => g.root_text === root && g.derived_text !== derived)
+            .map(g => g.gloss),
+          poolGlosses: glossPool
+            .filter(g => g.root_text !== root)
+            .map(g => g.gloss),
         },
         meanings: [],
         contexts: [],

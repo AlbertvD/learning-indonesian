@@ -23,19 +23,27 @@ export default function RecognitionMCQ({
   const t = translations[userLanguage]
   const { audioMap } = useSessionAudio()
   const { autoPlay } = useAutoplay()
-  const { learningItem: item, meanings, distractors } = exerciseItem
-  const learningItem = item!
-  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
+  const { learningItem: item, meanings, distractors, cuedRecallData } = exerciseItem
 
-  // Canonical correct meaning in the user's language.
+  // ADR 0021 — morphology MEANING card: no learningItem; prompt + options come from
+  // cuedRecallData (already includes the correct gloss + shuffled distractors). The
+  // prompt is the Indonesian derived form; no audio (morphology pairs carry none).
+  const isAffixed = !item && !!cuedRecallData
+  const learningItem = item ?? null
+  const audioUrl = learningItem ? resolveSessionAudioUrl(audioMap, learningItem.base_text, null) : null
+
+  // Canonical correct meaning in the user's language (item path).
   const correctMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
     ?? meanings.find(m => m.translation_language === userLanguage)
-  const correctAnswer = correctMeaning?.translation_text ?? ''
+  const correctAnswer = isAffixed ? cuedRecallData!.correctOptionId : (correctMeaning?.translation_text ?? '')
+  const promptText = isAffixed ? cuedRecallData!.promptMeaningText : (learningItem?.base_text ?? '')
 
   // Shuffle once on mount — useState(initializer) runs the randomization
   // exactly once; subsequent renders read the cached value without re-running
   // Math.random (which React 19's compiler would flag as impure during render).
+  // The affixed path's options are pre-shuffled by the builder; use them as-is.
   const [shuffledOptions] = useState(() => {
+    if (isAffixed) return cuedRecallData!.options
     const all = [correctAnswer, ...(distractors ?? [])].slice(0, 4)
     return [...all].sort(() => Math.random() - 0.5)
   })
@@ -58,7 +66,7 @@ export default function RecognitionMCQ({
   })
 
   const isSentenceType =
-    learningItem.item_type === 'sentence' || learningItem.item_type === 'dialogue_chunk'
+    learningItem?.item_type === 'sentence' || learningItem?.item_type === 'dialogue_chunk'
 
   return (
     <ExerciseFrame variant="session" adminOverlay={adminOverlay}>
@@ -67,7 +75,7 @@ export default function RecognitionMCQ({
         variant={isSentenceType ? 'sentence' : 'word'}
         audio={audioUrl ? { url: audioUrl, autoplay: autoPlay } : undefined}
       >
-        {learningItem.base_text}
+        {promptText}
       </ExercisePromptCard>
       <ExerciseOptionGroup>
         {shuffledOptions.map(opt => (

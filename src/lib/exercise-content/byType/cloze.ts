@@ -13,8 +13,40 @@
 
 import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
+import { blankDerivedInCarrier } from '@/lib/capabilities'
 
 export function buildCloze(input: BuilderInputFor<'type_missing_word_ex'>): BuilderResult {
+  // ADR 0021 — morphology USAGE card (word_form_pair_src path): blank the derived
+  // form in its harvested carrier sentence and have the learner produce it. The
+  // carrier is guaranteed present (the projector only emits the usage cap when
+  // carrier_text is non-empty); the derived gloss is the comprehension hint.
+  if (input.affixedFormPair) {
+    const afp = input.affixedFormPair
+    const sentence = afp.carrierText ? blankDerivedInCarrier(afp.carrierText, afp.derived) : null
+    if (!sentence) {
+      return {
+        kind: 'fail',
+        reasonCode: 'malformed_cloze',
+        message: `type_missing_word_ex word_form_pair_src carrier does not contain "${afp.derived}" as a whole word (sourceRef ${afp.sourceRef})`,
+        payloadSnapshot: { sourceRef: afp.sourceRef, derived: afp.derived, carrierText: afp.carrierText },
+      }
+    }
+    const exerciseItem = {
+      learningItem: null,
+      meanings: [],
+      contexts: [],
+      answerVariants: [],
+      skillType: 'produce_mode' as const,
+      exerciseType: 'type_missing_word_ex' as const,
+      clozeContext: {
+        sentence,
+        targetWord: afp.derived,
+        translation: afp.derivedGloss ?? '',
+      },
+    }
+    return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }
+  }
+
   // Dialogue-line path: input fields come from artifact payloads.
   if (input.dialogueLine) {
     if (!input.dialogueLine.sourceText.includes('___')) {

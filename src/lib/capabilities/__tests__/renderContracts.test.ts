@@ -189,8 +189,9 @@ describe('supportsSourceKind', () => {
     }
   })
 
-  it('type_form_ex + choose_form_ex + decompose_word_ex support word_form_pair_src (morphology phase-b + ADR 0019)', () => {
-    const supporting = new Set(['type_form_ex', 'choose_form_ex', 'decompose_word_ex'])
+  it('type_form_ex + choose_form_ex + decompose_word_ex + choose_meaning_ex + type_missing_word_ex support word_form_pair_src (morphology phase-b + ADR 0019/0021)', () => {
+    // ADR 0021 widened choose_meaning_ex (meaning card) + type_missing_word_ex (usage card).
+    const supporting = new Set(['type_form_ex', 'choose_form_ex', 'decompose_word_ex', 'choose_meaning_ex', 'type_missing_word_ex'])
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
       expect(supportsSourceKind(et, 'word_form_pair_src')).toBe(supporting.has(et))
     }
@@ -226,11 +227,16 @@ describe('requiredArtifactsFor', () => {
     expect(requiredArtifactsFor('type_form_ex', 'word_form_pair_src')).toEqual([])
   })
 
-  it('returns [] for an exercise/source-kind combination the contract does not declare', () => {
-    // choose_meaning_ex does not support word_form_pair_src.
+  it('choose_meaning_ex + type_missing_word_ex word_form_pair_src-source require [] (ADR 0021: structure from the typed affixed_form_pairs row + the gloss gate)', () => {
     expect(requiredArtifactsFor('choose_meaning_ex', 'word_form_pair_src')).toEqual([])
-    // choose_form_ex does not support word_form_pair_src (deferred per D3/D4).
-    expect(requiredArtifactsFor('choose_form_ex', 'word_form_pair_src')).toEqual([])
+    expect(requiredArtifactsFor('type_missing_word_ex', 'word_form_pair_src')).toEqual([])
+  })
+
+  it('returns [] for an exercise/source-kind combination the contract does not declare', () => {
+    // type_meaning_ex does not support word_form_pair_src.
+    expect(requiredArtifactsFor('type_meaning_ex', 'word_form_pair_src')).toEqual([])
+    // choose_meaning_from_audio_ex does not support word_form_pair_src.
+    expect(requiredArtifactsFor('choose_meaning_from_audio_ex', 'word_form_pair_src')).toEqual([])
   })
 })
 
@@ -270,6 +276,34 @@ describe('projectBuilderInput — word_form_pair_src (type_form_ex path)', () =>
       expect(input.affixedFormPair).toEqual(AFFIXED_FIXTURE)
       expect(input.learningItem).toBeNull()
       expect(input.primaryMeaning).toBeNull()
+    }
+  })
+
+  // ADR 0021 — the morphology MEANING + USAGE render paths.
+  it('succeeds for choose_meaning_ex with affixedFormPair populated + learningItem null (meaning card)', () => {
+    const raw = makeRawInput({ learningItem: null, affixedFormPair: AFFIXED_FIXTURE })
+    const result = projectBuilderInput('choose_meaning_ex', raw)
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      const input = result.input as { affixedFormPair: typeof AFFIXED_FIXTURE | null; learningItem: unknown; primaryMeaning: unknown }
+      expect(input.affixedFormPair).toEqual(AFFIXED_FIXTURE)
+      expect(input.learningItem).toBeNull()
+      expect(input.primaryMeaning).toBeNull()
+    }
+  })
+
+  it('succeeds for type_missing_word_ex with affixedFormPair populated (usage card) — the M2 guard', () => {
+    // Regression guard: without the `else if (raw.affixedFormPair)` branch in
+    // projectBuilderInput, the cloze-context lookup fires on empty contexts and
+    // returns malformed_cloze, leaving the usage cap permanently unrenderable.
+    const raw = makeRawInput({ learningItem: null, affixedFormPair: AFFIXED_FIXTURE, contexts: [] })
+    const result = projectBuilderInput('type_missing_word_ex', raw)
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      const input = result.input as { affixedFormPair: typeof AFFIXED_FIXTURE | null; clozeContext: unknown; learningItem: unknown }
+      expect(input.affixedFormPair).toEqual(AFFIXED_FIXTURE)
+      expect(input.clozeContext).toBeNull()
+      expect(input.learningItem).toBeNull()
     }
   })
 
