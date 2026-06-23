@@ -8,7 +8,7 @@ import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
 import { funnelBucket } from '@/lib/analytics/mastery/masteryModel'
 import { findCapsMissingSatellite, type CapForSatelliteCheck } from './lib/pipeline/capability-stage/satellitePresence'
-import { isCatalogAffix } from '@/lib/capabilities/affixCatalog'
+import { isCatalogAffix, routesToMeaningUsage } from '@/lib/capabilities/affixCatalog'
 import { itemSlug } from '@/lib/capabilities/itemSlug'
 import { projectionViolations, type RankedItem } from './collections/projection'
 
@@ -1133,6 +1133,44 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
       pass(`${HC33} (${projRows.length} projected row(s) checked; ${glossed}/${srcByRef.size} source pairs glossed)`)
     } else {
       fail(HC33, `${offenders.length} drifted row(s). Sample: ${offenders.slice(0, 5).join(' | ')}${offenders.length > 5 ? ' …' : ''}`)
+    }
+  }
+}
+
+// ── HC34 (ADR 0021): every TRANSPARENT-affix affixed_form_pairs row carries its
+//        derived meaning gloss (derived_gloss_nl AND derived_gloss_en) — the
+//        MEANING card's substrate. Layer-3 live-DB mirror of the Layer-2 gate
+//        morphology_meaning_gloss_missing (projectors/morphology.ts). Distinct from
+//        HC33 (which checks source↔projection PARITY): this checks gloss PRESENCE on
+//        transparent affixes. Allomorphic/confix/reduplication pairs render the
+//        FORMATION card and are exempt, so the check is scoped by routesToMeaningUsage(affix).
+{
+  const HC34 = 'HC34 every transparent-affix affixed_form_pairs row carries its derived gloss (ADR 0021 meaning-card substrate)'
+  const { data: rows, error } = await supabase
+    .schema('indonesian')
+    .from('affixed_form_pairs')
+    .select('source_ref, affix, derived_gloss_nl, derived_gloss_en')
+  if (error) {
+    fail(HC34, error.message)
+  } else {
+    type GlossRow = { source_ref: string; affix: string | null; derived_gloss_nl: string | null; derived_gloss_en: string | null }
+    const glossRows = (rows ?? []) as GlossRow[]
+    const transparent = glossRows.filter((r) => r.affix != null && routesToMeaningUsage(r.affix))
+    if (transparent.length === 0) {
+      pass(`${HC34} (no transparent-affix rows; vacuously green)`)
+    } else {
+      const offenders = transparent.filter(
+        (r) => !(r.derived_gloss_nl ?? '').trim() || !(r.derived_gloss_en ?? '').trim(),
+      )
+      if (offenders.length === 0) {
+        pass(`${HC34} (${transparent.length} transparent-affix row(s) checked)`)
+      } else {
+        fail(
+          HC34,
+          `${offenders.length} transparent-affix row(s) missing a derived gloss — the meaning card has no substrate. ` +
+            `Author it in the lesson's morphology-glosses.ts and re-publish. Sample: ${offenders.slice(0, 5).map((r) => r.source_ref).join(', ')}${offenders.length > 5 ? ' …' : ''}`,
+        )
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { deriveMasteryFunnel, deriveMasteryFunnelByLesson, deriveGrammarTopics } from '../masteryModel'
+import { deriveMasteryFunnel, deriveMasteryFunnelByLesson, deriveGrammarTopics, deriveSkillModeGaps } from '../masteryModel'
 import type { CapabilityMasteryEvidence } from '../masteryModel'
 
 const NOW = new Date('2026-06-10T12:00:00Z')
@@ -183,5 +183,43 @@ describe('grammar funnel counts the produce rung (ADR 0017)', () => {
     )
     const f2 = deriveMasteryFunnel({ evidence: allMastered, now: NOW })
     expect(f2.grammar.mastered).toBe(1)
+  })
+})
+
+// ADR 0021 — the reuse-safety guarantee: a transparent morphology pair carries a
+// VOCABULARY cap type (recognise_meaning_from_text_cap) but on word_form_pair_src.
+// It must bucket as MORPHOLOGY (funnel keys on source_kind) and must NOT leak into
+// the vocabulary skill profile (which fences to vocabulary_src). This is the
+// load-bearing reason we reuse the cap type instead of minting a new one.
+describe('ADR 0021 — reused vocab cap type on word_form_pair_src is morphology, not vocab', () => {
+  it('counts in the morphology funnel, not the vocabulary funnel', () => {
+    const evidence: CapabilityMasteryEvidence[] = [
+      ev({
+        sourceKind: 'word_form_pair_src',
+        sourceRef: 'lesson-11/morphology/ber-jalan-berjalan',
+        capabilityType: 'recognise_meaning_from_text_cap',
+        reviewCount: 0,
+        lessonActivated: true,
+      }),
+    ]
+    const funnel = deriveMasteryFunnel({ evidence, now: NOW })
+    expect(funnel.morphology.introduced).toBe(1)
+    expect(funnel.vocabulary.introduced).toBe(0)
+  })
+
+  it('is excluded from the vocabulary skill profile (fenced to vocabulary_src)', () => {
+    const evidence: CapabilityMasteryEvidence[] = [
+      ev({
+        sourceKind: 'word_form_pair_src',
+        sourceRef: 'lesson-11/morphology/ber-jalan-berjalan',
+        capabilityType: 'recognise_meaning_from_text_cap',
+        reviewCount: 5,
+        stability: 20,
+        lastReviewedAt: '2026-06-09T12:00:00Z',
+      }),
+    ]
+    const gaps = deriveSkillModeGaps({ evidence, now: NOW })
+    const recognise = gaps.find((g) => g.mode === 'recognise')!
+    expect(recognise.practisedWords).toBe(0) // never enters the vocab-size count
   })
 })
