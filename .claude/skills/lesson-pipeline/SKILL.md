@@ -155,6 +155,27 @@ Gotchas learned the hard way:
 - **No `timeout` on macOS.** Do NOT wrap commands in `timeout`/`gtimeout` — it's
   not installed and the whole command silently fails with "command not found".
   Just run the command; the publish scripts finish on their own.
+- **NEVER query the DB or run the capability gate while a publish is still
+  in-flight.** A live publish writes in stages (Stage A → runner → `publishVocabulary`);
+  the runner's grammar caps land FIRST as `draft`, and `publishVocabulary` (vocab
+  caps) + the final draft→published promotion land LAST. If you read mid-flight you
+  see a *false* "0 vocab caps / 27 stuck-draft caps / status=partial" — a snapshot
+  of a half-done publish, NOT a bug. A long publish is auto-backgrounded; WAIT for
+  the task-completion notification (or the process to exit) before any read-back or
+  `capability-readback --gate`. (Cost a long false-bug chase on L20, 2026-06-18.)
+- **The dry-run (`--dry-run`) cannot validate Stage B for a fresh lesson.** Stage B
+  reads lesson content *from the DB* (ADR 0011/0012); a dry-run doesn't write Stage
+  A's rows, so Stage B reads empty and reports all-zero capability counts. Real
+  capability output only exists after a true publish — don't read a clean dry-run as
+  "caps will be fine."
+- **A fresh affix/vocab lesson's caps come from TWO writers.** `runCapabilityStage`
+  (the runner) writes only pattern/dialogue/affixed caps; the cap-v2 `vocabulary/`
+  module `publishVocabulary` (called AFTER the runner in `publish-approved-content.ts`)
+  owns ALL vocab `learning_items` + caps + distractors. Lessons published before that
+  cutover kept their vocab caps (seed-once); a *fresh* publish needs both to run.
+- **`learning_items` has no `introduced_by_lesson_id` column.** The item→lesson link
+  is `item_contexts.source_lesson_id` (count items per lesson via that). Querying the
+  non-existent column returns a null count, which looks like "0 items written."
 - **Per-text audio is synthesized INSIDE Stage A, not as a separate step.** Bug
   fix #168: the Lesson Stage runner self-assigns voices
   (`setLessonVoicesForLesson` → persists `lessons.primary_voice` + `lesson_speakers`)
