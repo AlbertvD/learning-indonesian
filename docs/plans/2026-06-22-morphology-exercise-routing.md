@@ -1,8 +1,24 @@
 ---
-status: approved
-implementation: null
+status: shipped
+implementation: merged to main (53e2bcf), deployed + 11 lessons republished 2026-06-23
+merged_at: 2026-06-23
+implementation_paths:
+  - src/lib/capabilities/affixCatalog.ts
+  - scripts/lib/pipeline/capability-stage/projectors/affixedCapabilities.ts
+  - scripts/lib/pipeline/capability-stage/projectors/morphology.ts
+  - src/lib/capabilities/renderContracts.ts
+  - src/lib/exercise-content/byKind/affixedFormPair.ts
+  - src/lib/exercise-content/morphologyDistractors.ts
+  - src/lib/exercise-content/byType/recognitionMcq.ts
+  - src/lib/exercise-content/byType/cloze.ts
+  - scripts/check-supabase-deep.ts
 reviewed_by: [staff-engineer, architect, data-architect]
 supersedes: []
+note: >
+  Tasks 1-2 (gloss pipeline) dropped at integration — origin/main already had the
+  gloss substrate via PR #271 (original branch was built on a stale base). Only the
+  routing fork + render path + gate + HC + Task-3 carrier-harvest expansion shipped.
+  OpenBrain lessons 5b5aecc1 (stale-base) + 9e408eed (cutover).
 relates_to:
   - docs/adr/0021-morphology-exercise-routing-by-form-regularity.md
   - docs/adr/0018-morphology-application-cap-cross-source-kind-prerequisites.md
