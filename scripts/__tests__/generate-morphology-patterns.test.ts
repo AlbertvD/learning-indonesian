@@ -5,6 +5,7 @@ import {
   coveredClasses,
   extractSentences,
   harvestCarrier,
+  carrierTiersFromLesson,
   mergeCachedGlosses,
   harvestDescriptionSnippets,
   collectGlossNeeds,
@@ -212,6 +213,37 @@ describe('carrier harvest (option B)', () => {
   })
   it('does NOT harvest a clitic-attached surface, and falls back to null', () => {
     expect(harvestCarrier('dinaikkan', [['Bendera dinaikkannya tinggi sekali']])).toBeNull()
+  })
+
+  // Task 3 (ADR 0021): widened harvest — arrow RHS + dialogue tier.
+  it('harvests the affixed RHS of an arrow grammar example (was dropped before)', () => {
+    expect(harvestCarrier('berjalan', [['Saya jalan → Saya berjalan ke pasar']])).toBe('Saya berjalan ke pasar')
+  })
+  it('still yields null for a bare root→derived arrow (both sides too short)', () => {
+    expect(harvestCarrier('menempatkan', [['tempat → menempatkan']])).toBeNull()
+  })
+})
+
+describe('carrierTiersFromLesson — Task 3 tiers', () => {
+  const lesson = {
+    sections: [
+      { content: { type: 'grammar', categories: [{ title: 'X', examples: [{ indonesian: 'jalan → berjalan' }] }] } },
+      { content: { type: 'text', paragraphs: ['Dia berlari cepat sekali.'] } },
+      { content: { type: 'exercises', items: [{ prompt: 'Vul in', answer: 'Saya membaca buku' }] } },
+      { content: { type: 'dialogue', lines: [{ speaker: 'A', text: 'Saya ingin menukar uang.', translation: 'NL' }] } },
+    ],
+  }
+  const cats: LessonCategory[] = [{ title: 'X', examples: [{ indonesian: 'jalan → berjalan' }] }]
+
+  it('returns [grammar, story, exercise, dialogue] with the dialogue line captured', () => {
+    const tiers = carrierTiersFromLesson(lesson, cats)
+    expect(tiers).toHaveLength(4)
+    expect(tiers[3]).toContain('Saya ingin menukar uang.')
+    expect(tiers[2].join(' ')).toContain('Saya membaca buku')
+  })
+  it('lets the dialogue tier supply a carrier for a meN- form used only in dialogue', () => {
+    const tiers = carrierTiersFromLesson(lesson, cats)
+    expect(harvestCarrier('menukar', tiers)).toBe('Saya ingin menukar uang')
   })
 })
 

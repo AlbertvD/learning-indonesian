@@ -169,6 +169,7 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "meng",
     circumfixRight: "kan",
+    carrierText: "Murid-murid juga diwajibkan menggunakan kemeja putih",
     derivedGlossNl: "gebruiken",
     derivedGlossEn: "use",
   },

@@ -138,10 +138,13 @@ export function coveredClasses(category: LessonCategory, affix: string): Set<str
  * (`tempat → menempatkan`) and anything under 3 words (too short to be a carrier).
  */
 export function extractSentences(raw: string): string[] {
+  // ADR 0021 Task 3: split on the derivation arrow (→/->) too, so the affixed RHS
+  // of "root → derived in a sentence" survives (we used to discard the whole arrow
+  // line). A bare "tempat → menempatkan" still yields nothing — both sides < 3 words.
   return raw
-    .split(/[.!?]+\s+|—|\n|;/u)
+    .split(/[.!?]+\s+|—|→|->|\n|;/u)
     .map((s) => s.replace(/^\s*[a-z0-9]\.\s*/iu, '').replace(/[.!?]+\s*$/u, '').trim())
-    .filter((s) => !/→|->/.test(s) && s.split(/\s+/u).filter(Boolean).length >= 3)
+    .filter((s) => s.split(/\s+/u).filter(Boolean).length >= 3)
 }
 
 /**
@@ -527,10 +530,11 @@ function categoriesFromLesson(lesson: any): LessonCategory[] {
  * [grammar examples, story paragraphs, exercise answers]. `harvestCarrier` extracts
  * sentences + matches verbatim against derived_text.
  */
-function carrierTiersFromLesson(lesson: any, categories: LessonCategory[]): string[][] {
+export function carrierTiersFromLesson(lesson: any, categories: LessonCategory[]): string[][] {
   const grammar = categories.flatMap((c) => (c.examples ?? []).map((e) => e.indonesian)).filter((s): s is string => typeof s === 'string')
 
   const story: string[] = []
+  const dialogue: string[] = []
   const exercise: string[] = []
   const sections: any[] = Array.isArray(lesson?.sections) ? lesson.sections : []
   for (const s of sections) {
@@ -538,19 +542,27 @@ function carrierTiersFromLesson(lesson: any, categories: LessonCategory[]): stri
     if (content?.type === 'text' && Array.isArray(content.paragraphs)) {
       for (const p of content.paragraphs) if (typeof p === 'string') story.push(p)
     }
+    // ADR 0021 Task 3: dialogue/conversation lines are natural Indonesian carriers;
+    // `text` is the Indonesian line (`translation`/`translation_en` are glosses — skip).
+    if ((content?.type === 'dialogue' || content?.type === 'conversation') && Array.isArray(content.lines)) {
+      for (const ln of content.lines) if (typeof ln?.text === 'string') dialogue.push(ln.text)
+    }
   }
-  // Exercise answers can be nested arbitrarily deep (Latihan → sub-exercises → items).
-  const collectAnswers = (node: unknown): void => {
-    if (Array.isArray(node)) node.forEach(collectAnswers)
+  // Exercise carriers can be nested arbitrarily deep (Latihan → sub-exercises → items).
+  // ADR 0021 Task 3: collect both `answer` and `prompt` (some drills carry the
+  // Indonesian sentence in the prompt; Dutch instruction prompts never whole-word-match).
+  const collectExerciseStrings = (node: unknown): void => {
+    if (Array.isArray(node)) node.forEach(collectExerciseStrings)
     else if (node && typeof node === 'object') {
       const obj = node as Record<string, unknown>
       if (typeof obj.answer === 'string') exercise.push(obj.answer)
-      Object.values(obj).forEach(collectAnswers)
+      if (typeof obj.prompt === 'string') exercise.push(obj.prompt)
+      Object.values(obj).forEach(collectExerciseStrings)
     }
   }
-  collectAnswers(sections)
+  collectExerciseStrings(sections)
 
-  return [grammar, story, exercise]
+  return [grammar, story, exercise, dialogue]
 }
 
 /** All learning_items keyed by normalized_text (== itemSlug form), with bilingual

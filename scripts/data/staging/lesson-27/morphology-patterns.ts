@@ -65,6 +65,7 @@ export const affixedFormPairs = [
     productive: true,
     circumfixLeft: "ke",
     circumfixRight: "an",
+    carrierText: "Sepatu dibeli kebanyakan penduduk Indonesia",
     derivedGlossNl: "meerderheid, de meeste",
     derivedGlossEn: "majority, most of",
   },
