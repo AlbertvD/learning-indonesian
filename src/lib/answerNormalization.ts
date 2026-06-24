@@ -129,6 +129,49 @@ export function checkAnswer(
 }
 
 /**
+ * Detect a produce exercise the grader cannot actually grade ("ineffective").
+ *
+ * `checkAnswer`/`normalizeAnswer` lowercase, strip punctuation + parentheticals,
+ * and split on "/"/";" as OR-alternatives — deliberate typo-forgiveness. The
+ * side effect: a produce exercise whose ONLY difference from its prompt lives in
+ * those erased characters is silently ungradeable, because the grader accepts the
+ * unchanged prompt. Two shapes, both confirmed live (2026-06-24 audit):
+ *   - `answer_equals_prompt` — an acceptable answer normalizes identically to the
+ *     source, so copying the prompt passes. Covers capitalization-only fixes
+ *     ("hari rabu"→"hari Rabu"), punctuation-only changes ("."→"?"), and a
+ *     verbatim source accidentally listed as an accepted answer.
+ *   - `slash_fragments_answer` — an acceptable answer contains "/", which the
+ *     grader reads as "any of these alternatives", so a single fragment passes
+ *     ("Saya / minum teh / di kamar." → "di kamar" is accepted).
+ *
+ * Uses the grader's OWN `normalizeAnswer`, so the guard sees exactly what the
+ * grader sees — it cannot drift from the matching logic it protects.
+ *
+ * `source` is the same-language prompt the learner transforms (a transform's
+ * `source_sentence`). Pass the cross-language prompt for constrained translation
+ * too: the equals-prompt arm is then inert (a whole Dutch sentence never
+ * normalizes to a whole Indonesian answer) and only the slash arm fires.
+ *
+ * Returns the first violation's reason code, or null when the exercise is
+ * gradeable.
+ */
+export function findIneffectiveProduceReason(
+  source: string,
+  acceptableAnswers: readonly string[],
+): 'answer_equals_prompt' | 'slash_fragments_answer' | null {
+  for (const ans of acceptableAnswers) {
+    if (ans.includes('/')) return 'slash_fragments_answer'
+  }
+  const normSource = normalizeAnswer(source)
+  if (normSource.length > 0) {
+    for (const ans of acceptableAnswers) {
+      if (normalizeAnswer(ans) === normSource) return 'answer_equals_prompt'
+    }
+  }
+  return null
+}
+
+/**
  * Normalize a raw exercise response for FSRS / review-event writes.
  *
  * Storage-side normalisation (lowercase + trim, with null guard) — distinct

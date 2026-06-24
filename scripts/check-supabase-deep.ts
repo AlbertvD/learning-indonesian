@@ -4,6 +4,7 @@
 // Requires: SUPABASE_SERVICE_KEY env var; VITE_SUPABASE_URL from .env.local
 import { createClient } from '@supabase/supabase-js'
 import { classifyDutchSeparator, classifyIndonesianSeparator } from '@/lib/capabilities'
+import { findIneffectiveProduceReason } from '@/lib/answerNormalization'
 import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
 import { funnelBucket } from '@/lib/analytics/mastery/masteryModel'
@@ -1456,6 +1457,59 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     }
   } catch (err) {
     fail('HC24 no live answer surface uses a non-canonical separator', err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC35 (2026-06-24 produce-effectiveness audit): no ACTIVE produce exercise is
+//      ungradeable. The two typed produce tables hold free-text answers checked by
+//      `checkAnswer`, whose normalization erases case/punctuation and treats "/"
+//      as OR. An exercise whose only change from its prompt lives in those erased
+//      characters is silently accepted unchanged (the learner is told "correct"
+//      without transforming anything). Judgment is the SHARED grading-module
+//      predicate `findIneffectiveProduceReason` (the dual of `checkAnswer`) — the
+//      same definition CS24 uses pre-write, so this audit can never drift from the
+//      grader. Live-DB twin of CS24: catches legacy rows CS24 (which only sees
+//      re-projected candidates) cannot. `source` is the same-language prompt
+//      (`source_sentence` for transforms); constrained translation passes its
+//      cross-language prompt, where only the slash arm fires.
+{
+  const HC35 = 'HC35 every active produce exercise is gradeable (transform/translate answer differs from prompt + no "/")'
+  try {
+    const offenders: Array<{ table: string; id: string; reason: string }> = []
+    const PRODUCE_TABLES: Array<{ table: string; sourceCol: string }> = [
+      { table: 'sentence_transformation_exercises', sourceCol: 'source_sentence' },
+      { table: 'constrained_translation_exercises', sourceCol: 'source_language_sentence' },
+    ]
+    for (const { table, sourceCol } of PRODUCE_TABLES) {
+      for (let offset = 0; ; offset += 1000) {
+        const { data, error } = await supabase
+          .schema('indonesian')
+          .from(table)
+          .select(`id, ${sourceCol}, acceptable_answers, is_active`)
+          .eq('is_active', true)
+          .range(offset, offset + 999)
+        if (error) throw error
+        const rows = (data ?? []) as Array<Record<string, unknown>>
+        for (const r of rows) {
+          const source = r[sourceCol]
+          const acceptable = r.acceptable_answers
+          if (typeof source !== 'string' || !Array.isArray(acceptable)) continue
+          const reason = findIneffectiveProduceReason(source, acceptable as string[])
+          if (reason) offenders.push({ table, id: r.id as string, reason })
+        }
+        if (rows.length < 1000) break
+      }
+    }
+    if (offenders.length === 0) {
+      pass(HC35)
+    } else {
+      const sample = offenders.slice(0, 8).map((o) => `${o.table}:${o.id} (${o.reason})`).join('; ')
+      fail(HC35,
+        `${offenders.length} ungradeable active produce exercise(s) — the grader accepts the unchanged prompt or a fragment. ` +
+        `Fix the acceptable_answers (or regenerate the exercise) so the transformation is testable.\n   ${sample}${offenders.length > 8 ? ' …' : ''}`)
+    }
+  } catch (err) {
+    fail(HC35, err instanceof Error ? err.message : String(err))
   }
 }
 

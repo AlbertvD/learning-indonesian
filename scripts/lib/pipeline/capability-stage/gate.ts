@@ -49,6 +49,7 @@ import type { CapabilitySupabaseClient } from './adapter'
 import { validateGrammarPattern } from './validators/grammarPattern'
 import { validateCandidatePayload } from './validators/candidatePayload'
 import { validateGrammarExercises } from './validators/grammarExercises'
+import { validateGrammarExerciseEffectiveness } from './validators/grammarExerciseEffectiveness'
 import { validatePerItemMeaning } from './validators/perItemMeaning'
 import { validateItemTranslations } from './validators/itemTranslations'
 import { validateItemSeparatorConvention } from './validators/itemSeparatorConvention'
@@ -130,6 +131,11 @@ export function runCapabilityGatePreWrite(input: CapabilityGatePreWriteInput): V
     ...validateCandidatePayload(input.candidates),
     // CS13 — grammar-exercise typed-row shape (PR 4 Zod per-table gate).
     ...validateGrammarExercises(input.candidates),
+    // CS24 — produce-exercise effectiveness: a transform/translate exercise the
+    // grader cannot grade (accepts the unchanged prompt / a fragment). Judgment
+    // owned by @/lib/answerNormalization (dual of checkAnswer); HC35 is the
+    // live-DB twin for legacy rows this pre-write pass cannot see.
+    ...validateGrammarExerciseEffectiveness(input.candidates),
     // CS4 — per-item meaning: context_type, VALID_LANGUAGES.
     ...validatePerItemMeaning(input.learningItems),
     // CS4b — item translation columns: translation_nl CRITICAL for non-dialogue;

@@ -42,9 +42,18 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk'
+import { findIneffectiveProduceReason } from '@/lib/answerNormalization'
 import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { extractAnswerKey } from './validators/candidatePayload'
 import { SCHEMA_BY_TYPE } from './validators/grammarExercises'
+
+/** The produce exercise types + the typed column holding the learner's prompt.
+ *  A produce candidate is only kept if the grader can actually grade it (CS24 /
+ *  HC35 share this predicate — one definition, no drift). */
+const PRODUCE_SOURCE_COLUMN: Record<string, string> = {
+  transform_sentence_ex: 'source_sentence',
+  translate_sentence_ex: 'source_language_sentence',
+}
 import { ANTHROPIC_MAX_RETRIES, GENERATION_THROTTLE_MS, sleep } from '../generationThrottle'
 
 // ---------------------------------------------------------------------------
@@ -200,6 +209,7 @@ At least 8 total, ideally 15. If the pattern is a reference list (e.g. a duratio
 4. explanationText must teach the rule + contrast (the primary teaching moment shown after a wrong answer), not just confirm the answer.
 5. explanationText must be CONCISE — one or two short sentences (aim ≤160 characters). Teach the ONE rule at stake; do not lecture or restate the whole pattern.
 6. CEFR consistency — simple vocabulary + short sentences for A1.
+7. GRADEABILITY (produce types) — the grader lowercases, strips punctuation, and treats "/" as OR. So every transform_sentence_ex / translate_sentence_ex answer MUST differ from its prompt by MORE than case or punctuation, and MUST NEVER use "/" inside an answer. A change that is only capitalization (e.g. "rabu"→"Rabu"), only punctuation (e.g. "."→"?"), or marking word-group boundaries with "/" is UNGRADEABLE and will be dropped. For structural patterns (word order, word-grouping), test production with word-group ORDERING (give scrambled groups, answer is the correct sentence) or a constrained TRANSLATION — never slash annotation.
 
 ## Output format
 
@@ -274,7 +284,21 @@ export function validateCandidate(candidate: GrammarExerciseCandidate): boolean 
   const answerKey = extractAnswerKey(exercise_type, payload)
   const built = buildGrammarExerciseRow(exercise_type, payload, answerKey)
   if (!built) return false
-  return schema.safeParse(built.columns).success
+  if (!schema.safeParse(built.columns).success) return false
+
+  // Produce types: also drop what the grader cannot grade (answer normalizes to
+  // the prompt, or "/"-fragmented). Shared predicate with CS24 + HC35.
+  const sourceColumn = PRODUCE_SOURCE_COLUMN[exercise_type]
+  if (sourceColumn) {
+    const columns = built.columns as Record<string, unknown>
+    const source = columns[sourceColumn]
+    const acceptable = columns.acceptable_answers
+    if (typeof source === 'string' && Array.isArray(acceptable)
+        && findIneffectiveProduceReason(source, acceptable as string[])) {
+      return false
+    }
+  }
+  return true
 }
 
 // ---------------------------------------------------------------------------
