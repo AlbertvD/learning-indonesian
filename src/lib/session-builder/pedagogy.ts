@@ -444,7 +444,17 @@ export function prioritizeCandidates(candidates: readonly PlannerCapability[]): 
   }
   const rankByKey = new Map<string, number>()
   for (const group of groups.values()) {
-    group.sort((a, b) => compareCanonicalKey(a, b))
+    group.sort((a, b) => {
+      // Receptive rungs (Phase 1/2) before productive (Phase 3/4) WITHIN a word, so
+      // sibling-burying (1 cap/word/day, keeps the top-ranked) introduces a word's
+      // rungs in pedagogical order. The raw canonical_key is alphabetical by
+      // capability_type, which placed `recognise_meaning_from_audio` (listening, P1)
+      // behind `produce_form_from_audio` (P4) — starving listening to 1/288 introduced
+      // (2026-06-24). canonical_key still breaks ties within a phase (determinism).
+      const phaseDelta = capabilityPhase(a.capabilityType) - capabilityPhase(b.capabilityType)
+      if (phaseDelta !== 0) return phaseDelta
+      return compareCanonicalKey(a, b)
+    })
     group.forEach((cap, index) => rankByKey.set(cap.canonicalKey, index))
   }
 
