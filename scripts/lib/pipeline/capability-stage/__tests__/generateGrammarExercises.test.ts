@@ -234,6 +234,51 @@ describe('validateCandidate', () => {
     expect(validateCandidate(bad)).toBe(false)
   })
 
+  it('rejects an UNGRADEABLE transform (slash word-group answer) even though its shape is valid', () => {
+    const bad: GrammarExerciseCandidate = {
+      exercise_type: 'transform_sentence_ex',
+      grammar_pattern_slug: 'l2-woordgroepen',
+      payload: {
+        sourceSentence: 'Saya minum teh di kamar.',
+        transformationInstruction: 'Plaats schuine strepen tussen de woordgroepen.',
+        acceptableAnswers: ['Saya / minum teh / di kamar.'],
+        hintText: null,
+        explanationText: 'woordgroepen.',
+      },
+    }
+    expect(validateCandidate(bad)).toBe(false)
+  })
+
+  it('rejects an UNGRADEABLE transform whose answer differs from the prompt only by capitalization', () => {
+    const bad: GrammarExerciseCandidate = {
+      exercise_type: 'transform_sentence_ex',
+      grammar_pattern_slug: 'l7-dagen-van-de-week-hari',
+      payload: {
+        sourceSentence: 'Saya pergi pada hari rabu.',
+        transformationInstruction: 'Schrijf de zin correct op.',
+        acceptableAnswers: ['Saya pergi pada hari Rabu.'],
+        hintText: null,
+        explanationText: 'dagen krijgen een hoofdletter.',
+      },
+    }
+    expect(validateCandidate(bad)).toBe(false)
+  })
+
+  it('accepts a gradeable produce exercise (answer genuinely differs, no slash)', () => {
+    const good: GrammarExerciseCandidate = {
+      exercise_type: 'transform_sentence_ex',
+      grammar_pattern_slug: 'l2-woordgroepen',
+      payload: {
+        sourceSentence: 'minum teh / Saya / di kamar',
+        transformationInstruction: 'Zet de woordgroepen in de juiste volgorde tot een correcte zin.',
+        acceptableAnswers: ['Saya minum teh di kamar.'],
+        hintText: null,
+        explanationText: 'het onderwerp staat vooraan.',
+      },
+    }
+    expect(validateCandidate(good)).toBe(true)
+  })
+
   it('accepts translate_sentence_ex with empty disallowedShortcutForms', () => {
     const ok: GrammarExerciseCandidate = {
       exercise_type: 'translate_sentence_ex',
