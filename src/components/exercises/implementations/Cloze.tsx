@@ -82,12 +82,15 @@ export default function Cloze({
         </ExerciseSubmitButton>
       }
     >
-      <ExerciseInstruction
-        icon={translation ? <IconMessage2 size={16} /> : undefined}
-      >
-        {translation ?? t.session.exercise.completeSentence}
+      {/* Always state the task explicitly — the blanked sentence + a bare
+          translation read as a passive dialogue display, not a "type the word"
+          prompt (admin flag, L3 cloze: "not clear what the ask is"). The
+          translation becomes supporting context on the prompt card, not the
+          instruction. */}
+      <ExerciseInstruction icon={<IconMessage2 size={16} />}>
+        {t.session.exercise.fillMissingWord}
       </ExerciseInstruction>
-      <ExercisePromptCard variant="sentence">
+      <ExercisePromptCard variant="sentence" meta={translation ?? undefined}>
         {inlineInput}
       </ExercisePromptCard>
     </ExerciseFrame>
