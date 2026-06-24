@@ -504,7 +504,7 @@ export const lesson = {
         "items": [
           {
             "dutch": "0",
-            "indonesian": "nol, kosong",
+            "indonesian": "nol",
             "english": "zero, empty"
           },
           {

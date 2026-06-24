@@ -53,12 +53,12 @@ export const lesson = {
             "english": "spices"
           },
           {
-            "indonesian": "cabai, cabe rawit",
+            "indonesian": "cabai",
             "dutch": "kleine, hete pepers",
             "english": "small, hot peppers"
           },
           {
-            "indonesian": "cengkeh, cengkih",
+            "indonesian": "cengkeh",
             "dutch": "kruidnagel",
             "english": "clove"
           },
@@ -98,7 +98,7 @@ export const lesson = {
             "english": "ginger"
           },
           {
-            "indonesian": "jintan, jinten",
+            "indonesian": "jintan",
             "dutch": "komijn",
             "english": "cumin"
           },
@@ -148,12 +148,12 @@ export const lesson = {
             "english": "coriander"
           },
           {
-            "indonesian": "kunir, kunyit",
+            "indonesian": "kunyit",
             "dutch": "geelwortel, curcuma",
             "english": "turmeric"
           },
           {
-            "indonesian": "lada, merica",
+            "indonesian": "lada",
             "dutch": "peper",
             "english": "pepper"
           },
@@ -173,7 +173,7 @@ export const lesson = {
             "english": "chili pepper"
           },
           {
-            "indonesian": "merica, lada",
+            "indonesian": "merica",
             "dutch": "peper",
             "english": "pepper"
           },
@@ -183,12 +183,12 @@ export const lesson = {
             "english": "nutmeg"
           },
           {
-            "indonesian": "panili, vanili",
+            "indonesian": "panili",
             "dutch": "vanille",
             "english": "vanilla"
           },
           {
-            "indonesian": "petai, pete",
+            "indonesian": "petai",
             "dutch": "geurige vruchten van de petaiboom (stinkboon)",
             "english": "fragrant pods of the petai tree (stinkbean)"
           },
@@ -198,12 +198,12 @@ export const lesson = {
             "english": "spices"
           },
           {
-            "indonesian": "sambal, sambel",
+            "indonesian": "sambal",
             "dutch": "tot dikke pasta fijngewreven Spaanse pepers",
             "english": "chili peppers ground to a thick paste"
           },
           {
-            "indonesian": "santan, santen",
+            "indonesian": "santan",
             "dutch": "sap van uitgeperste kokospulp",
             "english": "juice of pressed coconut pulp"
           },
@@ -213,7 +213,7 @@ export const lesson = {
             "english": "basil seeds"
           },
           {
-            "indonesian": "serai, sereh",
+            "indonesian": "serai",
             "dutch": "citrusachtige grassoort",
             "english": "citrus-like grass"
           },
@@ -233,7 +233,7 @@ export const lesson = {
             "english": "shrimp or fish paste (dried; fried)"
           },
           {
-            "indonesian": "vanili, panili",
+            "indonesian": "vanili",
             "dutch": "vanille",
             "english": "vanilla"
           },
@@ -307,7 +307,7 @@ export const lesson = {
             "english": "bitter, unsweetened"
           },
           {
-            "indonesian": "pedas, pedis",
+            "indonesian": "pedas",
             "dutch": "heet / scherp",
             "english": "hot / spicy"
           },
