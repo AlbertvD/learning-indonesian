@@ -21,7 +21,10 @@ import { normalizeTtsText } from '@/lib/ttsNormalize'
  *
  * Texts NOT included (intentional):
  *   - meanings[].translation_text       — Dutch/English, not Indonesian
- *   - cuedRecallData.promptMeaningText  — Dutch/English prompt
+ *   - cuedRecallData.promptMeaningText  — Dutch/English prompt, EXCEPT on the
+ *     ADR-0021 morphology meaning card (choose_meaning_ex), where the prompt IS
+ *     the Indonesian derived form and the options are the user-language glosses
+ *     (inverted roles — see the cuedRecallData branch below)
  *   - contrastPairData.targetMeaning    — Dutch/English meaning
  *   - sentenceTransformationData.transformationInstruction — meta-text
  *   - constrainedTranslationData.sourceLanguageSentence    — source language
@@ -56,9 +59,20 @@ export function audibleTextFieldsOf(item: ExerciseItem): string[] {
     for (const opt of item.clozeMcqData.options) add(opt)
   }
 
-  // Cued recall: every option (Indonesian forms; the prompt is meaning).
+  // cuedRecallData is shared by two exercises with INVERTED Indonesian/user-
+  // language roles, so voice the Indonesian side of each:
+  //   - choose_form_ex (cued recall): options are Indonesian forms; the prompt
+  //     is the user-language meaning.
+  //   - choose_meaning_ex (ADR 0021 morphology MEANING card): the prompt is the
+  //     Indonesian derived form ("seorang"); options are user-language glosses.
+  // Voicing the options unconditionally left the meaning card silent (admin flag
+  // "No audio" on se-orang-seorang) AND tried to fetch clips for Dutch glosses.
   if (item.cuedRecallData) {
-    for (const opt of item.cuedRecallData.options) add(opt)
+    if (item.exerciseType === 'choose_meaning_ex') {
+      add(item.cuedRecallData.promptMeaningText)
+    } else {
+      for (const opt of item.cuedRecallData.options) add(opt)
+    }
   }
 
   // Contrast pair: both options are Indonesian.
