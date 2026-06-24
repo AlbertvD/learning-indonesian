@@ -112,3 +112,35 @@ describe('audibleTextFieldsOf — existing slots (sanity coverage)', () => {
     expect(result).toEqual(['baca'])
   })
 })
+
+describe('audibleTextFieldsOf — cuedRecallData inverted roles (admin flag: "No audio")', () => {
+  it('voices the Indonesian prompt (not the Dutch glosses) on the morphology meaning card', () => {
+    // choose_meaning_ex / ADR 0021: prompt = derived form "seorang"; options = NL glosses.
+    const item = baseExerciseItem({
+      exerciseType: 'choose_meaning_ex',
+      cuedRecallData: {
+        promptMeaningText: 'seorang',
+        options: ['een persoon, iemand', 'een dier', 'een huis'],
+        correctOptionId: 'een persoon, iemand',
+      },
+    })
+    const result = audibleTextFieldsOf(item)
+    expect(result).toContain('seorang')
+    expect(result).not.toContain('een persoon, iemand') // Dutch gloss, not voiced
+  })
+
+  it('still voices the Indonesian options (not the Dutch prompt) on cued recall', () => {
+    // choose_form_ex: prompt = NL meaning; options = Indonesian forms.
+    const item = baseExerciseItem({
+      exerciseType: 'choose_form_ex',
+      cuedRecallData: {
+        promptMeaningText: 'de markt',
+        options: ['pasar', 'toko', 'kota'],
+        correctOptionId: 'pasar',
+      },
+    })
+    const result = audibleTextFieldsOf(item)
+    expect(result).toEqual(expect.arrayContaining(['pasar', 'toko', 'kota']))
+    expect(result).not.toContain('de markt') // Dutch prompt, not voiced
+  })
+})
