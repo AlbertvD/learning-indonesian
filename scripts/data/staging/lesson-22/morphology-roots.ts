@@ -4,22 +4,22 @@ import type { MorphologyRoot } from '@/lib/capabilities'
 // Roots = taught learning_items whose reduplication form kaikki attests (not a loanword). Re-run additive.
 // Entries for other affixes in this lesson are preserved verbatim below.
 
-const CAT_0 = "2. Verdubbeling van het zelfstandig naamwoord — meervoud mét diversiteit"
-const CAT_1 = "3. Verdubbeling van het bijvoeglijk naamwoord — versterking"
+const CAT_0 = "3. Verdubbeling van het bijvoeglijk naamwoord — versterking"
+const CAT_1 = "2. Verdubbeling van het zelfstandig naamwoord — meervoud mét diversiteit"
 const CAT_2 = "1. Verdubbeling van het werkwoord"
 
 export const morphologyRoots: MorphologyRoot[] = [
-  // ── 2. Verdubbeling van het zelfstandig naamwoord — meervoud mét diversiteit ──
-  { root: 'rumah', affix: 'reduplication', illustratesCategory: CAT_0 }, // rumah-rumah
-  { root: 'anak', affix: 'reduplication', illustratesCategory: CAT_0 }, // anak-anak
-  { root: 'kota', affix: 'reduplication', illustratesCategory: CAT_0 }, // kota-kota
-  { root: 'orang', affix: 'reduplication', illustratesCategory: CAT_0 }, // orang-orang
-  { root: 'kata', affix: 'reduplication', illustratesCategory: CAT_0 }, // kata-kata
-  { root: 'hari', affix: 'reduplication', illustratesCategory: CAT_0 }, // hari-hari
-  { root: 'jenis', affix: 'reduplication', illustratesCategory: CAT_0 }, // jenis-jenis
-  { root: 'arah', affix: 'reduplication', illustratesCategory: CAT_0 }, // arah-arah
   // ── 3. Verdubbeling van het bijvoeglijk naamwoord — versterking ──
-  { root: 'banyak', affix: 'reduplication', illustratesCategory: CAT_1 }, // banyak-banyak
+  { root: 'banyak', affix: 'reduplication', illustratesCategory: CAT_0 }, // banyak-banyak
+  // ── 2. Verdubbeling van het zelfstandig naamwoord — meervoud mét diversiteit ──
+  { root: 'orang', affix: 'reduplication', illustratesCategory: CAT_1 }, // orang-orang
+  { root: 'kata', affix: 'reduplication', illustratesCategory: CAT_1 }, // kata-kata
+  { root: 'hari', affix: 'reduplication', illustratesCategory: CAT_1 }, // hari-hari
+  { root: 'rumah', affix: 'reduplication', illustratesCategory: CAT_1 }, // rumah-rumah
+  { root: 'anak', affix: 'reduplication', illustratesCategory: CAT_1 }, // anak-anak
+  { root: 'jenis', affix: 'reduplication', illustratesCategory: CAT_1 }, // jenis-jenis
+  { root: 'arah', affix: 'reduplication', illustratesCategory: CAT_1 }, // arah-arah
+  { root: 'kota', affix: 'reduplication', illustratesCategory: CAT_1 }, // kota-kota
   // ── 1. Verdubbeling van het werkwoord ──
   { root: 'jalan', affix: 'reduplication', illustratesCategory: CAT_2 }, // jalan-jalan
   { root: 'lihat', affix: 'reduplication', illustratesCategory: CAT_2 }, // lihat-lihat
@@ -32,6 +32,8 @@ export const morphologyRoots: MorphologyRoot[] = [
   { root: 'baca', affix: 'reduplication', illustratesCategory: CAT_2 }, // baca-baca
   { root: 'dengar', affix: 'reduplication', illustratesCategory: CAT_2 }, // dengar-dengar
   { root: 'tidur', affix: 'reduplication', illustratesCategory: CAT_2 }, // tidur-tidur
+  { root: 'minum', affix: 'reduplication', illustratesCategory: CAT_2 }, // minum-minum
+  { root: 'mandi', affix: 'reduplication', illustratesCategory: CAT_2 }, // mandi-mandi
   // ── preserved: other affixes taught in this lesson ──
   { root: 'sayur', affix: 'reduplication-an', illustratesCategory: "Verdubbeling van het zelfstandig naamwoord plus -AN" }, // sayur-sayuran
   { root: 'buah', affix: 'reduplication-an', illustratesCategory: "Verdubbeling van het zelfstandig naamwoord plus -AN" }, // buah-buahan
