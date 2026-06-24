@@ -39,6 +39,14 @@ interface AffixConfig {
   categoryOverride?: Record<string, string>
   /** folk-etymology false positives to drop. */
   exclude?: string[]
+  /**
+   * Hyper-productive suffix/confix: also require the DERIVED form to be a real,
+   * frequent word (present in the pinned frequency snapshot) and rank the pool by
+   * that frequency. Without this, the engine + kaikki over-generate mechanical
+   * rarities (membanyaki, menahui, adaan) the root-frequency ranking can't tell
+   * apart from real forms. See scripts/data/freq/README.md (ADR 0020).
+   */
+  freqGate?: boolean
 }
 const L11_EXC = 'Plaatsing van BER- — algemene regel en uitzonderingen'
 const initial = (r: string) => r[0]?.toLowerCase() ?? ''
@@ -86,6 +94,41 @@ const CONFIG: Record<string, AffixConfig> = {
     pos: ['verb', 'noun', 'adjective'],
     affixBase: 'i',
     category: 'Hoofdfunctie van de werkwoordsvorm met -i',
+  },
+  'se-': {
+    lesson: 2,
+    pos: ['noun', 'numeral', 'adjective'],
+    affixBase: 'se',
+    category: 'Classificeerwoorden', // must match L2 grammar_patterns slug l2-classificeerwoorden
+    freqGate: true,
+  },
+  '-kan': {
+    lesson: 21,
+    pos: ['verb', 'adjective', 'noun'],
+    affixBase: 'kan',
+    category: 'Zes woordklassen als basiswoord voor -KAN',
+    freqGate: true,
+  },
+  '-an': {
+    lesson: 25,
+    pos: ['verb', 'noun', 'adjective'],
+    affixBase: 'an',
+    category: 'PE-vorm versus PE-...-AN-vorm versus kale -AN-vorm: uitvoerder, proces, resultaat',
+    freqGate: true,
+  },
+  'meN-…-i': {
+    lesson: 23,
+    pos: ['verb', 'noun', 'adjective'],
+    affixBase: 'meng- -i', // kaikki confix decomposition key: "meng- -i|<root>"
+    category: 'Zes woordklassen als basiswoord voor -i', // active meN-…-i under L23's -i formation pattern
+    freqGate: true,
+  },
+  'di-…-i': {
+    lesson: 23,
+    pos: ['verb', 'noun', 'adjective'],
+    affixBase: 'di- -i', // kaikki confix decomposition key: "di- -i|<root>"
+    category: 'Passieve zinsconstructies met -i', // passive di-…-i under L23's passive -i pattern
+    freqGate: true,
   },
   'pe-…-an': {
     lesson: 25,
@@ -165,6 +208,13 @@ const snap = JSON.parse(fs.readFileSync('scripts/data/kaikki/id-attestation.json
 }
 const flat = new Set(snap.flat)
 const borrowed = new Set(snap.borrowed)
+
+// ── Derived-form frequency snapshot (ADR 0020 — the productive-suffix quality gate) ──
+const freqSnap = JSON.parse(fs.readFileSync('scripts/data/freq/id-frequency.json', 'utf8')) as { words: string[] }
+const freqRankOf = new Map<string, number>()
+freqSnap.words.forEach((w, i) => { if (!freqRankOf.has(w)) freqRankOf.set(w, i + 1) })
+/** A derived form passes the frequency gate iff it is a real, frequent word. */
+const freqRank = (form: string): number | undefined => freqRankOf.get(form)
 const isReduplication = affixCatalogEntry(affix)!.affixType === 'reduplication'
 const reverse = new Map<string, string[]>()
 for (const [form, decomps] of Object.entries(snap.morph)) {
@@ -195,9 +245,13 @@ for (const row of (data ?? []) as Array<{ normalized_text: string; pos: string; 
   if (excludeSet.has(root)) continue
   let derived: string
   try { derived = deriveAffixedForm(root, affix).derived } catch { skipped++; continue }
+  // Frequency gate (productive suffixes/confixes): the derived form must be a real,
+  // frequent word, and the pool ranks by THAT frequency, not the root's.
+  const dFreq = freqRank(derived)
+  if (cfg.freqGate && dFreq === undefined) { skipped++; continue }
   if (flat.has(derived)) {
     if (decompHas(derived, root) || !borrowed.has(derived)) {
-      confirmed.push({ root, derived, rank: row.frequency_rank, category: catFor(root) })
+      confirmed.push({ root, derived, rank: cfg.freqGate ? dFreq! : row.frequency_rank, category: catFor(root) })
     } else {
       rejected++ // attested but a foreign borrowing with no affix etymology → homograph (beranda)
     }
@@ -221,7 +275,9 @@ if (cfg.classify) {
   for (const c of confirmed) if (!chosen.has(c.root) && sel.length < cap) { sel.push(c); chosen.add(c.root) }
   selected = sel.sort((a, b) => (a.rank ?? 1e9) - (b.rank ?? 1e9))
 } else {
-  selected = confirmed.slice(0, cap)
+  // freqGate affixes carry the derived-form frequency in `rank` → rank the pool by it.
+  const ordered = cfg.freqGate ? [...confirmed].sort((a, b) => (a.rank ?? 1e9) - (b.rank ?? 1e9)) : confirmed
+  selected = ordered.slice(0, cap)
 }
 
 const entry = affixCatalogEntry(affix)!
