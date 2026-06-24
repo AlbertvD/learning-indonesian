@@ -117,6 +117,9 @@ const CONFIG: Record<string, AffixConfig> = {
     pos: ['verb', 'noun', 'adjective'],
     affixBase: 'per',
     category: 'PER-...-AN: het nominaliserende omhulsel (confix)',
+    // attested but marginal: perumuman/pertulisan — the standard nominalisations are
+    // pengumuman/penulisan (peN-…-an); the oracle accepts them as non-loanwords, drop by hand.
+    exclude: ['umum', 'tulis'],
   },
   'memper-…-kan': {
     lesson: 29,
@@ -256,17 +259,20 @@ if (process.argv.includes('--write')) {
   // Multi-affix lessons (e.g. L22's reduplication family) host >1 affix in one file.
   // Preserve entries for OTHER affixes verbatim — we only regenerate THIS affix's set.
   const path = `scripts/data/staging/lesson-${cfg.lesson}/morphology-roots.ts`
-  const foreign: { root: string; affix: string; cat: string }[] = []
+  // Preserve each foreign category's SOURCE token verbatim — never parse→re-stringify, which
+  // double-escapes embedded quotes (e.g. L22's ke-…-an `"-achtig"` → corrupt `\"-achtig\"`).
+  const foreign: { root: string; affix: string; catToken: string }[] = []
   if (fs.existsSync(path)) {
     const text = fs.readFileSync(path, 'utf8')
+    // escape-aware string-literal match: captures the whole `'…'`/`"…"` token incl. inner \" \'.
     const consts = new Map<string, string>()
-    for (const m of text.matchAll(/const (\w+)\s*=\s*(['"])([\s\S]*?)\2/g)) consts.set(m[1], m[3])
+    for (const m of text.matchAll(/const (\w+)\s*=\s*((['"])(?:\\.|(?!\3)[\s\S])*\3)/g)) consts.set(m[1], m[2])
     for (const m of text.matchAll(/\{\s*root:\s*'([^']*)',\s*affix:\s*'([^']*)',\s*illustratesCategory:\s*([^}]+?)\s*\}/g)) {
       const [, r, afx, expr] = m
       if (afx === affix) continue
-      const lit = expr.trim().match(/^(['"])([\s\S]*)\1$/)
-      const cat = lit ? lit[2] : consts.get(expr.trim())
-      if (cat) foreign.push({ root: r, affix: afx, cat })
+      const token = expr.trim()
+      const catToken = /^['"]/.test(token) ? token : consts.get(token)
+      if (catToken) foreign.push({ root: r, affix: afx, catToken })
     }
   }
 
@@ -284,7 +290,7 @@ if (process.argv.includes('--write')) {
   })
   if (foreign.length) {
     lines.push(`  // ── preserved: other affixes taught in this lesson ──`)
-    for (const f of foreign) lines.push(`  { root: '${f.root}', affix: '${f.affix}', illustratesCategory: ${JSON.stringify(f.cat)} }, // ${deriveAffixedForm(f.root, f.affix).derived}`)
+    for (const f of foreign) lines.push(`  { root: '${f.root}', affix: '${f.affix}', illustratesCategory: ${f.catToken} }, // ${deriveAffixedForm(f.root, f.affix).derived}`)
   }
   lines.push(']', '')
   fs.writeFileSync(path, lines.join('\n'))
