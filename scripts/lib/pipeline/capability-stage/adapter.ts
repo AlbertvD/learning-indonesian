@@ -462,13 +462,17 @@ export interface AffixedFormPairRowInput {
 }
 
 /**
- * Replace every `affixed_form_pairs` row whose capability_id is in `inputs`.
+ * Replace a lesson's `affixed_form_pairs` projection with `inputs`.
  *
- * Strategy: delete by `capability_id` first (the column is UNIQUE — one row
- * per cap, 2 caps per linguistic pair), then bulk-insert. Safe because
- * `affixed_form_pairs` is a regenerable projection of staged morphology pairs
- * — no referenced user state. Simpler than replaceDialogueClozes: there is no
- * source_line_ref → id resolution; capability_id is the only key.
+ * Strategy: delete the whole lesson's rows first (the runner passes ALL of one
+ * lesson's pairs in a single call), then bulk-insert the active set. Deleting by
+ * `lesson_id` — not by the incoming `capability_id`s — is what makes a *dropped*
+ * pair (e.g. an affix pool regenerated smaller, or a junk root curated out) leave
+ * NO orphan row: a delete-by-incoming-id only touches caps still being written, so
+ * a removed pair's row would linger and drift from lesson_section_affixed_pairs
+ * (HC33). Safe because `affixed_form_pairs` is a regenerable projection of staged
+ * morphology pairs — no referenced user state (the cap orphan-sweep preserves FSRS
+ * state separately).
  *
  * Returns the number of rows written.
  */
@@ -478,12 +482,12 @@ export async function replaceAffixedFormPairs(
 ): Promise<number> {
   if (inputs.length === 0) return 0
 
-  const capabilityIds = inputs.map((r) => r.capability_id)
+  const lessonIds = [...new Set(inputs.map((r) => r.lesson_id))]
   const { error: deleteError } = await supabase
     .schema('indonesian')
     .from('affixed_form_pairs')
     .delete()
-    .in('capability_id', capabilityIds)
+    .in('lesson_id', lessonIds)
   if (deleteError) throw deleteError
 
   const { error: insertError } = await supabase

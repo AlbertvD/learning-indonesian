@@ -94,6 +94,8 @@ const CONFIG: Record<string, AffixConfig> = {
     pos: ['verb', 'noun', 'adjective'],
     affixBase: 'i',
     category: 'Hoofdfunctie van de werkwoordsvorm met -i',
+    freqGate: true,
+    exclude: ['mal', 'mau'], // mali (= Mali, homograph), maui (nonstandard) slip the freq gate
   },
   'se-': {
     lesson: 2,
@@ -304,10 +306,18 @@ if (process.argv.includes('--write')) {
   const published = new Set(((pubRows ?? []) as Array<{ root_text: string }>).map((r) => r.root_text))
   const selRoots = new Set(selected.map((c) => c.root))
 
+  // --regenerate: ADR-0020 destructive opt-out — rebuild this affix's pool from the
+  // fresh selection, NOT preserving published roots. The orphan sweep retires the
+  // dropped caps on the next publish. Only safe pre-launch (disposable FSRS history).
+  const regenerate = process.argv.includes('--regenerate')
   const keep: string[] = []
-  for (const c of selected) if (published.has(c.root)) keep.push(c.root)          // preserved (live caps)
-  for (const r of published) if (!selRoots.has(r) && !excludeSet.has(r)) keep.push(r) // preserved even if reselection dropped
-  for (const c of selected) if (!published.has(c.root) && keep.length < cap) keep.push(c.root) // new
+  if (regenerate) {
+    for (const c of selected) keep.push(c.root)                                    // fresh pool, drop the rest
+  } else {
+    for (const c of selected) if (published.has(c.root)) keep.push(c.root)          // preserved (live caps)
+    for (const r of published) if (!selRoots.has(r) && !excludeSet.has(r)) keep.push(r) // preserved even if reselection dropped
+    for (const c of selected) if (!published.has(c.root) && keep.length < cap) keep.push(c.root) // new
+  }
 
   const groups = new Map<string, string[]>()
   for (const r of keep) { const c = catFor(r); groups.set(c, [...(groups.get(c) ?? []), r]) }
@@ -350,5 +360,8 @@ if (process.argv.includes('--write')) {
   }
   lines.push(']', '')
   fs.writeFileSync(path, lines.join('\n'))
-  console.log(`\n✍  wrote ${keep.length} ${affix} roots + ${foreign.length} preserved (other affixes) → ${path}  (${published.size} published this affix preserved + ${keep.length - published.size} new)`)
+  const provenance = regenerate
+    ? `regenerated from scratch — ${published.size} published roots will be retired by the orphan sweep`
+    : `${published.size} published this affix preserved + ${keep.length - published.size} new`
+  console.log(`\n✍  wrote ${keep.length} ${affix} roots + ${foreign.length} preserved (other affixes) → ${path}  (${provenance})`)
 }

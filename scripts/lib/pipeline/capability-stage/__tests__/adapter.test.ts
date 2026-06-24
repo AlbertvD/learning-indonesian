@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest'
 
 import {
   reconcileArtifactPresence,
+  replaceAffixedFormPairs,
   retireOrphanedCapabilities,
   upsertCapabilities,
   upsertLearningItem,
+  type AffixedFormPairRowInput,
   type CapabilityInput,
   type LearningItemInput,
 } from '../adapter'
@@ -32,6 +34,73 @@ function buildPayloadCapturingClient(returnId: string) {
   } as never
   return { client, captured }
 }
+
+describe('capability-stage adapter — replaceAffixedFormPairs lesson-scoped delete', () => {
+  // Captures the delete .in(column, values) so we can assert the scope.
+  function buildAffixedClient() {
+    const deletes: Array<{ column: string; values: unknown }> = []
+    const inserts: unknown[][] = []
+    const client = {
+      schema: () => ({
+        from: () => ({
+          delete: () => ({
+            in: (column: string, values: unknown) => {
+              deletes.push({ column, values })
+              return Promise.resolve({ error: null })
+            },
+          }),
+          insert: (rows: unknown[]) => {
+            inserts.push(rows)
+            return Promise.resolve({ error: null })
+          },
+        }),
+      }),
+    } as never
+    return { client, deletes, inserts }
+  }
+
+  const row = (capId: string, lessonId: string, root: string): AffixedFormPairRowInput => ({
+    capability_id: capId,
+    source_ref: `lesson-23/morphology/-i${root}-${root}i`,
+    lesson_id: lessonId,
+    root_text: root,
+    derived_text: `${root}i`,
+    allomorph_rule: '-i',
+    grammar_pattern_id: 'gp-1',
+    affix: '-i',
+    affix_type: 'suffix',
+    affix_gloss: 'verbal -i',
+    allomorph_class: null,
+    circumfix_left: null,
+    circumfix_right: null,
+    carrier_text: null,
+    derived_gloss_nl: 'x',
+    derived_gloss_en: 'x',
+  })
+
+  it('deletes by lesson_id (not the incoming capability_ids) so a dropped pair leaves no orphan row', async () => {
+    // Regression (2026-06-24): regenerating the -i pool smaller left junk
+    // affixed_form_pairs rows (adai/tahui) because the delete was keyed on the
+    // incoming capability_ids — a removed pair's cap is absent from the write,
+    // so its row was never deleted → HC33 drift. Delete-by-lesson clears the
+    // whole projection first; the cap orphan-sweep preserves FSRS state.
+    const { client, deletes } = buildAffixedClient()
+    const inputs = [row('cap-a', 'L23', 'mula'), row('cap-b', 'L23', 'jalan')]
+    const written = await replaceAffixedFormPairs(client, inputs)
+
+    expect(written).toBe(2)
+    expect(deletes).toHaveLength(1)
+    expect(deletes[0].column).toBe('lesson_id')
+    expect(deletes[0].values).toEqual(['L23'])
+  })
+
+  it('is a no-op when there are no inputs (does not blanket-delete the lesson)', async () => {
+    const { client, deletes } = buildAffixedClient()
+    const written = await replaceAffixedFormPairs(client, [])
+    expect(written).toBe(0)
+    expect(deletes).toHaveLength(0)
+  })
+})
 
 describe('capability-stage adapter — upsertLearningItem activation', () => {
   it('always upserts with is_active: true so re-publishes reactivate items that were toggled off', async () => {
