@@ -32,3 +32,14 @@ Everything downstream is unchanged: `morphology-roots.ts` → `generate-morpholo
 - **Doc updates required (same change):** `linguist-structurer` Step 5b, `content-pipeline.md`, `linguist-reviewer` §14, and the derived-staging-files note in CLAUDE.md.
 - **No schema change.** The `affixed_form_pairs` shape, the 2-cap projection (ADR 0018), CS12/HC31, and the engine (ADR 0019) are untouched — this changes *which roots get authored*, via the same contract.
 - **Irregulars are surfaced, not silently dropped** — the flag bucket is the to-do list for `affixDerivation.ts` `IRREGULAR`-table entries.
+
+## Amendment (2026-06-24): the derived-form frequency gate
+
+Filling the hyper-productive suffixes/confixes (`-kan`, `-an`, `meN-…-i`, `di-…-i`) exposed a limit of the kaikki-only oracle. Those affixes attach to almost any root, and kaikki attests even rare/mechanical derivations (`membanyaki`, `menahui`, `adaan`); because the proposer could only rank by the *root's* frequency, the pools filled with junk the attestation oracle had no way to reject (it is a realness oracle, not a quality one).
+
+**Decision: add a second pinned snapshot — a derived-form frequency corpus — as an opt-in gate (`freqGate`).** For a `freqGate` affix, a candidate is emitted only if its engine-derived form is present in the corpus, and the pool is **ranked by that derived-form frequency** (not the root's). The junk forms are absent from any frequency corpus, so the gate removes them deterministically; the kept forms are exactly the real, common words (`memiliki`, `mengunjungi`, `makanan`, `lakukan`). The kaikki branch is retained for loanword-homograph rejection (`beranda`); the two snapshots are complementary — kaikki answers "is it *this* derivation?", frequency answers "is it a real common word?".
+
+This closes morphology coverage to **21/21 catalog affixes**. `freqGate` is off for the invariant prefixes (`ber-`/`se-`/`di-`/`ter-`/…), where over-generation isn't a problem and root-frequency ranking already yields clean pools.
+
+- **Second data dependency (CC BY-SA):** `scripts/data/freq/id-frequency.json` — top-30000 forms from hermitdave/FrequencyWords (OpenSubtitles2018), pinned for reproducible/offline builds. Same attribution + commercial-use-diligence note as the kaikki snapshot. See `scripts/data/freq/README.md`.
+- **No schema change**, same contract. Routing (ADR 0021) is unchanged: `se-`/`-kan`/`-an` are transparent → meaning/usage caps; `meN-…-i`/`di-…-i` are confixes → formation caps.
