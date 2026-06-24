@@ -78,3 +78,21 @@ describe('Cloze — speaker prefix (dialogue_line source kind)', () => {
     expect(screen.getByText(/tinggal di rumah terus/)).toBeInTheDocument()
   })
 })
+
+describe('Cloze — explicit task instruction (admin flag: "not clear what the ask is")', () => {
+  it('always states the task even when a translation is present', () => {
+    renderCloze(makeExerciseItem({}))  // translation present by default
+    expect(screen.getByText('Typ het ontbrekende woord')).toBeInTheDocument()
+  })
+
+  it('still shows the translation as supporting context', () => {
+    renderCloze(makeExerciseItem({ translation: 'Ik blijf niet graag thuis' }))
+    expect(screen.getByText('Typ het ontbrekende woord')).toBeInTheDocument()
+    expect(screen.getByText('Ik blijf niet graag thuis')).toBeInTheDocument()
+  })
+
+  it('states the task even when no translation is available', () => {
+    renderCloze(makeExerciseItem({ translation: undefined }))
+    expect(screen.getByText('Typ het ontbrekende woord')).toBeInTheDocument()
+  })
+})
