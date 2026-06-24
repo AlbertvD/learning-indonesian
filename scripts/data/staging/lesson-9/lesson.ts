@@ -894,7 +894,7 @@ export const lesson = {
         "type": "vocabulary",
         "items": [
           {
-            "indonesian": "tubuh / badan",
+            "indonesian": "badan",
             "dutch": "lichaam",
             "english": "body"
           },
@@ -1053,7 +1053,7 @@ export const lesson = {
         "type": "vocabulary",
         "items": [
           {
-            "indonesian": "sakit perut / mag",
+            "indonesian": "sakit perut",
             "dutch": "buik/maagpijn",
             "english": "stomach ache"
           },

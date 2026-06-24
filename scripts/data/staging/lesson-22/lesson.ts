@@ -854,7 +854,7 @@ export const lesson = {
         "type": "vocabulary",
         "items": [
           {
-            "indonesian": "abu-abu / kelabu",
+            "indonesian": "abu-abu",
             "dutch": "grijs",
             "english": "grey"
           },

@@ -961,7 +961,7 @@ export const lesson = {
           },
           {
             "dutch": "maar, echter",
-            "indonesian": "tapi / tetapi",
+            "indonesian": "tetapi",
             "english": "but, however"
           },
           {

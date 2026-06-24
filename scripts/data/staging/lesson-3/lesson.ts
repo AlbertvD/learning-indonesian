@@ -203,7 +203,7 @@ export const lesson = {
           },
           {
             "dutch": "bus",
-            "indonesian": "bus/bis",
+            "indonesian": "bus",
             "english": "bus"
           },
           {
@@ -491,18 +491,13 @@ export const lesson = {
         "items": [
           {
             "dutch": "vliegveld",
-            "indonesian": "bandar udara / lapangan terbang",
+            "indonesian": "lapangan terbang",
             "english": "airport"
           },
           {
             "dutch": "kunt u me helpen?; hulp vragen",
             "indonesian": "Minta tolong",
             "english": "ask for help"
-          },
-          {
-            "dutch": "met de fiets/bus/auto gaan",
-            "indonesian": "naik sepeda/bus/mobil",
-            "english": "go by bicycle/bus/car"
           },
           {
             "dutch": "uitgang",
