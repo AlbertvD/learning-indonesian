@@ -67,13 +67,30 @@ const CHIRP3_TO_WAVENET_FALLBACK: Record<string, string> = {
   'id-ID-Chirp3-HD-Orus': 'id-ID-Wavenet-B',      // male
 }
 
+// Short words Chirp3-HD MISPRONOUNCES even though they are >2 chars — intelligible
+// but wrong, a distinct failure from the ≤2-char "broken audio" case. Seeded from
+// the "dua" admin flag; extend as more surface (audio mispronunciations DO get
+// flagged, unlike silent grading bugs). Compared lowercase-trimmed.
+const CHIRP3_MISPRONOUNCED_WORDS = new Set<string>(['dua'])
+
+/**
+ * Pick the voice to actually synthesise with. Falls back from Chirp3-HD to the
+ * reliable Wavenet voice where Chirp3-HD fails on a short utterance: ≤2-char
+ * words (broken audio) OR a known-mispronounced short word ("dua"). Pure +
+ * exported so the fallback policy is unit-tested without a network call.
+ */
+export function effectiveVoiceFor(text: string, voiceId: string): string {
+  const normalized = text.trim().toLowerCase()
+  const needsFallback = normalized.length <= 2 || CHIRP3_MISPRONOUNCED_WORDS.has(normalized)
+  return needsFallback && voiceId in CHIRP3_TO_WAVENET_FALLBACK
+    ? CHIRP3_TO_WAVENET_FALLBACK[voiceId]
+    : voiceId
+}
+
 export async function synthesizeSpeech(text: string, voiceId: string): Promise<Buffer> {
   const token = await getAccessToken()
 
-  // Use Wavenet fallback for very short words where Chirp3 fails
-  const effectiveVoice = text.trim().length <= 2 && voiceId in CHIRP3_TO_WAVENET_FALLBACK
-    ? CHIRP3_TO_WAVENET_FALLBACK[voiceId]
-    : voiceId
+  const effectiveVoice = effectiveVoiceFor(text, voiceId)
 
   const res = await fetch(TTS_ENDPOINT, {
     method: 'POST',
