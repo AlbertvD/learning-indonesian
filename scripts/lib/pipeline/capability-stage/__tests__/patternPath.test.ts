@@ -116,6 +116,10 @@ function makeFake(seed?: Partial<FakeDb>) {
                 return { data: inserted, error: null }
               },
             }),
+            // Reanimation pass in upsertCapabilitiesSkipIfExists: clears retired_at
+            // across the emitted keys. db.caps don't model retired_at, so this is a
+            // no-op recorder that just resolves.
+            update: () => ({ in: async () => ({ error: null }) }),
           }
         }
         if (table === 'exercise_variants') {

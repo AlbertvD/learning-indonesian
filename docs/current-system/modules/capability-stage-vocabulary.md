@@ -1,7 +1,7 @@
 ---
 module: capability-stage-vocabulary
 surface: scripts/lib/pipeline/capability-stage/vocabulary/
-last_verified_against_code: 2026-06-14
+last_verified_against_code: 2026-06-25
 status: in-flight   # cutover (Task 8) not yet landed — the runner still co-writes item caps until then
 ---
 
@@ -37,7 +37,11 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
 4. **dryRun** → return `ok` before writes.
 5. **Write** (dependency order): `upsertLearningItemIdempotent` + `upsertItemAnchorContext` per item →
    DB-native POS backfill (`fetchLearningItemPosByNormalizedText` + `enrichMissingPos` +
-   `updateLearningItemPos`) → `upsertCapabilitiesSkipIfExists` (item caps only) →
+   `updateLearningItemPos`) → `upsertCapabilitiesSkipIfExists` (item caps only; inserts new
+   caps via `ignoreDuplicates`, then a follow-up `update({retired_at:null})` over the emitted
+   keys **reanimates** any that an earlier orphan-sweep soft-retired — fixes the one-way
+   retire trap where a routine republish could never revive a still-authored item's caps,
+   2026-06-25; only `retired_at`/`updated_at` are touched, FSRS/readiness preserved) →
    `buildItemContentUnits` (`contentUnits.ts`) + `upsertContentUnits` → junction
    (`upsertCapabilityContentUnits`) → `retireOrphanedCapabilities({ sourceKinds: ['item'] })`.
    - **Item `contextual_cloze` is NOT emitted** — won't-build (see §4); cloze stays dialogue-only.
