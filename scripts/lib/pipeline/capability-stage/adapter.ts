@@ -1274,6 +1274,36 @@ export async function upsertCapabilitiesSkipIfExists(
       idsByKey.set(row.canonical_key, row.id)
     }
   }
+
+  // Reanimate re-emitted caps. `ignoreDuplicates` above does NOTHING on a
+  // canonical_key conflict, so a cap that was soft-retired by an earlier emit-set
+  // sweep (retireOrphanedCapabilities) and is now re-emitted would stay retired
+  // forever — a routine republish could never bring it back (the one-way retire
+  // trap that stranded 222 still-authored words, 2026-06-25). Every key in THIS
+  // emit set belongs to the current content and must be live (the retire sweep
+  // separately retires keys NOT emitted), so clear retired_at across the emitted
+  // keys: a no-op on already-live rows, an un-retire on stranded ones. Only
+  // retired_at/updated_at are touched — readiness/publication/FSRS state are
+  // preserved (ADR 0011 idempotency + FSRS-safety). Mirrors upsertCapabilities'
+  // own retired_at=null-on-re-emission; the caller's capIdsByKey already picks
+  // these up via existingItemCapsByCanonicalKey, so promotion + junction + the
+  // retire sweep all include them.
+  // Far smaller chunk than the upsert: `.in()` on an UPDATE is a PATCH whose
+  // filter rides in the URL query string (not the request body), and canonical_keys
+  // are long + colon-heavy (each ~150 chars once URL-encoded). 200 keys overran the
+  // Kong gateway → "URI too long". 25 keeps each request well under the URI limit.
+  const REANIMATE_CHUNK = 25
+  const reanimateKeys = capabilities.map((cap) => cap.canonicalKey)
+  for (let i = 0; i < reanimateKeys.length; i += REANIMATE_CHUNK) {
+    const slice = reanimateKeys.slice(i, i + REANIMATE_CHUNK)
+    const { error } = await supabase
+      .schema('indonesian')
+      .from('learning_capabilities')
+      .update({ retired_at: null, updated_at: new Date().toISOString() })
+      .in('canonical_key', slice)
+    if (error) throw error
+  }
+
   return idsByKey
 }
 

@@ -169,6 +169,11 @@ function buildItemWriteClient(existingRow: { id: string; normalized_text: string
  */
 function buildCapabilityUpsertClient(existingKeys: Set<string> = new Set()) {
   const upsertCalls: Array<{ rows: Array<Record<string, unknown>>; options: Record<string, unknown> }> = []
+  // Records the reanimation pass: .update({retired_at:null}).in('canonical_key', keys)
+  const updateCalls: Array<{
+    payload: Record<string, unknown>
+    inFilter?: { column: string; values: unknown[] }
+  }> = []
 
   const client = {
     schema: () => ({
@@ -189,11 +194,22 @@ function buildCapabilityUpsertClient(existingKeys: Set<string> = new Set()) {
               }),
           }
         },
+        // Reanimation pass: .update(...).in(col, vals) → resolves.
+        update: (payload: Record<string, unknown>) => {
+          const call: (typeof updateCalls)[number] = { payload }
+          updateCalls.push(call)
+          return {
+            in: (column: string, values: unknown[]) => {
+              call.inFilter = { column, values }
+              return Promise.resolve({ error: null })
+            },
+          }
+        },
       }),
     }),
   } as never
 
-  return { client, upsertCalls }
+  return { client, upsertCalls, updateCalls }
 }
 
 // ---------------------------------------------------------------------------
@@ -463,9 +479,40 @@ describe('upsertCapabilitiesSkipIfExists', () => {
   })
 
   it('handles an empty array without errors', async () => {
-    const { client, upsertCalls } = buildCapabilityUpsertClient()
+    const { client, upsertCalls, updateCalls } = buildCapabilityUpsertClient()
     const result = await upsertCapabilitiesSkipIfExists(client, [])
     expect(upsertCalls).toHaveLength(0)
+    expect(updateCalls).toHaveLength(0)
     expect(result.size).toBe(0)
+  })
+
+  it('reanimates a re-emitted-but-retired cap (un-retire pass after the skip-if-exists upsert)', async () => {
+    // The one-way retire-trap regression (2026-06-25): a cap soft-retired by an
+    // earlier emit-set sweep is skipped by ignoreDuplicates and would stay retired
+    // forever. The fix issues a follow-up .update({retired_at:null}) scoped to the
+    // emitted keys, filtered to only currently-retired rows.
+    const { client, upsertCalls, updateCalls } = buildCapabilityUpsertClient()
+    const cap: CapabilityInput = {
+      canonicalKey: 'cap:v1:vocabulary_src:learning_items/merah:recognise_meaning_from_text_cap:id_to_l1:text:nl',
+      sourceKind: 'vocabulary_src',
+      sourceRef: 'learning_items/merah',
+      capabilityType: 'recognise_meaning_from_text_cap',
+      direction: 'id_to_l1',
+      modality: 'text',
+      learnerLanguage: 'nl',
+      projectionVersion: 'capability-v3',
+      lessonId: 'lesson-uuid-6',
+      requiredArtifacts: [],
+      prerequisiteKeys: [],
+    }
+    await upsertCapabilitiesSkipIfExists(client, [cap])
+    // Skip-if-exists upsert still runs (new rows), AND a reanimation update fires.
+    expect(upsertCalls).toHaveLength(1)
+    expect(updateCalls).toHaveLength(1)
+    // Only retired_at is cleared — readiness/publication/FSRS untouched.
+    expect(updateCalls[0].payload.retired_at).toBeNull()
+    expect(Object.keys(updateCalls[0].payload).sort()).toEqual(['retired_at', 'updated_at'])
+    // Scoped to the emitted canonical_keys.
+    expect(updateCalls[0].inFilter).toEqual({ column: 'canonical_key', values: [cap.canonicalKey] })
   })
 })
