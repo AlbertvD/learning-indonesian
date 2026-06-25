@@ -364,6 +364,11 @@ GRANT SELECT ON indonesian.learning_sessions TO authenticated;
 -- Retirement #5 (2026-05-07): INSERT/UPDATE/DELETE retired. Only the
 -- commit_capability_answer_report RPC writes (service_role bypass). Browsers
 -- never write directly. SELECT preserved for the leaderboard view.
+-- 2026-06-26 security audit: the retirement #5 comment above promised SELECT-only
+-- but never REVOKEd — the live DB still held authenticated INSERT/UPDATE/DELETE
+-- (inert today since there is no write policy, but a landmine if a permissive
+-- write policy is ever added). Apply the REVOKE the comment always intended.
+REVOKE INSERT, UPDATE, DELETE ON indonesian.learning_sessions FROM authenticated;
 GRANT INSERT ON indonesian.error_logs TO authenticated;
 GRANT SELECT ON indonesian.leaderboard TO authenticated;
 GRANT SELECT ON indonesian.user_roles TO authenticated;
@@ -396,7 +401,11 @@ ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
 -- wiped policies declared in scripts/migrations/*.sql files; per-policy
 -- `drop if exists; create` only touches policies this file owns.
 DROP POLICY IF EXISTS "profiles_read" ON indonesian.profiles;
-CREATE POLICY "profiles_read" ON indonesian.profiles FOR SELECT TO authenticated USING (true);
+-- Owner-scoped (2026-06-26 security audit): was USING(true), which let any
+-- authenticated user read every learner's display_name + study prefs. The
+-- leaderboard that justified the open read is decommissioned; the live readers
+-- (authStore, get_lessons_overview) only ever read the caller's own profile.
+CREATE POLICY "profiles_read" ON indonesian.profiles FOR SELECT TO authenticated USING (id = auth.uid());
 DROP POLICY IF EXISTS "profiles_write" ON indonesian.profiles;
 CREATE POLICY "profiles_write" ON indonesian.profiles FOR ALL TO authenticated
   USING (id = auth.uid()) WITH CHECK (id = auth.uid());
@@ -469,13 +478,20 @@ CREATE POLICY "review_events_insert" ON indonesian.review_events FOR INSERT TO a
   WITH CHECK (user_id = auth.uid());
 
 DROP POLICY IF EXISTS "lesson_progress_read" ON indonesian.lesson_progress;
-CREATE POLICY "lesson_progress_read" ON indonesian.lesson_progress FOR SELECT TO authenticated USING (true);
+-- Owner-scoped (2026-06-26 security audit): was USING(true). The sole reader,
+-- lessonService.getUserLessonProgress, already filters .eq('user_id', userId).
+CREATE POLICY "lesson_progress_read" ON indonesian.lesson_progress FOR SELECT TO authenticated USING (user_id = auth.uid());
 DROP POLICY IF EXISTS "lesson_progress_write" ON indonesian.lesson_progress;
 CREATE POLICY "lesson_progress_write" ON indonesian.lesson_progress FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
 DROP POLICY IF EXISTS "learning_sessions_read" ON indonesian.learning_sessions;
-CREATE POLICY "learning_sessions_read" ON indonesian.learning_sessions FOR SELECT TO authenticated USING (true);
+-- Owner-scoped (2026-06-26 security audit): was USING(true). Read only by the
+-- SECURITY INVOKER analytics RPCs (get_practice_time/get_current_streak_days/
+-- get_daily_activity), all of which filter `where user_id = p_user_id` — this
+-- matches their documented "SECURITY INVOKER + RLS owner-scoping" intent and
+-- closes the leak where passing another user's p_user_id returned their stats.
+CREATE POLICY "learning_sessions_read" ON indonesian.learning_sessions FOR SELECT TO authenticated USING (user_id = auth.uid());
 DROP POLICY IF EXISTS "learning_sessions_write" ON indonesian.learning_sessions;
 CREATE POLICY "learning_sessions_write" ON indonesian.learning_sessions FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
@@ -522,6 +538,10 @@ RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian 
   )
 $$;
 
+-- 2026-06-26 security audit: revoke the default PUBLIC EXECUTE (never revoked,
+-- unlike the other SECURITY DEFINER functions) so anon cannot dump the full
+-- security topology (tables, grants, every policy predicate) with the public key.
+REVOKE ALL ON FUNCTION indonesian.schema_health() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO authenticated;
 
 -- Goal System Scheduled Jobs (pg_cron)
@@ -1204,77 +1224,20 @@ ON CONFLICT (exercise_type) DO NOTHING;
 ALTER TABLE indonesian.review_events DROP COLUMN IF EXISTS score;
 ALTER TABLE indonesian.review_events DROP COLUMN IF EXISTS feedback_type;
 
--- Atomic skill-state mutation. The session queue snapshots learnerSkillState
--- at session build time and reuses the same reference across multiple exercises
--- for one item, so the JS-side `success_count + 1` from upsertSkillState
--- produced stale writes (last write wins) when the same item+skill came up more
--- than once. This function increments counters DB-side so concurrent or stale
--- callers can't lose increments. FSRS-derived fields (stability/difficulty/
--- retrievability/next_due_at) are still set from the caller's just-computed
--- value because they require the algorithm input.
-CREATE OR REPLACE FUNCTION indonesian.apply_review_to_skill_state(
-  p_user_id            uuid,
-  p_learning_item_id   uuid,
-  p_skill_type         text,
-  p_was_correct        boolean,
-  p_stability          numeric,
-  p_difficulty         numeric,
-  p_retrievability     numeric,
-  p_last_reviewed_at   timestamptz,
-  p_next_due_at        timestamptz,
-  p_mean_latency_ms    integer
-) RETURNS indonesian.learner_skill_state
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path TO 'indonesian'
-AS $$
-DECLARE
-  v_row indonesian.learner_skill_state;
-BEGIN
-  INSERT INTO indonesian.learner_skill_state (
-    user_id, learning_item_id, skill_type,
-    stability, difficulty, retrievability,
-    last_reviewed_at, next_due_at,
-    success_count, failure_count, lapse_count, consecutive_failures,
-    mean_latency_ms, hint_rate, updated_at
-  ) VALUES (
-    p_user_id, p_learning_item_id, p_skill_type,
-    p_stability, p_difficulty, p_retrievability,
-    p_last_reviewed_at, p_next_due_at,
-    CASE WHEN p_was_correct THEN 1 ELSE 0 END,
-    CASE WHEN p_was_correct THEN 0 ELSE 1 END,
-    0,
-    CASE WHEN p_was_correct THEN 0 ELSE 1 END,
-    p_mean_latency_ms, NULL, NOW()
-  )
-  ON CONFLICT (user_id, learning_item_id, skill_type) DO UPDATE SET
-    stability            = EXCLUDED.stability,
-    difficulty           = EXCLUDED.difficulty,
-    retrievability       = EXCLUDED.retrievability,
-    last_reviewed_at     = EXCLUDED.last_reviewed_at,
-    next_due_at          = EXCLUDED.next_due_at,
-    success_count        = indonesian.learner_skill_state.success_count
-                           + CASE WHEN p_was_correct THEN 1 ELSE 0 END,
-    failure_count        = indonesian.learner_skill_state.failure_count
-                           + CASE WHEN p_was_correct THEN 0 ELSE 1 END,
-    lapse_count          = indonesian.learner_skill_state.lapse_count
-                           + CASE WHEN NOT p_was_correct
-                                       AND indonesian.learner_skill_state.success_count > 0
-                                  THEN 1 ELSE 0 END,
-    consecutive_failures = CASE WHEN p_was_correct THEN 0
-                                ELSE indonesian.learner_skill_state.consecutive_failures + 1 END,
-    mean_latency_ms      = COALESCE(EXCLUDED.mean_latency_ms,
-                                    indonesian.learner_skill_state.mean_latency_ms),
-    updated_at           = NOW()
-  RETURNING * INTO v_row;
-
-  RETURN v_row;
-END;
-$$;
-
-GRANT EXECUTE ON FUNCTION indonesian.apply_review_to_skill_state(
+-- RETIRED (2026-06-26 security audit): apply_review_to_skill_state was the legacy
+-- SM-2 per-item write path, superseded by commit_capability_answer_report (ADR 0004,
+-- writes learner_capability_state). It was dead — the only caller, learnerStateService,
+-- was imported by nothing but its own test. As a SECURITY DEFINER function it bypassed
+-- learner_skill_state's owner RLS, took a caller-supplied p_user_id with NO ownership
+-- guard, and — unlike every sibling write RPC — was never REVOKEd from PUBLIC, so the
+-- default anon EXECUTE grant let any holder of the public anon key overwrite ANY user's
+-- skill-state rows (unauthenticated cross-tenant write). Dropped rather than guarded:
+-- cutting dead mechanism beats hardening it. The learner_skill_state table is left in
+-- place (inert, owner-scoped for any direct access); a follow-up may drop it with the
+-- dead client surface.
+DROP FUNCTION IF EXISTS indonesian.apply_review_to_skill_state(
   uuid, uuid, text, boolean, numeric, numeric, numeric, timestamptz, timestamptz, integer
-) TO authenticated;
+);
 
 -- (Stale-session sweep + cron retired in 2026-05-07 retirement #5 — see end of file.)
 
