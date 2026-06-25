@@ -120,12 +120,6 @@ export interface ProjectSectionsOutput {
 
 const ITEM_SECTION_TYPES = new Set(['vocabulary', 'expressions', 'numbers'])
 
-/** Place-value landmark words that are items even when their value > 20. */
-const NUMBER_LANDMARKS = new Set([
-  'seratus', 'seribu', 'sejuta', 'semiliar', 'setriliun',
-  'ratus', 'ribu', 'juta', 'miliar', 'triliun', 'puluh', 'belas',
-])
-
 export function sourceSectionRef(lessonNumber: number, orderIndex: number): string {
   return `lesson-${lessonNumber}/section-${orderIndex}`
 }
@@ -133,24 +127,6 @@ export function sourceSectionRef(lessonNumber: number, orderIndex: number): stri
 /** Multi-token (whitespace-separated) Indonesian → phrase; single token → word. */
 export function classifyItemType(indonesian: string): 'word' | 'phrase' {
   return /\s/.test(indonesian.trim()) ? 'phrase' : 'word'
-}
-
-/**
- * A numbers-section item is harvested as a vocab item iff it is a NAMED number:
- *   - numeric value 0–20 (from the `dutch` field, which holds the digits), OR
- *   - a place-value landmark word (seratus/seribu/sejuta/semiliar/setriliun,
- *     and the bare place words).
- * Composed numbers ('dua puluh satu', 'dua ratus', 'sepuluh ribu') are NOT
- * items — they are formed by the drilled belas-numbers pattern.
- */
-export function isNamedNumber(indonesian: string, dutchValue: string | undefined): boolean {
-  const digits = (dutchValue ?? '').replace(/[^\d]/g, '')
-  if (digits.length > 0) {
-    const value = parseInt(digits, 10)
-    if (!Number.isNaN(value) && value >= 0 && value <= 20) return true
-  }
-  const firstToken = indonesian.trim().toLowerCase().split(/\s+/)[0] ?? ''
-  return NUMBER_LANDMARKS.has(firstToken)
 }
 
 function nonEmpty(value: unknown): value is string {
@@ -188,7 +164,12 @@ export function projectSections(input: ProjectSectionsInput): ProjectSectionsOut
         // Strip orthographic parentheticals (pronunciation gloss / optional letter)
         // so they don't leak into the reader, the TTS audio, or the MCQ answers.
         const indonesian = cleanItemText(indonesianRaw)
-        if (type === 'numbers' && !isNamedNumber(indonesian, item.dutch as string | undefined)) return
+        // Numbers sections extract ALL items, including composed numbers
+        // ('dua ratus', 'tiga puluh', 'sepuluh ribu'). They were previously
+        // filtered to "named" numbers only (the named-number gate, removed
+        // 2026-06-25) on the theory that composed numbers are build-from-parts;
+        // we now drill them as their own cards (audio already voices every
+        // numbers item — runner.ts — so the audio caps resolve).
         itemRows.push({
           sourceSectionOrderIndex: orderIndex,
           display_order: ii,

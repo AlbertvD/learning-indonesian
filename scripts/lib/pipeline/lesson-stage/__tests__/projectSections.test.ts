@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import {
   projectSections,
   classifyItemType,
-  isNamedNumber,
   sourceSectionRef,
 } from '../projectSections'
 
@@ -13,29 +12,6 @@ describe('classifyItemType', () => {
     expect(classifyItemType('di mana-mana')).toBe('phrase')
     expect(classifyItemType('tidak (ada) apa-apa')).toBe('phrase')
     expect(classifyItemType('kaki-kaki')).toBe('word') // hyphenated reduplication, no space
-  })
-})
-
-describe('isNamedNumber', () => {
-  it('values 0–20 are named', () => {
-    expect(isNamedNumber('nol, kosong', '0')).toBe(true)
-    expect(isNamedNumber('sepuluh', '10')).toBe(true)
-    expect(isNamedNumber('dua belas', '12')).toBe(true)
-    expect(isNamedNumber('dua puluh', '20')).toBe(true)
-  })
-  it('composed numbers > 20 are not named', () => {
-    expect(isNamedNumber('dua puluh satu', '21')).toBe(false)
-    expect(isNamedNumber('tiga puluh', '30')).toBe(false)
-    expect(isNamedNumber('dua ratus', '200')).toBe(false)
-    expect(isNamedNumber('sepuluh ribu', '10.000')).toBe(false)
-    expect(isNamedNumber('dua ribu', '2.000')).toBe(false)
-  })
-  it('place-value landmarks (se- forms) are named regardless of value', () => {
-    expect(isNamedNumber('seratus', '100')).toBe(true)
-    expect(isNamedNumber('seribu', '1.000')).toBe(true)
-    expect(isNamedNumber('sejuta', '1.000.000')).toBe(true)
-    expect(isNamedNumber('semiliar', '1.000.000.000')).toBe(true)
-    expect(isNamedNumber('setriliun', '1.000.000.000.000')).toBe(true)
   })
 })
 
@@ -133,11 +109,15 @@ describe('projectSections', () => {
     ])
   })
 
-  it('drops composed numbers but keeps named numbers + landmarks (display_order = authored index)', () => {
+  it('harvests ALL numbers items incl. composed numbers (named-number gate removed 2026-06-25)', () => {
     const nums = out.itemRows.filter((r) => r.sourceSectionOrderIndex === 3)
-    expect(nums.map((r) => r.indonesian_text)).toEqual(['sepuluh', 'seribu'])
-    expect(nums.map((r) => r.display_order)).toEqual([0, 2]) // index 1 (dua puluh satu) dropped
-    expect(nums.map((r) => r.source_item_ref)).toEqual(['lesson-9/section-3/item-0', 'lesson-9/section-3/item-2'])
+    // composed 'dua puluh satu' is now kept alongside named 'sepuluh' + landmark 'seribu'
+    expect(nums.map((r) => r.indonesian_text)).toEqual(['sepuluh', 'dua puluh satu', 'seribu'])
+    expect(nums.map((r) => r.display_order)).toEqual([0, 1, 2])
+    expect(nums.map((r) => r.source_item_ref)).toEqual([
+      'lesson-9/section-3/item-0', 'lesson-9/section-3/item-1', 'lesson-9/section-3/item-2',
+    ])
+    expect(nums.map((r) => r.item_type)).toEqual(['word', 'phrase', 'word'])
   })
 
   it('projects rule-bearing grammar categories with EN; skips table-only', () => {
