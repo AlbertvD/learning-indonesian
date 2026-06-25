@@ -161,6 +161,46 @@ export const lesson = {
         "type": "vocabulary",
         "items": [
           {
+            "dutch": "met de bus gaan",
+            "indonesian": "naik bus",
+            "english": "take the bus"
+          },
+          {
+            "dutch": "met de auto gaan",
+            "indonesian": "naik mobil",
+            "english": "go by car"
+          },
+          {
+            "dutch": "met de fiets gaan",
+            "indonesian": "naik sepeda",
+            "english": "ride a bike"
+          },
+          {
+            "dutch": "paspoort",
+            "indonesian": "paspoort",
+            "english": "passport"
+          },
+          {
+            "dutch": "één miljoen",
+            "indonesian": "satu juta",
+            "english": "one million"
+          },
+          {
+            "dutch": "maar, echter",
+            "indonesian": "akan tetapi",
+            "english": "but, however"
+          },
+          {
+            "dutch": "daarna, vervolgens",
+            "indonesian": "setelah itu",
+            "english": "after that"
+          },
+          {
+            "dutch": "kinderen",
+            "indonesian": "anak-anak",
+            "english": "children"
+          },
+          {
             "dutch": "is, zijn",
             "indonesian": "ada",
             "english": "is, are"
