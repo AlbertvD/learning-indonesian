@@ -54,15 +54,44 @@ describe('capability scheduler', () => {
     expect(due.map(item => item.stateId)).toEqual(['state-1'])
   })
 
-  it('sorts by next due date and respects limits', () => {
+  it('orders the more-overdue day-bucket ahead of fresher ones', () => {
+    // 2 days overdue vs 1h overdue → different 24h buckets → deterministic order,
+    // most-overdue first, independent of the within-bucket shuffle.
+    expect(getDueCapabilitiesFromRows({
+      now: new Date('2026-04-25T12:00:00.000Z'),
+      limit: 10,
+      rows: [
+        state({ id: 'fresh', nextDueAt: '2026-04-25T11:00:00.000Z' }),
+        state({ id: 'stale', nextDueAt: '2026-04-23T08:00:00.000Z' }),
+      ],
+    }).map(item => item.stateId)).toEqual(['stale', 'fresh'])
+  })
+
+  it('shuffles cards within the same day-bucket using the injected rng', () => {
+    // Both cards are <24h overdue → same bucket. Fisher-Yates with random()=>0
+    // swaps the only pair, so input order [a, b] presents as [b, a]; a strict
+    // next_due_at sort would have kept [a, b].
+    expect(getDueCapabilitiesFromRows({
+      now: new Date('2026-04-25T12:00:00.000Z'),
+      limit: 10,
+      random: () => 0,
+      rows: [
+        state({ id: 'a', nextDueAt: '2026-04-25T01:00:00.000Z' }),
+        state({ id: 'b', nextDueAt: '2026-04-25T11:00:00.000Z' }),
+      ],
+    }).map(item => item.stateId)).toEqual(['b', 'a'])
+  })
+
+  it('respects the limit, draining the most-overdue bucket first', () => {
     expect(getDueCapabilitiesFromRows({
       now: new Date('2026-04-25T12:00:00.000Z'),
       limit: 1,
+      random: () => 0,
       rows: [
-        state({ id: 'later', nextDueAt: '2026-04-25T11:00:00.000Z' }),
-        state({ id: 'earlier', nextDueAt: '2026-04-25T01:00:00.000Z' }),
+        state({ id: 'fresh', nextDueAt: '2026-04-25T11:00:00.000Z' }),
+        state({ id: 'stale', nextDueAt: '2026-04-23T01:00:00.000Z' }),
       ],
-    }).map(item => item.stateId)).toEqual(['earlier'])
+    }).map(item => item.stateId)).toEqual(['stale'])
   })
 
 })

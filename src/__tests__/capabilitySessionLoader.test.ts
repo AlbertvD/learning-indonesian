@@ -792,8 +792,10 @@ describe('capability session loader', () => {
       [keyA, { status: 'ready', allowedExercises: ['type_meaning_ex'] }],
       [keyB, { status: 'ready', allowedExercises: ['choose_meaning_ex'] }],
     ])
-    // A is more overdue than B, so A wins the word's single slot.
-    const stateA = activeState({ id: 'state-1', capabilityId: 'capability-1', canonicalKeySnapshot: keyA, nextDueAt: '2026-04-25T08:00:00.000Z' })
+    // A is more overdue than B (a full day earlier → an older 24h bucket), so it
+    // sorts ahead of B regardless of the within-bucket shuffle and wins the
+    // word's single slot.
+    const stateA = activeState({ id: 'state-1', capabilityId: 'capability-1', canonicalKeySnapshot: keyA, nextDueAt: '2026-04-23T08:00:00.000Z' })
     const stateB = activeState({ id: 'state-2', capabilityId: 'capability-2', canonicalKeySnapshot: keyB, nextDueAt: '2026-04-25T09:00:00.000Z' })
 
     it('serves at most one due sibling of a word, keeping the most-overdue', async () => {
