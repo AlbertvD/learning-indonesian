@@ -479,7 +479,7 @@ export const learningItems = [
     "level": "A1"
   },
   {
-    "base_text": "membayar*",
+    "base_text": "membayar",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "betalen",

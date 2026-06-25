@@ -313,7 +313,7 @@ export const lesson = {
             "english": "intention"
           },
           {
-            "indonesian": "membayar*",
+            "indonesian": "membayar",
             "dutch": "betalen",
             "english": "pay"
           },

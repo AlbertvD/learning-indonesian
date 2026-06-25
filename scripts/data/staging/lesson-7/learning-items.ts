@@ -199,7 +199,7 @@ export const learningItems = [
     "level": "A2"
   },
   {
-    "base_text": "dibawa*",
+    "base_text": "dibawa",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "meegenomen",
@@ -210,7 +210,7 @@ export const learningItems = [
     "level": "A2"
   },
   {
-    "base_text": "disetrika*",
+    "base_text": "disetrika",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "gestreken",
@@ -474,7 +474,7 @@ export const learningItems = [
     "level": "A2"
   },
   {
-    "base_text": "mengantar*",
+    "base_text": "mengantar",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "wegbrengen / begeleiden",

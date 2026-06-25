@@ -175,12 +175,12 @@ export const lesson = {
             "english": "example"
           },
           {
-            "indonesian": "dibawa*",
+            "indonesian": "dibawa",
             "dutch": "meegenomen",
             "english": "taken (along)"
           },
           {
-            "indonesian": "disetrika*",
+            "indonesian": "disetrika",
             "dutch": "gestreken",
             "english": "ironed"
           },
@@ -300,7 +300,7 @@ export const lesson = {
             "english": "forget"
           },
           {
-            "indonesian": "mengantar*",
+            "indonesian": "mengantar",
             "dutch": "wegbrengen, begeleiden",
             "english": "take, accompany"
           },
