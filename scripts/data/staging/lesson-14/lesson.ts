@@ -332,7 +332,8 @@ export const lesson = {
                 "Les 14",
                 "beperkt"
               ]
-            ]
+            ],
+            "title_en": "Combinations of ME- with word classes"
           },
           {
             "title": "2a. ME- + zelfstandig naamwoord, met patiens (lijdend voorwerp)",

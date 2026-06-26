@@ -745,7 +745,8 @@ export const lesson = {
                 "combinations": []
               }
             ],
-            "title": "Gecombineerde plaatsbepalingen"
+            "title": "Gecombineerde plaatsbepalingen",
+            "title_en": "Combined adverbials"
           }
         ],
         "grammar_topics": [
@@ -870,7 +871,8 @@ export const lesson = {
                 "example": "Rumah yang mana?"
               }
             ],
-            "title": "Vraagwoorden"
+            "title": "Vraagwoorden",
+            "title_en": "Question words"
           }
         ],
         "grammar_topics": [

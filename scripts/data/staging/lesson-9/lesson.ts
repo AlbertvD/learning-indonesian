@@ -482,7 +482,8 @@ export const lesson = {
                 "usah",
                 ""
               ]
-            ]
+            ],
+            "title_en": "Words per group"
           },
           {
             "title": "Groep A — fase van de handeling",

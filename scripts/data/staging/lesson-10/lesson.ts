@@ -500,7 +500,8 @@ export const lesson = {
                 "pikiran",
                 "gedachte"
               ]
-            ]
+            ],
+            "title_en": "Verb + -AN — noun"
           },
           {
             "title": "2a. Zelfstandig naamwoord + -AN — abstrakte betekenis",
@@ -517,7 +518,8 @@ export const lesson = {
                 "pasaran",
                 "de markt (begrip)"
               ]
-            ]
+            ],
+            "title_en": "2a. Noun + -AN — abstract meaning"
           },
           {
             "title": "2b. Tijdsaanduiding + -AN — periodiciteit",
@@ -546,7 +548,8 @@ export const lesson = {
                 "maandelijks",
                 "majalah bulanan = maandblad"
               ]
-            ]
+            ],
+            "title_en": "Adjective + -AN — noun"
           },
           {
             "title": "3. Bijvoeglijk naamwoord + -AN — zelfstandig naamwoord",
@@ -575,7 +578,8 @@ export const lesson = {
                 "terusan",
                 "kanaal"
               ]
-            ]
+            ],
+            "title_en": "Numeral + -AN — noun"
           },
           {
             "title": "4. Telwoord + -AN — zelfstandig naamwoord",
@@ -604,7 +608,8 @@ export const lesson = {
                 "belasan",
                 "teenager (tussen 10 en 20 jaar)"
               ]
-            ]
+            ],
+            "title_en": "Ordinal numbers"
           }
         ],
         "grammar_topics": [
@@ -707,7 +712,8 @@ export const lesson = {
                 "keseratus (ke-100)",
                 "honderdste"
               ]
-            ]
+            ],
+            "title_en": "Ordinal numbers"
           },
           {
             "title": "Bijzondere vormen",

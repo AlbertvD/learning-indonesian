@@ -419,7 +419,8 @@ export const lesson = {
                 "Surat Izin Mengemudi",
                 "rijbewijs"
               ]
-            ]
+            ],
+            "title_en": "Abbreviations (initials) — loose initial letters"
           },
           {
             "title": "Windrichtingen",
@@ -503,61 +504,75 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Mereka berpandang-pandangan.",
-                "dutch": "Ze keken elkaar aan."
+                "dutch": "Ze keken elkaar aan.",
+                "english": "They looked at each other."
               },
               {
                 "indonesian": "Serdadu berbunuh-bunuhan.",
-                "dutch": "De soldaten doden elkaar."
+                "dutch": "De soldaten doden elkaar.",
+                "english": "The soldiers kill each other."
               }
-            ]
+            ],
+            "title_en": "With verbs: reciprocity (each other)"
           },
           {
             "title": "Bij plaatswoorden: wederkerigheid (elkaar)",
             "examples": [
               {
                 "indonesian": "depan -> berdepan-depan",
-                "dutch": "tegenover elkaar staan"
+                "dutch": "tegenover elkaar staan",
+                "english": "stand opposite each other"
               }
-            ]
+            ],
+            "title_en": "With prepositions: reciprocity (each other)"
           },
           {
             "title": "Bij zelfstandige naamwoorden: intensiteit / herhaling",
             "examples": [
               {
                 "indonesian": "Berkali-kali dia jatuh dari sepeda.",
-                "dutch": "Telkens viel hij van de fiets."
+                "dutch": "Telkens viel hij van de fiets.",
+                "english": "He fell off his bike repeatedly."
               },
               {
                 "indonesian": "Bertahun-tahun dia bekerja di sana.",
-                "dutch": "Jarenlang werkte hij daar."
+                "dutch": "Jarenlang werkte hij daar.",
+                "english": "He worked there for years."
               }
-            ]
+            ],
+            "title_en": "With nouns: intensity / repetition"
           },
           {
             "title": "Bij bijvoeglijke naamwoorden: intensiteit",
             "examples": [
               {
                 "indonesian": "Dia bergegas-gegas ke kantornya.",
-                "dutch": "Hij ging hals over kop naar kantoor."
+                "dutch": "Hij ging hals over kop naar kantoor.",
+                "english": "He rushed to his office."
               }
-            ]
+            ],
+            "title_en": "With adjectives: intensity"
           },
           {
             "title": "Bij telwoorden: collectiviteit (een x-tal samen)",
             "examples": [
               {
                 "indonesian": "berdua-dua",
-                "dutch": "in groepjes van twee"
+                "dutch": "in groepjes van twee",
+                "english": "in groups of two"
               },
               {
                 "indonesian": "berdua-duaan = berduaan",
-                "dutch": "met z'n tweetjes"
+                "dutch": "met z'n tweetjes",
+                "english": "the two of them together"
               },
               {
                 "indonesian": "berpuluh-puluh",
-                "dutch": "in groepjes van tien / bij tientallen"
+                "dutch": "in groepjes van tien / bij tientallen",
+                "english": "in groups of ten / by tens"
               }
-            ]
+            ],
+            "title_en": "With numerals: collectivity (a number of together)"
           }
         ],
         "grammar_topics": [

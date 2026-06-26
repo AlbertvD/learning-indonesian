@@ -879,7 +879,8 @@ export const lesson = {
                 "pos_dutch": "lang"
               }
             ],
-            "title": "Tegengestelde bijvoeglijke naamwoorden"
+            "title": "Tegengestelde bijvoeglijke naamwoorden",
+            "title_en": "Opposite adjectives"
           }
         ],
         "grammar_topics": [

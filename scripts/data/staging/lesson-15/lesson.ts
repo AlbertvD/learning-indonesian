@@ -333,7 +333,8 @@ export const lesson = {
                 "eenlettergrepig basiswoord (geen klankverandering)",
                 "mengecat → cat; mengetik → tik"
               ]
-            ]
+            ],
+            "title_en": "Pattern: from prefix back to initial sound"
           },
           {
             "title": "Let op: de wegvallende beginklank (K, P, S, T)",

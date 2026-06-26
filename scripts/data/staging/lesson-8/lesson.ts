@@ -504,21 +504,26 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Mahal dong!",
-                "dutch": "Het is duur, hoor!"
+                "dutch": "Het is duur, hoor!",
+                "english": "It's expensive, really!"
               },
               {
                 "indonesian": "Lihat dong!",
-                "dutch": "Kijk dan!"
+                "dutch": "Kijk dan!",
+                "english": "Look!"
               },
               {
                 "indonesian": "Harganya, kok, Rp 46.500.",
-                "dutch": "De prijs is warempel Rp 46.500."
+                "dutch": "De prijs is warempel Rp 46.500.",
+                "english": "The price is actually Rp 46.500."
               },
               {
                 "indonesian": "Wah, saya senang!",
-                "dutch": "Wauw, ik ben blij!"
+                "dutch": "Wauw, ik ben blij!",
+                "english": "Wow, I'm happy!"
               }
-            ]
+            ],
+            "title_en": "Overview of interjections"
           }
         ],
         "grammar_topics": [

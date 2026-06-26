@@ -601,25 +601,31 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Minum!",
-                "dutch": "Drink!"
+                "dutch": "Drink!",
+                "english": "Drink!"
               },
               {
                 "indonesian": "Minumlah!",
-                "dutch": "Drinkt u toch!"
+                "dutch": "Drinkt u toch!",
+                "english": "Do drink!"
               },
               {
                 "indonesian": "Silakan minum!",
-                "dutch": "Ga uw gang, drink iets."
+                "dutch": "Ga uw gang, drink iets.",
+                "english": "Please drink something."
               },
               {
                 "indonesian": "Mari minum!",
-                "dutch": "Kom, drink iets."
+                "dutch": "Kom, drink iets.",
+                "english": "Come, drink something."
               },
               {
                 "indonesian": "Ayo minum!",
-                "dutch": "Kom, drink wat!"
+                "dutch": "Kom, drink wat!",
+                "english": "Come on, drink something!"
               }
-            ]
+            ],
+            "title_en": "Examples"
           }
         ],
         "grammar_topics": [
@@ -827,45 +833,56 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "jam enam (pagi) lewat seperempat",
-                "dutch": "06.15 uur"
+                "dutch": "06.15 uur",
+                "english": "6:15 a.m."
               },
               {
                 "indonesian": "jam setengah tujuh (pagi) kurang lima",
-                "dutch": "06.25 uur"
+                "dutch": "06.25 uur",
+                "english": "6:25 a.m."
               },
               {
                 "indonesian": "jam sembilan (pagi) kurang sepuluh",
-                "dutch": "08.50 uur"
+                "dutch": "08.50 uur",
+                "english": "8:50 a.m."
               },
               {
                 "indonesian": "jam setengah sepuluh (pagi)",
-                "dutch": "09.30 uur"
+                "dutch": "09.30 uur",
+                "english": "9:30 a.m."
               },
               {
                 "indonesian": "jam setengah dua belas (siang) lewat lima",
-                "dutch": "11.35 uur"
+                "dutch": "11.35 uur",
+                "english": "11:35 a.m."
               },
               {
                 "indonesian": "jam empat (sore) lewat sepuluh",
-                "dutch": "16.10 uur"
+                "dutch": "16.10 uur",
+                "english": "4:10 p.m."
               },
               {
                 "indonesian": "jam tujuh (malam) kurang lima",
-                "dutch": "18.55 uur"
+                "dutch": "18.55 uur",
+                "english": "6:55 p.m."
               },
               {
                 "indonesian": "jam tujuh (malam) lewat lima",
-                "dutch": "19.05 uur"
+                "dutch": "19.05 uur",
+                "english": "7:05 p.m."
               },
               {
                 "indonesian": "jam tujuh (malam) pas/tepat",
-                "dutch": "precies 19.00 uur"
+                "dutch": "precies 19.00 uur",
+                "english": "exactly 7:00 p.m."
               },
               {
                 "indonesian": "kira-kira jam delapan (malam)",
-                "dutch": "ongeveer 20.00 uur"
+                "dutch": "ongeveer 20.00 uur",
+                "english": "approximately 8:00 p.m."
               }
-            ]
+            ],
+            "title_en": "Clock time — examples"
           }
         ],
         "grammar_topics": [

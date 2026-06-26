@@ -709,7 +709,8 @@ export const lesson = {
                 "abad",
                 "eeuw"
               ]
-            ]
+            ],
+            "title_en": "Time units"
           },
           {
             "title": "Maanden (bulan)",
@@ -762,7 +763,8 @@ export const lesson = {
                 "bulan Desember",
                 "december"
               ]
-            ]
+            ],
+            "title_en": "Months (bulan)"
           },
           {
             "title": "Dagen van de week (hari)",
