@@ -19,6 +19,15 @@ content/extracted/
 # local reference material — never committed
 content/grammar-review/
 
+# Grammar-podcast generated briefings (NotebookLM source) — regenerated from the DB
+content/grammar-briefings/
+
+# Grammar-podcast generated episodes (MP3s, prompts, results) — local artifacts
+content/grammar-podcast/
+
+# Python venv for the notebooklm-py driver — never committed
+.venv/
+
 # Git worktrees — isolated workspaces
 .worktrees/
 
