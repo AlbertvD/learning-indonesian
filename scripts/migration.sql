@@ -100,6 +100,15 @@ CREATE TABLE IF NOT EXISTS indonesian.lessons (
 ALTER TABLE indonesian.lessons
   ADD COLUMN IF NOT EXISTS is_hidden boolean NOT NULL DEFAULT false;
 
+-- ── Grammar podcast: per-lesson English grammar-audio path (2026-06-26 plan) ──
+-- The existing `audio_path` is the Dutch grammar-podcast path; `audio_path_en` is
+-- the English counterpart. Both resolve against the indonesian-lessons bucket and
+-- are baked into each lesson's content.json by fetch-lesson-content.ts. Nullable:
+-- NL episodes are generated before EN, so a lesson can carry NL audio with EN
+-- still null.
+ALTER TABLE indonesian.lessons
+  ADD COLUMN IF NOT EXISTS audio_path_en text;
+
 CREATE TABLE IF NOT EXISTS indonesian.lesson_sections (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   lesson_id uuid NOT NULL REFERENCES indonesian.lessons(id) ON DELETE CASCADE,

@@ -17,6 +17,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { readFileSync } from 'node:fs'
+import { lessonAudioUrl } from './lib/lessonAudioUrl'
 
 for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
   const m = line.match(/^([A-Z_]+)=(.*)$/)
@@ -47,7 +48,7 @@ const pretty = process.argv.includes('--pretty')
 // ─── Lesson row ─────────────────────────────────────────────────────────────
 const { data: lessonRow, error: lessonErr } = await supabase
   .from('lessons')
-  .select('id, order_index, title, level, audio_path, primary_voice, duration_seconds, description')
+  .select('id, order_index, title, level, audio_path, audio_path_en, primary_voice, duration_seconds, description')
   .eq('order_index', orderIndex)
   .maybeSingle()
 if (lessonErr) throw lessonErr
@@ -56,10 +57,9 @@ if (!lessonRow) {
   process.exit(1)
 }
 
-// ─── Lesson-level audio URL ─────────────────────────────────────────────────
-const lessonAudioUrl: string | null = lessonRow.audio_path
-  ? `${url}/storage/v1/object/public/indonesian-lessons/${lessonRow.audio_path}`
-  : null
+// ─── Lesson-level audio URLs (NL = audio_path, EN = audio_path_en) ───────────
+const lessonAudioUrlNl = lessonAudioUrl(url, lessonRow.audio_path)
+const lessonAudioUrlEn = lessonAudioUrl(url, lessonRow.audio_path_en)
 
 // ─── Sections (preserve raw content shape) ──────────────────────────────────
 const { data: sectionRows, error: sectionsErr } = await supabase
@@ -198,7 +198,8 @@ const output = {
     description: lessonRow.description,
     primary_voice: lessonRow.primary_voice,
     duration_seconds: lessonRow.duration_seconds,
-    lesson_audio_url: lessonAudioUrl,
+    lesson_audio_url: lessonAudioUrlNl,
+    lesson_audio_url_en: lessonAudioUrlEn,
   },
   sections: enrichedSections,
   runtime_components: runtimeComponents,

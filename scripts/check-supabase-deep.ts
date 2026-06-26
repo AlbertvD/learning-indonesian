@@ -230,6 +230,31 @@ for (const table of EXPECTED_TABLES) {
   }
 }
 
+// ── Check: lessons.audio_path_en column exists (grammar-podcast EN path) ────
+{
+  // Structural existence check (read-only). The EN grammar podcast path is
+  // populated in bulk after all NL episodes; this gate only asserts the column
+  // is present so the migration can't silently regress. (Completeness of EN
+  // audio is a tier-1 follow-on, not gated here.)
+  const { error } = await supabase
+    .schema('indonesian')
+    .from('lessons')
+    .select('id, audio_path_en')
+    .limit(1)
+  if (error) {
+    if (error.message.includes('column') && error.message.includes('audio_path_en')) {
+      fail(
+        'lessons.audio_path_en column exists',
+        'Column lessons.audio_path_en not found — run: make migrate SUPABASE_SERVICE_KEY=<key>',
+      )
+    } else {
+      fail('lessons.audio_path_en column exists', error.message)
+    }
+  } else {
+    pass('lessons.audio_path_en column exists')
+  }
+}
+
 // ── Check: get_audio_clips RPC function exists ────────────────────────────
 {
   const { error } = await supabase
