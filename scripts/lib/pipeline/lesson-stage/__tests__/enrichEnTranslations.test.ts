@@ -50,7 +50,7 @@ function sections() {
 }
 
 describe('collectEnNeeds', () => {
-  it('collects items/dialogue/grammar needing EN; skips already-translated and table-only categories', () => {
+  it('collects items/dialogue/grammar needing EN; skips already-translated, but still collects a table-only category title', () => {
     const needs = collectEnNeeds(sections())
     const keys = needs.map((n) => n.key).sort()
     expect(keys).toEqual(
@@ -61,10 +61,11 @@ describe('collectEnNeeds', () => {
         '2|cat|0|rule|0',
         '2|cat|0|rule|1',
         '2|cat|0|title',
+        '2|cat|1|title', // reference grid (table-only) — its title still surfaces in the EN briefing
       ].sort(),
     )
-    // table-only category index 1 produces nothing
-    expect(needs.some((n) => n.key.startsWith('2|cat|1'))).toBe(false)
+    // table-only category index 1 contributes ONLY its title (no rules/examples to feed a capability)
+    expect(needs.filter((n) => n.key.startsWith('2|cat|1')).map((n) => n.key)).toEqual(['2|cat|1|title'])
   })
 
   it('carries indonesian + dutch for items/examples/dialogue and dutch-only for titles/rules', () => {
@@ -120,10 +121,10 @@ describe('enrichMissingEnContent', () => {
       return m
     }
     const result = await enrichMissingEnContent(secs, translate)
-    expect(result.needed).toBe(6)
+    expect(result.needed).toBe(7) // +1: the table-only category's title
     expect(result.filled.items).toBe(1)
     expect(result.filled.dialogueLines).toBe(1)
-    expect(result.filled.grammarCategories).toBe(1)
+    expect(result.filled.grammarCategories).toBe(2) // rule-bearing cat + the reference grid's title
     const items = secs[0].content.items as Array<Record<string, unknown>>
     expect(items[0].english).toBe('EN:kaki')
   })

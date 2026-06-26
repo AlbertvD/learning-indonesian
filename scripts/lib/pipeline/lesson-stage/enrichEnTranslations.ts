@@ -107,11 +107,19 @@ export function collectEnNeeds(sections: SectionLike[]): EnNeed[] {
       if (!Array.isArray(categories)) return
       categories.forEach((rawCat, ci) => {
         const cat = rawCat as Record<string, unknown>
-        if (!isCapabilityFeedingCategory(cat)) return
 
+        // Every titled category surfaces in the podcast EN briefing
+        // (scripts/grammar-podcast/briefings.ts), which does NOT filter by
+        // rule-bearing — so a pure reference grid (table/examples only, no
+        // rules) still needs its title in English or its Dutch heading leaks
+        // into the EN episode. Collect the title BEFORE the rule-bearing guard;
+        // rules/examples EN stay guarded (reference grids have none to feed a
+        // capability anyway).
         if (isFilled(cat.title) && !isFilled(cat.title_en)) {
           needs.push({ key: `${si}|cat|${ci}|title`, dutch: (cat.title as string).trim() })
         }
+
+        if (!isCapabilityFeedingCategory(cat)) return
 
         const rules = Array.isArray(cat.rules) ? cat.rules : []
         const rulesEn = Array.isArray(cat.rules_en) ? cat.rules_en : []
