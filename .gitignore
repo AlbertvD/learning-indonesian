@@ -15,6 +15,10 @@ content/raw/
 # Intermediate extraction JSON — not committed
 content/extracted/
 
+# Grammar-podcast Phase-0 review artifacts (claims, TBBBI/KBBI verdicts) and any
+# local reference material — never committed
+content/grammar-review/
+
 # Git worktrees — isolated workspaces
 .worktrees/
 
