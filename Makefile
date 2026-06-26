@@ -41,6 +41,10 @@ lint: ## Run ESLint
 typecheck: ## Run TypeScript type checker
 	bun run tsc -b --noEmit
 
+.PHONY: audit
+audit: ## Fail on any advisory in a PRODUCTION dependency (what ships / runs). devDependency advisories (eslint/vite/vitest/jsdom/workbox build+test tooling, offline pipeline) never reach the deployed static bundle, so --prod is the signal-not-noise gate. Re-classify offline-only tools as devDependencies to keep this clean.
+	bun audit --prod
+
 # ============================================================================
 # DATABASE
 # ============================================================================
@@ -203,6 +207,9 @@ pre-deploy: ## Run the full pre-deploy gauntlet: lint + tests + build + Supabase
 	@echo ""
 	@echo "→ Production build..."
 	@$(MAKE) -s build
+	@echo ""
+	@echo "→ Dependency audit (production deps only)..."
+	@$(MAKE) -s audit
 	@echo ""
 	@echo "→ Supabase tier-1 connectivity..."
 	@$(MAKE) -s check-supabase

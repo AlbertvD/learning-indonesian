@@ -15,7 +15,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@huggingface/transformers": "^4.2.0",
     "@mantine/core": "^9.4.0",
     "@mantine/hooks": "^9.4.0",
     "@mantine/notifications": "^9.4.0",
@@ -32,6 +31,7 @@
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
     "@eslint/js": "^10.0.1",
+    "@huggingface/transformers": "^4.2.0",
     "@playwright/test": "^1.61.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
