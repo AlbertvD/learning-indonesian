@@ -7,7 +7,7 @@
     "description": "History of Jakarta (Batavia). Grammar focus: negation system (belum/bukan/tidak/jangan), imperative with -lah, question suffix -kah, Indonesian day parts and clock time.",
     "primary_voice": "id-ID-Chirp3-HD-Orus",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-6.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-6-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -331,6 +331,42 @@
             "english": "color",
             "indonesian": "warna",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/warna-88d6b119.mp3"
+          },
+          {
+            "dutch": "ochtend",
+            "english": "morning",
+            "indonesian": "pagi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pagi-81dd0a59.mp3"
+          },
+          {
+            "dutch": "avond/nacht",
+            "english": "evening/night",
+            "indonesian": "malam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/malam-f83c8112.mp3"
+          },
+          {
+            "dutch": "seconde",
+            "english": "second",
+            "indonesian": "detik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/detik-85ee8a5e.mp3"
+          },
+          {
+            "dutch": "maand",
+            "english": "month",
+            "indonesian": "bulan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bulan-f796e59a.mp3"
+          },
+          {
+            "dutch": "jaar",
+            "english": "year",
+            "indonesian": "tahun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tahun-90d84058.mp3"
+          },
+          {
+            "dutch": "eeuw",
+            "english": "century",
+            "indonesian": "abad",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/abad-2f1f66d7.mp3"
           }
         ]
       }
@@ -640,30 +676,36 @@
             "examples": [
               {
                 "dutch": "Drink!",
+                "english": "Drink!",
                 "indonesian": "Minum!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/minum-e32fe784.mp3"
               },
               {
                 "dutch": "Drinkt u toch!",
+                "english": "Do drink!",
                 "indonesian": "Minumlah!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/minumlah-7184a824.mp3"
               },
               {
                 "dutch": "Ga uw gang, drink iets.",
+                "english": "Please drink something.",
                 "indonesian": "Silakan minum!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/silakan-minum-e3417f03.mp3"
               },
               {
                 "dutch": "Kom, drink iets.",
+                "english": "Come, drink something.",
                 "indonesian": "Mari minum!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mari-minum-e298465d.mp3"
               },
               {
                 "dutch": "Kom, drink wat!",
+                "english": "Come on, drink something!",
                 "indonesian": "Ayo minum!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ayo-minum-f4a23efb.mp3"
               }
-            ]
+            ],
+            "title_en": "Examples"
           }
         ],
         "grammar_topics": [
@@ -876,55 +918,66 @@
             "examples": [
               {
                 "dutch": "06.15 uur",
+                "english": "6:15 a.m.",
                 "indonesian": "jam enam (pagi) lewat seperempat",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-enam-pagi-lewat-fdba764b.mp3"
               },
               {
                 "dutch": "06.25 uur",
+                "english": "6:25 a.m.",
                 "indonesian": "jam setengah tujuh (pagi) kurang lima",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-setengah-tujuh-pagi-0ca6a2cf.mp3"
               },
               {
                 "dutch": "08.50 uur",
+                "english": "8:50 a.m.",
                 "indonesian": "jam sembilan (pagi) kurang sepuluh",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-sembilan-pagi-kurang-19ef57a9.mp3"
               },
               {
                 "dutch": "09.30 uur",
+                "english": "9:30 a.m.",
                 "indonesian": "jam setengah sepuluh (pagi)",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-setengah-sepuluh-pagi-2b2d2667.mp3"
               },
               {
                 "dutch": "11.35 uur",
+                "english": "11:35 a.m.",
                 "indonesian": "jam setengah dua belas (siang) lewat lima",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-setengah-dua-belas-aef4b550.mp3"
               },
               {
                 "dutch": "16.10 uur",
+                "english": "4:10 p.m.",
                 "indonesian": "jam empat (sore) lewat sepuluh",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-empat-sore-lewat-4acc71e0.mp3"
               },
               {
                 "dutch": "18.55 uur",
+                "english": "6:55 p.m.",
                 "indonesian": "jam tujuh (malam) kurang lima",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-tujuh-malam-kurang-e1340f2e.mp3"
               },
               {
                 "dutch": "19.05 uur",
+                "english": "7:05 p.m.",
                 "indonesian": "jam tujuh (malam) lewat lima",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-tujuh-malam-lewat-2ad5c709.mp3"
               },
               {
                 "dutch": "precies 19.00 uur",
+                "english": "exactly 7:00 p.m.",
                 "indonesian": "jam tujuh (malam) pas/tepat",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-tujuh-malam-pastepat-779ac4da.mp3"
               },
               {
                 "dutch": "ongeveer 20.00 uur",
+                "english": "approximately 8:00 p.m.",
                 "indonesian": "kira-kira jam delapan (malam)",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kirakira-jam-delapan-malam-82df5dc2.mp3"
               }
-            ]
+            ],
+            "title_en": "Clock time — examples"
           }
         ],
         "grammar_topics": [
@@ -1214,7 +1267,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-6.m4a\" voice=\"id-ID-Chirp3-HD-Orus\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Orus\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },

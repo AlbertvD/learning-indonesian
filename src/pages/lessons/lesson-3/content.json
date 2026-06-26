@@ -7,7 +7,7 @@
     "description": "Leer ada (er is/zijn), vraagwoorden, sekali (erg/heel), woorden van plaats (dari, di, ke) en de getallen 10-100. Oefen met een dialoog op vliegveld Soekarno-Hatta.",
     "primary_voice": "id-ID-Chirp3-HD-Sulafat",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-3.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-3-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -20,138 +20,161 @@
             "text": "Pak! Di mana barang saya?",
             "speaker": "Ibu Yulia",
             "translation": "Meneer! Waar zijn mijn spullen?",
+            "translation_en": "Sir! Where are my things?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pak-di-mana-barang-2ba7b95f.mp3"
           },
           {
             "text": "Di sana, Bu.",
             "speaker": "Pekerja",
             "translation": "Daar, mevrouw.",
+            "translation_en": "There, madam.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/di-sana-bu-8f69ebcb.mp3"
           },
           {
             "text": "Di sebelah kiri atau kanan?",
             "speaker": "Ibu Yulia",
             "translation": "Links of rechts?",
+            "translation_en": "Left or right?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/di-sebelah-kiri-atau-200706c0.mp3"
           },
           {
             "text": "Kanan, Bu.",
             "speaker": "Pekerja",
             "translation": "Rechts, mevrouw.",
+            "translation_en": "Right, madam.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kanan-bu-16cf81b7.mp3"
           },
           {
             "text": "O, barang saya berat sekali. Ada dua koper dan satu tas besar. Pak, pengangkut barang, di mana, ya Pak?",
             "speaker": "Ibu Yulia",
             "translation": "O, mijn bagage is erg zwaar. Ik heb twee koffers en een grote tas. Meneer, transporteur, waar bent u?",
+            "translation_en": "Oh, my luggage is very heavy. I have two suitcases and one large bag. Sir, porter, where are you?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/o-barang-saya-berat-3a3c368a.mp3"
           },
           {
             "text": "Di sana, Bu.",
             "speaker": "Pekerja",
             "translation": "Daar, mevrouw.",
+            "translation_en": "There, madam.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/di-sana-bu-8f69ebcb.mp3"
           },
           {
             "text": "Terima kasih banyak, Pak.",
             "speaker": "Ibu Yulia",
             "translation": "Dank je wel, meneer.",
+            "translation_en": "Thank you very much, sir.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/terima-kasih-banyak-pak-1e1fe606.mp3"
           },
           {
             "text": "Terima kasih kembali, Bu.",
             "speaker": "Pekerja",
             "translation": "Graag gedaan, mevrouw.",
+            "translation_en": "You're welcome, madam.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/terima-kasih-kembali-bu-e46d2317.mp3"
           },
           {
             "text": "Barang ini harus ke mana, Bu?",
             "speaker": "Pengangkut",
             "translation": "Waar moet dit naar toe, mevrouw?",
+            "translation_en": "Where should this go, madam?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/barang-ini-harus-ke-1ef3903f.mp3"
           },
           {
             "text": "Ke pabean saja, Pak.",
             "speaker": "Ibu Yulia",
             "translation": "Alleen naar de douane, meneer.",
+            "translation_en": "To customs only, sir.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ke-pabean-saja-pak-41c1f12a.mp3"
           },
           {
             "text": "Ibu mau menginap di mana di kota?",
             "speaker": "Pengangkut",
             "translation": "Waar gaat u in de stad logeren?",
+            "translation_en": "Where will you be staying in the city?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ibu-mau-menginap-di-58bcc6b5.mp3"
           },
           {
             "text": "Belum tahu, Pak. Saya menginap dulu di rumah teman. Besok saya mau cari hotel.",
             "speaker": "Ibu Yulia",
             "translation": "Weet ik nog niet, meneer. Ik logeer eerst bij een vriendin. Morgen zoek ik een hotel.",
+            "translation_en": "I don't know yet, sir. I'm staying first at a friend's place. Tomorrow I'll look for a hotel.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/belum-tahu-pak-saya-6c68e8e9.mp3"
           },
           {
             "text": "Nah, di sini pabean. Ini barang Ibu.",
             "speaker": "Pengangkut",
             "translation": "Hier is de douane. Dit zijn uw spullen.",
+            "translation_en": "Here's customs. These are your things.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nah-di-sini-pabean-44dcb60b.mp3"
           },
           {
             "text": "Terima kasih, Pak.",
             "speaker": "Ibu Yulia",
             "translation": "Dank je wel, meneer.",
+            "translation_en": "Thank you, sir.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/terima-kasih-pak-5ca3f24f.mp3"
           },
           {
             "text": "Selamat siang, Bu, silakan buka koper.",
             "speaker": "Pabean",
             "translation": "Goedemiddag, mevrouw, wilt u alstublieft uw koffer openmaken?",
+            "translation_en": "Good afternoon, madam, please open your suitcase.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/selamat-siang-bu-silakan-1a0014b9.mp3"
           },
           {
             "text": "Minta tolong, Pak, koper saya berat sekali, penuh pakaian dan oleh-oleh untuk teman.",
             "speaker": "Ibu Yulia",
             "translation": "Kunt u me helpen, meneer? Mijn koffer is erg zwaar, vol met kleding en souvenirs voor vrienden.",
+            "translation_en": "Can you help me, sir? My suitcase is very heavy, full of clothes and souvenirs for friends.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/minta-tolong-pak-koper-29782f18.mp3"
           },
           {
             "text": "Oleh-oleh apa, Bu?",
             "speaker": "Pabean",
             "translation": "Wat voor souvenirs, mevrouw?",
+            "translation_en": "What kind of souvenirs, madam?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/oleholeh-apa-bu-62cb7c7e.mp3"
           },
           {
             "text": "O, coklat dan keju. Di sini tidak ada 'kan?",
             "speaker": "Ibu Yulia",
             "translation": "O, chocolade en kaas. Die hebben jullie hier niet, toch?",
+            "translation_en": "Oh, chocolate and cheese. You don't have those here, right?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/o-coklat-dan-keju-6c985d08.mp3"
           },
           {
             "text": "Ya, benar. Silakan, Bu. Saya sudah selesai.",
             "speaker": "Pabean",
             "translation": "Dat klopt. Prima, mevrouw. Ik ben klaar.",
+            "translation_en": "That's correct. Go ahead, madam. I'm done.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ya-benar-silakan-bu-2290f92f.mp3"
           },
           {
             "text": "Pak, di mana ada taksi, ya Pak?",
             "speaker": "Ibu Yulia",
             "translation": "Meneer, waar kan ik hier een taxi vinden?",
+            "translation_en": "Sir, where can I find a taxi?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pak-di-mana-ada-cbcd7966.mp3"
           },
           {
             "text": "Di depan, Bu, di sebelah pintu keluar.",
             "speaker": "Pabean",
             "translation": "Buiten, mevrouw, bij de uitgang.",
+            "translation_en": "Outside, madam, by the exit.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/di-depan-bu-di-21d9f904.mp3"
           },
           {
             "text": "Terima kasih, Pak.",
             "speaker": "Ibu Yulia",
             "translation": "Dank je wel, meneer.",
+            "translation_en": "Thank you, sir.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/terima-kasih-pak-5ca3f24f.mp3"
           },
           {
             "text": "Sama-sama, Bu.",
             "speaker": "Pabean",
             "translation": "Graag gedaan, mevrouw.",
+            "translation_en": "You're welcome, madam.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/samasama-bu-dab28c83.mp3"
           }
         ],
@@ -164,249 +187,435 @@
         "type": "vocabulary",
         "items": [
           {
+            "dutch": "met de bus gaan",
+            "english": "take the bus",
+            "indonesian": "naik bus",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/naik-bus-aec0a5a5.mp3"
+          },
+          {
+            "dutch": "met de auto gaan",
+            "english": "go by car",
+            "indonesian": "naik mobil",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/naik-mobil-48fefb87.mp3"
+          },
+          {
+            "dutch": "met de fiets gaan",
+            "english": "ride a bike",
+            "indonesian": "naik sepeda",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/naik-sepeda-8d29e701.mp3"
+          },
+          {
+            "dutch": "paspoort",
+            "english": "passport",
+            "indonesian": "paspoort",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/paspoort-3d0884c7.mp3"
+          },
+          {
+            "dutch": "één miljoen",
+            "english": "one million",
+            "indonesian": "satu juta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/satu-juta-d770121a.mp3"
+          },
+          {
+            "dutch": "maar, echter",
+            "english": "but, however",
+            "indonesian": "akan tetapi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/akan-tetapi-23c9a13a.mp3"
+          },
+          {
+            "dutch": "daarna, vervolgens",
+            "english": "after that",
+            "indonesian": "setelah itu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/setelah-itu-33e82191.mp3"
+          },
+          {
+            "dutch": "kinderen",
+            "english": "children",
+            "indonesian": "anak-anak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/anakanak-5b4d36b6.mp3"
+          },
+          {
             "dutch": "is, zijn",
+            "english": "is, are",
             "indonesian": "ada",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/ada-1c7667d7.mp3"
           },
           {
             "dutch": "haven",
+            "english": "port, harbor",
             "indonesian": "bandar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bandar-0b7f9376.mp3"
           },
           {
             "dutch": "luchthaven",
+            "english": "airport",
             "indonesian": "bandar udara",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bandar-udara-9e40d4de.mp3"
           },
           {
             "dutch": "veel",
+            "english": "much, many",
             "indonesian": "banyak",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/banyak-88f6f58a.mp3"
           },
           {
             "dutch": "spullen, bagage",
+            "english": "things, luggage, baggage",
             "indonesian": "barang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/barang-853aaadb.mp3"
           },
           {
             "dutch": "echt, waar",
+            "english": "true, real",
             "indonesian": "benar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/benar-8aaede8c.mp3"
           },
           {
             "dutch": "morgen",
             "notes": "besok",
+            "english": "tomorrow",
             "indonesian": "besok",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/besok-aa411450.mp3"
           },
           {
             "dutch": "open(en)",
+            "english": "open",
             "indonesian": "buka",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/buka-c90f654a.mp3"
           },
           {
             "dutch": "bus",
-            "indonesian": "bus/bis",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/busbis-2b0289d2.mp3"
+            "english": "bus",
+            "indonesian": "bus",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bus-40939ebf.mp3"
           },
           {
             "dutch": "zoeken",
+            "english": "search",
             "indonesian": "cari",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/cari-fcf40895.mp3"
           },
           {
             "dutch": "chocolade",
+            "english": "chocolate",
             "indonesian": "coklat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/coklat-1afa795d.mp3"
           },
           {
             "dutch": "voorbeeld",
+            "english": "example",
             "indonesian": "contoh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/contoh-69370a9a.mp3"
           },
           {
             "dutch": "voorzijde",
+            "english": "front",
             "indonesian": "depan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/depan-c63c58b6.mp3"
           },
           {
             "dutch": "voor (plaatsbep.)",
+            "english": "in front of",
             "indonesian": "di depan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/di-depan-ca97ecd6.mp3"
           },
           {
             "dutch": "aan de (zij)kant",
+            "english": "beside",
             "indonesian": "di sebelah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/di-sebelah-1ca188e4.mp3"
           },
           {
             "dutch": "hier",
+            "english": "here",
             "indonesian": "di sini",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/di-sini-0b173a3d.mp3"
           },
           {
             "dutch": "zitten",
+            "english": "sit",
             "indonesian": "duduk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/duduk-8cd4dca5.mp3"
           },
           {
             "dutch": "moeten",
+            "english": "must",
             "indonesian": "harus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/harus-2a7c2d46.mp3"
           },
           {
             "dutch": "is 't niet?",
+            "english": "isn't it?",
             "indonesian": "'kan?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kan-b7d92235.mp3"
           },
           {
             "dutch": "rechts",
+            "english": "right",
             "indonesian": "kanan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kanan-bba8d007.mp3"
           },
           {
             "dutch": "kaas",
             "notes": "keju",
+            "english": "cheese",
             "indonesian": "keju",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/keju-38f743a4.mp3"
           },
           {
             "dutch": "naar buiten gaan",
+            "english": "go out",
             "indonesian": "keluar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/keluar-b8ab1dd4.mp3"
           },
           {
             "dutch": "terugkeren, terug",
+            "english": "return",
             "indonesian": "kembali",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kembali-53b62614.mp3"
           },
           {
             "dutch": "waarheen?",
+            "english": "where to?",
             "indonesian": "ke mana?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/ke-mana-83e2f794.mp3"
           },
           {
             "dutch": "koffer",
+            "english": "suitcase",
             "indonesian": "koper",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/koper-40868a50.mp3"
           },
           {
             "dutch": "stad",
+            "english": "city",
             "indonesian": "kota",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kota-e108eec8.mp3"
           },
           {
             "dutch": "vervolgens",
+            "english": "then",
             "indonesian": "lalu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lalu-a4aec402.mp3"
           },
           {
             "dutch": "veld",
+            "english": "field",
             "indonesian": "lapangan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lapangan-a143efb4.mp3"
           },
           {
             "dutch": "honger",
+            "english": "hunger",
             "indonesian": "lapar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lapar-abadd32d.mp3"
           },
           {
             "dutch": "zee",
+            "english": "sea",
             "indonesian": "laut",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/laut-6b88cf3d.mp3"
           },
           {
             "dutch": "welk, welke?",
+            "english": "which?",
             "indonesian": "mana?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/mana-e9afa637.mp3"
           },
           {
             "dutch": "vragen om iets, verzoeken",
+            "english": "ask for",
             "indonesian": "minta",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/minta-aa033a92.mp3"
           },
           {
             "dutch": "auto",
+            "english": "car",
             "indonesian": "mobil",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/mobil-3c031709.mp3"
           },
           {
             "dutch": "cadeautje, souvenir",
             "notes": "oleh-oleh",
+            "english": "gift, souvenir",
             "indonesian": "oleh-oleh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/oleholeh-f170cc32.mp3"
           },
           {
             "dutch": "douane",
             "notes": "pabean",
+            "english": "customs",
             "indonesian": "pabean",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pabean-fb443780.mp3"
           },
           {
             "dutch": "kleding",
+            "english": "clothing",
             "indonesian": "pakaian",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pakaian-27c6b38e.mp3"
           },
           {
             "dutch": "kruier",
+            "english": "porter",
             "indonesian": "pengangkut",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pengangkut-8f4e7e63.mp3"
           },
           {
             "dutch": "slechts, alleen maar",
+            "english": "only, just",
             "indonesian": "saja",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/saja-317c931e.mp3"
           },
           {
             "dutch": "oceaan",
+            "english": "ocean",
             "indonesian": "samudera",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/samudera-7f1a1052.mp3"
           },
           {
             "dutch": "zijkant, naast",
+            "english": "side, beside",
             "indonesian": "sebelah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sebelah-1c2f6b6c.mp3"
           },
           {
             "dutch": "zeer, erg, heel",
+            "english": "very, extremely",
             "indonesian": "sekali",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sekali-66c0ab51.mp3"
           },
           {
             "dutch": "klaar, gereed, afgelopen",
+            "english": "finished, ready, done",
             "indonesian": "selesai",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/selesai-c8783a94.mp3"
           },
           {
             "dutch": "fiets",
             "notes": "sepeda",
+            "english": "bicycle",
             "indonesian": "sepeda",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sepeda-9430f7ac.mp3"
           },
           {
             "dutch": "alstublieft, gaat uw gang",
+            "english": "please, go ahead",
             "indonesian": "silakan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/silakan-df00f79e.mp3"
           },
           {
             "dutch": "weten",
+            "english": "know",
             "indonesian": "tahu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tahu-c0c84ff2.mp3"
           },
           {
             "dutch": "vliegen",
+            "english": "fly",
             "indonesian": "terbang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/terbang-5414cc3a.mp3"
           },
           {
             "dutch": "helpen",
+            "english": "help",
             "indonesian": "tolong",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tolong-87f9b58f.mp3"
           },
           {
             "dutch": "lucht, luchtruim",
+            "english": "air",
             "indonesian": "udara",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/udara-ee500adc.mp3"
+          },
+          {
+            "dutch": "hoe?",
+            "english": "how?",
+            "indonesian": "bagaimana?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bagaimana-13edda7a.mp3"
+          },
+          {
+            "dutch": "wanneer?",
+            "english": "when?",
+            "indonesian": "kapan?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kapan-b13c9a21.mp3"
+          },
+          {
+            "dutch": "waarom?",
+            "english": "why?",
+            "indonesian": "mengapa?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/mengapa-9e8a06d0.mp3"
+          },
+          {
+            "dutch": "waarom? (oorzaak)",
+            "english": "why? (cause)",
+            "indonesian": "kenapa?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kenapa-e8583b69.mp3"
+          },
+          {
+            "dutch": "welke?",
+            "english": "which?",
+            "indonesian": "yang mana?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/yang-mana-98b1b2a4.mp3"
+          },
+          {
+            "dutch": "op/bovenkant",
+            "english": "on/top",
+            "indonesian": "atas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/atas-b7d7ac0b.mp3"
+          },
+          {
+            "dutch": "onder/onderkant",
+            "english": "under/bottom",
+            "indonesian": "bawah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bawah-eeb3c78e.mp3"
+          },
+          {
+            "dutch": "achter",
+            "english": "behind",
+            "indonesian": "belakang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/belakang-ec7992e3.mp3"
+          },
+          {
+            "dutch": "voor/voorkant",
+            "english": "front/in front",
+            "indonesian": "muka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/muka-bc171ae6.mp3"
+          },
+          {
+            "dutch": "in",
+            "english": "in",
+            "indonesian": "dalam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/dalam-4fc6aca9.mp3"
+          },
+          {
+            "dutch": "buiten",
+            "english": "outside",
+            "indonesian": "luar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/luar-b17a6b22.mp3"
+          },
+          {
+            "dutch": "midden",
+            "english": "middle",
+            "indonesian": "tengah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tengah-29ef1831.mp3"
+          },
+          {
+            "dutch": "links",
+            "english": "left",
+            "indonesian": "kiri",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kiri-65b0e361.mp3"
+          },
+          {
+            "dutch": "hier",
+            "english": "here",
+            "indonesian": "sini",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sini-d2a8512e.mp3"
+          },
+          {
+            "dutch": "daar",
+            "english": "there",
+            "indonesian": "situ",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/situ-5f38cb85.mp3"
           }
         ]
       }
@@ -418,31 +627,31 @@
         "items": [
           {
             "dutch": "vliegveld",
-            "indonesian": "bandar udara / lapangan terbang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bandar-udara-lapangan-terbang-ff348644.mp3"
+            "english": "airport",
+            "indonesian": "lapangan terbang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lapangan-terbang-d2717930.mp3"
           },
           {
             "dutch": "kunt u me helpen?; hulp vragen",
+            "english": "ask for help",
             "indonesian": "Minta tolong",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/minta-tolong-8d96ea53.mp3"
           },
           {
-            "dutch": "met de fiets/bus/auto gaan",
-            "indonesian": "naik sepeda/bus/mobil",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/naik-sepedabusmobil-cfe8df36.mp3"
-          },
-          {
             "dutch": "uitgang",
+            "english": "exit",
             "indonesian": "pintu keluar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pintu-keluar-4208fc1b.mp3"
           },
           {
             "dutch": "geen dank, van hetzelfde",
+            "english": "you're welcome",
             "indonesian": "sama-sama",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/samasama-27f46fa8.mp3"
           },
           {
             "dutch": "geen dank, graag gedaan",
+            "english": "you're welcome",
             "indonesian": "terima kasih kembali",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/terima-kasih-kembali-56518eaa.mp3"
           }
@@ -456,61 +665,73 @@
         "items": [
           {
             "dutch": "10",
+            "english": "ten",
             "indonesian": "sepuluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sepuluh-5724f915.mp3"
           },
           {
             "dutch": "20",
+            "english": "twenty",
             "indonesian": "dua puluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/dua-puluh-10937a51.mp3"
           },
           {
             "dutch": "21",
+            "english": "twenty-one",
             "indonesian": "dua puluh satu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/dua-puluh-satu-c4adad6f.mp3"
           },
           {
             "dutch": "30",
+            "english": "thirty",
             "indonesian": "tiga puluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tiga-puluh-bcd2c9a8.mp3"
           },
           {
             "dutch": "32",
+            "english": "thirty-two",
             "indonesian": "tiga puluh dua",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tiga-puluh-dua-18598517.mp3"
           },
           {
             "dutch": "40",
+            "english": "forty",
             "indonesian": "empat puluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/empat-puluh-00a7e225.mp3"
           },
           {
             "dutch": "50",
+            "english": "fifty",
             "indonesian": "lima puluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lima-puluh-d4dcf623.mp3"
           },
           {
             "dutch": "60",
+            "english": "sixty",
             "indonesian": "enam puluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/enam-puluh-a9874b08.mp3"
           },
           {
             "dutch": "70",
+            "english": "seventy",
             "indonesian": "tujuh puluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tujuh-puluh-0a74fe82.mp3"
           },
           {
             "dutch": "80",
+            "english": "eighty",
             "indonesian": "delapan puluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/delapan-puluh-3815bb8b.mp3"
           },
           {
             "dutch": "90",
+            "english": "ninety",
             "indonesian": "sembilan puluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sembilan-puluh-0ee38c75.mp3"
           },
           {
             "dutch": "100",
+            "english": "one hundred",
             "indonesian": "seratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/seratus-920b0f45.mp3"
           }
@@ -532,7 +753,17 @@
               "'Ik kom van huis' -> Saya dari rumah (correct)",
               "'Het huis is van mij' -> NIET Rumah dari saya (fout)"
             ],
-            "title": "Woorden van plaats: dari, di, ke"
+            "title": "Woorden van plaats: dari, di, ke",
+            "rules_en": [
+              "dari -- from, out of, from (motion from)",
+              "di -- in, at, on (location/rest)",
+              "ke -- to, towards (motion to)",
+              "Compare: I am from Bali. Now I live in Solo. Tomorrow I'm going back to Jakarta.",
+              "Di, dari and ke are always used in a locational phrase and not figuratively.",
+              "'I come from home' -> Saya dari rumah (correct)",
+              "'The house is mine' -> NOT Rumah dari saya (wrong)"
+            ],
+            "title_en": "Words of place: from, at, to"
           },
           {
             "table": [
@@ -625,7 +856,8 @@
                 "combinations": []
               }
             ],
-            "title": "Gecombineerde plaatsbepalingen"
+            "title": "Gecombineerde plaatsbepalingen",
+            "title_en": "Combined adverbials"
           }
         ],
         "grammar_topics": [
@@ -660,7 +892,7 @@
           {
             "dutch": "Ini koper berat",
             "indonesian": "Apa itu?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/apa-itu-922bfa32.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/apa-itu-fd336700.mp3"
           },
           {
             "dutch": "Ya, saya mau makan",
@@ -751,7 +983,8 @@
                 "example": "Rumah yang mana?"
               }
             ],
-            "title": "Vraagwoorden"
+            "title": "Vraagwoorden",
+            "title_en": "Question words"
           }
         ],
         "grammar_topics": [
@@ -771,7 +1004,12 @@
               "Hotel itu mahal sekali -- Dat hotel is erg duur",
               "Sepeda ini bagus sekali -- Deze fiets is erg mooi"
             ],
-            "title": "Sekali"
+            "title": "Sekali",
+            "rules_en": [
+              "That hotel is very expensive -- Hotel itu mahal sekali",
+              "This bicycle is very nice -- Sepeda ini bagus sekali"
+            ],
+            "title_en": "Sekali"
           }
         ],
         "grammar_topics": [
@@ -796,7 +1034,17 @@
               "Ik heb honger -> Saya lapar (NIET: saya ada lapar)",
               "Opmerking: Adalah = is, zijn. Het Nederlandse koppelwerkwoord kan worden vertaald met adalah, maar dit wordt slechts toegepast in officieel taalgebruik."
             ],
-            "title": "Gebruik van ada"
+            "title": "Gebruik van ada",
+            "rules_en": [
+              "There are many cars there -- Di sana ada banyak mobil",
+              "Is there cheese? - Yes, there is -- Ada keju? - Ya, ada",
+              "How many bicycles are there? -- Ada berapa sepeda?",
+              "In English one often uses the copular verbs 'is' and 'have'. Indonesian does not have these copular verbs.",
+              "This house is beautiful -> Rumah ini bagus (NOT: ada bagus)",
+              "I am hungry -> Saya lapar (NOT: saya ada lapar)",
+              "Note: Adalah = is, are. The English copular verb can be translated with adalah, but this is only used in formal language."
+            ],
+            "title_en": "Use of ada"
           }
         ],
         "grammar_topics": [
@@ -1032,7 +1280,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-3.m4a\" voice=\"id-ID-Chirp3-HD-Sulafat\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Sulafat\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },

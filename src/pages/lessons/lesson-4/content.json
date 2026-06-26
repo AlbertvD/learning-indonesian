@@ -7,7 +7,7 @@
     "description": "Accommodation and dining in Indonesia. Grammar focus: YANG constructie (relative pronouns and emphasis patterns)",
     "primary_voice": "id-ID-Chirp3-HD-Algenib",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-4.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-4-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -18,8 +18,8 @@
         "paragraphs": [
           "Les 4\nCULTUUR",
           "Sommigen brengen de nacht door onder een flonkerende tropenhemel op het witte strand van Bali. Het is romantisch en goedkoop, al moet je de voortdurende nieuwsgierigheid van stekende muggen, blaffende hondjes en nachtelijke vissers op de koop toe nemen. Mocht je toch in slaap vallen, dan ben je bij deze gewaarschuwd: om vijf uur 's ochtends gonst het strand van de bedrijvigheid. Van zee terugkerende vissers, hout sprokkelende vrouwen, spelende kinderen en dauwtrappende toeristen komen de eerste zonnestralen begroeten.",
-          "Een andere mogelijkheid om de nacht door te brengen is het huren van een kamer in een \"penginapan\", vrij vertaald: \"een plaats waar je kunt overnachten\". Vaak betekent het inderdaad niets meer dan dat. Je krijgt er een slaapplaats aangewezen in een slaapzaal en wanneer je geluk hebt is er wellicht een afsluitbare tweepersoons-kamer te huur. Een gemeenschappelijk hurktoilet en 'mandi-kamer' die ettelijke dagen geen Hollandse schoonmaakbeurt hebben gekregen, zijn gebruikelijk. Ontbijt en andere maaltijden worden niet geserveerd, het beddegoed is niet altijd even nieuw en er wordt geen handdoek met zeep aangeboden. Echter over één ding kunnen zelfs 'budget travellers' niet kibbelen: de lage prijs. De kosten van een overnachting variëren van Rp 70.000 tot Rp 150.000 (circa € 4 tot € 9). Natuurlijk zijn er vele nette en schone 'penginapans', doch over het algemeen zijn ze bedoeld voor de degene die op doorreis niet al te veel geld wil of kan besteden aan zijn nachtrust.",
-          "De nettere slaapgelegenheden presenteren zich als \"losmen\" (van het Nederlandse 'logement'). Het beheer is meestal in handen van een familie die door verhuur van kamers een klein extra inkomen probeert te verwerven. Het zijn in feite goedkope hotels met dien verstande dat ze niet de daarbij behorende service verlenen. Doorgaans kun je er bijvoorbeeld geen ontbijt krijgen en uitgebreide drink- en eetfaciliteiten zijn eveneens afwezig. Meestal kan men wel voor een klein bedrag kleding laten wassen. De kwaliteit van de kamers en de hygiëne zijn sterk afhankelijk van de eigenaar waardoor we een grote verscheidenheid aantreffen: soms hoge prijzen en smoezelige kamers, dan weer brandschone badkamers en lage prijzen. Het verdient aanbeveling om altijd eerst te kijken voordat men erin trekt. De prijzen liggen tussen de Rp 100.000 en Rp 300.000.",
+          "Een andere mogelijkheid om de nacht door te brengen is het huren van een kamer in een \"penginapan\", vrij vertaald: \"een plaats waar je kunt overnachten\". Vaak betekent het inderdaad niets meer dan dat. Je krijgt er een slaapplaats aangewezen in een slaapzaal en wanneer je geluk hebt is er wellicht een afsluitbare tweepersoons-kamer te huur. Een gemeenschappelijk hurktoilet en 'mandi-kamer' die ettelijke dagen geen Hollandse schoonmaakbeurt hebben gekregen, zijn gebruikelijk. Ontbijt en andere maaltijden worden niet geserveerd, het beddegoed is niet altijd even nieuw en er wordt geen handdoek met zeep aangeboden. Echter over één ding kunnen zelfs 'budget travellers' niet kibbelen: de lage prijs. De kosten van een overnachting kunnen variëren van Rp 7.000 tot Rp 20.000 (circa f 6,-- tot f 17,50). Natuurlijk zijn er vele nette en schone 'penginapans', doch over het algemeen zijn ze bedoeld voor de degene die op doorreis niet al te veel geld wil of kan besteden aan zijn nachtrust.",
+          "De nettere slaapgelegenheden presenteren zich als \"losmen\" (van het Nederlandse 'logement'). Het beheer is meestal in handen van een familie die door verhuur van kamers een klein extra inkomen probeert te verwerven. Het zijn in feite goedkope hotels met dien verstande dat ze niet de daarbij behorende service verlenen. Doorgaans kun je er bijvoorbeeld geen ontbijt krijgen en uitgebreide drink- en eetfaciliteiten zijn eveneens afwezig. Meestal kan men wel voor een klein bedrag kleding laten wassen. De kwaliteit van de kamers en de hygiëne zijn sterk afhankelijk van de eigenaar waardoor we een grote verscheidenheid aantreffen: soms hoge prijzen en smoezelige kamers, dan weer brandschone badkamers en lage prijzen. Het verdient aanbeveling om altijd eerst te kijken voordat men erin trekt. De prijzen liggen tussen de Rp 15.000 - Rp 30.000.",
           "In juli 1988 heeft de Indonesische overheid voor Bali echter het verbod uitgevaardigd om toeristen in privéhuizen op te nemen teneinde een betere controle te krijgen op de toeristenstroom.",
           "Van betere kwaliteit zijn de 'guesthouses', al moet de reiziger ook hier uitkijken wat hij huurt. Over het algemeen is de hygiëne goed en zijn toilet en mandi-kamer schoon. Het zijn andere zaken waarop men dient te letten zoals: de ligging van de kamer, netheid, de aanwezigheid van een electrische ventilator (probeer hem eerst uit) of AC (-air conditioning) en voldoende verlichting."
         ]
@@ -46,78 +46,91 @@
             "text": "Selamat siang, Mas. Kamar saya nomor berapa?",
             "speaker": "Ibu Dewi",
             "translation": "Goedemiddag, meneer. Welk kamernummer heb ik?",
+            "translation_en": "Good afternoon, sir. What is my room number?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/selamat-siang-mas-kamar-66803c79.mp3"
           },
           {
             "text": "Nomor 215, Bu. Di lantai 2.",
             "speaker": "Mas Wawan",
             "translation": "Nummer 215, mevrouw. Op de tweede verdieping.",
+            "translation_en": "Number 215, madam. On the second floor.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nomor-215-bu-di-00f5ff74.mp3"
           },
           {
             "text": "Paspor Ibu di mana? Saya harus isi formulir hotel.",
             "speaker": "Mas Wawan",
             "translation": "Waar is uw paspoort, mevrouw? Ik moet het hotelformulier invullen.",
+            "translation_en": "Where is your passport, madam? I need to fill in the hotel form.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/paspor-ibu-di-mana-d7bbd278.mp3"
           },
           {
             "text": "Ini paspor saya. Kunci saya di mana?",
             "speaker": "Ibu Dewi",
             "translation": "Hier is mijn paspoort. Waar is mijn sleutel?",
+            "translation_en": "Here is my passport. Where is my key?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ini-paspor-saya-kunci-40cc6f22.mp3"
           },
           {
             "text": "Kunci yang kecil dan kuning ini kunci Ibu, silakan!",
             "speaker": "Mas Wawan",
             "translation": "Deze kleine gele sleutel is uw sleutel, alstublieft!",
+            "translation_en": "This small yellow key is your key, please!",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kunci-yang-kecil-dan-b9d0f8dc.mp3"
           },
           {
             "text": "Kamar saya bagus. Kamar mandi ada di mana?",
             "speaker": "Ibu Dewi",
             "translation": "Mijn kamer is mooi. Waar is het badkamer?",
+            "translation_en": "My room is nice. Where is the bathroom?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kamar-saya-bagus-kamar-05f9c487.mp3"
           },
           {
             "text": "Di sini, Bu. Handuk, sabun dan sikat gigi ada. Di situ bak air.",
             "speaker": "Mas Wawan",
             "translation": "Hier, mevrouw. Handdoeken, zeep en tandenborstel zijn er. Daar is het badkuip.",
+            "translation_en": "Here, madam. Towels, soap and toothbrush are here. There is the bathtub.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/di-sini-bu-handuk-859c2d8e.mp3"
           },
           {
             "text": "Air di bak untuk mandi.",
             "speaker": "Mas Wawan",
             "translation": "Het water in het kuip is voor het bad.",
+            "translation_en": "The water in the tub is for bathing.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/air-di-bak-untuk-6b133260.mp3"
           },
           {
             "text": "Oke, terima kasih, ya Mas!",
             "speaker": "Ibu Dewi",
             "translation": "Oké, dank je wel, meneer!",
+            "translation_en": "Okay, thank you, sir!",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/oke-terima-kasih-ya-97f41190.mp3"
           },
           {
             "text": "Mas, saya ingin makan. Apa makanan yang enak?",
             "speaker": "Ibu Dewi",
             "translation": "Meneer, ik wil graag eten. Wat is lekker eten?",
+            "translation_en": "Sir, I want to eat. What is good food?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/mas-saya-ingin-makan-6ae7bef7.mp3"
           },
           {
             "text": "Oo, apa Ibu suka ayam pedas, nasi kuning dan lauk?",
             "speaker": "Mas Imran",
             "translation": "Oh, houdt u van pittige kip, gele rijst en bijgerechten?",
+            "translation_en": "Oh, do you like spicy chicken, yellow rice and side dishes?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/oo-apa-ibu-suka-eaf8c292.mp3"
           },
           {
             "text": "Eeh... suka, tetapi saya ingin makan sate kambing, gado-gado dan nasi putih.",
             "speaker": "Ibu Dewi",
             "translation": "Eh... ja, maar ik wil liever geitenvlees satéspiesjes, gado-gado en witte rijst eten.",
+            "translation_en": "Eh... yes, but I would prefer to eat goat satay, gado-gado and white rice.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/eeh-suka-tetapi-saya-6d25c76a.mp3"
           },
           {
             "text": "Tambah krupuk juga dan segelas air putih, ya Mas.",
             "speaker": "Ibu Dewi",
             "translation": "Voeg ook nog krupuk toe en een glas water, meneer.",
+            "translation_en": "Add crackers too and a glass of water, sir.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tambah-krupuk-juga-dan-6d75705e.mp3"
           }
         ]
@@ -132,25 +145,37 @@
             "rules": [
               "Yang koppelt als betrekkelijk voornaamwoord een bijzin aan het voorgaande zelfstandig naamwoord.",
               "Yang staat altijd direct na het woord of de woordgroep waarnaar verwezen wordt.",
-              "Na samengestelde zelfstandige naamwoorden (kamar mandi, tempat tidur) is yang verplicht.",
+              "Na samengestelde zelfstandige naamwoorden (kamar mandi, tempat tidur) is yang optioneel: zowel 'kamar mandi bersih' als 'kamar mandi yang bersih' is correct; yang gebruik je vooral in formele taal of voor de duidelijkheid.",
               "Na een bezittelijk voornaamwoord dient een bijvoeglijk naamwoord ook voorafgegaan te worden door yang."
             ],
             "title": "Yang als betrekkelijk voornaamwoord (die/dat)",
             "examples": [
               {
                 "dutch": "Een banaan die te oud is, is niet lekker",
-                "indonesian": "Pisang yang terlalu tua tidak enak"
+                "english": "A banana that is too ripe is not tasty.",
+                "indonesian": "Pisang yang terlalu tua tidak enak",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pisang-yang-terlalu-tua-388e27a8.mp3"
               },
               {
                 "dutch": "Dit is de Nederlander die in Bogor woont",
-                "indonesian": "Ini orang Belanda yang tinggal di Bogor"
+                "english": "This is the Dutchman who lives in Bogor.",
+                "indonesian": "Ini orang Belanda yang tinggal di Bogor",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ini-orang-belanda-yang-6633ea8f.mp3"
               },
               {
                 "dutch": "Mijn kleine fiets is verdwenen",
+                "english": "My small bicycle has disappeared.",
                 "indonesian": "Sepeda saya yang kecil hilang",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sepeda-saya-yang-kecil-82e90a00.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Yang links as a relative pronoun a subordinate clause to the preceding noun.",
+              "Yang always stands directly after the word or phrase it refers to.",
+              "After compound nouns (kamar mandi, tempat tidur) yang is optional: both 'kamar mandi bersih' and 'kamar mandi yang bersih' are correct; yang is used mainly in formal register or for clarity.",
+              "After a possessive pronoun an adjective must also be preceded by yang."
+            ],
+            "title_en": "Yang as relative pronoun (who/which/that)"
           },
           {
             "rules": [
@@ -161,28 +186,40 @@
             "examples": [
               {
                 "dutch": "De dure (dingen) zijn mooi",
+                "english": "The expensive ones are beautiful.",
                 "indonesian": "Yang mahal bagus",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yang-mahal-bagus-8020316a.mp3"
               },
               {
                 "dutch": "De grote is lekker",
-                "indonesian": "Yang besar enak"
+                "english": "The big one is tasty.",
+                "indonesian": "Yang besar enak",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yang-besar-enak-c53c65bf.mp3"
               },
               {
                 "dutch": "Degenen die slapen zijn talrijk",
+                "english": "Those who sleep are many.",
                 "indonesian": "Yang tidur banyak",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yang-tidur-banyak-640c4077.mp3"
               },
               {
                 "dutch": "Degenen die naar de winkel willen moeten een taxi nemen",
+                "english": "Those who want to go to the store must take a taxi.",
                 "indonesian": "Yang mau ke toko harus naik taksi",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yang-mau-ke-toko-1f9c8d0a.mp3"
               },
               {
                 "dutch": "Deze twee zijn schoon",
-                "indonesian": "Yang dua ini bersih"
+                "english": "These two are clean.",
+                "indonesian": "Yang dua ini bersih",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yang-dua-ini-bersih-cb6588ca.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Yang can convert adjectives, verbs and other parts of speech into nouns.",
+              "Comparable to the Dutch 'the...' or 'those who...'."
+            ],
+            "title_en": "Yang makes nouns (nominalization)"
           },
           {
             "rules": [
@@ -193,23 +230,34 @@
             "examples": [
               {
                 "dutch": "Het GROTE huis (nadruk op groot)",
+                "english": "The BIG house (emphasis on big)",
                 "indonesian": "Rumah yang besar",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rumah-yang-besar-29a570ab.mp3"
               },
               {
                 "dutch": "De SCHONE lepel",
-                "indonesian": "Sendok yang bersih"
+                "english": "The CLEAN spoon",
+                "indonesian": "Sendok yang bersih",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sendok-yang-bersih-39b9f767.mp3"
               },
               {
                 "dutch": "De KLEINE stoel",
-                "indonesian": "Kursi yang kecil"
+                "english": "The SMALL chair",
+                "indonesian": "Kursi yang kecil",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kursi-yang-kecil-6dc0f491.mp3"
               },
               {
                 "dutch": "De WITTE badkamer",
+                "english": "The WHITE bathroom",
                 "indonesian": "Kamar mandi yang putih",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kamar-mandi-yang-putih-10d6dace.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Yang before an adjective emphasizes that property.",
+              "Comparable to italicizing a word in Dutch."
+            ],
+            "title_en": "Yang with a single adjective (emphasis)"
           },
           {
             "rules": [
@@ -220,25 +268,34 @@
             "examples": [
               {
                 "dutch": "Het GELE grote huis (geel benadrukt)",
+                "english": "The YELLOW large house (yellow emphasized)",
                 "indonesian": "Rumah besar yang kuning",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rumah-besar-yang-kuning-15c5735a.mp3"
               },
               {
                 "dutch": "De schone kleine lepel (schoon benadrukt)",
+                "english": "The clean small spoon (clean emphasized)",
                 "indonesian": "Sendok kecil yang bersih",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sendok-kecil-yang-bersih-9add1c39.mp3"
               },
               {
                 "dutch": "Het grote en gele huis (gelijke nadruk)",
+                "english": "The large and yellow house (equal emphasis)",
                 "indonesian": "Rumah yang besar dan kuning",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rumah-yang-besar-dan-40b92379.mp3"
               },
               {
                 "dutch": "De witte, zware kamerdeur (gelijke nadruk)",
+                "english": "The white, heavy room door (equal emphasis)",
                 "indonesian": "Pintu kamar yang putih dan berat",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pintu-kamar-yang-putih-cd20b8f9.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "With unequal emphasis (one property emphasized): [noun] [adj.] yang [emphasized adj.]",
+              "With equal emphasis (both properties equally important): [noun] yang [adj.] dan [adj.]"
+            ],
+            "title_en": "Yang with two adjectives"
           },
           {
             "rules": [
@@ -249,10 +306,16 @@
             "examples": [
               {
                 "dutch": "Er zijn er die uit Nederland komen en er zijn er die uit Duitsland komen",
+                "english": "There are those from the Netherlands and there are those from Germany",
                 "indonesian": "Ada yang dari negeri Belanda dan ada yang dari negeri Jerman",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ada-yang-dari-negeri-60fb0cca.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Ada yang... means 'there are those who...' or 'some..., others...'",
+              "Used to divide a group or indicate a portion."
+            ],
+            "title_en": "Ada yang... — there are those who..."
           }
         ],
         "grammar_topics": [
@@ -459,416 +522,499 @@
         "items": [
           {
             "dutch": "de jonge rijstplant",
+            "english": "young rice plant",
             "indonesian": "bibit padi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bibit-padi-420c697b.mp3"
           },
           {
             "dutch": "volgroeide rijstplant met volle rijstaar, ongepelde rijst",
+            "english": "mature rice plant with full rice head, unmilled rice",
             "indonesian": "padi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/padi-1ca42301.mp3"
           },
           {
             "dutch": "ongepelde rijst",
+            "english": "unmilled rice",
             "indonesian": "gabah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gabah-cf264292.mp3"
           },
           {
             "dutch": "gepelde ongekookte rijst",
+            "english": "milled uncooked rice",
             "indonesian": "beras",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/beras-089126c3.mp3"
           },
           {
             "dutch": "gekookte rijst",
+            "english": "cooked rice",
             "indonesian": "nasi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nasi-9ed3ab32.mp3"
           },
           {
             "dutch": "gekookte witte rijst",
+            "english": "cooked white rice",
             "indonesian": "nasi putih",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nasi-putih-ab91a238.mp3"
           },
           {
             "dutch": "gekookte rijst, daarna met kruiden gebakken",
+            "english": "cooked rice, then fried with spices",
             "indonesian": "nasi goreng",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nasi-goreng-6723e6c0.mp3"
           },
           {
             "dutch": "met kruiden geel gekookte rijst",
+            "english": "rice cooked yellow with spices",
             "indonesian": "nasi kuning",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nasi-kuning-6c873774.mp3"
           },
           {
             "dutch": "begeleiden",
+            "english": "to accompany",
             "indonesian": "mengantar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/mengantar-203c7982.mp3"
           },
           {
             "dutch": "water",
+            "english": "water",
             "indonesian": "air",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/air-a169050c.mp3"
           },
           {
             "dutch": "drinken",
+            "english": "to drink",
             "indonesian": "minum",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/minum-de3f09dc.mp3"
           },
           {
             "dutch": "drinkwater",
+            "english": "drinking water",
             "indonesian": "air putih",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/air-putih-163cba90.mp3"
           },
           {
             "dutch": "drank",
+            "english": "beverage",
             "indonesian": "minuman",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/minuman-2102e6d6.mp3"
           },
           {
             "dutch": "maar, echter",
+            "english": "but, however",
             "indonesian": "tetapi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tetapi-2f7ec091.mp3"
           },
           {
             "dutch": "kind",
+            "english": "child",
             "indonesian": "anak",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/anak-aa695f1a.mp3"
           },
           {
             "dutch": "waterbak",
+            "english": "water tank",
             "indonesian": "bak air",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bak-air-af5d5b34.mp3"
           },
           {
             "dutch": "heet (van smaak)",
+            "english": "spicy, hot (taste)",
             "indonesian": "pedas",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pedas-a8c86dc3.mp3"
           },
           {
             "dutch": "schoon",
+            "english": "clean",
             "indonesian": "bersih",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bersih-dd0b0707.mp3"
           },
           {
             "dutch": "langzaam (aan)",
+            "english": "slowly",
             "indonesian": "pelan-pelan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pelanpelan-e63f3255.mp3"
           },
           {
             "dutch": "zitten",
+            "english": "sit",
             "indonesian": "duduk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/duduk-29f728b3.mp3"
           },
           {
             "dutch": "bestellen",
+            "english": "order",
             "indonesian": "pesan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pesan-060f9e4f.mp3"
           },
           {
             "dutch": "formulier",
+            "english": "form",
             "indonesian": "formulir",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/formulir-91ed0a16.mp3"
           },
           {
             "dutch": "bord",
+            "english": "plate",
             "indonesian": "piring",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/piring-39b2cf4d.mp3"
           },
           {
             "dutch": "groentegerecht",
+            "english": "vegetable dish",
             "indonesian": "gado-gado",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gadogado-fe13836e.mp3"
           },
           {
             "dutch": "verlangen, willen",
+            "english": "want, desire",
             "indonesian": "ingin",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ingin-360a98ea.mp3"
           },
           {
             "dutch": "mes",
+            "english": "knife",
             "indonesian": "pisau",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pisau-0c23130c.mp3"
           },
           {
             "dutch": "vork",
+            "english": "fork",
             "indonesian": "garpu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/garpu-c8316a82.mp3"
           },
           {
             "dutch": "wit",
+            "english": "white",
             "indonesian": "putih",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/putih-c18dc549.mp3"
           },
           {
             "dutch": "glas",
+            "english": "glass",
             "indonesian": "gelas",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gelas-42ff40cd.mp3"
           },
           {
             "dutch": "netjes",
+            "english": "tidy, neat",
             "indonesian": "rapi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rapi-625ce180.mp3"
           },
           {
             "dutch": "tand",
+            "english": "tooth",
             "indonesian": "gigi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gigi-1f9c483a.mp3"
           },
           {
             "dutch": "restaurant",
+            "english": "restaurant",
             "indonesian": "restoran",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/restoran-d42d6d00.mp3"
           },
           {
             "dutch": "bakken, braden",
+            "english": "fry",
             "indonesian": "goreng",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/goreng-5337251a.mp3"
           },
           {
             "dutch": "handdoek",
+            "english": "towel",
             "indonesian": "handuk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/handuk-bae810cc.mp3"
           },
           {
             "dutch": "zeep",
+            "english": "soap",
             "indonesian": "sabun",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sabun-56b88195.mp3"
           },
           {
             "dutch": "weg, verdwenen (kwijt)",
+            "english": "lost, missing",
             "indonesian": "hilang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/hilang-e7ca6dc3.mp3"
           },
           {
             "dutch": "pasta van Spaanse pepers",
+            "english": "chili pepper paste",
             "indonesian": "sambal",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sambal-4df8d8a6.mp3"
           },
           {
             "dutch": "sate",
+            "english": "satay",
             "indonesian": "sate",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sate-e04b16f9.mp3"
           },
           {
             "dutch": "inhoud, (in)vullen",
+            "english": "contents, fill",
             "indonesian": "isi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/isi-d858e03f.mp3"
           },
           {
             "dutch": "groente",
+            "english": "vegetable",
             "indonesian": "sayur",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sayur-f8c63c34.mp3"
           },
           {
             "dutch": "een bepaalde vrucht",
+            "english": "rose apple",
             "indonesian": "jambu air",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jambu-air-a20cc6c5.mp3"
           },
           {
             "dutch": "school",
+            "english": "school",
             "indonesian": "sekolah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sekolah-51dac999.mp3"
           },
           {
             "dutch": "Duitsland, Duits",
+            "english": "Germany, German",
             "indonesian": "Jerman",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jerman-11cee52c.mp3"
           },
           {
             "dutch": "vaarwel",
+            "english": "goodbye",
             "indonesian": "selamat tinggal",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/selamat-tinggal-71654d42.mp3"
           },
           {
             "dutch": "ook",
+            "english": "also",
             "indonesian": "juga",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/juga-5c428547.mp3"
           },
           {
             "dutch": "lepel",
+            "english": "spoon",
             "indonesian": "sendok",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sendok-7ab3b30c.mp3"
           },
           {
             "dutch": "toilet, w.c.",
+            "english": "toilet, restroom",
             "indonesian": "kamar kecil",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kamar-kecil-233b323e.mp3"
           },
           {
             "dutch": "na(dat), vervolgens",
+            "english": "after, then",
             "indonesian": "setelah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/setelah-5db80c0e.mp3"
           },
           {
             "dutch": "eetkamer",
+            "english": "dining room",
             "indonesian": "kamar makan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kamar-makan-f29dd93c.mp3"
           },
           {
             "dutch": "borstel",
+            "english": "brush",
             "indonesian": "sikat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sikat-ae60c715.mp3"
           },
           {
             "dutch": "badkamer",
+            "english": "bathroom",
             "indonesian": "kamar mandi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kamar-mandi-3d8732c1.mp3"
           },
           {
             "dutch": "tandenborstel",
+            "english": "toothbrush",
             "indonesian": "sikat gigi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sikat-gigi-a61a1533.mp3"
           },
           {
             "dutch": "geit",
+            "english": "goat",
             "indonesian": "kambing",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kambing-758a2a96.mp3"
           },
           {
             "dutch": "houden van (lekker vinden)",
+            "english": "like, enjoy",
             "indonesian": "suka",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/suka-0ff49e7d.mp3"
           },
           {
             "dutch": "sojasaus",
+            "english": "soy sauce",
             "indonesian": "kecap",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kecap-d1ad3db8.mp3"
           },
           {
             "dutch": "gast",
+            "english": "guest",
             "indonesian": "tamu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tamu-0c503895.mp3"
           },
           {
             "dutch": "genoeg, voldaan",
+            "english": "full, satisfied",
             "indonesian": "kenyang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kenyang-473018f3.mp3"
           },
           {
             "dutch": "thee",
+            "english": "tea",
             "indonesian": "teh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/teh-52361ba7.mp3"
           },
           {
             "dutch": "koffie",
+            "english": "coffee",
             "indonesian": "kopi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kopi-038a45e2.mp3"
           },
           {
             "dutch": "plaats",
+            "english": "place",
             "indonesian": "tempat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tempat-574ee383.mp3"
           },
           {
             "dutch": "zwarte koffie",
+            "english": "black coffee",
             "indonesian": "kopi pahit",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kopi-pahit-a6ad7ec0.mp3"
           },
           {
             "dutch": "zitplaats",
+            "english": "seat",
             "indonesian": "tempat duduk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tempat-duduk-50c73b72.mp3"
           },
           {
             "dutch": "zwarte koffie met suiker",
+            "english": "black coffee with sugar",
             "indonesian": "kopi tubruk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kopi-tubruk-924f3040.mp3"
           },
           {
             "dutch": "bed",
+            "english": "bed",
             "indonesian": "tempat tidur",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tempat-tidur-e45af7e0.mp3"
           },
           {
             "dutch": "te",
+            "english": "too",
             "indonesian": "terlalu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/terlalu-198af8a4.mp3"
           },
           {
             "dutch": "kroepoek",
+            "english": "prawn cracker",
             "indonesian": "krupuk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/krupuk-8ba95193.mp3"
           },
           {
             "dutch": "klaar staan, gereed",
+            "english": "available, ready",
             "indonesian": "tersedia",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tersedia-df7742d5.mp3"
           },
           {
             "dutch": "sleutel",
+            "english": "key",
             "indonesian": "kunci",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kunci-08bb861a.mp3"
           },
           {
             "dutch": "slapen",
+            "english": "sleep",
             "indonesian": "tidur",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tidur-2e3a8d1c.mp3"
           },
           {
             "dutch": "geel",
+            "english": "yellow",
             "indonesian": "kuning",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kuning-f0bdbb89.mp3"
           },
           {
             "dutch": "botsen",
+            "english": "collide",
             "indonesian": "tubruk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tubruk-6c848183.mp3"
           },
           {
             "dutch": "tekort, minder",
+            "english": "less, short of",
             "indonesian": "kurang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kurang-be17214e.mp3"
           },
           {
             "dutch": "afdalen, uitstappen",
+            "english": "descend, get off",
             "indonesian": "turun",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/turun-53164553.mp3"
           },
           {
             "dutch": "die, dat",
+            "english": "who, which, that",
             "indonesian": "yang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yang-37c17f44.mp3"
           },
           {
             "dutch": "stoel",
+            "english": "chair",
             "indonesian": "kursi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kursi-85305a5e.mp3"
           },
           {
             "dutch": "vloer, verdieping",
+            "english": "floor, story",
             "indonesian": "lantai",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lantai-d0f1490c.mp3"
           },
           {
             "dutch": "bijgerechten",
+            "english": "side dishes",
             "indonesian": "lauk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lauk-547a6086.mp3"
           },
           {
             "dutch": "kast",
+            "english": "cabinet",
             "indonesian": "lemari",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lemari-7f23bfc0.mp3"
           },
           {
             "dutch": "voedsel",
+            "english": "food",
             "indonesian": "makanan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/makanan-ab3a04ee.mp3"
           },
           {
             "dutch": "baden",
+            "english": "bathe",
             "indonesian": "mandi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/mandi-297282f1.mp3"
           },
           {
             "dutch": "goud (emas)",
+            "english": "gold",
             "indonesian": "mas",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/mas-95ab239b.mp3"
           },
           {
             "dutch": "nog",
+            "english": "still",
             "indonesian": "masih",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/masih-3dd9d46b.mp3"
           },
           {
             "dutch": "tafel",
+            "english": "table",
             "indonesian": "meja",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/meja-d7a4033f.mp3"
           }
@@ -882,81 +1028,97 @@
         "items": [
           {
             "dutch": "100",
+            "english": "hundred",
             "indonesian": "seratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/seratus-00c2c91b.mp3"
           },
           {
             "dutch": "200",
+            "english": "two hundred",
             "indonesian": "dua ratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dua-ratus-009ac4b3.mp3"
           },
           {
             "dutch": "300",
+            "english": "three hundred",
             "indonesian": "tiga ratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tiga-ratus-c6fcc9ac.mp3"
           },
           {
             "dutch": "400",
+            "english": "four hundred",
             "indonesian": "empat ratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/empat-ratus-9340df4d.mp3"
           },
           {
             "dutch": "500",
+            "english": "five hundred",
             "indonesian": "lima ratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lima-ratus-ad4984f7.mp3"
           },
           {
             "dutch": "600",
+            "english": "six hundred",
             "indonesian": "enam ratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/enam-ratus-f763549a.mp3"
           },
           {
             "dutch": "700",
+            "english": "seven hundred",
             "indonesian": "tujuh ratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tujuh-ratus-e12c0111.mp3"
           },
           {
             "dutch": "800",
+            "english": "eight hundred",
             "indonesian": "delapan ratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/delapan-ratus-8b7b45d8.mp3"
           },
           {
             "dutch": "900",
+            "english": "nine hundred",
             "indonesian": "sembilan ratus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sembilan-ratus-8d499518.mp3"
           },
           {
             "dutch": "1.000",
+            "english": "thousand",
             "indonesian": "seribu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/seribu-8ae6de31.mp3"
           },
           {
             "dutch": "2.000",
+            "english": "two thousand",
             "indonesian": "dua ribu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dua-ribu-b4216f20.mp3"
           },
           {
             "dutch": "9.000",
+            "english": "nine thousand",
             "indonesian": "sembilan ribu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sembilan-ribu-03e3139b.mp3"
           },
           {
             "dutch": "10.000",
+            "english": "ten thousand",
             "indonesian": "sepuluh ribu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sepuluh-ribu-f2cdabc7.mp3"
           },
           {
             "dutch": "1.000.000",
+            "english": "million",
             "indonesian": "sejuta",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sejuta-bbae71f5.mp3"
           },
           {
             "dutch": "1.000.000.000",
+            "english": "billion",
             "indonesian": "semiliar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/semiliar-5fced811.mp3"
           },
           {
             "dutch": "1.000.000.000.000",
+            "english": "trillion",
             "indonesian": "setriliun",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/setriliun-a9a79eff.mp3"
           }
@@ -973,7 +1135,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-4.m4a\" voice=\"id-ID-Chirp3-HD-Algenib\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Algenib\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },

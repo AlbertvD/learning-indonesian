@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Achird",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-8.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-8-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -367,8 +367,8 @@
           {
             "dutch": "betalen",
             "english": "pay",
-            "indonesian": "membayar*",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/membayar-07e2f428.mp3"
+            "indonesian": "membayar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/membayar-20b3b1c9.mp3"
           },
           {
             "dutch": "modern",
@@ -566,7 +566,7 @@
               ],
               [
                 "nih",
-                "milde verbazing"
+                "spreektaalvariant van 'ini' (dit/hier); wijst aan of benadrukt nabijheid"
               ],
               [
                 "sih",
@@ -577,25 +577,30 @@
             "examples": [
               {
                 "dutch": "Het is duur, hoor!",
+                "english": "It's expensive, really!",
                 "indonesian": "Mahal dong!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mahal-dong-09306c47.mp3"
               },
               {
                 "dutch": "Kijk dan!",
+                "english": "Look!",
                 "indonesian": "Lihat dong!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lihat-dong-555c213e.mp3"
               },
               {
                 "dutch": "De prijs is warempel Rp 46.500.",
+                "english": "The price is actually Rp 46.500.",
                 "indonesian": "Harganya, kok, Rp 46.500.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/harganya-kok-rp-46500-b2f0f203.mp3"
               },
               {
                 "dutch": "Wauw, ik ben blij!",
+                "english": "Wow, I'm happy!",
                 "indonesian": "Wah, saya senang!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/wah-saya-senang-bfbe2c71.mp3"
               }
-            ]
+            ],
+            "title_en": "Overview of interjections"
           }
         ],
         "grammar_topics": [
@@ -1084,7 +1089,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-8.m4a\" voice=\"id-ID-Chirp3-HD-Achird\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Achird\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },

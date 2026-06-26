@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Despina",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-9.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-9-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -351,6 +351,18 @@
             "english": "already",
             "indonesian": "telah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/telah-d5b566bc.mp3"
+          },
+          {
+            "dutch": "nodig (tidak usah)",
+            "english": "need (not need)",
+            "indonesian": "usah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/usah-7466137f.mp3"
+          },
+          {
+            "dutch": "zeer/erg",
+            "english": "very/very much",
+            "indonesian": "sangat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sangat-f5f6c1fe.mp3"
           }
         ]
       }
@@ -533,7 +545,8 @@
                 ""
               ]
             ],
-            "title": "Woorden per groep"
+            "title": "Woorden per groep",
+            "title_en": "Words per group"
           },
           {
             "rules": [
@@ -967,8 +980,8 @@
           {
             "dutch": "lichaam",
             "english": "body",
-            "indonesian": "tubuh / badan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tubuh-badan-5e724e09.mp3"
+            "indonesian": "badan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/badan-355552ae.mp3"
           },
           {
             "dutch": "lever",
@@ -1155,8 +1168,8 @@
           {
             "dutch": "buik/maagpijn",
             "english": "stomach ache",
-            "indonesian": "sakit perut / mag",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sakit-perut-mag-25527409.mp3"
+            "indonesian": "sakit perut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sakit-perut-8225ab97.mp3"
           },
           {
             "dutch": "duizelig zijn",
@@ -1297,7 +1310,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-9.m4a\" voice=\"id-ID-Chirp3-HD-Despina\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Despina\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },

@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Despina",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-7.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-7-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -202,14 +202,14 @@
           {
             "dutch": "meegenomen",
             "english": "taken (along)",
-            "indonesian": "dibawa*",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dibawa-cf3814d9.mp3"
+            "indonesian": "dibawa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dibawa-492c981f.mp3"
           },
           {
             "dutch": "gestreken",
             "english": "ironed",
-            "indonesian": "disetrika*",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/disetrika-d7861839.mp3"
+            "indonesian": "disetrika",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/disetrika-333d039c.mp3"
           },
           {
             "dutch": "disco",
@@ -352,8 +352,8 @@
           {
             "dutch": "wegbrengen, begeleiden",
             "english": "take, accompany",
-            "indonesian": "mengantar*",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mengantar-48666264.mp3"
+            "indonesian": "mengantar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mengantar-ff6bd445.mp3"
           },
           {
             "dutch": "lichtrood, roze",
@@ -504,6 +504,144 @@
             "english": "color",
             "indonesian": "warna",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/warna-2cb0f89f.mp3"
+          },
+          {
+            "dutch": "januari",
+            "english": "January",
+            "indonesian": "Januari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/januari-47693ba3.mp3"
+          },
+          {
+            "dutch": "februari",
+            "english": "February",
+            "indonesian": "Februari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/februari-537641ad.mp3"
+          },
+          {
+            "dutch": "maart",
+            "english": "March",
+            "indonesian": "Maret",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/maret-6eff31b9.mp3"
+          },
+          {
+            "dutch": "april",
+            "english": "April",
+            "indonesian": "April",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/april-f202d022.mp3"
+          },
+          {
+            "dutch": "mei",
+            "english": "May",
+            "indonesian": "Mei",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mei-87539936.mp3"
+          },
+          {
+            "dutch": "juni",
+            "english": "June",
+            "indonesian": "Juni",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/juni-df67397d.mp3"
+          },
+          {
+            "dutch": "juli",
+            "english": "July",
+            "indonesian": "Juli",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/juli-9d2e840d.mp3"
+          },
+          {
+            "dutch": "augustus",
+            "english": "August",
+            "indonesian": "Agustus",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/agustus-5f71b477.mp3"
+          },
+          {
+            "dutch": "september",
+            "english": "September",
+            "indonesian": "September",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/september-7d5e53c3.mp3"
+          },
+          {
+            "dutch": "oktober",
+            "english": "October",
+            "indonesian": "Oktober",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/oktober-b669de0d.mp3"
+          },
+          {
+            "dutch": "november",
+            "english": "November",
+            "indonesian": "November",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/november-525ac423.mp3"
+          },
+          {
+            "dutch": "december",
+            "english": "December",
+            "indonesian": "Desember",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/desember-abdfb424.mp3"
+          },
+          {
+            "dutch": "maandag",
+            "english": "Monday",
+            "indonesian": "hari Senin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hari-senin-df2758fa.mp3"
+          },
+          {
+            "dutch": "dinsdag",
+            "english": "Tuesday",
+            "indonesian": "hari Selasa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hari-selasa-dc815785.mp3"
+          },
+          {
+            "dutch": "vrijdag",
+            "english": "Friday",
+            "indonesian": "hari Jumat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hari-jumat-6b1b1fd9.mp3"
+          },
+          {
+            "dutch": "zaterdag",
+            "english": "Saturday",
+            "indonesian": "hari Sabtu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hari-sabtu-4dd7f67e.mp3"
+          },
+          {
+            "dutch": "gisteren",
+            "english": "yesterday",
+            "indonesian": "kemarin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kemarin-5e4dbff3.mp3"
+          },
+          {
+            "dutch": "overmorgen",
+            "english": "the day after tomorrow",
+            "indonesian": "lusa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lusa-f005dd1b.mp3"
+          },
+          {
+            "dutch": "zojuist",
+            "english": "just now",
+            "indonesian": "tadi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tadi-d1e903f9.mp3"
+          },
+          {
+            "dutch": "week",
+            "english": "week",
+            "indonesian": "pekan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pekan-10e5b3f6.mp3"
+          },
+          {
+            "dutch": "weekend",
+            "english": "weekend",
+            "indonesian": "akhir minggu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/akhir-minggu-5e2b0987.mp3"
+          },
+          {
+            "dutch": "zaterdagavond",
+            "english": "Saturday evening",
+            "indonesian": "malam Minggu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/malam-minggu-fbb16af8.mp3"
+          },
+          {
+            "dutch": "zondagavond",
+            "english": "Sunday evening",
+            "indonesian": "Minggu malam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/minggu-malam-86ec30b0.mp3"
           }
         ]
       }
@@ -680,7 +818,8 @@
                 "eeuw"
               ]
             ],
-            "title": "Tijdseenheden"
+            "title": "Tijdseenheden",
+            "title_en": "Time units"
           },
           {
             "table": [
@@ -689,7 +828,7 @@
                 "januari"
               ],
               [
-                "bulan Pebruari",
+                "bulan Februari",
                 "februari"
               ],
               [
@@ -725,7 +864,7 @@
                 "oktober"
               ],
               [
-                "bulan Nopember",
+                "bulan November",
                 "november"
               ],
               [
@@ -733,7 +872,8 @@
                 "december"
               ]
             ],
-            "title": "Maanden (bulan)"
+            "title": "Maanden (bulan)",
+            "title_en": "Months (bulan)"
           },
           {
             "rules": [
@@ -1124,7 +1264,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-7.m4a\" voice=\"id-ID-Chirp3-HD-Despina\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Despina\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },

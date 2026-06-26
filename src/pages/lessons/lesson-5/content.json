@@ -7,7 +7,7 @@
     "description": "Family dialogue about studying at home. Grammar focus: personal pronouns (persoonlijk voornaamwoord) and possessive pronouns (bezittelijk voornaamwoord), including kami vs kita distinction.",
     "primary_voice": "id-ID-Chirp3-HD-Gacrux",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-5.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-5-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -37,21 +37,21 @@
             "text": "Ibu dan bapak enak saja ke Taman Mini. Kita harus belajar di rumah. Aku juga mau ke Taman Mini, dan kamu Nanang?",
             "speaker": "Titin",
             "translation": "Mama en papa gaan maar naar Taman Mini. Wij moeten thuis studeren. Ik wil ook naar Taman Mini, en jij Nanang?",
-            "translation_en": "Mom and dad can just go to Taman Mini. We have to study at home. I also want to go to Taman Mini, what about you Nanang?",
+            "translation_en": "Mom and dad are just going to Taman Mini. We have to study at home. I also want to go to Taman Mini, and you Nanang?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ibu-dan-bapak-enak-198d75ee.mp3"
           },
           {
             "text": "Aku tidak senang tinggal di rumah terus. Mari! Kita juga pergi saja, Tin.",
             "speaker": "Nanang",
             "translation": "Ik hou er niet van om maar thuis te blijven. Kom mee! Wij gaan toch gewoon weg, Tin.",
-            "translation_en": "I don't like staying home all the time. Come on! Let's just go anyway, Tin.",
+            "translation_en": "I don't like just staying home. Come on! Let's go anyway, Tin.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/aku-tidak-senang-tinggal-919b9480.mp3"
           },
           {
             "text": "Kita harus kerja dulu sebentar. Nanti kita pergi.",
             "speaker": "Titin",
             "translation": "Wij moeten eerst nog even werken. Daarna gaan we weg.",
-            "translation_en": "We have to work a bit first. Then we'll go.",
+            "translation_en": "We have to work first for a bit. Then we'll go.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kita-harus-kerja-dulu-0ff8b5b3.mp3"
           },
           {
@@ -72,7 +72,7 @@
             "text": "Saya juga tidak punya uang. Jadi, tinggal di rumah saja Tin. Besok saja jalan-jalan dengan ayahmu. Mari! Sekarang kerja. Besok harus ke sekolah 'kan?",
             "speaker": "Pembantu",
             "translation": "Ik heb ook geen geld. Dus blijf je maar thuis, Tin. Morgen ga je wandelen met je vader. Kom op! Nu werken. Morgen moet je naar school, hè?",
-            "translation_en": "I also don't have money. So just stay home, Tin. Tomorrow you can go for a walk with your dad. Come on! Now work. Tomorrow you have to go to school, right?",
+            "translation_en": "I don't have money either. So just stay home, Tin. Tomorrow you can walk with your father. Come on! Now work. Tomorrow you have to go to school, right?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/saya-juga-tidak-punya-47c609fa.mp3"
           },
           {
@@ -101,25 +101,28 @@
               {
                 "dutch": "Mijn vriend en ik",
                 "english": "My friend and I",
-                "indonesian": "Saya dan teman saya"
+                "indonesian": "Saya dan teman saya",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saya-dan-teman-saya-8a52a0e9.mp3"
               },
               {
                 "dutch": "Ik wil ook naar Taman Mini (informeel)",
                 "english": "I also want to go to Taman Mini (informal)",
-                "indonesian": "Aku juga mau ke Taman Mini"
+                "indonesian": "Aku juga mau ke Taman Mini",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/aku-juga-mau-ke-e48db0f6.mp3"
               },
               {
                 "dutch": "Ik (Awan) wil naar de stad (eigennaam als 'ik')",
                 "english": "I (Awan) want to go to the city (proper name as 'I')",
-                "indonesian": "Awan mau ke kota"
+                "indonesian": "Awan mau ke kota",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/awan-mau-ke-kota-a15e5a4d.mp3"
               }
             ],
             "rules_en": [
-              "Use saya as the neutral-formal form of 'I' when meeting people and in formal situations.",
-              "Aku is the informal form of 'I', used in family circles and among friends.",
+              "Use saya as the neutral-formal form of 'I' when meeting and in formal situations.",
+              "Aku is the informal form of 'I', used in the home and among friends.",
               "Indonesians often refer to themselves by their own name instead of saya or aku."
             ],
-            "title_en": "I — saya, aku and proper names"
+            "title_en": "I — saya, aku and proper name"
           },
           {
             "rules": [
@@ -132,20 +135,22 @@
               {
                 "dutch": "Wat wil jij (Awan) in de stad kopen?",
                 "english": "What do you (Awan) want to buy in the city?",
-                "indonesian": "Awan mau beli apa di kota?"
+                "indonesian": "Awan mau beli apa di kota?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/awan-mau-beli-apa-cfe4b7ed.mp3"
               },
               {
                 "dutch": "Ga jij (Siti) met de auto naar de markt?",
                 "english": "Are you (Siti) going to the market by car?",
-                "indonesian": "Siti naik mobil ke pasar?"
+                "indonesian": "Siti naik mobil ke pasar?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/siti-naik-mobil-ke-606ad143.mp3"
               }
             ],
             "rules_en": [
               "The most polite way to say 'you' is to use the other person's own name or first name.",
-              "Kamu and engkau are informal forms of address, limited to family circles and friends.",
-              "Never use kamu with an adult guest or stranger — it will be perceived as rude."
+              "Kamu and engkau are informal forms of address, limited to the home and among friends.",
+              "Never use kamu to an adult guest or stranger — that is perceived as rude."
             ],
-            "title_en": "You — formal via name or kamu/engkau"
+            "title_en": "You — politely via name or kamu/engkau"
           },
           {
             "rules": [
@@ -158,25 +163,27 @@
             "examples": [
               {
                 "dutch": "Waar komt u (meneer Sahid) vandaan?",
-                "english": "Where are you from, Bapak Sahid?",
-                "indonesian": "Bapak Sahid dari mana?"
+                "english": "Where are you (Mr. Sahid) from?",
+                "indonesian": "Bapak Sahid dari mana?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bapak-sahid-dari-mana-9ecade48.mp3"
               },
               {
                 "dutch": "Houdt u (mevrouw Sutrisno) van thee?",
-                "english": "Do you like tea, Ibu Sutrisno?",
+                "english": "Do you (Mrs. Sutrisno) like tea?",
                 "indonesian": "Ibu Sutrisno suka teh?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ibu-sutrisno-suka-teh-ce4811ba.mp3"
               },
               {
                 "dutch": "Wat wilt u eten?",
                 "english": "What would you like to eat?",
-                "indonesian": "Anda ingin makan apa?"
+                "indonesian": "Anda ingin makan apa?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/anda-ingin-makan-apa-1a9d341d.mp3"
               }
             ],
             "rules_en": [
-              "Formal: Tuan (sir) and Nyonya (madam) for westerners and official situations.",
-              "Neutral daily use: Bapak (sir) and Ibu (madam), also with name: Bapak Sahid.",
-              "Anda is gender- and socially neutral 'you', popular in advertising and formal texts.",
+              "Formal: Tuan (mister) and Nyonya (madam) for Westerners and official situations.",
+              "Neutral everyday use: Bapak (mister) and Ibu (madam), also with name: Bapak Sahid.",
+              "Anda is gender- and socially-neutral 'you', popular in advertising and formal texts.",
               "Saudara (friend/equal) for colleagues and peers in neutral situations."
             ],
             "title_en": "You — Tuan/Nyonya, Bapak/Ibu, Anda, Saudara"
@@ -192,30 +199,34 @@
               {
                 "dutch": "oudere broer",
                 "english": "older brother",
-                "indonesian": "kakak laki-laki (of: abang)"
+                "indonesian": "kakak laki-laki (of: abang)",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kakak-lakilaki-of-abang-38c3ee0c.mp3"
               },
               {
                 "dutch": "oudere zus",
                 "english": "older sister",
-                "indonesian": "kakak perempuan"
+                "indonesian": "kakak perempuan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kakak-perempuan-a9680d62.mp3"
               },
               {
                 "dutch": "jongere broer",
                 "english": "younger brother",
-                "indonesian": "adik laki-laki"
+                "indonesian": "adik laki-laki",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/adik-lakilaki-3f4f2ed0.mp3"
               },
               {
                 "dutch": "jongere zus",
                 "english": "younger sister",
-                "indonesian": "adik perempuan"
+                "indonesian": "adik perempuan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/adik-perempuan-2c49e99d.mp3"
               }
             ],
             "rules_en": [
               "Distinction: kakak (older brother/sister), adik (younger brother/sister) — gender is secondary.",
-              "Abang (informal: bang) = older brother; kakak perempuan = older sister.",
+              "Abang (informally: bang) = older brother; kakak perempuan = older sister.",
               "These family terms are also used informally for acquaintances and neighbors."
             ],
-            "title_en": "Siblings — kakak, adik, abang"
+            "title_en": "Brothers and sisters — kakak, adik, abang"
           },
           {
             "rules": [
@@ -227,17 +238,19 @@
               {
                 "dutch": "hij of zij (beide correct)",
                 "english": "he or she (both correct)",
-                "indonesian": "Dia atau ia"
+                "indonesian": "Dia atau ia",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/dia-atau-ia-d84c51b5.mp3"
               },
               {
                 "dutch": "Zij is mijn lerares (respectvol)",
                 "english": "She is my teacher (respectful)",
-                "indonesian": "Beliau adalah guru saya"
+                "indonesian": "Beliau adalah guru saya",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/beliau-adalah-guru-saya-36a5f352.mp3"
               }
             ],
             "rules_en": [
               "Dia and ia are both correct for 'he' and 'she' — there is no gender distinction.",
-              "Beliau is the respectful form: used to speak about someone with esteem."
+              "Beliau is the respectful form: used to speak about someone with reverence."
             ],
             "title_en": "He/she — dia, ia, beliau"
           },
@@ -252,27 +265,31 @@
               {
                 "dutch": "Wij moeten thuis studeren (jij ook — Titin tegen Nanang)",
                 "english": "We must study at home (you too — Titin to Nanang)",
-                "indonesian": "Kita harus belajar di rumah"
+                "indonesian": "Kita harus belajar di rumah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kita-harus-belajar-di-5b5de609.mp3"
               },
               {
                 "dutch": "Wij willen naar buiten (jij niet — Titin tegen pembantu)",
-                "english": "We want to go out (you don't — Titin to a helper)",
-                "indonesian": "Aduh, kami mau ke luar"
+                "english": "We want to go out (you don't — Titin to maid)",
+                "indonesian": "Aduh, kami mau ke luar",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/aduh-kami-mau-ke-29c6a62f.mp3"
               },
               {
                 "dutch": "Ma, wij gaan alvast naar school! (jij gaat niet mee)",
-                "english": "Ma, we're going to school now! (you're not coming)",
-                "indonesian": "Bu, kami ke sekolah dulu ya!"
+                "english": "Ma, we're going to school first! (you're not coming)",
+                "indonesian": "Bu, kami ke sekolah dulu ya!",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bu-kami-ke-sekolah-5f1e80b9.mp3"
               },
               {
                 "dutch": "Pa, laten wij gaan wandelen (kom mee)",
-                "english": "Pa, let's go for a walk (come with me)",
-                "indonesian": "Bapak, mari kita jalan-jalan"
+                "english": "Pa, let's go for a walk (come with us)",
+                "indonesian": "Bapak, mari kita jalan-jalan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bapak-mari-kita-jalanjalan-660a6a10.mp3"
               }
             ],
             "rules_en": [
-              "Kita = 'we' including the person addressed (the listener is included).",
-              "Kami = 'we' excluding the person addressed (the listener is not included).",
+              "Kita = 'we' including the person addressed (the person you're speaking to is included).",
+              "Kami = 'we' excluding the person addressed (the person you're speaking to is not included).",
               "This distinction does not exist in Dutch — context determines the choice."
             ],
             "title_en": "We — kita (inclusive) versus kami (exclusive)"
@@ -288,25 +305,28 @@
               {
                 "dutch": "Waar gaan jullie naartoe?",
                 "english": "Where are you all going?",
-                "indonesian": "Kalian mau ke mana?"
+                "indonesian": "Kalian mau ke mana?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kalian-mau-ke-mana-9b54fc21.mp3"
               },
               {
                 "dutch": "Dames en heren (formele aanspreekvorm)",
                 "english": "Ladies and gentlemen (formal form of address)",
-                "indonesian": "Saudara-Saudari yang terhormat"
+                "indonesian": "Saudara-Saudari yang terhormat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saudarasaudari-yang-terhormat-d48b459d.mp3"
               },
               {
                 "dutch": "Zij hebben een net restaurant",
                 "english": "They have a neat restaurant",
-                "indonesian": "Mereka punya restoran yang rapi"
+                "indonesian": "Mereka punya restoran yang rapi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mereka-punya-restoran-yang-ed535907.mp3"
               }
             ],
             "rules_en": [
               "Kalian = 'you all' (neutral plural second person).",
-              "You (formal plural): Bapak-Bapak / Ibu-Ibu / Saudara-Saudari / Anda (semua).",
-              "They: mereka (one word, no gender distinction)."
+              "You plural: Bapak-Bapak / Ibu-Ibu / Saudara-Saudari / Anda (all).",
+              "They plural: mereka (one word, no gender distinction)."
             ],
-            "title_en": "You (plural), You (formal plural) and They (plural)"
+            "title_en": "You all, You (plural) and They (plural)"
           }
         ],
         "grammar_topics": [
@@ -739,7 +759,7 @@
           },
           {
             "dutch": "hemel, goh, jemig (uitroep)",
-            "english": "oh my, goodness, wow (exclamation)",
+            "english": "goodness, gosh, my (exclamation)",
             "indonesian": "aduh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/aduh-71a284ce.mp3"
           },
@@ -763,7 +783,7 @@
           },
           {
             "dutch": "goed dan (maar)",
-            "english": "okay then",
+            "english": "all right then",
             "indonesian": "baiklah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/baiklah-6db9fb1c.mp3"
           },
@@ -781,25 +801,25 @@
           },
           {
             "dutch": "op z'n gemak, naar believen",
-            "english": "at ease, as one likes",
+            "english": "at ease, as you like",
             "indonesian": "enak saja",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/enak-saja-47c29e2e.mp3"
           },
           {
             "dutch": "ongepelde rijst (rijst/vliesje)",
-            "english": "unhusked rice",
+            "english": "unhulled rice",
             "indonesian": "gabah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/gabah-fb3fd413.mp3"
           },
           {
             "dutch": "vol van smaak",
-            "english": "full of flavor",
+            "english": "flavorful",
             "indonesian": "gurih",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/gurih-7940675e.mp3"
           },
           {
             "dutch": "op, afgelopen",
-            "english": "finished, done",
+            "english": "finished, gone",
             "indonesian": "habis",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/habis-9891dc5e.mp3"
           },
@@ -841,7 +861,7 @@
           },
           {
             "dutch": "oudere broer/zus",
-            "english": "older brother/sister",
+            "english": "older sibling",
             "indonesian": "kakak",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kakak-c7777140.mp3"
           },
@@ -913,7 +933,7 @@
           },
           {
             "dutch": "straks, zo meteen",
-            "english": "soon, in a moment",
+            "english": "presently, in a moment",
             "indonesian": "nanti",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nanti-ade85006.mp3"
           },
@@ -931,7 +951,7 @@
           },
           {
             "dutch": "hulp in de huishouding",
-            "english": "maid, housekeeper",
+            "english": "household helper",
             "indonesian": "pembantu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pembantu-7a17bd27.mp3"
           },
@@ -967,13 +987,13 @@
           },
           {
             "dutch": "een moment(je), even",
-            "english": "a moment, just a sec",
+            "english": "a moment, just a second",
             "indonesian": "sebentar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sebentar-190ec25d.mp3"
           },
           {
             "dutch": "zich prettig voelen, blij, leuk",
-            "english": "feel happy, pleased, enjoyable",
+            "english": "feel pleased, happy, nice",
             "indonesian": "senang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/senang-610d2a8a.mp3"
           },
@@ -1009,15 +1029,15 @@
           },
           {
             "dutch": "Klein Indonesie - park met traditionele gebouwen in Jakarta",
-            "english": "Taman Mini—park featuring traditional Indonesian buildings in Jakarta",
+            "english": "Taman Mini - park with traditional Indonesian buildings in Jakarta",
             "indonesian": "Taman Mini",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/taman-mini-aa2e5d00.mp3"
           },
           {
             "dutch": "maar, echter",
             "english": "but, however",
-            "indonesian": "tapi / tetapi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tapi-tetapi-0fa30449.mp3"
+            "indonesian": "tetapi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tetapi-d9c0402f.mp3"
           },
           {
             "dutch": "vliegen",
@@ -1027,7 +1047,7 @@
           },
           {
             "dutch": "voorts, steeds, maar door",
-            "english": "on, continuously, keep going",
+            "english": "further, keep on, continuously",
             "indonesian": "terus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/terus-66d15dd3.mp3"
           },
@@ -1039,9 +1059,105 @@
           },
           {
             "dutch": "goh! nou! (stopwoord/uitroep)",
-            "english": "wow! gosh! (interjection)",
+            "english": "wow! goodness! (exclamation)",
             "indonesian": "wah!",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/wah-83c45277.mp3"
+          },
+          {
+            "dutch": "hij/zij",
+            "english": "he/she",
+            "indonesian": "dia",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/dia-c5955eac.mp3"
+          },
+          {
+            "dutch": "hij/zij",
+            "english": "he/she",
+            "indonesian": "ia",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ia-5998dc95.mp3"
+          },
+          {
+            "dutch": "hij/zij (respect)",
+            "english": "he/she (respectful)",
+            "indonesian": "beliau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/beliau-6c9c740b.mp3"
+          },
+          {
+            "dutch": "u/jij",
+            "english": "you (formal/informal)",
+            "indonesian": "anda",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/anda-5e404699.mp3"
+          },
+          {
+            "dutch": "jullie",
+            "english": "you all",
+            "indonesian": "kalian",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kalian-7de3cec0.mp3"
+          },
+          {
+            "dutch": "jij (informeel)",
+            "english": "you (informal)",
+            "indonesian": "engkau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/engkau-4b428332.mp3"
+          },
+          {
+            "dutch": "meneer (formeel)",
+            "english": "sir (formal)",
+            "indonesian": "tuan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tuan-f34215fc.mp3"
+          },
+          {
+            "dutch": "kameraad (m)",
+            "english": "colleague (m)",
+            "indonesian": "saudara",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saudara-a95237de.mp3"
+          },
+          {
+            "dutch": "kameraad (v)",
+            "english": "colleague (f)",
+            "indonesian": "saudari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saudari-3f1d7736.mp3"
+          },
+          {
+            "dutch": "juffrouw",
+            "english": "miss",
+            "indonesian": "nona",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nona-8e80c7f6.mp3"
+          },
+          {
+            "dutch": "heren",
+            "english": "gentlemen",
+            "indonesian": "tuan-tuan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tuantuan-8aea619e.mp3"
+          },
+          {
+            "dutch": "heren (neutraal)",
+            "english": "gentlemen (neutral)",
+            "indonesian": "bapak-bapak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bapakbapak-90a00322.mp3"
+          },
+          {
+            "dutch": "dames (formeel)",
+            "english": "ladies (formal)",
+            "indonesian": "nyonya-nyonya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nyonyanyonya-96516002.mp3"
+          },
+          {
+            "dutch": "dames (neutraal)",
+            "english": "ladies (neutral)",
+            "indonesian": "ibu-ibu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ibuibu-4b3c96e4.mp3"
+          },
+          {
+            "dutch": "dames en heren",
+            "english": "ladies and gentlemen",
+            "indonesian": "saudara-saudara",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saudarasaudara-8973bc36.mp3"
+          },
+          {
+            "dutch": "dames",
+            "english": "ladies",
+            "indonesian": "saudari-saudari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saudarisaudari-3403bdd1.mp3"
           }
         ]
       }
@@ -1056,7 +1172,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-5.m4a\" voice=\"id-ID-Chirp3-HD-Gacrux\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Gacrux\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
