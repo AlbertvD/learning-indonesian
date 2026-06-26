@@ -321,12 +321,17 @@ export const lesson = {
               [
                 "meny-",
                 "s (valt weg, herstel s)",
-                "menyanyi → nyanyi; menyambung → sambung"
+                "menyapu → sapu; menyambung → sambung"
               ],
               [
                 "meng-",
                 "a, e, i, o, u, g, h (blijven staan) — of k (valt weg, herstel k)",
                 "mengisi → isi; mengirim → kirim"
+              ],
+              [
+                "menge-",
+                "eenlettergrepig basiswoord (geen klankverandering)",
+                "mengecat → cat; mengetik → tik"
               ]
             ]
           },
@@ -335,7 +340,7 @@ export const lesson = {
             "rules": [
               "Bij mem- kan het basiswoord met b of f beginnen (blijft staan), of met p (de p is weggevallen): membayar → bayar, maar memikir → pikir.",
               "Bij men- kan het basiswoord met c, d of j beginnen (blijft staan), of met t (de t is weggevallen): mencari → cari, maar menari → tari.",
-              "Bij meny- is de s altijd weggevallen: menyanyi → nyanyi.",
+              "Bij meny- valt bij een s-stam de s weg (menyapu → sapu, menyewa → sewa); maar een basiswoord dat zelf met ny- begint (nyanyi, nyala) houdt zijn ny- en krijgt alleen me-, zonder dat er een s wegvalt.",
               "Bij meng- kan het basiswoord met een klinker of g/h beginnen (blijft staan), of met k (de k is weggevallen): menggoreng → goreng, maar mengirim → kirim.",
               "Een ME-vorm met een weggevallen klank is dus dubbelzinnig op het eerste gezicht (memasak kan van masak komen); het basiswoord en de context bepalen de juiste keuze."
             ],
@@ -343,7 +348,7 @@ export const lesson = {
             "rules_en": [
               "With mem- the base word can begin with b or f (unchanged), or with p (the p has been dropped): membayar → bayar, but memikir → pikir.",
               "With men- the base word can begin with c, d or j (unchanged), or with t (the t has been dropped): mencari → cari, but menari → tari.",
-              "With meny- the s is always dropped: menyanyi → nyanyi.",
+              "With meny-, an s-stem drops its s (menyapu → sapu, menyewa → sewa); but a base word that itself begins with ny- (nyanyi, nyala) keeps its ny- and just takes me-, with no s dropped.",
               "With meng- the base word can begin with a vowel or g/h (unchanged), or with k (the k has been dropped): menggoreng → goreng, but mengirim → kirim.",
               "A ME-form with a dropped sound is thus ambiguous at first glance (memasak can come from masak); the base word and context determine the correct choice."
             ]

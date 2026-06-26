@@ -356,7 +356,8 @@ export const lesson = {
               "Het basiswoord blijft onveranderd, maar het voorvoegsel past zich aan de beginklank aan.",
               "MEM- bij basiswoorden die beginnen met B of F.",
               "MEN- bij basiswoorden die beginnen met C, D of J.",
-              "MENG- bij basiswoorden die beginnen met een klinker (A, E, I, O, U) en bij G of H."
+              "MENG- bij basiswoorden die beginnen met een klinker (A, E, I, O, U) en bij G of H.",
+              "MENGE- bij eenlettergrepige basiswoorden (bv. cat → mengecat, tik → mengetik, en bij een klanknabootsing zoals meong → mengeong)."
             ],
             "examples": [
               {
@@ -410,7 +411,8 @@ export const lesson = {
               "The base word remains unchanged, but the prefix adapts to the initial sound.",
               "MEM- for base words beginning with B or F.",
               "MEN- for base words beginning with C, D or J.",
-              "MENG- for base words beginning with a vowel (A, E, I, O, U) and with G or H."
+              "MENG- for base words beginning with a vowel (A, E, I, O, U) and with G or H.",
+              "MENGE- for monosyllabic base words (e.g. cat → mengecat, tik → mengetik, and onomatopoeia such as meong → mengeong)."
             ]
           },
           {

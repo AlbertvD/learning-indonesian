@@ -525,14 +525,14 @@ export const lesson = {
             ],
             "examples": [
               {
-                "indonesian": "atas → mengatas",
-                "dutch": "boven, bovenkant → omhoog gaan, het hogerop zoeken",
-                "english": "above, top → to go up, to seek higher"
+                "indonesian": "darat → mendarat",
+                "dutch": "land, vasteland → landen, aan land gaan",
+                "english": "land, shore → to land, to go ashore"
               },
               {
-                "indonesian": "Debu mengatas karena angin.",
-                "dutch": "Het stof ging omhoog vanwege de wind.",
-                "english": "The dust went up because of the wind."
+                "indonesian": "Pesawat mendarat di bandara.",
+                "dutch": "Het vliegtuig landt op het vliegveld.",
+                "english": "The plane lands at the airport."
               }
             ],
             "title_en": "6. ME- + locative word",
