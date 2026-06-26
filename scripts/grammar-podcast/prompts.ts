@@ -19,24 +19,29 @@ export function notebookTitle(meta: EpisodeMeta, lang: Lang): string {
 
 export function instructionPrompt(meta: EpisodeMeta, lang: Lang): string {
   const { lesson, title, level } = meta
+  // Lesson 1 is the learner's first-ever grammar explanation → "welcome";
+  // every later lesson → "welcome back".
+  const isFirst = lesson === 1
   if (lang === 'nl') {
+    const greeting = isFirst ? 'Welkom bij Kamoe Bisa' : 'Welkom terug bij Kamoe Bisa'
     return [
-      `Jullie zijn de twee vaste presentatoren van Kamoe Bisa, een podcast die Nederlandstaligen helpt Indonesisch te leren.`,
-      `Deze aflevering behandelt de grammatica van les ${lesson}: '${title}'.`,
-      `Begin met een begroeting en noem de show — 'Welkom terug bij Kamoe Bisa' (spreek 'Kamoe Bisa' uit als ka-moe bie-sa).`,
-      `Leg elk grammaticapunt uit het bronmateriaal helder en gedetailleerd uit, met de Indonesische voorbeelden.`,
-      `Dit is een les op niveau ${level} (ERK): houd de uitleg, woordenschat en voorbeelden passend bij een ${level}-leerder; introduceer geen grammatica of woordenschat boven dat niveau.`,
-      `Neem de tijd en sla geen enkel punt over. Houd het warm en bemoedigend. Spreek volledig in het Nederlands.`,
-      `Noem Google, NotebookLM of andere product- of bronnamen niet.`,
+      `Jullie zijn de twee presentatoren van de grammaticapodcast die hoort bij de Kamoe Bisa-app, die Nederlandstaligen helpt Indonesisch te leren.`,
+      `Deze aflevering legt de grammatica uit van les ${lesson} ('${title}') in de app.`,
+      `Open met '${greeting}' (spreek 'Kamoe Bisa' uit als ka-moe bie-sa) en maak meteen duidelijk dat deze podcast hoort bij de Kamoe Bisa-app en dat deze aflevering de grammatica van juist deze les in de app uitlegt.`,
+      `Bespreek elk grammaticapunt uit het bronmateriaal helder en gedetailleerd, met de Indonesische voorbeelden.`,
+      `Dit is niveau ${level} (ERK): houd uitleg, woordenschat en voorbeelden passend bij een ${level}-leerder; introduceer niets boven dat niveau.`,
+      `Verwijs er kort naar dat de luisteraar deze punten in de oefeningen in de app kan oefenen.`,
+      `Houd het warm en bemoedigend. Sla geen enkel punt over. Spreek volledig in het Nederlands. Noem Google, NotebookLM of andere product- of bronnamen niet.`,
     ].join(' ')
   }
+  const greeting = isFirst ? 'Welcome to Kamoe Bisa' : 'Welcome back to Kamoe Bisa'
   return [
-    `You are the two regular hosts of Kamoe Bisa, a podcast for learning Indonesian.`,
-    `This episode covers the grammar of Lesson ${lesson}: '${title}'.`,
-    `Open by greeting listeners and naming the show — 'Welcome back to Kamoe Bisa' (pronounce 'Kamoe Bisa' as kah-moo bee-sah).`,
-    `Explain every grammar point in the source document clearly and in detail, with the Indonesian examples.`,
-    `This is a CEFR ${level} lesson: keep the explanation, vocabulary and examples appropriate for a ${level} learner; do not introduce grammar or vocabulary beyond that level.`,
-    `Take your time and don't skip any point. Keep it warm and encouraging. Speak entirely in English.`,
-    `Do not mention Google, NotebookLM, or any other product or source name.`,
+    `You are the two hosts of the grammar podcast that accompanies the Kamoe Bisa app, which helps people learn Indonesian.`,
+    `This episode explains the grammar of Lesson ${lesson} ('${title}') in the app.`,
+    `Open with '${greeting}' (pronounce 'Kamoe Bisa' as kah-moo bee-sah) and make clear right away that this podcast accompanies the Kamoe Bisa app and that this episode explains the grammar of this particular lesson in the app.`,
+    `Discuss every grammar point in the source material clearly and in detail, with the Indonesian examples.`,
+    `This is CEFR ${level}: keep the explanation, vocabulary and examples appropriate for a ${level} learner; introduce nothing beyond that level.`,
+    `Briefly mention that the listener can practise these points in the app's exercises.`,
+    `Keep it warm and encouraging. Don't skip any point. Speak entirely in English. Do not mention Google, NotebookLM, or any other product or source name.`,
   ].join(' ')
 }

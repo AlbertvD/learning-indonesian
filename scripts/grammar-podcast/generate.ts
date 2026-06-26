@@ -110,7 +110,9 @@ log(`audio generated`)
 // 4. download the MP3
 const audioPath = `${outDir}/lesson-${job.lesson}.${job.lang}.mp3`
 log(`downloading → ${audioPath}`)
-const dl = await runNlm(['download', 'audio', audioPath, '-n', nbId])
+// --force so a regenerated episode overwrites the canonical path instead of the
+// CLI auto-suffixing it to "lesson-1.nl (2).mp3".
+const dl = await runNlm(['download', 'audio', audioPath, '-n', nbId, '--force'])
 if (dl.code !== 0) throw new Error(`download failed: ${dl.stderr || dl.stdout}`)
 
 const result = { lesson: job.lesson, lang: job.lang, notebookId: nbId, audioPath, generatedOk: true }
