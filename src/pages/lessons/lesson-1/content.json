@@ -7,7 +7,7 @@
     "description": "Leer de basisuitspraakregels van het Indonesisch, essentiële grammaticaprincipes (werkwoord, zelfstandig naamwoord, bijvoeglijk naamwoord), en oefen met een marktdialoog en de getallen 0-10.",
     "primary_voice": "id-ID-Chirp3-HD-Despina",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-1.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-1-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -250,6 +250,30 @@
       "content": {
         "type": "vocabulary",
         "items": [
+          {
+            "dutch": "groente",
+            "english": "vegetable",
+            "indonesian": "sayuran",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sayuran-4f254b5e.mp3"
+          },
+          {
+            "dutch": "zwarte koffie",
+            "english": "black coffee",
+            "indonesian": "kopi pait",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kopi-pait-708f4f43.mp3"
+          },
+          {
+            "dutch": "bijgerechten",
+            "english": "side dishes",
+            "indonesian": "lauk-pauk",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/laukpauk-051ffac5.mp3"
+          },
+          {
+            "dutch": "sambal",
+            "english": "sambal",
+            "indonesian": "sambel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sambel-2ae392e4.mp3"
+          },
           {
             "dutch": "einde",
             "english": "end",
@@ -569,8 +593,8 @@
           {
             "dutch": "0",
             "english": "zero, empty",
-            "indonesian": "nol, kosong",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nol-kosong-3486c2df.mp3"
+            "indonesian": "nol",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nol-185071c0.mp3"
           },
           {
             "dutch": "1",
@@ -1086,7 +1110,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-1.m4a\" voice=\"id-ID-Chirp3-HD-Despina\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Despina\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
