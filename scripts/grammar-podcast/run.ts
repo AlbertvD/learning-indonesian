@@ -77,7 +77,10 @@ async function processEpisode(lesson: number, lang: string): Promise<'published'
     return 'flagged'
   }
 
-  await sh(['bun', 'scripts/grammar-podcast/publish.ts', job])
+  if (!(await sh(['bun', 'scripts/grammar-podcast/publish.ts', job]))) {
+    console.log(`[run] L${lesson} ${lang}: publish FAILED (see error above) — path stays null, left for a later round.`)
+    return 'flagged'
+  }
   return 'published'
 }
 
