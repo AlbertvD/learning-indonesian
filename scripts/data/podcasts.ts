@@ -268,7 +268,125 @@ Apa yang kita lihat di sini adalah inti dari DNA bahasa ini. Pola subjek-predika
 Dengan menggunakan kata-kata yang sama persis: Bapak beli enam pisang, tidak mau ke pasar — cerita pendek berbeda apa yang bisa Anda ciptakan?
 
 Itulah langkah Anda yang sesungguhnya dalam perjalanan ini.`,
-    transcript_english: null,
+    transcript_english: `Hello, and welcome back.
+
+Today we have a rather unique mission for you.
+
+In front of us is a stack of foundational material from the Indonesian language. There's a vocabulary list, some grammar rules, and example sentences. But we're not going to go through them one by one like in a classroom.
+
+The mission now is to bring all these separate pieces together into one story.
+
+Oh, interesting.
+
+A complete and vivid story. We're going to see how words like ibu, pasar, beli, and mahal transform from a simple memorization list into a narrative.
+
+Ready to see how we put these building blocks of language together?
+
+Absolutely ready. And those building blocks you mention — that's exactly the key point. Even though they look very basic, they're actually enormously powerful.
+
+Powerful?
+
+Powerful. We have the core elements right here. Things like apa kabar? Forms of address for people, bapak and ibu, locations like pasar, essential verbs like mau and beli, opposite adjectives like murah and mahal, and of course the basic numbers from 0 to 10.
+
+Actually quite complete, isn't it?
+
+What's most interesting about this is that these simple pieces are already enough to tell an everyday scenario.
+
+A very relatable, everyday scenario.
+
+Exactly. This shows the efficiency and directness of Indonesian sentence structure. We can start at the starting point of any story: an encounter, a conversation.
+
+Okay, let's step into the first scene. Imagine two people meeting each other. From the material, the most natural opening line is: Apa kabar, Bu?
+
+Although this is often translated literally, it functions primarily as a warm social opening — not as a genuine question about someone's health.
+
+Exactly. It's a social signal. A way of warmly acknowledging someone's presence.
+
+And the most common response, as your material also shows, is baik, terima kasih or baik-baik saja.
+
+Just baik is enough?
+
+More than enough. It means everything is fine, the conversation can flow smoothly.
+
+And the expression terima kasih. Your notes mention that it's a combination of terima and kasih.
+
+That's right.
+
+If you think of terima kasih as "I receive your kindness," it really changes the weight of the expression. It feels much more personal.
+
+More personal and more sincere. There's a philosophical depth behind it. You're not just reciting a polite formula — you're actively acknowledging an act of kindness. That's embedded in everyday language use.
+
+Let's continue the story. The opening conversation has taken place. Now we give one character — let's call her ibu — a clear goal.
+
+Ibu mau ke pasar.
+
+A sentence of just four words, and yet all the essential information is in there. Who? What is the intention? Where to?
+
+But what's missing from that sentence? No time marker. No articles like "a" or "the." Just: ke pasar. What does that mean?
+
+Context is everything.
+
+You're hitting on a crucial point. Verbs are not conjugated: mau stays mau, regardless of the subject. Always mau. And the absence of articles means Indonesian relies heavily on context. Ibu mau ke pasar could mean now, later, or even yesterday — depending on the context.
+
+That pushes the listener or reader to think more actively about the whole picture.
+
+It makes the language extremely efficient. Almost like a code.
+
+The plan is clear: Ibu mau ke pasar.
+
+At the market, everything revolves around transactions. Ibu spots a vendor and knows what she's looking for. The story continues: Ibu mau beli pisang.
+
+Subject, intention, action, and object. Verbs can be stacked to show intention and action.
+
+The dialogue begins. Pak, saya mau beli tiga buah pisang. Berapa harganya?
+
+The magic question in any transaction: Berapa harganya?
+
+The pronunciation of numbers is straightforward, but pay attention to the c sound, as in cukup.
+
+The vendor replies optimistically: Murah, Bu. Delapan rupiah.
+
+What's cheap to the vendor isn't always cheap to the buyer.
+
+Ibu responds: Itu mahal ya. Empat rupiah boleh?
+
+This is the beginning of the negotiation dance.
+
+Belum bisa, Bu. Kalau mau lima buah, sembilan rupiah.
+
+Here we see important function words: belum, tetapi, kalau.
+
+Then Ibu makes a decision: Saya tidak mau pisang. Saya mau nanas.
+
+Negation is simple: tidak before the verb.
+
+Bapak dan Ibu beli buah-buahan.
+
+Here we see reduplication. Buah is one piece of fruit. Buah-buahan means a variety of fruits.
+
+With specific quantities, you don't repeat the word: tiga buah, empat pisang.
+
+Bapak dan Ibu tidak mau ke hotel, tetapi mau ke rumah.
+
+Tidak cukup. An assessment of the situation.
+
+Saya mau beli rumah besar. Noun first, then the adjective.
+
+This pattern is nearly always consistent. The essence comes first, then the detail.
+
+We followed Ibu to the market, saw the negotiation unfold, and watched as Bapak joined along the way.
+
+This entire story was built with just a handful of words and a few basic rules.
+
+This is not a vocabulary list. This is the logical engine of the language.
+
+Even with this small foundation, you can already communicate and create your own stories.
+
+This is the core — the DNA of the language.
+
+Try using the same words: Bapak beli enam pisang, tidak mau ke pasar. What other short story can you come up with?
+
+That is your real next step.`,
   },
   {
     title: 'Les 2 – Arsitektur Borobudur Sebagai Peta Menuju Nirwana',
@@ -470,6 +588,102 @@ Setelah susah payah melepaskan dunia luar, kita malah diminta melihatnya lagi, t
 Kenapa sebuah struktur yang begitu fokus pada pembebasan batin, pada akhirnya justru menghubungkan kita kembali dengan kosmos yang tak terbatas? Apa hubungan sebenarnya antara kedamaian di dalam diri — ya itu nirwana — dengan alam semesta yang mahaluas di luar sana?
 
 Mungkin jawabannya adalah saat kita benar-benar tenang di dalam, barulah kita bisa benar-benar melihat ke luasan yang ada di luar. Sesuatu untuk Anda pikirkan saat melanjutkan perjalanan belajar Anda.`,
-    transcript_english: null,
+    transcript_english: `Welcome back. Today we want to try something a little different. You're about to open chapter two of your Indonesian textbook, Selamat Datang. And you've asked us to break down the introductory text. And honestly, this is no ordinary vocabulary list.
+
+That's right. This is truly a deep journey. The source you've given us takes us a long way back. To the roots of a philosophy that has, yes, shaped one of the most iconic monuments in the world.
+
+Exactly. So this isn't just about learning a language. This is about understanding the mindset behind it. Our mission this time is to break down this text together. We'll look at how an abstract idea about life, suffering, and enlightenment — something that originated thousands of kilometers away — could become a masterpiece of stone in the middle of the island of Java.
+
+Okay, let's get into it. This is not a story about an old building. Not at all. This is about how a philosophy can be literally carved in stone.
+
+So let's start at the roots. This text takes us to northern India, around the sixth century BCE. That's where the Buddhist teachings first emerged.
+
+That's right. You may have already heard the basic concept. Reincarnation. The idea is that we are all caught in a cycle. We are born, we live, we die, and then we are born again. And on it goes.
+
+But what's interesting is that Buddhism doesn't see this as something positive.
+
+Isn't it good to get another chance?
+
+Well, that's exactly the problem. This cycle is seen as the core problem that needs to be solved. Because every life, without exception, is always marked by suffering. In the original language, Pali, this is called dukha. And dukha doesn't just mean physical pain or sadness. It goes much deeper than that. The text gives examples like disappointment, heartache, illness, and death. But dukha is also that subtle feeling of dissatisfaction — we feel happy when we buy something new, but that feeling fades quickly. Or when we achieve something, the fear of losing it immediately sets in. That is dukha. Our default state of never being truly, permanently satisfied.
+
+Okay, I get it. So this isn't pessimism. It's more of a diagnosis of the human condition. We keep searching for satisfaction in the wrong places.
+
+Exactly. And here's the breakthrough. Many other religions or philosophies might focus on how to make the next life better — becoming a king, or being born into heaven. But Buddhism says: that is not the goal. The goal is not to win this game, but to stop playing it altogether. To step out of the cycle.
+
+But how do you do that? It sounds completely impossible.
+
+The way, according to this teaching, is to free yourself from the very source of suffering: attachment. Our endless craving. The desire to have things, the desire to become someone, even being attached to our own ideas. If all that attachment can be let go, the cycle of suffering stops.
+
+And when the cycle stops, what happens? Where do we go?
+
+We reach what is called Nirwana. The text describes it as a state of absolute stillness. Not a heaven with gardens. More like the extinguishing of the fire of desire and suffering. Total peace that is unshakeable. A state from which you are not reborn. That is the ultimate goal.
+
+Okay, so the goal is to step out of the cycle by reaching Nirwana. But is there just one standard way to get there, or are there different paths?
+
+An excellent question. And that brings us directly to the next part of your text. There are indeed different paths, or vehicles, to reach that destination. Buddhist teaching is divided into two main streams.
+
+Small wheel and large wheel?
+
+Exactly. The first is Hinayana — which means small vehicle or small wheel. This stream is considered more conservative. They try to follow the original teachings of the Buddha as precisely as possible. The focus is very individual. This is the journey of a monk to achieve liberation for himself — like a solo mountain climb.
+
+And what about the other one?
+
+Mahayana — which means large vehicle or large wheel. This stream is more flexible. They believe that the path to enlightenment is open to everyone, not just monks. And most importantly: Mahayana is very open to adapting to local cultures and belief systems.
+
+If Hinayana is stricter and focused on the individual, while Mahayana is more flexible and focused on the community — does that mean followers of Mahayana see the Hinayana path as somewhat selfish?
+
+Well, that's a theological debate thousands of years in the making. From the Mahayana perspective, focusing solely on your own liberation can be seen as less compassionate. They have the concept of the Bodhisattva — someone who has essentially already achieved enlightenment, but chooses to delay their Nirwana. They return to the cycle of birth in order to help all living beings reach enlightenment as well.
+
+Wow, so there's a strong emphasis on collective well-being over personal interest? One focuses on "save yourself," the other on "save everyone."
+
+Exactly. And this flexibility of Mahayana is the key to its spread. Its ability to integrate with local cultures was the defining factor in why Buddhism could be accepted and grow so rapidly throughout the Nusantara. The text mentions that traces of it were already present in Indonesia around the fourth century CE.
+
+That's a very long time ago. And this was no passing influence — this was a major intellectual and spiritual wave.
+
+That's right. The text highlights that between the seventh and eighth centuries, the Kingdom of Sriwijaya on Sumatra was a highly renowned Buddhist religious center. Monks and scholars from across Asia — from China, India, Tibet — came to study and translate sacred texts. It was like the Harvard or Oxford of the Buddhist world at that time.
+
+This shows that these ideas were no longer just a belief system — they had already become part of the power, politics, and identity of a great kingdom.
+
+Now, this is where all the threads come together. All the abstract ideas we've discussed — dukha, letting go, Nirwana, the spiritual journey — finally take their physical form: the temple of Borobudur. A massive textbook made of two million stone blocks, built around the eighth century in Central Java. More than fifty thousand skilled workers labored for decades. This wasn't simply building a temple — this was a civilizational project.
+
+And in its time, this complex was alive: wooden buildings for monks, lodgings for pilgrims, libraries, study spaces. It hummed with spiritual activity.
+
+Okay, let's make the journey now. Imagine we are pilgrims in the eighth century approaching this temple for the first time. The text divides the temple into three levels or spheres.
+
+Absolutely. This is a three-dimensional map of the human mind on its way to enlightenment. Every step upward is a spiritual advancement — this is architecture that teaches.
+
+We begin right at the bottom: the Sphere of Desire, or Kamadhatu. This lowest level symbolizes our everyday world — the world of longing, craving, attachment, everything that is the source of dukha. The temple seems to be saying: this is who you are right now, bound to the world.
+
+Then we begin climbing the stairs to the next level: the Sphere of Form, or Rupadhatu. Here the journey becomes more focused. Someone at this level has already begun letting go of the coarser desires, but is still bound to form and shape. At this level, the galleries are decorated with thousands of reliefs that are extraordinarily intricate and beautiful. Stories from the life of the Buddha, Jataka tales. And yet it actually gets busier here!
+
+A very sharp question. This is "the trap of beauty." Those reliefs are lessons. But their very beauty is itself a form to which you can become attached. This is the test: can you understand the message behind the form, without becoming attached to the form itself?
+
+Extraordinary. So this is a kind of walking meditation. We move through these corridors, reading the stories on the walls. And consciously or not, we're already absorbing ideas about virtue and wisdom.
+
+Exactly. You walk clockwise around the temple on each level before ascending to the next. This ritual is called pradaksina. Physically, you keep moving forward and upward, just like your spiritual journey.
+
+And finally, after passing through the galleries filled with forms and stories, we arrive at the top: the Sphere of Formlessness, or Arupadhatu. Here everything changes. The narrow corridors and busy walls suddenly disappear. What remains are only three circular terraces, wide open to the sky. Serene, expansive.
+
+That's right. No more stories carved in stone, no more forms to hold on to. Only stupas with openings cut into them, and inside stand Buddha figures that all look identical. And at the center stands one great main stupa, solidly sealed shut.
+
+What does this symbolize?
+
+This is the symbol of the ultimate goal itself. Arupadhatu is the realm of the mind that has transcended form and shape. You no longer need stories or images. The mind has come to rest. Those stupas with openings symbolize emptiness, a central concept in Mahayana Buddhism. And the main stupa that is firmly sealed — that is the symbol of Nirwana. Something that is absolutely indescribable and cannot be depicted in any form whatsoever.
+
+So the physical act of climbing the temple is truly a metaphor. From the busyness of desire at the bottom, through the beauty of form in the middle, to the simplicity and stillness at the top. The architecture itself is our teacher.
+
+You've summarized it perfectly. You're not just reading about letting go — you experience it physically as you move from a space that is narrow to one that is open and boundless.
+
+So, coming back to you as you study this chapter two — this means Borobudur is far more than just a beautiful tourist destination. It is a story. It is a map of the spiritual journey frozen in time.
+
+That's right. As you learn new words in Indonesian, remember that behind that language lie layers of history. Philosophy and a worldview as profound as this one.
+
+And to close: the summit, the main stupa, directs our gaze toward the sky, toward the immeasurable world above us. This raises an intriguing question. The entire journey of climbing the temple is about an inward journey — releasing the world, quieting the mind, finding stillness within yourself. But once you reach the top, at the highest point of attainment, the architecture turns your gaze outward — upward, toward the boundless universe.
+
+A paradox. After all that effort to release the outer world, we are asked to look at it again — but from an entirely different perspective.
+
+What is the true relationship between peace within yourself — Nirwana — and the vast universe beyond?
+
+Perhaps the answer is that when we have truly come to rest on the inside, only then can we truly see the vastness that lies outside. Something to reflect on as you continue your learning journey.`,
   },
 ]
