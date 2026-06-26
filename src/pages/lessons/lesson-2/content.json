@@ -7,7 +7,8 @@
     "description": "Leer de SE- prefix, ini/itu (dit/dat) als aanwijzend voornaamwoord en woordgroepmarkeerder, ontkenning met tidak, bijvoeglijke naamwoorden en de getallen 11-20.",
     "primary_voice": "id-ID-Chirp3-HD-Achird",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-2.m4a"
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-2.m4a",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {

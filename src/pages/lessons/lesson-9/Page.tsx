@@ -30,7 +30,7 @@ import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
-import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'
+import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -666,14 +666,14 @@ export default function Lesson9Page() {
       </section>
 
       {/* Lesson-level grammar-explanation audio */}
-      {meta.lesson_audio_url && (
-        <section className={classes.audioBand}>
-          <div className={classes.audioInner}>
-            <p className={classes.audioLabel}>Uitleg bij de grammatica · audio</p>
-            <LessonAudioPlayer src={meta.lesson_audio_url} />
-          </div>
-        </section>
-      )}
+      <LessonGrammarAudioBand
+        nl={meta.lesson_audio_url}
+        en={meta.lesson_audio_url_en}
+        label="Uitleg bij de grammatica · audio"
+        bandClassName={classes.audioBand}
+        innerClassName={classes.audioInner}
+        labelClassName={classes.audioLabel}
+      />
 
       {/* Main content — culture spread sets the worldview, then the modern
           encounter (puskesmas), then the lesson's grammatical spine (A·B·C),

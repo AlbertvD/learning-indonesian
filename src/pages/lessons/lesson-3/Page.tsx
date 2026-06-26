@@ -13,7 +13,7 @@
 import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
-import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'
+import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import content from './content.json'
 import classes from './Page.module.css'
@@ -499,13 +499,12 @@ export default function Lesson3Page() {
       </section>
 
       {/* Lesson audio */}
-      {meta.lesson_audio_url && (
-        <section className={classes.audioBand}>
-          <div className={classes.audioInner}>
-            <LessonAudioPlayer src={meta.lesson_audio_url} />
-          </div>
-        </section>
-      )}
+      <LessonGrammarAudioBand
+        nl={meta.lesson_audio_url}
+        en={meta.lesson_audio_url_en}
+        bandClassName={classes.audioBand}
+        innerClassName={classes.audioInner}
+      />
 
       {/* Main content */}
       <section className={classes.shellBand}>

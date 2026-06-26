@@ -7,7 +7,8 @@
     "description": "History of Jakarta (Batavia). Grammar focus: negation system (belum/bukan/tidak/jangan), imperative with -lah, question suffix -kah, Indonesian day parts and clock time.",
     "primary_voice": "id-ID-Chirp3-HD-Orus",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-6.m4a"
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-6.m4a",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {
