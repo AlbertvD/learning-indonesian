@@ -22,6 +22,11 @@ export function cleanSectionDisplayContent(content: Record<string, unknown>): Re
   }
 }
 
+// INVARIANT: the Lesson Stage owns title/description/level/sections ONLY. It does
+// NOT write `lessons.audio_path` or `lessons.audio_path_en` — those grammar-podcast
+// audio paths are owned solely by scripts/grammar-podcast/publish.ts. Do NOT add
+// audio_path[_en] to LessonInput / upsertLesson: a re-publish of a grammar-corrected
+// lesson must not clobber an already-produced podcast. (Grammar-podcast plan, C1.)
 export interface LessonInput {
   module_id: string
   order_index: number
