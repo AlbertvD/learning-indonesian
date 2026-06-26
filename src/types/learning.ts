@@ -92,25 +92,6 @@ export interface LearnerItemState {
   updated_at: string
 }
 
-export interface LearnerSkillState {
-  id: string
-  user_id: string
-  learning_item_id: string
-  skill_type: SkillType
-  stability: number
-  difficulty: number
-  retrievability: number | null
-  last_reviewed_at: string | null
-  next_due_at: string | null
-  success_count: number
-  failure_count: number
-  lapse_count: number
-  consecutive_failures: number
-  mean_latency_ms: number | null
-  hint_rate: number | null
-  updated_at: string
-}
-
 export interface ReviewEvent {
   id: string
   user_id: string
