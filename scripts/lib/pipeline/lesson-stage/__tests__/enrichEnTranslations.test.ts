@@ -39,8 +39,9 @@ function sections() {
             examples: [{ indonesian: 'Saya datang.', dutch: 'Ik kom.' }],
           },
           {
-            title: 'Woorden per groep', // table-only — must be SKIPPED
+            title: 'Woorden per groep', // reference grid (no rules) — title + examples still need EN
             table: [['A', 'B', 'C']],
+            examples: [{ indonesian: 'Jam lima', dutch: 'Vijf uur' }],
           },
         ],
         grammar_topics: ['Werkwoordvolgorde'],
@@ -61,11 +62,14 @@ describe('collectEnNeeds', () => {
         '2|cat|0|rule|0',
         '2|cat|0|rule|1',
         '2|cat|0|title',
-        '2|cat|1|title', // reference grid (table-only) — its title still surfaces in the EN briefing
+        '2|cat|1|title', // reference grid — its title still surfaces in the reader/EN briefing
+        '2|cat|1|ex|0', // reference grid — its example glosses also surface and need EN
       ].sort(),
     )
-    // table-only category index 1 contributes ONLY its title (no rules/examples to feed a capability)
-    expect(needs.filter((n) => n.key.startsWith('2|cat|1')).map((n) => n.key)).toEqual(['2|cat|1|title'])
+    // reference grid index 1 contributes its title + examples (no rules to feed a capability)
+    expect(needs.filter((n) => n.key.startsWith('2|cat|1')).map((n) => n.key).sort()).toEqual(
+      ['2|cat|1|ex|0', '2|cat|1|title'],
+    )
   })
 
   it('carries indonesian + dutch for items/examples/dialogue and dutch-only for titles/rules', () => {
@@ -121,10 +125,10 @@ describe('enrichMissingEnContent', () => {
       return m
     }
     const result = await enrichMissingEnContent(secs, translate)
-    expect(result.needed).toBe(7) // +1: the table-only category's title
+    expect(result.needed).toBe(8) // +2: the reference grid's title and its example
     expect(result.filled.items).toBe(1)
     expect(result.filled.dialogueLines).toBe(1)
-    expect(result.filled.grammarCategories).toBe(2) // rule-bearing cat + the reference grid's title
+    expect(result.filled.grammarCategories).toBe(2) // rule-bearing cat + the reference grid (title+example)
     const items = secs[0].content.items as Array<Record<string, unknown>>
     expect(items[0].english).toBe('EN:kaki')
   })

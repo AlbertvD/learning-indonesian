@@ -108,26 +108,16 @@ export function collectEnNeeds(sections: SectionLike[]): EnNeed[] {
       categories.forEach((rawCat, ci) => {
         const cat = rawCat as Record<string, unknown>
 
-        // Every titled category surfaces in the podcast EN briefing
-        // (scripts/grammar-podcast/briefings.ts), which does NOT filter by
-        // rule-bearing — so a pure reference grid (table/examples only, no
-        // rules) still needs its title in English or its Dutch heading leaks
-        // into the EN episode. Collect the title BEFORE the rule-bearing guard;
-        // rules/examples EN stay guarded (reference grids have none to feed a
-        // capability anyway).
+        // The title AND examples of EVERY category surface in the reader and the
+        // podcast EN briefing (scripts/grammar-podcast/briefings.ts), neither of
+        // which filters by rule-bearing — so a pure reference grid (table/examples
+        // only, no rules) still needs its title and example glosses in English, or
+        // its Dutch leaks into the EN reader / episode. Collect those BEFORE the
+        // rule-bearing guard; only rules_en stays guarded (reference grids have no
+        // rules to feed a capability).
         if (isFilled(cat.title) && !isFilled(cat.title_en)) {
           needs.push({ key: `${si}|cat|${ci}|title`, dutch: (cat.title as string).trim() })
         }
-
-        if (!isCapabilityFeedingCategory(cat)) return
-
-        const rules = Array.isArray(cat.rules) ? cat.rules : []
-        const rulesEn = Array.isArray(cat.rules_en) ? cat.rules_en : []
-        rules.forEach((rule, ri) => {
-          if (!isFilled(rule)) return
-          if (isFilled(rulesEn[ri])) return
-          needs.push({ key: `${si}|cat|${ci}|rule|${ri}`, dutch: (rule as string).trim() })
-        })
 
         const examples = Array.isArray(cat.examples) ? cat.examples : []
         examples.forEach((rawEx, ei) => {
@@ -140,6 +130,16 @@ export function collectEnNeeds(sections: SectionLike[]): EnNeed[] {
             indonesian,
             dutch: isFilled(ex.dutch) ? (ex.dutch as string).trim() : undefined,
           })
+        })
+
+        if (!isCapabilityFeedingCategory(cat)) return
+
+        const rules = Array.isArray(cat.rules) ? cat.rules : []
+        const rulesEn = Array.isArray(cat.rules_en) ? cat.rules_en : []
+        rules.forEach((rule, ri) => {
+          if (!isFilled(rule)) return
+          if (isFilled(rulesEn[ri])) return
+          needs.push({ key: `${si}|cat|${ci}|rule|${ri}`, dutch: (rule as string).trim() })
         })
       })
     }
