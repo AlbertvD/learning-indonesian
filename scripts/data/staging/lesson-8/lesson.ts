@@ -494,7 +494,7 @@ export const lesson = {
               ],
               [
                 "nih",
-                "milde verbazing"
+                "spreektaalvariant van 'ini' (dit/hier); wijst aan of benadrukt nabijheid"
               ],
               [
                 "sih",

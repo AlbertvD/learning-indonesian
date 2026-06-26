@@ -553,7 +553,7 @@ export const lesson = {
             "rules": [
               "Op een bijvoeglijk naamwoord geeft TER- de overtreffende trap (superlatief), als alternatief voor paling (Les 8): terbesar (grootst), tertinggi (hoogst), terbaik (best).",
               "TER- treedt ook op als bijvoeglijke bepaling vóór een zelfstandig naamwoord, vaak met een passief-resultatieve kleur: dokter terkenal (de bekende arts), penyanyi tercinta (de geliefde zanger).",
-              "Een aantal TER-vormen is een vaste term die je als geheel leert: tergantung dari (afhangen van), termasuk (inclusief / behoren tot), tersebut (genoemd, voornoemd), terdiri dari (bestaan uit)."
+              "Een aantal TER-vormen is een vaste term die je als geheel leert: tergantung pada (afhangen van; informeel ook tergantung dari), termasuk (inclusief / behoren tot), tersebut (genoemd, voornoemd), terdiri atas (bestaan uit; informeel ook terdiri dari)."
             ],
             "examples": [
               {
@@ -572,7 +572,7 @@ export const lesson = {
                 "english": "Is this bill including VAT?"
               },
               {
-                "indonesian": "Buku ini terdiri dari 14 bab",
+                "indonesian": "Buku ini terdiri atas 14 bab",
                 "dutch": "Dit boek bestaat uit 14 hoofdstukken",
                 "english": "This book consists of 14 chapters"
               }
@@ -581,7 +581,7 @@ export const lesson = {
             "rules_en": [
               "On an adjective, TER- gives the superlative, as an alternative to paling (Lesson 8): terbesar (largest), tertinggi (highest), terbaik (best).",
               "TER- also appears as an attributive adjective before a noun, often with a passive-resultative sense: dokter terkenal (the famous doctor), penyanyi tercinta (the beloved singer).",
-              "A number of TER-forms is a fixed term that you learn as a whole: tergantung dari (depend on), termasuk (including / belong to), tersebut (mentioned, aforesaid), terdiri dari (consist of)."
+              "A number of TER-forms is a fixed term that you learn as a whole: tergantung pada (depend on; informally also tergantung dari), termasuk (including / belong to), tersebut (mentioned, aforesaid), terdiri atas (consist of; informally also terdiri dari)."
             ]
           }
         ],

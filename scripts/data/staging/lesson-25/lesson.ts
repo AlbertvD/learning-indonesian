@@ -261,7 +261,7 @@ export const lesson = {
             "title": "De PE-...-AN vorm: van basiswoord naar zelfstandig naamwoord",
             "rules": [
               "Het circumfix PE-...-AN (voorvoegsel PE- + achtervoegsel -AN samen) maakt van het basiswoord een zelfstandig naamwoord.",
-              "De vormingsregels zijn identiek aan die van de PE-vorm (Les 20) en de -AN-vorm (Les 10) tegelijk toegepast — er is dus niets nieuws aan de vorming.",
+              "De meeste vormen combineren de PE-vorm (Les 20) met de -AN-vorm (Les 10) en volgen dezelfde nasaleringsregels (pengembangan, pendaftaran). Let op de uitzondering: sommige zelfstandige naamwoorden zijn gevormd met het confix per-...-an op een BER-werkwoord — géén nasalering, géén K/P/S/T-luluh — zoals berkembang → perkembangan.",
               "Zoals we hebben gezien kan op basis van een basiswoord met ME-, ME-KAN en ME-I een werkwoord worden gemaakt; op basis van dat werkwoord maakt PE-...-AN er opnieuw een zelfstandig naamwoord van.",
               "De afgeleide vorm benoemt meestal het proces of de handeling, soms het resultaat, een abstractie of een plaats.",
               "De beginklank van het basiswoord bepaalt de vorm van het voorvoegsel-deel — dezelfde nasaleringsregels als bij ME- en PE-: pe- (L, M, N, NY, R, W, Y), pem- (B, F), pen- (C, D, J), peny- (S valt weg), peng- (klinkers + G, H), penge- (eenlettergrepig). Bij K, P, S, T valt de beginklank van het basiswoord weg."
@@ -286,7 +286,7 @@ export const lesson = {
             "title_en": "The PE-...-AN form: from root word to noun",
             "rules_en": [
               "The circumfix PE-...-AN (prefix PE- + suffix -AN together) turns the root word into a noun.",
-              "The formation rules are identical to those of the PE-form (Lesson 20) and the -AN-form (Lesson 10) applied simultaneously — there is nothing new about the formation.",
+              "Most forms combine the PE-form (Lesson 20) with the -AN-form (Lesson 10) and follow the same nasalisation rules (pengembangan, pendaftaran). Note the exception: some nouns are formed with the per-...-an confix on a BER-verb — no nasalisation, no K/P/S/T elision — such as berkembang → perkembangan.",
               "As we have seen, a verb can be made from a root word using ME-, ME-KAN and ME-I; based on that verb, PE-...-AN turns it back into a noun.",
               "The derived form usually names the process or action, sometimes the result, an abstraction, or a place.",
               "The initial consonant of the root word determines the form of the prefix part — the same nasalization rules as with ME- and PE-: pe- (L, M, N, NY, R, W, Y), pem- (B, F), pen- (C, D, J), peny- (S disappears), peng- (vowels + G, H), penge- (one syllable). With K, P, S, T the initial consonant of the root word disappears."
@@ -354,7 +354,7 @@ export const lesson = {
                 "english": "plan → the planning"
               },
               {
-                "indonesian": "Pendaftaran mahasiswa baru memulai pada bulan Juni",
+                "indonesian": "Pendaftaran mahasiswa baru dimulai pada bulan Juni",
                 "dutch": "De inschrijving van nieuwe studenten begint in juni",
                 "english": "Registration of new students begins in June."
               },

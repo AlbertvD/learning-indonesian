@@ -374,9 +374,9 @@ export const lesson = {
                 "english": "SUMSEL = SUMatera + SELatan"
               },
               {
-                "indonesian": "NUSTENGTIM = NUSa + TENGgara + TIMur",
-                "dutch": "Nusa Tenggara Oost (nusa = eiland, tenggara = zuidoost, timur = oost)",
-                "english": "NUSTENGTIM = NUSa + TENGgara + TIMur"
+                "indonesian": "JABODETABEK = JAkarta + BOgor + DEpok + TAngerang + BEKasi",
+                "dutch": "de regio rond Jakarta (Jakarta, Bogor, Depok, Tangerang, Bekasi)",
+                "english": "JABODETABEK = JAkarta + BOgor + DEpok + TAngerang + BEKasi"
               }
             ],
             "title_en": "Acronyms (acronym) — syllables combined into one word",

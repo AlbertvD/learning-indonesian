@@ -374,7 +374,7 @@ export const lesson = {
             "title": "Minimale paren: zelfde basiswoord, -KAN tegenover -i",
             "rules": [
               "Bij veel basiswoorden geven -KAN en -i een verschillende betekenis: -KAN causatief/benefactief (patiens bewogen of gemaakt), -i locatief (handeling op een vast doelpunt gericht).",
-              "tinggal (blijven): meninggalkan = achterlaten; meninggali = nalaten, verlaten.",
+              "tinggal (blijven): meninggalkan = achterlaten, verlaten; meninggali = bewonen / nalaten (als erfenis).",
               "duduk (zitten): mendudukkan = iemand laten zitten; menduduki = bezetten.",
               "gambar (illustratie, tekening): menggambarkan = afbeelden; menggambari = illustreren, beschilderen."
             ],
@@ -391,7 +391,7 @@ export const lesson = {
               },
               {
                 "indonesian": "meninggali",
-                "dutch": "nalaten; verlaten",
+                "dutch": "bewonen; nalaten (als erfenis)",
                 "english": "bequeath; leave"
               },
               {
@@ -416,8 +416,8 @@ export const lesson = {
               },
               {
                 "indonesian": "Siapa meninggali rumah itu?",
-                "dutch": "Wie heeft dat huis verlaten?",
-                "english": "Who left that house?"
+                "dutch": "Wie bewoont dat huis?",
+                "english": "Who inhabits that house?"
               },
               {
                 "indonesian": "duduk",
@@ -473,7 +473,7 @@ export const lesson = {
             "title_en": "Minimal pairs: same base word, -KAN versus -i",
             "rules_en": [
               "With many base words, -KAN and -i have different meanings: -KAN causative/benefactive (patient moved or made), -i locative (action directed at a fixed goal).",
-              "tinggal (stay): meninggalkan = abandon; meninggali = bequeath, leave.",
+              "tinggal (stay): meninggalkan = abandon, leave; meninggali = inhabit / bequeath.",
               "duduk (sit): mendudukkan = make someone sit; menduduki = occupy.",
               "gambar (illustration, drawing): menggambarkan = depict; menggambari = illustrate, paint."
             ]
@@ -501,7 +501,7 @@ export const lesson = {
                 "aku",
                 "ik",
                 "mengakui — erkennen, toegeven",
-                "mengakukan — doen erkennen, laten bekennen"
+                "(aku heeft geen gangbare -kan-vorm)"
               ],
               [
                 "atas",

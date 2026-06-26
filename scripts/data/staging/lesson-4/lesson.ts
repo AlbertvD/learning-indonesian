@@ -131,7 +131,7 @@ export const lesson = {
             "rules": [
               "Yang koppelt als betrekkelijk voornaamwoord een bijzin aan het voorgaande zelfstandig naamwoord.",
               "Yang staat altijd direct na het woord of de woordgroep waarnaar verwezen wordt.",
-              "Na samengestelde zelfstandige naamwoorden (kamar mandi, tempat tidur) is yang verplicht.",
+              "Na samengestelde zelfstandige naamwoorden (kamar mandi, tempat tidur) is yang optioneel: zowel 'kamar mandi bersih' als 'kamar mandi yang bersih' is correct; yang gebruik je vooral in formele taal of voor de duidelijkheid.",
               "Na een bezittelijk voornaamwoord dient een bijvoeglijk naamwoord ook voorafgegaan te worden door yang."
             ],
             "title": "Yang als betrekkelijk voornaamwoord (die/dat)",
@@ -156,7 +156,7 @@ export const lesson = {
             "rules_en": [
               "Yang links as a relative pronoun a subordinate clause to the preceding noun.",
               "Yang always stands directly after the word or phrase it refers to.",
-              "After compound nouns (kamar mandi, tempat tidur) yang is obligatory.",
+              "After compound nouns (kamar mandi, tempat tidur) yang is optional: both 'kamar mandi bersih' and 'kamar mandi yang bersih' are correct; yang is used mainly in formal register or for clarity.",
               "After a possessive pronoun an adjective must also be preceded by yang."
             ]
           },

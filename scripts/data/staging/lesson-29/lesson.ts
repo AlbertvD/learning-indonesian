@@ -427,7 +427,7 @@ export const lesson = {
             "title": "MEMPER- bij een werkwoord (ingat) en de hele afleidingsreeks",
             "rules": [
               "Op één werkwoordelijk basiswoord kunnen meerdere afleidingen naast elkaar bestaan, elk met een eigen betekenis en een eigen DI-vorm.",
-              "mengingat = zich herinneren (di-vorm diingat); mengingatkan = iemand herinneren aan (diingatkan); mengingati = vermanen (diingati).",
+              "mengingat = zich herinneren (di-vorm diingat); mengingatkan = iemand herinneren aan (diingatkan); mengingati = zich herinneren, niet vergeten (diingati).",
               "memperingatkan = waarschuwen (diperingatkan); memperingati = gedenken, herdenken (diperingati).",
               "De MEMPER-afleidingen voegen de intensieve/nadrukkelijke laag toe boven op de gewone ME-afleidingen."
             ],
@@ -446,7 +446,7 @@ export const lesson = {
             "title_en": "MEMPER- with a verb (ingat) and the complete derivation series",
             "rules_en": [
               "Multiple derivations can exist side by side from one verbal base word, each with its own meaning and its own DI- form.",
-              "mengingat = remember (di-form: diingat); mengingatkan = remind someone of (di-form: diingatkan); mengingati = admonish (di-form: diingati).",
+              "mengingat = remember (di-form: diingat); mengingatkan = remind someone of (di-form: diingatkan); mengingati = remember, keep in mind (di-form: diingati).",
               "memperingatkan = warn (di-form: diperingatkan); memperingati = commemorate (di-form: diperingati).",
               "The MEMPER- derivations add an intensive/emphatic layer on top of the regular ME- derivations."
             ]

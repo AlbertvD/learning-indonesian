@@ -359,7 +359,7 @@ export const lesson = {
               "1b. intransitief werkwoord: duduk → mendudukkan (iemand laten zitten).",
               "2. zelfstandig naamwoord: tempat → menempatkan (iets neerzetten).",
               "3. bijvoeglijk naamwoord: bersih → membersihkan (iets schoonmaken).",
-              "4. telwoord (zeldzaam): dua → menduakan (iets verdubbelen).",
+              "4. telwoord (zeldzaam): dua → menduakan (iemand/iets als tweede behandelen, naast een ander stellen).",
               "5. persoonlijk voornaamwoord (zeldzaam): aku → mengakukan (laten erkennen).",
               "6. woord van plaats (zeldzaam): ke muka → mengemukakan (opperen, voorstellen, naar voren brengen)."
             ],
@@ -381,7 +381,7 @@ export const lesson = {
               "1b. intransitive verb: duduk → mendudukkan (make someone sit).",
               "2. noun: tempat → menempatkan (put something down).",
               "3. adjective: bersih → membersihkan (clean something).",
-              "4. numeral (rare): dua → menduakan (double something).",
+              "4. numeral (rare): dua → menduakan (treat as second, put beside another).",
               "5. personal pronoun (rare): aku → mengakukan (make (someone) acknowledge).",
               "6. locative word (rare): ke muka → mengemukakan (propose, suggest, bring forward)."
             ]
