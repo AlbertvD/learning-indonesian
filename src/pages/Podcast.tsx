@@ -21,6 +21,7 @@ export function Podcast() {
   const navigate = useNavigate()
   const T = useT()
   const user = useAuthStore((state) => state.user)
+  const lang = useAuthStore((state) => state.profile?.language ?? 'nl')
 
   const [podcast, setPodcast] = useState<Podcast | null>(null)
   const [loading, setLoading] = useState(true)
@@ -97,8 +98,9 @@ export function Podcast() {
             <Tabs defaultValue="indonesian">
               <Tabs.List>
                 <Tabs.Tab value="indonesian">{T.podcast.transcriptIndonesian}</Tabs.Tab>
-                <Tabs.Tab value="english">{T.podcast.transcriptEnglish}</Tabs.Tab>
-                <Tabs.Tab value="dutch">{T.podcast.transcriptDutch}</Tabs.Tab>
+                <Tabs.Tab value="translation">
+                  {lang === 'nl' ? T.podcast.transcriptDutch : T.podcast.transcriptEnglish}
+                </Tabs.Tab>
               </Tabs.List>
 
               <Tabs.Panel value="indonesian" pt="md">
@@ -107,15 +109,11 @@ export function Podcast() {
                 </Text>
               </Tabs.Panel>
 
-              <Tabs.Panel value="english" pt="md">
+              <Tabs.Panel value="translation" pt="md">
                 <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-                  {podcast.transcript_english || T.podcast.noTranscriptEnglish}
-                </Text>
-              </Tabs.Panel>
-
-              <Tabs.Panel value="dutch" pt="md">
-                <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-                  {podcast.transcript_dutch || T.podcast.noTranscriptDutch}
+                  {lang === 'nl'
+                    ? podcast.transcript_dutch || T.podcast.noTranscriptDutch
+                    : podcast.transcript_english || T.podcast.noTranscriptEnglish}
                 </Text>
               </Tabs.Panel>
             </Tabs>
