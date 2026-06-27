@@ -7,7 +7,7 @@
 // transcript_indonesian == the joined segment ids), so the join delimiter is a
 // single shared constant used by both this writer and that check.
 
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment, PodcastAttribution } from '@/services/podcastService'
 import type { PodcastData } from '../data/podcasts'
 import type { Level } from './pacing'
 
@@ -25,6 +25,8 @@ export interface AssembleInput {
   segments: TranscriptSegment[]
   audio_filename: string
   duration_seconds: number
+  /** CC attribution for a sourced episode; null/omitted for LLM-original. */
+  attribution?: PodcastAttribution | null
 }
 
 /**
@@ -50,7 +52,7 @@ export function transcriptDrift(row: {
 }
 
 export function assembleEpisode(input: AssembleInput): PodcastData {
-  const { title, description, level, segments, audio_filename, duration_seconds } = input
+  const { title, description, level, segments, audio_filename, duration_seconds, attribution } = input
   return {
     title,
     description,
@@ -61,5 +63,6 @@ export function assembleEpisode(input: AssembleInput): PodcastData {
     transcript_dutch: joinSegments(segments, 'nl'),
     transcript_english: joinSegments(segments, 'en'),
     transcript_segments: segments,
+    attribution: attribution ?? null,
   }
 }

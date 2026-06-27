@@ -25,6 +25,7 @@ A **leveled, shared, narrated Indonesian story** produced for *listening practic
 
 - **Leveled** — authored at a fixed CEFR level (A1 / A2 / B1 / B2). The level is the learner's *selection axis*: "pick a story at my level to practise listening."
 - **Shared, not personalized** — one episode per (level, topic) serves every learner; pre-seeded, never generated per-user (North-star: content flows homelab→cloud by re-publish, never per-user runtime generation).
+- **LLM-invented OR adapted-from-source** — content is either an original Gemini-authored story or an *openly-licensed* public story graded down to the level. Sourced episodes carry mandatory CC **attribution** (`podcasts.attribution`, displayed in the reader); prefer CC-BY over CC-BY-SA for the eventual paid app (ADR 0022 amendment).
 - **Vocab-anchored, loosely** — authored leaning on the app's vocabulary at that level (`learning_items`, level ≤ target) as a *soft* word-stock, not a hard whitelist; comprehensible-input by construction, but **not** coupled to any individual learner's FSRS progress.
 - **Listening-only** — NOT wired into capabilities / FSRS. (The transcript→core-vocab *harvest* loop, roadmap #4 "PLUS", is a separate, deferred feature.)
 - **Read-along** — the transcript is stored **sentence-aligned across ID / NL / EN** so the reader can follow in their chosen language while listening.

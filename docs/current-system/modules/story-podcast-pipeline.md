@@ -19,19 +19,28 @@ table + `indonesian-podcasts` bucket. Listening-only — never wired into capabi
 
 ## 1. Public interface (CLI)
 
-`bun scripts/podcasts/run.ts --level <A1|A2|B1|B2> --topic "<seed>" [--dry-run] [--voice <id>]`
-(`scripts/podcasts/run.ts:33-90`). `--dry-run` prints the plan and makes **no** API calls or
-writes (`run.ts:60-64`). Non-dry-run requires `GEMINI_API_KEY`, the Google TTS service account
+Two modes:
+- **Invent** — `--level <A1|A2|B1|B2> --topic "<seed>"`: Gemini authors an original story.
+- **Adapt** — `--level <…> --source <file> --attribution <file.json> [--source-level <lvl>]`:
+  grades an openly-licensed source story (e.g. a Wikibooks dongeng) down to the target level.
+  A sourced episode **requires** a complete CC attribution file — `run.ts` refuses without it.
+
+`[--dry-run]` prints the plan and makes **no** API calls or writes. `[--voice <id>]` overrides the
+narrator voice. Non-dry-run requires `GEMINI_API_KEY`, the Google TTS service account
 (`~/.config/gcloud/tts-indonesian.json`), and `SUPABASE_SERVICE_KEY`.
+
+The operator provides the source as a **local text file** (the pipeline does not scrape per-platform);
+CC-BY platforms (StoryWeaver/Let's Read) are downloaded by hand, Wikibooks (CC-BY-SA) can be pasted in.
 
 ## 2. Internal flow
 
 A thin composition (`run.ts:66-88`): **author** → **translate** → **narrate** → **assemble** → **seed**.
 
-- **author** — `authorStory` (`storyAuthor.ts:62-72`) calls Gemini with `buildAuthorPrompt`
-  (`storyAuthor.ts:36-53`, pure) and `AUTHOR_SCHEMA` structured output → `{title, description,
-  sentences[]}`. The story is authored *already segmented* (one sentence per array element), so
-  alignment is free.
+- **author / adapt** — `authorStory` (invent) or `adaptStory` (grade an openly-licensed source to
+  level) in `storyAuthor.ts`, both via Gemini with `AUTHOR_SCHEMA` structured output → `{title,
+  description, sentences[]}`; prompts are `buildAuthorPrompt` / `buildAdaptPrompt` (pure). The story
+  is *already segmented* (one sentence per element), so alignment is free. Sourced episodes carry a
+  `PodcastAttribution`, validated complete by `loadAttribution` (`run.ts`) before any work.
 - **translate** — `translateSegments` (`translate.ts:48-66`) translates the Indonesian sentence
   array to NL + EN in one Gemini call, then `alignTranslations` (`translate.ts:14-21`, pure) zips
   them into `TranscriptSegment[]`, throwing if counts diverge (the alignment invariant).

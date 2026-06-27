@@ -141,6 +141,15 @@ ALTER TABLE indonesian.podcasts ADD COLUMN IF NOT EXISTS transcript_segments jso
 COMMENT ON COLUMN indonesian.podcasts.transcript_segments IS
   'Ordered sentence-aligned array [{idx,id,nl,en}]: idx=0-based ordinal, id=Indonesian sentence, nl=Dutch, en=English. The transcript_indonesian/dutch/english columns are these segments joined (denormalized for the 3-tab reader); HC asserts consistency.';
 
+-- Story-podcast attribution: CC-BY/CC-BY-SA legal credit for openly-licensed
+-- source episodes (Wikibooks, StoryWeaver, Let's Read…). Nullable: LLM-invented
+-- episodes are original work and carry no attribution obligation. Read whole with
+-- the row and displayed as one unit (ADR 0009 trigger does not fire). Inherits
+-- podcasts_read/podcasts_admin_write + the authenticated SELECT grant.
+ALTER TABLE indonesian.podcasts ADD COLUMN IF NOT EXISTS attribution jsonb;
+COMMENT ON COLUMN indonesian.podcasts.attribution IS
+  'CC attribution for openly-licensed source episodes: {source_title, source_url, author, license, license_url}. NULL for LLM-original content.';
+
 -- Learning items (canonical teachable unit)
 CREATE TABLE IF NOT EXISTS indonesian.learning_items (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

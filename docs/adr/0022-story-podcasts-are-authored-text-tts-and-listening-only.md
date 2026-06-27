@@ -24,6 +24,24 @@ A **story podcast** is:
 - **Bundle the transcript→vocab harvest into this feature.** Rejected: it pulls the capability/FSRS data model in, and — per the affective-filter research — bolting testing onto extensive listening removes the very thing that makes it work. Kept separate and deferred.
 - **Karaoke audio-sync now** (auto-highlight the current line). Deferred: true timepoints aren't wired and would lock the engine to Chirp3-HD (Gemini TTS returns no timestamps), killing the bake-off for ~20% of the felt value. Sentence-level read-along (no sync) delivers the rest cheaply.
 
+## Amendment (2026-06-27) — sourcing & attribution
+
+Story content may be **either LLM-invented or adapted from an openly-licensed public-domain
+source** (the pipeline's author step has an *adapt* mode that grades a source story down to the
+target CEFR level). Decisions:
+
+- **Prefer CC-BY** (StoryWeaver, Let's Read, Global Digital Library) over **CC-BY-SA** (Wikibooks
+  dongeng) for durable content: CC-BY-SA's share-alike would force our derivative audio/translations
+  to carry the same open license — awkward for the Phase-2 paid app. CC-BY-SA is fine for the
+  build-stage personal instance; treat the swap to CC-BY as a pre-monetization task.
+- **Attribution is mandatory and stored.** Sourced episodes carry a `PodcastAttribution`
+  (`{source_title, source_url, author, license, license_url}`) in a new nullable `podcasts.attribution`
+  JSONB column (data-architect-resolved, same reasoning as `transcript_segments`), and the reader
+  **must display** the credit — a CC-BY/SA legal requirement, enforced by a pre-write guard
+  (sourced episode ⇒ complete attribution) rather than a DB health check.
+- The pipeline does **not** scrape per-platform; the operator provides the source as a local text
+  file (CC-BY platforms are JS apps / API-blocked).
+
 ## Consequences
 
 - The codebase intentionally has **two podcast audio paths**: NotebookLM (grammar, per-lesson, `lessons.audio_path`) and authored-text→TTS (story, `podcasts` table). A future reader should not "unify" them — the read-along fidelity requirement is the reason.

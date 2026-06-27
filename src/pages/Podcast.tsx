@@ -1,7 +1,7 @@
 // src/pages/Podcast.tsx
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Text, Button, Paper, Group, Stack, Tabs } from '@mantine/core'
+import { Text, Button, Paper, Group, Stack, Tabs, Anchor } from '@mantine/core'
 import { IconChevronLeft, IconMicrophone } from '@tabler/icons-react'
 import {
   PageContainer,
@@ -119,6 +119,19 @@ export function Podcast() {
                 </Text>
               </Tabs.Panel>
             </Tabs>
+
+            {podcast.attribution && (
+              <Text size="xs" c="dimmed">
+                {'Bron: '}
+                <Anchor href={podcast.attribution.source_url} target="_blank" rel="noopener noreferrer" inherit>
+                  {podcast.attribution.source_title}
+                </Anchor>
+                {` — ${podcast.attribution.author} · `}
+                <Anchor href={podcast.attribution.license_url} target="_blank" rel="noopener noreferrer" inherit>
+                  {podcast.attribution.license}
+                </Anchor>
+              </Text>
+            )}
           </Stack>
         </Paper>
       </PageBody>

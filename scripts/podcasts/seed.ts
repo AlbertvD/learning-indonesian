@@ -52,6 +52,7 @@ export async function seedEpisode(record: PodcastData, mp3: Buffer): Promise<voi
         transcript_dutch: record.transcript_dutch,
         transcript_english: record.transcript_english,
         transcript_segments: record.transcript_segments ?? null,
+        attribution: record.attribution ?? null,
         level: record.level,
         duration_seconds: record.duration_seconds,
       },

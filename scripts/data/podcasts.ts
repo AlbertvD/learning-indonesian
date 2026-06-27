@@ -1,4 +1,4 @@
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment, PodcastAttribution } from '@/services/podcastService'
 
 export interface PodcastData {
   title: string
@@ -12,6 +12,8 @@ export interface PodcastData {
   // Sentence-aligned transcript for read-along (ADR 0022). Optional: the legacy
   // story rows predate it. The transcript_* full-text above is these joined.
   transcript_segments?: TranscriptSegment[] | null
+  // CC attribution for openly-licensed source episodes; null for LLM-original.
+  attribution?: PodcastAttribution | null
 }
 
 export const podcasts: PodcastData[] = [

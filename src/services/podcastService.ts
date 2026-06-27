@@ -14,6 +14,19 @@ export interface TranscriptSegment {
   en: string // English
 }
 
+/**
+ * CC attribution for an openly-licensed source episode (Wikibooks, StoryWeaver,
+ * Let's Read…). Required to display by CC-BY / CC-BY-SA. NULL for LLM-original
+ * episodes — see `podcasts.attribution`.
+ */
+export interface PodcastAttribution {
+  source_title: string
+  source_url: string
+  author: string
+  license: string // e.g. 'CC BY-SA 4.0'
+  license_url: string
+}
+
 export interface Podcast {
   id: string
   title: string
@@ -23,6 +36,7 @@ export interface Podcast {
   transcript_english: string | null
   transcript_dutch: string | null
   transcript_segments: TranscriptSegment[] | null
+  attribution: PodcastAttribution | null
   level: string | null
   duration_seconds: number | null
   created_at: string

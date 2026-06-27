@@ -13,11 +13,22 @@
 
 import { readFileSync, existsSync } from 'node:fs'
 import { assembleEpisode } from './assemble'
-import { authorStory } from './storyAuthor'
+import { authorStory, adaptStory, type StoryDraft } from './storyAuthor'
 import { translateSegments } from './translate'
 import { synthesizeEpisode, DEFAULT_STORY_VOICE } from './narrator'
 import { persistSeedRecord, seedEpisode } from './seed'
 import type { Level } from './pacing'
+import type { PodcastAttribution } from '@/services/podcastService'
+
+const ATTR_FIELDS: (keyof PodcastAttribution)[] = ['source_title', 'source_url', 'author', 'license', 'license_url']
+
+/** Pre-write guard (data-architect): a sourced episode MUST carry complete CC attribution. */
+function loadAttribution(path: string): PodcastAttribution {
+  const attr = JSON.parse(readFileSync(path, 'utf8')) as Partial<PodcastAttribution>
+  const missing = ATTR_FIELDS.filter((f) => !attr[f])
+  if (missing.length) throw new Error(`attribution file missing required field(s): ${missing.join(', ')}`)
+  return attr as PodcastAttribution
+}
 
 const LEVELS: Level[] = ['A1', 'A2', 'B1', 'B2']
 
@@ -48,6 +59,7 @@ async function main() {
   loadEnv()
   const level = (arg('level') ?? 'A2') as Level
   const topic = arg('topic') ?? 'a small everyday moment in Indonesia'
+  const sourcePath = arg('source')
   const dryRun = process.argv.includes('--dry-run')
   const voice = arg('voice') ?? process.env.PODCAST_VOICE ?? DEFAULT_STORY_VOICE
 
@@ -56,16 +68,33 @@ async function main() {
     process.exit(1)
   }
 
-  console.log(`[story-podcast] level=${level} topic="${topic}" voice=${voice}${dryRun ? ' (dry-run)' : ''}`)
+  // Adapt mode (sourced, openly-licensed story) vs invent mode (LLM-original).
+  // A sourced episode REQUIRES a CC attribution file (--attribution).
+  const adapt = sourcePath !== undefined
+  let attribution: PodcastAttribution | null = null
+  if (adapt) {
+    const attrPath = arg('attribution')
+    if (!attrPath) throw new Error('--source requires --attribution <file.json> (CC credit is mandatory)')
+    attribution = loadAttribution(attrPath)
+  }
+
+  console.log(`[story-podcast] level=${level} ${adapt ? `source="${sourcePath}"` : `topic="${topic}"`} voice=${voice}${dryRun ? ' (dry-run)' : ''}`)
 
   if (dryRun) {
-    console.log('  would: author (Gemini) → translate ID→NL/EN → narrate (Chirp3-HD SSML) → assemble → seed (bucket + podcasts row)')
+    const step = adapt ? `adapt source (Gemini, → ${level}, credit ${attribution!.license})` : 'author (Gemini)'
+    console.log(`  would: ${step} → translate ID→NL/EN → narrate (Chirp3-HD SSML) → assemble → seed (bucket + podcasts row)`)
     console.log('  no API calls or writes made.')
     return
   }
 
-  console.log('  authoring…')
-  const draft = await authorStory({ level, topic, vocabPool: [] }) // vocab pool: slice 2 (#294)
+  let draft: StoryDraft
+  if (adapt) {
+    console.log('  adapting source…')
+    draft = await adaptStory({ sourceText: readFileSync(sourcePath!, 'utf8'), targetLevel: level, sourceLevel: arg('source-level') })
+  } else {
+    console.log('  authoring…')
+    draft = await authorStory({ level, topic, vocabPool: [] }) // vocab pool: slice 2 (#294)
+  }
   console.log(`  "${draft.title}" — ${draft.sentences.length} sentences`)
 
   console.log('  translating…')
@@ -82,6 +111,7 @@ async function main() {
     segments,
     audio_filename: `story-${level.toLowerCase()}-${slugify(draft.title)}.mp3`,
     duration_seconds: estimateDurationSeconds(wordCount, segments.length, level === 'A1' ? 0.85 : 1),
+    attribution,
   })
 
   const seedPath = persistSeedRecord(record)
