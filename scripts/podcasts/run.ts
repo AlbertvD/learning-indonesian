@@ -18,6 +18,7 @@ import { translateSegments } from './translate'
 import { synthesizeEpisode, DEFAULT_STORY_VOICE } from './narrator'
 import { persistSeedRecord, seedEpisode } from './seed'
 import type { Level } from './pacing'
+import type { PodcastData } from '../data/podcasts'
 import type { PodcastAttribution } from '@/services/podcastService'
 
 const ATTR_FIELDS: (keyof PodcastAttribution)[] = ['source_title', 'source_url', 'author', 'license', 'license_url']
@@ -57,6 +58,19 @@ function estimateDurationSeconds(wordCount: number, sentenceCount: number, speed
 
 async function main() {
   loadEnv()
+
+  // Resume: re-seed an already-generated episode from its persisted record + local
+  // MP3, without re-calling Gemini/TTS (used after a transient seed/upload failure).
+  const resumePath = arg('resume')
+  if (resumePath) {
+    const record = JSON.parse(readFileSync(resumePath, 'utf8')) as PodcastData
+    const mp3 = readFileSync(`content/podcasts/${record.audio_filename}`)
+    console.log(`[story-podcast] resume "${record.title}" → seed (${mp3.length} bytes)`)
+    await seedEpisode(record, mp3)
+    console.log(`  ✓ seeded "${record.title}"`)
+    return
+  }
+
   const level = (arg('level') ?? 'A2') as Level
   const topic = arg('topic') ?? 'a small everyday moment in Indonesia'
   const sourcePath = arg('source')

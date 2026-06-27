@@ -1,0 +1,151 @@
+{
+  "title": "Cuaca di Dalam Diriku",
+  "description": "Een verhaal over hoe je gevoelens kunnen veranderen, net als het weer, en waarom het goed is om erover te praten met mensen die je dierbaar zijn.",
+  "level": "A2",
+  "duration_seconds": 75,
+  "audio_filename": "story-a2-cuaca-di-dalam-diriku.mp3",
+  "transcript_indonesian": "Kita bisa melihat cuaca di luar.\n\nTapi, cuaca di dalam diriku? Itu beda.\n\nAku kadang tidak tahu apa yang aku rasa.\n\nApakah kamu juga pernah merasa begitu?\n\nKadang, hatiku cerah seperti matahari.\n\nAku bisa melakukan apa saja!\n\nWaktu lain, kepalaku penuh kabut dan awan gelap.\n\nAku jadi lupa banyak hal.\n\nAtau, aku tidak dengar orang bicara.\n\nKadang, aku bangun dengan rasa lelah dan marah.\n\nSeperti ada angin ribut di kepala.\n\nAku juga kadang merasa ada hujan di dalam diriku.\n\nHujan kecil membuatku sedih.\n\nHujan besar bisa membuatku sangat marah.\n\nKadang, cuaca di dalam diriku beda dengan cuaca di luar.\n\nDan aku tidak mau merasa begitu.\n\nApakah itu tidak apa-apa?\n\nTentu, tidak apa-apa!\n\nJika cuaca di dalam diriku tidak baik, aku bisa bicara.\n\nAku bisa bicara dengan orang yang aku sayang.\n\nMereka juga punya 'cuaca' di dalam hati mereka.\n\nJadi, mereka bisa mengerti aku.",
+  "transcript_dutch": "We kunnen het weer buiten zien.\n\nMaar, het weer in mij? Dat is anders.\n\nIk weet soms niet wat ik voel.\n\nVoel jij je ook wel eens zo?\n\nSoms is mijn hart helder als de zon.\n\nIk kan alles doen!\n\nEen andere keer is mijn hoofd vol mist en donkere wolken.\n\nIk vergeet dan veel dingen.\n\nOf, ik hoor mensen niet praten.\n\nSoms word ik wakker met een moe en boos gevoel.\n\nAlsof er een storm in mijn hoofd is.\n\nIk voel soms ook regen in mezelf.\n\nKleine regen maakt me verdrietig.\n\nGrote regen kan me heel boos maken.\n\nSoms is het weer in mij anders dan het weer buiten.\n\nEn ik wil me niet zo voelen.\n\nIs dat oké?\n\nNatuurlijk, het is oké!\n\nAls het weer in mij niet goed is, kan ik praten.\n\nIk kan praten met mensen van wie ik houd.\n\nZij hebben ook 'weer' in hun hart.\n\nDus, ze kunnen me begrijpen.",
+  "transcript_english": "We can see the weather outside.\n\nBut, the weather inside me? That's different.\n\nI sometimes don't know what I feel.\n\nDo you ever feel that way too?\n\nSometimes, my heart is bright like the sun.\n\nI can do anything!\n\nOther times, my head is full of fog and dark clouds.\n\nI then forget many things.\n\nOr, I don't hear people talking.\n\nSometimes, I wake up feeling tired and angry.\n\nLike there's a storm in my head.\n\nI also sometimes feel rain inside me.\n\nSmall rain makes me sad.\n\nHeavy rain can make me very angry.\n\nSometimes, the weather inside me is different from the weather outside.\n\nAnd I don't want to feel that way.\n\nIs that okay?\n\nOf course, it's okay!\n\nIf the weather inside me isn't good, I can talk.\n\nI can talk to people I love.\n\nThey also have 'weather' in their hearts.\n\nSo, they can understand me.",
+  "transcript_segments": [
+    {
+      "idx": 0,
+      "id": "Kita bisa melihat cuaca di luar.",
+      "nl": "We kunnen het weer buiten zien.",
+      "en": "We can see the weather outside."
+    },
+    {
+      "idx": 1,
+      "id": "Tapi, cuaca di dalam diriku? Itu beda.",
+      "nl": "Maar, het weer in mij? Dat is anders.",
+      "en": "But, the weather inside me? That's different."
+    },
+    {
+      "idx": 2,
+      "id": "Aku kadang tidak tahu apa yang aku rasa.",
+      "nl": "Ik weet soms niet wat ik voel.",
+      "en": "I sometimes don't know what I feel."
+    },
+    {
+      "idx": 3,
+      "id": "Apakah kamu juga pernah merasa begitu?",
+      "nl": "Voel jij je ook wel eens zo?",
+      "en": "Do you ever feel that way too?"
+    },
+    {
+      "idx": 4,
+      "id": "Kadang, hatiku cerah seperti matahari.",
+      "nl": "Soms is mijn hart helder als de zon.",
+      "en": "Sometimes, my heart is bright like the sun."
+    },
+    {
+      "idx": 5,
+      "id": "Aku bisa melakukan apa saja!",
+      "nl": "Ik kan alles doen!",
+      "en": "I can do anything!"
+    },
+    {
+      "idx": 6,
+      "id": "Waktu lain, kepalaku penuh kabut dan awan gelap.",
+      "nl": "Een andere keer is mijn hoofd vol mist en donkere wolken.",
+      "en": "Other times, my head is full of fog and dark clouds."
+    },
+    {
+      "idx": 7,
+      "id": "Aku jadi lupa banyak hal.",
+      "nl": "Ik vergeet dan veel dingen.",
+      "en": "I then forget many things."
+    },
+    {
+      "idx": 8,
+      "id": "Atau, aku tidak dengar orang bicara.",
+      "nl": "Of, ik hoor mensen niet praten.",
+      "en": "Or, I don't hear people talking."
+    },
+    {
+      "idx": 9,
+      "id": "Kadang, aku bangun dengan rasa lelah dan marah.",
+      "nl": "Soms word ik wakker met een moe en boos gevoel.",
+      "en": "Sometimes, I wake up feeling tired and angry."
+    },
+    {
+      "idx": 10,
+      "id": "Seperti ada angin ribut di kepala.",
+      "nl": "Alsof er een storm in mijn hoofd is.",
+      "en": "Like there's a storm in my head."
+    },
+    {
+      "idx": 11,
+      "id": "Aku juga kadang merasa ada hujan di dalam diriku.",
+      "nl": "Ik voel soms ook regen in mezelf.",
+      "en": "I also sometimes feel rain inside me."
+    },
+    {
+      "idx": 12,
+      "id": "Hujan kecil membuatku sedih.",
+      "nl": "Kleine regen maakt me verdrietig.",
+      "en": "Small rain makes me sad."
+    },
+    {
+      "idx": 13,
+      "id": "Hujan besar bisa membuatku sangat marah.",
+      "nl": "Grote regen kan me heel boos maken.",
+      "en": "Heavy rain can make me very angry."
+    },
+    {
+      "idx": 14,
+      "id": "Kadang, cuaca di dalam diriku beda dengan cuaca di luar.",
+      "nl": "Soms is het weer in mij anders dan het weer buiten.",
+      "en": "Sometimes, the weather inside me is different from the weather outside."
+    },
+    {
+      "idx": 15,
+      "id": "Dan aku tidak mau merasa begitu.",
+      "nl": "En ik wil me niet zo voelen.",
+      "en": "And I don't want to feel that way."
+    },
+    {
+      "idx": 16,
+      "id": "Apakah itu tidak apa-apa?",
+      "nl": "Is dat oké?",
+      "en": "Is that okay?"
+    },
+    {
+      "idx": 17,
+      "id": "Tentu, tidak apa-apa!",
+      "nl": "Natuurlijk, het is oké!",
+      "en": "Of course, it's okay!"
+    },
+    {
+      "idx": 18,
+      "id": "Jika cuaca di dalam diriku tidak baik, aku bisa bicara.",
+      "nl": "Als het weer in mij niet goed is, kan ik praten.",
+      "en": "If the weather inside me isn't good, I can talk."
+    },
+    {
+      "idx": 19,
+      "id": "Aku bisa bicara dengan orang yang aku sayang.",
+      "nl": "Ik kan praten met mensen van wie ik houd.",
+      "en": "I can talk to people I love."
+    },
+    {
+      "idx": 20,
+      "id": "Mereka juga punya 'cuaca' di dalam hati mereka.",
+      "nl": "Zij hebben ook 'weer' in hun hart.",
+      "en": "They also have 'weather' in their hearts."
+    },
+    {
+      "idx": 21,
+      "id": "Jadi, mereka bisa mengerti aku.",
+      "nl": "Dus, ze kunnen me begrijpen.",
+      "en": "So, they can understand me."
+    }
+  ],
+  "attribution": {
+    "source_title": "Cuaca dalam Diriku",
+    "source_url": "https://storyweaver.org.in/en/stories/366119-my-inside-weather",
+    "author": "Translation by Adani Nur Sabrina (© Badan Pengembangan dan Pembinaan Bahasa, 2022); original 'My Inside Weather' by Jen Thorpe, illustrated by Lara Berge (© Book Dash, 2017)",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/"
+  }
+}
