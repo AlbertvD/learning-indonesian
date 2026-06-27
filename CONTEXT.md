@@ -19,6 +19,18 @@ The fixed set of `source_kind` discriminators a capability carries (the type uni
 
 _Flagged ambiguity: `podcast_phrase` is latent — no capability type maps to it and it has 0 rows. It is a candidate for removal from the union unless a phrase-level podcast capability is planned. `podcast_segment` is likewise defined but not live (only `podcast_gist` would consume it)._
 
+## Story podcast (listening content)
+
+A **leveled, shared, narrated Indonesian story** produced for *listening practice* — a row in the `podcasts` table with audio in the `indonesian-podcasts` bucket. Distinct from the **grammar podcast** (the two-host NotebookLM "Kamoe Bisa" grammar explainer attached per lesson via `lessons.audio_path`; not a `podcasts` row). Properties:
+
+- **Leveled** — authored at a fixed CEFR level (A1 / A2 / B1 / B2). The level is the learner's *selection axis*: "pick a story at my level to practise listening."
+- **Shared, not personalized** — one episode per (level, topic) serves every learner; pre-seeded, never generated per-user (North-star: content flows homelab→cloud by re-publish, never per-user runtime generation).
+- **Vocab-anchored, loosely** — authored leaning on the app's vocabulary at that level (`learning_items`, level ≤ target) as a *soft* word-stock, not a hard whitelist; comprehensible-input by construction, but **not** coupled to any individual learner's FSRS progress.
+- **Listening-only** — NOT wired into capabilities / FSRS. (The transcript→core-vocab *harvest* loop, roadmap #4 "PLUS", is a separate, deferred feature.)
+- **Read-along** — the transcript is stored **sentence-aligned across ID / NL / EN** so the reader can follow in their chosen language while listening.
+
+Not to be confused with the `podcast_segment` / `podcast_phrase` capability `source_kind`s above (dead scaffolding, 0 rows — flagged for removal).
+
 ## Affix
 
 The **organizing unit of the morphology / affix-trainer surface** — a single Indonesian affix (e.g. `meN-`, `-kan`, `ke-…-an`) under which its rule and all its derivations are gathered. An Affix is a *higher* grouping than either of its data homes: one Affix spans **several `grammar_pattern`s** (the rule tier — e.g. `meN-` carries separate nasalization sub-rule patterns) and **many `affixed_form_pair`s** (the application tier — one per root↔derived instance).
