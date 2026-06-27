@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Achird",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-10.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-10-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -440,6 +440,78 @@
             "english": "university",
             "indonesian": "universitas",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/universitas-4357790b.mp3"
+          },
+          {
+            "dutch": "bijvoorbeeld",
+            "english": "for example",
+            "indonesian": "misalnya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/misalnya-0cfc6bd9.mp3"
+          },
+          {
+            "dutch": "indien",
+            "english": "if",
+            "indonesian": "jikalau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jikalau-fe768390.mp3"
+          },
+          {
+            "dutch": "ofschoon",
+            "english": "although",
+            "indonesian": "meskipun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meskipun-700f7d80.mp3"
+          },
+          {
+            "dutch": "ofschoon",
+            "english": "although",
+            "indonesian": "walaupun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/walaupun-440474f7.mp3"
+          },
+          {
+            "dutch": "opdat",
+            "english": "so that",
+            "indonesian": "supaya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/supaya-36cf7a7c.mp3"
+          },
+          {
+            "dutch": "opdat",
+            "english": "so that",
+            "indonesian": "agar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/agar-3abb90ac.mp3"
+          },
+          {
+            "dutch": "terwijl",
+            "english": "while",
+            "indonesian": "sementara",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sementara-4c6230f0.mp3"
+          },
+          {
+            "dutch": "tevoren",
+            "english": "beforehand",
+            "indonesian": "sebelumnya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sebelumnya-6c32ff8e.mp3"
+          },
+          {
+            "dutch": "voordat",
+            "english": "before",
+            "indonesian": "sebelum",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sebelum-78e87109.mp3"
+          },
+          {
+            "dutch": "keer/maal (×)",
+            "english": "times/multiplied by (×)",
+            "indonesian": "kali",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kali-e637a2bc.mp3"
+          },
+          {
+            "dutch": "delen/voor (÷)",
+            "english": "divided by/for (÷)",
+            "indonesian": "bagi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bagi-1bb15922.mp3"
+          },
+          {
+            "dutch": "laatste",
+            "english": "last",
+            "indonesian": "terakhir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/terakhir-1d3e309e.mp3"
           }
         ]
       }
@@ -506,7 +578,8 @@
                 "gedachte"
               ]
             ],
-            "title": "1. Werkwoord + -AN — zelfstandig naamwoord"
+            "title": "1. Werkwoord + -AN — zelfstandig naamwoord",
+            "title_en": "Verb + -AN — noun"
           },
           {
             "table": [
@@ -523,7 +596,8 @@
                 "de markt (begrip)"
               ]
             ],
-            "title": "2a. Zelfstandig naamwoord + -AN — abstrakte betekenis"
+            "title": "2a. Zelfstandig naamwoord + -AN — abstrakte betekenis",
+            "title_en": "2a. Noun + -AN — abstract meaning"
           },
           {
             "table": [
@@ -552,7 +626,8 @@
                 "majalah bulanan = maandblad"
               ]
             ],
-            "title": "2b. Tijdsaanduiding + -AN — periodiciteit"
+            "title": "2b. Tijdsaanduiding + -AN — periodiciteit",
+            "title_en": "Adjective + -AN — noun"
           },
           {
             "table": [
@@ -581,7 +656,8 @@
                 "kanaal"
               ]
             ],
-            "title": "3. Bijvoeglijk naamwoord + -AN — zelfstandig naamwoord"
+            "title": "3. Bijvoeglijk naamwoord + -AN — zelfstandig naamwoord",
+            "title_en": "Numeral + -AN — noun"
           },
           {
             "table": [
@@ -610,7 +686,8 @@
                 "teenager (tussen 10 en 20 jaar)"
               ]
             ],
-            "title": "4. Telwoord + -AN — zelfstandig naamwoord"
+            "title": "4. Telwoord + -AN — zelfstandig naamwoord",
+            "title_en": "Ordinal numbers"
           }
         ],
         "grammar_topics": [
@@ -716,7 +793,8 @@
                 "honderdste"
               ]
             ],
-            "title": "Rangtelwoorden"
+            "title": "Rangtelwoorden",
+            "title_en": "Ordinal numbers"
           },
           {
             "rules": [
@@ -1234,7 +1312,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-10.m4a\" voice=\"id-ID-Chirp3-HD-Achird\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Achird\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },

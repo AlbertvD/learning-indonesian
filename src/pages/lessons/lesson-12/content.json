@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Algenib",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-12.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-12-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -340,6 +340,30 @@
             "english": "main, principal",
             "indonesian": "utama",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/utama-4617f308.mp3"
+          },
+          {
+            "dutch": "noord",
+            "english": "north",
+            "indonesian": "utara",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/utara-bcf3d8e9.mp3"
+          },
+          {
+            "dutch": "zuid",
+            "english": "south",
+            "indonesian": "selatan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/selatan-d7382365.mp3"
+          },
+          {
+            "dutch": "oost",
+            "english": "east",
+            "indonesian": "timur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/timur-98cb757e.mp3"
+          },
+          {
+            "dutch": "west",
+            "english": "west",
+            "indonesian": "barat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/barat-d85129be.mp3"
           }
         ]
       }
@@ -414,10 +438,10 @@
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sumsel-sumatera-selatan-b58e433d.mp3"
               },
               {
-                "dutch": "Nusa Tenggara Oost (nusa = eiland, tenggara = zuidoost, timur = oost)",
-                "english": "NUSTENGTIM = NUSa + TENGgara + TIMur",
-                "indonesian": "NUSTENGTIM = NUSa + TENGgara + TIMur",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nustengtim-nusa-tenggara-timur-bd572361.mp3"
+                "dutch": "de regio rond Jakarta (Jakarta, Bogor, Depok, Tangerang, Bekasi)",
+                "english": "JABODETABEK = JAkarta + BOgor + DEpok + TAngerang + BEKasi",
+                "indonesian": "JABODETABEK = JAkarta + BOgor + DEpok + TAngerang + BEKasi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jabodetabek-jakarta-bogor-depok-06d7d545.mp3"
               }
             ],
             "rules_en": [
@@ -460,7 +484,8 @@
                 "rijbewijs"
               ]
             ],
-            "title": "Afkortingen (singkatan) — losse beginletters"
+            "title": "Afkortingen (singkatan) — losse beginletters",
+            "title_en": "Abbreviations (initials) — loose initial letters"
           },
           {
             "rules": [
@@ -543,70 +568,84 @@
             "examples": [
               {
                 "dutch": "Ze keken elkaar aan.",
+                "english": "They looked at each other.",
                 "indonesian": "Mereka berpandang-pandangan.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/mereka-berpandangpandangan-5ea40956.mp3"
               },
               {
                 "dutch": "De soldaten doden elkaar.",
+                "english": "The soldiers kill each other.",
                 "indonesian": "Serdadu berbunuh-bunuhan.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/serdadu-berbunuhbunuhan-8b4f2a0f.mp3"
               }
-            ]
+            ],
+            "title_en": "With verbs: reciprocity (each other)"
           },
           {
             "title": "Bij plaatswoorden: wederkerigheid (elkaar)",
             "examples": [
               {
                 "dutch": "tegenover elkaar staan",
+                "english": "stand opposite each other",
                 "indonesian": "depan -> berdepan-depan",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/depan-berdepandepan-163f7abc.mp3"
               }
-            ]
+            ],
+            "title_en": "With prepositions: reciprocity (each other)"
           },
           {
             "title": "Bij zelfstandige naamwoorden: intensiteit / herhaling",
             "examples": [
               {
                 "dutch": "Telkens viel hij van de fiets.",
+                "english": "He fell off his bike repeatedly.",
                 "indonesian": "Berkali-kali dia jatuh dari sepeda.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/berkalikali-dia-jatuh-dari-1bd26114.mp3"
               },
               {
                 "dutch": "Jarenlang werkte hij daar.",
+                "english": "He worked there for years.",
                 "indonesian": "Bertahun-tahun dia bekerja di sana.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bertahuntahun-dia-bekerja-di-01cdabe2.mp3"
               }
-            ]
+            ],
+            "title_en": "With nouns: intensity / repetition"
           },
           {
             "title": "Bij bijvoeglijke naamwoorden: intensiteit",
             "examples": [
               {
                 "dutch": "Hij ging hals over kop naar kantoor.",
+                "english": "He rushed to his office.",
                 "indonesian": "Dia bergegas-gegas ke kantornya.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dia-bergegasgegas-ke-kantornya-07f77ee8.mp3"
               }
-            ]
+            ],
+            "title_en": "With adjectives: intensity"
           },
           {
             "title": "Bij telwoorden: collectiviteit (een x-tal samen)",
             "examples": [
               {
                 "dutch": "in groepjes van twee",
+                "english": "in groups of two",
                 "indonesian": "berdua-dua",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/berduadua-3bac2746.mp3"
               },
               {
                 "dutch": "met z'n tweetjes",
+                "english": "the two of them together",
                 "indonesian": "berdua-duaan = berduaan",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/berduaduaan-berduaan-924dae4c.mp3"
               },
               {
                 "dutch": "in groepjes van tien / bij tientallen",
+                "english": "in groups of ten / by tens",
                 "indonesian": "berpuluh-puluh",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/berpuluhpuluh-09db42c4.mp3"
               }
-            ]
+            ],
+            "title_en": "With numerals: collectivity (a number of together)"
           }
         ],
         "grammar_topics": [
@@ -817,7 +856,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-12.m4a\" voice=\"id-ID-Chirp3-HD-Algenib\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Algenib\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
