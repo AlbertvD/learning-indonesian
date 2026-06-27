@@ -133,6 +133,14 @@ CREATE TABLE IF NOT EXISTS indonesian.podcasts (
   UNIQUE(title)
 );
 
+-- Story-podcast read-along: sentence-aligned transcript (ADR 0022). Idempotent
+-- additive column; nullable (legacy story rows predate it). JSONB, not a child
+-- table — segments are read whole with the row, never queried individually
+-- (data-architect, ADR 0009 trigger does not fire).
+ALTER TABLE indonesian.podcasts ADD COLUMN IF NOT EXISTS transcript_segments jsonb;
+COMMENT ON COLUMN indonesian.podcasts.transcript_segments IS
+  'Ordered sentence-aligned array [{idx,id,nl,en}]: idx=0-based ordinal, id=Indonesian sentence, nl=Dutch, en=English. The transcript_indonesian/dutch/english columns are these segments joined (denormalized for the 3-tab reader); HC asserts consistency.';
+
 -- Learning items (canonical teachable unit)
 CREATE TABLE IF NOT EXISTS indonesian.learning_items (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

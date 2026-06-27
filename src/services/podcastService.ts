@@ -1,6 +1,19 @@
 // src/services/podcastService.ts
 import { supabase } from '@/lib/supabase'
 
+/**
+ * One sentence of a Story podcast, aligned across the three languages.
+ * The canonical shape of `podcasts.transcript_segments` (see ADR 0022). The
+ * denormalized `transcript_*` full-text columns are these segments' `id`/`nl`/`en`
+ * joined — kept in sync so the current 3-tab reader works without segments.
+ */
+export interface TranscriptSegment {
+  idx: number
+  id: string // Indonesian sentence
+  nl: string // Dutch
+  en: string // English
+}
+
 export interface Podcast {
   id: string
   title: string
@@ -9,6 +22,7 @@ export interface Podcast {
   transcript_indonesian: string | null
   transcript_english: string | null
   transcript_dutch: string | null
+  transcript_segments: TranscriptSegment[] | null
   level: string | null
   duration_seconds: number | null
   created_at: string

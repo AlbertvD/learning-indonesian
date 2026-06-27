@@ -12,6 +12,7 @@ import { findCapsMissingSatellite, type CapForSatelliteCheck } from './lib/pipel
 import { isCatalogAffix, routesToMeaningUsage } from '@/lib/capabilities/affixCatalog'
 import { itemSlug } from '@/lib/capabilities/itemSlug'
 import { projectionViolations, type RankedItem } from './collections/projection'
+import { transcriptDrift } from './podcasts/assemble'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
@@ -1535,6 +1536,33 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     }
   } catch (err) {
     fail(HC35, err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC36 (#293, ADR 0022): Story-podcast transcript denormalization consistency.
+//      For every podcasts row carrying transcript_segments, the denormalized
+//      transcript_indonesian/dutch/english full-text columns must equal the
+//      joined segments. Catches the "normalize every representation" drift class
+//      (a row written with segments but a stale/empty full-text column).
+{
+  const HC36 = 'HC36 podcasts.transcript_segments consistent with denormalized transcript_* (ADR 0022)'
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('podcasts')
+    .select('id, title, transcript_segments, transcript_indonesian, transcript_dutch, transcript_english')
+    .not('transcript_segments', 'is', null)
+  if (error) {
+    fail(HC36, error.message)
+  } else {
+    const offenders = ((data ?? []) as Array<{ title: string } & Parameters<typeof transcriptDrift>[0]>)
+      .map((row) => ({ title: row.title, drift: transcriptDrift(row) }))
+      .filter((r) => r.drift !== null)
+    if (offenders.length === 0) {
+      pass(HC36)
+    } else {
+      fail(HC36, `${offenders.length} podcast(s) drifted: ` +
+        offenders.slice(0, 5).map((o) => `"${o.title}" (${o.drift})`).join('; '))
+    }
   }
 }
 

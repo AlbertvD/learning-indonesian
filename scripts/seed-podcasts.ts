@@ -45,6 +45,7 @@ for (const podcast of podcasts) {
         transcript_english: podcast.transcript_english,
         level: podcast.level,
         duration_seconds: podcast.duration_seconds,
+        transcript_segments: podcast.transcript_segments ?? null,
       },
       { onConflict: 'title' },
     )

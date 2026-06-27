@@ -88,16 +88,34 @@ export function effectiveVoiceFor(text: string, voiceId: string): string {
 }
 
 export async function synthesizeSpeech(text: string, voiceId: string): Promise<Buffer> {
-  const token = await getAccessToken()
-
   const effectiveVoice = effectiveVoiceFor(text, voiceId)
+  return synthesizeInput({ text }, effectiveVoice)
+}
+
+/**
+ * Synthesise an SSML document (Story-podcast narration). Unlike `synthesizeSpeech`
+ * this sends `input: { ssml }`, the only field Google Cloud TTS honours for
+ * `<prosody rate>` / `<break>` pacing. The per-word `effectiveVoiceFor` short-word
+ * fallback is intentionally NOT applied: a multi-sentence SSML block uses one voice
+ * for the whole document and narrates full sentences (not isolated ≤2-char words),
+ * so that Chirp3-HD failure mode does not arise here.
+ */
+export async function synthesizeSsml(ssml: string, voiceId: string): Promise<Buffer> {
+  return synthesizeInput({ ssml }, voiceId)
+}
+
+async function synthesizeInput(
+  input: { text: string } | { ssml: string },
+  voiceName: string,
+): Promise<Buffer> {
+  const token = await getAccessToken()
 
   const res = await fetch(TTS_ENDPOINT, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      input: { text },
-      voice: { languageCode: 'id-ID', name: effectiveVoice },
+      input,
+      voice: { languageCode: 'id-ID', name: voiceName },
       audioConfig: { audioEncoding: 'MP3', sampleRateHertz: 24000 },
     }),
   })

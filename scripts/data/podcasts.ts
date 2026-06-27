@@ -1,3 +1,5 @@
+import type { TranscriptSegment } from '@/services/podcastService'
+
 export interface PodcastData {
   title: string
   description: string | null
@@ -7,6 +9,9 @@ export interface PodcastData {
   transcript_dutch: string | null
   transcript_indonesian: string | null
   transcript_english: string | null
+  // Sentence-aligned transcript for read-along (ADR 0022). Optional: the legacy
+  // story rows predate it. The transcript_* full-text above is these joined.
+  transcript_segments?: TranscriptSegment[] | null
 }
 
 export const podcasts: PodcastData[] = [
