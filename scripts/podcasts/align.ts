@@ -130,6 +130,14 @@ export function alignWordTimings(segments: TranscriptSegment[], sttWords: SttWor
   }
   interpolateGaps(times)
 
+  // STT can return endTime == startTime for a clipped token, and an empty
+  // interpolation gap collapses to zero too. Guarantee a positive highlight
+  // duration so the timings are valid and a word never flashes for 0ms.
+  const MIN_DURATION = 0.05
+  for (const t of times) {
+    if (t && t.end <= t.start) t.end = t.start + MIN_DURATION
+  }
+
   // Regroup timed words back into their segments, keeping authored spelling.
   return segments.map((segment, s) => {
     const words: TimedWord[] = flat

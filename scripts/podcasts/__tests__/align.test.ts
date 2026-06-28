@@ -58,6 +58,20 @@ describe('alignWordTimings', () => {
     expect(words[1].end).toBeGreaterThanOrEqual(words[1].start)
   })
 
+  it('guarantees positive duration when STT returns a zero-length word', () => {
+    // Google STT can return endTime == startTime for a clipped final token
+    // (observed live: "saja!" at 22.6→22.6). The aligner must still emit end>start.
+    const result = alignWordTimings([seg(0, 'Saya pergi saja!')], [
+      { word: 'saya', start: 0.0, end: 0.4 },
+      { word: 'pergi', start: 0.4, end: 0.9 },
+      { word: 'saja', start: 22.6, end: 22.6 },
+    ])
+    const last = result[0].words![2]
+    expect(last.word).toBe('saja!')
+    expect(last.end).toBeGreaterThan(last.start)
+    expect(() => assertValidTimings(result)).not.toThrow()
+  })
+
   it('output of a real alignment passes the pre-write validator', () => {
     const result = alignWordTimings([seg(0, 'Ibu pergi makan.')], [
       { word: 'ibu', start: 0.0, end: 0.4 },
