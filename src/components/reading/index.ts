@@ -1,0 +1,1 @@
+export { GlossableText } from './GlossableText'

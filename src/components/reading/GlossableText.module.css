@@ -1,0 +1,32 @@
+.reader {
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.sentence {
+  font-size: 1.15rem;
+  line-height: 2;
+  margin-bottom: 0.75rem;
+}
+
+.word {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0 1px;
+  transition: background-color 120ms ease;
+}
+
+.word:hover {
+  background-color: var(--mantine-color-blue-light);
+}
+
+.word:focus-visible {
+  outline: 2px solid var(--mantine-color-blue-filled);
+  outline-offset: 1px;
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
