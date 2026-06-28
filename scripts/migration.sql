@@ -3775,3 +3775,47 @@ language sql stable security invoker as $$
   order by col.rank_cutoff nulls last, col.slug;
 $$;
 grant execute on function indonesian.get_collections_overview(uuid) to authenticated;
+
+-- get_text_coverage — per-learner reading coverage for the Lezen reader (PRD #299).
+-- Given a text's distinct content tokens (client-normalised via itemSlug), returns
+-- the subset the learner already "knows", so lib/reading can order texts most-
+-- comprehensible-first. The "known" predicate is a COMPOSITE of two REUSED rules
+-- (ADR 0015 — parity-guarded by TWO assertions in
+-- scripts/__tests__/lessons-overview-mastery-parity.test.ts):
+--   (i)  practiced threshold: coalesce(review_count, 0) >= 1
+--        — PRACTICED_MIN_REVIEWS, canonical at src/lib/lessons/overview.ts:16.
+--   (ii) recognition-cap scoping: capability_type = 'recognise_meaning_from_text_cap'
+--        — the LIVE literal, shared with get_collections_overview (§8 _cap rename
+--        is in flight; this is the un-renamed live value).
+-- Reading deliberately uses the SOFTER 'practiced' bar (a word reviewed >=1x counts
+-- as recognisable for reading), NOT collections' 'mastered'. See CONTEXT.md
+-- "Reading-coverage known (recognisable)".
+-- SECURITY INVOKER: the learner_capability_state join runs under the caller's RLS,
+-- so only the caller's own state rows are visible (passing another user's p_user_id
+-- yields all-unknown, never a leak) — same pattern as get_collections_overview.
+create or replace function indonesian.get_text_coverage(p_user_id uuid, p_tokens text[])
+returns json
+language sql stable security invoker as $$
+  with toks as (
+    select distinct lower(btrim(t)) as token
+    from unnest(p_tokens) as t
+    where btrim(t) <> ''
+  ),
+  known as (
+    select tk.token
+    from toks tk
+    join indonesian.learning_items li on li.normalized_text = tk.token
+    join indonesian.learning_capabilities c
+      on c.source_kind = 'vocabulary_src'
+      and c.capability_type = 'recognise_meaning_from_text_cap'
+      and c.source_ref = 'learning_items/' || li.normalized_text
+    join indonesian.learner_capability_state s
+      on s.capability_id = c.id and s.user_id = p_user_id
+    where coalesce(s.review_count, 0) >= 1
+    group by tk.token
+  )
+  select json_build_object(
+    'known_tokens', coalesce((select json_agg(token) from known), '[]'::json)
+  );
+$$;
+grant execute on function indonesian.get_text_coverage(uuid, text[]) to authenticated;
