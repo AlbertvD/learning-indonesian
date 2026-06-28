@@ -1,0 +1,1008 @@
+{
+  "title": "Jas Hujan Manu",
+  "description": "Manu krijgt een nieuwe regenjas en wil die graag dragen, maar het regent nooit... totdat het wel regent en hij zijn jas vergeet!",
+  "level": "A1",
+  "duration_seconds": 94,
+  "audio_filename": "story-a1-jas-hujan-manu.mp3",
+  "transcript_indonesian": "Ini hari Minggu.\n\nManu punya jas hujan baru.\n\nWarnanya merah.\n\n\"Bolehkah aku pakai?\" tanya Manu.\n\nIbu bilang: \"Tidak, Manu. Langit cerah.\"\n\nHari Senin.\n\nMatahari bersinar.\n\n\"Akan hujan, Bu?\" tanya Manu.\n\nIbu bilang: \"Tidak, Manu. Hari ini tidak hujan.\"\n\nHari Selasa.\n\nLangit biru.\n\n\"Kapan hujan, Bu?\" tanya Manu.\n\nIbu bilang: \"Bukan hari ini, Manu. Hanya ada satu awan kecil.\"\n\nHari Rabu.\n\nHari ini panas.\n\n\"Kenapa belum hujan, Bu?\" tanya Manu.\n\nIbu bilang: \"Mungkin akan hujan sebentar lagi.\"\n\nHari Kamis.\n\nManu pergi piknik.\n\n\"Bagaimana kalau hujan, Bu? Bawa jas hujan?\" tanya Manu.\n\nIbu bilang: \"Tidak, Manu. Tidak akan hujan hari ini.\"\n\nHari Jumat.\n\nLangit mendung.\n\n\"Akan hujan, Bu?\" tanya Manu.\n\nIbu bilang: \"Mungkin, Manu. Ada awan gelap.\"\n\nHari Sabtu.\n\nDuarr!\n\nAda petir!\n\n\"Bu, itu petir? Akan hujan sekarang?\" tanya Manu.\n\nAkhirnya, hujan turun!\n\n\"Hujan! Hujan!\" Manu senang.\n\nDia lari keluar.\n\nIbu panggil: \"Manu! Kamu lupa jas hujanmu!\"",
+  "transcript_dutch": "Het is zondag.\n\nManu heeft een nieuwe regenjas.\n\nHij is rood.\n\n\"Mag ik hem aan?\" vraagt Manu.\n\nMoeder zegt: \"Nee, Manu. De lucht is helder.\"\n\nHet is maandag.\n\nDe zon schijnt.\n\n\"Zal het regenen, Mam?\" vraagt Manu.\n\nMoeder zegt: \"Nee, Manu. Het regent vandaag niet.\"\n\nHet is dinsdag.\n\nDe lucht is blauw.\n\n\"Wanneer regent het, Mam?\" vraagt Manu.\n\nMoeder zegt: \"Niet vandaag, Manu. Er is maar één klein wolkje.\"\n\nHet is woensdag.\n\nVandaag is het warm.\n\n\"Waarom regent het nog niet, Mam?\" vraagt Manu.\n\nMoeder zegt: \"Misschien gaat het zo regenen.\"\n\nHet is donderdag.\n\nManu gaat picknicken.\n\n\"Wat als het regent, Mam? Neem ik mijn regenjas mee?\" vraagt Manu.\n\nMoeder zegt: \"Nee, Manu. Het zal vandaag niet regenen.\"\n\nHet is vrijdag.\n\nDe lucht is bewolkt.\n\n\"Zal het regenen, Mam?\" vraagt Manu.\n\nMoeder zegt: \"Misschien, Manu. Er zijn donkere wolken.\"\n\nHet is zaterdag.\n\nKnal!\n\nEr is bliksem!\n\n\"Mam, is dat bliksem? Gaat het nu regenen?\" vraagt Manu.\n\nEindelijk regent het!\n\n\"Regen! Regen!\" Manu is blij.\n\nHij rent naar buiten.\n\nMoeder roept: \"Manu! Je bent je regenjas vergeten!\"",
+  "transcript_english": "It is Sunday.\n\nManu has a new raincoat.\n\nIts color is red.\n\n\"May I wear it?\" asks Manu.\n\nMother says: \"No, Manu. The sky is clear.\"\n\nIt is Monday.\n\nThe sun is shining.\n\n\"Will it rain, Mom?\" asks Manu.\n\nMother says: \"No, Manu. It's not raining today.\"\n\nIt is Tuesday.\n\nThe sky is blue.\n\n\"When will it rain, Mom?\" asks Manu.\n\nMother says: \"Not today, Manu. There is only one small cloud.\"\n\nIt is Wednesday.\n\nToday it is hot.\n\n\"Why isn't it raining yet, Mom?\" asks Manu.\n\nMother says: \"Maybe it will rain soon.\"\n\nIt is Thursday.\n\nManu goes for a picnic.\n\n\"What if it rains, Mom? Should I bring my raincoat?\" asks Manu.\n\nMother says: \"No, Manu. It won't rain today.\"\n\nIt is Friday.\n\nThe sky is cloudy.\n\n\"Will it rain, Mom?\" asks Manu.\n\nMother says: \"Maybe, Manu. There are dark clouds.\"\n\nIt is Saturday.\n\nBoom!\n\nThere is lightning!\n\n\"Mom, is that lightning? Is it going to rain now?\" asks Manu.\n\nFinally, it's raining!\n\n\"Rain! Rain!\" Manu is happy.\n\nHe runs outside.\n\nMother calls: \"Manu! You forgot your raincoat!\"",
+  "transcript_segments": [
+    {
+      "idx": 0,
+      "id": "Ini hari Minggu.",
+      "nl": "Het is zondag.",
+      "en": "It is Sunday.",
+      "words": [
+        {
+          "word": "Ini",
+          "start": 0,
+          "end": 0.8
+        },
+        {
+          "word": "hari",
+          "start": 0.8,
+          "end": 1.2
+        },
+        {
+          "word": "Minggu.",
+          "start": 1.2,
+          "end": 1.5
+        }
+      ]
+    },
+    {
+      "idx": 1,
+      "id": "Manu punya jas hujan baru.",
+      "nl": "Manu heeft een nieuwe regenjas.",
+      "en": "Manu has a new raincoat.",
+      "words": [
+        {
+          "word": "Manu",
+          "start": 2.9,
+          "end": 3.9
+        },
+        {
+          "word": "punya",
+          "start": 3.9,
+          "end": 4
+        },
+        {
+          "word": "jas",
+          "start": 4,
+          "end": 4.6
+        },
+        {
+          "word": "hujan",
+          "start": 4.6,
+          "end": 4.6499999999999995
+        },
+        {
+          "word": "baru.",
+          "start": 4.6,
+          "end": 4.9
+        }
+      ]
+    },
+    {
+      "idx": 2,
+      "id": "Warnanya merah.",
+      "nl": "Hij is rood.",
+      "en": "Its color is red.",
+      "words": [
+        {
+          "word": "Warnanya",
+          "start": 6.2,
+          "end": 7.1
+        },
+        {
+          "word": "merah.",
+          "start": 7.1,
+          "end": 7.5
+        }
+      ]
+    },
+    {
+      "idx": 3,
+      "id": "\"Bolehkah aku pakai?\" tanya Manu.",
+      "nl": "\"Mag ik hem aan?\" vraagt Manu.",
+      "en": "\"May I wear it?\" asks Manu.",
+      "words": [
+        {
+          "word": "\"Bolehkah",
+          "start": 8.9,
+          "end": 9.9
+        },
+        {
+          "word": "aku",
+          "start": 9.9,
+          "end": 10.1
+        },
+        {
+          "word": "pakai?\"",
+          "start": 10.1,
+          "end": 10.4
+        },
+        {
+          "word": "tanya",
+          "start": 10.4,
+          "end": 11.5
+        },
+        {
+          "word": "Manu.",
+          "start": 11.5,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "idx": 4,
+      "id": "Ibu bilang: \"Tidak, Manu. Langit cerah.\"",
+      "nl": "Moeder zegt: \"Nee, Manu. De lucht is helder.\"",
+      "en": "Mother says: \"No, Manu. The sky is clear.\"",
+      "words": [
+        {
+          "word": "Ibu",
+          "start": 13.2,
+          "end": 13.7
+        },
+        {
+          "word": "bilang:",
+          "start": 13.7,
+          "end": 14.2
+        },
+        {
+          "word": "\"Tidak,",
+          "start": 14.2,
+          "end": 14.8
+        },
+        {
+          "word": "Manu.",
+          "start": 14.8,
+          "end": 15.4
+        },
+        {
+          "word": "Langit",
+          "start": 15.4,
+          "end": 16.4
+        },
+        {
+          "word": "cerah.\"",
+          "start": 16.4,
+          "end": 16.9
+        }
+      ]
+    },
+    {
+      "idx": 5,
+      "id": "Hari Senin.",
+      "nl": "Het is maandag.",
+      "en": "It is Monday.",
+      "words": [
+        {
+          "word": "Hari",
+          "start": 18.1,
+          "end": 18.9
+        },
+        {
+          "word": "Senin.",
+          "start": 18.9,
+          "end": 19.4
+        }
+      ]
+    },
+    {
+      "idx": 6,
+      "id": "Matahari bersinar.",
+      "nl": "De zon schijnt.",
+      "en": "The sun is shining.",
+      "words": [
+        {
+          "word": "Matahari",
+          "start": 20.5,
+          "end": 21.5
+        },
+        {
+          "word": "bersinar.",
+          "start": 21.5,
+          "end": 22.3
+        }
+      ]
+    },
+    {
+      "idx": 7,
+      "id": "\"Akan hujan, Bu?\" tanya Manu.",
+      "nl": "\"Zal het regenen, Mam?\" vraagt Manu.",
+      "en": "\"Will it rain, Mom?\" asks Manu.",
+      "words": [
+        {
+          "word": "\"Akan",
+          "start": 23.7,
+          "end": 24.2
+        },
+        {
+          "word": "hujan,",
+          "start": 24.2,
+          "end": 24.6
+        },
+        {
+          "word": "Bu?\"",
+          "start": 24.6,
+          "end": 25
+        },
+        {
+          "word": "tanya",
+          "start": 25,
+          "end": 25.8
+        },
+        {
+          "word": "Manu.",
+          "start": 25.8,
+          "end": 27.2
+        }
+      ]
+    },
+    {
+      "idx": 8,
+      "id": "Ibu bilang: \"Tidak, Manu. Hari ini tidak hujan.\"",
+      "nl": "Moeder zegt: \"Nee, Manu. Het regent vandaag niet.\"",
+      "en": "Mother says: \"No, Manu. It's not raining today.\"",
+      "words": [
+        {
+          "word": "Ibu",
+          "start": 27.2,
+          "end": 27.9
+        },
+        {
+          "word": "bilang:",
+          "start": 27.9,
+          "end": 28.3
+        },
+        {
+          "word": "\"Tidak,",
+          "start": 28.3,
+          "end": 29
+        },
+        {
+          "word": "Manu.",
+          "start": 29,
+          "end": 29.6
+        },
+        {
+          "word": "Hari",
+          "start": 29.6,
+          "end": 30.7
+        },
+        {
+          "word": "ini",
+          "start": 30.7,
+          "end": 30.8
+        },
+        {
+          "word": "tidak",
+          "start": 30.8,
+          "end": 31.2
+        },
+        {
+          "word": "hujan.\"",
+          "start": 31.2,
+          "end": 31.6
+        }
+      ]
+    },
+    {
+      "idx": 9,
+      "id": "Hari Selasa.",
+      "nl": "Het is dinsdag.",
+      "en": "It is Tuesday.",
+      "words": [
+        {
+          "word": "Hari",
+          "start": 32.9,
+          "end": 33.8
+        },
+        {
+          "word": "Selasa.",
+          "start": 33.8,
+          "end": 34.2
+        }
+      ]
+    },
+    {
+      "idx": 10,
+      "id": "Langit biru.",
+      "nl": "De lucht is blauw.",
+      "en": "The sky is blue.",
+      "words": [
+        {
+          "word": "Langit",
+          "start": 35.4,
+          "end": 36.2
+        },
+        {
+          "word": "biru.",
+          "start": 36.2,
+          "end": 36.5
+        }
+      ]
+    },
+    {
+      "idx": 11,
+      "id": "\"Kapan hujan, Bu?\" tanya Manu.",
+      "nl": "\"Wanneer regent het, Mam?\" vraagt Manu.",
+      "en": "\"When will it rain, Mom?\" asks Manu.",
+      "words": [
+        {
+          "word": "\"Kapan",
+          "start": 37.8,
+          "end": 38.4
+        },
+        {
+          "word": "hujan,",
+          "start": 38.4,
+          "end": 38.8
+        },
+        {
+          "word": "Bu?\"",
+          "start": 38.8,
+          "end": 39.1
+        },
+        {
+          "word": "tanya",
+          "start": 39.1,
+          "end": 40.3
+        },
+        {
+          "word": "Manu.",
+          "start": 40.3,
+          "end": 41.5
+        }
+      ]
+    },
+    {
+      "idx": 12,
+      "id": "Ibu bilang: \"Bukan hari ini, Manu. Hanya ada satu awan kecil.\"",
+      "nl": "Moeder zegt: \"Niet vandaag, Manu. Er is maar één klein wolkje.\"",
+      "en": "Mother says: \"Not today, Manu. There is only one small cloud.\"",
+      "words": [
+        {
+          "word": "Ibu",
+          "start": 41.5,
+          "end": 42.1
+        },
+        {
+          "word": "bilang:",
+          "start": 42.1,
+          "end": 42.6
+        },
+        {
+          "word": "\"Bukan",
+          "start": 42.6,
+          "end": 43.4
+        },
+        {
+          "word": "hari",
+          "start": 43.4,
+          "end": 43.7
+        },
+        {
+          "word": "ini,",
+          "start": 43.7,
+          "end": 44
+        },
+        {
+          "word": "Manu.",
+          "start": 44,
+          "end": 44.6
+        },
+        {
+          "word": "Hanya",
+          "start": 44.8,
+          "end": 45.5
+        },
+        {
+          "word": "ada",
+          "start": 45.5,
+          "end": 46
+        },
+        {
+          "word": "satu",
+          "start": 46,
+          "end": 46.3
+        },
+        {
+          "word": "awan",
+          "start": 46.3,
+          "end": 46.6
+        },
+        {
+          "word": "kecil.\"",
+          "start": 46.6,
+          "end": 46.8
+        }
+      ]
+    },
+    {
+      "idx": 13,
+      "id": "Hari Rabu.",
+      "nl": "Het is woensdag.",
+      "en": "It is Wednesday.",
+      "words": [
+        {
+          "word": "Hari",
+          "start": 48.2,
+          "end": 49
+        },
+        {
+          "word": "Rabu.",
+          "start": 49,
+          "end": 49.5
+        }
+      ]
+    },
+    {
+      "idx": 14,
+      "id": "Hari ini panas.",
+      "nl": "Vandaag is het warm.",
+      "en": "Today it is hot.",
+      "words": [
+        {
+          "word": "Hari",
+          "start": 50.6,
+          "end": 51.2
+        },
+        {
+          "word": "ini",
+          "start": 51.2,
+          "end": 51.4
+        },
+        {
+          "word": "panas.",
+          "start": 51.4,
+          "end": 52
+        }
+      ]
+    },
+    {
+      "idx": 15,
+      "id": "\"Kenapa belum hujan, Bu?\" tanya Manu.",
+      "nl": "\"Waarom regent het nog niet, Mam?\" vraagt Manu.",
+      "en": "\"Why isn't it raining yet, Mom?\" asks Manu.",
+      "words": [
+        {
+          "word": "\"Kenapa",
+          "start": 53.4,
+          "end": 54
+        },
+        {
+          "word": "belum",
+          "start": 54,
+          "end": 54.6
+        },
+        {
+          "word": "hujan,",
+          "start": 54.6,
+          "end": 55
+        },
+        {
+          "word": "Bu?\"",
+          "start": 55,
+          "end": 55.4
+        },
+        {
+          "word": "tanya",
+          "start": 55.4,
+          "end": 56.3
+        },
+        {
+          "word": "Manu.",
+          "start": 56.3,
+          "end": 56.5
+        }
+      ]
+    },
+    {
+      "idx": 16,
+      "id": "Ibu bilang: \"Mungkin akan hujan sebentar lagi.\"",
+      "nl": "Moeder zegt: \"Misschien gaat het zo regenen.\"",
+      "en": "Mother says: \"Maybe it will rain soon.\"",
+      "words": [
+        {
+          "word": "Ibu",
+          "start": 57.7,
+          "end": 58.3
+        },
+        {
+          "word": "bilang:",
+          "start": 58.3,
+          "end": 58.7
+        },
+        {
+          "word": "\"Mungkin",
+          "start": 58.7,
+          "end": 59.5
+        },
+        {
+          "word": "akan",
+          "start": 59.5,
+          "end": 60
+        },
+        {
+          "word": "hujan",
+          "start": 60,
+          "end": 60.4
+        },
+        {
+          "word": "sebentar",
+          "start": 60.4,
+          "end": 60.8
+        },
+        {
+          "word": "lagi.\"",
+          "start": 60.8,
+          "end": 61.2
+        }
+      ]
+    },
+    {
+      "idx": 17,
+      "id": "Hari Kamis.",
+      "nl": "Het is donderdag.",
+      "en": "It is Thursday.",
+      "words": [
+        {
+          "word": "Hari",
+          "start": 62.8,
+          "end": 63.6
+        },
+        {
+          "word": "Kamis.",
+          "start": 63.6,
+          "end": 64
+        }
+      ]
+    },
+    {
+      "idx": 18,
+      "id": "Manu pergi piknik.",
+      "nl": "Manu gaat picknicken.",
+      "en": "Manu goes for a picnic.",
+      "words": [
+        {
+          "word": "Manu",
+          "start": 65.3,
+          "end": 66.4
+        },
+        {
+          "word": "pergi",
+          "start": 66.4,
+          "end": 66.5
+        },
+        {
+          "word": "piknik.",
+          "start": 66.5,
+          "end": 67.1
+        }
+      ]
+    },
+    {
+      "idx": 19,
+      "id": "\"Bagaimana kalau hujan, Bu? Bawa jas hujan?\" tanya Manu.",
+      "nl": "\"Wat als het regent, Mam? Neem ik mijn regenjas mee?\" vraagt Manu.",
+      "en": "\"What if it rains, Mom? Should I bring my raincoat?\" asks Manu.",
+      "words": [
+        {
+          "word": "\"Bagaimana",
+          "start": 68,
+          "end": 68.7
+        },
+        {
+          "word": "kalau",
+          "start": 68.7,
+          "end": 69.2
+        },
+        {
+          "word": "hujan,",
+          "start": 69.2,
+          "end": 69.6
+        },
+        {
+          "word": "Bu?",
+          "start": 69.6,
+          "end": 70
+        },
+        {
+          "word": "Bawa",
+          "start": 70,
+          "end": 71
+        },
+        {
+          "word": "jas",
+          "start": 71,
+          "end": 71.4
+        },
+        {
+          "word": "hujan?\"",
+          "start": 71.4,
+          "end": 71.5
+        },
+        {
+          "word": "tanya",
+          "start": 71.5,
+          "end": 72.7
+        },
+        {
+          "word": "Manu.",
+          "start": 72.7,
+          "end": 72.9
+        }
+      ]
+    },
+    {
+      "idx": 20,
+      "id": "Ibu bilang: \"Tidak, Manu. Tidak akan hujan hari ini.\"",
+      "nl": "Moeder zegt: \"Nee, Manu. Het zal vandaag niet regenen.\"",
+      "en": "Mother says: \"No, Manu. It won't rain today.\"",
+      "words": [
+        {
+          "word": "Ibu",
+          "start": 73.9,
+          "end": 74.7
+        },
+        {
+          "word": "bilang:",
+          "start": 74.7,
+          "end": 75
+        },
+        {
+          "word": "\"Tidak,",
+          "start": 75,
+          "end": 75.8
+        },
+        {
+          "word": "Manu.",
+          "start": 75.8,
+          "end": 76.4
+        },
+        {
+          "word": "Tidak",
+          "start": 76.4,
+          "end": 77.3
+        },
+        {
+          "word": "akan",
+          "start": 77.3,
+          "end": 77.5
+        },
+        {
+          "word": "hujan",
+          "start": 77.5,
+          "end": 77.8
+        },
+        {
+          "word": "hari",
+          "start": 77.8,
+          "end": 78.1
+        },
+        {
+          "word": "ini.\"",
+          "start": 78.1,
+          "end": 78.2
+        }
+      ]
+    },
+    {
+      "idx": 21,
+      "id": "Hari Jumat.",
+      "nl": "Het is vrijdag.",
+      "en": "It is Friday.",
+      "words": [
+        {
+          "word": "Hari",
+          "start": 79.7,
+          "end": 80.4
+        },
+        {
+          "word": "Jumat.",
+          "start": 80.4,
+          "end": 80.7
+        }
+      ]
+    },
+    {
+      "idx": 22,
+      "id": "Langit mendung.",
+      "nl": "De lucht is bewolkt.",
+      "en": "The sky is cloudy.",
+      "words": [
+        {
+          "word": "Langit",
+          "start": 81.9,
+          "end": 82.7
+        },
+        {
+          "word": "mendung.",
+          "start": 82.7,
+          "end": 83.3
+        }
+      ]
+    },
+    {
+      "idx": 23,
+      "id": "\"Akan hujan, Bu?\" tanya Manu.",
+      "nl": "\"Zal het regenen, Mam?\" vraagt Manu.",
+      "en": "\"Will it rain, Mom?\" asks Manu.",
+      "words": [
+        {
+          "word": "\"Akan",
+          "start": 84.4,
+          "end": 85.1
+        },
+        {
+          "word": "hujan,",
+          "start": 85.1,
+          "end": 85.5
+        },
+        {
+          "word": "Bu?\"",
+          "start": 85.5,
+          "end": 85.9
+        },
+        {
+          "word": "tanya",
+          "start": 85.9,
+          "end": 86.9
+        },
+        {
+          "word": "Manu.",
+          "start": 86.9,
+          "end": 87.2
+        }
+      ]
+    },
+    {
+      "idx": 24,
+      "id": "Ibu bilang: \"Mungkin, Manu. Ada awan gelap.\"",
+      "nl": "Moeder zegt: \"Misschien, Manu. Er zijn donkere wolken.\"",
+      "en": "Mother says: \"Maybe, Manu. There are dark clouds.\"",
+      "words": [
+        {
+          "word": "Ibu",
+          "start": 88.2,
+          "end": 88.8
+        },
+        {
+          "word": "bilang:",
+          "start": 88.8,
+          "end": 89.1
+        },
+        {
+          "word": "\"Mungkin,",
+          "start": 89.1,
+          "end": 90
+        },
+        {
+          "word": "Manu.",
+          "start": 90,
+          "end": 90.7
+        },
+        {
+          "word": "Ada",
+          "start": 90.7,
+          "end": 91.6
+        },
+        {
+          "word": "awan",
+          "start": 91.6,
+          "end": 91.9
+        },
+        {
+          "word": "gelap.\"",
+          "start": 91.9,
+          "end": 92.4
+        }
+      ]
+    },
+    {
+      "idx": 25,
+      "id": "Hari Sabtu.",
+      "nl": "Het is zaterdag.",
+      "en": "It is Saturday.",
+      "words": [
+        {
+          "word": "Hari",
+          "start": 93.5,
+          "end": 94.2
+        },
+        {
+          "word": "Sabtu.",
+          "start": 94.2,
+          "end": 94.7
+        }
+      ]
+    },
+    {
+      "idx": 26,
+      "id": "Duarr!",
+      "nl": "Knal!",
+      "en": "Boom!",
+      "words": [
+        {
+          "word": "Duarr!",
+          "start": 95.8,
+          "end": 96.8
+        }
+      ]
+    },
+    {
+      "idx": 27,
+      "id": "Ada petir!",
+      "nl": "Er is bliksem!",
+      "en": "There is lightning!",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 97.9,
+          "end": 98.7
+        },
+        {
+          "word": "petir!",
+          "start": 98.7,
+          "end": 99.1
+        }
+      ]
+    },
+    {
+      "idx": 28,
+      "id": "\"Bu, itu petir? Akan hujan sekarang?\" tanya Manu.",
+      "nl": "\"Mam, is dat bliksem? Gaat het nu regenen?\" vraagt Manu.",
+      "en": "\"Mom, is that lightning? Is it going to rain now?\" asks Manu.",
+      "words": [
+        {
+          "word": "\"Bu,",
+          "start": 100.3,
+          "end": 101
+        },
+        {
+          "word": "itu",
+          "start": 101,
+          "end": 101.4
+        },
+        {
+          "word": "petir?",
+          "start": 101.4,
+          "end": 101.8
+        },
+        {
+          "word": "Akan",
+          "start": 101.8,
+          "end": 102.8
+        },
+        {
+          "word": "hujan",
+          "start": 102.8,
+          "end": 103.3
+        },
+        {
+          "word": "sekarang?\"",
+          "start": 103.3,
+          "end": 103.7
+        },
+        {
+          "word": "tanya",
+          "start": 103.7,
+          "end": 105
+        },
+        {
+          "word": "Manu.",
+          "start": 105,
+          "end": 105.2
+        }
+      ]
+    },
+    {
+      "idx": 29,
+      "id": "Akhirnya, hujan turun!",
+      "nl": "Eindelijk regent het!",
+      "en": "Finally, it's raining!",
+      "words": [
+        {
+          "word": "Akhirnya,",
+          "start": 106.3,
+          "end": 107.1
+        },
+        {
+          "word": "hujan",
+          "start": 107.1,
+          "end": 107.8
+        },
+        {
+          "word": "turun!",
+          "start": 107.8,
+          "end": 108.3
+        }
+      ]
+    },
+    {
+      "idx": 30,
+      "id": "\"Hujan! Hujan!\" Manu senang.",
+      "nl": "\"Regen! Regen!\" Manu is blij.",
+      "en": "\"Rain! Rain!\" Manu is happy.",
+      "words": [
+        {
+          "word": "\"Hujan!",
+          "start": 109.7,
+          "end": 110.5
+        },
+        {
+          "word": "Hujan!\"",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "Manu",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "senang.",
+          "start": 110.5,
+          "end": 110.55
+        }
+      ]
+    },
+    {
+      "idx": 31,
+      "id": "Dia lari keluar.",
+      "nl": "Hij rent naar buiten.",
+      "en": "He runs outside.",
+      "words": [
+        {
+          "word": "Dia",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "lari",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "keluar.",
+          "start": 110.5,
+          "end": 110.55
+        }
+      ]
+    },
+    {
+      "idx": 32,
+      "id": "Ibu panggil: \"Manu! Kamu lupa jas hujanmu!\"",
+      "nl": "Moeder roept: \"Manu! Je bent je regenjas vergeten!\"",
+      "en": "Mother calls: \"Manu! You forgot your raincoat!\"",
+      "words": [
+        {
+          "word": "Ibu",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "panggil:",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "\"Manu!",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "Kamu",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "lupa",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "jas",
+          "start": 110.5,
+          "end": 110.55
+        },
+        {
+          "word": "hujanmu!\"",
+          "start": 110.5,
+          "end": 113.3
+        }
+      ]
+    }
+  ],
+  "attribution": {
+    "source_title": "Jas Hujan Merah",
+    "source_url": "https://storyweaver.org.in/en/stories/39803-the-red-raincoat",
+    "author": "Translation by Nasema Zeerak (© The Asia Foundation, 2015); original 'The Red Raincoat' by Kiran Kasturia, illustrated by Zainab Tambawalla (© Pratham Books, 2015)",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/"
+  }
+}

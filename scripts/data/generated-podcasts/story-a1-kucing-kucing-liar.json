@@ -1,0 +1,769 @@
+{
+  "title": "Kucing-Kucing Liar",
+  "description": "Dit is een eenvoudig verhaal over verschillende soorten wilde katten.",
+  "level": "A1",
+  "duration_seconds": 73,
+  "audio_filename": "story-a1-kucing-kucing-liar.mp3",
+  "transcript_indonesian": "Halo! Mari kita dengar cerita tentang kucing.\n\nAda banyak kucing liar di dunia.\n\nAda kucing liar dengan warna belang.\n\nAda kucing liar yang punya bulu tebal di lehernya, seperti singa kecil.\n\nAda kucing liar dengan banyak bintik di badannya.\n\nAda kucing liar yang suka memanjat pohon yang tinggi.\n\nAda kucing liar yang tinggal di gunung yang dingin.\n\nAda juga kucing liar yang tinggal di padang pasir yang panas.\n\nAda kucing liar dengan telinga yang berbulu panjang.\n\nAda kucing liar yang suka sekali menangkap ikan di air.\n\nDan ada kucing liar yang paling kecil di dunia!\n\nAda juga kucing liar yang mirip sekali dengan kucing di rumah kita.\n\nTapi ingat ya, semua kucing ini adalah kucing liar.\n\nMereka tidak tinggal di rumah.\n\nMereka hidup bebas di alam!",
+  "transcript_dutch": "Hallo! Laten we een verhaal over katten horen.\n\nEr zijn veel wilde katten in de wereld.\n\nEr zijn wilde katten met gestreepte kleuren.\n\nEr zijn wilde katten die dikke vacht rond hun nek hebben, zoals kleine leeuwen.\n\nEr zijn wilde katten met veel vlekken op hun lichaam.\n\nEr zijn wilde katten die graag in hoge bomen klimmen.\n\nEr zijn wilde katten die in koude bergen leven.\n\nEr zijn ook wilde katten die in hete woestijnen leven.\n\nEr zijn wilde katten met lange, behaarde oren.\n\nEr zijn wilde katten die heel graag vis vangen in het water.\n\nEn er zijn de kleinste wilde katten ter wereld!\n\nEr zijn ook wilde katten die erg lijken op onze huiskatten.\n\nMaar onthoud, al deze katten zijn wilde katten.\n\nZe wonen niet in huizen.\n\nZe leven vrij in de natuur!",
+  "transcript_english": "Hello! Let's hear a story about cats.\n\nThere are many wild cats in the world.\n\nThere are wild cats with striped patterns.\n\nThere are wild cats that have thick fur around their necks, like small lions.\n\nThere are wild cats with many spots on their bodies.\n\nThere are wild cats that like to climb tall trees.\n\nThere are wild cats that live in cold mountains.\n\nThere are also wild cats that live in hot deserts.\n\nThere are wild cats with long, furry ears.\n\nThere are wild cats that really like to catch fish in the water.\n\nAnd there are the smallest wild cats in the world!\n\nThere are also wild cats that look very much like our house cats.\n\nBut remember, all these cats are wild cats.\n\nThey do not live in houses.\n\nThey live freely in nature!",
+  "transcript_segments": [
+    {
+      "idx": 0,
+      "id": "Halo! Mari kita dengar cerita tentang kucing.",
+      "nl": "Hallo! Laten we een verhaal over katten horen.",
+      "en": "Hello! Let's hear a story about cats.",
+      "words": [
+        {
+          "word": "Halo!",
+          "start": 0,
+          "end": 0.4
+        },
+        {
+          "word": "Mari",
+          "start": 0.4,
+          "end": 1.8
+        },
+        {
+          "word": "kita",
+          "start": 1.8,
+          "end": 1.9
+        },
+        {
+          "word": "dengar",
+          "start": 1.9,
+          "end": 2.3
+        },
+        {
+          "word": "cerita",
+          "start": 2.3,
+          "end": 2.7
+        },
+        {
+          "word": "tentang",
+          "start": 2.7,
+          "end": 3.1
+        },
+        {
+          "word": "kucing.",
+          "start": 3.1,
+          "end": 3.7
+        }
+      ]
+    },
+    {
+      "idx": 1,
+      "id": "Ada banyak kucing liar di dunia.",
+      "nl": "Er zijn veel wilde katten in de wereld.",
+      "en": "There are many wild cats in the world.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 5.4,
+          "end": 6
+        },
+        {
+          "word": "banyak",
+          "start": 6,
+          "end": 6.3
+        },
+        {
+          "word": "kucing",
+          "start": 6.3,
+          "end": 6.7
+        },
+        {
+          "word": "liar",
+          "start": 6.7,
+          "end": 7.2
+        },
+        {
+          "word": "di",
+          "start": 7.2,
+          "end": 7.4
+        },
+        {
+          "word": "dunia.",
+          "start": 7.4,
+          "end": 7.5
+        }
+      ]
+    },
+    {
+      "idx": 2,
+      "id": "Ada kucing liar dengan warna belang.",
+      "nl": "Er zijn wilde katten met gestreepte kleuren.",
+      "en": "There are wild cats with striped patterns.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 9.3,
+          "end": 10
+        },
+        {
+          "word": "kucing",
+          "start": 10,
+          "end": 10.3
+        },
+        {
+          "word": "liar",
+          "start": 10.3,
+          "end": 10.8
+        },
+        {
+          "word": "dengan",
+          "start": 10.8,
+          "end": 11
+        },
+        {
+          "word": "warna",
+          "start": 11,
+          "end": 11.4
+        },
+        {
+          "word": "belang.",
+          "start": 11.4,
+          "end": 11.9
+        }
+      ]
+    },
+    {
+      "idx": 3,
+      "id": "Ada kucing liar yang punya bulu tebal di lehernya, seperti singa kecil.",
+      "nl": "Er zijn wilde katten die dikke vacht rond hun nek hebben, zoals kleine leeuwen.",
+      "en": "There are wild cats that have thick fur around their necks, like small lions.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 13.5,
+          "end": 14
+        },
+        {
+          "word": "kucing",
+          "start": 14,
+          "end": 14.4
+        },
+        {
+          "word": "liar",
+          "start": 14.4,
+          "end": 14.9
+        },
+        {
+          "word": "yang",
+          "start": 14.9,
+          "end": 15.1
+        },
+        {
+          "word": "punya",
+          "start": 15.1,
+          "end": 15.4
+        },
+        {
+          "word": "bulu",
+          "start": 15.4,
+          "end": 15.9
+        },
+        {
+          "word": "tebal",
+          "start": 15.9,
+          "end": 16.2
+        },
+        {
+          "word": "di",
+          "start": 16.2,
+          "end": 16.5
+        },
+        {
+          "word": "lehernya,",
+          "start": 16.5,
+          "end": 16.9
+        },
+        {
+          "word": "seperti",
+          "start": 16.9,
+          "end": 17.6
+        },
+        {
+          "word": "singa",
+          "start": 17.6,
+          "end": 18.3
+        },
+        {
+          "word": "kecil.",
+          "start": 18.3,
+          "end": 18.5
+        }
+      ]
+    },
+    {
+      "idx": 4,
+      "id": "Ada kucing liar dengan banyak bintik di badannya.",
+      "nl": "Er zijn wilde katten met veel vlekken op hun lichaam.",
+      "en": "There are wild cats with many spots on their bodies.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 19.8,
+          "end": 20.4
+        },
+        {
+          "word": "kucing",
+          "start": 20.4,
+          "end": 20.8
+        },
+        {
+          "word": "liar",
+          "start": 20.8,
+          "end": 21.3
+        },
+        {
+          "word": "dengan",
+          "start": 21.3,
+          "end": 21.5
+        },
+        {
+          "word": "banyak",
+          "start": 21.5,
+          "end": 21.9
+        },
+        {
+          "word": "bintik",
+          "start": 21.9,
+          "end": 22.7
+        },
+        {
+          "word": "di",
+          "start": 22.7,
+          "end": 23.1
+        },
+        {
+          "word": "badannya.",
+          "start": 23.1,
+          "end": 23.4
+        }
+      ]
+    },
+    {
+      "idx": 5,
+      "id": "Ada kucing liar yang suka memanjat pohon yang tinggi.",
+      "nl": "Er zijn wilde katten die graag in hoge bomen klimmen.",
+      "en": "There are wild cats that like to climb tall trees.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 24.9,
+          "end": 25.6
+        },
+        {
+          "word": "kucing",
+          "start": 25.6,
+          "end": 25.9
+        },
+        {
+          "word": "liar",
+          "start": 25.9,
+          "end": 26.4
+        },
+        {
+          "word": "yang",
+          "start": 26.4,
+          "end": 26.5
+        },
+        {
+          "word": "suka",
+          "start": 26.5,
+          "end": 27
+        },
+        {
+          "word": "memanjat",
+          "start": 27,
+          "end": 27.6
+        },
+        {
+          "word": "pohon",
+          "start": 27.6,
+          "end": 27.9
+        },
+        {
+          "word": "yang",
+          "start": 27.9,
+          "end": 28.1
+        },
+        {
+          "word": "tinggi.",
+          "start": 28.1,
+          "end": 28.5
+        }
+      ]
+    },
+    {
+      "idx": 6,
+      "id": "Ada kucing liar yang tinggal di gunung yang dingin.",
+      "nl": "Er zijn wilde katten die in koude bergen leven.",
+      "en": "There are wild cats that live in cold mountains.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 29.8,
+          "end": 30.5
+        },
+        {
+          "word": "kucing",
+          "start": 30.5,
+          "end": 30.8
+        },
+        {
+          "word": "liar",
+          "start": 30.8,
+          "end": 31.3
+        },
+        {
+          "word": "yang",
+          "start": 31.3,
+          "end": 31.5
+        },
+        {
+          "word": "tinggal",
+          "start": 31.5,
+          "end": 31.8
+        },
+        {
+          "word": "di",
+          "start": 31.8,
+          "end": 32.4
+        },
+        {
+          "word": "gunung",
+          "start": 32.4,
+          "end": 32.5
+        },
+        {
+          "word": "yang",
+          "start": 32.5,
+          "end": 32.7
+        },
+        {
+          "word": "dingin.",
+          "start": 32.7,
+          "end": 33.1
+        }
+      ]
+    },
+    {
+      "idx": 7,
+      "id": "Ada juga kucing liar yang tinggal di padang pasir yang panas.",
+      "nl": "Er zijn ook wilde katten die in hete woestijnen leven.",
+      "en": "There are also wild cats that live in hot deserts.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 34.6,
+          "end": 35.3
+        },
+        {
+          "word": "juga",
+          "start": 35.3,
+          "end": 35.4
+        },
+        {
+          "word": "kucing",
+          "start": 35.4,
+          "end": 36
+        },
+        {
+          "word": "liar",
+          "start": 36,
+          "end": 36.6
+        },
+        {
+          "word": "yang",
+          "start": 36.6,
+          "end": 36.8
+        },
+        {
+          "word": "tinggal",
+          "start": 36.8,
+          "end": 37.1
+        },
+        {
+          "word": "di",
+          "start": 37.1,
+          "end": 37.5
+        },
+        {
+          "word": "padang",
+          "start": 37.5,
+          "end": 38
+        },
+        {
+          "word": "pasir",
+          "start": 38,
+          "end": 38.4
+        },
+        {
+          "word": "yang",
+          "start": 38.4,
+          "end": 38.5
+        },
+        {
+          "word": "panas.",
+          "start": 38.5,
+          "end": 38.9
+        }
+      ]
+    },
+    {
+      "idx": 8,
+      "id": "Ada kucing liar dengan telinga yang berbulu panjang.",
+      "nl": "Er zijn wilde katten met lange, behaarde oren.",
+      "en": "There are wild cats with long, furry ears.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 40.4,
+          "end": 41.1
+        },
+        {
+          "word": "kucing",
+          "start": 41.1,
+          "end": 41.4
+        },
+        {
+          "word": "liar",
+          "start": 41.4,
+          "end": 41.9
+        },
+        {
+          "word": "dengan",
+          "start": 41.9,
+          "end": 42.1
+        },
+        {
+          "word": "telinga",
+          "start": 42.1,
+          "end": 42.7
+        },
+        {
+          "word": "yang",
+          "start": 42.7,
+          "end": 42.9
+        },
+        {
+          "word": "berbulu",
+          "start": 42.9,
+          "end": 43.4
+        },
+        {
+          "word": "panjang.",
+          "start": 43.4,
+          "end": 43.7
+        }
+      ]
+    },
+    {
+      "idx": 9,
+      "id": "Ada kucing liar yang suka sekali menangkap ikan di air.",
+      "nl": "Er zijn wilde katten die heel graag vis vangen in het water.",
+      "en": "There are wild cats that really like to catch fish in the water.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 45.3,
+          "end": 46
+        },
+        {
+          "word": "kucing",
+          "start": 46,
+          "end": 46.3
+        },
+        {
+          "word": "liar",
+          "start": 46.3,
+          "end": 46.8
+        },
+        {
+          "word": "yang",
+          "start": 46.8,
+          "end": 47
+        },
+        {
+          "word": "suka",
+          "start": 47,
+          "end": 47.4
+        },
+        {
+          "word": "sekali",
+          "start": 47.4,
+          "end": 47.7
+        },
+        {
+          "word": "menangkap",
+          "start": 47.7,
+          "end": 48.5
+        },
+        {
+          "word": "ikan",
+          "start": 48.5,
+          "end": 48.7
+        },
+        {
+          "word": "di",
+          "start": 48.7,
+          "end": 49.1
+        },
+        {
+          "word": "air.",
+          "start": 49.1,
+          "end": 49.2
+        }
+      ]
+    },
+    {
+      "idx": 10,
+      "id": "Dan ada kucing liar yang paling kecil di dunia!",
+      "nl": "En er zijn de kleinste wilde katten ter wereld!",
+      "en": "And there are the smallest wild cats in the world!",
+      "words": [
+        {
+          "word": "Dan",
+          "start": 50.7,
+          "end": 51.2
+        },
+        {
+          "word": "ada",
+          "start": 51.2,
+          "end": 51.6
+        },
+        {
+          "word": "kucing",
+          "start": 51.6,
+          "end": 51.9
+        },
+        {
+          "word": "liar",
+          "start": 51.9,
+          "end": 52.5
+        },
+        {
+          "word": "yang",
+          "start": 52.5,
+          "end": 52.8
+        },
+        {
+          "word": "paling",
+          "start": 52.8,
+          "end": 53.1
+        },
+        {
+          "word": "kecil",
+          "start": 53.1,
+          "end": 53.5
+        },
+        {
+          "word": "di",
+          "start": 53.5,
+          "end": 53.8
+        },
+        {
+          "word": "dunia!",
+          "start": 53.8,
+          "end": 54
+        }
+      ]
+    },
+    {
+      "idx": 11,
+      "id": "Ada juga kucing liar yang mirip sekali dengan kucing di rumah kita.",
+      "nl": "Er zijn ook wilde katten die erg lijken op onze huiskatten.",
+      "en": "There are also wild cats that look very much like our house cats.",
+      "words": [
+        {
+          "word": "Ada",
+          "start": 55.6,
+          "end": 56.3
+        },
+        {
+          "word": "juga",
+          "start": 56.3,
+          "end": 56.5
+        },
+        {
+          "word": "kucing",
+          "start": 56.5,
+          "end": 56.9
+        },
+        {
+          "word": "liar",
+          "start": 56.9,
+          "end": 57.4
+        },
+        {
+          "word": "yang",
+          "start": 57.4,
+          "end": 57.7
+        },
+        {
+          "word": "mirip",
+          "start": 57.7,
+          "end": 58.1
+        },
+        {
+          "word": "sekali",
+          "start": 58.1,
+          "end": 58.5
+        },
+        {
+          "word": "dengan",
+          "start": 58.5,
+          "end": 58.8
+        },
+        {
+          "word": "kucing",
+          "start": 58.8,
+          "end": 59.2
+        },
+        {
+          "word": "di",
+          "start": 59.2,
+          "end": 59.6
+        },
+        {
+          "word": "rumah",
+          "start": 59.6,
+          "end": 59.7
+        },
+        {
+          "word": "kita.",
+          "start": 59.7,
+          "end": 60.1
+        }
+      ]
+    },
+    {
+      "idx": 12,
+      "id": "Tapi ingat ya, semua kucing ini adalah kucing liar.",
+      "nl": "Maar onthoud, al deze katten zijn wilde katten.",
+      "en": "But remember, all these cats are wild cats.",
+      "words": [
+        {
+          "word": "Tapi",
+          "start": 61.2,
+          "end": 61.8
+        },
+        {
+          "word": "ingat",
+          "start": 61.8,
+          "end": 62.2
+        },
+        {
+          "word": "ya,",
+          "start": 62.2,
+          "end": 62.3
+        },
+        {
+          "word": "semua",
+          "start": 62.3,
+          "end": 63.2
+        },
+        {
+          "word": "kucing",
+          "start": 63.2,
+          "end": 63.5
+        },
+        {
+          "word": "ini",
+          "start": 63.5,
+          "end": 63.8
+        },
+        {
+          "word": "adalah",
+          "start": 63.8,
+          "end": 64.1
+        },
+        {
+          "word": "kucing",
+          "start": 64.1,
+          "end": 64.6
+        },
+        {
+          "word": "liar.",
+          "start": 64.6,
+          "end": 65.1
+        }
+      ]
+    },
+    {
+      "idx": 13,
+      "id": "Mereka tidak tinggal di rumah.",
+      "nl": "Ze wonen niet in huizen.",
+      "en": "They do not live in houses.",
+      "words": [
+        {
+          "word": "Mereka",
+          "start": 66.6,
+          "end": 67.2
+        },
+        {
+          "word": "tidak",
+          "start": 67.2,
+          "end": 67.6
+        },
+        {
+          "word": "tinggal",
+          "start": 67.6,
+          "end": 67.9
+        },
+        {
+          "word": "di",
+          "start": 67.9,
+          "end": 68.3
+        },
+        {
+          "word": "rumah.",
+          "start": 68.3,
+          "end": 68.4
+        }
+      ]
+    },
+    {
+      "idx": 14,
+      "id": "Mereka hidup bebas di alam!",
+      "nl": "Ze leven vrij in de natuur!",
+      "en": "They live freely in nature!",
+      "words": [
+        {
+          "word": "Mereka",
+          "start": 70.1,
+          "end": 70.7
+        },
+        {
+          "word": "hidup",
+          "start": 70.7,
+          "end": 71.2
+        },
+        {
+          "word": "bebas",
+          "start": 71.2,
+          "end": 71.6
+        },
+        {
+          "word": "di",
+          "start": 71.6,
+          "end": 72
+        },
+        {
+          "word": "alam!",
+          "start": 72,
+          "end": 72.1
+        }
+      ]
+    }
+  ],
+  "attribution": {
+    "source_title": "Kucing Liar! Kucing Liar!",
+    "source_url": "https://storyweaver.org.in/en/stories/92469-kucing-liar-kucing-liar",
+    "author": "Translation by Sophia Susanto (© Jala, 2019); original 'Wild Cat! Wild Cat!' by Sejal Mehta, illustrated by Rohan Chakravarty (© Pratham Books, 2017)",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/"
+  }
+}
