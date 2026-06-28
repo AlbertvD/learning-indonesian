@@ -110,6 +110,35 @@ export function assertValidTimings(segments: TranscriptSegment[]): void {
 }
 
 /**
+ * Recover from STT tail-drops: when STT drops a run of words and lumps that audio
+ * into one over-long neighbour, alignment leaves several words bunched at one
+ * instant (a "skip") followed by a word that holds for seconds (a "hover"). Where
+ * such a bunched cluster has a long enough total span to work with, redistribute
+ * its words evenly across that span. Mutates `times` in place. Only fires on a
+ * genuine bunch (≥3 words within `CLUSTER_GAP`) with room to spread, so normal
+ * fast speech is untouched.
+ */
+const CLUSTER_GAP = 0.12
+const MIN_STEP = 0.12
+function spreadCollapsedClusters(times: Array<{ start: number; end: number }>): void {
+  let i = 0
+  while (i < times.length) {
+    let j = i
+    while (j + 1 < times.length && times[j + 1].start - times[j].start < CLUSTER_GAP) j++
+    const runLen = j - i + 1
+    const span = times[j].end - times[i].start
+    if (runLen >= 3 && span > runLen * MIN_STEP) {
+      const start = times[i].start
+      const step = span / runLen
+      for (let k = 0; k < runLen; k++) {
+        times[i + k] = { start: start + step * k, end: start + step * (k + 1) }
+      }
+    }
+    i = j + 1
+  }
+}
+
+/**
  * Align the recognised STT word stream to the script and return each segment
  * enriched with per-(script-)word timings.
  */
@@ -137,6 +166,9 @@ export function alignWordTimings(segments: TranscriptSegment[], sttWords: SttWor
   for (const t of times) {
     if (t && t.end <= t.start) t.end = t.start + MIN_DURATION
   }
+
+  // Recover STT tail-drops (bunched cluster + over-long absorbing word).
+  spreadCollapsedClusters(times as Array<{ start: number; end: number }>)
 
   // Regroup timed words back into their segments, keeping authored spelling.
   return segments.map((segment, s) => {

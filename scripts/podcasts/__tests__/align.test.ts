@@ -72,6 +72,23 @@ describe('alignWordTimings', () => {
     expect(() => assertValidTimings(result)).not.toThrow()
   })
 
+  it('spreads a collapsed cluster across the over-long word that absorbed it (tail-drop recovery)', () => {
+    // STT recognised only 'a' and 'e', dropping b/c/d and lumping that audio into
+    // a 2.5s 'e' — the real-world tail-drop. The dropped words would otherwise
+    // bunch at one instant (skip) while 'e' holds for seconds (hover).
+    const result = alignWordTimings([seg(0, 'a b c d e')], [
+      { word: 'a', start: 0.0, end: 0.4 },
+      { word: 'e', start: 0.5, end: 3.0 },
+    ])
+    const starts = result[0].words!.map((w) => w.start)
+    // No 3 consecutive words bunched within 0.15s any more.
+    for (let i = 0; i + 2 < starts.length; i++) {
+      expect(starts[i + 2] - starts[i]).toBeGreaterThan(0.15)
+    }
+    // 'e' is pushed toward its real position, not left at 0.5 holding 2.5s.
+    expect(result[0].words![4].start).toBeGreaterThan(1.0)
+  })
+
   it('output of a real alignment passes the pre-write validator', () => {
     const result = alignWordTimings([seg(0, 'Ibu pergi makan.')], [
       { word: 'ibu', start: 0.0, end: 0.4 },
