@@ -1,28 +1,30 @@
 import { Fragment, useState } from 'react'
-import { Anchor, Badge, Box, Divider, Group, Popover, Text } from '@mantine/core'
+import { Anchor, Box, Divider, Popover, Text } from '@mantine/core'
 import { Link } from 'react-router-dom'
 import type { GlossResult, MorphologyGloss, ReadableText, ReadingToken } from '@/lib/reading'
 import { useT } from '@/hooks/useT'
 import classes from './GlossableText.module.css'
 
-/** Exploratory morphology detail (ADR 0024): affix + function, root + meaning, family,
- *  and a link into the Affix Trainer detail (/morphology?affix=…). Gloss-only. */
+/** /morphology?affix=… — the affix rule explanation (Affix Trainer detail). */
+const ruleHref = (affix: string) => `/morphology?affix=${encodeURIComponent(affix)}`
+
+/**
+ * Exploratory morphology detail (ADR 0024): the root + its meaning, and the word family
+ * — each related form is a LINK to its affix-rule explanation, shown with its exact
+ * translation. The affix rule itself is not shown inline (it lives behind the link), to
+ * keep the card compact. Gloss-only.
+ */
 function MorphologyDetail({ m }: { m: MorphologyGloss }) {
   const T = useT()
   return (
     <>
       <Divider my={8} />
-      {/* The word's affix (left badge) + what it does. */}
-      <Group gap={8} mb={4} align="flex-start" wrap="nowrap">
-        <Badge size="md" variant="light" style={{ flexShrink: 0 }}>{m.affix}</Badge>
-        <Text size="sm" c="dimmed">{m.affixFunctionNl}</Text>
-      </Group>
-      {/* The root it derives from + its meaning. */}
+      {/* The base form it derives from + its meaning (the root is not affixed → no link). */}
       <Text size="sm">
         ← <Text span fw={600}>{m.root}</Text>
         {m.rootMeaning && <Text span c="dimmed"> · {m.rootMeaning}</Text>}
       </Text>
-      {/* The word family — each related form with what its affix does. */}
+      {/* Word family: each affixed form links to its rule; translation shown inline. */}
       {m.family.length > 0 && (
         <>
           <Text size="xs" fw={700} tt="uppercase" c="dimmed" mt={8} mb={2}>
@@ -30,15 +32,12 @@ function MorphologyDetail({ m }: { m: MorphologyGloss }) {
           </Text>
           {m.family.map((f) => (
             <Text key={f.form} size="sm" mb={2}>
-              <Text span fw={600}>{f.form}</Text>
-              <Text span size="xs" c="dimmed"> · {f.affixFunctionNl}</Text>
+              <Anchor component={Link} to={ruleHref(f.affix)} fw={600}>{f.form}</Anchor>
+              {f.translation && <Text span c="dimmed"> · {f.translation}</Text>}
             </Text>
           ))}
         </>
       )}
-      <Anchor component={Link} to={`/morphology?affix=${encodeURIComponent(m.affix)}`} size="sm" mt={8} display="block">
-        {T.reading.affixTrainerLink} →
-      </Anchor>
     </>
   )
 }
@@ -92,13 +91,21 @@ export function GlossableText({ text, glossFor }: GlossableTextProps) {
               </Text>
             )
             if (!isActive) return <Fragment key={key}>{word} </Fragment>
+            const morph = active.gloss.morphology
             return (
               <Fragment key={key}>
-                <Popover opened position="bottom" withArrow shadow="md" width={320}
+                <Popover opened position="bottom" withArrow shadow="md" width={360}
                   onChange={(o) => { if (!o) setActive(null) }}>
                   <Popover.Target>{word}</Popover.Target>
                   <Popover.Dropdown className={classes.dropdown}>
-                    <Text fw={700} size="md">{tok.raw}</Text>
+                    {/* Headline: the tapped word; links to its affix rule when affixed. */}
+                    {morph
+                      ? (
+                        <Anchor component={Link} to={ruleHref(morph.affix)} fw={700} size="md">
+                          {tok.raw}
+                        </Anchor>
+                      )
+                      : <Text fw={700} size="md">{tok.raw}</Text>}
                     {active.gloss.text
                       ? (
                         <Text size="sm" c={active.gloss.source === 'sentence' ? 'dimmed' : undefined}>
@@ -109,7 +116,7 @@ export function GlossableText({ text, glossFor }: GlossableTextProps) {
                         </Text>
                       )
                       : <Text size="sm" c="dimmed">{T.reading.noGloss}</Text>}
-                    {active.gloss.morphology && <MorphologyDetail m={active.gloss.morphology} />}
+                    {morph && <MorphologyDetail m={morph} />}
                   </Popover.Dropdown>
                 </Popover>
                 {' '}

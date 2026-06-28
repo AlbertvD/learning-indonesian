@@ -34,7 +34,7 @@ const KEY = process.env.SUPABASE_SERVICE_KEY
 if (!URL || !KEY) throw new Error('VITE_SUPABASE_URL + SUPABASE_SERVICE_KEY required (.env.local)')
 const db = createClient(URL, KEY).schema('indonesian')
 
-interface Row { normalized_text: string; root: string; affix: string }
+interface Row { normalized_text: string; root: string; affix: string; gloss_nl: string | null; gloss_en: string | null }
 
 const tokenize = (s: string): string[] =>
   s.toLowerCase().split(/[^a-z-]+/).filter((w) => w.length >= 3 && w !== '-')
@@ -42,23 +42,34 @@ const tokenize = (s: string): string[] =>
 async function main() {
   const rows = new Map<string, Row>() // normalized_text → row (first writer wins)
 
-  // 1. Curated affixed_form_pairs (authoritative).
+  // 1. Curated affixed_form_pairs (authoritative) — incl. the EXACT derived gloss.
   const { data: pairs, error: pe } = await db
     .from('affixed_form_pairs')
-    .select('root_text, derived_text, affix')
+    .select('root_text, derived_text, affix, derived_gloss_nl, derived_gloss_en')
     .not('affix', 'is', null)
   if (pe) throw pe
-  for (const p of (pairs ?? []) as Array<{ root_text: string; derived_text: string; affix: string }>) {
+  for (const p of (pairs ?? []) as Array<{ root_text: string; derived_text: string; affix: string; derived_gloss_nl: string | null; derived_gloss_en: string | null }>) {
     const key = p.derived_text.toLowerCase()
-    if (!rows.has(key)) rows.set(key, { normalized_text: key, root: p.root_text.toLowerCase(), affix: p.affix })
+    if (!rows.has(key)) {
+      rows.set(key, {
+        normalized_text: key, root: p.root_text.toLowerCase(), affix: p.affix,
+        gloss_nl: p.derived_gloss_nl, gloss_en: p.derived_gloss_en,
+      })
+    }
   }
   const fromPairs = rows.size
 
-  // 2. learning_items = the root lexicon for decomposition + the corpus membership.
-  const { data: items, error: ie } = await db.from('learning_items').select('normalized_text')
+  // 2. learning_items = the root lexicon + the exact gloss for decomposed forms that are
+  //    themselves items.
+  const { data: items, error: ie } = await db
+    .from('learning_items')
+    .select('normalized_text, translation_nl, translation_en')
   if (ie) throw ie
-  const itemSet = new Set((items ?? []).map((r: { normalized_text: string }) => r.normalized_text.toLowerCase()))
-  const isRoot = (w: string) => itemSet.has(w)
+  const itemGloss = new Map<string, { nl: string | null; en: string | null }>()
+  for (const r of (items ?? []) as Array<{ normalized_text: string; translation_nl: string | null; translation_en: string | null }>) {
+    itemGloss.set(r.normalized_text.toLowerCase(), { nl: r.translation_nl, en: r.translation_en })
+  }
+  const isRoot = (w: string) => itemGloss.has(w)
 
   // 3. Reading corpus tokens (texts.transcript_segments → Indonesian sentences).
   const { data: texts, error: te } = await db.from('texts').select('transcript_segments')
@@ -68,14 +79,17 @@ async function main() {
     for (const seg of t.transcript_segments ?? []) for (const w of tokenize(seg.id)) corpus.add(w)
   }
 
-  // 4. Decompose uncovered corpus words (verified against the forward engine).
+  // 4. Decompose uncovered corpus words (verified against the forward engine). The exact
+  //    gloss is the derived form's own item translation if it is itself an item, else null
+  //    (the reader falls back to the root meaning).
   let fromDecomp = 0
   for (const word of corpus) {
     if (rows.has(word) || isFunctionWord(word)) continue
     const results = decompose(word, isRoot)
     if (results.length === 0) continue
     const best = results[0] // usually 1; ambiguous picks the first catalog-order affix
-    rows.set(word, { normalized_text: word, root: best.root, affix: best.affix })
+    const g = itemGloss.get(word)
+    rows.set(word, { normalized_text: word, root: best.root, affix: best.affix, gloss_nl: g?.nl ?? null, gloss_en: g?.en ?? null })
     fromDecomp++
   }
 

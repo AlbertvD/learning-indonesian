@@ -32,10 +32,13 @@ export async function fetchCoverageKnownTokens(
 export interface ItemMorphology {
   root: string
   affix: string
+  /** The exact meaning of the derived combination (NL/EN), if known. */
+  glossNl: string | null
+  glossEn: string | null
 }
 
 /**
- * The {root, affix} decomposition for each given surface word that has one (ADR 0024
+ * The decomposition + exact gloss for each given surface word that has one (ADR 0024
  * pre-compute). Keyed by `normalized_text`. Words with no row are monomorphemic /
  * unknown-root — the reader falls through to the plain item gloss.
  */
@@ -44,42 +47,45 @@ export async function fetchItemMorphology(
 ): Promise<Map<string, ItemMorphology>> {
   const map = new Map<string, ItemMorphology>()
   if (tokens.length === 0) return map
-  const rows = await chunkedIn<{ normalized_text: string; root: string; affix: string }>(
+  const rows = await chunkedIn<{ normalized_text: string; root: string; affix: string; gloss_nl: string | null; gloss_en: string | null }>(
     'item_morphology',
     'normalized_text',
     [...new Set(tokens)],
-    (b) => b.select('normalized_text, root, affix'),
+    (b) => b.select('normalized_text, root, affix, gloss_nl, gloss_en'),
   )
-  for (const row of rows) map.set(row.normalized_text, { root: row.root, affix: row.affix })
+  for (const row of rows) {
+    map.set(row.normalized_text, { root: row.root, affix: row.affix, glossNl: row.gloss_nl, glossEn: row.gloss_en })
+  }
   return map
 }
 
 export interface FamilyMember {
   form: string
   affix: string
+  glossNl: string | null
+  glossEn: string | null
 }
 
 /**
- * The word family for each given root: every derived form that decomposes to it, WITH
- * its affix (ADR 0024 `family` = join over shared root), so the reader can show each
- * member's meaning (its affix function), not just the form. The root itself is added by
- * the gloss builder; this returns the derived members only.
+ * The word family for each given root: every derived form that decomposes to it, with
+ * its affix (for the rule link) + exact gloss (ADR 0024 `family` = join over shared
+ * root). The tapped word is excluded by the gloss builder.
  */
 export async function fetchMorphologyFamilies(
   roots: string[],
 ): Promise<Map<string, FamilyMember[]>> {
   const map = new Map<string, FamilyMember[]>()
   if (roots.length === 0) return map
-  const rows = await chunkedIn<{ normalized_text: string; root: string; affix: string }>(
+  const rows = await chunkedIn<{ normalized_text: string; root: string; affix: string; gloss_nl: string | null; gloss_en: string | null }>(
     'item_morphology',
     'root',
     [...new Set(roots)],
-    (b) => b.select('normalized_text, root, affix'),
+    (b) => b.select('normalized_text, root, affix, gloss_nl, gloss_en'),
   )
   for (const row of rows) {
     const fam = map.get(row.root) ?? []
     if (!fam.some((m) => m.form === row.normalized_text)) {
-      fam.push({ form: row.normalized_text, affix: row.affix })
+      fam.push({ form: row.normalized_text, affix: row.affix, glossNl: row.gloss_nl, glossEn: row.gloss_en })
     }
     map.set(row.root, fam)
   }

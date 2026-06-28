@@ -177,8 +177,15 @@ CREATE TABLE IF NOT EXISTS indonesian.item_morphology (
   affix           text NOT NULL,           -- catalog affix label, e.g. 'meN-', '-kan'
   created_at      timestamptz NOT NULL DEFAULT now()
 );
+-- The EXACT meaning of the derived combination (e.g. pembaca = 'lezer'), so the reader
+-- shows the word's translation, not just the affix's rule. Nullable: a decomposed corpus
+-- word with no curated derived gloss and no learning_item has none (reader falls back to
+-- the root meaning). Projected from affixed_form_pairs.derived_gloss_nl/_en +
+-- learning_items.translation_nl/_en. The affix *function* still comes from AFFIX_CATALOG.
+ALTER TABLE indonesian.item_morphology ADD COLUMN IF NOT EXISTS gloss_nl text;
+ALTER TABLE indonesian.item_morphology ADD COLUMN IF NOT EXISTS gloss_en text;
 COMMENT ON TABLE indonesian.item_morphology IS
-  'Build-time morphological decomposition for reading-corpus words (ADR 0024). Gloss-only / exploratory; mints no capabilities. family = join over shared root. Distinct from the drilled affixed_form_pairs.';
+  'Build-time morphological decomposition + exact derived-form gloss for reading-corpus words (ADR 0024). Gloss-only / exploratory; mints no capabilities. family = join over shared root. Distinct from the drilled affixed_form_pairs.';
 ALTER TABLE indonesian.item_morphology ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "item_morphology_read" ON indonesian.item_morphology;
 CREATE POLICY "item_morphology_read" ON indonesian.item_morphology FOR SELECT TO authenticated USING (true);
