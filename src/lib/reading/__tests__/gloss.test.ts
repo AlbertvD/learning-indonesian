@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { resolveGloss, type GlossDeps, type ItemGloss } from '../gloss'
-import type { ItemMorphology } from '../adapter'
+import type { ItemMorphology, FamilyMember } from '../adapter'
 import type { ReadingToken } from '../readableText'
 
 function tok(normalized: string, opts: Partial<ReadingToken> = {}): ReadingToken {
@@ -15,23 +15,20 @@ const glosses = new Map<string, ItemGloss>([
 ])
 
 const morphology = new Map<string, ItemMorphology>([
-  ['membaca', { root: 'baca', affix: 'meN-' }],
-  ['dibaca', { root: 'baca', affix: 'di-' }],
+  ['membaca', { root: 'baca', affix: 'meN-', glossNl: 'lezen (actief)', glossEn: 'to read' }],
+  ['dibaca', { root: 'baca', affix: 'di-', glossNl: 'gelezen worden', glossEn: 'to be read' }],
+  ['pembaca', { root: 'baca', affix: 'peN-', glossNl: null, glossEn: null }],
 ])
 
-const families = new Map([
-  ['baca', [{ form: 'membaca', affix: 'meN-' }, { form: 'dibaca', affix: 'di-' }]],
+const families = new Map<string, FamilyMember[]>([
+  ['baca', [
+    { form: 'membaca', affix: 'meN-', glossNl: 'lezen (actief)', glossEn: 'to read' },
+    { form: 'dibaca', affix: 'di-', glossNl: 'gelezen worden', glossEn: 'to be read' },
+    { form: 'pembaca', affix: 'peN-', glossNl: 'lezer', glossEn: 'reader' },
+  ]],
 ])
 
-const fn = (affix: string) => (affix === 'meN-' ? 'actief werkwoord' : affix === 'di-' ? 'passief' : affix)
-
-const base: GlossDeps = {
-  glosses,
-  morphology,
-  families,
-  affixFunctionNl: fn,
-  sentenceNl: 'De hele zin.',
-}
+const base: GlossDeps = { glosses, morphology, families, sentenceNl: 'De hele zin.' }
 
 describe('resolveGloss cascade', () => {
   it('exact item match → NL gloss (item source)', () => {
@@ -42,26 +39,30 @@ describe('resolveGloss cascade', () => {
     expect(resolveGloss(tok('enonly'), base).text).toBe('english-only')
   })
 
-  it('item that is ALSO affixed → item meaning + morphology payload attached', () => {
+  it('item that is ALSO affixed → item meaning + morphology payload (family with translations)', () => {
     const r = resolveGloss(tok('membaca'), base)
     expect(r.source).toBe('item')
     expect(r.text).toBe('lezen (actief)')
-    expect(r.morphology).toEqual({
-      affix: 'meN-',
-      affixFunctionNl: 'actief werkwoord',
-      root: 'baca',
-      rootMeaning: 'lezen',
-      // family excludes the tapped word itself; each member carries its affix function
-      family: [{ form: 'dibaca', affixFunctionNl: 'passief' }],
-    })
+    expect(r.morphology?.root).toBe('baca')
+    expect(r.morphology?.rootMeaning).toBe('lezen')
+    // family excludes the tapped word; each member carries its affix (for the link) + translation
+    expect(r.morphology?.family).toEqual([
+      { form: 'dibaca', affix: 'di-', translation: 'gelezen worden' },
+      { form: 'pembaca', affix: 'peN-', translation: 'lezer' },
+    ])
   })
 
-  it('affixed non-item → root meaning + morphology payload (morphology source)', () => {
+  it('affixed non-item → its OWN derived translation (not the root meaning)', () => {
     const r = resolveGloss(tok('dibaca'), base)
     expect(r.source).toBe('morphology')
-    expect(r.text).toBe('lezen') // the root's meaning
+    expect(r.text).toBe('gelezen worden') // the derived form's own gloss, not "lezen"
     expect(r.morphology?.root).toBe('baca')
-    expect(r.morphology?.family).toEqual([{ form: 'membaca', affixFunctionNl: 'actief werkwoord' }])
+  })
+
+  it('affixed non-item with no stored gloss → falls back to the root meaning', () => {
+    const r = resolveGloss(tok('pembaca'), base)
+    expect(r.source).toBe('morphology')
+    expect(r.text).toBe('lezen') // no derived gloss stored → root meaning
   })
 
   it('proper noun → no gloss (name source)', () => {

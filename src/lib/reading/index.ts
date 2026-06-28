@@ -6,7 +6,6 @@
  * `session-builder` in Phase 1 (that is the Phase-2 harvest edge).
  */
 import type { Podcast } from '@/services/textService'
-import { affixCatalogEntry } from '@/lib/capabilities/affixCatalog'
 import {
   fetchCoverageKnownTokens,
   fetchItemGlosses,
@@ -61,7 +60,6 @@ export async function loadReader(podcast: Podcast): Promise<LoadedReader> {
     fetchItemGlosses([...tokens, ...roots]), // surface meanings + root meanings
     fetchMorphologyFamilies(roots),
   ])
-  const affixFunctionNl = (affix: string) => affixCatalogEntry(affix)?.glossNl ?? affix
   const nlBySegment = new Map(text.segments.map((s) => [s.idx, s.nl]))
   return {
     text,
@@ -70,7 +68,6 @@ export async function loadReader(podcast: Podcast): Promise<LoadedReader> {
         glosses,
         morphology,
         families,
-        affixFunctionNl,
         sentenceNl: nlBySegment.get(segmentIdx) ?? '',
       }),
   }
