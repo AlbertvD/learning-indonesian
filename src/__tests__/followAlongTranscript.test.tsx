@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { FollowAlongTranscript } from '@/pages/Podcast'
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 
 // jsdom doesn't implement scrollIntoView (used by the auto-scroll effect).
 beforeAll(() => {

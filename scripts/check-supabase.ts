@@ -168,7 +168,7 @@ if (TEST_EMAIL && TEST_PASSWORD) {
 }
 
 if (authed) {
-  for (const table of ['lessons', 'vocabulary', 'podcasts']) {
+  for (const table of ['lessons', 'vocabulary', 'texts']) {
     const { error } = await supabase.schema('indonesian').from(table).select('id').limit(1)
     if (error) {
       fail(`${table} readable (authenticated)`, `${error.message} — check RLS policies and grants in migration.sql, run: make migrate SUPABASE_SERVICE_KEY=<key>`)

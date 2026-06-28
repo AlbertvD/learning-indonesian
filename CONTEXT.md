@@ -14,18 +14,20 @@ The fixed set of `source_kind` discriminators a capability carries (the type uni
 - **`dialogue_line`** — One complete utterance from a lesson dialogue, used as the carrier for a contextual cloze. Source table: `lesson_dialogue_lines`.
 - **`pattern`** — A metalinguistic grammar or number-formation rule drilled as a skill (e.g. the `meN-` prefix, the `belas`-numbers rule). Source table: `grammar_patterns`.
 - **`affixed_form_pair`** — A root↔derived morphology pair (e.g. `baca` ↔ `membaca`). Source table: `affixed_form_pairs`. (Grouped under an **Affix** — see below.)
-- **`podcast_segment`** — A bounded audio span of a podcast, consumed by listening for gist. Source table: `podcasts` (segment rows). Not yet live (0 capabilities).
+- **`podcast_segment`** — A bounded audio span of a podcast, consumed by listening for gist. Source table: `texts` (segment rows; renamed from `podcasts`, ADR 0023). Not yet live (0 capabilities).
 - **`podcast_phrase`** — A timecoded phrase *within* a podcast segment (finer-grained than a segment).
 
 _Flagged ambiguity: `podcast_phrase` is latent — no capability type maps to it and it has 0 rows. It is a candidate for removal from the union unless a phrase-level podcast capability is planned. `podcast_segment` is likewise defined but not live (only `podcast_gist` would consume it)._
 
-## Story podcast (listening content)
+## Text (with N faces) · Story podcast (listening content)
 
-A **leveled, shared, narrated Indonesian story** produced for *listening practice* — a row in the `podcasts` table with audio in the `indonesian-podcasts` bucket. Distinct from the **grammar podcast** (the two-host NotebookLM "Kamoe Bisa" grammar explainer attached per lesson via `lessons.audio_path`; not a `podcasts` row). Properties:
+**Reading/listening content is one `texts` entity** (ADR 0023, renamed from `podcasts`): a story + its ID/NL/EN-aligned transcript + level + attribution, where **audio is optional**. A text can be presented through several *faces*: 🎧 **Listen** (needs audio — the Podcasts page), 📖 **Read** (needs only the transcript — Lezen, available to *every* text), 🎴 **Study** (harvest its words — every text). The single definition of "is a podcast" is `audio_path != null`, lives once in `textService`.
+
+A **Story podcast** is therefore *a Text that has a Listen face*: a **leveled, shared, narrated Indonesian story** produced for *listening practice* — a `texts` row with `audio_path` set and audio in the `indonesian-podcasts` bucket. A **read-only text** is a `texts` row with `audio_path = NULL` (no Listen face). Distinct from the **grammar podcast** (the two-host NotebookLM "Kamoe Bisa" grammar explainer attached per lesson via `lessons.audio_path`; not a `texts` row). Story-podcast properties:
 
 - **Leveled** — authored at a fixed CEFR level (A1 / A2 / B1 / B2). The level is the learner's *selection axis*: "pick a story at my level to practise listening."
 - **Shared, not personalized** — one episode per (level, topic) serves every learner; pre-seeded, never generated per-user (North-star: content flows homelab→cloud by re-publish, never per-user runtime generation).
-- **LLM-invented OR adapted-from-source** — content is either an original Gemini-authored story or an *openly-licensed* public story graded down to the level. Sourced episodes carry mandatory CC **attribution** (`podcasts.attribution`, displayed in the reader); prefer CC-BY over CC-BY-SA for the eventual paid app (ADR 0022 amendment).
+- **LLM-invented OR adapted-from-source** — content is either an original Gemini-authored story or an *openly-licensed* public story graded down to the level. Sourced episodes carry mandatory CC **attribution** (`texts.attribution`, displayed in the reader); prefer CC-BY over CC-BY-SA for the eventual paid app (ADR 0022 amendment).
 - **Vocab-anchored, loosely** — authored leaning on the app's vocabulary at that level (`learning_items`, level ≤ target) as a *soft* word-stock, not a hard whitelist; comprehensible-input by construction, but **not** coupled to any individual learner's FSRS progress.
 - **Listening-only** — NOT wired into capabilities / FSRS. (The transcript→core-vocab *harvest* loop, roadmap #4 "PLUS", is a separate, deferred feature.)
 - **Read-along** — the transcript is stored **sentence-aligned across ID / NL / EN** so the reader can follow in their chosen language while listening. The reader additionally supports **timed follow-along** (rung C): each segment carries per-word timings (`words: {word,start,end}[]`, recovered by **Google STT word-offsets aligned to the known script** — *not* the TTS engine, which returns no timings on Chirp3-HD) so the reader follows along as the audio plays. **Word-level following is the goal** — each word highlights as it is spoken (driven by `<audio onTimeUpdate>` against the stored per-word `start`/`end`); sentences are the visual grouping + click-to-seek target. See ADR 0022 amendment (2026-06-28).

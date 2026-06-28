@@ -1,4 +1,4 @@
-// src/services/podcastService.ts
+// src/services/textService.ts
 import { supabase } from '@/lib/supabase'
 
 /**
@@ -42,11 +42,18 @@ export interface PodcastAttribution {
   license_url: string
 }
 
+/**
+ * A row of the `texts` table — a Text with N faces (ADR 0023). `audio_path` is
+ * nullable: a row WITH audio is the Listen face (a "podcast"); the same row is the
+ * Read face (Lezen); any row is a Study face (harvest). The name `Podcast` is retained
+ * for the row type because the podcast surfaces (Listen page, `scripts/podcasts/`) are
+ * its primary consumers; semantically it is a Text.
+ */
 export interface Podcast {
   id: string
   title: string
   description: string | null
-  audio_path: string
+  audio_path: string | null
   transcript_indonesian: string | null
   transcript_english: string | null
   transcript_dutch: string | null
@@ -57,23 +64,32 @@ export interface Podcast {
   created_at: string
 }
 
-export const podcastService = {
-  async getPodcasts(): Promise<Podcast[]> {
+/** The single definition of "is a podcast" (has a Listen face) — used nowhere else. */
+const hasAudio = (t: Podcast): boolean => t.audio_path != null
+
+export const textService = {
+  /** All texts (the Read face is available to every text); the reader filters readability. */
+  async listTexts(): Promise<Podcast[]> {
     const { data, error } = await supabase
       .schema('indonesian')
-      .from('podcasts')
+      .from('texts')
       .select('*')
       .order('created_at', { ascending: false })
     if (error) throw error
     return data as Podcast[]
   },
 
-  async getPodcast(podcastId: string): Promise<Podcast> {
+  /** Audio-bearing texts only — the Listen face (Podcasts page). */
+  async listPodcasts(): Promise<Podcast[]> {
+    return (await this.listTexts()).filter(hasAudio)
+  },
+
+  async getText(textId: string): Promise<Podcast> {
     const { data, error } = await supabase
       .schema('indonesian')
-      .from('podcasts')
+      .from('texts')
       .select('*')
-      .eq('id', podcastId)
+      .eq('id', textId)
       .single()
     if (error) throw error
     return data as Podcast

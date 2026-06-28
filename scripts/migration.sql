@@ -119,11 +119,20 @@ CREATE TABLE IF NOT EXISTS indonesian.lesson_sections (
 );
 
 -- Podcasts (admin-managed, public read)
-CREATE TABLE IF NOT EXISTS indonesian.podcasts (
+-- ── Reading content: the `texts` entity ("Text with N faces", ADR 0023) ──────────
+-- A Text is a story + its ID/NL/EN-aligned transcript + level + attribution. Audio is
+-- OPTIONAL: a row WITH audio is the Listen face (Podcasts page); the same row is the
+-- Read face (Lezen); any row is a Study face (harvest). A "podcast" = a Text with audio.
+-- Idempotent rename of the former `podcasts` table (build-stage): ALTER … RENAME is a
+-- no-op once renamed; CREATE IF NOT EXISTS handles a fresh DB; the ALTER drops the old
+-- NOT NULL on audio_path. This preserves story-podcast data (vs DROP CASCADE, which
+-- would wipe it every `make migrate`) while addressing stale policy names below.
+ALTER TABLE IF EXISTS indonesian.podcasts RENAME TO texts;
+CREATE TABLE IF NOT EXISTS indonesian.texts (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   title text NOT NULL,
   description text,
-  audio_path text NOT NULL,
+  audio_path text,                 -- nullable: read-only texts have no Listen face
   transcript_indonesian text,
   transcript_english text,
   transcript_dutch text,
@@ -132,23 +141,22 @@ CREATE TABLE IF NOT EXISTS indonesian.podcasts (
   created_at timestamptz DEFAULT now(),
   UNIQUE(title)
 );
+ALTER TABLE indonesian.texts ALTER COLUMN audio_path DROP NOT NULL;
 
--- Story-podcast read-along: sentence-aligned transcript (ADR 0022). Idempotent
--- additive column; nullable (legacy story rows predate it). JSONB, not a child
--- table — segments are read whole with the row, never queried individually
--- (data-architect, ADR 0009 trigger does not fire).
-ALTER TABLE indonesian.podcasts ADD COLUMN IF NOT EXISTS transcript_segments jsonb;
-COMMENT ON COLUMN indonesian.podcasts.transcript_segments IS
+-- Read-along: sentence-aligned transcript (ADR 0022). Idempotent additive column;
+-- nullable. JSONB, not a child table — segments are read whole with the row, never
+-- queried individually (data-architect, ADR 0009 trigger does not fire).
+ALTER TABLE indonesian.texts ADD COLUMN IF NOT EXISTS transcript_segments jsonb;
+COMMENT ON COLUMN indonesian.texts.transcript_segments IS
   'Ordered sentence-aligned array [{idx,id,nl,en}]: idx=0-based ordinal, id=Indonesian sentence, nl=Dutch, en=English. The transcript_indonesian/dutch/english columns are these segments joined (denormalized for the 3-tab reader); HC asserts consistency.';
 
--- Story-podcast attribution: CC-BY/CC-BY-SA legal credit for openly-licensed
--- source episodes (Wikibooks, StoryWeaver, Let's Read…). Nullable: LLM-invented
--- episodes are original work and carry no attribution obligation. Read whole with
--- the row and displayed as one unit (ADR 0009 trigger does not fire). Inherits
--- podcasts_read/podcasts_admin_write + the authenticated SELECT grant.
-ALTER TABLE indonesian.podcasts ADD COLUMN IF NOT EXISTS attribution jsonb;
-COMMENT ON COLUMN indonesian.podcasts.attribution IS
-  'CC attribution for openly-licensed source episodes: {source_title, source_url, author, license, license_url}. NULL for LLM-original content.';
+-- Attribution: CC-BY/CC-BY-SA legal credit for openly-licensed source content.
+-- Nullable: LLM-invented texts are original work and carry no attribution obligation.
+-- Read whole with the row and displayed as one unit (ADR 0009 trigger does not fire).
+-- Inherits texts_read/texts_admin_write + the authenticated SELECT grant.
+ALTER TABLE indonesian.texts ADD COLUMN IF NOT EXISTS attribution jsonb;
+COMMENT ON COLUMN indonesian.texts.attribution IS
+  'CC attribution for openly-licensed source texts: {source_title, source_url, author, license, license_url}. NULL for LLM-original content.';
 
 -- Learning items (canonical teachable unit)
 CREATE TABLE IF NOT EXISTS indonesian.learning_items (
@@ -377,7 +385,7 @@ GRANT SELECT ON indonesian.profiles TO authenticated;
 GRANT INSERT, UPDATE ON indonesian.profiles TO authenticated;
 GRANT SELECT ON indonesian.lessons TO authenticated;
 GRANT SELECT ON indonesian.lesson_sections TO authenticated;
-GRANT SELECT ON indonesian.podcasts TO authenticated;
+GRANT SELECT ON indonesian.texts TO authenticated;
 GRANT SELECT ON indonesian.learning_items TO authenticated;
 GRANT SELECT ON indonesian.item_meanings TO authenticated;
 GRANT SELECT ON indonesian.item_contexts TO authenticated;
@@ -409,7 +417,7 @@ ALTER TABLE indonesian.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.user_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.lessons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.lesson_sections ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.podcasts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.texts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.learning_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.item_meanings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.item_contexts ENABLE ROW LEVEL SECURITY;
@@ -453,10 +461,14 @@ CREATE POLICY "lesson_sections_admin_write" ON indonesian.lesson_sections FOR AL
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
-DROP POLICY IF EXISTS "podcasts_read" ON indonesian.podcasts;
-CREATE POLICY "podcasts_read" ON indonesian.podcasts FOR SELECT TO authenticated USING (true);
-DROP POLICY IF EXISTS "podcasts_admin_write" ON indonesian.podcasts;
-CREATE POLICY "podcasts_admin_write" ON indonesian.podcasts FOR ALL TO authenticated
+-- Drop BOTH the old (podcasts_*) names — carried over on the renamed table — and the
+-- new names, then recreate, so the rename leaves no stale policy (data-architect m1).
+DROP POLICY IF EXISTS "podcasts_read" ON indonesian.texts;
+DROP POLICY IF EXISTS "podcasts_admin_write" ON indonesian.texts;
+DROP POLICY IF EXISTS "texts_read" ON indonesian.texts;
+CREATE POLICY "texts_read" ON indonesian.texts FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "texts_admin_write" ON indonesian.texts;
+CREATE POLICY "texts_admin_write" ON indonesian.texts FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 

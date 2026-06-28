@@ -12,7 +12,7 @@
 // (Needleman–Wunsch) alignment stays correct at those seams; words STT dropped
 // are interpolated into the gap between their timed neighbours.
 
-import type { TranscriptSegment, TimedWord } from '@/services/podcastService'
+import type { TranscriptSegment, TimedWord } from '@/services/textService'
 
 /** A recognised word with its audio timing (seconds), in audio order. */
 export interface SttWord {

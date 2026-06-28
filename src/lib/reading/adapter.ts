@@ -2,7 +2,7 @@
  * Data access for the Lezen reader — the only I/O in `lib/reading/`. Wraps the
  * `get_text_coverage` RPC (per-learner known tokens) and the `learning_items` gloss
  * fetch. Reads LIVE state only (never staging snapshots — the trap from the design
- * grill). `podcastService` remains the source for the texts themselves.
+ * grill). `textService` remains the source for the texts themselves.
  */
 import { supabase } from '@/lib/supabase'
 import { chunkedIn } from '@/lib/chunkedQuery'

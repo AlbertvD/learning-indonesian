@@ -26,7 +26,7 @@ import { synthesizeEpisode, DEFAULT_STORY_VOICE } from './narrator'
 import { persistSeedRecord, seedEpisode } from './seed'
 import type { Level } from './pacing'
 import type { PodcastData } from '../data/podcasts'
-import type { PodcastAttribution } from '@/services/podcastService'
+import type { PodcastAttribution } from '@/services/textService'
 
 /** Count words timed across a record's segments (for log output). */
 function countTimedWords(record: PodcastData): number {

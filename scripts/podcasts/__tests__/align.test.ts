@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { alignWordTimings, assertValidTimings } from '../align'
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 
 // Minimal aligned segments (only `id` matters for alignment; nl/en pass through).
 function seg(idx: number, id: string): TranscriptSegment {

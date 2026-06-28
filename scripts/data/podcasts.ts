@@ -1,4 +1,4 @@
-import type { TranscriptSegment, PodcastAttribution } from '@/services/podcastService'
+import type { TranscriptSegment, PodcastAttribution } from '@/services/textService'
 
 export interface PodcastData {
   title: string

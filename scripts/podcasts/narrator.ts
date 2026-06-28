@@ -9,7 +9,7 @@
 // This is the Chirp3-HD (Google Cloud TTS) bake-off arm. The Gemini 2.5 TTS arm
 // + the engine adapter land in slice 3 (#295).
 
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 import { buildSSML, type SpeakableLine } from '../lib/ssml-builder'
 import { synthesizeSsml } from '../lib/tts-client'
 import { levelToPacing, type Level } from './pacing'

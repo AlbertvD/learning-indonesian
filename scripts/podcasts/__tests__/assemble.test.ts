@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { assembleEpisode, retimeRecord } from '../assemble'
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 import type { PodcastData } from '../../data/podcasts'
 
 const segments: TranscriptSegment[] = [

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { buildNarrationSsml } from '../narrator'
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 
 const segments: TranscriptSegment[] = [
   { idx: 0, id: 'Ibu pergi ke pasar.', nl: 'Moeder gaat naar de markt.', en: 'Mother goes to the market.' },

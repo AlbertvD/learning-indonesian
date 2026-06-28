@@ -10,7 +10,7 @@ import {
   PageHeader,
   LoadingState,
 } from '@/components/page/primitives'
-import { podcastService } from '@/services/podcastService'
+import { textService } from '@/services/textService'
 import { loadReader, type LoadedReader } from '@/lib/reading'
 import { GlossableText } from '@/components/reading'
 import { logError } from '@/lib/logger'
@@ -31,7 +31,7 @@ export function LezenReader() {
     async function fetchData() {
       if (!podcastId) return
       try {
-        const podcast = await podcastService.getPodcast(podcastId)
+        const podcast = await textService.getText(podcastId)
         const loaded = await loadReader(podcast)
         if (!cancelled) {
           setTitle(podcast.title)

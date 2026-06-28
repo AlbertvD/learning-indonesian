@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { analyzeTimings } from '../check-timings'
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 
 function seg(idx: number, words: { word: string; start: number; end: number }[]): TranscriptSegment {
   return { idx, id: words.map((w) => w.word).join(' '), nl: '', en: '', words }

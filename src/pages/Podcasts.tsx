@@ -11,7 +11,7 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { IconHeadphones } from '@tabler/icons-react'
-import { podcastService, type Podcast } from '@/services/podcastService'
+import { textService, type Podcast } from '@/services/textService'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
 
@@ -30,7 +30,7 @@ export function Podcasts() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await podcastService.getPodcasts()
+        const data = await textService.listPodcasts()
         setPodcasts(data)
       } catch (err) {
         logError({ page: 'podcasts', action: 'fetchData', error: err })

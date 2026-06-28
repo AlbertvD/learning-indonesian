@@ -7,7 +7,7 @@
 // transcript_indonesian == the joined segment ids), so the join delimiter is a
 // single shared constant used by both this writer and that check.
 
-import type { TranscriptSegment, PodcastAttribution } from '@/services/podcastService'
+import type { TranscriptSegment, PodcastAttribution } from '@/services/textService'
 import type { PodcastData } from '../data/podcasts'
 import type { Level } from './pacing'
 import { alignWordTimings, assertValidTimings, type SttWord } from './align'

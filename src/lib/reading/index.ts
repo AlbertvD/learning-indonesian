@@ -1,11 +1,11 @@
 /**
  * `lib/reading/` — the Lezen (Read) reader domain (PRD #299).
  *
- * Reuses `podcastService` for the texts; owns the ReadableText view-model, the
+ * Reuses `textService` for the texts; owns the ReadableText view-model, the
  * tap-to-gloss cascade, and per-learner coverage ordering. Does NOT import
  * `session-builder` in Phase 1 (that is the Phase-2 harvest edge).
  */
-import type { Podcast } from '@/services/podcastService'
+import type { Podcast } from '@/services/textService'
 import { fetchCoverageKnownTokens, fetchItemGlosses } from './adapter'
 import { affixCandidates } from './affixStrip'
 import { computeCoverage, orderByCoverage, type RankedText } from './coverage'
