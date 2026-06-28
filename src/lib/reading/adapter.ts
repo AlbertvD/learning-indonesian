@@ -54,24 +54,33 @@ export async function fetchItemMorphology(
   return map
 }
 
+export interface FamilyMember {
+  form: string
+  affix: string
+}
+
 /**
- * The word family for each given root: every surface form that decomposes to it
- * (ADR 0024 `family` = join over shared root), plus the root itself.
+ * The word family for each given root: every derived form that decomposes to it, WITH
+ * its affix (ADR 0024 `family` = join over shared root), so the reader can show each
+ * member's meaning (its affix function), not just the form. The root itself is added by
+ * the gloss builder; this returns the derived members only.
  */
 export async function fetchMorphologyFamilies(
   roots: string[],
-): Promise<Map<string, string[]>> {
-  const map = new Map<string, string[]>()
+): Promise<Map<string, FamilyMember[]>> {
+  const map = new Map<string, FamilyMember[]>()
   if (roots.length === 0) return map
-  const rows = await chunkedIn<{ normalized_text: string; root: string }>(
+  const rows = await chunkedIn<{ normalized_text: string; root: string; affix: string }>(
     'item_morphology',
     'root',
     [...new Set(roots)],
-    (b) => b.select('normalized_text, root'),
+    (b) => b.select('normalized_text, root, affix'),
   )
   for (const row of rows) {
-    const fam = map.get(row.root) ?? [row.root]
-    if (!fam.includes(row.normalized_text)) fam.push(row.normalized_text)
+    const fam = map.get(row.root) ?? []
+    if (!fam.some((m) => m.form === row.normalized_text)) {
+      fam.push({ form: row.normalized_text, affix: row.affix })
+    }
     map.set(row.root, fam)
   }
   return map
