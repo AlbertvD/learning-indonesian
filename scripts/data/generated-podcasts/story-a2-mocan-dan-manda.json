@@ -12,199 +12,1550 @@
       "idx": 0,
       "id": "Di tepi hutan, hiduplah dua sahabat baik: harimau bernama Mocan dan panda bernama Manda.",
       "nl": "Aan de rand van het bos leefden twee goede vrienden: een tijger genaamd Mocan en een panda genaamd Manda.",
-      "en": "On the edge of the forest lived two good friends: a tiger named Mocan and a panda named Manda."
+      "en": "On the edge of the forest lived two good friends: a tiger named Mocan and a panda named Manda.",
+      "words": [
+        {
+          "word": "Di",
+          "start": 0,
+          "end": 0.6
+        },
+        {
+          "word": "tepi",
+          "start": 0.6,
+          "end": 0.9
+        },
+        {
+          "word": "hutan,",
+          "start": 0.9,
+          "end": 0.9500000000000001
+        },
+        {
+          "word": "hiduplah",
+          "start": 0.9,
+          "end": 1.9
+        },
+        {
+          "word": "dua",
+          "start": 1.9,
+          "end": 2.4
+        },
+        {
+          "word": "sahabat",
+          "start": 2.4,
+          "end": 3
+        },
+        {
+          "word": "baik:",
+          "start": 3,
+          "end": 3.3
+        },
+        {
+          "word": "harimau",
+          "start": 3.3,
+          "end": 3.3499999999999996
+        },
+        {
+          "word": "bernama",
+          "start": 3.3,
+          "end": 3.3499999999999996
+        },
+        {
+          "word": "Mocan",
+          "start": 3.3,
+          "end": 3.3499999999999996
+        },
+        {
+          "word": "dan",
+          "start": 3.3,
+          "end": 5.7
+        },
+        {
+          "word": "panda",
+          "start": 5.7,
+          "end": 5.75
+        },
+        {
+          "word": "bernama",
+          "start": 5.7,
+          "end": 5.75
+        },
+        {
+          "word": "Manda.",
+          "start": 5.7,
+          "end": 5.75
+        }
+      ]
     },
     {
       "idx": 1,
       "id": "Suatu hari, Mocan mengajak Manda menanam pohon pisang.",
       "nl": "Op een dag nodigde Mocan Manda uit om een bananenboom te planten.",
-      "en": "One day, Mocan invited Manda to plant a banana tree."
+      "en": "One day, Mocan invited Manda to plant a banana tree.",
+      "words": [
+        {
+          "word": "Suatu",
+          "start": 5.7,
+          "end": 5.75
+        },
+        {
+          "word": "hari,",
+          "start": 5.7,
+          "end": 5.75
+        },
+        {
+          "word": "Mocan",
+          "start": 5.7,
+          "end": 5.75
+        },
+        {
+          "word": "mengajak",
+          "start": 5.7,
+          "end": 10.8
+        },
+        {
+          "word": "Manda",
+          "start": 10.8,
+          "end": 11.2
+        },
+        {
+          "word": "menanam",
+          "start": 11.2,
+          "end": 11.7
+        },
+        {
+          "word": "pohon",
+          "start": 11.7,
+          "end": 11.75
+        },
+        {
+          "word": "pisang.",
+          "start": 11.7,
+          "end": 11.75
+        }
+      ]
     },
     {
       "idx": 2,
       "id": "Mocan bilang, \"Manda, ayo kita tanam pohon pisang!\"",
       "nl": "Mocan zei: \"Manda, laten we een bananenboom planten!\"",
-      "en": "Mocan said, \"Manda, let's plant a banana tree!\""
+      "en": "Mocan said, \"Manda, let's plant a banana tree!\"",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 11.7,
+          "end": 11.75
+        },
+        {
+          "word": "bilang,",
+          "start": 11.7,
+          "end": 11.75
+        },
+        {
+          "word": "\"Manda,",
+          "start": 11.7,
+          "end": 11.75
+        },
+        {
+          "word": "ayo",
+          "start": 11.7,
+          "end": 11.75
+        },
+        {
+          "word": "kita",
+          "start": 11.7,
+          "end": 11.75
+        },
+        {
+          "word": "tanam",
+          "start": 11.7,
+          "end": 11.75
+        },
+        {
+          "word": "pohon",
+          "start": 11.7,
+          "end": 12
+        },
+        {
+          "word": "pisang!\"",
+          "start": 12,
+          "end": 12.3
+        }
+      ]
     },
     {
       "idx": 3,
       "id": "Manda menjawab, \"Bagus! Kamu di kiri, aku di kanan.\"",
       "nl": "Manda antwoordde: \"Geweldig! Jij links, ik rechts.\"",
-      "en": "Manda replied, \"Great! You on the left, I on the right.\""
+      "en": "Manda replied, \"Great! You on the left, I on the right.\"",
+      "words": [
+        {
+          "word": "Manda",
+          "start": 12.3,
+          "end": 12.350000000000001
+        },
+        {
+          "word": "menjawab,",
+          "start": 12.3,
+          "end": 12.350000000000001
+        },
+        {
+          "word": "\"Bagus!",
+          "start": 12.3,
+          "end": 12.350000000000001
+        },
+        {
+          "word": "Kamu",
+          "start": 12.3,
+          "end": 12.350000000000001
+        },
+        {
+          "word": "di",
+          "start": 12.3,
+          "end": 22.1
+        },
+        {
+          "word": "kiri,",
+          "start": 22.1,
+          "end": 22.6
+        },
+        {
+          "word": "aku",
+          "start": 22.6,
+          "end": 23.2
+        },
+        {
+          "word": "di",
+          "start": 23.2,
+          "end": 23.3
+        },
+        {
+          "word": "kanan.\"",
+          "start": 23.3,
+          "end": 23.8
+        }
+      ]
     },
     {
       "idx": 4,
       "id": "Setiap hari, Manda merawat pohon pisangnya.",
       "nl": "Elke dag verzorgde Manda haar bananenboom.",
-      "en": "Every day, Manda took care of her banana tree."
+      "en": "Every day, Manda took care of her banana tree.",
+      "words": [
+        {
+          "word": "Setiap",
+          "start": 23.8,
+          "end": 25.9
+        },
+        {
+          "word": "hari,",
+          "start": 25.9,
+          "end": 26.2
+        },
+        {
+          "word": "Manda",
+          "start": 26.2,
+          "end": 27
+        },
+        {
+          "word": "merawat",
+          "start": 27,
+          "end": 27.5
+        },
+        {
+          "word": "pohon",
+          "start": 27.5,
+          "end": 27.7
+        },
+        {
+          "word": "pisangnya.",
+          "start": 27.7,
+          "end": 27.9
+        }
+      ]
     },
     {
       "idx": 5,
       "id": "Dia menyiram dan menjaga pohonnya baik-baik.",
       "nl": "Ze gaf water en zorgde goed voor haar boom.",
-      "en": "She watered and took good care of her tree."
+      "en": "She watered and took good care of her tree.",
+      "words": [
+        {
+          "word": "Dia",
+          "start": 27.9,
+          "end": 30.5
+        },
+        {
+          "word": "menyiram",
+          "start": 30.5,
+          "end": 30.8
+        },
+        {
+          "word": "dan",
+          "start": 30.8,
+          "end": 31.5
+        },
+        {
+          "word": "menjaga",
+          "start": 31.5,
+          "end": 32
+        },
+        {
+          "word": "pohonnya",
+          "start": 32,
+          "end": 32.4
+        },
+        {
+          "word": "baik-baik.",
+          "start": 32.4,
+          "end": 33.2
+        }
+      ]
     },
     {
       "idx": 6,
       "id": "Manda bernyanyi dengan riang, \"Tumbuhlah, tumbuhlah pohon pisangku!\"",
       "nl": "Manda zong vrolijk: \"Groei, groei, mijn bananenboom!\"",
-      "en": "Manda sang cheerfully, \"Grow, grow, my banana tree!\""
+      "en": "Manda sang cheerfully, \"Grow, grow, my banana tree!\"",
+      "words": [
+        {
+          "word": "Manda",
+          "start": 33.2,
+          "end": 34.4
+        },
+        {
+          "word": "bernyanyi",
+          "start": 34.4,
+          "end": 34.8
+        },
+        {
+          "word": "dengan",
+          "start": 34.8,
+          "end": 35.2
+        },
+        {
+          "word": "riang,",
+          "start": 35.2,
+          "end": 35.7
+        },
+        {
+          "word": "\"Tumbuhlah,",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "tumbuhlah",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "pohon",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "pisangku!\"",
+          "start": 35.7,
+          "end": 35.75
+        }
+      ]
     },
     {
       "idx": 7,
       "id": "Mocan hanya melihat Manda dari jauh, sambil tiduran.",
       "nl": "Mocan keek alleen van een afstand naar Manda, terwijl hij lag te luieren.",
-      "en": "Mocan only watched Manda from afar, while lying down."
+      "en": "Mocan only watched Manda from afar, while lying down.",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "hanya",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "melihat",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "Manda",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "dari",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "jauh,",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "sambil",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "tiduran.",
+          "start": 35.7,
+          "end": 35.75
+        }
+      ]
     },
     {
       "idx": 8,
       "id": "Dia tidak merawat pohonnya sendiri.",
       "nl": "Hij verzorgde zijn eigen boom niet.",
-      "en": "He didn't take care of his own tree."
+      "en": "He didn't take care of his own tree.",
+      "words": [
+        {
+          "word": "Dia",
+          "start": 35.7,
+          "end": 35.75
+        },
+        {
+          "word": "tidak",
+          "start": 35.7,
+          "end": 45.4
+        },
+        {
+          "word": "merawat",
+          "start": 45.4,
+          "end": 45.8
+        },
+        {
+          "word": "pohonnya",
+          "start": 45.8,
+          "end": 45.849999999999994
+        },
+        {
+          "word": "sendiri.",
+          "start": 45.8,
+          "end": 45.849999999999994
+        }
+      ]
     },
     {
       "idx": 9,
       "id": "Manda menyapa Mocan, \"Bagaimana pohon pisangmu, Mocan?\"",
       "nl": "Manda groette Mocan: \"Hoe gaat het met jouw bananenboom, Mocan?\"",
-      "en": "Manda greeted Mocan, \"How is your banana tree, Mocan?\""
+      "en": "Manda greeted Mocan, \"How is your banana tree, Mocan?\"",
+      "words": [
+        {
+          "word": "Manda",
+          "start": 45.8,
+          "end": 48.1
+        },
+        {
+          "word": "menyapa",
+          "start": 48.1,
+          "end": 48.6
+        },
+        {
+          "word": "Mocan,",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "\"Bagaimana",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "pohon",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "pisangmu,",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "Mocan?\"",
+          "start": 48.6,
+          "end": 48.65
+        }
+      ]
     },
     {
       "idx": 10,
       "id": "Mocan menjawab, \"Pohonku belum ada buah, aku khawatir.\"",
       "nl": "Mocan antwoordde: \"Mijn boom heeft nog geen vruchten, ik maak me zorgen.\"",
-      "en": "Mocan replied, \"My tree doesn't have any fruit yet, I'm worried.\""
+      "en": "Mocan replied, \"My tree doesn't have any fruit yet, I'm worried.\"",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "menjawab,",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "\"Pohonku",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "belum",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "ada",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "buah,",
+          "start": 48.6,
+          "end": 48.65
+        },
+        {
+          "word": "aku",
+          "start": 48.6,
+          "end": 49.2
+        },
+        {
+          "word": "khawatir.\"",
+          "start": 49.2,
+          "end": 55.9
+        }
+      ]
     },
     {
       "idx": 11,
       "id": "Bulan demi bulan berlalu.",
       "nl": "Maand na maand verstreek.",
-      "en": "Month after month passed."
+      "en": "Month after month passed.",
+      "words": [
+        {
+          "word": "Bulan",
+          "start": 55.9,
+          "end": 58.1
+        },
+        {
+          "word": "demi",
+          "start": 58.1,
+          "end": 58.5
+        },
+        {
+          "word": "bulan",
+          "start": 58.5,
+          "end": 58.6
+        },
+        {
+          "word": "berlalu.",
+          "start": 58.6,
+          "end": 59.2
+        }
+      ]
     },
     {
       "idx": 12,
       "id": "Pohon pisang Manda berbuah lebat dan besar.",
       "nl": "Manda's bananenboom droeg veel en grote vruchten.",
-      "en": "Manda's banana tree bore abundant and large fruit."
+      "en": "Manda's banana tree bore abundant and large fruit.",
+      "words": [
+        {
+          "word": "Pohon",
+          "start": 59.9,
+          "end": 61.5
+        },
+        {
+          "word": "pisang",
+          "start": 61.5,
+          "end": 61.7
+        },
+        {
+          "word": "Manda",
+          "start": 61.7,
+          "end": 61.75
+        },
+        {
+          "word": "berbuah",
+          "start": 61.7,
+          "end": 62.5
+        },
+        {
+          "word": "lebat",
+          "start": 62.5,
+          "end": 62.9
+        },
+        {
+          "word": "dan",
+          "start": 62.9,
+          "end": 63.2
+        },
+        {
+          "word": "besar.",
+          "start": 63.2,
+          "end": 63.5
+        }
+      ]
     },
     {
       "idx": 13,
       "id": "Tapi, pohon pisang Mocan tumbuh sangat besar, namun tidak ada buah sama sekali.",
       "nl": "Maar de bananenboom van Mocan groeide erg groot, maar had helemaal geen vruchten.",
-      "en": "But Mocan's banana tree grew very large, yet had no fruit at all."
+      "en": "But Mocan's banana tree grew very large, yet had no fruit at all.",
+      "words": [
+        {
+          "word": "Tapi,",
+          "start": 63.5,
+          "end": 65.5
+        },
+        {
+          "word": "pohon",
+          "start": 65.5,
+          "end": 66.4
+        },
+        {
+          "word": "pisang",
+          "start": 66.4,
+          "end": 66.45
+        },
+        {
+          "word": "Mocan",
+          "start": 66.4,
+          "end": 66.7
+        },
+        {
+          "word": "tumbuh",
+          "start": 66.7,
+          "end": 67.5
+        },
+        {
+          "word": "sangat",
+          "start": 67.5,
+          "end": 67.7
+        },
+        {
+          "word": "besar,",
+          "start": 67.7,
+          "end": 68.2
+        },
+        {
+          "word": "namun",
+          "start": 68.2,
+          "end": 68.6
+        },
+        {
+          "word": "tidak",
+          "start": 68.6,
+          "end": 69.1
+        },
+        {
+          "word": "ada",
+          "start": 69.1,
+          "end": 69.4
+        },
+        {
+          "word": "buah",
+          "start": 69.4,
+          "end": 69.9
+        },
+        {
+          "word": "sama",
+          "start": 69.9,
+          "end": 70.2
+        },
+        {
+          "word": "sekali.",
+          "start": 70.2,
+          "end": 70.6
+        }
+      ]
     },
     {
       "idx": 14,
       "id": "Saatnya panen pisang Manda. Dia meminta bantuan Mocan.",
       "nl": "Het was tijd om Manda's bananen te oogsten. Ze vroeg Mocan om hulp.",
-      "en": "It was time to harvest Manda's bananas. She asked Mocan for help."
+      "en": "It was time to harvest Manda's bananas. She asked Mocan for help.",
+      "words": [
+        {
+          "word": "Saatnya",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "panen",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "pisang",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "Manda.",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "Dia",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "meminta",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "bantuan",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "Mocan.",
+          "start": 70.6,
+          "end": 70.64999999999999
+        }
+      ]
     },
     {
       "idx": 15,
       "id": "Manda bertanya, \"Maukah kamu bantu aku memetik pisang ini?\"",
       "nl": "Manda vroeg: \"Wil je me helpen deze bananen te plukken?\"",
-      "en": "Manda asked, \"Will you help me pick these bananas?\""
+      "en": "Manda asked, \"Will you help me pick these bananas?\"",
+      "words": [
+        {
+          "word": "Manda",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "bertanya,",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "\"Maukah",
+          "start": 70.6,
+          "end": 70.64999999999999
+        },
+        {
+          "word": "kamu",
+          "start": 70.6,
+          "end": 79.8
+        },
+        {
+          "word": "bantu",
+          "start": 79.8,
+          "end": 80.1
+        },
+        {
+          "word": "aku",
+          "start": 80.1,
+          "end": 80.3
+        },
+        {
+          "word": "memetik",
+          "start": 80.3,
+          "end": 80.7
+        },
+        {
+          "word": "pisang",
+          "start": 80.7,
+          "end": 80.9
+        },
+        {
+          "word": "ini?\"",
+          "start": 80.9,
+          "end": 81.5
+        }
+      ]
     },
     {
       "idx": 16,
       "id": "Mocan setuju, \"Oke, tapi semua pisang itu hanya untukku.\"",
       "nl": "Mocan stemde toe: \"Oké, maar alle bananen zijn alleen voor mij.\"",
-      "en": "Mocan agreed, \"Okay, but all those bananas are only for me.\""
+      "en": "Mocan agreed, \"Okay, but all those bananas are only for me.\"",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 81.5,
+          "end": 81.55
+        },
+        {
+          "word": "setuju,",
+          "start": 81.5,
+          "end": 81.55
+        },
+        {
+          "word": "\"Oke,",
+          "start": 81.5,
+          "end": 81.55
+        },
+        {
+          "word": "tapi",
+          "start": 81.5,
+          "end": 85
+        },
+        {
+          "word": "semua",
+          "start": 85,
+          "end": 85.3
+        },
+        {
+          "word": "pisang",
+          "start": 85.3,
+          "end": 85.7
+        },
+        {
+          "word": "itu",
+          "start": 85.7,
+          "end": 85.9
+        },
+        {
+          "word": "hanya",
+          "start": 85.9,
+          "end": 86.3
+        },
+        {
+          "word": "untukku.\"",
+          "start": 86.3,
+          "end": 86.7
+        }
+      ]
     },
     {
       "idx": 17,
       "id": "Manda marah, \"Dasar pelit! Aku tidak mau kamu bantu!\"",
       "nl": "Manda was boos: \"Jij gierigaard! Ik wil je hulp niet!\"",
-      "en": "Manda got angry, \"You stingy person! I don't want your help!\""
+      "en": "Manda got angry, \"You stingy person! I don't want your help!\"",
+      "words": [
+        {
+          "word": "Manda",
+          "start": 86.7,
+          "end": 88.4
+        },
+        {
+          "word": "marah,",
+          "start": 88.4,
+          "end": 88.9
+        },
+        {
+          "word": "\"Dasar",
+          "start": 88.9,
+          "end": 89.8
+        },
+        {
+          "word": "pelit!",
+          "start": 89.8,
+          "end": 90.1
+        },
+        {
+          "word": "Aku",
+          "start": 90.1,
+          "end": 90.5
+        },
+        {
+          "word": "tidak",
+          "start": 90.5,
+          "end": 90.9
+        },
+        {
+          "word": "mau",
+          "start": 90.9,
+          "end": 91
+        },
+        {
+          "word": "kamu",
+          "start": 91,
+          "end": 91.2
+        },
+        {
+          "word": "bantu!\"",
+          "start": 91.2,
+          "end": 91.7
+        }
+      ]
     },
     {
       "idx": 18,
       "id": "Mocan tetap memanjat pohon pisang Manda.",
       "nl": "Mocan klom toch in Manda's bananenboom.",
-      "en": "Mocan still climbed Manda's banana tree."
+      "en": "Mocan still climbed Manda's banana tree.",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 91.7,
+          "end": 94
+        },
+        {
+          "word": "tetap",
+          "start": 94,
+          "end": 94.3
+        },
+        {
+          "word": "memanjat",
+          "start": 94.3,
+          "end": 94.8
+        },
+        {
+          "word": "pohon",
+          "start": 94.8,
+          "end": 95
+        },
+        {
+          "word": "pisang",
+          "start": 95,
+          "end": 95.5
+        },
+        {
+          "word": "Manda.",
+          "start": 95.5,
+          "end": 95.55
+        }
+      ]
     },
     {
       "idx": 19,
       "id": "Bau pisang yang harum membuat Mocan lapar.",
       "nl": "De heerlijke geur van de bananen maakte Mocan hongerig.",
-      "en": "The fragrant smell of the bananas made Mocan hungry."
+      "en": "The fragrant smell of the bananas made Mocan hungry.",
+      "words": [
+        {
+          "word": "Bau",
+          "start": 95.5,
+          "end": 95.9
+        },
+        {
+          "word": "pisang",
+          "start": 95.9,
+          "end": 98.2
+        },
+        {
+          "word": "yang",
+          "start": 98.2,
+          "end": 98.5
+        },
+        {
+          "word": "harum",
+          "start": 98.5,
+          "end": 98.7
+        },
+        {
+          "word": "membuat",
+          "start": 98.7,
+          "end": 99.1
+        },
+        {
+          "word": "Mocan",
+          "start": 99.1,
+          "end": 99.5
+        },
+        {
+          "word": "lapar.",
+          "start": 99.5,
+          "end": 99.8
+        }
+      ]
     },
     {
       "idx": 20,
       "id": "Dia memakan semua pisang di pohon itu.",
       "nl": "Hij at alle bananen van die boom op.",
-      "en": "He ate all the bananas on that tree."
+      "en": "He ate all the bananas on that tree.",
+      "words": [
+        {
+          "word": "Dia",
+          "start": 99.8,
+          "end": 102.1
+        },
+        {
+          "word": "memakan",
+          "start": 102.1,
+          "end": 102.6
+        },
+        {
+          "word": "semua",
+          "start": 102.6,
+          "end": 103
+        },
+        {
+          "word": "pisang",
+          "start": 103,
+          "end": 103.4
+        },
+        {
+          "word": "di",
+          "start": 103.4,
+          "end": 103.5
+        },
+        {
+          "word": "pohon",
+          "start": 103.5,
+          "end": 103.7
+        },
+        {
+          "word": "itu.",
+          "start": 103.7,
+          "end": 104.1
+        }
+      ]
     },
     {
       "idx": 21,
       "id": "Manda menunggu di bawah. Dia berteriak, \"Mocan, mana pisang bagianku?\"",
       "nl": "Manda wachtte beneden. Ze riep: \"Mocan, waar is mijn deel van de bananen?\"",
-      "en": "Manda waited below. She shouted, \"Mocan, where is my share of the bananas?\""
+      "en": "Manda waited below. She shouted, \"Mocan, where is my share of the bananas?\"",
+      "words": [
+        {
+          "word": "Manda",
+          "start": 104.1,
+          "end": 105.8
+        },
+        {
+          "word": "menunggu",
+          "start": 105.8,
+          "end": 106.4
+        },
+        {
+          "word": "di",
+          "start": 106.4,
+          "end": 106.6
+        },
+        {
+          "word": "bawah.",
+          "start": 106.6,
+          "end": 107
+        },
+        {
+          "word": "Dia",
+          "start": 107,
+          "end": 108.2
+        },
+        {
+          "word": "berteriak,",
+          "start": 108.2,
+          "end": 108.9
+        },
+        {
+          "word": "\"Mocan,",
+          "start": 108.9,
+          "end": 108.95
+        },
+        {
+          "word": "mana",
+          "start": 108.9,
+          "end": 109.7
+        },
+        {
+          "word": "pisang",
+          "start": 109.7,
+          "end": 110.9
+        },
+        {
+          "word": "bagianku?\"",
+          "start": 111.3,
+          "end": 111.5
+        }
+      ]
     },
     {
       "idx": 22,
       "id": "Mocan menjawab, \"Sudah aku makan semuanya!\"",
       "nl": "Mocan antwoordde: \"Ik heb ze allemaal opgegeten!\"",
-      "en": "Mocan replied, \"I've eaten them all!\""
+      "en": "Mocan replied, \"I've eaten them all!\"",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 113.3,
+          "end": 114.1
+        },
+        {
+          "word": "menjawab,",
+          "start": 114.1,
+          "end": 114.8
+        },
+        {
+          "word": "\"Sudah",
+          "start": 114.8,
+          "end": 115.5
+        },
+        {
+          "word": "aku",
+          "start": 115.5,
+          "end": 115.9
+        },
+        {
+          "word": "makan",
+          "start": 115.9,
+          "end": 116.1
+        },
+        {
+          "word": "semuanya!\"",
+          "start": 116.1,
+          "end": 116.8
+        }
+      ]
     },
     {
       "idx": 23,
       "id": "Manda mulai menangis, \"Mocan, ini pohon pisangku!\"",
       "nl": "Manda begon te huilen: \"Mocan, dit is mijn bananenboom!\"",
-      "en": "Manda started crying, \"Mocan, this is my banana tree!\""
+      "en": "Manda started crying, \"Mocan, this is my banana tree!\"",
+      "words": [
+        {
+          "word": "Manda",
+          "start": 116.8,
+          "end": 116.85
+        },
+        {
+          "word": "mulai",
+          "start": 116.8,
+          "end": 119.5
+        },
+        {
+          "word": "menangis,",
+          "start": 119.5,
+          "end": 120.1
+        },
+        {
+          "word": "\"Mocan,",
+          "start": 120.1,
+          "end": 120.14999999999999
+        },
+        {
+          "word": "ini",
+          "start": 120.1,
+          "end": 121.5
+        },
+        {
+          "word": "pohon",
+          "start": 121.5,
+          "end": 121.9
+        },
+        {
+          "word": "pisangku!\"",
+          "start": 121.9,
+          "end": 121.95
+        }
+      ]
     },
     {
       "idx": 24,
       "id": "Mocan mengejek, \"Salah sendiri kenapa tidak bisa memanjat? Pohonnya pendek kok.\"",
       "nl": "Mocan spotte: \"Je eigen schuld dat je niet kunt klimmen? De boom is toch kort.\"",
-      "en": "Mocan scoffed, \"It's your own fault you can't climb? The tree is short anyway.\""
+      "en": "Mocan scoffed, \"It's your own fault you can't climb? The tree is short anyway.\"",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 121.9,
+          "end": 121.95
+        },
+        {
+          "word": "mengejek,",
+          "start": 121.9,
+          "end": 122
+        },
+        {
+          "word": "\"Salah",
+          "start": 122,
+          "end": 122.6
+        },
+        {
+          "word": "sendiri",
+          "start": 122.6,
+          "end": 126.7
+        },
+        {
+          "word": "kenapa",
+          "start": 126.7,
+          "end": 127.2
+        },
+        {
+          "word": "tidak",
+          "start": 127.2,
+          "end": 127.6
+        },
+        {
+          "word": "bisa",
+          "start": 127.6,
+          "end": 127.7
+        },
+        {
+          "word": "memanjat?",
+          "start": 127.7,
+          "end": 128.4
+        },
+        {
+          "word": "Pohonnya",
+          "start": 128.5,
+          "end": 129.7
+        },
+        {
+          "word": "pendek",
+          "start": 129.7,
+          "end": 130
+        },
+        {
+          "word": "kok.\"",
+          "start": 130,
+          "end": 130.5
+        }
+      ]
     },
     {
       "idx": 25,
       "id": "Manda sangat sedih dan marah.",
       "nl": "Manda was erg verdrietig en boos.",
-      "en": "Manda was very sad and angry."
+      "en": "Manda was very sad and angry.",
+      "words": [
+        {
+          "word": "Manda",
+          "start": 130.5,
+          "end": 131.9
+        },
+        {
+          "word": "sangat",
+          "start": 131.9,
+          "end": 132.4
+        },
+        {
+          "word": "sedih",
+          "start": 132.4,
+          "end": 132.8
+        },
+        {
+          "word": "dan",
+          "start": 132.8,
+          "end": 132.9
+        },
+        {
+          "word": "marah.",
+          "start": 132.9,
+          "end": 133.1
+        }
+      ]
     },
     {
       "idx": 26,
       "id": "Dia menendang pohon pisang itu.",
       "nl": "Ze schopte tegen de bananenboom.",
-      "en": "She kicked the banana tree."
+      "en": "She kicked the banana tree.",
+      "words": [
+        {
+          "word": "Dia",
+          "start": 133.1,
+          "end": 134.8
+        },
+        {
+          "word": "menendang",
+          "start": 134.8,
+          "end": 135.4
+        },
+        {
+          "word": "pohon",
+          "start": 135.4,
+          "end": 136
+        },
+        {
+          "word": "pisang",
+          "start": 136,
+          "end": 136.5
+        },
+        {
+          "word": "itu.",
+          "start": 136.5,
+          "end": 136.6
+        }
+      ]
     },
     {
       "idx": 27,
       "id": "Tiba-tiba, \"Bruk!\" Pohon pisang itu jatuh.",
       "nl": "Plotseling, \"Krak!\" De bananenboom viel om.",
-      "en": "Suddenly, \"Thud!\" The banana tree fell down."
+      "en": "Suddenly, \"Thud!\" The banana tree fell down.",
+      "words": [
+        {
+          "word": "Tiba-tiba,",
+          "start": 136.6,
+          "end": 138.9
+        },
+        {
+          "word": "\"Bruk!\"",
+          "start": 138.9,
+          "end": 138.95000000000002
+        },
+        {
+          "word": "Pohon",
+          "start": 138.9,
+          "end": 140.9
+        },
+        {
+          "word": "pisang",
+          "start": 140.9,
+          "end": 141.4
+        },
+        {
+          "word": "itu",
+          "start": 141.4,
+          "end": 141.45000000000002
+        },
+        {
+          "word": "jatuh.",
+          "start": 141.4,
+          "end": 142.1
+        }
+      ]
     },
     {
       "idx": 28,
       "id": "Mocan juga jatuh dan tertimpa pohon. Dia mengerang kesakitan.",
       "nl": "Mocan viel ook en werd bedolven onder de boom. Hij kreunde van de pijn.",
-      "en": "Mocan also fell and was trapped under the tree. He groaned in pain."
+      "en": "Mocan also fell and was trapped under the tree. He groaned in pain.",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 142.1,
+          "end": 144
+        },
+        {
+          "word": "juga",
+          "start": 144,
+          "end": 144.4
+        },
+        {
+          "word": "jatuh",
+          "start": 144.4,
+          "end": 144.8
+        },
+        {
+          "word": "dan",
+          "start": 144.8,
+          "end": 145.1
+        },
+        {
+          "word": "tertimpa",
+          "start": 145.1,
+          "end": 145.6
+        },
+        {
+          "word": "pohon.",
+          "start": 145.6,
+          "end": 145.8
+        },
+        {
+          "word": "Dia",
+          "start": 145.8,
+          "end": 147.6
+        },
+        {
+          "word": "mengerang",
+          "start": 147.6,
+          "end": 148.1
+        },
+        {
+          "word": "kesakitan.",
+          "start": 148.1,
+          "end": 148.3
+        }
+      ]
     },
     {
       "idx": 29,
       "id": "Mocan bilang, \"Ampun Manda, tolong aku! Aku menyesal!\"",
       "nl": "Mocan zei: \"Genade Manda, help me! Ik heb spijt!\"",
-      "en": "Mocan said, \"Forgive me Manda, help me! I'm sorry!\""
+      "en": "Mocan said, \"Forgive me Manda, help me! I'm sorry!\"",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 148.3,
+          "end": 151.2
+        },
+        {
+          "word": "bilang,",
+          "start": 151.2,
+          "end": 151.6
+        },
+        {
+          "word": "\"Ampun",
+          "start": 151.6,
+          "end": 152.5
+        },
+        {
+          "word": "Manda,",
+          "start": 152.5,
+          "end": 152.8
+        },
+        {
+          "word": "tolong",
+          "start": 152.8,
+          "end": 152.85000000000002
+        },
+        {
+          "word": "aku!",
+          "start": 152.8,
+          "end": 154.1
+        },
+        {
+          "word": "Aku",
+          "start": 154.1,
+          "end": 154.8
+        },
+        {
+          "word": "menyesal!\"",
+          "start": 154.8,
+          "end": 155.4
+        }
+      ]
     },
     {
       "idx": 30,
       "id": "Tapi Manda hanya pergi begitu saja.",
       "nl": "Maar Manda ging gewoon weg.",
-      "en": "But Manda just left."
+      "en": "But Manda just left.",
+      "words": [
+        {
+          "word": "Tapi",
+          "start": 155.4,
+          "end": 156.7
+        },
+        {
+          "word": "Manda",
+          "start": 156.7,
+          "end": 157.3
+        },
+        {
+          "word": "hanya",
+          "start": 157.3,
+          "end": 157.7
+        },
+        {
+          "word": "pergi",
+          "start": 157.7,
+          "end": 157.9
+        },
+        {
+          "word": "begitu",
+          "start": 157.9,
+          "end": 158.4
+        },
+        {
+          "word": "saja.",
+          "start": 158.4,
+          "end": 158.5
+        }
+      ]
     },
     {
       "idx": 31,
       "id": "Mocan sangat menyesal. Dia telah kehilangan sahabat baiknya.",
       "nl": "Mocan had er veel spijt van. Hij had zijn goede vriend verloren.",
-      "en": "Mocan was very regretful. He had lost his good friend."
+      "en": "Mocan was very regretful. He had lost his good friend.",
+      "words": [
+        {
+          "word": "Mocan",
+          "start": 158.5,
+          "end": 160.6
+        },
+        {
+          "word": "sangat",
+          "start": 160.6,
+          "end": 160.9
+        },
+        {
+          "word": "menyesal.",
+          "start": 160.9,
+          "end": 160.95000000000002
+        },
+        {
+          "word": "Dia",
+          "start": 160.9,
+          "end": 162.1
+        },
+        {
+          "word": "telah",
+          "start": 162.1,
+          "end": 162.4
+        },
+        {
+          "word": "kehilangan",
+          "start": 162.4,
+          "end": 162.7
+        },
+        {
+          "word": "sahabat",
+          "start": 162.7,
+          "end": 163.7
+        },
+        {
+          "word": "baiknya.",
+          "start": 163.7,
+          "end": 164.1
+        }
+      ]
     },
     {
       "idx": 32,
       "id": "Pesan moralnya: kita harus saling membantu dan tidak boleh serakah.",
       "nl": "De moraal van het verhaal: we moeten elkaar helpen en niet hebzuchtig zijn.",
-      "en": "The moral of the story: we must help each other and not be greedy."
+      "en": "The moral of the story: we must help each other and not be greedy.",
+      "words": [
+        {
+          "word": "Pesan",
+          "start": 164.1,
+          "end": 164.15
+        },
+        {
+          "word": "moralnya:",
+          "start": 164.1,
+          "end": 164.15
+        },
+        {
+          "word": "kita",
+          "start": 164.1,
+          "end": 167.9
+        },
+        {
+          "word": "harus",
+          "start": 167.9,
+          "end": 168.3
+        },
+        {
+          "word": "saling",
+          "start": 168.3,
+          "end": 168.6
+        },
+        {
+          "word": "membantu",
+          "start": 168.6,
+          "end": 168.8
+        },
+        {
+          "word": "dan",
+          "start": 168.8,
+          "end": 169.6
+        },
+        {
+          "word": "tidak",
+          "start": 169.6,
+          "end": 169.9
+        },
+        {
+          "word": "boleh",
+          "start": 169.9,
+          "end": 170.1
+        },
+        {
+          "word": "serakah.",
+          "start": 170.1,
+          "end": 170.5
+        }
+      ]
     }
   ],
   "attribution": {

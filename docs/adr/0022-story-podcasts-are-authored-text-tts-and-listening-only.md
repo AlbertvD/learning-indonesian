@@ -42,6 +42,41 @@ target CEFR level). Decisions:
 - The pipeline does **not** scrape per-platform; the operator provides the source as a local text
   file (CC-BY platforms are JS apps / API-blocked).
 
+## Amendment (2026-06-28) — timed follow-along (rung C) via STT word-offsets
+
+This ADR originally **deferred** karaoke audio-sync, reasoning that "true timepoints aren't
+wired and would lock the engine to Chirp3-HD (Gemini TTS returns no timestamps)." A design grill
+plus an empirical probe against the live service account showed that reasoning was **doubly
+wrong**, and the deferral is now reversed for the **sentence-level** highlight:
+
+- **The TTS engine cannot supply timings at all on our voice.** Google Cloud TTS
+  `enableTimePointing: ['SSML_MARK']` is a **`v1beta1`-only** field (the `v1` endpoint we call
+  rejects it), and on **Chirp3-HD it returns `timepoints: []`** — the warm storyteller voice the
+  pipeline is built on emits *no* timepoints. (Wavenet returns real ones, but switching would cost
+  the voice.) So timings cannot come from the synthesizer, regardless of engine bake-off.
+- **Timings come from ASR, not TTS.** We synthesise on Chirp3-HD unchanged, then run the audio
+  through **Google Speech-to-Text `longrunningrecognize` with `enableWordTimeOffsets`** and align
+  the recognised words to the *known* script. Probed live: `longrunningrecognize` accepts **inline
+  base64** at our ~90s episode length (**no GCS bucket needed**) and returns clean per-word
+  `{word, startTime, endTime}` (recognition is near-perfect because it's pristine TTS audio of text
+  we authored). This **does not** lock or change the TTS engine — the bake-off question is moot for
+  timing, and is independently retired only because Chirp3-HD already won by ear.
+- **Schema.** Each `TranscriptSegment` gains `words: { word: string; start: number; end: number }[]`
+  (the universal ASR / read-along shape; JSON-in-DB because the reader renders a custom highlight,
+  not WebVTT `<track>` captions). Additive to the existing `transcript_segments` JSONB — **no
+  migration**. A sentence's start derives as `words[0].start`.
+- **Scope.** **Word-level following is the goal** (operator-stated): each word highlights as it is
+  spoken, driven by `<audio onTimeUpdate>` against the stored per-word `start`/`end`. Sentences are
+  the visual grouping and the click-to-seek target. (Word-level is tractable precisely *because* STT
+  supplies per-word offsets — the old "needs forced alignment" objection does not apply.) Re-timing
+  the already-live episodes needs **no re-synthesis** — STT runs over the existing bucket audio
+  (zero Gemini/TTS calls), via a `--retime` flag on `run.ts` beside the existing `--resume`.
+  needs **no re-synthesis** — STT runs over the existing bucket audio (zero Gemini/TTS calls), via a
+  `--retime` flag on `run.ts` beside the existing `--resume`.
+- **Prerequisite.** Speech-to-Text must be enabled (and billing attached) on the TTS Cloud project
+  `hassio-integration-5a907`; usage is within the free tier. The reader degrades gracefully when a
+  row lacks `words` (static segmented lines, then the legacy prose blob).
+
 ## Consequences
 
 - The codebase intentionally has **two podcast audio paths**: NotebookLM (grammar, per-lesson, `lessons.audio_path`) and authored-text→TTS (story, `podcasts` table). A future reader should not "unify" them — the read-along fidelity requirement is the reason.

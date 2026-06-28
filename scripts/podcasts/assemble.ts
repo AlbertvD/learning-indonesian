@@ -10,6 +10,7 @@
 import type { TranscriptSegment, PodcastAttribution } from '@/services/podcastService'
 import type { PodcastData } from '../data/podcasts'
 import type { Level } from './pacing'
+import { alignWordTimings, assertValidTimings, type SttWord } from './align'
 
 /** Delimiter joining segments into the denormalized full-text columns. */
 export const SEGMENT_JOIN = '\n\n'
@@ -49,6 +50,31 @@ export function transcriptDrift(row: {
   if (row.transcript_dutch !== joinSegments(segs, 'nl')) mismatches.push('dutch')
   if (row.transcript_english !== joinSegments(segs, 'en')) mismatches.push('english')
   return mismatches.length ? `transcript_${mismatches.join('/')} diverges from transcript_segments` : null
+}
+
+/**
+ * Re-time an already-generated episode: align its existing segments to a fresh
+ * STT word stream (run over the episode's existing audio), enrich each segment
+ * with per-word timings, and rebuild the record. Pure — no I/O, no re-synthesis;
+ * the `--retime` flow on `run.ts` supplies the STT words. The denormalized
+ * `transcript_*` columns are unchanged (timings don't alter sentence text), so
+ * the HC36 invariant still holds. Throws if there are no segments to time.
+ */
+export function retimeRecord(record: PodcastData, sttWords: SttWord[]): PodcastData {
+  if (!record.transcript_segments || record.transcript_segments.length === 0) {
+    throw new Error('cannot re-time: record has no transcript_segments')
+  }
+  const timed = alignWordTimings(record.transcript_segments, sttWords)
+  assertValidTimings(timed)
+  return assembleEpisode({
+    title: record.title,
+    description: record.description,
+    level: record.level as Level,
+    segments: timed,
+    audio_filename: record.audio_filename,
+    duration_seconds: record.duration_seconds,
+    attribution: record.attribution ?? null,
+  })
 }
 
 export function assembleEpisode(input: AssembleInput): PodcastData {

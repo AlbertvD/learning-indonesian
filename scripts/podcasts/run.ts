@@ -12,7 +12,9 @@
 // SUPABASE_SERVICE_KEY — all in .env.local / the gcloud config.
 
 import { readFileSync, existsSync } from 'node:fs'
-import { assembleEpisode } from './assemble'
+import { assembleEpisode, retimeRecord } from './assemble'
+import { alignWordTimings, assertValidTimings } from './align'
+import { transcribeWordOffsets } from './stt'
 import { authorStory, adaptStory, type StoryDraft } from './storyAuthor'
 import { translateSegments } from './translate'
 import { synthesizeEpisode, DEFAULT_STORY_VOICE } from './narrator'
@@ -20,6 +22,11 @@ import { persistSeedRecord, seedEpisode } from './seed'
 import type { Level } from './pacing'
 import type { PodcastData } from '../data/podcasts'
 import type { PodcastAttribution } from '@/services/podcastService'
+
+/** Count words timed across a record's segments (for log output). */
+function countTimedWords(record: PodcastData): number {
+  return (record.transcript_segments ?? []).reduce((n, s) => n + (s.words?.length ?? 0), 0)
+}
 
 const ATTR_FIELDS: (keyof PodcastAttribution)[] = ['source_title', 'source_url', 'author', 'license', 'license_url']
 
@@ -71,6 +78,25 @@ async function main() {
     return
   }
 
+  // Re-time: recover word-level timings for an already-generated episode by
+  // running STT over its EXISTING bucket/local audio, then re-seed. No re-author,
+  // no re-translate, no re-synthesis (zero Gemini/TTS) — the audio is unchanged;
+  // only the per-word timings (transcript_segments[].words) are added. (ADR 0022
+  // amendment — follow-along.) Used to back-fill the live episodes with timings.
+  const retimePath = arg('retime')
+  if (retimePath) {
+    const record = JSON.parse(readFileSync(retimePath, 'utf8')) as PodcastData
+    const mp3 = readFileSync(`content/podcasts/${record.audio_filename}`)
+    console.log(`[story-podcast] retime "${record.title}" → STT word offsets (${mp3.length} bytes)`)
+    const sttWords = await transcribeWordOffsets(mp3)
+    const timed = retimeRecord(record, sttWords)
+    const seedPath = persistSeedRecord(timed)
+    console.log(`  ${countTimedWords(timed)} words timed; record → ${seedPath}`)
+    await seedEpisode(timed, mp3)
+    console.log(`  ✓ re-timed + re-seeded "${timed.title}"`)
+    return
+  }
+
   const level = (arg('level') ?? 'A2') as Level
   const topic = arg('topic') ?? 'a small everyday moment in Indonesia'
   const sourcePath = arg('source')
@@ -96,7 +122,7 @@ async function main() {
 
   if (dryRun) {
     const step = adapt ? `adapt source (Gemini, → ${level}, credit ${attribution!.license})` : 'author (Gemini)'
-    console.log(`  would: ${step} → translate ID→NL/EN → narrate (Chirp3-HD SSML) → assemble → seed (bucket + podcasts row)`)
+    console.log(`  would: ${step} → translate ID→NL/EN → narrate (Chirp3-HD SSML) → STT word-timings (align to script) → assemble → seed (bucket + podcasts row)`)
     console.log('  no API calls or writes made.')
     return
   }
@@ -117,12 +143,20 @@ async function main() {
   console.log('  narrating…')
   const mp3 = await synthesizeEpisode(segments, level, voice)
 
+  // Recover per-word timings for follow-along: STT the synthesised audio and
+  // align the recognised words onto the known script (ADR 0022 amendment).
+  console.log('  transcribing for word timings…')
+  const sttWords = await transcribeWordOffsets(mp3)
+  const timedSegments = alignWordTimings(segments, sttWords)
+  assertValidTimings(timedSegments)
+  console.log(`  ${sttWords.length} words recognised → timings aligned to script`)
+
   const wordCount = segments.reduce((n, s) => n + s.id.split(/\s+/).length, 0)
   const record = assembleEpisode({
     title: draft.title,
     description: draft.description,
     level,
-    segments,
+    segments: timedSegments,
     audio_filename: `story-${level.toLowerCase()}-${slugify(draft.title)}.mp3`,
     duration_seconds: estimateDurationSeconds(wordCount, segments.length, level === 'A1' ? 0.85 : 1),
     attribution,

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { assembleEpisode } from '../assemble'
+import { assembleEpisode, retimeRecord } from '../assemble'
 import type { TranscriptSegment } from '@/services/podcastService'
+import type { PodcastData } from '../../data/podcasts'
 
 const segments: TranscriptSegment[] = [
   { idx: 0, id: 'Ibu pergi ke pasar.', nl: 'Moeder gaat naar de markt.', en: 'Mother goes to the market.' },
@@ -32,5 +33,54 @@ describe('assembleEpisode', () => {
     expect(record.level).toBe('A2')
     expect(record.audio_filename).toBe('story-a2-pasar.mp3')
     expect(record.duration_seconds).toBe(73)
+  })
+})
+
+describe('retimeRecord', () => {
+  const existing: PodcastData = {
+    title: 'Di Pasar',
+    description: 'd',
+    level: 'A2',
+    duration_seconds: 73,
+    audio_filename: 'story-a2-pasar.mp3',
+    transcript_indonesian: 'Ibu pergi.\n\nDia makan.',
+    transcript_dutch: 'Moeder gaat.\n\nZe eet.',
+    transcript_english: 'Mother goes.\n\nShe eats.',
+    transcript_segments: [
+      { idx: 0, id: 'Ibu pergi.', nl: 'Moeder gaat.', en: 'Mother goes.' },
+      { idx: 1, id: 'Dia makan.', nl: 'Ze eet.', en: 'She eats.' },
+    ],
+    attribution: null,
+  }
+  const stt = [
+    { word: 'ibu', start: 0.0, end: 0.4 },
+    { word: 'pergi', start: 0.4, end: 0.9 },
+    { word: 'dia', start: 1.5, end: 1.8 },
+    { word: 'makan', start: 1.8, end: 2.3 },
+  ]
+
+  it('enriches the segments with word timings', () => {
+    const out = retimeRecord(existing, stt)
+    expect(out.transcript_segments![0].words).toEqual([
+      { word: 'Ibu', start: 0.0, end: 0.4 },
+      { word: 'pergi.', start: 0.4, end: 0.9 },
+    ])
+    expect(out.transcript_segments![1].words).toEqual([
+      { word: 'Dia', start: 1.5, end: 1.8 },
+      { word: 'makan.', start: 1.8, end: 2.3 },
+    ])
+  })
+
+  it('leaves the denormalized full-text and metadata unchanged', () => {
+    const out = retimeRecord(existing, stt)
+    expect(out.transcript_indonesian).toBe(existing.transcript_indonesian)
+    expect(out.transcript_dutch).toBe(existing.transcript_dutch)
+    expect(out.title).toBe('Di Pasar')
+    expect(out.audio_filename).toBe('story-a2-pasar.mp3')
+    expect(out.duration_seconds).toBe(73)
+  })
+
+  it('throws when the record has no segments to re-time', () => {
+    expect(() => retimeRecord({ ...existing, transcript_segments: null }, stt)).toThrow(/segment/i)
   })
 })
