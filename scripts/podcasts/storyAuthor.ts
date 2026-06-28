@@ -23,7 +23,7 @@ export interface StoryDraft {
   sentences: string[]
 }
 
-const LENGTH_BY_LEVEL: Record<Level, string> = {
+export const LENGTH_BY_LEVEL: Record<Level, string> = {
   A1: '8–12 short, simple sentences',
   A2: '12–18 sentences',
   B1: '18–28 sentences',
@@ -66,6 +66,7 @@ export function buildAdaptPrompt(input: AdaptInput): string {
     `Adapt and simplify the Indonesian story below into a warm spoken story for a language learner at CEFR level ${targetLevel}.`,
     sourceLevel ? `The source reads at about ${sourceLevel}; grade it down for ${targetLevel}.` : '',
     `Retell it: keep the plot, the moral, and all proper and cultural names, but shorten and simplify the language.`,
+    `Length: ${LENGTH_BY_LEVEL[targetLevel]}. This is a short listening story, not a full audiobook — condense a long source to fit, keeping only the essential beats.`,
     `Comprehensibility is the priority: aim for at least 95% of the words to be ones a learner at ${targetLevel} already knows; a spoken/listening story should sit a little easier than the reading level.`,
     `Tone: a warm storyteller speaking to the listener. This will be narrated as audio.`,
     `Return: a short Indonesian title, a one-sentence Dutch description, and the story as an ordered array of individual Indonesian sentences (one sentence per element).`,
