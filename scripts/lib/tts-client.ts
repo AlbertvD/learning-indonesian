@@ -17,7 +17,12 @@ function loadKey(): ServiceAccountKey {
   return JSON.parse(readFileSync(KEY_PATH, 'utf8'))
 }
 
-async function getAccessToken(): Promise<string> {
+/**
+ * OAuth bearer token for the TTS service account (cloud-platform scope, so it
+ * also authorises Speech-to-Text). Exported so the STT word-offset client
+ * (`scripts/podcasts/stt.ts`) shares one auth path. Cached until ~expiry.
+ */
+export async function getAccessToken(): Promise<string> {
   if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
     return cachedToken.token
   }

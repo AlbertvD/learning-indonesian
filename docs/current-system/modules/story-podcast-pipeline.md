@@ -19,11 +19,15 @@ table + `indonesian-podcasts` bucket. Listening-only — never wired into capabi
 
 ## 1. Public interface (CLI)
 
-Two modes:
+Three modes:
 - **Invent** — `--level <A1|A2|B1|B2> --topic "<seed>"`: Gemini authors an original story.
 - **Adapt** — `--level <…> --source <file> --attribution <file.json> [--source-level <lvl>]`:
   grades an openly-licensed source story (e.g. a Wikibooks dongeng) down to the target level.
   A sourced episode **requires** a complete CC attribution file — `run.ts` refuses without it.
+- **Re-time** — `--retime <record.json>`: re-time an already-generated episode for follow-along.
+  Runs STT word-offsets over its **existing** audio and re-seeds with per-word timings — **no
+  re-author / re-translate / re-synthesis** (zero Gemini/TTS). (`--resume <record.json>` separately
+  re-seeds an episode from its saved record + MP3 after a transient seed failure, with no STT.)
 
 `[--dry-run]` prints the plan and makes **no** API calls or writes. `[--voice <id>]` overrides the
 narrator voice. Non-dry-run requires `GEMINI_API_KEY`, the Google TTS service account
@@ -34,7 +38,7 @@ CC-BY platforms (StoryWeaver/Let's Read) are downloaded by hand, Wikibooks (CC-B
 
 ## 2. Internal flow
 
-A thin composition (`run.ts:66-88`): **author** → **translate** → **narrate** → **assemble** → **seed**.
+A thin composition: **author** → **translate** → **narrate** → **align** → **assemble** → **seed**.
 
 - **author / adapt** — `authorStory` (invent) or `adaptStory` (grade an openly-licensed source to
   level) in `storyAuthor.ts`, both via Gemini with `AUTHOR_SCHEMA` structured output → `{title,
@@ -47,6 +51,12 @@ A thin composition (`run.ts:66-88`): **author** → **translate** → **narrate*
 - **narrate** — `synthesizeEpisode` (`narrator.ts:34-49`) builds level-graded SSML via
   `buildNarrationSsml` (`narrator.ts:21-25`) and synthesises one MP3 through the SSML-capable
   `synthesizeSsml` (`scripts/lib/tts-client.ts:96-98`). Chirp3-HD arm.
+- **align** — `transcribeWordOffsets` (`stt.ts`) runs the MP3 through Google STT
+  `longrunningrecognize` + `enableWordTimeOffsets` (inline base64, no GCS; auth via the shared
+  `tts-client.getAccessToken`), then `alignWordTimings` (`align.ts`, pure) maps the recognised words
+  onto the known script (Needleman–Wunsch; authored spelling kept, drops interpolated) and
+  `assertValidTimings` guards monotonic/`end>start`/non-empty before any write. Chirp3-HD emits no
+  timepoints, so timings come from ASR — see ADR 0022 amendment (2026-06-28).
 - **assemble** — `assembleEpisode` (`assemble.ts:48-62`, pure) builds the `PodcastData` record:
   the aligned segments plus the **denormalized** `transcript_*` full-text columns (segments joined
   with `SEGMENT_JOIN`, `assemble.ts:14`).
@@ -97,13 +107,9 @@ A thin composition (`run.ts:66-88`): **author** → **translate** → **narrate*
 - **5000-byte TTS cap.** One synthesis request per episode; over the cap it throws rather than
   chunking (`narrator.ts:42-46`). Chunk-and-concat is deferred.
 - **Estimated duration.** `duration_seconds` is a word-count estimate (`run.ts:52-54`), not a probe.
-- **No timed follow-along yet.** Design-approved (ADR 0022 amendment 2026-06-28), not built. Planned
-  shape: a `narrate → **align** → assemble` step where `align.ts` runs the synthesised MP3 through
-  **Google STT `longrunningrecognize` + `enableWordTimeOffsets`** (inline base64, no GCS), aligns the
-  recognised words to the known script (reuse `levenshteinDistance` from `asr-quality-gate.ts`), and
-  enriches each `TranscriptSegment` with `words: {word,start,end}[]`. A `--retime <record.json>` flag
-  on `run.ts` re-times existing episodes from bucket audio with **zero Gemini/TTS calls**. Reader
-  highlights the active **word** off `<audio onTimeUpdate>` (word-level following is the feature
-  goal; sentences group the words + are the click-to-seek target). Prereq: STT enabled on the TTS
-  project. Build-time validator (data-architect): assert monotonic `start`s, `end > start`,
-  `words.length > 0` before write.
+- **Follow-along: pipeline built, reader pending.** The capture+store half (the `align` step,
+  `stt.ts`, `--retime`, `TranscriptSegment.words`) is built and unit-tested (ADR 0022 amendment
+  2026-06-28). **Not yet built:** the reader word-level highlight UI in `src/pages/Podcast.tsx`
+  (highlight the active **word** off `<audio onTimeUpdate>`; sentences group the words + are the
+  click-to-seek target; degrade gracefully when `words` absent) and the live re-time of the existing
+  episodes. Prereq (done): STT enabled on the TTS project `hassio-integration-5a907`.
