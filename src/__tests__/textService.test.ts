@@ -1,6 +1,6 @@
-// src/__tests__/podcastService.test.ts
+// src/__tests__/textService.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { podcastService } from '@/services/podcastService'
+import { textService } from '@/services/textService'
 import { supabase } from '@/lib/supabase'
 
 vi.mock('@/lib/supabase', () => {
@@ -30,7 +30,7 @@ vi.mock('@/lib/supabase', () => {
   }
 })
 
-describe('podcastService', () => {
+describe('textService', () => {
   const getMock = () => (supabase.schema('indonesian').from('any') as any)
 
   beforeEach(() => {
@@ -40,21 +40,36 @@ describe('podcastService', () => {
     })
   })
 
-  it('getPodcasts fetches podcasts from indonesian schema', async () => {
-    const mockData = [{ id: '1', title: 'Podcast 1' }]
+  it('listTexts fetches texts from indonesian schema', async () => {
+    const mockData = [{ id: '1', title: 'Text 1', audio_path: 'a.mp3' }]
     getMock().then.mockImplementationOnce(function(onFulfilled: any) {
       return Promise.resolve({ data: mockData, error: null }).then(onFulfilled)
     })
 
-    const result = await podcastService.getPodcasts()
+    const result = await textService.listTexts()
 
     expect(supabase.schema).toHaveBeenCalledWith('indonesian')
     expect(getMock().select).toHaveBeenCalledWith('*')
     expect(result).toEqual(mockData)
   })
 
+  it('listPodcasts returns only audio-bearing texts (the Listen face)', async () => {
+    const mockData = [
+      { id: '1', title: 'With audio', audio_path: 'a.mp3' },
+      { id: '2', title: 'Read-only', audio_path: null },
+    ]
+    getMock().then.mockImplementationOnce(function(onFulfilled: any) {
+      return Promise.resolve({ data: mockData, error: null }).then(onFulfilled)
+    })
+
+    const result = await textService.listPodcasts()
+
+    expect(result).toHaveLength(1)
+    expect(result[0].id).toBe('1')
+  })
+
   it('getAudioUrl calls supabase storage', () => {
-    const url = podcastService.getAudioUrl('path/to/audio.mp3')
+    const url = textService.getAudioUrl('path/to/audio.mp3')
     expect(supabase.storage.from).toHaveBeenCalledWith('indonesian-podcasts')
     expect(url).toBe('https://example.com/audio.mp3')
   })

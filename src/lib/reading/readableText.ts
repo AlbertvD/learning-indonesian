@@ -7,7 +7,7 @@
  * Pure — no I/O. The reader (`components/reading/`) renders `ReadableText`; the
  * gloss + coverage modules consume its tokens.
  */
-import type { Podcast, TranscriptSegment } from '@/services/podcastService'
+import type { Podcast, TranscriptSegment } from '@/services/textService'
 
 export interface ReadingToken {
   /** Surface form as written, incl. punctuation — what the reader displays. */

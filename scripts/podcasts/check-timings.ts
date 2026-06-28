@@ -11,7 +11,7 @@
 
 import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 
 const GENERATED_DIR = resolve('scripts/data/generated-podcasts')
 const COLLAPSE_SPAN = 0.15 // seconds: ≥3 word-starts inside this window = a collapse

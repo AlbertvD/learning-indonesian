@@ -34,7 +34,7 @@ for (const podcast of podcasts) {
 
   const { error: metaError } = await supabase
     .schema('indonesian')
-    .from('podcasts')
+    .from('texts')
     .upsert(
       {
         title: podcast.title,

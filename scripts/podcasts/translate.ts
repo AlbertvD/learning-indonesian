@@ -6,7 +6,7 @@
 // sentence array to NL and EN preserving count, then calls this.
 
 import { GoogleGenAI } from '@google/genai'
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 
 /**
  * Zip equal-length Indonesian / Dutch / English sentence arrays into ordered

@@ -11,7 +11,7 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { IconBook2 } from '@tabler/icons-react'
-import { podcastService, type Podcast } from '@/services/podcastService'
+import { textService, type Podcast } from '@/services/textService'
 import { rankReadableTexts } from '@/lib/reading'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
@@ -33,7 +33,7 @@ export function Lezen() {
     async function fetchData() {
       if (!user) return
       try {
-        const podcasts = await podcastService.getPodcasts()
+        const podcasts = await textService.listTexts()
         const ranked = await rankReadableTexts(podcasts, user.id)
         if (!cancelled) setStories(ranked.map((r) => r.item))
       } catch (err) {

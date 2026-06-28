@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Podcast } from '@/services/podcastService'
+import type { Podcast } from '@/services/textService'
 import {
   contentTokens,
   isReadable,

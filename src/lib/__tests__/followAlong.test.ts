@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { findActiveWord } from '../followAlong'
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 
 const segments: TranscriptSegment[] = [
   {

@@ -1,4 +1,4 @@
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 
 /** Location of the active word within the segmented transcript. */
 export interface ActiveWord {

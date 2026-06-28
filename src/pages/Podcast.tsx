@@ -10,7 +10,7 @@ import {
   LoadingState,
   EmptyState,
 } from '@/components/page/primitives'
-import { podcastService, type Podcast, type TranscriptSegment } from '@/services/podcastService'
+import { textService, type Podcast, type TranscriptSegment } from '@/services/textService'
 import { findActiveWord, type ActiveWord } from '@/lib/followAlong'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
@@ -105,7 +105,7 @@ export function Podcast() {
     async function fetchData() {
       if (!podcastId || !user) return
       try {
-        const podcastData = await podcastService.getPodcast(podcastId)
+        const podcastData = await textService.getText(podcastId)
         setPodcast(podcastData)
       } catch (err) {
         logError({ page: 'podcast', action: 'fetchData', error: err })
@@ -141,7 +141,9 @@ export function Podcast() {
     )
   }
 
-  const audioUrl = podcastService.getAudioUrl(podcast.audio_path)
+  // This is the Listen face — reached only via the audio-filtered Podcasts list.
+  // audio_path is nullable on the texts row (read-only texts have none); guard defensively.
+  const audioUrl = podcast.audio_path ? textService.getAudioUrl(podcast.audio_path) : ''
   const segments = podcast.transcript_segments ?? null
   // Cheap (~150 words, ~4×/s); not a hook so it can live after the early returns.
   const active = segments ? findActiveWord(segments, currentTime) : null

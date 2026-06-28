@@ -36,7 +36,7 @@ const EXPECTED_TABLES = [
   'user_roles',
   'lessons',
   'lesson_sections',
-  'podcasts',
+  'texts',                      // ADR 0023: renamed from podcasts (audio optional)
   'learning_items',
   'item_contexts',
   'item_answer_variants',
@@ -58,7 +58,7 @@ const EXPECTED_TABLES = [
 const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   lessons:              { authenticated: ['SELECT'] },
   lesson_sections:      { authenticated: ['SELECT'] },
-  podcasts:             { authenticated: ['SELECT'] },
+  texts:                { authenticated: ['SELECT'] },
   profiles:             { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
   learning_items:       { authenticated: ['SELECT'] },
   item_contexts:        { authenticated: ['SELECT'] },
@@ -1560,10 +1560,10 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 //      joined segments. Catches the "normalize every representation" drift class
 //      (a row written with segments but a stale/empty full-text column).
 {
-  const HC36 = 'HC36 podcasts.transcript_segments consistent with denormalized transcript_* (ADR 0022)'
+  const HC36 = 'HC36 texts.transcript_segments consistent with denormalized transcript_* (ADR 0022)'
   const { data, error } = await supabase
     .schema('indonesian')
-    .from('podcasts')
+    .from('texts')
     .select('id, title, transcript_segments, transcript_indonesian, transcript_dutch, transcript_english')
     .not('transcript_segments', 'is', null)
   if (error) {

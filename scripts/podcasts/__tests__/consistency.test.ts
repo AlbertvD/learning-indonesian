@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { transcriptDrift } from '../assemble'
-import type { TranscriptSegment } from '@/services/podcastService'
+import type { TranscriptSegment } from '@/services/textService'
 
 const segments: TranscriptSegment[] = [
   { idx: 0, id: 'Ibu pergi.', nl: 'Moeder gaat.', en: 'Mother goes.' },

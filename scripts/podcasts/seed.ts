@@ -42,7 +42,7 @@ export async function seedEpisode(record: PodcastData, mp3: Buffer): Promise<voi
 
   const { error: metaError } = await supabase
     .schema('indonesian')
-    .from('podcasts')
+    .from('texts')
     .upsert(
       {
         title: record.title,
