@@ -24,7 +24,7 @@ import { useT } from '@/hooks/useT'
  * Clicking any line seeks the audio to that sentence's start. Falls back to a
  * prose blob when the episode has no segments (legacy / un-timed rows).
  */
-function FollowAlongTranscript({
+export function FollowAlongTranscript({
   segments,
   lang,
   fallback,
@@ -57,6 +57,7 @@ function FollowAlongTranscript({
           <Text
             key={seg.idx}
             ref={isActiveLine ? activeLineRef : undefined}
+            data-active-line={isActiveLine || undefined}
             onClick={() => onSeek(idx)}
             style={{ cursor: 'pointer', lineHeight: 1.8, borderRadius: 4, padding: '2px 4px' }}
             bg={!timed && isActiveLine ? 'var(--mantine-primary-color-light)' : undefined}
@@ -65,15 +66,18 @@ function FollowAlongTranscript({
               ? seg.words!.map((w, wi) => {
                   const isActiveWord = isActiveLine && active?.wordIdx === wi
                   return (
-                    <Text
-                      key={wi}
-                      component="span"
-                      fw={isActiveWord ? 700 : 400}
-                      bg={isActiveWord ? 'var(--mantine-primary-color-light)' : undefined}
-                      style={{ borderRadius: 4, padding: isActiveWord ? '0 2px' : undefined }}
-                    >
-                      {w.word}{wi < seg.words!.length - 1 ? ' ' : ''}
-                    </Text>
+                    <span key={wi}>
+                      <Text
+                        component="span"
+                        data-active={isActiveWord || undefined}
+                        fw={isActiveWord ? 700 : 400}
+                        bg={isActiveWord ? 'var(--mantine-primary-color-light)' : undefined}
+                        style={{ borderRadius: 4, padding: isActiveWord ? '0 2px' : undefined }}
+                      >
+                        {w.word}
+                      </Text>
+                      {wi < seg.words!.length - 1 ? ' ' : ''}
+                    </span>
                   )
                 })
               : seg[lang]}
