@@ -79,8 +79,10 @@ A thin composition (`run.ts:66-88`): **author** → **translate** → **narrate*
 
 - **Upstream:** Gemini (`@google/genai`, `GEMINI_API_KEY`); Google Cloud TTS (`tts-client.ts`).
 - **Reader (downstream):** `src/services/podcastService.ts` (`Podcast.transcript_segments`,
-  `TranscriptSegment`) → `src/pages/Podcast.tsx`. The current 3-tab reader renders the denormalized
-  full-text; the **segmented read-along reader is a fast-follow** (out of scope for #293).
+  `TranscriptSegment`) → `src/pages/Podcast.tsx`. The current two-tab reader (Indonesian /
+  translation) renders the denormalized full-text; the **segmented read-along reader + timed
+  follow-along is the next reader iteration** (ADR 0022 amendment 2026-06-28, design-approved, not
+  yet built).
 - **Schema:** `indonesian.podcasts.transcript_segments jsonb` (`scripts/migration.sql`).
 - **Type home (the triangle):** `TranscriptSegment` in `src/services/podcastService.ts`, imported by
   `PodcastData` (`scripts/data/podcasts.ts`), the seed upsert, and the reader interface.
@@ -95,3 +97,13 @@ A thin composition (`run.ts:66-88`): **author** → **translate** → **narrate*
 - **5000-byte TTS cap.** One synthesis request per episode; over the cap it throws rather than
   chunking (`narrator.ts:42-46`). Chunk-and-concat is deferred.
 - **Estimated duration.** `duration_seconds` is a word-count estimate (`run.ts:52-54`), not a probe.
+- **No timed follow-along yet.** Design-approved (ADR 0022 amendment 2026-06-28), not built. Planned
+  shape: a `narrate → **align** → assemble` step where `align.ts` runs the synthesised MP3 through
+  **Google STT `longrunningrecognize` + `enableWordTimeOffsets`** (inline base64, no GCS), aligns the
+  recognised words to the known script (reuse `levenshteinDistance` from `asr-quality-gate.ts`), and
+  enriches each `TranscriptSegment` with `words: {word,start,end}[]`. A `--retime <record.json>` flag
+  on `run.ts` re-times existing episodes from bucket audio with **zero Gemini/TTS calls**. Reader
+  highlights the active **word** off `<audio onTimeUpdate>` (word-level following is the feature
+  goal; sentences group the words + are the click-to-seek target). Prereq: STT enabled on the TTS
+  project. Build-time validator (data-architect): assert monotonic `start`s, `end > start`,
+  `words.length > 0` before write.

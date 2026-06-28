@@ -7,11 +7,26 @@ import { supabase } from '@/lib/supabase'
  * denormalized `transcript_*` full-text columns are these segments' `id`/`nl`/`en`
  * joined — kept in sync so the current 3-tab reader works without segments.
  */
+/**
+ * One word of an episode's narration with its audio timing (seconds). Recovered
+ * by Google STT word-offsets aligned to the authored script (ADR 0022 amendment
+ * 2026-06-28) — the `word` keeps the *authored* spelling/case/punctuation, the
+ * `start`/`end` come from the matched recognized word. Drives word-level
+ * follow-along highlighting in the reader. Universal ASR / read-along shape.
+ */
+export interface TimedWord {
+  word: string
+  start: number
+  end: number
+}
+
 export interface TranscriptSegment {
   idx: number
   id: string // Indonesian sentence
   nl: string // Dutch
   en: string // English
+  /** Per-word timings for follow-along; absent on pre-feature / un-timed episodes. */
+  words?: TimedWord[]
 }
 
 /**
