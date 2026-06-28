@@ -158,6 +158,33 @@ ALTER TABLE indonesian.texts ADD COLUMN IF NOT EXISTS attribution jsonb;
 COMMENT ON COLUMN indonesian.texts.attribution IS
   'CC attribution for openly-licensed source texts: {source_title, source_url, author, license, license_url}. NULL for LLM-original content.';
 
+-- ── Morphology gloss pre-compute (reader exploratory glossing, ADR 0024) ─────────
+-- For every affixed corpus word, its {root, affix} decomposition, so the Lezen reader
+-- shows an EXPLORATORY gloss on tap (affix function + root meaning + word family) by a
+-- pure RETRIEVE — no runtime morphological parsing. GLOSS-ONLY: mints no capabilities;
+-- the DRILLED set stays the curated `affixed_form_pairs` (ADR 0020/0021), untouched.
+-- Keyed by `normalized_text` (the surface form), NOT a learning_item_id FK: a derived
+-- corpus word is not necessarily a learning_item (it becomes one only via the slice-3
+-- harvest pre-seed), and the reader looks words up by token text anyway. The glosses
+-- themselves are DERIVED at read time (affix function from the static AFFIX_CATALOG,
+-- root meaning from learning_items, family = items sharing the root) — not stored here,
+-- so this table cannot drift from the catalog/items. Publish-time projection
+-- (regenerable): built from `affixed_form_pairs` (attested) + the affixDecomposition
+-- engine over the reading corpus.
+CREATE TABLE IF NOT EXISTS indonesian.item_morphology (
+  normalized_text text PRIMARY KEY,        -- the surface (derived) word, lowercased
+  root            text NOT NULL,           -- verified base form (a learning_item / catalog root)
+  affix           text NOT NULL,           -- catalog affix label, e.g. 'meN-', '-kan'
+  created_at      timestamptz NOT NULL DEFAULT now()
+);
+COMMENT ON TABLE indonesian.item_morphology IS
+  'Build-time morphological decomposition for reading-corpus words (ADR 0024). Gloss-only / exploratory; mints no capabilities. family = join over shared root. Distinct from the drilled affixed_form_pairs.';
+ALTER TABLE indonesian.item_morphology ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "item_morphology_read" ON indonesian.item_morphology;
+CREATE POLICY "item_morphology_read" ON indonesian.item_morphology FOR SELECT TO authenticated USING (true);
+GRANT SELECT ON indonesian.item_morphology TO authenticated;
+REVOKE INSERT, UPDATE, DELETE ON indonesian.item_morphology FROM authenticated;
+
 -- Learning items (canonical teachable unit)
 CREATE TABLE IF NOT EXISTS indonesian.learning_items (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

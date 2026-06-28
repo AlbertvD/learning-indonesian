@@ -1,8 +1,37 @@
 import { Fragment, useState } from 'react'
-import { Box, Popover, Text } from '@mantine/core'
-import type { GlossResult, ReadableText, ReadingToken } from '@/lib/reading'
+import { Anchor, Badge, Box, Divider, Group, Popover, Text } from '@mantine/core'
+import { Link } from 'react-router-dom'
+import type { GlossResult, MorphologyGloss, ReadableText, ReadingToken } from '@/lib/reading'
 import { useT } from '@/hooks/useT'
 import classes from './GlossableText.module.css'
+
+/** Exploratory morphology detail (ADR 0024): affix + function, root + meaning, family,
+ *  and a link into the Affix Trainer detail (/morphology?affix=…). Gloss-only. */
+function MorphologyDetail({ m }: { m: MorphologyGloss }) {
+  const T = useT()
+  const family = m.family.filter((w) => w !== m.root)
+  return (
+    <>
+      <Divider my={6} />
+      <Group gap={6} mb={2} wrap="nowrap">
+        <Badge size="xs" variant="light">{m.affix}</Badge>
+        <Text size="xs" c="dimmed">{m.affixFunctionNl}</Text>
+      </Group>
+      <Text size="xs">
+        ← <Text span fw={600}>{m.root}</Text>
+        {m.rootMeaning && <Text span c="dimmed"> · {m.rootMeaning}</Text>}
+      </Text>
+      {family.length > 0 && (
+        <Text size="xs" c="dimmed" mt={2}>
+          {T.reading.wordFamily}: {[m.root, ...family].join(', ')}
+        </Text>
+      )}
+      <Anchor component={Link} to={`/morphology?affix=${encodeURIComponent(m.affix)}`} size="xs" mt={4} display="block">
+        {T.reading.affixTrainerLink} →
+      </Anchor>
+    </>
+  )
+}
 
 interface GlossableTextProps {
   text: ReadableText
@@ -70,6 +99,7 @@ export function GlossableText({ text, glossFor }: GlossableTextProps) {
                         </Text>
                       )
                       : <Text size="sm" c="dimmed">{T.reading.noGloss}</Text>}
+                    {active.gloss.morphology && <MorphologyDetail m={active.gloss.morphology} />}
                   </Popover.Dropdown>
                 </Popover>
                 {' '}

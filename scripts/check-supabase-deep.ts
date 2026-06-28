@@ -37,6 +37,7 @@ const EXPECTED_TABLES = [
   'lessons',
   'lesson_sections',
   'texts',                      // ADR 0023: renamed from podcasts (audio optional)
+  'item_morphology',            // ADR 0024: reader morphology gloss pre-compute
   'learning_items',
   'item_contexts',
   'item_answer_variants',
@@ -59,6 +60,7 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   lessons:              { authenticated: ['SELECT'] },
   lesson_sections:      { authenticated: ['SELECT'] },
   texts:                { authenticated: ['SELECT'] },
+  item_morphology:      { authenticated: ['SELECT'] },
   profiles:             { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
   learning_items:       { authenticated: ['SELECT'] },
   item_contexts:        { authenticated: ['SELECT'] },

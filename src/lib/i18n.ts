@@ -336,6 +336,8 @@ export const nl = {
     sentenceGloss: 'zin',
     noGloss: 'Geen vertaling beschikbaar',
     backToList: 'Terug naar overzicht',
+    wordFamily: 'Woordfamilie',
+    affixTrainerLink: 'Open in de Affix Trainer',
   },
   session: {
     title: 'Oefensessie',
@@ -723,6 +725,8 @@ export const en: typeof nl = {
     sentenceGloss: 'sentence',
     noGloss: 'No translation available',
     backToList: 'Back to list',
+    wordFamily: 'Word family',
+    affixTrainerLink: 'Open in the Affix Trainer',
   },
   session: {
     title: 'Practice Session',
