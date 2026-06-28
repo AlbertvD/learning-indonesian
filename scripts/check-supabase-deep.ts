@@ -53,6 +53,7 @@ const EXPECTED_TABLES = [
   'collections',
   'collection_items',
   'learner_collection_activation',
+  'learner_reading_harvest',     // reader Phase 2 §4: tapped-word harvest membership
 ]
 
 // Expected grants: table → { role → privileges[] }
@@ -78,6 +79,9 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   collections:           { authenticated: ['SELECT'] },
   collection_items:      { authenticated: ['SELECT'] },
   learner_collection_activation: { authenticated: ['SELECT'] },  // writes via set_collection_activation only
+  // Reading harvest: owner-RLS, learner-writable DIRECTLY (membership row, not
+  // capability state) — owner SELECT + INSERT, no UPDATE/DELETE (reader §4).
+  learner_reading_harvest: { authenticated: ['SELECT', 'INSERT'] },
 }
 
 // ── Fetch schema health report ─────────────────────────────────────────────

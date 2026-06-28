@@ -8,9 +8,9 @@ function tok(normalized: string, opts: Partial<ReadingToken> = {}): ReadingToken
 }
 
 const glosses = new Map<string, ItemGloss>([
-  ['gelap', { nl: 'donker', en: 'dark' }],
-  ['baca', { nl: 'lezen', en: 'read' }],
-  ['membaca', { nl: 'lezen (actief)', en: 'to read' }],
+  ['gelap', { id: 'item-gelap', nl: 'donker', en: 'dark' }],
+  ['baca', { id: 'item-baca', nl: 'lezen', en: 'read' }],
+  ['membaca', { id: 'item-membaca', nl: 'lezen (actief)', en: 'to read' }],
   ['enonly', { nl: null, en: 'english-only' }],
 ])
 
@@ -32,7 +32,7 @@ const base: GlossDeps = { glosses, morphology, families, sentenceNl: 'De hele zi
 
 describe('resolveGloss cascade', () => {
   it('exact item match → NL gloss (item source)', () => {
-    expect(resolveGloss(tok('gelap'), base)).toEqual({ text: 'donker', source: 'item', morphology: undefined })
+    expect(resolveGloss(tok('gelap'), base)).toEqual({ text: 'donker', source: 'item', morphology: undefined, harvestableItemId: 'item-gelap' })
   })
 
   it('NL-first, falls back to EN when no NL', () => {
@@ -75,5 +75,24 @@ describe('resolveGloss cascade', () => {
 
   it('non-word token → none', () => {
     expect(resolveGloss(tok('', { isWord: false }), base).source).toBe('none')
+  })
+
+  // Harvest (reader §4): a tapped word is harvestable ("+ leren") iff it is itself a
+  // learning_item — then it already has the vocab cap suite the harvest activates.
+  it('exact item → harvestableItemId is the item id', () => {
+    expect(resolveGloss(tok('gelap'), base).harvestableItemId).toBe('item-gelap')
+  })
+
+  it('item that is also affixed → still harvestable (its own id)', () => {
+    expect(resolveGloss(tok('membaca'), base).harvestableItemId).toBe('item-membaca')
+  })
+
+  it('affixed NON-item (morphology source) → NOT harvestable (no item id)', () => {
+    expect(resolveGloss(tok('dibaca'), base).harvestableItemId).toBeUndefined()
+  })
+
+  it('proper noun / unknown word → NOT harvestable', () => {
+    expect(resolveGloss(tok('manu', { isProperNoun: true }), base).harvestableItemId).toBeUndefined()
+    expect(resolveGloss(tok('xyzzy'), base).harvestableItemId).toBeUndefined()
   })
 })

@@ -3707,6 +3707,42 @@ end $$;
 revoke all on function indonesian.set_collection_activation(uuid, uuid, boolean) from public;
 grant execute on function indonesian.set_collection_activation(uuid, uuid, boolean) to authenticated, service_role;
 
+-- ── Reading harvest: words a learner tapped "+ leren" in the Lezen reader ─────
+-- Reader Phase 2 Slice 3 (ADR 0023/0024 plan §4). A plain per-learner MEMBERSHIP
+-- row — NOT learner_capability_state — so it needs no security-definer RPC and
+-- raises no ADR-0004 concern. Distinct from learner_collection_activation: that
+-- activates whole collections (no per-item grain), this is one tapped word.
+--
+-- Eligibility: lib/collections/membership.resolveActivatedMemberRefs UNIONs each
+-- harvested item's source_ref ('learning_items/' || normalized_text) into the set
+-- that feeds the session-builder activatedCollectionRefs gate-OR (pedagogy.ts:410).
+-- FSRS state is then minted by the EXISTING review-commit path on first review
+-- (activation_source='review_processor', already within the CHECK) — no new RPC,
+-- no activation_source widening, no direct learner_capability_state write.
+--
+-- Owner-RLS, learner-WRITABLE DIRECTLY (membership only): owner SELECT + INSERT.
+-- No UPDATE/DELETE for authenticated (un-harvest is out of scope; re-tap is an
+-- idempotent ON CONFLICT DO NOTHING).
+create table if not exists indonesian.learner_reading_harvest (
+  user_id          uuid not null references auth.users(id) on delete cascade,
+  learning_item_id uuid not null references indonesian.learning_items(id) on delete cascade,
+  created_at       timestamptz not null default now(),
+  primary key (user_id, learning_item_id)
+);
+create index if not exists learner_reading_harvest_user_idx
+  on indonesian.learner_reading_harvest(user_id);
+
+alter table indonesian.learner_reading_harvest enable row level security;
+drop policy if exists "reading harvest owner read" on indonesian.learner_reading_harvest;
+create policy "reading harvest owner read"
+  on indonesian.learner_reading_harvest for select to authenticated using (user_id = auth.uid());
+drop policy if exists "reading harvest owner insert" on indonesian.learner_reading_harvest;
+create policy "reading harvest owner insert"
+  on indonesian.learner_reading_harvest for insert to authenticated with check (user_id = auth.uid());
+grant select, insert on indonesian.learner_reading_harvest to authenticated;
+revoke update, delete on indonesian.learner_reading_harvest from authenticated;
+grant all on indonesian.learner_reading_harvest to service_role;
+
 -- ── Common Words: the hidden gap-word home lesson (spec §4.4) ────────────────
 -- Frequency words not in any coursebook lesson need a lesson home (ADR 0006:
 -- learning_capabilities.lesson_id is NOT NULL for non-podcast caps). A single

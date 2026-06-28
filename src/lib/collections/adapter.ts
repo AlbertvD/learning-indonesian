@@ -24,6 +24,26 @@ export async function fetchActivatedCollectionIds(
   return ((data ?? []) as Array<{ collection_id: string }>).map(row => row.collection_id)
 }
 
+// The normalized_texts of every word the learner has harvested in the Lezen
+// reader (reader §4). One FK embed: learner_reading_harvest → learning_items.
+// Owner-RLS scopes the read to this learner; we still filter by user_id so a
+// service-role caller is also scoped. `lib/reading` writes this table; this
+// module is its only reader (the harvest → scheduling seam, one-directional).
+export async function fetchHarvestedNormalizedTexts(
+  userId: string,
+  client: CollectionsReadClient = supabase,
+): Promise<string[]> {
+  const { data, error } = await client
+    .schema('indonesian')
+    .from('learner_reading_harvest')
+    .select('learning_items(normalized_text)')
+    .eq('user_id', userId)
+  if (error) throw error
+  return ((data ?? []) as Array<{ learning_items: { normalized_text: string } | null }>)
+    .map(row => row.learning_items?.normalized_text)
+    .filter((text): text is string => Boolean(text))
+}
+
 // The normalized_texts of every learning_item that is a member of any of the
 // given collections (one FK embed: collection_items → learning_items).
 export async function fetchMemberNormalizedTexts(
