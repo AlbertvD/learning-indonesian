@@ -273,6 +273,21 @@ for (const table of EXPECTED_TABLES) {
   }
 }
 
+// ── Check: get_text_coverage RPC function exists (Lezen reader, PRD #299) ──
+{
+  const { error } = await supabase
+    .schema('indonesian')
+    .rpc('get_text_coverage', { p_user_id: '00000000-0000-0000-0000-000000000000', p_tokens: [] })
+  if (error && error.message.includes('does not exist')) {
+    fail(
+      'RPC function exists: get_text_coverage',
+      'Function indonesian.get_text_coverage not found — run: make migrate SUPABASE_SERVICE_KEY=<key>'
+    )
+  } else {
+    pass('RPC function exists: get_text_coverage')
+  }
+}
+
 // ── Check: choose_meaning_from_audio_ex + dictation registered in exercise_type_availability ──
 for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audio_ex']) {
   const { data: availRow, error: availErr } = await supabase

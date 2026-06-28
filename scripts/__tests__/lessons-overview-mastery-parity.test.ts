@@ -125,3 +125,39 @@ describe('get_lessons_overview practiced predicate ↔ overview.ts parity', () =
     expect(sql).toContain("publication_status = 'published'")
   })
 })
+
+// ADR 0015 parity guard for get_text_coverage (the Lezen reader, PRD #299). Its
+// "known" predicate is a COMPOSITE of two reused rules at a NEW SQL site, so it
+// owes TWO assertions: (i) its practiced threshold pins to PRACTICED_MIN_REVIEWS,
+// and (ii) its recognition-cap literal is the SAME one get_collections_overview
+// uses — so neither rule can drift across its two sites.
+const RECOGNITION_CAP_LITERAL = "capability_type = 'recognise_meaning_from_text_cap'"
+
+function textCoverageRpc(): string {
+  const start = migrationSql.indexOf('function indonesian.get_text_coverage')
+  expect(start).toBeGreaterThan(-1)
+  const end = migrationSql.indexOf('$$;', start)
+  expect(end).toBeGreaterThan(start)
+  return migrationSql.slice(start, end)
+}
+
+function collectionsOverviewRpc(): string {
+  const start = migrationSql.indexOf('function indonesian.get_collections_overview')
+  expect(start).toBeGreaterThan(-1)
+  const end = migrationSql.indexOf('$$;', start)
+  expect(end).toBeGreaterThan(start)
+  return migrationSql.slice(start, end)
+}
+
+describe('get_text_coverage predicate ↔ canonical predicates parity (ADR 0015)', () => {
+  it('(i) reading practiced threshold pins to PRACTICED_MIN_REVIEWS', () => {
+    const [, practicedMin] = tsPracticedMin!
+    expect(textCoverageRpc()).toContain(`coalesce(s.review_count, 0) >= ${practicedMin}`)
+    expect(textCoverageRpc()).not.toMatch(/[^(]\breview_count >= [0-3]\b/) // no bare threshold
+  })
+
+  it('(ii) reading recognition-cap literal is the SAME as get_collections_overview', () => {
+    expect(textCoverageRpc()).toContain(RECOGNITION_CAP_LITERAL)
+    expect(collectionsOverviewRpc()).toContain(RECOGNITION_CAP_LITERAL)
+  })
+})

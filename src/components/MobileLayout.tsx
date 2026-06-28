@@ -1,7 +1,7 @@
 // src/components/MobileLayout.tsx
 import { Outlet, NavLink } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
-import { IconUser, IconUserFilled, IconHome, IconHomeFilled, IconBook, IconBookFilled, IconHeadphones, IconHeadphonesFilled, IconChartBar, IconAbc } from '@tabler/icons-react'
+import { IconUser, IconUserFilled, IconHome, IconHomeFilled, IconBook, IconBookFilled, IconBook2, IconHeadphones, IconHeadphonesFilled, IconChartBar, IconAbc } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
 import classes from './MobileLayout.module.css'
 
@@ -12,6 +12,7 @@ export function MobileLayout() {
     { label: T.nav.home, iconOutline: <IconHome size={22} />, iconFilled: <IconHomeFilled size={22} />, path: '/' },
     { label: T.nav.lessons, iconOutline: <IconBook size={22} />, iconFilled: <IconBookFilled size={22} />, path: '/lessons' },
     { label: T.nav.podcasts, iconOutline: <IconHeadphones size={22} />, iconFilled: <IconHeadphonesFilled size={22} />, path: '/podcasts' },
+    { label: T.nav.lezen, iconOutline: <IconBook2 size={22} />, iconFilled: <IconBook2 size={22} />, path: '/lezen' },
     { label: T.nav.progress, iconOutline: <IconChartBar size={22} />, iconFilled: <IconChartBar size={22} />, path: '/progress' },
     { label: T.nav.morphology, iconOutline: <IconAbc size={22} />, iconFilled: <IconAbc size={22} />, path: '/morphology' },
     { label: T.nav.profile, iconOutline: <IconUser size={22} />, iconFilled: <IconUserFilled size={22} />, path: '/profile' },
