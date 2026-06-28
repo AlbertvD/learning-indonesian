@@ -37,7 +37,7 @@ follow-along** (each word highlights as spoken). Listening-only — never wired 
 |---|---|---|
 | **Adapt** | `--level <CEFR> --source <txt> --attribution <json> --source-level "StoryWeaver Level N"` | grade an openly-licensed source story to a CEFR level (the usual path) |
 | **Invent** | `--level <CEFR> --topic "<seed>"` | Gemini writes an original story |
-| **Re-time** | `--retime <record.json>` | recover word timings for an existing episode from its audio — **no** re-author/translate/synthesis |
+| **Re-time** | `--retime <record.json>` | recover word timings for an existing episode from its audio — **no** re-author/translate/synthesis. ⚠️ reads the **local** MP3 at `content/podcasts/<audio_filename>`, which is gitignored — on a fresh clone, download it from the `indonesian-podcasts` bucket first |
 
 `--dry-run` prints the plan with no API calls. `--resume <record.json>` re-seeds after a transient upload failure (no STT).
 

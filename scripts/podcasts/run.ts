@@ -1,15 +1,20 @@
 #!/usr/bin/env bun
-// Story-podcast pipeline — single-episode orchestrator (slice 1, #293).
+// Story-podcast pipeline — single-episode orchestrator. See the `story-podcast`
+// skill (.claude/skills/story-podcast/SKILL.md) for the full operator workflow.
 //
-// Thin composition: author (Gemini) → translate (Gemini) → narrate (Chirp3-HD)
-// → assemble → seed (bucket + podcasts row). `--dry-run` prints the plan and
-// makes NO API calls or writes. The resumable batch driver is slice 4 (#296).
+// Thin composition: author/adapt (Gemini) → translate (Gemini) → narrate
+// (Chirp3-HD) → align (STT word-offsets → script) → assemble → seed (bucket +
+// podcasts row). `--dry-run` prints the plan and makes NO API calls or writes.
 //
-// Usage:
-//   bun scripts/podcasts/run.ts --level A2 --topic "buying breakfast at a warung" [--dry-run]
+// Modes:
+//   invent  --level A2 --topic "buying breakfast at a warung"
+//   adapt   --level A2 --source <file.txt> --attribution <file.json> [--source-level "..."]
+//   re-time --retime <record.json>     (STT existing audio → timings; no Gemini/TTS)
+//   resume  --resume <record.json>      (re-seed existing record + MP3; no STT)
 //
-// Requires (non-dry-run): GEMINI_API_KEY, ~/.config/gcloud/tts-indonesian.json,
-// SUPABASE_SERVICE_KEY — all in .env.local / the gcloud config.
+// Requires (non-dry-run): GEMINI_API_KEY, ~/.config/gcloud/tts-indonesian.json
+// (Speech-to-Text API enabled on its project), SUPABASE_SERVICE_KEY. Prefix direct
+// runs with NODE_TLS_REJECT_UNAUTHORIZED=0 for the homelab seed upload.
 
 import { readFileSync, existsSync } from 'node:fs'
 import { assembleEpisode, retimeRecord } from './assemble'
