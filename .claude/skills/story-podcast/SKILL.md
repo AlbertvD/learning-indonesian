@@ -50,12 +50,13 @@ follow-along** (each word highlights as spoken). Listening-only — never wired 
    bun scripts/podcasts/curate-source.ts <story>.pdf scripts/data/podcast-sources/<slug>.txt
    ```
    It strips the cover header, `N/M` page numbers, the credits block, and any glossary/bulleted appendix. **Verify** the output is story-only (`head`/`tail`); manually trim any non-narrative appendix the heuristic missed.
-4. **Attribution** — write `scripts/data/podcast-sources/<slug>.attribution.json` with all 5 fields (the pipeline refuses a sourced episode without them), composed from the PDF's "Story Attribution" block:
+4. **Attribution** — write `scripts/data/podcast-sources/<slug>.attribution.json` with all 5 fields (the pipeline refuses a sourced episode without them). Get the credit text from **either** the `StoryWeaverAttribution_*.txt` downloaded alongside the PDF (easiest — it's the full citation), **or** the PDF's "Story Attribution:" block near the end (`pdftotext <pdf> - | grep -A4 "Story Attribution"`). Compose:
    ```json
-   { "source_title": "...", "source_url": "https://storyweaver.org.in/en/stories/<id>-<slug>",
-     "author": "Translation by … (© …); original '…' by … (© Pratham Books, YYYY)",
+   { "source_title": "<Indonesian title>", "source_url": "https://storyweaver.org.in/en/stories/<id>-<english-slug-from-the-folder-name>",
+     "author": "Translation by <translator> (© <translation ©-holder>, <year>); original '<English title>' by <author> (© Pratham Books, <year>)",
      "license": "CC BY 4.0", "license_url": "https://creativecommons.org/licenses/by/4.0/" }
    ```
+   `source_url` = `https://storyweaver.org.in/en/stories/<download-folder-name>` (id + English slug, e.g. `39803-the-red-raincoat`). Map `CC BY-SA 4.0` → `https://creativecommons.org/licenses/by-sa/4.0/` if a CC-BY-SA source is used.
 5. **Generate** (seeds live):
    ```
    NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/podcasts/run.ts \
