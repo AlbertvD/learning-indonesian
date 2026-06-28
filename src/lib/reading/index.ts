@@ -6,8 +6,13 @@
  * `session-builder` in Phase 1 (that is the Phase-2 harvest edge).
  */
 import type { Podcast } from '@/services/textService'
-import { fetchCoverageKnownTokens, fetchItemGlosses } from './adapter'
-import { affixCandidates } from './affixStrip'
+import { affixCatalogEntry } from '@/lib/capabilities/affixCatalog'
+import {
+  fetchCoverageKnownTokens,
+  fetchItemGlosses,
+  fetchItemMorphology,
+  fetchMorphologyFamilies,
+} from './adapter'
 import { computeCoverage, orderByCoverage, type RankedText } from './coverage'
 import { isFunctionWord } from './functionWords'
 import { resolveGloss, type GlossResult } from './gloss'
@@ -20,22 +25,20 @@ import {
 } from './readableText'
 
 export type { ReadableText, ReadingSegment, ReadingToken } from './readableText'
-export type { GlossResult, GlossSource, ItemGloss } from './gloss'
+export type { GlossResult, GlossSource, ItemGloss, MorphologyGloss } from './gloss'
 export type { RankedText } from './coverage'
 export { isReadable, toReadableText } from './readableText'
 export { isFunctionWord } from './functionWords'
-export { affixCandidates } from './affixStrip'
 export { computeCoverage, orderByCoverage } from './coverage'
 export { resolveGloss } from './gloss'
 
-/** Every normalized form to fetch glosses for: each word token + its affix roots. */
-function glossLookupTokens(text: ReadableText): string[] {
+/** The content word tokens of a text (proper nouns excluded). */
+function wordTokens(text: ReadableText): string[] {
   const out = new Set<string>()
   for (const seg of text.segments) {
     for (const tok of seg.tokens) {
       if (!tok.isWord || tok.isProperNoun) continue
       out.add(tok.normalized)
-      for (const cand of affixCandidates(tok.normalized)) out.add(cand)
     }
   }
   return [...out]
@@ -43,22 +46,32 @@ function glossLookupTokens(text: ReadableText): string[] {
 
 export interface LoadedReader {
   text: ReadableText
-  /** Resolve a tapped token's gloss using its sentence's NL translation as fallback. */
+  /** Resolve a tapped token's gloss (incl. morphology), sentence NL as the fallback. */
   glossFor: (segmentIdx: number, token: ReadingToken) => GlossResult
 }
 
 /** Build everything the reader page needs for one story: view-model + a gloss resolver. */
 export async function loadReader(podcast: Podcast): Promise<LoadedReader> {
   const text = toReadableText(podcast)
-  const glosses = await fetchItemGlosses(glossLookupTokens(text))
+  const tokens = wordTokens(text)
+  // Morphology pre-compute for the text's words → the roots whose meanings/families we need.
+  const morphology = await fetchItemMorphology(tokens)
+  const roots = [...new Set([...morphology.values()].map((m) => m.root))]
+  const [glosses, families] = await Promise.all([
+    fetchItemGlosses([...tokens, ...roots]), // surface meanings + root meanings
+    fetchMorphologyFamilies(roots),
+  ])
+  const affixFunctionNl = (affix: string) => affixCatalogEntry(affix)?.glossNl ?? affix
   const nlBySegment = new Map(text.segments.map((s) => [s.idx, s.nl]))
   return {
     text,
     glossFor: (segmentIdx, token) =>
       resolveGloss(token, {
         glosses,
+        morphology,
+        families,
+        affixFunctionNl,
         sentenceNl: nlBySegment.get(segmentIdx) ?? '',
-        affixCandidates,
       }),
   }
 }

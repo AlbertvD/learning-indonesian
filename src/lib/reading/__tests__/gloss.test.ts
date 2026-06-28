@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { affixCandidates } from '../affixStrip'
-import { resolveGloss, type ItemGloss } from '../gloss'
+import { resolveGloss, type GlossDeps, type ItemGloss } from '../gloss'
+import type { ItemMorphology } from '../adapter'
 import type { ReadingToken } from '../readableText'
 
 function tok(normalized: string, opts: Partial<ReadingToken> = {}): ReadingToken {
@@ -10,52 +10,64 @@ function tok(normalized: string, opts: Partial<ReadingToken> = {}): ReadingToken
 const glosses = new Map<string, ItemGloss>([
   ['gelap', { nl: 'donker', en: 'dark' }],
   ['baca', { nl: 'lezen', en: 'read' }],
+  ['membaca', { nl: 'lezen (actief)', en: 'to read' }],
   ['enonly', { nl: null, en: 'english-only' }],
 ])
 
-const base = { glosses, sentenceNl: 'De hele zin.', affixCandidates }
+const morphology = new Map<string, ItemMorphology>([
+  ['membaca', { root: 'baca', affix: 'meN-' }],
+  ['dibaca', { root: 'baca', affix: 'di-' }],
+])
+
+const families = new Map<string, string[]>([['baca', ['baca', 'membaca', 'dibaca']]])
+
+const base: GlossDeps = {
+  glosses,
+  morphology,
+  families,
+  affixFunctionNl: (affix) => (affix === 'meN-' ? 'actief werkwoord' : affix),
+  sentenceNl: 'De hele zin.',
+}
 
 describe('resolveGloss cascade', () => {
   it('exact item match → NL gloss (item source)', () => {
-    expect(resolveGloss(tok('gelap'), base)).toEqual({ text: 'donker', source: 'item' })
+    expect(resolveGloss(tok('gelap'), base)).toEqual({ text: 'donker', source: 'item', morphology: undefined })
   })
 
   it('NL-first, falls back to EN when no NL', () => {
-    expect(resolveGloss(tok('enonly'), base)).toEqual({ text: 'english-only', source: 'item' })
+    expect(resolveGloss(tok('enonly'), base).text).toBe('english-only')
   })
 
-  it('affixed form glosses via its root (morphology source)', () => {
-    // membaca is not an item; its root baca is.
-    expect(resolveGloss(tok('membaca'), base)).toEqual({ text: 'lezen', source: 'morphology' })
+  it('item that is ALSO affixed → item meaning + morphology payload attached', () => {
+    const r = resolveGloss(tok('membaca'), base)
+    expect(r.source).toBe('item')
+    expect(r.text).toBe('lezen (actief)')
+    expect(r.morphology).toEqual({
+      affix: 'meN-',
+      affixFunctionNl: 'actief werkwoord',
+      root: 'baca',
+      rootMeaning: 'lezen',
+      family: ['baca', 'membaca', 'dibaca'],
+    })
+  })
+
+  it('affixed non-item → root meaning + morphology payload (morphology source)', () => {
+    const r = resolveGloss(tok('dibaca'), base)
+    expect(r.source).toBe('morphology')
+    expect(r.text).toBe('lezen') // the root's meaning
+    expect(r.morphology?.root).toBe('baca')
+    expect(r.morphology?.family).toEqual(['baca', 'membaca', 'dibaca'])
   })
 
   it('proper noun → no gloss (name source)', () => {
-    expect(resolveGloss(tok('manu', { isProperNoun: true }), base)).toEqual({
-      text: null, source: 'name',
-    })
+    expect(resolveGloss(tok('manu', { isProperNoun: true }), base)).toEqual({ text: null, source: 'name' })
   })
 
   it('unknown word → sentence-translation fallback', () => {
-    expect(resolveGloss(tok('xyzzy'), base)).toEqual({
-      text: 'De hele zin.', source: 'sentence',
-    })
+    expect(resolveGloss(tok('xyzzy'), base)).toEqual({ text: 'De hele zin.', source: 'sentence' })
   })
 
   it('non-word token → none', () => {
     expect(resolveGloss(tok('', { isWord: false }), base).source).toBe('none')
-  })
-})
-
-describe('affixCandidates', () => {
-  it('recovers the root of common prefixed/suffixed forms', () => {
-    expect(affixCandidates('membaca')).toContain('baca')
-    expect(affixCandidates('memukul')).toContain('pukul') // nasal restore (mem → p)
-    expect(affixCandidates('menulis')).toContain('tulis') // men → t
-    expect(affixCandidates('berlari')).toContain('lari')
-    expect(affixCandidates('makanan')).toContain('makan') // suffix -an
-    expect(affixCandidates('namanya')).toContain('nama') // suffix -nya
-  })
-  it('always includes the surface form itself', () => {
-    expect(affixCandidates('rumah')).toContain('rumah')
   })
 })

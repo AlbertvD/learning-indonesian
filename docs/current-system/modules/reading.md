@@ -45,10 +45,10 @@ pure `glossFor` closure (`index.ts:57`). `rankReadableTexts` filters to readable
 **Resolve a gloss** (`gloss.ts:33` `resolveGloss`) — a pure NL-first cascade:
 1. proper noun → no gloss (`name`, `gloss.ts:42`);
 2. exact `learning_item` → its `translation_nl`/`_en` (`item`, `gloss.ts:45`);
-3. *(P1)* affix-stripped candidate that **is** an item → that root's gloss
-   (`morphology`, `gloss.ts:49`, via the crude `affixStrip.affixCandidates`);
-   ***(P2)* this step is replaced by an `item_morphology` lookup** — affix + root +
-   family from the build-time pre-compute, gloss-only; `affixStrip.ts` is **deleted**;
+3. **morphology** — the word has an `item_morphology` row (build-time pre-compute,
+   ADR 0024) → show the root's meaning + the exploratory `MorphologyGloss` payload
+   (affix + function + root + family + Affix-Trainer link). `affixStrip.ts` is
+   **deleted**; the decomposer (`lib/capabilities/affixDecomposition`) is build-time;
 4. sentence fallback → the segment's Dutch translation (`sentence`, `gloss.ts:56`).
 
 **Rank texts** = for each readable text, `contentTokens` (non-proper-noun words) →
@@ -82,12 +82,11 @@ eligibility + scheduling come from the existing gate-OR + review path (see §5).
 | File | Role |
 |---|---|
 | `index.ts` | public interface + composition (`loadReader`, `rankReadableTexts`, *(P2)* `harvestWord`) |
-| `adapter.ts` | the only I/O — `get_text_coverage` RPC, `learning_items` glosses; *(P2)* `item_morphology` read + `learner_reading_harvest` write |
-| `gloss.ts` | the tap-to-gloss cascade (pure) |
+| `adapter.ts` | the only I/O — `get_text_coverage` RPC, `learning_items` glosses, `item_morphology` + family reads; *(P3)* `learner_reading_harvest` write |
+| `gloss.ts` | the tap-to-gloss cascade incl. the `MorphologyGloss` payload (pure) |
 | `coverage.ts` | token-weighted coverage + ordering (pure) |
 | `readableText.ts` | the `ReadableText` view-model + tokenization |
 | `functionWords.ts` | the ~150-word always-known list |
-| `affixStrip.ts` | *(P1 only)* crude runtime affix stripper — **deleted in P2** |
 
 ## 5. Seams to other modules
 
@@ -96,12 +95,11 @@ eligibility + scheduling come from the existing gate-OR + review path (see §5).
   not in the service (architect M1). "Is a podcast" (`audio_path != null`) is defined
   once, in the service.
 - **Sideways (affix labels):** `lib/capabilities/affixCatalog` — shared static catalog,
-  safe to import; supplies affix → function labels. The **Affix-Trainer link** uses a
-  pure route helper (`affixPracticePath`/`AFFIX_SESSION_MODE`) **relocated out of
-  `lib/morphology/practice.ts` into a shared route module** so both `lib/morphology` and
-  `lib/reading` import it without `lib/reading` reaching into `lib/morphology` (architect
-  R2 contradiction fix; until relocated, the strict no-`lib/morphology` invariant below
-  is at risk).
+  safe to import; `index.ts` reads `affixCatalogEntry(affix).glossNl` for the affix
+  function. The **Affix-Trainer link** is a plain route string `/morphology?affix=<label>`
+  built in the `GlossableText` component (a component→route edge, not a module import),
+  so `lib/reading` never imports `lib/morphology` — no `affixPracticePath` relocation was
+  needed (the link targets the trainer *detail* view, not the practice session).
 - **Downstream (harvest → scheduling):** `lib/collections/membership.ts`
   (`resolveActivatedMemberRefs`) reads `learner_reading_harvest`;
   `lib/session-builder/` reads *that* via the `activatedCollectionRefs` gate-OR
