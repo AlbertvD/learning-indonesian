@@ -9,24 +9,34 @@ import classes from './GlossableText.module.css'
  *  and a link into the Affix Trainer detail (/morphology?affix=…). Gloss-only. */
 function MorphologyDetail({ m }: { m: MorphologyGloss }) {
   const T = useT()
-  const family = m.family.filter((w) => w !== m.root)
   return (
     <>
-      <Divider my={6} />
-      <Group gap={6} mb={2} wrap="nowrap">
-        <Badge size="xs" variant="light">{m.affix}</Badge>
-        <Text size="xs" c="dimmed">{m.affixFunctionNl}</Text>
+      <Divider my={8} />
+      {/* The word's affix (left badge) + what it does. */}
+      <Group gap={8} mb={4} align="flex-start" wrap="nowrap">
+        <Badge size="md" variant="light" style={{ flexShrink: 0 }}>{m.affix}</Badge>
+        <Text size="sm" c="dimmed">{m.affixFunctionNl}</Text>
       </Group>
-      <Text size="xs">
+      {/* The root it derives from + its meaning. */}
+      <Text size="sm">
         ← <Text span fw={600}>{m.root}</Text>
         {m.rootMeaning && <Text span c="dimmed"> · {m.rootMeaning}</Text>}
       </Text>
-      {family.length > 0 && (
-        <Text size="xs" c="dimmed" mt={2}>
-          {T.reading.wordFamily}: {[m.root, ...family].join(', ')}
-        </Text>
+      {/* The word family — each related form with what its affix does. */}
+      {m.family.length > 0 && (
+        <>
+          <Text size="xs" fw={700} tt="uppercase" c="dimmed" mt={8} mb={2}>
+            {T.reading.wordFamily}
+          </Text>
+          {m.family.map((f) => (
+            <Text key={f.form} size="sm" mb={2}>
+              <Text span fw={600}>{f.form}</Text>
+              <Text span size="xs" c="dimmed"> · {f.affixFunctionNl}</Text>
+            </Text>
+          ))}
+        </>
       )}
-      <Anchor component={Link} to={`/morphology?affix=${encodeURIComponent(m.affix)}`} size="xs" mt={4} display="block">
+      <Anchor component={Link} to={`/morphology?affix=${encodeURIComponent(m.affix)}`} size="sm" mt={8} display="block">
         {T.reading.affixTrainerLink} →
       </Anchor>
     </>
@@ -84,11 +94,11 @@ export function GlossableText({ text, glossFor }: GlossableTextProps) {
             if (!isActive) return <Fragment key={key}>{word} </Fragment>
             return (
               <Fragment key={key}>
-                <Popover opened position="bottom" withArrow shadow="md" width={220}
+                <Popover opened position="bottom" withArrow shadow="md" width={320}
                   onChange={(o) => { if (!o) setActive(null) }}>
                   <Popover.Target>{word}</Popover.Target>
                   <Popover.Dropdown className={classes.dropdown}>
-                    <Text fw={600} size="sm">{tok.raw}</Text>
+                    <Text fw={700} size="md">{tok.raw}</Text>
                     {active.gloss.text
                       ? (
                         <Text size="sm" c={active.gloss.source === 'sentence' ? 'dimmed' : undefined}>

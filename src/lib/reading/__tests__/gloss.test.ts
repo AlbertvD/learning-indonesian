@@ -19,13 +19,17 @@ const morphology = new Map<string, ItemMorphology>([
   ['dibaca', { root: 'baca', affix: 'di-' }],
 ])
 
-const families = new Map<string, string[]>([['baca', ['baca', 'membaca', 'dibaca']]])
+const families = new Map([
+  ['baca', [{ form: 'membaca', affix: 'meN-' }, { form: 'dibaca', affix: 'di-' }]],
+])
+
+const fn = (affix: string) => (affix === 'meN-' ? 'actief werkwoord' : affix === 'di-' ? 'passief' : affix)
 
 const base: GlossDeps = {
   glosses,
   morphology,
   families,
-  affixFunctionNl: (affix) => (affix === 'meN-' ? 'actief werkwoord' : affix),
+  affixFunctionNl: fn,
   sentenceNl: 'De hele zin.',
 }
 
@@ -47,7 +51,8 @@ describe('resolveGloss cascade', () => {
       affixFunctionNl: 'actief werkwoord',
       root: 'baca',
       rootMeaning: 'lezen',
-      family: ['baca', 'membaca', 'dibaca'],
+      // family excludes the tapped word itself; each member carries its affix function
+      family: [{ form: 'dibaca', affixFunctionNl: 'passief' }],
     })
   })
 
@@ -56,7 +61,7 @@ describe('resolveGloss cascade', () => {
     expect(r.source).toBe('morphology')
     expect(r.text).toBe('lezen') // the root's meaning
     expect(r.morphology?.root).toBe('baca')
-    expect(r.morphology?.family).toEqual(['baca', 'membaca', 'dibaca'])
+    expect(r.morphology?.family).toEqual([{ form: 'membaca', affixFunctionNl: 'actief werkwoord' }])
   })
 
   it('proper noun → no gloss (name source)', () => {

@@ -14,11 +14,17 @@
  * for the pre-seed, not a runtime layer.
  */
 import type { ReadingToken } from './readableText'
-import type { ItemMorphology } from './adapter'
+import type { ItemMorphology, FamilyMember } from './adapter'
 
 export interface ItemGloss {
   nl: string | null
   en: string | null
+}
+
+/** One related form in the word family, with what its affix does. */
+export interface FamilyGloss {
+  form: string
+  affixFunctionNl: string
 }
 
 /** The exploratory morphology detail shown in the popover (gloss-only; not drilled). */
@@ -31,8 +37,8 @@ export interface MorphologyGloss {
   root: string
   /** The root's own meaning (NL-first), if the root is a learning_item. */
   rootMeaning: string | null
-  /** Related forms sharing the root (incl. the root), for the "word family" display. */
-  family: string[]
+  /** Related derived forms sharing the root, each with its affix function. */
+  family: FamilyGloss[]
 }
 
 export type GlossSource = 'item' | 'morphology' | 'sentence' | 'name' | 'none'
@@ -54,19 +60,23 @@ function pickGloss(g: ItemGloss | undefined): string | null {
 export interface GlossDeps {
   glosses: Map<string, ItemGloss>
   morphology: Map<string, ItemMorphology>
-  families: Map<string, string[]>
+  families: Map<string, FamilyMember[]>
   /** affix label → learner-facing Dutch function (from AFFIX_CATALOG). */
   affixFunctionNl: (affix: string) => string
   sentenceNl: string
 }
 
-function buildMorphology(m: ItemMorphology, deps: GlossDeps): MorphologyGloss {
+function buildMorphology(m: ItemMorphology, surface: string, deps: GlossDeps): MorphologyGloss {
+  const members = deps.families.get(m.root) ?? []
   return {
     affix: m.affix,
     affixFunctionNl: deps.affixFunctionNl(m.affix),
     root: m.root,
     rootMeaning: pickGloss(deps.glosses.get(m.root)),
-    family: deps.families.get(m.root) ?? [m.root],
+    // exclude the tapped word itself from the family list (it's the popover headline)
+    family: members
+      .filter((mem) => mem.form !== surface)
+      .map((mem) => ({ form: mem.form, affixFunctionNl: deps.affixFunctionNl(mem.affix) })),
   }
 }
 
@@ -75,7 +85,7 @@ export function resolveGloss(token: ReadingToken, deps: GlossDeps): GlossResult 
   if (token.isProperNoun) return { text: null, source: 'name' }
 
   const morph = deps.morphology.get(token.normalized)
-  const morphology = morph ? buildMorphology(morph, deps) : undefined
+  const morphology = morph ? buildMorphology(morph, token.normalized, deps) : undefined
 
   // 2. exact item match — precise meaning; attach morphology if the word is also affixed.
   const exact = pickGloss(deps.glosses.get(token.normalized))
