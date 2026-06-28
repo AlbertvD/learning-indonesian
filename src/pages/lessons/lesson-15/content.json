@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Despina",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-15.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-15-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -366,21 +366,27 @@
               [
                 "meny-",
                 "s (valt weg, herstel s)",
-                "menyanyi → nyanyi; menyambung → sambung"
+                "menyapu → sapu; menyambung → sambung"
               ],
               [
                 "meng-",
                 "a, e, i, o, u, g, h (blijven staan) — of k (valt weg, herstel k)",
                 "mengisi → isi; mengirim → kirim"
+              ],
+              [
+                "menge-",
+                "eenlettergrepig basiswoord (geen klankverandering)",
+                "mengecat → cat; mengetik → tik"
               ]
             ],
-            "title": "Schema: van voorvoegsel terug naar de beginklank"
+            "title": "Schema: van voorvoegsel terug naar de beginklank",
+            "title_en": "Pattern: from prefix back to initial sound"
           },
           {
             "rules": [
               "Bij mem- kan het basiswoord met b of f beginnen (blijft staan), of met p (de p is weggevallen): membayar → bayar, maar memikir → pikir.",
               "Bij men- kan het basiswoord met c, d of j beginnen (blijft staan), of met t (de t is weggevallen): mencari → cari, maar menari → tari.",
-              "Bij meny- is de s altijd weggevallen: menyanyi → nyanyi.",
+              "Bij meny- valt bij een s-stam de s weg (menyapu → sapu, menyewa → sewa); maar een basiswoord dat zelf met ny- begint (nyanyi, nyala) houdt zijn ny- en krijgt alleen me-, zonder dat er een s wegvalt.",
               "Bij meng- kan het basiswoord met een klinker of g/h beginnen (blijft staan), of met k (de k is weggevallen): menggoreng → goreng, maar mengirim → kirim.",
               "Een ME-vorm met een weggevallen klank is dus dubbelzinnig op het eerste gezicht (memasak kan van masak komen); het basiswoord en de context bepalen de juiste keuze."
             ],
@@ -388,7 +394,7 @@
             "rules_en": [
               "With mem- the base word can begin with b or f (unchanged), or with p (the p has been dropped): membayar → bayar, but memikir → pikir.",
               "With men- the base word can begin with c, d or j (unchanged), or with t (the t has been dropped): mencari → cari, but menari → tari.",
-              "With meny- the s is always dropped: menyanyi → nyanyi.",
+              "With meny-, an s-stem drops its s (menyapu → sapu, menyewa → sewa); but a base word that itself begins with ny- (nyanyi, nyala) keeps its ny- and just takes me-, with no s dropped.",
               "With meng- the base word can begin with a vowel or g/h (unchanged), or with k (the k has been dropped): menggoreng → goreng, but mengirim → kirim.",
               "A ME-form with a dropped sound is thus ambiguous at first glance (memasak can come from masak); the base word and context determine the correct choice."
             ],
@@ -692,7 +698,7 @@
     },
     "LessonAudioPlayer": {
       "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
-      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-15.m4a\" voice=\"id-ID-Chirp3-HD-Despina\" />",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Despina\" />",
       "purpose": "The lesson-level explanation/overview audio player.",
       "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },

@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Algenib",
     "duration_seconds": null,
-    "lesson_audio_url": null,
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-20-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -64,14 +64,14 @@
           {
             "dutch": "kleine, hete pepers",
             "english": "small, hot peppers",
-            "indonesian": "cabai, cabe rawit",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cabai-cabe-rawit-eba7e533.mp3"
+            "indonesian": "cabai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cabai-2d648f7d.mp3"
           },
           {
             "dutch": "kruidnagel",
             "english": "clove",
-            "indonesian": "cengkeh, cengkih",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cengkeh-cengkih-e009b9c4.mp3"
+            "indonesian": "cengkeh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cengkeh-040743f9.mp3"
           },
           {
             "dutch": "azijn",
@@ -118,8 +118,8 @@
           {
             "dutch": "komijn",
             "english": "cumin",
-            "indonesian": "jintan, jinten",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jintan-jinten-dea627b7.mp3"
+            "indonesian": "jintan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jintan-e31bc498.mp3"
           },
           {
             "dutch": "kaneel",
@@ -178,14 +178,14 @@
           {
             "dutch": "geelwortel, curcuma",
             "english": "turmeric",
-            "indonesian": "kunir, kunyit",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kunir-kunyit-449ace2b.mp3"
+            "indonesian": "kunyit",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kunyit-56bf43ca.mp3"
           },
           {
             "dutch": "peper",
             "english": "pepper",
-            "indonesian": "lada, merica",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lada-merica-6bc1d9c6.mp3"
+            "indonesian": "lada",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lada-fc4e93b4.mp3"
           },
           {
             "dutch": "gemberachtige wortel",
@@ -208,8 +208,8 @@
           {
             "dutch": "peper",
             "english": "pepper",
-            "indonesian": "merica, lada",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/merica-lada-9dde6c21.mp3"
+            "indonesian": "merica",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/merica-4defe9aa.mp3"
           },
           {
             "dutch": "nootmuskaat",
@@ -220,14 +220,14 @@
           {
             "dutch": "vanille",
             "english": "vanilla",
-            "indonesian": "panili, vanili",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/panili-vanili-a1709c97.mp3"
+            "indonesian": "panili",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/panili-782e363e.mp3"
           },
           {
             "dutch": "geurige vruchten van de petaiboom (stinkboon)",
             "english": "fragrant pods of the petai tree (stinkbean)",
-            "indonesian": "petai, pete",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/petai-pete-71440e69.mp3"
+            "indonesian": "petai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/petai-f82890f7.mp3"
           },
           {
             "dutch": "kruiden",
@@ -238,14 +238,14 @@
           {
             "dutch": "tot dikke pasta fijngewreven Spaanse pepers",
             "english": "chili peppers ground to a thick paste",
-            "indonesian": "sambal, sambel",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sambal-sambel-130fc6c3.mp3"
+            "indonesian": "sambal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sambal-4df8d8a6.mp3"
           },
           {
             "dutch": "sap van uitgeperste kokospulp",
             "english": "juice of pressed coconut pulp",
-            "indonesian": "santan, santen",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/santan-santen-fbc48be6.mp3"
+            "indonesian": "santan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/santan-2b6935d1.mp3"
           },
           {
             "dutch": "basilicumzaadjes",
@@ -256,8 +256,8 @@
           {
             "dutch": "citrusachtige grassoort",
             "english": "citrus-like grass",
-            "indonesian": "serai, sereh",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/serai-sereh-ee3ccede.mp3"
+            "indonesian": "serai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/serai-beb04179.mp3"
           },
           {
             "dutch": "geurig, aromatisch blad",
@@ -280,8 +280,8 @@
           {
             "dutch": "vanille",
             "english": "vanilla",
-            "indonesian": "vanili, panili",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/vanili-panili-8453a6fc.mp3"
+            "indonesian": "vanili",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/vanili-d3010245.mp3"
           },
           {
             "dutch": "sesamzaadjes",
@@ -366,8 +366,8 @@
           {
             "dutch": "heet / scherp",
             "english": "hot / spicy",
-            "indonesian": "pedas, pedis",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pedas-pedis-0b9a4350.mp3"
+            "indonesian": "pedas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pedas-a8c86dc3.mp3"
           },
           {
             "dutch": "smaak",
@@ -1261,7 +1261,10 @@
       "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
     },
     "LessonAudioPlayer": {
-      "note": "No lesson-level audio published for this lesson yet."
+      "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Algenib\" />",
+      "purpose": "The lesson-level explanation/overview audio player.",
+      "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
     "PracticeActions": {
       "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",

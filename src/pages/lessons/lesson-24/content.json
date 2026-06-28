@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Achird",
     "duration_seconds": null,
-    "lesson_audio_url": null,
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-24-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -431,7 +431,7 @@
           {
             "rules": [
               "Bij veel basiswoorden geven -KAN en -i een verschillende betekenis: -KAN causatief/benefactief (patiens bewogen of gemaakt), -i locatief (handeling op een vast doelpunt gericht).",
-              "tinggal (blijven): meninggalkan = achterlaten; meninggali = nalaten, verlaten.",
+              "tinggal (blijven): meninggalkan = achterlaten, verlaten; meninggali = bewonen / nalaten (als erfenis).",
               "duduk (zitten): mendudukkan = iemand laten zitten; menduduki = bezetten.",
               "gambar (illustratie, tekening): menggambarkan = afbeelden; menggambari = illustreren, beschilderen."
             ],
@@ -450,7 +450,7 @@
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meninggalkan-3509053a.mp3"
               },
               {
-                "dutch": "nalaten; verlaten",
+                "dutch": "bewonen; nalaten (als erfenis)",
                 "english": "bequeath; leave",
                 "indonesian": "meninggali",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meninggali-306e708d.mp3"
@@ -480,8 +480,8 @@
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anaknya-ditinggali-uang-oleh-8a09c3c4.mp3"
               },
               {
-                "dutch": "Wie heeft dat huis verlaten?",
-                "english": "Who left that house?",
+                "dutch": "Wie bewoont dat huis?",
+                "english": "Who inhabits that house?",
                 "indonesian": "Siapa meninggali rumah itu?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/siapa-meninggali-rumah-itu-86a75a60.mp3"
               },
@@ -548,7 +548,7 @@
             ],
             "rules_en": [
               "With many base words, -KAN and -i have different meanings: -KAN causative/benefactive (patient moved or made), -i locative (action directed at a fixed goal).",
-              "tinggal (stay): meninggalkan = abandon; meninggali = bequeath, leave.",
+              "tinggal (stay): meninggalkan = abandon, leave; meninggali = inhabit / bequeath.",
               "duduk (sit): mendudukkan = make someone sit; menduduki = occupy.",
               "gambar (illustration, drawing): menggambarkan = depict; menggambari = illustrate, paint."
             ],
@@ -576,7 +576,7 @@
                 "aku",
                 "ik",
                 "mengakui — erkennen, toegeven",
-                "mengakukan — doen erkennen, laten bekennen"
+                "(aku heeft geen gangbare -kan-vorm)"
               ],
               [
                 "atas",
@@ -847,7 +847,10 @@
       "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
     },
     "LessonAudioPlayer": {
-      "note": "No lesson-level audio published for this lesson yet."
+      "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Achird\" />",
+      "purpose": "The lesson-level explanation/overview audio player.",
+      "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
     "PracticeActions": {
       "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",

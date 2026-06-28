@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Orus",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-14.m4a",
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-14-nl.mp3",
     "lesson_audio_url_en": null
   },
   "sections": [
@@ -307,6 +307,18 @@
             "english": "close",
             "indonesian": "tutup",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tutup-14bc4f10.mp3"
+          },
+          {
+            "dutch": "land/wal",
+            "english": "land",
+            "indonesian": "darat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/darat-83326523.mp3"
+          },
+          {
+            "dutch": "stap",
+            "english": "step",
+            "indonesian": "langkah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/langkah-8a92df2c.mp3"
           }
         ]
       }
@@ -370,7 +382,8 @@
                 "beperkt"
               ]
             ],
-            "title": "Combinaties van ME- met woordklassen"
+            "title": "Combinaties van ME- met woordklassen",
+            "title_en": "Combinations of ME- with word classes"
           },
           {
             "rules": [
@@ -585,16 +598,16 @@
             "title": "6. ME- + woord van plaats",
             "examples": [
               {
-                "dutch": "boven, bovenkant → omhoog gaan, het hogerop zoeken",
-                "english": "above, top → to go up, to seek higher",
-                "indonesian": "atas → mengatas",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/atas-mengatas-54794ad7.mp3"
+                "dutch": "land, vasteland → landen, aan land gaan",
+                "english": "land, shore → to land, to go ashore",
+                "indonesian": "darat → mendarat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/darat-mendarat-a2a4b07b.mp3"
               },
               {
-                "dutch": "Het stof ging omhoog vanwege de wind.",
-                "english": "The dust went up because of the wind.",
-                "indonesian": "Debu mengatas karena angin.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/debu-mengatas-karena-angin-2073cd98.mp3"
+                "dutch": "Het vliegtuig landt op het vliegveld.",
+                "english": "The plane lands at the airport.",
+                "indonesian": "Pesawat mendarat di bandara.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pesawat-mendarat-di-bandara-f381c27b.mp3"
               }
             ],
             "rules_en": [
@@ -912,7 +925,10 @@
       "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
     },
     "LessonAudioPlayer": {
-      "note": "No lesson-level audio published for this lesson yet."
+      "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
+      "usage": "<LessonAudioPlayer src=undefined voice=\"id-ID-Chirp3-HD-Orus\" />",
+      "purpose": "The lesson-level explanation/overview audio player.",
+      "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
     "PracticeActions": {
       "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
