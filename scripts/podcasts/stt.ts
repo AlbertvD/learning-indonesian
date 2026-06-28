@@ -56,6 +56,11 @@ export async function transcribeWordOffsets(mp3: Buffer): Promise<SttWord[]> {
       languageCode: 'id-ID',
       enableAutomaticPunctuation: true,
       enableWordTimeOffsets: true,
+      // `latest_long` is tuned for long-form narration; the default model drops
+      // runs of words on our ~90-130s episodes and lumps the audio into one
+      // over-long word, which breaks follow-along (skip + hover). ADR 0022 amend.
+      model: 'latest_long',
+      useEnhanced: true,
     },
     audio: { content: mp3.toString('base64') },
   })

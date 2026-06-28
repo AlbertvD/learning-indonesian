@@ -17,16 +17,16 @@
         {
           "word": "Dulu",
           "start": 0,
-          "end": 0.8
+          "end": 0.7
         },
         {
           "word": "sekali,",
-          "start": 0.8,
-          "end": 1.2
+          "start": 0.7,
+          "end": 1.1
         },
         {
           "word": "di",
-          "start": 1.2,
+          "start": 1.1,
           "end": 1.8
         },
         {
@@ -37,27 +37,27 @@
         {
           "word": "Timur,",
           "start": 2,
-          "end": 2.3
+          "end": 2.2
         },
         {
           "word": "ada",
-          "start": 2.3,
-          "end": 3
+          "start": 2.2,
+          "end": 2.9
         },
         {
           "word": "seekor",
-          "start": 3,
-          "end": 3.3
+          "start": 2.9,
+          "end": 3.4
         },
         {
           "word": "buaya",
-          "start": 3.3,
-          "end": 3.8
+          "start": 3.4,
+          "end": 3.7
         },
         {
           "word": "besar.",
-          "start": 3.8,
-          "end": 4.2
+          "start": 3.7,
+          "end": 4
         }
       ]
     },
@@ -69,43 +69,43 @@
       "words": [
         {
           "word": "Namanya",
-          "start": 4.2,
-          "end": 5.9
+          "start": 5,
+          "end": 5.7
         },
         {
           "word": "Baya.",
-          "start": 5.9,
-          "end": 6.5
+          "start": 5.7,
+          "end": 6.4
         },
         {
           "word": "Dia",
-          "start": 6.5,
+          "start": 6.4,
           "end": 7.3
         },
         {
           "word": "sangat",
           "start": 7.3,
-          "end": 7.7
+          "end": 7.5
         },
         {
           "word": "kuat",
-          "start": 7.7,
-          "end": 8
+          "start": 7.5,
+          "end": 7.8
         },
         {
           "word": "dan",
-          "start": 8,
-          "end": 8.3
+          "start": 7.8,
+          "end": 8
         },
         {
           "word": "penguasa",
-          "start": 8.3,
-          "end": 8.9
+          "start": 8,
+          "end": 8.7
         },
         {
           "word": "sungai.",
-          "start": 8.9,
-          "end": 9.1
+          "start": 8.7,
+          "end": 9
         }
       ]
     },
@@ -117,43 +117,43 @@
       "words": [
         {
           "word": "Di",
-          "start": 9.1,
-          "end": 10.3
+          "start": 9,
+          "end": 10.4
         },
         {
           "word": "laut,",
-          "start": 10.3,
+          "start": 10.4,
           "end": 10.6
         },
         {
           "word": "ada",
           "start": 10.6,
-          "end": 11.4
+          "end": 11.3
         },
         {
           "word": "seekor",
-          "start": 11.4,
-          "end": 11.6
+          "start": 11.3,
+          "end": 11.8
         },
         {
           "word": "hiu",
-          "start": 11.6,
-          "end": 11.65
+          "start": 11.8,
+          "end": 12.1
         },
         {
           "word": "besar.",
-          "start": 11.6,
-          "end": 11.65
+          "start": 12.1,
+          "end": 12.2
         },
         {
           "word": "Namanya",
-          "start": 11.6,
-          "end": 11.65
+          "start": 12.2,
+          "end": 13.6
         },
         {
           "word": "Sura.",
-          "start": 11.6,
-          "end": 11.65
+          "start": 13.6,
+          "end": 14.2
         }
       ]
     },
@@ -165,38 +165,38 @@
       "words": [
         {
           "word": "Sura",
-          "start": 11.6,
-          "end": 11.65
+          "start": 14.2,
+          "end": 15.4
         },
         {
           "word": "juga",
-          "start": 11.6,
-          "end": 11.65
+          "start": 15.4,
+          "end": 15.5
         },
         {
           "word": "sangat",
-          "start": 11.6,
-          "end": 11.65
+          "start": 15.5,
+          "end": 15.8
         },
         {
           "word": "kuat",
-          "start": 11.6,
-          "end": 11.65
+          "start": 15.8,
+          "end": 16.1
         },
         {
           "word": "dan",
-          "start": 11.6,
-          "end": 11.65
+          "start": 16.1,
+          "end": 16.9
         },
         {
           "word": "penguasa",
-          "start": 11.6,
-          "end": 11.65
+          "start": 16.9,
+          "end": 17.5
         },
         {
           "word": "laut.",
-          "start": 11.6,
-          "end": 11.65
+          "start": 17.5,
+          "end": 17.7
         }
       ]
     },
@@ -208,58 +208,58 @@
       "words": [
         {
           "word": "Sura",
-          "start": 11.6,
-          "end": 11.65
+          "start": 17.7,
+          "end": 19
         },
         {
           "word": "bosan",
-          "start": 11.6,
-          "end": 19.4
+          "start": 19,
+          "end": 19.3
         },
         {
           "word": "hanya",
-          "start": 19.4,
-          "end": 19.45
+          "start": 19.3,
+          "end": 19.6
         },
         {
           "word": "makan",
-          "start": 19.4,
-          "end": 20.1
+          "start": 19.6,
+          "end": 19.9
         },
         {
           "word": "ikan.",
-          "start": 20.1,
-          "end": 20.5
+          "start": 19.9,
+          "end": 20.2
         },
         {
           "word": "Dia",
-          "start": 20.5,
-          "end": 21.4
+          "start": 20.2,
+          "end": 21.2
         },
         {
           "word": "ingin",
-          "start": 21.4,
-          "end": 21.6
+          "start": 21.2,
+          "end": 21.4
         },
         {
           "word": "coba",
-          "start": 21.6,
-          "end": 22
+          "start": 21.4,
+          "end": 21.8
         },
         {
           "word": "makan",
-          "start": 22,
-          "end": 22.4
+          "start": 21.8,
+          "end": 22.2
         },
         {
           "word": "yang",
-          "start": 22.4,
-          "end": 22.6
+          "start": 22.2,
+          "end": 22.4
         },
         {
           "word": "lain.",
-          "start": 22.6,
-          "end": 22.8
+          "start": 22.4,
+          "end": 22.7
         }
       ]
     },
@@ -271,33 +271,33 @@
       "words": [
         {
           "word": "Jadi,",
-          "start": 22.8,
-          "end": 22.85
+          "start": 22.7,
+          "end": 24
         },
         {
           "word": "Sura",
-          "start": 22.8,
-          "end": 22.85
+          "start": 24,
+          "end": 25
         },
         {
           "word": "berenang",
-          "start": 22.8,
-          "end": 22.85
+          "start": 25,
+          "end": 25.2
         },
         {
           "word": "ke",
-          "start": 22.8,
-          "end": 22.85
+          "start": 25.2,
+          "end": 25.6
         },
         {
           "word": "sungai",
-          "start": 22.8,
-          "end": 22.85
+          "start": 25.6,
+          "end": 25.7
         },
         {
           "word": "Baya.",
-          "start": 22.8,
-          "end": 22.85
+          "start": 25.7,
+          "end": 26.2
         }
       ]
     },
@@ -309,48 +309,48 @@
       "words": [
         {
           "word": "Di",
-          "start": 22.8,
-          "end": 22.85
+          "start": 26.2,
+          "end": 27.3
         },
         {
           "word": "sungai,",
-          "start": 22.8,
-          "end": 22.85
+          "start": 27.3,
+          "end": 27.5
         },
         {
           "word": "dia",
-          "start": 22.8,
+          "start": 27.5,
           "end": 28.3
         },
         {
           "word": "makan",
           "start": 28.3,
-          "end": 28.7
+          "end": 28.5
         },
         {
           "word": "anak",
-          "start": 28.7,
-          "end": 29
+          "start": 28.5,
+          "end": 28.9
         },
         {
           "word": "rusa",
-          "start": 29,
-          "end": 29.4
+          "start": 28.9,
+          "end": 29.3
         },
         {
           "word": "dan",
-          "start": 29.4,
-          "end": 29.7
+          "start": 29.3,
+          "end": 29.5
         },
         {
           "word": "binatang",
-          "start": 29.7,
-          "end": 30.2
+          "start": 29.5,
+          "end": 29.9
         },
         {
           "word": "lain.",
-          "start": 30.2,
-          "end": 30.5
+          "start": 29.9,
+          "end": 30.3
         }
       ]
     },
@@ -362,43 +362,43 @@
       "words": [
         {
           "word": "Baya",
-          "start": 30.5,
-          "end": 31.7
+          "start": 30.3,
+          "end": 31.6
         },
         {
           "word": "jadi",
-          "start": 31.7,
-          "end": 32
+          "start": 31.6,
+          "end": 31.9
         },
         {
           "word": "heran,",
-          "start": 32,
-          "end": 32.3
+          "start": 31.9,
+          "end": 32.2
         },
         {
           "word": "kenapa",
-          "start": 32.3,
+          "start": 32.2,
           "end": 32.8
         },
         {
           "word": "makanannya",
           "start": 32.8,
-          "end": 33.7
+          "end": 33.6
         },
         {
           "word": "di",
-          "start": 33.7,
+          "start": 33.6,
           "end": 33.8
         },
         {
           "word": "sungai",
           "start": 33.8,
-          "end": 34.2
+          "end": 34
         },
         {
           "word": "berkurang.",
-          "start": 34.2,
-          "end": 34.5
+          "start": 34,
+          "end": 34.6
         }
       ]
     },
@@ -410,38 +410,38 @@
       "words": [
         {
           "word": "Baya",
-          "start": 34.5,
-          "end": 34.55
+          "start": 34.6,
+          "end": 36.2
         },
         {
           "word": "melihat",
-          "start": 34.5,
-          "end": 34.55
+          "start": 36.2,
+          "end": 36.3
         },
         {
           "word": "Sura",
-          "start": 34.5,
-          "end": 34.55
+          "start": 36.3,
+          "end": 36.8
         },
         {
           "word": "sedang",
-          "start": 34.5,
-          "end": 37.1
+          "start": 36.8,
+          "end": 37
         },
         {
           "word": "makan",
-          "start": 37.1,
-          "end": 37.5
+          "start": 37,
+          "end": 37.3
         },
         {
           "word": "di",
-          "start": 37.5,
+          "start": 37.3,
           "end": 37.7
         },
         {
           "word": "sungainya.",
           "start": 37.7,
-          "end": 37.75
+          "end": 38
         }
       ]
     },
@@ -453,63 +453,63 @@
       "words": [
         {
           "word": "\"Hei",
-          "start": 37.7,
-          "end": 37.75
+          "start": 38,
+          "end": 38.9
         },
         {
           "word": "Sura!",
-          "start": 37.7,
-          "end": 37.9
+          "start": 38.9,
+          "end": 39.9
         },
         {
           "word": "Ini",
-          "start": 37.9,
-          "end": 38.2
+          "start": 39.9,
+          "end": 40.3
         },
         {
           "word": "daerahku!",
-          "start": 38.2,
-          "end": 41.1
+          "start": 40.3,
+          "end": 41
         },
         {
           "word": "Kenapa",
-          "start": 41.1,
-          "end": 42.1
+          "start": 41,
+          "end": 41.9
         },
         {
           "word": "kamu",
-          "start": 42.1,
-          "end": 42.3
+          "start": 41.9,
+          "end": 42.2
         },
         {
           "word": "makan",
-          "start": 42.3,
-          "end": 42.7
+          "start": 42.2,
+          "end": 42.6
         },
         {
           "word": "di",
-          "start": 42.7,
+          "start": 42.6,
           "end": 42.8
         },
         {
           "word": "sini?\"",
           "start": 42.8,
-          "end": 43.1
+          "end": 42.849999999999994
         },
         {
           "word": "kata",
-          "start": 43.1,
-          "end": 43.9
+          "start": 42.8,
+          "end": 43.8
         },
         {
           "word": "Baya",
-          "start": 43.9,
-          "end": 43.949999999999996
+          "start": 43.8,
+          "end": 44.4
         },
         {
           "word": "marah.",
-          "start": 43.9,
-          "end": 44.3
+          "start": 44.4,
+          "end": 44.449999999999996
         }
       ]
     },
@@ -521,63 +521,63 @@
       "words": [
         {
           "word": "Sura",
-          "start": 44.3,
-          "end": 44.6
+          "start": 44.4,
+          "end": 45.9
         },
         {
           "word": "menjawab,",
-          "start": 44.6,
-          "end": 46.4
+          "start": 45.9,
+          "end": 46.2
         },
         {
           "word": "\"Bukan!",
-          "start": 46.4,
+          "start": 46.2,
           "end": 46.9
         },
         {
           "word": "Ini",
           "start": 46.9,
-          "end": 47.9
+          "end": 47.7
         },
         {
           "word": "bukan",
-          "start": 47.9,
-          "end": 48.2
+          "start": 47.7,
+          "end": 48
         },
         {
           "word": "daerahmu!",
-          "start": 48.2,
-          "end": 48.9
+          "start": 48,
+          "end": 48.7
         },
         {
           "word": "Aku",
-          "start": 48.9,
-          "end": 49.7
+          "start": 48.7,
+          "end": 49.4
         },
         {
           "word": "bebas",
-          "start": 49.7,
-          "end": 50
+          "start": 49.4,
+          "end": 49.9
         },
         {
           "word": "makan",
-          "start": 50,
-          "end": 50.4
+          "start": 49.9,
+          "end": 50.3
         },
         {
           "word": "di",
-          "start": 50.4,
+          "start": 50.3,
           "end": 50.5
         },
         {
           "word": "mana",
           "start": 50.5,
-          "end": 50.8
+          "end": 50.7
         },
         {
           "word": "saja!\"",
-          "start": 50.8,
-          "end": 51.2
+          "start": 50.7,
+          "end": 50.9
         }
       ]
     },
@@ -589,63 +589,63 @@
       "words": [
         {
           "word": "Mereka",
-          "start": 51.2,
-          "end": 52.1
+          "start": 50.9,
+          "end": 52
         },
         {
           "word": "pun",
-          "start": 52.1,
-          "end": 52.5
+          "start": 52,
+          "end": 52.4
         },
         {
           "word": "bertengkar",
-          "start": 52.5,
-          "end": 52.8
+          "start": 52.4,
+          "end": 52.9
         },
         {
           "word": "hebat.",
-          "start": 52.8,
-          "end": 53.1
+          "start": 52.9,
+          "end": 53.2
         },
         {
           "word": "Mereka",
-          "start": 53.1,
-          "end": 53.7
+          "start": 53.2,
+          "end": 53.6
         },
         {
           "word": "sangat",
-          "start": 53.7,
-          "end": 54.2
+          "start": 53.6,
+          "end": 53.9
         },
         {
           "word": "kuat,",
-          "start": 54.2,
-          "end": 54.5
+          "start": 53.9,
+          "end": 54.3
         },
         {
           "word": "jadi",
-          "start": 54.5,
-          "end": 54.9
+          "start": 54.3,
+          "end": 54.8
         },
         {
           "word": "tidak",
-          "start": 54.9,
-          "end": 55.3
+          "start": 54.8,
+          "end": 55
         },
         {
           "word": "ada",
-          "start": 55.3,
-          "end": 55.4
+          "start": 55,
+          "end": 55.2
         },
         {
           "word": "yang",
-          "start": 55.4,
-          "end": 55.6
+          "start": 55.2,
+          "end": 55.4
         },
         {
           "word": "menang.",
-          "start": 55.6,
-          "end": 55.9
+          "start": 55.4,
+          "end": 55.7
         }
       ]
     },
@@ -657,23 +657,23 @@
       "words": [
         {
           "word": "Akhirnya,",
-          "start": 55.9,
-          "end": 57.3
+          "start": 55.7,
+          "end": 56.9
         },
         {
           "word": "mereka",
-          "start": 57.3,
-          "end": 58.1
+          "start": 56.9,
+          "end": 57.8
         },
         {
           "word": "berdua",
-          "start": 58.1,
-          "end": 58.3
+          "start": 57.8,
+          "end": 58.4
         },
         {
           "word": "capek.",
-          "start": 58.3,
-          "end": 59
+          "start": 58.4,
+          "end": 58.8
         }
       ]
     },
@@ -685,22 +685,22 @@
       "words": [
         {
           "word": "\"Kita",
-          "start": 59,
-          "end": 59.9
+          "start": 58.8,
+          "end": 59.6
         },
         {
           "word": "berhenti",
-          "start": 59.9,
-          "end": 60.5
+          "start": 59.6,
+          "end": 60
         },
         {
           "word": "saja,",
-          "start": 60.5,
-          "end": 60.6
+          "start": 60,
+          "end": 60.5
         },
         {
           "word": "Sura.",
-          "start": 60.6,
+          "start": 60.5,
           "end": 61
         },
         {
@@ -711,17 +711,17 @@
         {
           "word": "lelah,\"",
           "start": 61.8,
-          "end": 61.849999999999994
+          "end": 62.3
         },
         {
           "word": "kata",
-          "start": 61.8,
-          "end": 63
+          "start": 62.3,
+          "end": 62.8
         },
         {
           "word": "Baya.",
-          "start": 63,
-          "end": 63.3
+          "start": 62.8,
+          "end": 63.2
         }
       ]
     },
@@ -733,58 +733,58 @@
       "words": [
         {
           "word": "Sura",
-          "start": 63.3,
-          "end": 63.349999999999994
+          "start": 63.9,
+          "end": 65
         },
         {
           "word": "setuju.",
-          "start": 63.3,
+          "start": 65,
           "end": 65.4
         },
         {
           "word": "\"Oke.",
           "start": 65.4,
-          "end": 66.6
+          "end": 66.5
         },
         {
           "word": "Tapi",
-          "start": 66.6,
-          "end": 67.5
+          "start": 66.5,
+          "end": 67.4
         },
         {
           "word": "kita",
-          "start": 67.5,
+          "start": 67.4,
           "end": 67.6
         },
         {
           "word": "buat",
           "start": 67.6,
-          "end": 68
+          "end": 67.8
         },
         {
           "word": "perjanjian.",
-          "start": 68,
-          "end": 68.4
+          "start": 67.8,
+          "end": 68.3
         },
         {
           "word": "Muara",
-          "start": 68.4,
-          "end": 68.45
+          "start": 68.3,
+          "end": 69.5
         },
         {
           "word": "sungai",
-          "start": 68.4,
-          "end": 68.45
+          "start": 69.5,
+          "end": 69.6
         },
         {
           "word": "itu",
-          "start": 68.4,
+          "start": 69.6,
           "end": 69.9
         },
         {
           "word": "batasnya.\"",
           "start": 69.9,
-          "end": 70.5
+          "end": 70.4
         }
       ]
     },
@@ -796,83 +796,83 @@
       "words": [
         {
           "word": "\"Kamu",
-          "start": 70.5,
-          "end": 71.4
+          "start": 70.4,
+          "end": 71.1
         },
         {
           "word": "di",
-          "start": 71.4,
-          "end": 71.6
+          "start": 71.1,
+          "end": 71.7
         },
         {
           "word": "sungai,",
-          "start": 71.6,
-          "end": 71.8
+          "start": 71.7,
+          "end": 71.9
         },
         {
           "word": "aku",
-          "start": 71.8,
+          "start": 71.9,
           "end": 72.7
         },
         {
           "word": "di",
           "start": 72.7,
-          "end": 73
+          "end": 73.1
         },
         {
           "word": "laut.",
-          "start": 73,
-          "end": 73.4
+          "start": 73.1,
+          "end": 73.2
         },
         {
           "word": "Jangan",
-          "start": 73.4,
-          "end": 74.1
+          "start": 73.2,
+          "end": 73.9
         },
         {
           "word": "masuk",
-          "start": 74.1,
-          "end": 74.5
+          "start": 73.9,
+          "end": 74.3
         },
         {
           "word": "daerahku,",
-          "start": 74.5,
-          "end": 75
+          "start": 74.3,
+          "end": 74.9
         },
         {
           "word": "aku",
-          "start": 75,
-          "end": 75.8
+          "start": 74.9,
+          "end": 75.6
         },
         {
           "word": "juga",
+          "start": 75.6,
+          "end": 75.8
+        },
+        {
+          "word": "tidak",
           "start": 75.8,
           "end": 76
         },
         {
-          "word": "tidak",
-          "start": 76,
-          "end": 76.2
-        },
-        {
           "word": "masuk",
-          "start": 76.2,
-          "end": 76.6
+          "start": 76,
+          "end": 76.3
         },
         {
           "word": "daerahmu,\"",
-          "start": 76.6,
-          "end": 77.1
+          "start": 76.3,
+          "end": 76.9
         },
         {
           "word": "kata",
-          "start": 77.9,
+          "start": 77.8,
           "end": 78.3
         },
         {
           "word": "Sura.",
           "start": 78.3,
-          "end": 78.35
+          "end": 78.5
         }
       ]
     },
@@ -884,38 +884,38 @@
       "words": [
         {
           "word": "Baya",
-          "start": 78.3,
-          "end": 78.35
+          "start": 78.5,
+          "end": 79.7
         },
         {
           "word": "setuju.",
-          "start": 78.3,
-          "end": 78.7
+          "start": 79.7,
+          "end": 80.2
         },
         {
           "word": "Sura",
-          "start": 78.7,
-          "end": 80.5
+          "start": 80.2,
+          "end": 81
         },
         {
           "word": "lalu",
-          "start": 80.5,
-          "end": 81.4
+          "start": 81,
+          "end": 81.3
         },
         {
           "word": "kembali",
-          "start": 81.4,
+          "start": 81.3,
           "end": 81.6
         },
         {
           "word": "ke",
           "start": 81.6,
-          "end": 81.9
+          "end": 82
         },
         {
           "word": "laut.",
-          "start": 81.9,
-          "end": 82.3
+          "start": 82,
+          "end": 82.1
         }
       ]
     },
@@ -927,48 +927,48 @@
       "words": [
         {
           "word": "Beberapa",
-          "start": 82.3,
-          "end": 83.2
+          "start": 82.1,
+          "end": 83.1
         },
         {
           "word": "bulan",
-          "start": 83.2,
-          "end": 83.8
+          "start": 83.1,
+          "end": 83.6
         },
         {
           "word": "kemudian,",
-          "start": 83.8,
-          "end": 84.1
+          "start": 83.6,
+          "end": 84
         },
         {
           "word": "Sura",
-          "start": 84.1,
-          "end": 84.14999999999999
+          "start": 84,
+          "end": 85
         },
         {
           "word": "rindu",
-          "start": 84.1,
-          "end": 84.14999999999999
+          "start": 85,
+          "end": 85.3
         },
         {
           "word": "makan",
-          "start": 84.1,
-          "end": 85.9
+          "start": 85.3,
+          "end": 85.7
         },
         {
           "word": "daging",
-          "start": 85.9,
-          "end": 86.3
+          "start": 85.7,
+          "end": 86
         },
         {
           "word": "di",
-          "start": 86.3,
+          "start": 86,
           "end": 86.5
         },
         {
           "word": "sungai.",
           "start": 86.5,
-          "end": 86.8
+          "end": 86.6
         }
       ]
     },
@@ -980,33 +980,33 @@
       "words": [
         {
           "word": "Diam-diam,",
-          "start": 86.8,
-          "end": 88.6
+          "start": 86.6,
+          "end": 88.5
         },
         {
           "word": "Sura",
-          "start": 88.6,
-          "end": 88.64999999999999
+          "start": 88.5,
+          "end": 89.3
         },
         {
           "word": "kembali",
-          "start": 88.6,
-          "end": 89.8
+          "start": 89.3,
+          "end": 89.6
         },
         {
           "word": "masuk",
-          "start": 89.8,
-          "end": 90.1
+          "start": 89.6,
+          "end": 90
         },
         {
           "word": "ke",
-          "start": 90.1,
-          "end": 90.2
+          "start": 90,
+          "end": 90.3
         },
         {
           "word": "sungai.",
-          "start": 90.2,
-          "end": 90.5
+          "start": 90.3,
+          "end": 90.4
         }
       ]
     },
@@ -1018,33 +1018,33 @@
       "words": [
         {
           "word": "Dia",
-          "start": 90.5,
-          "end": 91.9
+          "start": 90.4,
+          "end": 91.7
         },
         {
           "word": "kembali",
-          "start": 91.9,
-          "end": 92.5
+          "start": 91.7,
+          "end": 92.2
         },
         {
           "word": "makan",
-          "start": 92.5,
-          "end": 92.8
+          "start": 92.2,
+          "end": 92.7
         },
         {
           "word": "binatang",
-          "start": 92.8,
-          "end": 93.2
+          "start": 92.7,
+          "end": 93
         },
         {
           "word": "di",
-          "start": 93.2,
+          "start": 93,
           "end": 93.5
         },
         {
           "word": "sana.",
           "start": 93.5,
-          "end": 93.8
+          "end": 93.6
         }
       ]
     },
@@ -1056,33 +1056,33 @@
       "words": [
         {
           "word": "Baya",
-          "start": 93.8,
-          "end": 95.3
+          "start": 93.6,
+          "end": 94.5
         },
         {
           "word": "curiga",
-          "start": 95.3,
+          "start": 94.5,
           "end": 95.8
         },
         {
           "word": "lagi.",
           "start": 95.8,
-          "end": 96.9
+          "end": 95.9
         },
         {
           "word": "Makanannya",
-          "start": 96.9,
-          "end": 97
+          "start": 95.9,
+          "end": 96.9
         },
         {
           "word": "berkurang",
-          "start": 97,
+          "start": 96.9,
           "end": 97.4
         },
         {
           "word": "lagi.",
           "start": 97.4,
-          "end": 97.6
+          "end": 97.5
         }
       ]
     },
@@ -1094,53 +1094,53 @@
       "words": [
         {
           "word": "Baya",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 97.5,
+          "end": 98.7
         },
         {
           "word": "melihat",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 98.7,
+          "end": 99
         },
         {
           "word": "Sura",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 99,
+          "end": 99.5
         },
         {
           "word": "di",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 99.5,
+          "end": 99.7
         },
         {
           "word": "sungai.",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 99.7,
+          "end": 99.8
         },
         {
           "word": "\"Kamu",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 99.8,
+          "end": 100.5
         },
         {
           "word": "melanggar",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 100.5,
+          "end": 101.2
         },
         {
           "word": "janji!\"",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 101.2,
+          "end": 101.6
         },
         {
           "word": "kata",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 101.6,
+          "end": 102.1
         },
         {
           "word": "Baya.",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 102.1,
+          "end": 102.7
         }
       ]
     },
@@ -1152,38 +1152,38 @@
       "words": [
         {
           "word": "Mereka",
-          "start": 97.6,
-          "end": 97.64999999999999
+          "start": 102.7,
+          "end": 103.7
         },
         {
           "word": "bertengkar",
-          "start": 97.6,
-          "end": 104.4
+          "start": 103.7,
+          "end": 104.6
         },
         {
           "word": "lagi,",
-          "start": 104.4,
-          "end": 104.8
+          "start": 104.6,
+          "end": 104.7
         },
         {
           "word": "lebih",
-          "start": 104.8,
-          "end": 105.5
+          "start": 104.7,
+          "end": 105.3
         },
         {
           "word": "parah",
-          "start": 105.5,
-          "end": 106
+          "start": 105.3,
+          "end": 105.8
         },
         {
           "word": "dari",
-          "start": 106,
-          "end": 106.2
+          "start": 105.8,
+          "end": 106
         },
         {
           "word": "sebelumnya.",
-          "start": 106.2,
-          "end": 106.7
+          "start": 106,
+          "end": 106.5
         }
       ]
     },
@@ -1195,38 +1195,38 @@
       "words": [
         {
           "word": "Mereka",
-          "start": 106.7,
-          "end": 106.75
+          "start": 106.5,
+          "end": 107.8
         },
         {
           "word": "saling",
-          "start": 106.7,
-          "end": 108.4
+          "start": 107.8,
+          "end": 108.3
         },
         {
           "word": "menggigit",
-          "start": 108.4,
-          "end": 108.7
+          "start": 108.3,
+          "end": 108.9
         },
         {
           "word": "dan",
-          "start": 108.7,
-          "end": 109.3
+          "start": 108.9,
+          "end": 109.1
         },
         {
           "word": "memukul",
-          "start": 109.3,
+          "start": 109.1,
           "end": 109.7
         },
         {
           "word": "sangat",
           "start": 109.7,
-          "end": 110
+          "end": 109.8
         },
         {
           "word": "keras.",
-          "start": 110,
-          "end": 110.5
+          "start": 109.8,
+          "end": 110.2
         }
       ]
     },
@@ -1238,63 +1238,63 @@
       "words": [
         {
           "word": "Ekor",
-          "start": 110.5,
-          "end": 111.4
+          "start": 110.2,
+          "end": 111.5
         },
         {
           "word": "Baya",
-          "start": 111.4,
-          "end": 111.6
+          "start": 111.5,
+          "end": 111.8
         },
         {
           "word": "digigit",
-          "start": 111.6,
-          "end": 112.2
+          "start": 111.8,
+          "end": 112.3
         },
         {
           "word": "Sura.",
-          "start": 112.2,
-          "end": 112.25
-        },
-        {
-          "word": "Ekor",
-          "start": 112.2,
-          "end": 112.25
-        },
-        {
-          "word": "Sura",
-          "start": 112.2,
+          "start": 112.3,
           "end": 112.6
         },
         {
-          "word": "juga",
+          "word": "Ekor",
           "start": 112.6,
-          "end": 114.2
+          "end": 113.6
+        },
+        {
+          "word": "Sura",
+          "start": 113.6,
+          "end": 113.9
+        },
+        {
+          "word": "juga",
+          "start": 113.9,
+          "end": 114
         },
         {
           "word": "digigit",
-          "start": 114.2,
-          "end": 114.5
+          "start": 114,
+          "end": 114.6
         },
         {
           "word": "Baya",
-          "start": 114.5,
-          "end": 114.9
+          "start": 114.6,
+          "end": 115
         },
         {
           "word": "sampai",
-          "start": 114.9,
-          "end": 115.7
+          "start": 115,
+          "end": 115.6
         },
         {
           "word": "hampir",
-          "start": 115.7,
+          "start": 115.6,
           "end": 116
         },
         {
           "word": "putus.",
           "start": 116,
-          "end": 116.5
+          "end": 116.3
         }
       ]
     },
@@ -1306,22 +1306,22 @@
       "words": [
         {
           "word": "Akhirnya,",
-          "start": 116.5,
-          "end": 118.1
+          "start": 116.3,
+          "end": 117.6
         },
         {
           "word": "Sura",
-          "start": 118.1,
+          "start": 117.6,
           "end": 118.7
         },
         {
           "word": "pergi",
           "start": 118.7,
-          "end": 119.1
+          "end": 119
         },
         {
           "word": "kembali",
-          "start": 119.1,
+          "start": 119,
           "end": 119.3
         },
         {
@@ -1332,7 +1332,7 @@
         {
           "word": "laut.",
           "start": 119.6,
-          "end": 119.9
+          "end": 119.7
         }
       ]
     },
@@ -1344,38 +1344,38 @@
       "words": [
         {
           "word": "Baya",
-          "start": 119.9,
-          "end": 119.95
+          "start": 119.7,
+          "end": 120.9
         },
         {
           "word": "senang",
-          "start": 119.9,
-          "end": 119.95
+          "start": 120.9,
+          "end": 121.3
         },
         {
           "word": "karena",
-          "start": 119.9,
-          "end": 122.1
+          "start": 121.3,
+          "end": 121.8
         },
         {
           "word": "dia",
-          "start": 122.1,
+          "start": 121.8,
           "end": 122.3
         },
         {
           "word": "berhasil",
           "start": 122.3,
-          "end": 122.7
+          "end": 122.5
         },
         {
           "word": "menjaga",
-          "start": 122.7,
-          "end": 123.2
+          "start": 122.5,
+          "end": 123
         },
         {
           "word": "sungainya.",
-          "start": 123.2,
-          "end": 123.7
+          "start": 123,
+          "end": 123.6
         }
       ]
     },
@@ -1387,47 +1387,47 @@
       "words": [
         {
           "word": "Nah,",
-          "start": 123.7,
-          "end": 123.75
+          "start": 123.6,
+          "end": 125
         },
         {
           "word": "cerita",
-          "start": 123.7,
-          "end": 126
+          "start": 125,
+          "end": 125.7
         },
         {
           "word": "tentang",
-          "start": 126,
-          "end": 126.4
+          "start": 125.7,
+          "end": 126.1
         },
         {
           "word": "Sura",
-          "start": 126.4,
+          "start": 126.1,
           "end": 126.7
         },
         {
           "word": "dan",
           "start": 126.7,
-          "end": 126.9
+          "end": 126.8
         },
         {
           "word": "Baya",
-          "start": 126.9,
+          "start": 126.8,
           "end": 127
         },
         {
           "word": "ini",
           "start": 127,
-          "end": 127.4
+          "end": 127.2
         },
         {
           "word": "sangat",
-          "start": 127.4,
-          "end": 127.8
+          "start": 127.2,
+          "end": 127.5
         },
         {
           "word": "terkenal",
-          "start": 127.8,
+          "start": 127.5,
           "end": 128
         },
         {
@@ -1438,12 +1438,12 @@
         {
           "word": "Jawa",
           "start": 128.3,
-          "end": 128.5
+          "end": 128.4
         },
         {
           "word": "Timur.",
-          "start": 128.5,
-          "end": 128.8
+          "start": 128.4,
+          "end": 128.6
         }
       ]
     },
@@ -1455,38 +1455,38 @@
       "words": [
         {
           "word": "Nama",
-          "start": 128.8,
-          "end": 128.85000000000002
+          "start": 128.6,
+          "end": 130.2
         },
         {
           "word": "kota",
-          "start": 128.8,
-          "end": 128.85000000000002
+          "start": 130.2,
+          "end": 130.5
         },
         {
           "word": "Surabaya",
-          "start": 128.8,
+          "start": 130.5,
           "end": 130.8
         },
         {
           "word": "berasal",
           "start": 130.8,
-          "end": 131.7
+          "end": 131.6
         },
         {
           "word": "dari",
-          "start": 131.7,
-          "end": 131.75
+          "start": 131.6,
+          "end": 131.8
         },
         {
           "word": "nama",
-          "start": 131.7,
-          "end": 131.75
+          "start": 131.8,
+          "end": 132.2
         },
         {
           "word": "mereka.",
-          "start": 131.7,
-          "end": 132.8
+          "start": 132.2,
+          "end": 132.5
         }
       ]
     },
@@ -1498,38 +1498,38 @@
       "words": [
         {
           "word": "Surabaya",
-          "start": 132.8,
-          "end": 134.4
+          "start": 132.5,
+          "end": 134.1
         },
         {
           "word": "juga",
-          "start": 134.4,
-          "end": 134.7
+          "start": 134.1,
+          "end": 134.5
         },
         {
           "word": "bisa",
-          "start": 134.7,
-          "end": 135
+          "start": 134.5,
+          "end": 134.7
         },
         {
           "word": "berarti",
-          "start": 135,
+          "start": 134.7,
           "end": 135.3
         },
         {
           "word": "\"selamat",
           "start": 135.3,
-          "end": 136.8
+          "end": 136.6
         },
         {
           "word": "menghadapi",
-          "start": 136.8,
-          "end": 137.4
+          "start": 136.6,
+          "end": 137.2
         },
         {
           "word": "bahaya\".",
-          "start": 137.4,
-          "end": 137.6
+          "start": 137.2,
+          "end": 137.7
         }
       ]
     }
