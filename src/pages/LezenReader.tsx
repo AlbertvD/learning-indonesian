@@ -11,10 +11,11 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { textService } from '@/services/textService'
-import { loadReader, type LoadedReader } from '@/lib/reading'
+import { loadReader, harvestWord, type LoadedReader } from '@/lib/reading'
 import { GlossableText } from '@/components/reading'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
+import { useAuthStore } from '@/stores/authStore'
 
 /**
  * Lezen reader — one story, silent + tap-to-gloss (PRD #299). No audio in Phase 1.
@@ -22,9 +23,29 @@ import { useT } from '@/hooks/useT'
 export function LezenReader() {
   const { podcastId } = useParams<{ podcastId: string }>()
   const T = useT()
+  const userId = useAuthStore((s) => s.user?.id)
   const [reader, setReader] = useState<LoadedReader | null>(null)
   const [title, setTitle] = useState('')
   const [loading, setLoading] = useState(true)
+
+  // Harvest a tapped word into the learner's reading set (reader §4). Membership
+  // only — eligibility rides the existing gate-OR, state is minted on first review.
+  // Throws on failure so GlossableText keeps the button in its pre-confirm state.
+  async function handleHarvest(itemId: string) {
+    if (!userId) return
+    try {
+      await harvestWord(userId, itemId)
+      notifications.show({ color: 'teal', message: T.reading.harvestedToast })
+    } catch (err) {
+      logError({ page: 'lezen-reader', action: 'harvestWord', error: err })
+      notifications.show({
+        color: 'red',
+        title: T.reading.harvestFailed,
+        message: T.common.somethingWentWrong,
+      })
+      throw err
+    }
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -65,7 +86,7 @@ export function LezenReader() {
         ) : reader ? (
           <>
             <PageHeader title={title} />
-            <GlossableText text={reader.text} glossFor={reader.glossFor} />
+            <GlossableText text={reader.text} glossFor={reader.glossFor} onHarvest={userId ? handleHarvest : undefined} />
           </>
         ) : null}
       </PageBody>

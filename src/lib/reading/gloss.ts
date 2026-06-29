@@ -17,6 +17,8 @@ import type { ReadingToken } from './readableText'
 import type { ItemMorphology, FamilyMember } from './adapter'
 
 export interface ItemGloss {
+  /** learning_items.id — present so a tapped item can be harvested (reader §4). */
+  id?: string
   nl: string | null
   en: string | null
 }
@@ -49,6 +51,13 @@ export interface GlossResult {
   source: GlossSource
   /** Present whenever the word has a morphology decomposition (any source). */
   morphology?: MorphologyGloss
+  /**
+   * The learning_item id when the tapped word is itself an item — the reader shows
+   * the "+ leren" harvest action only for these (they already carry the vocab cap
+   * suite the harvest activates). Absent for morphology-only / unknown / proper-noun
+   * words (reader §4).
+   */
+  harvestableItemId?: string
 }
 
 /** NL-first: a learner reads in Dutch by default (Kim et al. 2024). */
@@ -89,9 +98,13 @@ export function resolveGloss(token: ReadingToken, deps: GlossDeps): GlossResult 
   const morph = deps.morphology.get(token.normalized)
   const morphology = morph ? buildMorphology(morph, token.normalized, deps) : undefined
 
-  // 2. exact item match — precise meaning; attach morphology if the word is also affixed.
-  const exact = pickGloss(deps.glosses.get(token.normalized))
-  if (exact !== null) return { text: exact, source: 'item', morphology }
+  // 2. exact item match — precise meaning; attach morphology if the word is also
+  // affixed. The word is a learning_item, so it is harvestable (its own id).
+  const item = deps.glosses.get(token.normalized)
+  const exact = pickGloss(item)
+  if (exact !== null) {
+    return { text: exact, source: 'item', morphology, harvestableItemId: item?.id }
+  }
 
   // 3. morphology — show the derived form's OWN translation if known, else the root's.
   if (morph) {

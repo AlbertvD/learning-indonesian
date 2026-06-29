@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MantineProvider } from '@mantine/core'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { GlossableText } from '../GlossableText'
 import type { GlossResult, ReadableText, ReadingToken } from '@/lib/reading'
 
@@ -25,15 +25,15 @@ const text: ReadableText = {
 }
 
 const glossFor = (_seg: number, tok: ReadingToken): GlossResult => {
-  if (tok.normalized === 'buku') return { text: 'boek', source: 'item' }
+  if (tok.normalized === 'buku') return { text: 'boek', source: 'item', harvestableItemId: 'item-buku' }
   if (tok.normalized === 'membaca') return { text: 'lezen', source: 'morphology' }
   return { text: null, source: 'none' }
 }
 
-function renderReader() {
+function renderReader(onHarvest?: (itemId: string) => void | Promise<void>) {
   return render(
     <MantineProvider>
-      <GlossableText text={text} glossFor={glossFor} />
+      <GlossableText text={text} glossFor={glossFor} onHarvest={onHarvest} />
     </MantineProvider>,
   )
 }
@@ -62,5 +62,43 @@ describe('GlossableText', () => {
   it('does not make proper nouns interactive', () => {
     renderReader()
     expect(screen.queryByRole('button', { name: 'manu' })).not.toBeInTheDocument()
+  })
+
+  // Harvest (reader §4): suggest-then-confirm — the gloss is the suggestion, the
+  // "+ leren" button is the explicit confirm. Only the exact tapped word, only when
+  // it is item-backed (harvestableItemId set).
+  // The popover dropdown is a Mantine/floating-ui portal; role queries treat it as
+  // hidden in jsdom, so dropdown content is queried by text (as 'boek'/'lezen' above).
+  it('shows a "+ leren" button for a harvestable (item-backed) word', async () => {
+    const user = userEvent.setup()
+    renderReader(vi.fn())
+    await user.click(screen.getByRole('button', { name: 'buku' }))
+    expect(await screen.findByText('+ leren')).toBeInTheDocument()
+  })
+
+  it('does NOT show "+ leren" for a non-item (morphology-only) word', async () => {
+    const user = userEvent.setup()
+    renderReader(vi.fn())
+    await user.click(screen.getByRole('button', { name: 'membaca' }))
+    expect(await screen.findByText('lezen')).toBeInTheDocument()
+    expect(screen.queryByText('+ leren')).not.toBeInTheDocument()
+  })
+
+  it('clicking "+ leren" harvests the exact tapped word by its item id', async () => {
+    const user = userEvent.setup()
+    const onHarvest = vi.fn().mockResolvedValue(undefined)
+    renderReader(onHarvest)
+    await user.click(screen.getByRole('button', { name: 'buku' }))
+    await user.click(await screen.findByText('+ leren'))
+    expect(onHarvest).toHaveBeenCalledWith('item-buku')
+  })
+
+  it('after harvesting, the button confirms "Toegevoegd"', async () => {
+    const user = userEvent.setup()
+    const onHarvest = vi.fn().mockResolvedValue(undefined)
+    renderReader(onHarvest)
+    await user.click(screen.getByRole('button', { name: 'buku' }))
+    await user.click(await screen.findByText('+ leren'))
+    expect(await screen.findByText('Toegevoegd')).toBeInTheDocument()
   })
 })

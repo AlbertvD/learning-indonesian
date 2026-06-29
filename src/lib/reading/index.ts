@@ -11,6 +11,7 @@ import {
   fetchItemGlosses,
   fetchItemMorphology,
   fetchMorphologyFamilies,
+  insertReadingHarvest,
 } from './adapter'
 import { computeCoverage, orderByCoverage, type RankedText } from './coverage'
 import { isFunctionWord } from './functionWords'
@@ -96,6 +97,19 @@ export async function rankReadableTexts(
     })),
   )
   return orderByCoverage(ranked, (p) => p.title)
+}
+
+/**
+ * Harvest a tapped word into the learner's reading set (reader §4, the one new
+ * public verb). Writes membership only — eligibility then rides the EXISTING
+ * collections gate-OR (`resolveActivatedMemberRefs` reads `learner_reading_harvest`)
+ * and FSRS state is minted by the existing review-commit path. `lib/reading` does
+ * NOT import `session-builder`; the edge is one-directional (it writes membership,
+ * session-builder reads it). `itemId` is the `harvestableItemId` the gloss exposes
+ * for an item-backed word.
+ */
+export async function harvestWord(userId: string, itemId: string): Promise<void> {
+  await insertReadingHarvest(userId, itemId)
 }
 
 export type { ReadableText as ReaderText }

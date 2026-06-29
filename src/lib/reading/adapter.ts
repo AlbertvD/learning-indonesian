@@ -13,6 +13,28 @@ interface CoverageRpcResult {
 }
 
 /**
+ * Write a reading-harvest membership row (reader §4): the learner tapped "+ leren"
+ * on a word. Idempotent — `ignoreDuplicates` makes a re-tap an INSERT … ON CONFLICT
+ * DO NOTHING, which needs only the owner INSERT grant (no UPDATE). This is a plain
+ * membership row, NOT capability state: scheduling comes from the gate-OR
+ * (`lib/collections/membership.resolveActivatedMemberRefs` reads this table) and
+ * FSRS state from the existing review-commit path. We never write capability state.
+ */
+export async function insertReadingHarvest(
+  userId: string,
+  learningItemId: string,
+): Promise<void> {
+  const { error } = await supabase
+    .schema('indonesian')
+    .from('learner_reading_harvest')
+    .upsert(
+      { user_id: userId, learning_item_id: learningItemId },
+      { onConflict: 'user_id,learning_item_id', ignoreDuplicates: true },
+    )
+  if (error) throw error
+}
+
+/**
  * The subset of `contentTokens` the learner "knows" (recognition cap, practiced),
  * via the server-side composite predicate. Returns a Set for O(1) coverage lookup.
  */
@@ -93,6 +115,7 @@ export async function fetchMorphologyFamilies(
 }
 
 interface ItemGlossRow {
+  id: string
   normalized_text: string
   translation_nl: string | null
   translation_en: string | null
@@ -100,7 +123,8 @@ interface ItemGlossRow {
 
 /**
  * Glosses for the given normalized forms (pass surface tokens AND their morphology
- * roots so the root-meaning lookup has data). Keyed by `normalized_text`.
+ * roots so the root-meaning lookup has data). Keyed by `normalized_text`. Carries
+ * the item `id` so a tapped item can be harvested (reader §4).
  */
 export async function fetchItemGlosses(
   lookupTokens: string[],
@@ -111,10 +135,10 @@ export async function fetchItemGlosses(
     'learning_items',
     'normalized_text',
     [...new Set(lookupTokens)],
-    (b) => b.select('normalized_text, translation_nl, translation_en'),
+    (b) => b.select('id, normalized_text, translation_nl, translation_en'),
   )
   for (const row of rows) {
-    map.set(row.normalized_text, { nl: row.translation_nl, en: row.translation_en })
+    map.set(row.normalized_text, { id: row.id, nl: row.translation_nl, en: row.translation_en })
   }
   return map
 }

@@ -1,8 +1,8 @@
 ---
 module: reading
 surface: src/lib/reading/
-last_verified_against_code: 2026-06-28
-status: in-flight          # Phase 1 shipped; Phase 2 (harvest + morphology gloss) designed, not yet built
+last_verified_against_code: 2026-06-29
+status: in-flight          # Phase 1 + Slice 2 (morphology gloss) + Slice 3 (harvest) shipped; Slice 4 (new content) pending
 ---
 
 # `lib/reading` — the Lezen (Read) reader domain
@@ -13,11 +13,12 @@ The domain module behind the **Lezen** reader (`/lezen`, PRD #299): it turns a s
 three-verb public interface over a deep implementation (gloss cascade, coverage math,
 view-model, all I/O).
 
-**Status note.** Phase 1 (silent reading + tap-to-gloss + coverage ordering) is shipped
-and live. Phase 2 (morphological glossing, vocab→FSRS harvest, new `texts` content) is
-**designed but not built** — see `docs/plans/2026-06-28-reader-phase-2-design.md`.
-Lines marked *(P2)* describe the approved-but-unbuilt target; verify against code before
-relying on them.
+**Status note.** Phase 1 (silent reading + tap-to-gloss + coverage ordering), Slice 2
+(morphological glossing — `item_morphology`), and Slice 3 (vocab→FSRS harvest) are shipped
+and live. Slice 4 (new authored `texts` content) is pending. See
+`docs/plans/2026-06-28-reader-phase-2-design.md`. The harvest verb + "+ leren" UI are built;
+the §5 pre-seed (residual reading-corpus primitives → `learning_items` via `lesson-999`) is
+a pipeline concern, not this runtime module.
 
 ## 1. Public interface
 
@@ -27,7 +28,7 @@ The pages (`pages/Lezen.tsx`, `pages/LezenReader.tsx`) call only `index.ts`:
 |---|---|---|
 | `loadReader` | `(text) → Promise<LoadedReader>` | view-model + a `glossFor(segIdx, token)` resolver for one story (`index.ts:51`) |
 | `rankReadableTexts` | `(texts, userId) → Promise<RankedText<T>[]>` | the story list, most-comprehensible-first per learner (`index.ts:77`) |
-| `harvestWord` *(P2)* | `(userId, item) → Promise<void>` | write `learner_reading_harvest` membership (the only new public verb) |
+| `harvestWord` | `(userId, itemId) → Promise<void>` | write `learner_reading_harvest` membership for the tapped item (`index.ts`); the gloss exposes `harvestableItemId` for item-backed words |
 | types | `ReadableText`, `ReadingToken`, `GlossResult`, `RankedText`, … | re-exported from internals (`index.ts:22-29`) |
 
 `loadReader` builds the view-model (`toReadableText`), fetches glosses for every content
@@ -56,9 +57,11 @@ pure `glossFor` closure (`index.ts:57`). `rankReadableTexts` filters to readable
 function words always known, `coverage.ts:17`) → `orderByCoverage` (descending, stable
 by title, `coverage.ts:43`).
 
-**Harvest a word** *(P2)* = `harvestWord` writes a `learner_reading_harvest` membership
-row. It does **not** mint capability state and does **not** touch `session-builder`;
-eligibility + scheduling come from the existing gate-OR + review path (see §5).
+**Harvest a word** = `harvestWord(userId, itemId)` writes a `learner_reading_harvest`
+membership row (idempotent on-conflict). It does **not** mint capability state and does
+**not** touch `session-builder`; eligibility + scheduling come from the existing gate-OR +
+review path (see §5). The reader offers it (the "+ leren" button) only when the gloss
+carries a `harvestableItemId` — i.e. the tapped word is itself a `learning_item`.
 
 ## 3. Invariants
 
@@ -82,7 +85,7 @@ eligibility + scheduling come from the existing gate-OR + review path (see §5).
 | File | Role |
 |---|---|
 | `index.ts` | public interface + composition (`loadReader`, `rankReadableTexts`, *(P2)* `harvestWord`) |
-| `adapter.ts` | the only I/O — `get_text_coverage` RPC, `learning_items` glosses, `item_morphology` + family reads; *(P3)* `learner_reading_harvest` write |
+| `adapter.ts` | the only I/O — `get_text_coverage` RPC, `learning_items` glosses (+ `id` for harvest), `item_morphology` + family reads, the `learner_reading_harvest` write (`insertReadingHarvest`) |
 | `gloss.ts` | the tap-to-gloss cascade incl. the `MorphologyGloss` payload (pure) |
 | `coverage.ts` | token-weighted coverage + ordering (pure) |
 | `readableText.ts` | the `ReadableText` view-model + tokenization |

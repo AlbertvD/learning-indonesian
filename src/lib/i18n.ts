@@ -338,6 +338,10 @@ export const nl = {
     backToList: 'Terug naar overzicht',
     wordFamily: 'Woordfamilie',
     affixTrainerLink: 'Open in de Affix Trainer',
+    addToLearn: '+ leren',
+    added: 'Toegevoegd',
+    harvestFailed: 'Woord toevoegen mislukt',
+    harvestedToast: 'Toegevoegd aan je woorden om te leren',
   },
   session: {
     title: 'Oefensessie',
@@ -727,6 +731,10 @@ export const en: typeof nl = {
     backToList: 'Back to list',
     wordFamily: 'Word family',
     affixTrainerLink: 'Open in the Affix Trainer',
+    addToLearn: '+ learn',
+    added: 'Added',
+    harvestFailed: 'Could not add the word',
+    harvestedToast: 'Added to your words to learn',
   },
   session: {
     title: 'Practice Session',

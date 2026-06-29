@@ -55,6 +55,24 @@ describe('session-builder adapter — collections wiring', () => {
     )
   })
 
+  it('feeds a harvested word into plannerInput.activatedCollectionRefs (reader §4 gate-OR; the seam a refactor must not drop)', async () => {
+    const client = mockClient({
+      learning_capabilities: [],
+      learner_capability_state: [],
+      lessons: [],
+      capability_review_events: [],
+      learner_lesson_activation: [],
+      learner_collection_activation: [],
+      collection_items: [],
+      learner_reading_harvest: [{ learning_items: { normalized_text: 'jas' } }],
+    })
+    const adapter = createSessionBuilderAdapter(client as any)
+
+    const snapshot = await adapter.loadCapabilitySessionData(baseRequest)
+
+    expect(snapshot.plannerInput.activatedCollectionRefs).toEqual(new Set(['learning_items/jas']))
+  })
+
   it('resolves an empty set when the learner has activated no collections', async () => {
     const client = mockClient({
       learning_capabilities: [],

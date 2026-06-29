@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react'
-import { Anchor, Box, Divider, Popover, Text } from '@mantine/core'
+import { Anchor, Box, Button, Divider, Group, Popover, Text } from '@mantine/core'
+import { IconCheck } from '@tabler/icons-react'
 import { Link } from 'react-router-dom'
 import type { GlossResult, MorphologyGloss, ReadableText, ReadingToken } from '@/lib/reading'
 import { useT } from '@/hooks/useT'
@@ -42,9 +43,48 @@ function MorphologyDetail({ m }: { m: MorphologyGloss }) {
   )
 }
 
+/**
+ * The "+ leren" harvest action (reader §4): suggest-then-confirm — the gloss is the
+ * suggestion, this button the explicit confirm. Shown only for an item-backed word
+ * (`harvestableItemId`). On confirm it flips to "Toegevoegd" and never auto-adds.
+ */
+function HarvestButton({ itemId, onHarvest }: { itemId: string; onHarvest: (id: string) => void | Promise<void> }) {
+  const T = useT()
+  const [added, setAdded] = useState(false)
+  const [busy, setBusy] = useState(false)
+  if (added) {
+    return (
+      <Text size="sm" c="teal" fw={600} mt={8}>
+        <Group gap={4} component="span"><IconCheck size={15} />{T.reading.added}</Group>
+      </Text>
+    )
+  }
+  return (
+    <Button
+      size="compact-sm"
+      variant="light"
+      mt={8}
+      loading={busy}
+      onClick={async () => {
+        setBusy(true)
+        try {
+          await onHarvest(itemId)
+          setAdded(true)
+        } finally {
+          setBusy(false)
+        }
+      }}
+    >
+      {T.reading.addToLearn}
+    </Button>
+  )
+}
+
 interface GlossableTextProps {
   text: ReadableText
   glossFor: (segmentIdx: number, token: ReadingToken) => GlossResult
+  /** Harvest the exact tapped word (its learning_item id). Omitted ⇒ no "+ leren". */
+  onHarvest?: (itemId: string) => void | Promise<void>
 }
 
 interface Active {
@@ -59,7 +99,7 @@ interface Active {
  * anchored to the word (tap-to-reveal, NL-first — Q5). Proper nouns and pure
  * punctuation are not interactive. No audio (Phase 1 is silent reading).
  */
-export function GlossableText({ text, glossFor }: GlossableTextProps) {
+export function GlossableText({ text, glossFor, onHarvest }: GlossableTextProps) {
   const T = useT()
   const [active, setActive] = useState<Active | null>(null)
 
@@ -117,6 +157,14 @@ export function GlossableText({ text, glossFor }: GlossableTextProps) {
                       )
                       : <Text size="sm" c="dimmed">{T.reading.noGloss}</Text>}
                     {morph && <MorphologyDetail m={morph} />}
+                    {onHarvest && active.gloss.harvestableItemId && (
+                      <HarvestButton
+                        // key by item so the "added" state resets when a different word is tapped
+                        key={active.gloss.harvestableItemId}
+                        itemId={active.gloss.harvestableItemId}
+                        onHarvest={onHarvest}
+                      />
+                    )}
                   </Popover.Dropdown>
                 </Popover>
                 {' '}
