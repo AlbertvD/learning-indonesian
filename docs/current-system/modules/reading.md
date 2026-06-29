@@ -60,8 +60,12 @@ by title, `coverage.ts:43`).
 **Harvest a word** = `harvestWord(userId, itemId)` writes a `learner_reading_harvest`
 membership row (idempotent on-conflict). It does **not** mint capability state and does
 **not** touch `session-builder`; eligibility + scheduling come from the existing gate-OR +
-review path (see §5). The reader offers it (the "+ leren" button) only when the gloss
-carries a `harvestableItemId` — i.e. the tapped word is itself a `learning_item`.
+review path (see §5). The reader offers it (the "+ leren" button) whenever the gloss
+carries a `harvestableItemId` — the tapped word's own id if it is a `learning_item`, or
+its **root**'s id for a derived/affixed word (morphology source), labelled "+ leren:
+&lt;root&gt;" since derived forms aren't seeded as items. The root is reachable because the
+`item_morphology` pre-compute decomposes `meN-` and the nasal confixes `meN-…-kan`/`meN-…-i`
+(`lib/capabilities/affixDecomposition`).
 
 ## 3. Invariants
 

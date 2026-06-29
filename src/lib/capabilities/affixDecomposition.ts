@@ -48,10 +48,16 @@ function proposeRoots(surface: string, entry: AffixCatalogEntry): string[] {
   const out = new Set<string>()
 
   // Nasalising prefix (meN-/peN-): strip a known spelling, restore the elided initial.
+  // For a nasal CONFIX (meN-…-kan / meN-…-i) the suffix must be stripped too, else the
+  // proposed root keeps the suffix (kembang*kan*) and fails isRoot + verification.
   if (comp.prefix && 'nasal' in comp.prefix) {
     for (const [spelling, initials] of Object.entries(NASAL_PROPOSALS)) {
       if (!surface.startsWith(spelling) || surface.length - spelling.length < 2) continue
-      const rest = surface.slice(spelling.length)
+      let rest = surface.slice(spelling.length)
+      if (comp.suffix) {
+        if (!rest.endsWith(comp.suffix) || rest.length - comp.suffix.length < 2) continue
+        rest = rest.slice(0, rest.length - comp.suffix.length)
+      }
       for (const initial of initials) out.add(initial + rest)
     }
     return [...out]

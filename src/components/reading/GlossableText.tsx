@@ -45,10 +45,11 @@ function MorphologyDetail({ m }: { m: MorphologyGloss }) {
 
 /**
  * The "+ leren" harvest action (reader §4): suggest-then-confirm — the gloss is the
- * suggestion, this button the explicit confirm. Shown only for an item-backed word
- * (`harvestableItemId`). On confirm it flips to "Toegevoegd" and never auto-adds.
+ * suggestion, this button the explicit confirm. Shown whenever the gloss carries a
+ * `harvestableItemId` (a base word's own id, or a derived word's ROOT id). On confirm
+ * it flips to "Toegevoegd" and never auto-adds.
  */
-function HarvestButton({ itemId, onHarvest }: { itemId: string; onHarvest: (id: string) => void | Promise<void> }) {
+function HarvestButton({ itemId, rootLabel, onHarvest }: { itemId: string; rootLabel?: string; onHarvest: (id: string) => void | Promise<void> }) {
   const T = useT()
   const [added, setAdded] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -59,6 +60,9 @@ function HarvestButton({ itemId, onHarvest }: { itemId: string; onHarvest: (id: 
       </Text>
     )
   }
+  // Derived word → harvest the root: label "+ leren: <root>" makes clear the ROOT is
+  // what's added (the primitive); a base word just shows "+ leren".
+  const label = rootLabel ? `${T.reading.addToLearn}: ${rootLabel}` : T.reading.addToLearn
   return (
     <Button
       size="compact-sm"
@@ -75,7 +79,7 @@ function HarvestButton({ itemId, onHarvest }: { itemId: string; onHarvest: (id: 
         }
       }}
     >
-      {T.reading.addToLearn}
+      {label}
     </Button>
   )
 }
@@ -162,6 +166,7 @@ export function GlossableText({ text, glossFor, onHarvest }: GlossableTextProps)
                         // key by item so the "added" state resets when a different word is tapped
                         key={active.gloss.harvestableItemId}
                         itemId={active.gloss.harvestableItemId}
+                        rootLabel={active.gloss.harvestRootLabel}
                         onHarvest={onHarvest}
                       />
                     )}

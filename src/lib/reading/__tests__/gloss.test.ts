@@ -87,8 +87,23 @@ describe('resolveGloss cascade', () => {
     expect(resolveGloss(tok('membaca'), base).harvestableItemId).toBe('item-membaca')
   })
 
-  it('affixed NON-item (morphology source) → NOT harvestable (no item id)', () => {
-    expect(resolveGloss(tok('dibaca'), base).harvestableItemId).toBeUndefined()
+  it('affixed NON-item (morphology source) → harvestable via its ROOT (the primitive)', () => {
+    // dibaca is not itself an item, but its root baca IS (item-baca) → "+ leren: baca"
+    const r = resolveGloss(tok('dibaca'), base)
+    expect(r.source).toBe('morphology')
+    expect(r.harvestableItemId).toBe('item-baca')
+    expect(r.harvestRootLabel).toBe('baca')
+  })
+
+  it('morphology word whose ROOT is not an item → NOT harvestable', () => {
+    const noRootItem = {
+      ...base,
+      morphology: new Map([['kemleng', { root: 'mleng', affix: 'ke-', glossNl: null, glossEn: null }]]),
+      families: new Map(),
+    }
+    const r = resolveGloss(tok('kemleng'), noRootItem)
+    expect(r.harvestableItemId).toBeUndefined()
+    expect(r.harvestRootLabel).toBeUndefined()
   })
 
   it('proper noun / unknown word → NOT harvestable', () => {
