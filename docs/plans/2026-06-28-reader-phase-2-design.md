@@ -1,5 +1,6 @@
 ---
-status: approved
+status: implementing
+implementation: "Slice 1 (texts) PR #305 · Slice 2 (morphology gloss) PR #306 · Slice 3 (harvest) in flight on feat/reader-p2-harvest · Slice 4 (new content) pending"
 reviewed_by: [architect, data-architect]   # staff-engineer (sound-w/-changes) → architect R1 REQUEST-CHANGES → data-architect R1 REQUEST-CHANGES → all folded (harvest reconciled to membership-only) → data-architect R2 APPROVE → architect R2 NEEDS-REVISION (2 seam fixes) → architect R3 APPROVE. Data model touched (texts rename, learner_reading_harvest, item_morphology).
 supersedes: []
 ---
