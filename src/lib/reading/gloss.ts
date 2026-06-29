@@ -52,12 +52,18 @@ export interface GlossResult {
   /** Present whenever the word has a morphology decomposition (any source). */
   morphology?: MorphologyGloss
   /**
-   * The learning_item id when the tapped word is itself an item — the reader shows
-   * the "+ leren" harvest action only for these (they already carry the vocab cap
-   * suite the harvest activates). Absent for morphology-only / unknown / proper-noun
-   * words (reader §4).
+   * The learning_item id to harvest with the "+ leren" action. For an item-backed word
+   * it is the word's own id; for a derived/affixed word (morphology source) it is the
+   * ROOT's id (the primitive — derived forms aren't seeded as items, so we harvest the
+   * root the learner can actually study). Absent for unknown / proper-noun words, or a
+   * derived word whose root is not itself an item (reader §4).
    */
   harvestableItemId?: string
+  /**
+   * Set only when harvesting via the root (morphology source): the root form, so the UI
+   * can label the action "+ leren: <root>" — it adds the root, not the tapped surface.
+   */
+  harvestRootLabel?: string
 }
 
 /** NL-first: a learner reads in Dutch by default (Kim et al. 2024). */
@@ -107,9 +113,18 @@ export function resolveGloss(token: ReadingToken, deps: GlossDeps): GlossResult 
   }
 
   // 3. morphology — show the derived form's OWN translation if known, else the root's.
+  // Harvest the ROOT (the primitive): derived forms aren't seeded as items, but the root
+  // usually is — "+ leren: <root>" adds it. Skipped if the root isn't itself an item.
   if (morph) {
     const derived = morph.glossNl ?? morph.glossEn ?? null
-    return { text: derived ?? morphology!.rootMeaning, source: 'morphology', morphology }
+    const rootItem = deps.glosses.get(morph.root)
+    return {
+      text: derived ?? morphology!.rootMeaning,
+      source: 'morphology',
+      morphology,
+      harvestableItemId: rootItem?.id,
+      harvestRootLabel: rootItem?.id ? morph.root : undefined,
+    }
   }
 
   // 4. sentence-translation fallback (meaning in context).

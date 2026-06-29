@@ -26,7 +26,8 @@ const text: ReadableText = {
 
 const glossFor = (_seg: number, tok: ReadingToken): GlossResult => {
   if (tok.normalized === 'buku') return { text: 'boek', source: 'item', harvestableItemId: 'item-buku' }
-  if (tok.normalized === 'membaca') return { text: 'lezen', source: 'morphology' }
+  // membaca: morphology source, harvestable via its ROOT (baca)
+  if (tok.normalized === 'membaca') return { text: 'lezen', source: 'morphology', harvestableItemId: 'item-baca', harvestRootLabel: 'baca' }
   return { text: null, source: 'none' }
 }
 
@@ -76,12 +77,14 @@ describe('GlossableText', () => {
     expect(await screen.findByText('+ leren')).toBeInTheDocument()
   })
 
-  it('does NOT show "+ leren" for a non-item (morphology-only) word', async () => {
+  it('a derived word harvests its ROOT — button reads "+ leren: <root>"', async () => {
     const user = userEvent.setup()
-    renderReader(vi.fn())
+    const onHarvest = vi.fn().mockResolvedValue(undefined)
+    renderReader(onHarvest)
     await user.click(screen.getByRole('button', { name: 'membaca' }))
     expect(await screen.findByText('lezen')).toBeInTheDocument()
-    expect(screen.queryByText('+ leren')).not.toBeInTheDocument()
+    await user.click(await screen.findByText('+ leren: baca'))
+    expect(onHarvest).toHaveBeenCalledWith('item-baca')
   })
 
   it('clicking "+ leren" harvests the exact tapped word by its item id', async () => {

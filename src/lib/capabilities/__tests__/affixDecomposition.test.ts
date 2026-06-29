@@ -5,6 +5,7 @@ import { decompose } from '../affixDecomposition'
 // forward engine, so only true derivations of these roots come back.
 const ROOTS = new Set([
   'baca', 'tulis', 'lari', 'main', 'makan', 'ajar', 'jual', 'ambil', 'pukul', 'kira',
+  'kembang', 'lindung', 'milik', 'jatuh', 'jelas',
 ])
 const isRoot = (w: string) => ROOTS.has(w)
 
@@ -17,6 +18,15 @@ describe('decompose', () => {
     expect(affixesFor('menulis')).toContain('tulis+meN-')
     expect(affixesFor('memukul')).toContain('pukul+meN-') // p elides
     expect(affixesFor('mengambil')).toContain('ambil+meN-') // vowel
+  })
+
+  it('recovers a NASAL confix (meN-…-kan / meN-…-i — the prefix AND suffix together)', () => {
+    // mengembangkan = meng + kembang (k elides) + kan; melindungi = me + lindung + i
+    expect(affixesFor('mengembangkan')).toContain('kembang+meN-…-kan')
+    expect(affixesFor('melindungi')).toContain('lindung+meN-…-i')
+    expect(affixesFor('memiliki')).toContain('milik+meN-…-i')
+    expect(affixesFor('menjatuhkan')).toContain('jatuh+meN-…-kan')
+    expect(affixesFor('menjelaskan')).toContain('jelas+meN-…-kan')
   })
 
   it('recovers fixed prefixes (ber-, di-)', () => {
