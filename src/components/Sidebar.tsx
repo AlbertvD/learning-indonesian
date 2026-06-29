@@ -4,7 +4,7 @@ import { useMantineColorScheme } from '@mantine/core'
 import {
   IconHome, IconBook, IconHeadphones, IconChartBar,
   IconLayoutList, IconBolt, IconEye, IconAbc,
-  IconSun, IconMoon, IconBook2,
+  IconSun, IconMoon, IconBook2, IconVolume,
 } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -38,6 +38,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
     { label: T.nav.lezen,        icon: <IconBook2 size={17} />,       path: '/lezen' },
     { label: T.nav.progress,     icon: <IconChartBar size={17} />,   path: '/progress' },
     { label: T.nav.morphology,   icon: <IconAbc size={17} />,         path: '/morphology' },
+    { label: T.nav.pronunciation, icon: <IconVolume size={17} />,     path: '/pronunciation' },
     { label: T.nav.sections,     icon: <IconLayoutList size={17} />,  path: '/content/sections' },
     { label: T.nav.exercises,    icon: <IconBolt size={17} />,        path: '/content/exercises' },
   ]
