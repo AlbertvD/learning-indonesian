@@ -1,6 +1,6 @@
 ---
 status: draft
-reviewed_by: []          # REQUIRES architect + data-architect (new reader RPC contracts) before status: approved
+reviewed_by: [staff-engineer]   # soundness/simplicity pass 2026-06-30 (see §9). STILL REQUIRES architect + data-architect (reader RPC contracts) before status: approved
 supersedes: []
 ---
 
@@ -54,13 +54,16 @@ Body is `get_weekly_movement` (migration.sql:2382) with the current-week `where`
 
 This reconstructs `get_memory_health`'s *current* average (which reads `learner_capability_state`) at each historical week-end: for each week boundary, `distinct on (capability_id) … where created_at <= week_end order by capability_id, created_at desc`, then `avg(state_after.stability)`. Cumulative state ⇒ a true trend, not "stability of words touched this week." Bounded `p_weeks`, indexed scan; SECURITY INVOKER, `where user_id = p_user_id`.
 
-**TS:** revive `src/lib/analytics/memory/index.ts` with `stabilitySeries(userId, tz, weeks) → StabilityWeek[]` and `health(userId)` (wrap the existing `get_memory_health` from `learnerProgressService`). Add `memory` back to the `analytics` barrel.
+**TS:** revive `src/lib/analytics/memory/index.ts` with `stabilitySeries(userId, tz, weeks) → StabilityWeek[]` and add `memory` back to the `analytics` barrel.
+
+> **Self-contained — does NOT depend on `get_memory_health`** (staff-engineer pass, §9). That function lives ONLY in the paper-trail `scripts/migrations/2026-05-01-learner-progress-functions.sql`, is absent from the canonical `scripts/migration.sql`, and is rendered nowhere — its live presence/shape is unverified, so the durability curve must not lean on it. `get_stability_series` reads `capability_review_events` directly and stands alone. (If a current-snapshot `health()` is wanted later, re-declare `get_memory_health` in `migration.sql` first, with its own verification — out of scope here.)
 
 ### 3.4 UI — one new tab
 
 `Progress.tsx`: add `'groei'` to `Tab`/`TABS` and a `PillSegmented` entry (label `T.progress.tabGrowth`). Two cards under it:
 
-- **`GrowthCurveCard`** — bar/line of per-week mastered units (stacked vocab/grammar/morphology, reusing the funnel's colour tokens), headline delta ("+12 deze week", month-over-month), `slipped` shown honestly. **Carries a strategy nudge** (design read #2): e.g. "+12 woorden — houd je dagelijkse sessie vast om dit tempo te halen." Not a naked number.
+- **`GrowthCurveCard`** — bar/line of per-week mastered units (stacked vocab/grammar/morphology, reusing the funnel's colour tokens), `slipped` shown honestly. **Carries a strategy nudge** (design read #2): e.g. "+12 woorden — houd je dagelijkse sessie vast om dit tempo te halen." Not a naked number.
+  > **Headline = NET-DISTINCT, not a sum of weekly flows** (staff-engineer pass, §9). The per-week `reached_mastered` is a *flow* ("advanced a rung this week"); mastery is non-monotonic (advance→slip→re-advance), so **summing weeks double-counts** a word re-mastered twice — exactly the inflated vanity number the research warns against. The bars are honest *velocity*; the month headline must be **net-distinct words mastered now that weren't a month ago** (a snapshot diff, not a flow sum), or be labelled plainly as "rung-vooruitgang" (activity), never "X woorden geleerd."
 - **`DurabilityCard`** — line of `avg_stability_days` over weeks. **Plain-language, calibrating headline** (design read #3): "Je geheugen houdt nu ~32 dagen vast (was 18 vorige maand)" — never raw "stability: 32.4". Pairs conceptually with the recognise/produce/listen skill card.
 
 **Plateau handling** (design read #5): a flat/declining curve is framed as direction, not failure — a dip surfaces "X words to review" (the funnel already models `at_risk`/`slipped`), so a downturn reads as a recovery action, not a scolding. **Personal-trajectory only — no social comparison** (design read #4; the leaderboard stays retired).
@@ -100,12 +103,25 @@ This reconstructs `get_memory_health`'s *current* average (which reads `learner_
 - **Component** (RTL): `Groei` tab renders both cards; deep-link `/progress?tab=groei`; headline delta + strategy nudge present; durability shows plain-language days not raw stability.
 - **RPC parity** test backing the §5 health check.
 
-## 7. Open questions for review
+## 7. Phasing (staff-engineer pass, §9)
 
-- **Q1 (data-architect):** confirm passing `e.created_at` (not `now()`) as the label clock for historical weeks in `get_mastery_movement_series` (§3.2). Does this preserve `_mastery_label` semantics for the recency rule across the full window?
-- **Q2 (data-architect):** `get_stability_series` cumulative `distinct on` per week-end vs. the cheaper "avg stability of events in-week" proxy — confirm the cumulative version is worth the window cost for a 12-week bounded read.
-- **Q3 (architect):** revive `memory` sub-module (target-roster-faithful) vs. fold durability into `mastery` to avoid a 2-function module — which better serves the locked roster intent?
+The event log is currently short and mostly disposable test data; a 12-week trajectory over it shows noise, not a learner. So **build in two phases — sequencing, not goal-shrinking; both curves remain the design:**
 
-## 8. Reviewers required
+- **Phase 1 — durability curve** (`get_stability_series` + `memory` revival + `DurabilityCard`). The research's defensible-if-forced-to-one pick; self-contained; the calibration value lands even on a short log because it's about *strength*, not *count*.
+- **Phase 2 — growth curve** (`get_mastery_movement_series` + `GrowthCurveCard`), landing once real post-launch history exists so the velocity bars and net-distinct headline are meaningful rather than test-noise.
+
+Both phases ship behind the same `Groei` tab; Phase 1 may launch the tab with one card.
+
+## 8. Open questions for review
+
+- **Q1 (data-architect):** confirm passing `e.created_at` (not `now()`) as the label clock for historical weeks in `get_mastery_movement_series` (§3.2). Does this preserve `_mastery_label` semantics for the recency rule across the full window? *(Staff-engineer confirmed the trap is real — `get_weekly_movement` hardcodes `now()` at migration.sql:2411,2419.)*
+- **Q2 (data-architect) — DECIDED, confirm perf only:** `get_stability_series` uses the cumulative `distinct on (capability_id)` per week-end (the snapshot the card claims to trend). The "in-week proxy" is rejected — it is a different, biased metric (staff-engineer pass). Confirm the bounded 12-week window cost is acceptable.
+- **Q3 (architect):** revive `memory` sub-module (target-roster-faithful) vs. fold the durability headline into the existing skill card to avoid a thin ~1–2-function module — staff-engineer flagged this as minimum-mechanism pressure. Which better serves the locked roster intent?
+
+## 9. Review log
+
+- **2026-06-30 — staff-engineer (soundness/simplicity):** verdict NEEDS WORK → addressed. Folded in: dropped the unverified `get_memory_health` dependency (§3.3); net-distinct growth headline to avoid the double-count vanity number (§3.4); committed to cumulative stability, rejected the in-week proxy (§8 Q2); phased the build durability-first (§7). Carried forward to rigor review: Q1 (label clock, confirmed real), Q3 (`memory` sub-module thinness).
+
+## 10. Reviewers required
 
 Per CLAUDE.md (data-model / reader-contract rule + `plan-review-gate`): this adds **reader RPC contracts**, so it needs **both `architect`** (Q3 placement) **and `data-architect`** (Q1/Q2 RPC shape) in `reviewed_by:` before `status: approved`.
