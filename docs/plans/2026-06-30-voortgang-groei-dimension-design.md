@@ -1,6 +1,6 @@
 ---
-status: draft
-reviewed_by: [staff-engineer, architect-r2, data-architect-r2]   # was approved at round 2; the 2026-06-30 round-3 growth reshape (mastered-only flow → funnel-over-time, 4 selectable state lines, §9) changed the growth contract → back to draft. Durability (§3.3) is unaffected & still approved. Re-dispatch architect + data-architect for the growth change (Q4) before re-approving.
+status: approved
+reviewed_by: [staff-engineer, architect, data-architect]   # round-2 approved durability; round-3 (growth reshape → funnel-over-time, 4 selectable state lines) re-approved by architect + data-architect 2026-06-30 (§9). Growth = Path A (client-side, no RPC); implementer notes M1/I1/M2 pinned in §3.2.
 supersedes: []
 ---
 
@@ -46,7 +46,7 @@ Why this is strictly better than the old mastered-only flow: mastery is a high b
 **Mechanism — generalize the client-derived funnel to a series (the `get_weekly_movement` framing is RETIRED).** The live funnel is **client-derived**: `getMasteryFunnels` (masteryModel.ts:918) fetches evidence and runs the pure `deriveMasteryFunnel` (`:423`) in TS — there is **no funnel RPC**. The series extends that exact pattern to time:
 
 - **`deriveFunnelSeries(events, weekEnds, caps, now?)`** — pure, in `masteryModel.ts`, sibling to `deriveMasteryFunnel`. For each week-end: reconstruct each capability's **last-known state as of that week-end** (`distinct on capability_id` over events with `created_at <= week_end`), build `CapabilityMasteryEvidence` with the label clock = **the week-end moment** (newest week-end = `now()`), then call the existing `deriveMasteryFunnel` **verbatim** → one `MasteryFunnels` per week. Weakest-wins per `source_ref` and the vocab/grammar/morphology split come for free — they live *inside* `deriveMasteryFunnel`. The label-clock-as-of-week-end is the clean generalization of the old `CASE WHEN` clock (the as-of moment simply *is* each week-end); `at_risk` short-circuit stays clock-independent (data-architect Q1).
-- **`getFunnelSeries(userId, tz, weeks)`** wrapper: fetches the owner-scoped event log + caps, computes week-end boundaries timezone-locally (M1 formula, identical to §3.3), derives client-side.
+- **`getFunnelSeries(userId, tz, weeks)`** wrapper: fetches the event log + caps, computes week-end boundaries timezone-locally (M1 formula, identical to §3.3), derives client-side.
 
 **Returns `FunnelWeek[]`**, zero-filled for empty weeks:
 ```ts
@@ -54,9 +54,14 @@ export interface FunnelWeek { weekStart: string; vocabulary: MasteryFunnel; gram
 // MasteryFunnel = the existing Record<MasteryLabel, number> — reused, no new shape.
 ```
 
-> **Open decision for re-review — Path A (client-derive, above) vs Path B (server RPC).** Path A reuses `deriveMasteryFunnel` verbatim (no new SQL, no new SQL-vs-TS lockstep surface) and matches how the funnel is computed *today*, but ships the owner's event log to the client — ADR 0015 prefers server-side aggregation for small results. Path B = a `get_mastery_funnel_series` RPC replicating `_mastery_label` + weakest-wins-per-`source_ref` per week-end (server-aggregated, ADR-0015-faithful, but new SQL + a new lockstep). **Recommendation: Path A** — the funnel's snapshot counterpart is *already* client-derived, so growth and durability legitimately differ in mechanism (durability's counterpart `get_memory_health` is a server aggregate; the funnel's is client TS). Architect owns the ADR-0015 seam call; data-architect owns the event-log-fetch shape. This is the one substantive question the reshape reopens.
+**Mechanism DECIDED: Path A (pure client-side TS), both round-3 reviewers (§9).** Path A reuses `deriveMasteryFunnel` verbatim — no new SQL, no new lockstep surface — and is correct on ADR 0015's *own* terms: ADR 0015 prefers server aggregation to avoid shipping ~10⁴ rows on a *hot path*; Groei is an opt-in tab and the fetch is owner-scoped, so neither condition bites. The funnel's snapshot counterpart `getMasteryFunnels` is *already* client-derived (no RPC), so the time-series legitimately stays client-side; a server RPC (rejected "Path B") would be the *only* server-side funnel computation in the codebase **and** would re-mirror the 5-rule `labelForCapability` + weakest-wins in SQL (a new HC28-style lockstep) — more mechanism, against Minimum Mechanism. **Growth therefore adds NO RPC and NO migration.**
 
-**Validator:** the newest week-end's funnel must equal the live `getMasteryFunnels().all` for the same user (exact — same deriver, same evidence) — a regression guard that **replaces** the retired `get_weekly_movement` parity.
+> **Implementer notes (data-architect round 3 — pin before build):**
+> - **M1 — the event fetch is UNBOUNDED on time.** A single owner-scoped query (`WHERE user_id = p_user_id`, **no `created_at` floor**, not a chunked `.in()`). A `created_at >= oldest-week-start` window *looks* like a safe optimization but silently misclassifies any cap whose last event predates the window (it would read as `introduced` at every historical week-end), and the newest-week validator does **not** catch it. (This overrides an architect suggestion to floor the fetch to `p_weeks`; the data-architect's correctness analysis wins — the architect's real ask, "one clean owner-scoped query, not a chunked .in()", is preserved.)
+> - **I1 — cap set = `learner_capability_state` rows**, resolved to their capability rows — exactly what `allLearnerEvidence` (masteryModel.ts:865) feeds `getMasteryFunnels`. NOT "all active caps" (over-counts) and NOT "caps seen in the event log" (under-counts). Using the same set is what makes the validator exact.
+> - **M2 — known limitation:** because `lessonActivated` and the cap-set are present-tense for all historical week-ends, the `introduced` rung is slightly inflated in early-history weeks (caps whose first review post-dates that week-end). Upper rungs (`learning`/`strengthening`/`mastered`) and the newest-week validator are unaffected — acceptable for the use case; document it on the card if early weeks look odd.
+
+**Validator:** the **newest** week-end's funnel must equal the live `getMasteryFunnels().all` for the same user — exact (same deriver, same evidence, `commit_capability_answer_report` writes state + events in lockstep). A unit-test/regression guard replacing the retired `get_weekly_movement` parity. Historical week-ends have no live counterpart to assert against (expected — the guard is newest-week only).
 
 ### 3.3 Durability curve — revive `analytics.memory`
 
@@ -99,7 +104,7 @@ A single un-LATERAL'd `DISTINCT ON` returns only **one** week — the LATERAL is
 
 | New piece | What breaks if omitted |
 |---|---|
-| `deriveFunnelSeries` / `getFunnelSeries` (Path A) — or `get_mastery_funnel_series` RPC (Path B) | No growth trend — only the *current* funnel snapshot exists; cannot show the 4 rungs climbing over time. |
+| `deriveFunnelSeries` / `getFunnelSeries` (client-side, Path A) | No growth trend — only the *current* funnel snapshot exists; cannot show the 4 rungs climbing over time. |
 | `get_stability_series` | No durability trend — only a current snapshot (and that snapshot is itself unrendered today). |
 | Revived `memory` sub-module | *Cohesion, not a functional break* (architect W4): keeping the function elsewhere still works, but puts retention/stability math inside `mastery` (whose job is the 6-state *label* hierarchy) — the conceptual muddle the roster's `memory`-vs-`mastery` split exists to prevent (target-arch:734-735). Scoped to `stabilitySeries` only; thinness of a correctly-placed module is not over-engineering (architect verdict). |
 | `Groei` tab + 2 cards | The data has no surface; RPCs would be dead. |
@@ -109,10 +114,10 @@ A single un-LATERAL'd `DISTINCT ON` returns only **one** week — the LATERAL is
 ## 5. Supabase Requirements
 
 ### Schema changes
-- **No new tables or columns.** Durability always adds one **SECURITY INVOKER** RPC `get_stability_series`. Growth adds an RPC **only if Path B** (`get_mastery_funnel_series`) — under the recommended **Path A it is pure client-side TS** (`deriveFunnelSeries` + a `getFunnelSeries` that reads the event log via the existing client) and adds **no** RPC. All RPCs filter `where user_id = p_user_id` (invoker-RPC safety idiom, migration.sql:571).
-- **RLS:** none added. The reads hit `capability_review_events`, which already has owner-only read RLS (migration.sql:1514) + `grant select … to authenticated` (`:1535`) — covering both the Path-A client fetch and any Path-B RPC.
-- **Grants:** `grant execute on function … to authenticated` for each RPC built (mirrors `get_weekly_movement`, migration.sql:2476).
-- Run `make migrate-idempotent-check` before merge (any RPC uses `create or replace`).
+- **No new tables or columns.** **Durability** adds one **SECURITY INVOKER** RPC `get_stability_series` (filters `where user_id = p_user_id`, invoker-RPC safety idiom migration.sql:571). **Growth is pure client-side TS (Path A) — NO RPC, NO migration.**
+- **RLS:** none added. Both readers hit `capability_review_events`, which already has owner-only read RLS (migration.sql:1514) + `grant select … to authenticated` (`:1535`) — covering the durability RPC and the growth client fetch alike.
+- **Grants:** `grant execute on function get_stability_series … to authenticated` (mirrors `get_weekly_movement`, migration.sql:2476).
+- Run `make migrate-idempotent-check` before merge (the one RPC uses `create or replace`).
 
 ### homelab-configs changes
 - [ ] PostgREST schema exposure — **N/A** (`indonesian` already exposed; RPCs are reachable once defined).
@@ -121,8 +126,8 @@ A single un-LATERAL'd `DISTINCT ON` returns only **one** week — the LATERAL is
 - [ ] Storage — **N/A.**
 
 ### Health check additions
-- `scripts/check-supabase-deep.ts`: assert each RPC built (`get_stability_series`, + `get_mastery_funnel_series` under Path B) exists + is `authenticated`-executable.
-- **Growth validator = funnel parity.** The newest week-end of the funnel series must equal the live `getMasteryFunnels().all` for the same user (§3.2). Under **Path A** this is a unit test (`deriveFunnelSeries`' newest column == `deriveMasteryFunnel` over current evidence — same deriver, so it is a structural regression guard). Under **Path B** it is the SQL-vs-TS lockstep (ADR 0015 / HC28 precedent: `get_mastery_funnel_series` newest week == client `deriveMasteryFunnel`). The retired `get_weekly_movement` parity no longer applies.
+- `scripts/check-supabase-deep.ts`: assert `get_stability_series` exists + is `authenticated`-executable. (Growth adds no RPC.)
+- **Growth validator = funnel parity (unit test).** `deriveFunnelSeries`' newest week-end column == `deriveMasteryFunnel` over current evidence — same deriver, a structural regression guard. The retired `get_weekly_movement` parity no longer applies.
 - **Durability** keeps its existing checks (function exists; cumulative reconstruction is RPC-authoritative, §3.3).
 
 ### Docs to update in the same PR (architect W5)
@@ -133,7 +138,7 @@ A single un-LATERAL'd `DISTINCT ON` returns only **one** week — the LATERAL is
 
 - **TS pure derivers** (Vitest): `deriveFunnelSeries` — empty log → zero-filled weeks; per-week-end snapshot reconstructs the last-known state per cap (an advance→slip→re-advance word sits in exactly one rung per week-end, **no double-count**); the four rung counts per week per bucket; newest week-end == `deriveMasteryFunnel` over current evidence (the funnel-parity guard).
 - **Component** (RTL): `Groei` tab renders the phase-1 card(s); deep-link `/progress?tab=groei`; the growth card's **rung selector** shows/hides each of the 4 lines and the bucket toggle switches vocab/grammar/morphology; durability shows plain-language days not raw stability; plateau framing present.
-- **Funnel-parity** test backing the §5 health check (newest week-end == live funnel; Path B additionally: SQL series == TS series over the same events).
+- **Funnel-parity** test backing the §5 health check (newest week-end == live funnel; historical weeks have no live counterpart — newest-only by design). Plus M1 coverage: a cap whose only event predates the window still classifies correctly at historical week-ends (guards against a time-floored fetch).
 
 ## 7. Phasing (staff-engineer pass, §9)
 
@@ -146,8 +151,8 @@ Both phases ship behind the same `Groei` tab; Phase 1 may launch the tab with on
 
 ## 8. Questions
 
-**Reopened by the 2026-06-30 growth reshape (needs re-review):**
-- **Q4 — growth Path A (client-derive) vs Path B (server RPC)** for the funnel series (§3.2). Architect owns the ADR-0015 seam call (is shipping the owner's bounded event log to the client acceptable, given the funnel is *already* client-derived?); data-architect owns the event-log-fetch shape + (if Path B) the SQL replication of `_mastery_label`/weakest-wins. Recommendation in-spec: **Path A**.
+**Resolved by the 2026-06-30 round-3 re-review:**
+- **Q4 — growth Path A vs Path B — RESOLVED: Path A (client-derive).** Both reviewers approved. Architect: Path A is sound on ADR 0015's own terms (no hot-path/volume trigger; Path B would be the only server-side funnel computation + a new label-hierarchy SQL mirror). Data-architect: reconstruction faithful; pinned M1 (unbounded fetch), I1 (cap set = `learner_capability_state`), M2 (`introduced` historical inflation = known limitation) — all folded into §3.2.
 
 **Still resolved (durability unchanged + carried mastery findings):**
 - **Q1 — label clock — RESOLVED.** As-of-week-end clock (newest = `now()`); generalizes the old `CASE WHEN`. `at_risk` short-circuit clock-independent (data-architect Q1).
@@ -161,8 +166,15 @@ Both phases ship behind the same `Groei` tab; Phase 1 may launch the tab with on
 - **2026-06-30 — data-architect (RPC contracts), round 1:** disposition NOT YET APPROVABLE; **Q1 + Q2 semantics confirmed correct**, `get_memory_health` drop confirmed clean (i2). Folded in: timezone-aware week boundaries (§3.2/§3.3, **M1 major**); `CASE WHEN` label clock for exact parity (§3.2, m1); inline TS row interfaces + char-for-char mappers (§3.2/§3.3, m2); zero-fill via `generate_series` (m3); `RETURNS json`/`json_agg` (i1); explicit `LATERAL`-over-`generate_series` shape for the stability reconstruction (§3.3, Q2 caveat).
 - **2026-06-30 — architect (placement/seams), round 2: APPROVED.** Re-verified W1–W5 all correctly + completely addressed against live code; no new placement/seam drift; read-only boundary + ADR 0015 intact. Non-blocking notes carried: 6-tab 390px UX check + component directory (§3.4).
 - **2026-06-30 — data-architect (RPC contracts), round 2: APPROVED.** All six round-1 findings verified resolved; both writer-reader-validator triangles close (growth = TS deriver + series lockstep HC; stability = inline typed interface, the correct minimum guard for a non-client-derivable cumulative read). Two MINOR implementer notes folded into §3.3: n=0 current-week boundary must use `now()`; `avg_stability_days` is `double precision`. → `status: approved`.
-- **2026-06-30 — user direction (round 3): growth reshaped — "should not only be mastered; track all 4 states; a line per state, selectable."** The growth curve changed from a mastered-only **flow** (generalizing `get_weekly_movement`) to the **funnel over time** — a per-week-end snapshot of all 4 rungs (`introduced`/`learning`/`strengthening`/`mastered`), rendered as 4 selectable lines (§3.2, §3.4). This **dissolves** the staff-engineer double-count concern (snapshots can't double-count) and **retires** the `get_weekly_movement` generalization + its lockstep parity (replaced by funnel parity). Durability (§3.3) is unchanged. Reopens **Q4** (Path A client-derive vs Path B server RPC) → back to `draft`, re-dispatch architect + data-architect for the growth change only.
+- **2026-06-30 — user direction (round 3): growth reshaped — "should not only be mastered; track all 4 states; a line per state, selectable."** The growth curve changed from a mastered-only **flow** (generalizing `get_weekly_movement`) to the **funnel over time** — a per-week-end snapshot of all 4 rungs (`introduced`/`learning`/`strengthening`/`mastered`), rendered as 4 selectable lines (§3.2, §3.4). This **dissolves** the staff-engineer double-count concern (snapshots can't double-count) and **retires** the `get_weekly_movement` generalization + its lockstep parity (replaced by funnel parity). Durability (§3.3) unchanged.
+- **2026-06-30 — architect (growth reshape), round 3: APPROVED (Path A).** Settled Q4: Path A is correct on ADR 0015's own terms (Groei is opt-in, not a hot path; fetch is owner-scoped — neither ADR-0015 trigger bites), and Path B would invent the only server-side funnel computation + a new label-hierarchy SQL mirror (against Minimum Mechanism). Placement still correct (now unambiguously `mastery`, no longer touches `memory`); retiring the `get_weekly_movement` coupling leaves no gap (the function + HC28 stay live). Folded: collapse to Path A; pin the fetch as a single owner-scoped query.
+- **2026-06-30 — data-architect (growth reshape), round 3: APPROVED (Path A).** Reconstruction faithful; `state_after_json` field contract confirmed (HC28-backed, no new lockstep). Folded into §3.2: **M1** event fetch UNBOUNDED on time (a time-floored fetch silently misclassifies historical weeks and the validator won't catch it — overrides the architect's floor suggestion); **I1** cap set = `learner_capability_state` (mirrors `allLearnerEvidence`) so the validator is exact; **M2** `introduced` historical inflation = documented known limitation. Clock semantics (`at_risk` clock-free, `mastered` `isRecent` vs week-end) confirmed correct. → `status: approved`.
 
-## 10. Review status — DRAFT (durability approved; growth reshape pending re-review)
+## 10. Review status — APPROVED
 
-Reached `approved` at round 2, then the 2026-06-30 growth reshape (§9 round 3) changed the **growth** contract — so back to `draft`. **Durability (§3.3) is unaffected and stays approved**; Phase 1 (durability) could even proceed independently. **Growth (§3.2/§3.4) needs one re-review round** on **Q4** (Path A client-derive vs Path B server RPC) — architect for the ADR-0015 seam, data-architect for the event-log-fetch shape / SQL replication. On sign-off: `reviewed_by: [staff-engineer, architect, data-architect]`, `status: approved`. Build surfaces unchanged except growth moves from a new RPC to `masteryModel.ts` `deriveFunnelSeries`/`getFunnelSeries` (Path A) or a `get_mastery_funnel_series` RPC (Path B).
+Reached `approved` at round 2; the 2026-06-30 growth reshape (funnel-over-time, 4 selectable lines) was re-approved by both `architect` and `data-architect` at round 3 (§9, Path A). `reviewed_by: [staff-engineer, architect, data-architect]`, `status: approved`. **Ready to implement** — Phase 1 (durability) first per §7. Build surfaces:
+- `scripts/migration.sql` — **one** idempotent `CREATE OR REPLACE` RPC `get_stability_series` (durability only; growth adds none).
+- `src/lib/analytics/memory/index.ts` — single-file revival (`stabilitySeries`).
+- `src/lib/analytics/mastery/masteryModel.ts` — `deriveFunnelSeries` + `getFunnelSeries` (Phase 2 growth, pure client-side; pinned notes M1/I1/M2 in §3.2).
+- `Progress.tsx` + `GrowthCurveCard` / `DurabilityCard` in `src/components/progress/`.
+- Same-PR doc updates (§5) + implementer notes (§3.2, §3.3).
