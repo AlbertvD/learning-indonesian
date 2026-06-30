@@ -10,7 +10,7 @@ import { isFunctionWord } from '../functionWords'
 
 function podcast(overrides: Partial<Podcast>): Podcast {
   return {
-    id: 'p1', title: 'Test', description: null, audio_path: 'a.mp3',
+    id: 'p1', title: 'Test', description: null, audio_path: 'a.mp3', audio_path_en: null,
     transcript_indonesian: null, transcript_english: null, transcript_dutch: null,
     transcript_segments: null, attribution: null, level: 'A1',
     duration_seconds: null, created_at: '2026-01-01', ...overrides,

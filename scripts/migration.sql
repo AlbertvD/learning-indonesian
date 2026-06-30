@@ -158,6 +158,15 @@ ALTER TABLE indonesian.texts ADD COLUMN IF NOT EXISTS attribution jsonb;
 COMMENT ON COLUMN indonesian.texts.attribution IS
   'CC attribution for openly-licensed source texts: {source_title, source_url, author, license, license_url}. NULL for LLM-original content.';
 
+-- Pronunciation podcast: L1-specific English audio (twin of audio_path, which carries
+-- the NL episode), mirroring the grammar-podcast lessons.audio_path/audio_path_en pattern
+-- (ADR 0025). Nullable: only pronunciation-podcast rows set this; story podcasts and
+-- read-only texts leave it NULL — so the Listen face L1-routes off its presence
+-- (lang==='en' && audio_path_en ? audio_path_en : audio_path), no kind discriminator.
+ALTER TABLE indonesian.texts ADD COLUMN IF NOT EXISTS audio_path_en text;
+COMMENT ON COLUMN indonesian.texts.audio_path_en IS
+  'English-L1 audio path (indonesian-podcasts bucket). Set only on pronunciation podcasts; NULL on story podcasts and read-only texts. Twin of audio_path (NL).';
+
 -- ── Morphology gloss pre-compute (reader exploratory glossing, ADR 0024) ─────────
 -- For every affixed corpus word, its {root, affix} decomposition, so the Lezen reader
 -- shows an EXPLORATORY gloss on tap (affix function + root meaning + word family) by a
