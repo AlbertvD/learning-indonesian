@@ -15,6 +15,10 @@ content/raw/
 # Intermediate extraction JSON — not committed
 content/extracted/
 
+# Kaikki/Wiktionary dictionary dumps — large (~90 MB) build-input reference data
+# for the reader/morphology glossing; reference only, never committed
+content/kaikki/
+
 # Grammar-podcast Phase-0 review artifacts (claims, TBBBI/KBBI verdicts) and any
 # local reference material — never committed
 content/grammar-review/
