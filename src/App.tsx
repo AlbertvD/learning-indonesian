@@ -20,6 +20,7 @@ const LezenReader = lazy(() => import('@/pages/LezenReader').then(m => ({ defaul
 const Profile = lazy(() => import('@/pages/Profile').then(m => ({ default: m.Profile })))
 const Progress = lazy(() => import('@/pages/Progress').then(m => ({ default: m.Progress })))
 const AffixTrainer = lazy(() => import('@/pages/AffixTrainer').then(m => ({ default: m.AffixTrainer })))
+const Pronunciation = lazy(() => import('@/pages/Pronunciation').then(m => ({ default: m.Pronunciation })))
 const SectionCoverage = lazy(() => import('@/pages/SectionCoverage').then(m => ({ default: m.SectionCoverage })))
 const ExerciseCoverage = lazy(() => import('@/pages/ExerciseCoverage').then(m => ({ default: m.ExerciseCoverage })))
 const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ default: m.ContentReview })))
@@ -377,6 +378,14 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><AffixTrainer /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pronunciation"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Pronunciation /></LazyPage>
             </ProtectedRoute>
           }
         />
