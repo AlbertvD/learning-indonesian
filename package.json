@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
-    "@mantine/core": "^9.4.0",
-    "@mantine/hooks": "^9.4.0",
-    "@mantine/notifications": "^9.4.0",
+    "@mantine/core": "^9.1.0",
+    "@mantine/hooks": "^9.1.0",
+    "@mantine/notifications": "^9.1.0",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.108.2",
     "@tabler/icons-react": "^3.44.0",
