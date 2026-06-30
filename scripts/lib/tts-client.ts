@@ -92,9 +92,9 @@ export function effectiveVoiceFor(text: string, voiceId: string): string {
     : voiceId
 }
 
-export async function synthesizeSpeech(text: string, voiceId: string): Promise<Buffer> {
+export async function synthesizeSpeech(text: string, voiceId: string, languageCode = 'id-ID'): Promise<Buffer> {
   const effectiveVoice = effectiveVoiceFor(text, voiceId)
-  return synthesizeInput({ text }, effectiveVoice)
+  return synthesizeInput({ text }, effectiveVoice, languageCode)
 }
 
 /**
@@ -105,13 +105,14 @@ export async function synthesizeSpeech(text: string, voiceId: string): Promise<B
  * for the whole document and narrates full sentences (not isolated ≤2-char words),
  * so that Chirp3-HD failure mode does not arise here.
  */
-export async function synthesizeSsml(ssml: string, voiceId: string): Promise<Buffer> {
-  return synthesizeInput({ ssml }, voiceId)
+export async function synthesizeSsml(ssml: string, voiceId: string, languageCode = 'id-ID'): Promise<Buffer> {
+  return synthesizeInput({ ssml }, voiceId, languageCode)
 }
 
 async function synthesizeInput(
   input: { text: string } | { ssml: string },
   voiceName: string,
+  languageCode = 'id-ID',
 ): Promise<Buffer> {
   const token = await getAccessToken()
 
@@ -120,7 +121,7 @@ async function synthesizeInput(
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       input,
-      voice: { languageCode: 'id-ID', name: voiceName },
+      voice: { languageCode, name: voiceName },
       audioConfig: { audioEncoding: 'MP3', sampleRateHertz: 24000 },
     }),
   })
