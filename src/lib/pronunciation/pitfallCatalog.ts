@@ -65,6 +65,14 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: 'Nooit als een k of een s.',
     pitfallEn: 'Never as k or s.',
     examples: ['cinta', 'coklat', 'kecil', 'cuci'],
+    minimalPairs: [
+      {
+        a: 'cari',
+        b: 'kari',
+        contrastNl: "'cari' (zoeken) begint met de tj-klank; 'kari' (kerrie) met een k.",
+        contrastEn: "'cari' (to look for) starts with the 'ch' sound; 'kari' (curry) with a k.",
+      },
+    ],
     rank: 2,
   },
   {
@@ -107,6 +115,14 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: "Nederlanders maken er vaak de zachte keel-g van ('gaan') — dat klopt niet.",
     pitfallEn: 'Dutch speakers often use the soft guttural g — that is wrong here.',
     examples: ['gampang', 'gelas', 'gigi', 'gula'],
+    minimalPairs: [
+      {
+        a: 'gali',
+        b: 'kali',
+        contrastNl: "'gali' (graven) heeft de harde g; 'kali' (keer/rivier) een k.",
+        contrastEn: "'gali' (to dig) has the hard g; 'kali' (times/river) a k.",
+      },
+    ],
     rank: 5,
   },
   {
@@ -141,6 +157,14 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: 'Engelstaligen gebruiken de Engelse glij-r — die bestaat niet in het Indonesisch.',
     pitfallEn: 'English speakers use the English approximant r — it does not exist in Indonesian.',
     examples: ['rumah', 'lari', 'besar', 'kerja'],
+    minimalPairs: [
+      {
+        a: 'rusa',
+        b: 'lusa',
+        contrastNl: "'rusa' (hert) begint met de getikte r; 'lusa' (overmorgen) met een l.",
+        contrastEn: "'rusa' (deer) starts with the tapped r; 'lusa' (the day after tomorrow) with an l.",
+      },
+    ],
     rank: 8,
   },
   {

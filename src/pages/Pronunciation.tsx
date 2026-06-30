@@ -31,7 +31,10 @@ export function Pronunciation() {
       setLoading(true)
       setError(null)
       try {
-        const words = getPitfallsForL1(language).flatMap((p) => p.examples)
+        const words = getPitfallsForL1(language).flatMap((p) => [
+          ...p.examples,
+          ...(p.minimalPairs ?? []).flatMap((mp) => [mp.a, mp.b]),
+        ])
         const map = await fetchSessionAudioMap(words.map((text) => ({ text, voiceId: null })))
         if (!cancelled) setAudioMap(map)
       } catch (err) {

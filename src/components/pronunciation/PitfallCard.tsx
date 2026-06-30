@@ -5,6 +5,7 @@
 
 import { Card, Badge, Group, Stack, Text } from '@mantine/core'
 import { PlayButton } from '@/components/PlayButton'
+import { MinimalPairPlayer } from './MinimalPairPlayer'
 import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
 import { useT } from '@/hooks/useT'
 import type { Pitfall, L1 } from '@/lib/pronunciation/pitfallCatalog'
@@ -48,6 +49,19 @@ export function PitfallCard({ pitfall, language, audioMap }: PitfallCardProps) {
             ))}
           </Group>
         </div>
+
+        {pitfall.minimalPairs && pitfall.minimalPairs.length > 0 && (
+          <div>
+            <Text size="xs" tt="uppercase" c="dimmed" mb={4}>
+              {T.pronunciation.perceptionLabel}
+            </Text>
+            <Stack gap="xs">
+              {pitfall.minimalPairs.map((mp) => (
+                <MinimalPairPlayer key={`${mp.a}-${mp.b}`} pair={mp} language={language} audioMap={audioMap} />
+              ))}
+            </Stack>
+          </div>
+        )}
       </Stack>
     </Card>
   )
