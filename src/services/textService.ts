@@ -54,6 +54,9 @@ export interface Podcast {
   title: string
   description: string | null
   audio_path: string | null
+  /** English-L1 audio (twin of audio_path = NL). Set only on pronunciation
+   *  podcasts (ADR 0025); NULL on story podcasts and read-only texts. */
+  audio_path_en: string | null
   transcript_indonesian: string | null
   transcript_english: string | null
   transcript_dutch: string | null

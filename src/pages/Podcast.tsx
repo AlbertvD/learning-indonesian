@@ -143,7 +143,11 @@ export function Podcast() {
 
   // This is the Listen face — reached only via the audio-filtered Podcasts list.
   // audio_path is nullable on the texts row (read-only texts have none); guard defensively.
-  const audioUrl = podcast.audio_path ? textService.getAudioUrl(podcast.audio_path) : ''
+  // L1 routing (ADR 0025): a pronunciation podcast carries an English twin in
+  // audio_path_en — an English learner hears that; everyone else hears audio_path (NL).
+  // Story podcasts have no audio_path_en, so this is a no-op for them.
+  const audioSource = lang === 'en' && podcast.audio_path_en ? podcast.audio_path_en : podcast.audio_path
+  const audioUrl = audioSource ? textService.getAudioUrl(audioSource) : ''
   const segments = podcast.transcript_segments ?? null
   // Cheap (~150 words, ~4×/s); not a hook so it can live after the early returns.
   const active = segments ? findActiveWord(segments, currentTime) : null
