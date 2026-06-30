@@ -55,4 +55,19 @@ describe('catalog integrity', () => {
     expect(words.length).toBeGreaterThan(0)
     for (const w of words) expect(w.length).toBeGreaterThan(0)
   })
+
+  it('gives well-formed minimal pairs where present (distinct, audible, both-language contrast)', () => {
+    const withPairs = [...distinct.values()].filter((p) => (p.minimalPairs?.length ?? 0) > 0)
+    // At least one pitfall must carry a minimal pair (the perception drill's input).
+    expect(withPairs.length).toBeGreaterThan(0)
+    for (const p of withPairs) {
+      for (const mp of p.minimalPairs!) {
+        expect(normalizeTtsText(mp.a)).not.toBe(normalizeTtsText(mp.b))
+        expect(normalizeTtsText(mp.a).length).toBeGreaterThan(0)
+        expect(normalizeTtsText(mp.b).length).toBeGreaterThan(0)
+        expect(mp.contrastNl.length, `${p.id} pair missing NL contrast`).toBeGreaterThan(0)
+        expect(mp.contrastEn.length, `${p.id} pair missing EN contrast`).toBeGreaterThan(0)
+      }
+    }
+  })
 })

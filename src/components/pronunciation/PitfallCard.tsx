@@ -5,6 +5,8 @@
 
 import { Card, Badge, Group, Stack, Text } from '@mantine/core'
 import { PlayButton } from '@/components/PlayButton'
+import { MinimalPairPlayer } from './MinimalPairPlayer'
+import { ShadowControl } from './ShadowControl'
 import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
 import { useT } from '@/hooks/useT'
 import type { Pitfall, L1 } from '@/lib/pronunciation/pitfallCatalog'
@@ -40,14 +42,31 @@ export function PitfallCard({ pitfall, language, audioMap }: PitfallCardProps) {
             {T.pronunciation.examplesLabel}
           </Text>
           <Group gap="md">
-            {pitfall.examples.map((word) => (
-              <Group key={word} gap={2} wrap="nowrap">
-                <Text size="sm">{word}</Text>
-                <PlayButton audioUrl={resolveSessionAudioUrl(audioMap, word, null)} size="xs" />
-              </Group>
-            ))}
+            {pitfall.examples.map((word) => {
+              const url = resolveSessionAudioUrl(audioMap, word, null)
+              return (
+                <Group key={word} gap={2} wrap="nowrap">
+                  <Text size="sm">{word}</Text>
+                  <PlayButton audioUrl={url} size="xs" />
+                  <ShadowControl word={word} modelUrl={url} />
+                </Group>
+              )
+            })}
           </Group>
         </div>
+
+        {pitfall.minimalPairs && pitfall.minimalPairs.length > 0 && (
+          <div>
+            <Text size="xs" tt="uppercase" c="dimmed" mb={4}>
+              {T.pronunciation.perceptionLabel}
+            </Text>
+            <Stack gap="xs">
+              {pitfall.minimalPairs.map((mp) => (
+                <MinimalPairPlayer key={`${mp.a}-${mp.b}`} pair={mp} language={language} audioMap={audioMap} />
+              ))}
+            </Stack>
+          </div>
+        )}
       </Stack>
     </Card>
   )
