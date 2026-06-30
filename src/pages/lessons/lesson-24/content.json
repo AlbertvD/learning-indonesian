@@ -8,7 +8,7 @@
     "primary_voice": "id-ID-Chirp3-HD-Achird",
     "duration_seconds": null,
     "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-24-nl.mp3",
-    "lesson_audio_url_en": null
+    "lesson_audio_url_en": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-24-en.mp3"
   },
   "sections": [
     {
