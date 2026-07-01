@@ -1,7 +1,13 @@
 ---
-status: implementing
+status: shipped
 approved_at: 2026-07-01
 implementation: PR #328
+merged_at: 2026-07-01
+implementation_paths:
+  - scripts/migration.sql
+  - scripts/check-supabase-deep.ts
+  - scripts/lib/pipeline/capability-stage/adapter.ts
+  - src/services/lessonService.ts
 doc_type: schema-teardown-plan
 issue: "#150"
 parent_epic: "#98"
