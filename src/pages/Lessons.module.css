@@ -198,22 +198,53 @@
   margin-top: 0.6rem;
 }
 
-/* Practice-tools block, secondary to the lessons hero. */
-.toolsSection {
-  margin-top: 1.25rem;
+/* Four content-type cards at the top of Leren (§7.3). 2×2 on mobile. */
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin: 0.25rem 0 1.25rem;
 }
 
-.toolsTitle {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text-secondary, #868e96);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin: 0 0 0.6rem;
+@media (min-width: 700px) {
+  .typeGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
-.toolsGrid {
+.typeCard {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.9rem 0.5rem;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.typeCard:active {
+  transform: scale(0.98);
+}
+
+.typeCard:hover {
+  background: var(--accent-primary-subtle);
+}
+
+.typeCardActive {
+  border-color: var(--accent-primary, #4dabf7);
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary, #4dabf7);
+}
+
+.typeLabel {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.15;
 }

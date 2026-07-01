@@ -1,0 +1,15 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary, #868e96);
+  text-decoration: none;
+  padding: 0.25rem 0;
+  margin-bottom: 0.4rem;
+}
+
+.back:hover {
+  color: var(--accent-primary, #4dabf7);
+}
