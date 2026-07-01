@@ -123,6 +123,24 @@ describe('selectMeaningDistractors', () => {
 
     expect(chosen.map((c) => c.itemId)).toEqual(['i-rood-a', 'i-groen'])
   })
+
+  it('excludes a multi-form synonym even when its embedding is missing (HC26 answer-equal regression)', () => {
+    // L3 `akan tetapi`="maar / echter": the item `tetapi` shares the FULL gloss
+    // "maar / echter" but its embedding is absent (zero vector → cosine 0), so the
+    // cosine synonym filter can't catch it and the old full-vs-split forms check
+    // missed it — it survived and rendered identically to the answer. The symmetric
+    // answer-form exclusion must drop it regardless of embedding.
+    const answer = { meaning: 'maar / echter', embedding: [1, 0, 0] }
+    const candidates = [
+      { itemId: 'i-tetapi', meaning: 'maar / echter', embedding: [0, 0, 0] }, // full synonym, zero embedding — excluded
+      { itemId: 'i-maar', meaning: 'maar', embedding: [0, 0, 0] }, // shares a `/`-form — excluded
+      { itemId: 'i-en', meaning: 'en', embedding: [0.2, 0.3, 0.9] }, // distinct — kept
+    ]
+
+    const chosen = selectMeaningDistractors(answer, candidates, 3, { synonymThreshold: 0.85 })
+
+    expect(chosen.map((c) => c.itemId)).toEqual(['i-en'])
+  })
 })
 
 describe('withPosFallback', () => {

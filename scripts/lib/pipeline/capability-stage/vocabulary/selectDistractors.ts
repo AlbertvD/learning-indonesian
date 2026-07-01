@@ -167,9 +167,22 @@ export function selectMeaningDistractors(
   const threshold = opts?.synonymThreshold ?? DEFAULT_SYNONYM_THRESHOLD
   const forms = answerForms(answer.meaning)
 
+  // A candidate is a (partly) CORRECT answer — not a valid wrong option — if its
+  // gloss shares ANY of the answer's `/`-separated forms. This splits the
+  // candidate too (symmetric), so a multi-form synonym like `tetapi`="maar /
+  // echter" is excluded for answer `akan tetapi`="maar / echter", not just a
+  // candidate whose whole gloss is a single answer form. It is embedding-
+  // INDEPENDENT: the cosine synonym filter below silently fails when a candidate's
+  // embedding is missing/zero (cosine → 0 < threshold), which let identical-gloss
+  // synonyms survive and render as the answer (HC26 answer-equal; F1 tail).
+  const sharesAnswerForm = (m: string): boolean => {
+    for (const f of answerForms(m)) if (forms.has(f)) return true
+    return false
+  }
+
   const ranked = candidates
     .map((c) => ({ c, sim: cosine(answer.embedding, c.embedding) }))
-    .filter(({ c, sim }) => !forms.has(c.meaning.toLowerCase().trim()) && sim < threshold)
+    .filter(({ c, sim }) => !sharesAnswerForm(c.meaning) && sim < threshold)
     .sort((x, y) => y.sim - x.sim || x.c.meaning.localeCompare(y.c.meaning))
   return dedupeByRendered(ranked, (r) => r.c.meaning)
     .slice(0, k)
