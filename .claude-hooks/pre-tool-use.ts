@@ -54,11 +54,17 @@ const IP_ALLOWED_FILES = [
 const LOG_FILE = `${process.cwd()}/.claude/logs/pre_tool_use.jsonl`;
 
 export function checkDangerousGit(command: string): CheckResult {
+	// These target the operations that can break GitOps sync with Portainer on
+	// main: rewriting pushed history (force push), destroying working-tree/commit
+	// state (hard reset, clean -df). LOCAL branch deletion (`git branch -d/-D`) is
+	// intentionally NOT blocked — it never touches the remote or main, so it can't
+	// affect GitOps; the previous `git branch -D` rule (matched case-insensitively,
+	// so it also caught the safe `-d`) blocked routine stale-branch cleanup for no
+	// GitOps benefit.
 	const patterns = [
 		String.raw`git\s+push\s+.*--force`,
 		String.raw`git\s+reset\s+--hard`,
 		String.raw`git\s+clean\s+-[df]`,
-		String.raw`git\s+branch\s+-D`,
 	];
 	for (const pattern of patterns) {
 		if (new RegExp(pattern, "i").test(command)) {
