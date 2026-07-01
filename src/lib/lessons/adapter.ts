@@ -6,11 +6,9 @@
 // (`lesson-${order_index}`).
 //
 // Folded from src/services/lessonService.ts in commit 6 of the lib/lessons/
-// fold (docs/plans/2026-05-18-fold-lib-lessons.md). Two methods stayed in
-// services/lessonService.ts:
-//   - getAudioUrl: long-form lesson audio bucket transport
-//   - getUserLessonProgress: reads lesson_progress (Dashboard concern; will
-//     migrate during the analytics/mastery fold)
+// fold (docs/plans/2026-05-18-fold-lib-lessons.md). getAudioUrl (long-form
+// lesson audio bucket transport) stayed in services/lessonService.ts.
+// (getUserLessonProgress was removed 2026-07-01 with the lesson_progress table — #150.)
 
 import { supabase } from '@/lib/supabase'
 import { chunkedIn } from '@/lib/chunkedQuery'
