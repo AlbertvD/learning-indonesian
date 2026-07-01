@@ -1,6 +1,14 @@
 ---
-status: approved
-reviewed_by: [staff-engineer, architect, data-architect]   # round-2 approved durability; round-3 (growth reshape → funnel-over-time, 4 selectable state lines) re-approved by architect + data-architect 2026-06-30 (§9). Growth = Path A (client-side, no RPC); implementer notes M1/I1/M2 pinned in §3.2.
+status: shipped
+implementation: PR #322
+merged_at: 2026-07-01
+implementation_paths:
+  - scripts/migration.sql                        # get_stability_series RPC (live-verified)
+  - src/lib/analytics/memory/index.ts            # revived memory sub-module (durability)
+  - src/lib/analytics/mastery/masteryModel.ts    # deriveFunnelSeries / getFunnelSeries / weekEndsBackFrom (growth)
+  - src/components/progress/                      # TrendChart, GrowthCurveCard, DurabilityCard
+  - src/pages/Progress.tsx                        # Groei tab
+reviewed_by: [staff-engineer, architect, data-architect]   # round-2 approved durability; round-3 (growth reshape → funnel-over-time, 4 selectable state lines) re-approved 2026-06-30 (§9). Growth = Path A (client-side, no RPC); build refined to interpretation B (§9, verify vs code). DB verified live 2026-07-01.
 supersedes: []
 ---
 
