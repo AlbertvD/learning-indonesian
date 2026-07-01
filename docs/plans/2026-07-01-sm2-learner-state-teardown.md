@@ -1,6 +1,7 @@
 ---
-status: approved
+status: implementing
 approved_at: 2026-07-01
+implementation: PR #328
 doc_type: schema-teardown-plan
 issue: "#150"
 parent_epic: "#98"
