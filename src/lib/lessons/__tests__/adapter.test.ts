@@ -3,9 +3,8 @@
 // Tests for the lesson-domain methods + pure helpers folded out of
 // src/services/lessonService.ts during the lib/lessons/ fold (commit 6 of
 // docs/plans/2026-05-18-fold-lib-lessons.md). Moved verbatim from
-// src/__tests__/lessonService.test.ts; the remaining 2 service methods
-// (getAudioUrl, getUserLessonProgress) had no tests, so the legacy file is
-// deleted entirely.
+// src/__tests__/lessonService.test.ts; the remaining service method
+// (getAudioUrl) had no tests, so the legacy file is deleted entirely.
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import {

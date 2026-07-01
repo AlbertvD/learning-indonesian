@@ -783,16 +783,6 @@ export async function deleteGrammarExercisesForPattern(
  *
  * SAFETY: scoped to `introduced_by_lesson_id = lessonId` so it can only ever
  * remove THIS lesson's patterns; `keepSlugs` is the new set to preserve.
- *
- * LEGACY review_events (live-trial finding 2026-06-01): `review_events`
- * .grammar_pattern_id is `ON DELETE SET NULL` (migration.sql:812) but
- * `review_events_source_check` (migration.sql:888) forbids a row with BOTH
- * source columns null — so a grammar review_event blocks the pattern delete
- * (the SET-NULL would violate the check). `review_events` is a DEAD legacy table
- * (zero readers/writers in src/; the live app uses capability_review_events,
- * which is 0 for patterns). So we first DELETE the legacy grammar review_events
- * for the to-delete patterns (operator-approved 2026-06-01), then delete the
- * patterns. This completes the clean hard-delete the cutover intends.
  */
 export async function deleteLegacyPatternsForLesson(
   supabase: CapabilitySupabaseClient,
@@ -815,17 +805,6 @@ export async function deleteLegacyPatternsForLesson(
   )
   if (toDelete.length === 0) return []
   const deleteIds = toDelete.map((p) => p.id)
-
-  // Clear the dead-legacy grammar review_events that would otherwise block the
-  // delete via the SET-NULL → source-check violation (see fn docstring).
-  const { error: reError } = await supabase
-    .schema('indonesian')
-    .from('review_events')
-    .delete()
-    .in('grammar_pattern_id', deleteIds)
-  if (reError) {
-    throw new Error(`Failed to clear legacy review_events for lesson=${lessonId}: ${reError.message}`)
-  }
 
   const { error: delError } = await supabase
     .schema('indonesian')

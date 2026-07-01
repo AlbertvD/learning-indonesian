@@ -41,10 +41,9 @@ const EXPECTED_TABLES = [
   'learning_items',
   'item_contexts',
   'item_answer_variants',
-  // learner_item_state: dropped in the analytics redesign teardown (#212)
-  'learner_skill_state',
-  'review_events',
-  'lesson_progress',
+  // learner_item_state + leaderboard: dropped in the analytics redesign teardown (#212).
+  // learner_skill_state, review_events, lesson_progress: dropped in the SM-2 teardown
+  // (#150, epic #98) — asserted absent by HC38 below.
   'learning_sessions',
   'error_logs',
   'audio_clips',
@@ -66,10 +65,8 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   learning_items:       { authenticated: ['SELECT'] },
   item_contexts:        { authenticated: ['SELECT'] },
   item_answer_variants: { authenticated: ['SELECT'] },
-  // learner_item_state: dropped in the analytics redesign teardown (#212)
-  learner_skill_state:  { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
-  review_events:        { authenticated: ['SELECT', 'INSERT'] },
-  lesson_progress:      { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
+  // learner_item_state (#212), learner_skill_state / review_events / lesson_progress
+  // (#150): dropped — no grants to assert (absence asserted by HC38).
   learning_sessions:    { authenticated: ['SELECT'] },
   error_logs:           { authenticated: ['INSERT'] },
   user_roles:           { authenticated: ['SELECT'] },
@@ -1688,6 +1685,33 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     }
   } catch (err) {
     fail('HC37 exercise_variants dropped + grammar exercises intact', err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC38 (#150, epic #98): SM-2 / learner-state tables dropped.
+//      Mirrors HC25/HC37 for the SM-2 teardown. learner_skill_state, review_events,
+//      and lesson_progress must NOT exist — confirms the drop landed and catches
+//      accidental re-creation. Probe with .select('*').limit(1) (a head-count would
+//      return null/no-error for a dropped table — see HC25/HC37).
+{
+  for (const table of ['learner_skill_state', 'review_events', 'lesson_progress']) {
+    try {
+      const { error } = await supabase
+        .schema('indonesian')
+        .from(table)
+        .select('*')
+        .limit(1)
+      const tableGone = !!error && /PGRST205|could not find the table|does not exist/i.test(error.message ?? '')
+      if (!tableGone) {
+        fail(`HC38 ${table} dropped`,
+          error ? `unexpected error probing ${table}: ${error.message}`
+                : `${table} still exists — the SM-2 teardown (#150) drop did not land (or the table was re-created)`)
+      } else {
+        pass(`HC38 ${table} dropped (SM-2 teardown #150)`)
+      }
+    } catch (err) {
+      fail(`HC38 ${table} dropped`, err instanceof Error ? err.message : String(err))
+    }
   }
 }
 

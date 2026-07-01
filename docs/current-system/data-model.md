@@ -25,11 +25,10 @@ For the *why* behind the capability schema, see `docs/adr/0001-capability-based-
 | **Lesson content** | `lessons`, `lesson_sections` (+ `section_kind`/`source_section_ref`), `lesson_dialogue_lines`, `audio_clips`, `podcasts`, `vocabulary` (legacy) | `scripts/migration.sql` |
 | **Lesson-section typed contract (PR 6)** | `lesson_section_item_rows`, `lesson_section_grammar_categories`, `lesson_section_grammar_topics`, `lesson_section_affixed_pairs` | `scripts/migration.sql` (lesson-stage writer; capability-stage reader is #98/#99) |
 | **Authoring pipeline** | `textbook_sources`, `textbook_pages`, `generated_exercise_candidates`, `exercise_review_comments`, `content_flags` | `scripts/migration.sql` |
-| **Sessions + progress** | `learning_sessions` (lazy, capability-only), `lesson_progress` (orphan after #6) | `scripts/migration.sql` |
-| **Legacy-retained** | `learner_item_state`, `learner_skill_state`, `review_events` | `scripts/migration.sql` (write paths retired; rows preserved as historical record) |
+| **Sessions + progress** | `learning_sessions` (lazy, capability-only) | `scripts/migration.sql` |
 | **Infrastructure** | `profiles`, `user_roles`, `exercise_type_availability`, `error_logs` | `scripts/migration.sql` |
 
-Retired tables (DROPPED with CASCADE in `scripts/migration.sql`) — listed only so readers know they used to exist: `learner_grammar_state` (retirement #2), `learner_weekly_goal_sets`, `learner_weekly_goals`, `learner_daily_goal_rollups`, `learner_stage_events`, `learner_analytics_events` (all #4), `learner_source_progress_events`, `learner_source_progress_state` (#6), `learner_lesson_engagement` (one-off), `anki_cards`, `card_reviews`, `card_set_shares`, `card_sets`, `user_progress`, `user_vocabulary`, `vocabulary` (all retirement #8 — orphan tables, zero rows, never managed in version control).
+Retired tables (DROPPED with CASCADE in `scripts/migration.sql`) — listed only so readers know they used to exist: `learner_grammar_state` (retirement #2), `learner_weekly_goal_sets`, `learner_weekly_goals`, `learner_daily_goal_rollups`, `learner_stage_events`, `learner_analytics_events` (all #4), `learner_source_progress_events`, `learner_source_progress_state` (#6), `learner_lesson_engagement` (one-off), `anki_cards`, `card_reviews`, `card_set_shares`, `card_sets`, `user_progress`, `user_vocabulary`, `vocabulary` (all retirement #8 — orphan tables, zero rows, never managed in version control); `learner_item_state` + the `leaderboard` view (analytics redesign #212); `learner_skill_state`, `review_events`, `lesson_progress` (SM-2 teardown #150, epic #98).
 
 ---
 
@@ -181,21 +180,11 @@ The EN/NL enricher was **relocated** out of the capability stage into `lesson-st
 
 Rows are now materialised lazily by the `commit_capability_answer_report` RPC's upsert from the answer log. The first answer in a session inserts the row; each subsequent answer advances `ended_at` via `GREATEST(existing, submittedAt)`. **Only the capability path produces sessions** — `session_type` is always `'learning'` for new rows. Lesson reading and podcast listening no longer create rows. Sessions with zero answers leave no row. `duration_seconds` is a generated column. Browsers no longer write to this table directly — `authenticated` GRANT was narrowed to `SELECT` only.
 
-### `lesson_progress` (orphan after retirement #6)
-
-The legacy `progressService.markLessonComplete` write path retired. Existing rows were promoted to `learner_lesson_activation` via backfill. Reads survive only as a fallback in `get_lessons_overview`'s `has_started_lesson` derivation. A future retirement can drop the table after a quiet period.
-
 ---
 
-## 6. Legacy-retained tables
+## 6. Legacy SM-2 / learner-state tables — DROPPED (#150, epic #98, 2026-07-01)
 
-Three tables stayed in the schema with their write paths retired (per the canonical-contract spec — "they stay as historical record"):
-
-- **`learner_item_state`** (`migration.sql:173`) — per-(user, item) lifecycle stage. Stages: `new → anchoring → retrieving → productive → maintenance`. Replaced by `learner_capability_state` for the capability path. No new rows.
-- **`learner_skill_state`** (`migration.sql:191`) — per-(user, item, skill_type) FSRS state. Replaced by `learner_capability_state`. No new rows.
-- **`review_events`** (`migration.sql:212`) — append-only review log. Capability path writes to `capability_review_events` instead. `learnerProgressService.getCurrentStreakDays` reads from `capability_review_events`, not this table.
-
-These are kept because dropping them would lose historical analytics data and a follow-up retirement is cheap to do later.
+`learner_item_state`, `learner_skill_state`, `review_events`, and `lesson_progress` — the pre-capability SM-2 / learner-state tables — were dropped in the SM-2 teardown (#150). The capability model (ADR 0001-0004) + the two-axis analytics redesign (#206-229) replaced them: `learner_capability_state` carries per-(user, capability) FSRS state and `capability_review_events` is the review log. `learner_item_state` was already dropped by the analytics redesign (#212); the other three followed in #150. Absence is asserted by HC38 in `check-supabase-deep.ts`. See `docs/plans/2026-07-01-sm2-learner-state-teardown.md`.
 
 ---
 
@@ -228,14 +217,9 @@ Write-only error log from the app. Admin-queryable via Supabase Studio. Logged v
 
 ---
 
-## 8. Leaderboard view
+## 8. Leaderboard view — DECOMMISSIONED (#206-229)
 
-`indonesian.leaderboard` is a view (not a table), refreshed live on read. Definition at `scripts/migration.sql:277-295`. **Currently uses legacy-retained tables:**
-- `items_learned` derives from `learner_item_state` (stage `IN ('retrieving','productive','maintenance')`).
-- `lessons_completed` derives from `lesson_progress` (orphan after retirement #6).
-- `total_seconds_spent` / `days_active` derive from `learning_sessions` (now lazy + capability-only).
-
-The view is **partially stale for capability-era users**: `items_learned` reads `learner_item_state`, which receives no new writes after retirement #5/#6 — so a user who only ever used the capability path will see `items_learned = 0`. A future rewrite should source `items_learned` from `learner_capability_state` (`review_count > 0` or equivalent). Tracked as a follow-up to this audit (2026-05-14).
+The `indonesian.leaderboard` view was **decommissioned** in the two-axis learner-progress analytics redesign (#206-229) — analytics is learner-aligned (Practice Time + Mastery progression), not comparative — and its CREATE was excised from `migration.sql` in the SM-2 teardown (#150). It read `learner_item_state` + `lesson_progress`, both dropped. There is no replacement view.
 
 ---
 
@@ -253,5 +237,4 @@ The view is **partially stale for capability-era users**: `items_learned` reads 
 ## 10. Notes for future work
 
 - The 10 capability-era tables in `scripts/migrations/2026-04-25-*.sql` (+ `2026-05-02-capability-resolution-failures.sql`) are tracked for fold-back into `scripts/migration.sql`. Until then, fresh DB rebuilds need both file sets applied. The fold is non-trivial because it requires reconciling the lowercase-DDL style of the standalone files with the uppercase-DDL style of master (the master uses `IF NOT EXISTS` aggressively for idempotency, which the standalone files also do).
-- `learner_item_state`, `learner_skill_state`, and `review_events` are candidates for a future retirement once the historical-analytics use case is resolved (could be folded into `capability_review_events` via a backfill view, or kept indefinitely as cold storage).
-- **Leaderboard view rewrite** — currently reads from legacy tables; needs to source `items_learned` from `learner_capability_state` to stop reporting 0 for capability-era-only users. Tracked but not yet specced.
+- The legacy SM-2 / learner-state tables (`learner_item_state`, `learner_skill_state`, `review_events`, `lesson_progress`) and the `leaderboard` view were **dropped** (analytics redesign #212 + SM-2 teardown #150) — no longer future work.

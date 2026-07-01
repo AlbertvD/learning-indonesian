@@ -110,24 +110,22 @@ function buildDeleteByPatternClient(rowsByTable: Record<string, string[]>) {
 
 function buildLegacyPatternClient(existing: Array<{ id: string; slug: string }>) {
   const deletedIds: string[] = [] // grammar_patterns ids deleted
-  const reviewEventsCleared: string[] = [] // review_events grammar_pattern_ids cleared first
   const client = {
     schema: () => ({
-      from: (table: string) => ({
+      from: () => ({
         select: () => ({
           eq: async () => ({ data: existing, error: null }),
         }),
         delete: () => ({
           in: async (_col: string, ids: string[]) => {
-            if (table === 'review_events') reviewEventsCleared.push(...ids)
-            else deletedIds.push(...ids)
+            deletedIds.push(...ids)
             return { error: null }
           },
         }),
       }),
     }),
   } as never
-  return { client, deletedIds, reviewEventsCleared }
+  return { client, deletedIds }
 }
 
 // ---------------------------------------------------------------------------
@@ -190,7 +188,7 @@ describe('deleteGrammarExercisesForPattern', () => {
 
 describe('deleteLegacyPatternsForLesson', () => {
   it('deletes only the lesson patterns whose slug is NOT in the keep-set', async () => {
-    const { client, deletedIds, reviewEventsCleared } = buildLegacyPatternClient([
+    const { client, deletedIds } = buildLegacyPatternClient([
       { id: 'p1', slug: 'l4-bukan-negatie' }, // keep (new)
       { id: 'p2', slug: 'bukan-negation' }, // legacy → delete
       { id: 'p3', slug: 'zero-copula' }, // legacy → delete
@@ -198,9 +196,6 @@ describe('deleteLegacyPatternsForLesson', () => {
     const removed = await deleteLegacyPatternsForLesson(client, 'lesson-4', ['l4-bukan-negatie'])
     expect(removed.sort()).toEqual(['bukan-negation', 'zero-copula'])
     expect(deletedIds.sort()).toEqual(['p2', 'p3'])
-    // Live-trial fix: the dead-legacy review_events for the deleted patterns are
-    // cleared FIRST (else SET-NULL violates review_events_source_check).
-    expect(reviewEventsCleared.sort()).toEqual(['p2', 'p3'])
   })
 
   it('is a no-op (deletes nothing) when every existing slug is kept', async () => {

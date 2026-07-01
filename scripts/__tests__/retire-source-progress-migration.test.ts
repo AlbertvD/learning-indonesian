@@ -48,11 +48,13 @@ describe('retirement #6 — source-progress → lesson-activation migration (mas
     expect(masterSql).toContain('on conflict (user_id, lesson_id) do nothing')
   })
 
-  it('promotes legacy lesson_progress rows using completed_at (no last_accessed_at — that column does not exist; R1 v2 C9)', () => {
-    expect(masterSql).toContain('coalesce(lp.completed_at, now())')
-    expect(masterSql).toContain('from indonesian.lesson_progress lp')
-    // Negative assertion: the phantom column must not appear.
-    expect(masterSql).not.toContain('lp.last_accessed_at')
+  it('no longer promotes lesson_progress rows to activation (BACKFILL Step 2 removed with the lesson_progress table — #150)', () => {
+    // The one-time promotion was already applied live; its source table
+    // (lesson_progress) is dropped in the SM-2 teardown (#150), so the backfill
+    // is removed rather than to_regclass-guarded. The Step-1 auto-activate above
+    // (lessons {1,2,3}) survives — it touches only lessons + learner_lesson_activation.
+    expect(masterSql).not.toContain('BACKFILL — Step 2')
+    expect(masterSql).not.toContain('from indonesian.lesson_progress lp')
   })
 
   it('get_lessons_overview Status-1 is pure activation EXISTS (lesson_progress union retired 2026-06-09)', () => {

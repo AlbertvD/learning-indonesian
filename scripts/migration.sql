@@ -46,7 +46,7 @@ BEGIN
   END IF;
 END $$;
 
--- User profiles (readable by all — used by leaderboard and sharing UI)
+-- User profiles (readable by all — used by the sharing UI)
 CREATE TABLE IF NOT EXISTS indonesian.profiles (
   id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   display_name text,
@@ -274,74 +274,10 @@ CREATE TABLE IF NOT EXISTS indonesian.item_answer_variants (
   notes text
 );
 
--- Learner item lifecycle state
-CREATE TABLE IF NOT EXISTS indonesian.learner_item_state (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
-  stage text NOT NULL DEFAULT 'new' CHECK (stage IN ('new', 'anchoring', 'retrieving', 'productive', 'maintenance')),
-  introduced_at timestamptz,
-  last_seen_at timestamptz,
-  priority integer,
-  origin text,
-  times_seen integer NOT NULL DEFAULT 0,
-  is_leech boolean NOT NULL DEFAULT false,
-  suspended boolean NOT NULL DEFAULT false,
-  gate_check_passed boolean,
-  updated_at timestamptz DEFAULT now(),
-  UNIQUE(user_id, learning_item_id)
-);
-
--- Per-skill FSRS state per user per item
-CREATE TABLE IF NOT EXISTS indonesian.learner_skill_state (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
-  skill_type text NOT NULL CHECK (skill_type IN ('recognition', 'form_recall', 'meaning_recall', 'spoken_production')),
-  stability numeric NOT NULL DEFAULT 0,
-  difficulty numeric NOT NULL DEFAULT 0,
-  retrievability numeric,
-  last_reviewed_at timestamptz,
-  next_due_at timestamptz,
-  success_count integer NOT NULL DEFAULT 0,
-  failure_count integer NOT NULL DEFAULT 0,
-  lapse_count integer NOT NULL DEFAULT 0,
-  consecutive_failures integer NOT NULL DEFAULT 0,
-  mean_latency_ms integer,
-  hint_rate numeric,
-  updated_at timestamptz DEFAULT now(),
-  UNIQUE(user_id, learning_item_id, skill_type)
-);
-
--- Immutable review event log
-CREATE TABLE IF NOT EXISTS indonesian.review_events (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
-  skill_type text NOT NULL CHECK (skill_type IN ('recognition', 'form_recall', 'meaning_recall', 'spoken_production')),
-  exercise_type text NOT NULL,
-  session_id uuid, -- FK added after learning_sessions check
-  was_correct boolean NOT NULL,
-  score numeric,
-  latency_ms integer,
-  hint_used boolean NOT NULL DEFAULT false,
-  attempt_number integer NOT NULL DEFAULT 1,
-  raw_response text,
-  normalized_response text,
-  feedback_type text,
-  scheduler_snapshot jsonb,
-  created_at timestamptz DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS indonesian.lesson_progress (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  lesson_id uuid NOT NULL REFERENCES indonesian.lessons(id) ON DELETE CASCADE,
-  completed_at timestamptz,
-  sections_completed text[] DEFAULT '{}',
-  created_at timestamptz DEFAULT now(),
-  UNIQUE(user_id, lesson_id)
-);
+-- SM-2 / learner-state tables (learner_item_state, learner_skill_state,
+-- review_events, lesson_progress) were removed 2026-07-01 (#150, epic #98) — the
+-- capability model (ADR 0001-0004) + two-axis analytics (#206-229) replaced them.
+-- Their drops live in the SM-2 teardown block near the end of this file.
 
 CREATE TABLE IF NOT EXISTS indonesian.learning_sessions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -373,14 +309,6 @@ ALTER TABLE indonesian.learning_sessions ADD COLUMN IF NOT EXISTS completed_at t
 CREATE INDEX IF NOT EXISTS ls_user_completed_idx
   ON indonesian.learning_sessions(user_id, completed_at) WHERE completed_at IS NOT NULL;
 
--- Drop stale exercise_type CHECK constraint from review_events (constraint name from original migration)
-ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_exercise_type_check;
-
--- Add FK from review_events to learning_sessions
-ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_session_id_fkey;
-ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_session_id_fkey
-  FOREIGN KEY (session_id) REFERENCES indonesian.learning_sessions(id) ON DELETE SET NULL;
-
 -- Error logs
 CREATE TABLE IF NOT EXISTS indonesian.error_logs (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -392,33 +320,13 @@ CREATE TABLE IF NOT EXISTS indonesian.error_logs (
   created_at timestamptz DEFAULT now()
 );
 
--- Leaderboard view
-CREATE OR REPLACE VIEW indonesian.leaderboard AS
-SELECT
-  p.id AS user_id,
-  p.display_name,
-  COALESCE(lis.items_learned, 0) AS items_learned,
-  COUNT(DISTINCT lp.lesson_id) FILTER (WHERE lp.completed_at IS NOT NULL) AS lessons_completed,
-  COALESCE(SUM(ls.duration_seconds) FILTER (WHERE ls.duration_seconds IS NOT NULL), 0) AS total_seconds_spent,
-  COUNT(DISTINCT DATE(ls.started_at)) FILTER (WHERE ls.duration_seconds IS NOT NULL OR ls.started_at > now() - interval '2 hours') AS days_active
-FROM indonesian.profiles p
-LEFT JOIN (
-  SELECT user_id, COUNT(*) AS items_learned
-  FROM indonesian.learner_item_state
-  WHERE stage IN ('retrieving', 'productive', 'maintenance')
-  GROUP BY user_id
-) lis ON lis.user_id = p.id
-LEFT JOIN indonesian.lesson_progress lp ON lp.user_id = p.id
-LEFT JOIN indonesian.learning_sessions ls ON ls.user_id = p.id
-  AND (ls.ended_at IS NOT NULL OR ls.started_at > now() - interval '2 hours')
-GROUP BY p.id, p.display_name, lis.items_learned;
+-- (Leaderboard view removed 2026-07-01 (#150): decommissioned in the two-axis
+-- analytics redesign (#206-229); it read learner_item_state + lesson_progress,
+-- both dropped. No replacement — analytics is learner-aligned, not comparative.)
 
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_item_contexts_lesson ON indonesian.item_contexts(source_lesson_id);
 CREATE INDEX IF NOT EXISTS idx_item_contexts_item_anchor ON indonesian.item_contexts(learning_item_id, is_anchor_context);
-CREATE INDEX IF NOT EXISTS idx_learner_item_state_stage ON indonesian.learner_item_state(user_id, stage);
-CREATE INDEX IF NOT EXISTS idx_learner_skill_state_due ON indonesian.learner_skill_state(user_id, next_due_at);
-CREATE INDEX IF NOT EXISTS idx_review_events_user_time ON indonesian.review_events(user_id, created_at);
 
 -- (Weekly goal system tables retired in 2026-05-07 retirement #4 — see end of file)
 
@@ -433,21 +341,17 @@ GRANT SELECT ON indonesian.learning_items TO authenticated;
 GRANT SELECT ON indonesian.item_meanings TO authenticated;
 GRANT SELECT ON indonesian.item_contexts TO authenticated;
 GRANT SELECT ON indonesian.item_answer_variants TO authenticated;
-GRANT SELECT, INSERT, UPDATE ON indonesian.learner_item_state TO authenticated;
-GRANT SELECT, INSERT, UPDATE ON indonesian.learner_skill_state TO authenticated;
-GRANT SELECT, INSERT ON indonesian.review_events TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.lesson_progress TO authenticated;
 GRANT SELECT ON indonesian.learning_sessions TO authenticated;
 -- Retirement #5 (2026-05-07): INSERT/UPDATE/DELETE retired. Only the
 -- commit_capability_answer_report RPC writes (service_role bypass). Browsers
--- never write directly. SELECT preserved for the leaderboard view.
+-- never write directly. (SELECT retained for client-side session reads; the
+-- leaderboard view that once justified the open SELECT was decommissioned — #150.)
 -- 2026-06-26 security audit: the retirement #5 comment above promised SELECT-only
 -- but never REVOKEd — the live DB still held authenticated INSERT/UPDATE/DELETE
 -- (inert today since there is no write policy, but a landmine if a permissive
 -- write policy is ever added). Apply the REVOKE the comment always intended.
 REVOKE INSERT, UPDATE, DELETE ON indonesian.learning_sessions FROM authenticated;
 GRANT INSERT ON indonesian.error_logs TO authenticated;
-GRANT SELECT ON indonesian.leaderboard TO authenticated;
 GRANT SELECT ON indonesian.user_roles TO authenticated;
 
 -- Service role permissions (for health checks and scripts)
@@ -465,10 +369,6 @@ ALTER TABLE indonesian.learning_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.item_meanings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.item_contexts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.item_answer_variants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.learner_item_state ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.learner_skill_state ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.review_events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.lesson_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.learning_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
 
@@ -543,28 +443,8 @@ CREATE POLICY "item_answer_variants_admin_write" ON indonesian.item_answer_varia
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
-DROP POLICY IF EXISTS "learner_item_state_owner" ON indonesian.learner_item_state;
-CREATE POLICY "learner_item_state_owner" ON indonesian.learner_item_state FOR ALL TO authenticated
-  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
-
-DROP POLICY IF EXISTS "learner_skill_state_owner" ON indonesian.learner_skill_state;
-CREATE POLICY "learner_skill_state_owner" ON indonesian.learner_skill_state FOR ALL TO authenticated
-  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
-
-DROP POLICY IF EXISTS "review_events_read" ON indonesian.review_events;
-CREATE POLICY "review_events_read" ON indonesian.review_events FOR SELECT TO authenticated
-  USING (user_id = auth.uid());
-DROP POLICY IF EXISTS "review_events_insert" ON indonesian.review_events;
-CREATE POLICY "review_events_insert" ON indonesian.review_events FOR INSERT TO authenticated
-  WITH CHECK (user_id = auth.uid());
-
-DROP POLICY IF EXISTS "lesson_progress_read" ON indonesian.lesson_progress;
--- Owner-scoped (2026-06-26 security audit): was USING(true). The sole reader,
--- lessonService.getUserLessonProgress, already filters .eq('user_id', userId).
-CREATE POLICY "lesson_progress_read" ON indonesian.lesson_progress FOR SELECT TO authenticated USING (user_id = auth.uid());
-DROP POLICY IF EXISTS "lesson_progress_write" ON indonesian.lesson_progress;
-CREATE POLICY "lesson_progress_write" ON indonesian.lesson_progress FOR ALL TO authenticated
-  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+-- (Owner RLS policies for learner_item_state / learner_skill_state / review_events /
+-- lesson_progress removed 2026-07-01 with those tables — #150.)
 
 DROP POLICY IF EXISTS "learning_sessions_read" ON indonesian.learning_sessions;
 -- Owner-scoped (2026-06-26 security audit): was USING(true). Read only by the
@@ -635,27 +515,8 @@ CREATE EXTENSION IF NOT EXISTS pg_cron;
 -- (Goal-system functions, cron schedules, and learner_analytics_events table
 -- retired in 2026-05-07 retirement #4 — see end of file.)
 
--- Skill facet migration: rename 'recall' to 'form_recall'
--- First widen constraints to allow both old and new values, then migrate data, then narrow
-ALTER TABLE indonesian.learner_skill_state DROP CONSTRAINT IF EXISTS learner_skill_state_skill_type_check;
-ALTER TABLE indonesian.learner_skill_state ADD CONSTRAINT learner_skill_state_skill_type_check
-  CHECK (skill_type IN ('recognition', 'recall', 'form_recall', 'meaning_recall', 'spoken_production'));
-
-ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_skill_type_check;
-ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_skill_type_check
-  CHECK (skill_type IN ('recognition', 'recall', 'form_recall', 'meaning_recall', 'spoken_production'));
-
-UPDATE indonesian.learner_skill_state SET skill_type = 'form_recall' WHERE skill_type = 'recall';
-UPDATE indonesian.review_events SET skill_type = 'form_recall' WHERE skill_type = 'recall';
-
--- Narrow constraints to final values only
-ALTER TABLE indonesian.learner_skill_state DROP CONSTRAINT IF EXISTS learner_skill_state_skill_type_check;
-ALTER TABLE indonesian.learner_skill_state ADD CONSTRAINT learner_skill_state_skill_type_check
-  CHECK (skill_type IN ('recognition', 'form_recall', 'meaning_recall', 'spoken_production'));
-
-ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_skill_type_check;
-ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_skill_type_check
-  CHECK (skill_type IN ('recognition', 'form_recall', 'meaning_recall', 'spoken_production'));
+-- (Skill-facet 'recall'→'form_recall' constraint migration on learner_skill_state
+-- + review_events removed 2026-07-01 with those tables — #150.)
 
 -- === Content Generation and Staging Tables ===
 
@@ -901,13 +762,6 @@ CREATE INDEX IF NOT EXISTS idx_content_flags_user_status
 -- Rollback: scripts/migrations/2026-05-07-drop-learner-grammar-state.rollback.sql
 drop table if exists indonesian.learner_grammar_state cascade;
 
--- Extend review_events to support grammar pattern reviews
--- learning_item_id is relaxed to nullable; grammar reviews use grammar_pattern_id instead
-ALTER TABLE indonesian.review_events ALTER COLUMN learning_item_id DROP NOT NULL;
-
-ALTER TABLE indonesian.review_events ADD COLUMN IF NOT EXISTS
-  grammar_pattern_id UUID REFERENCES indonesian.grammar_patterns(id) ON DELETE SET NULL;
-
 -- Content review comments: admin-only per-variant annotations
 CREATE TABLE IF NOT EXISTS indonesian.exercise_review_comments (
   id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -964,16 +818,6 @@ CREATE INDEX IF NOT EXISTS idx_exercise_review_comments_variant
 -- ::regclass cast would error on a fresh apply now that the table is dropped).
 -- Integrity is app-side (exerciseReviewService resolves the id across the 4 typed
 -- tables) + HC23 (check-supabase-deep.ts counts orphans).
-
--- Exactly one source must be set (vocab review XOR grammar review)
-DO $$ BEGIN
-  ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_source_check
-    CHECK (
-      (learning_item_id IS NOT NULL AND grammar_pattern_id IS NULL) OR
-      (learning_item_id IS NULL AND grammar_pattern_id IS NOT NULL)
-    );
-EXCEPTION WHEN duplicate_object THEN NULL;
-END $$;
 
 -- content_flags: extend to support grammar exercises (grammar_pattern_id)
 -- Make learning_item_id nullable so grammar flags have no vocab anchor
@@ -1232,11 +1076,6 @@ VALUES
    'Audio-only Indonesian prompt, typed Indonesian answer. Runtime-built. Free text with fuzzy grading.')
 ON CONFLICT (exercise_type) DO NOTHING;
 
--- review_events.score and feedback_type were never written (always null) and
--- never read. Drop the dead columns.
-ALTER TABLE indonesian.review_events DROP COLUMN IF EXISTS score;
-ALTER TABLE indonesian.review_events DROP COLUMN IF EXISTS feedback_type;
-
 -- RETIRED (2026-06-26 security audit): apply_review_to_skill_state was the legacy
 -- SM-2 per-item write path, superseded by commit_capability_answer_report (ADR 0004,
 -- writes learner_capability_state). It was dead — the only caller, learnerStateService,
@@ -1245,9 +1084,9 @@ ALTER TABLE indonesian.review_events DROP COLUMN IF EXISTS feedback_type;
 -- guard, and — unlike every sibling write RPC — was never REVOKEd from PUBLIC, so the
 -- default anon EXECUTE grant let any holder of the public anon key overwrite ANY user's
 -- skill-state rows (unauthenticated cross-tenant write). Dropped rather than guarded:
--- cutting dead mechanism beats hardening it. The learner_skill_state table is left in
--- place (inert, owner-scoped for any direct access); a follow-up may drop it with the
--- dead client surface.
+-- cutting dead mechanism beats hardening it. (The learner_skill_state table it wrote
+-- was dropped 2026-07-01 in the SM-2 teardown — #150, epic #98.) The DROP FUNCTION
+-- below stays as an idempotent guard against a stale live definition.
 DROP FUNCTION IF EXISTS indonesian.apply_review_to_skill_state(
   uuid, uuid, text, boolean, numeric, numeric, numeric, timestamptz, timestamptz, integer
 );
@@ -2020,15 +1859,8 @@ cross join indonesian.lessons l
 where l.order_index in (1, 2, 3)
 on conflict (user_id, lesson_id) do nothing;
 
--- 5. BACKFILL — Step 2: promote legacy lesson_progress rows to activation.
--- Preserves "started" state for users who clicked through any lesson via the
--- pre-retirement reader. After this commit lesson_progress becomes orphan data
--- (no future writes, no future reads); follow-up retirement to drop it.
--- R1 v2 fix: lesson_progress has no last_accessed_at column (master line 198-206).
-insert into indonesian.learner_lesson_activation (user_id, lesson_id, activated_at)
-select lp.user_id, lp.lesson_id, coalesce(lp.completed_at, now())
-from indonesian.lesson_progress lp
-on conflict (user_id, lesson_id) do nothing;
+-- (BACKFILL Step 2 — the one-time lesson_progress→activation promotion — removed
+-- 2026-07-01 with the lesson_progress table (#150). It was already applied live.)
 
 -- ============================================================================
 -- CLEANUP-ONLY (applied in cleanup.sql AFTER code deploy; mirrored in master)
@@ -3636,19 +3468,23 @@ comment on column indonesian.dialogue_clozes.translation_en is
   'English translation (EN). Added PR 6 (shape settled here). Populated by the Capability Stage in the capability-stage redesign (#98/#99). NULL until then.';
 
 -- ============================================================
--- Analytics redesign teardown (#212) — retire legacy item-state + leaderboard
+-- SM-2 / learner-state teardown (#150, 2026-07-01) — epic #98 final teardown.
 -- ============================================================
--- learner_item_state (the legacy 5-stage item model) and the leaderboard view
--- are retired by the two-axis learner-progress analytics redesign (#206-#212).
--- Data-architect verified the drop is safe: no trigger/scheduler/pipeline writes
--- the table; its only app writer (learnerStateService.upsertItemState) is removed
--- in the same change. Build-stage: disposable data (CLAUDE.md Operating Context).
--- The leaderboard view reads learner_item_state, so it drops first (CASCADE on the
--- table covers its index/grant/RLS/policy). The CREATE blocks above are left as
--- create-then-dropped here rather than excised inline — a follow-up can remove
--- them; the end state (both gone) is idempotent.
-drop view if exists indonesian.leaderboard;
-drop table if exists indonesian.learner_item_state cascade;
+-- The capability model (ADR 0001-0004) + the two-axis analytics redesign
+-- (#206-229) replaced the pre-capability SM-2 / learner-state tables. Census
+-- 2026-07-01: 0 live app readers, 0 live app writers (the review_events pre-clear
+-- in capability-stage/adapter.ts was retired in the same PR), and NO foreign key
+-- points INTO any of them (all their FKs are outbound), so CASCADE loses no data
+-- in a surviving table. Build-stage disposable data (CLAUDE.md Operating Context);
+-- pg_dump archived before drop. CASCADE covers each table's own index/grant/
+-- RLS/policy + its outbound FKs.
+--
+-- learner_item_state + the leaderboard view were already dropped live by #212;
+-- their CREATE blocks are now excised above (never create-then-dropped), so this
+-- file no longer mentions them — nothing to drop here for those two.
+drop table if exists indonesian.learner_skill_state cascade;
+drop table if exists indonesian.review_events cascade;
+drop table if exists indonesian.lesson_progress cascade;
 
 -- ============================================================
 -- Collections: selectable word-lists (2026-06-13 spec, slice 1 — additive schema)
