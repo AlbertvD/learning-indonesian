@@ -2472,9 +2472,67 @@ returns json language sql stable security invoker as $$
   from days left join sess on sess.d = days.d;
 $$;
 
+-- Durability curve (Voortgang "Groei" tab, docs/plans/2026-06-30-voortgang-groei-
+-- dimension-design.md §3.3): average FSRS stability (memory strength, days)
+-- reconstructed per week-end from the append-only capability_review_events log —
+-- the over-time twin of the current-snapshot get_memory_health. For each of the
+-- last p_weeks timezone-local weeks, take each capability's LAST-KNOWN state as of
+-- that week-end (distinct on capability_id, latest event <= cutoff) and average its
+-- stability. Cutoff = end of that week, clamped to now() for the in-progress week
+-- (n=0). Null/zero-filled for weeks before the first review. SECURITY INVOKER +
+-- user_id filter (the invoker-RPC safety idiom); reads owner-RLS'd rows only.
+create or replace function indonesian.get_stability_series(
+  p_user_id uuid,
+  p_timezone text,
+  p_weeks int
+)
+returns json language sql stable security invoker as $$
+  with bounds as (
+    select
+      (date_trunc('week', now() at time zone p_timezone) - make_interval(weeks => n))::date as week_start,
+      -- End of this local week as a UTC instant, clamped to now() for the current
+      -- (in-progress) week so today's reviews are included at the newest point.
+      least(
+        now(),
+        (date_trunc('week', now() at time zone p_timezone) - make_interval(weeks => n) + interval '1 week') at time zone p_timezone
+      ) as cutoff
+    from generate_series(0, p_weeks - 1) as n
+  ),
+  per_week as (
+    select
+      b.week_start,
+      agg.avg_stability_days,
+      agg.sample_size
+    from bounds b
+    cross join lateral (
+      select
+        avg(s.stability) as avg_stability_days,
+        count(s.stability)::int as sample_size
+      from (
+        select distinct on (e.capability_id)
+               nullif(e.state_after_json->>'stability', '')::double precision as stability
+        from indonesian.capability_review_events e
+        where e.user_id = p_user_id
+          and e.created_at <= b.cutoff
+        order by e.capability_id, e.created_at desc
+      ) s
+    ) agg
+  )
+  select coalesce(json_agg(
+    json_build_object(
+      'week_start', to_char(week_start, 'YYYY-MM-DD'),
+      'avg_stability_days', avg_stability_days,
+      'sample_size', sample_size
+    )
+    order by week_start
+  ), '[]'::json)
+  from per_week;
+$$;
+
 grant execute on function indonesian._mastery_label(int, int, int, double precision, timestamptz, timestamptz) to authenticated;
 grant execute on function indonesian.get_weekly_movement(uuid, text) to authenticated;
 grant execute on function indonesian.get_daily_activity(uuid, text, int) to authenticated;
+grant execute on function indonesian.get_stability_series(uuid, text, int) to authenticated;
 
 -- Mark a session complete — the learner finished their full session (all served
 -- cards; ExperiencePlayer.onComplete). The streak + streak bar count COMPLETED
