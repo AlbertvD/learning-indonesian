@@ -104,15 +104,24 @@ async function findPatternCapsMissing(
   patternCaps: CapForSatelliteCheck[],
 ): Promise<CapForSatelliteCheck[]> {
   const slugs = [...new Set(patternCaps.map((c) => patternSlugOf(c.source_ref)))]
-  const { data: patternRows, error: pErr } = await supabase
-    .schema('indonesian')
-    .from('grammar_patterns')
-    .select('id, slug')
-    .in('slug', slugs)
-  if (pErr) throw new Error(`satellitePresence: read of grammar_patterns failed: ${pErr.message}`)
-  const patternIdBySlug = new Map(
-    ((patternRows ?? []) as Array<{ id: string; slug: string }>).map((p) => [p.slug, p.id]),
-  )
+  // Chunked read (mirrors fetchPresentCapIds). An unchunked .in('slug', slugs)
+  // encodes every slug into the PostgREST request URL; once the pattern count is
+  // large enough the URL overruns Kong's upstream limit and the read comes back
+  // as an HTTP 502 ("invalid response from upstream server") — which broke HC19/
+  // HC20/HC30 and would throw in the Layer-2 publish reconciliation. Chunk it.
+  const patternIdBySlug = new Map<string, string>()
+  for (let i = 0; i < slugs.length; i += CHUNK) {
+    const chunk = slugs.slice(i, i + CHUNK)
+    const { data: patternRows, error: pErr } = await supabase
+      .schema('indonesian')
+      .from('grammar_patterns')
+      .select('id, slug')
+      .in('slug', chunk)
+    if (pErr) throw new Error(`satellitePresence: read of grammar_patterns failed: ${pErr.message}`)
+    for (const p of (patternRows ?? []) as Array<{ id: string; slug: string }>) {
+      patternIdBySlug.set(p.slug, p.id)
+    }
+  }
 
   const contrastSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.choose_correct_form_ex)
   const stSet = await fetchActivePatternIds(supabase, GRAMMAR_EXERCISE_TABLES.transform_sentence_ex)

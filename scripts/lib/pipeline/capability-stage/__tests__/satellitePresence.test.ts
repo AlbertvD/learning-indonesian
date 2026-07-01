@@ -14,6 +14,7 @@ import { findCapsMissingSatellite, type CapForSatelliteCheck } from '../satellit
  */
 function buildSatelliteClient(
   tables: Record<string, Array<Record<string, unknown>> | { error: string }>,
+  inCalls?: Record<string, number[]>, // optional: records the size of each .in(col, values) call per table
 ) {
   const rowsFor = (table: string) => {
     const v = tables[table]
@@ -28,6 +29,7 @@ function buildSatelliteClient(
           const errored = entry && !Array.isArray(entry) ? entry.error : null
           return {
             in: async (col: string, values: string[]) => {
+              if (inCalls) (inCalls[table] ??= []).push(values.length)
               if (errored) return { data: null, error: { message: errored } }
               const data = (rowsFor(table) as Array<Record<string, unknown>>).filter((r) =>
                 values.includes(r[col] as string),
@@ -200,6 +202,34 @@ describe('findCapsMissingSatellite', () => {
     })
     const missing = await findCapsMissingSatellite(client, caps)
     expect(missing.map((m) => m.id).sort()).toEqual(['a-bad', 'd-bad', 'pc-bad'])
+  })
+
+  it('chunks the grammar_patterns slug read (≤50 per request) so a large pattern set does not overrun the PostgREST URL limit', async () => {
+    // Regression for the HC19/20/30 live 502: an unchunked .in('slug', slugs) over
+    // ~169 slugs overran Kong's upstream URL limit. Fails on the pre-fix code
+    // (one 169-wide call); passes once the read is chunked at CHUNK=50.
+    const N = 120
+    const caps = Array.from({ length: N }, (_, i) =>
+      patternCap(`p${i}`, `slug-${i}`, 'contrast_grammar_pattern_cap'),
+    )
+    const grammarRows = Array.from({ length: N }, (_, i) => ({ id: `gp-${i}`, slug: `slug-${i}` }))
+    const inCalls: Record<string, number[]> = {}
+    const client = buildSatelliteClient(
+      {
+        grammar_patterns: grammarRows,
+        contrast_pair_exercises: grammarRows.map((r) => ({ grammar_pattern_id: r.id })),
+        sentence_transformation_exercises: [],
+        constrained_translation_exercises: [],
+        cloze_mcq_exercises: [],
+      },
+      inCalls,
+    )
+    const missing = await findCapsMissingSatellite(client, caps)
+    // every slug resolves + every pattern has a contrast row → none missing
+    expect(missing).toEqual([])
+    // the grammar_patterns read was chunked: ceil(120/50)=3 calls, none over 50 wide
+    expect(inCalls.grammar_patterns).toHaveLength(Math.ceil(N / 50))
+    expect(Math.max(...inCalls.grammar_patterns)).toBeLessThanOrEqual(50)
   })
 
   it('throws when a satellite read errors', async () => {
