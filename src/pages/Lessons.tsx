@@ -12,10 +12,13 @@ import {
   IconStethoscope,
   IconMailbox,
   IconBook2,
+  IconBook,
   IconAbc,
   IconVolume,
+  IconListCheck,
   IconChevronDown,
 } from '@tabler/icons-react'
+import { Link } from 'react-router-dom'
 import {
   PageContainer,
   PageBody,
@@ -23,7 +26,6 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { LessonCard } from '@/components/lessons/LessonCard'
-import { HubCard } from '@/components/nav/HubCard'
 import { Woordenlijsten } from '@/components/collections/Woordenlijsten'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -322,30 +324,38 @@ export function Lessons() {
       <PageBody>
         <PageHeader title={T.nav.leren} />
 
-        {/* Two peer views of the Leren surface (foundation doc §2/§7): the lesson
-            grid + the check-to-schedule word-lists. Local state — these are not
-            deep-linkable destinations and the grid owns scroll-restore. */}
-        <div className={classes.tabs} role="tablist" aria-label={T.nav.leren}>
+        {/* Four content-type cards (§7.3): Lessons + Woordenlijsten swap inline
+            (default Lessons); Affix + Pronunciation jump to their full trainer
+            pages (which offer a back link). */}
+        <div className={classes.typeGrid} role="tablist" aria-label={T.nav.leren}>
           <button
             type="button"
             role="tab"
             aria-selected={tab === 'lessen'}
-            data-active={tab === 'lessen' || undefined}
-            className={classes.tab}
+            className={`${classes.typeCard} ${tab === 'lessen' ? classes.typeCardActive : ''}`}
             onClick={() => setTab('lessen')}
           >
-            {T.leren.lessenTab}
+            <IconBook size={22} />
+            <span className={classes.typeLabel}>{T.leren.lessenTab}</span>
           </button>
           <button
             type="button"
             role="tab"
             aria-selected={tab === 'woordenlijsten'}
-            data-active={tab === 'woordenlijsten' || undefined}
-            className={classes.tab}
+            className={`${classes.typeCard} ${tab === 'woordenlijsten' ? classes.typeCardActive : ''}`}
             onClick={() => setTab('woordenlijsten')}
           >
-            {T.collections.title}
+            <IconListCheck size={22} />
+            <span className={classes.typeLabel}>{T.collections.title}</span>
           </button>
+          <Link to="/morphology" className={classes.typeCard}>
+            <IconAbc size={22} />
+            <span className={classes.typeLabel}>{T.leren.affixTitle}</span>
+          </Link>
+          <Link to="/pronunciation" className={classes.typeCard}>
+            <IconVolume size={22} />
+            <span className={classes.typeLabel}>{T.leren.pronunciationTitle}</span>
+          </Link>
         </div>
 
         {loadFailed && (
@@ -391,25 +401,6 @@ export function Lessons() {
                 </section>
               )
             })}
-
-            {/* Practice tools — secondary to the lessons hero (§7.3). */}
-            <section className={classes.toolsSection}>
-              <h2 className={classes.toolsTitle}>{T.leren.toolsTitle}</h2>
-              <div className={classes.toolsGrid}>
-                <HubCard
-                  to="/morphology"
-                  icon={<IconAbc size={24} />}
-                  title={T.leren.affixTitle}
-                  description={T.leren.affixDesc}
-                />
-                <HubCard
-                  to="/pronunciation"
-                  icon={<IconVolume size={24} />}
-                  title={T.leren.pronunciationTitle}
-                  description={T.leren.pronunciationDesc}
-                />
-              </div>
-            </section>
           </>
         ) : (
           <Woordenlijsten />

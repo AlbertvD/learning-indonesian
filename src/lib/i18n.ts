@@ -5,6 +5,7 @@ export const nl = {
   nav: {
     home: 'Home',
     leren: 'Leren',
+    backToLeren: 'Terug naar Leren',
     ontdek: 'Ontdek',
     lessons: 'Lessen',
     podcasts: 'Podcasts',
@@ -90,6 +91,7 @@ export const nl = {
     movementNone: 'Nog niets omhoog deze week',
     viewProgress: 'Bekijk je voortgang',
     startTodaysSessionMinimal: 'Start sessie',
+    readyToPractice: 'Klaar om te oefenen?',
     // Rescue card (lapsing items)
     rescueTitle: '{count} zwakke woorden',
     rescueSubtitle: 'Verschijnen automatisch in je volgende sessie',
@@ -443,6 +445,7 @@ export const en: typeof nl = {
   nav: {
     home: 'Home',
     leren: 'Learn',
+    backToLeren: 'Back to Learn',
     ontdek: 'Discover',
     lessons: 'Lessons',
     podcasts: 'Podcasts',
@@ -528,6 +531,7 @@ export const en: typeof nl = {
     movementNone: 'Nothing moved up yet this week',
     viewProgress: 'View your progress',
     startTodaysSessionMinimal: 'Start session',
+    readyToPractice: 'Ready to practise?',
     // Rescue card (lapsing items)
     rescueTitle: '{count} weak words',
     rescueSubtitle: 'Will appear automatically in your next session',

@@ -1,20 +1,15 @@
 // src/pages/Dashboard.tsx
 //
-// Home — "decide + glance" (CONTEXT.md → Learner Progress Axes). One focal
-// action (start session), a small first-of-day greeting, two glanceable "this
-// week" cards (practice time with a week-over-week trend cue, and rung movement),
-// and "continue lesson" rebased on ACTIVATION (the queue trigger), not the old
-// reading-progress heuristic. Richer comparison analytics live on voortgang.
+// Home — a launchpad (foundation plan §7.2): lead with the focal action (start
+// today's session) as a hero, then momentum (streak), a continue-shortcut, and a
+// single read-only progress pulse (band-coverage goal → taps through to Voortgang).
+// It does NOT browse or activate, and richer analytics (practice time, rung
+// movement) live on Voortgang, not here.
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Stack, Text, Button } from '@mantine/core'
+import { Text, Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import {
-  IconBook,
-  IconTrendingUp,
-  IconTrendingDown,
-  IconArrowUpRight,
-} from '@tabler/icons-react'
+import { IconBook } from '@tabler/icons-react'
 import { PageContainer, PageBody, ListCard, LoadingState } from '@/components/page/primitives'
 import { StreakBar } from '@/components/dashboard/StreakBar'
 import { CommonWordsGoalCard } from '@/components/collections/CommonWordsGoalCard'
@@ -22,10 +17,10 @@ import { getLessonsBasic } from '@/lib/lessons'
 import { listActivatedLessons } from '@/lib/lessons/activation'
 import { engagement } from '@/lib/analytics/engagement'
 import type { DailyActivity } from '@/lib/analytics/engagement'
-import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
+import classes from './Dashboard.module.css'
 
 function todayKey(): string {
   return new Date().toLocaleDateString('en-CA')
@@ -42,11 +37,6 @@ export function Dashboard() {
   const [continueLessonNo, setContinueLessonNo] = useState<number | null>(null)
   const [currentStreak, setCurrentStreak] = useState(0)
   const [dailyActivity, setDailyActivity] = useState<DailyActivity[]>([])
-  const [minutesThisWeek, setMinutesThisWeek] = useState(0)
-  const [minutesLastWeek, setMinutesLastWeek] = useState(0)
-  const [advancedVocab, setAdvancedVocab] = useState(0)
-  const [advancedGrammar, setAdvancedGrammar] = useState(0)
-  const [advancedMorphology, setAdvancedMorphology] = useState(0)
 
   // Welcome line only on the first Dashboard view of the day.
   const [showWelcome] = useState(() => {
@@ -65,17 +55,15 @@ export function Dashboard() {
       if (!user) return
       try {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const [lessons, activated, pt, daily, movement] = await Promise.all([
+        const [lessons, activated, pt, daily] = await Promise.all([
           getLessonsBasic(),
           listActivatedLessons(user.id),
           engagement.practiceTime(user.id, tz),
           engagement.dailyActivity(user.id, tz, 5),
-          getWeeklyMovement(user.id, tz),
         ])
 
         // "Continue lesson" follows ACTIVATION (the queue trigger) — the
-        // learner's latest activated lesson — not the retired reading-progress
-        // heuristic.
+        // learner's latest activated lesson.
         const target = lessons
           .filter((l) => activated.has(l.id))
           .sort((a, b) => b.order_index - a.order_index)[0]
@@ -86,11 +74,6 @@ export function Dashboard() {
 
         setCurrentStreak(pt.streakDays)
         setDailyActivity(daily)
-        setMinutesThisWeek(pt.minutesThisWeek)
-        setMinutesLastWeek(pt.minutesLastWeek)
-        setAdvancedVocab(movement.advancedVocab)
-        setAdvancedGrammar(movement.advancedGrammar)
-        setAdvancedMorphology(movement.advancedMorphology)
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
@@ -116,21 +99,6 @@ export function Dashboard() {
   }
 
   const name = profile?.fullName?.split(' ')[0] ?? profile?.email ?? 'User'
-  const weekDelta = minutesThisWeek - minutesLastWeek
-  const TrendIcon = weekDelta > 0 ? IconTrendingUp : weekDelta < 0 ? IconTrendingDown : IconArrowUpRight
-  const trendColor = weekDelta > 0 ? 'var(--success)' : weekDelta < 0 ? 'var(--danger)' : 'var(--text-secondary)'
-  const deltaLabel =
-    weekDelta === 0
-      ? T.dashboard.sameAsLastWeek
-      : `${weekDelta > 0 ? '+' : ''}${weekDelta} ${T.dashboard.minVsLastWeek}`
-  const movementSubtitle =
-    advancedVocab + advancedGrammar + advancedMorphology === 0
-      ? T.dashboard.movementNone
-      : [
-          `${advancedVocab} ${T.dashboard.movementWords}`,
-          `${advancedGrammar} ${T.dashboard.movementGrammar}`,
-          ...(advancedMorphology > 0 ? [`${advancedMorphology} ${T.dashboard.movementMorphology}`] : []),
-        ].join(' · ')
 
   return (
     <PageContainer size="lg">
@@ -141,26 +109,24 @@ export function Dashboard() {
           </Text>
         )}
 
-        <StreakBar streakDays={currentStreak} days={dailyActivity} />
+        {/* Focal action — lead with it (§7.2), don't bury it below stats. */}
+        <div className={classes.hero}>
+          <div>
+            <div className={classes.heroTitle}>{T.dashboard.readyToPractice}</div>
+            <div className={classes.heroSub}>{T.dashboard.nextLesson}</div>
+          </div>
+          <Button onClick={() => navigate('/session')} size="lg" fullWidth>
+            {T.dashboard.startTodaysSessionMinimal}
+          </Button>
+        </div>
 
-        <Stack gap="md" mt="md">
-          <ListCard
-            to="/progress?tab=time"
-            icon={<TrendIcon size={18} color={trendColor} />}
-            title={`${minutesThisWeek} ${T.progress.minutesShort} ${T.dashboard.thisWeekLower}`}
-            subtitle={deltaLabel}
-          />
+        {/* Momentum */}
+        <div className={classes.streakWrap}>
+          <StreakBar streakDays={currentStreak} days={dailyActivity} />
+        </div>
 
-          <ListCard
-            to="/progress?tab=funnel"
-            icon={<IconArrowUpRight size={18} color="var(--accent-primary)" />}
-            title={T.dashboard.movementTitle}
-            subtitle={movementSubtitle}
-          />
-
-          {/* Headline frequency-band coverage — inert until a band is seeded. */}
-          <CommonWordsGoalCard />
-
+        {/* Continue-shortcut + a single read-only progress pulse. */}
+        <div className={classes.secondary}>
           <ListCard
             to={continueUrl}
             icon={<IconBook size={18} color="var(--accent-primary)" />}
@@ -172,10 +138,9 @@ export function Dashboard() {
             subtitle={T.dashboard.nextLesson}
           />
 
-          <Button onClick={() => navigate('/session')} size="lg" fullWidth>
-            {T.dashboard.startTodaysSessionMinimal}
-          </Button>
-        </Stack>
+          {/* Headline frequency-band coverage — the one glance; taps to Voortgang. */}
+          <CommonWordsGoalCard />
+        </div>
       </PageBody>
     </PageContainer>
   )
