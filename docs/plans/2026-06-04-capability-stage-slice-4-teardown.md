@@ -1,6 +1,16 @@
 ---
-status: approved
+status: shipped
 approved_at: 2026-07-01
+implementation: PR #327
+merged_at: 2026-07-01
+implementation_paths:
+  - scripts/migration.sql
+  - scripts/lib/pipeline/capability-stage/
+  - scripts/check-supabase-deep.ts
+  - scripts/check-lesson-coverage.ts
+  - scripts/generate-exercise-audio.ts
+  - src/types/learning.ts
+  - src/pages/ExerciseCoverage.tsx
 doc_type: capability-stage-slice-plan
 issue: "#102"
 parent_epic: "#98"
