@@ -133,3 +133,48 @@ Reserving a module home does **not** define its schema. Each of these carries it
 **Decides (locked):** the 5-tab IA + the open/check/experience taxonomy; what each tab contains and its interaction model; the module *homes* for every roadmap surface; the collections data model.
 
 **Does NOT decide (by design):** the detailed UX of reserved surfaces (reading glossing, affix drills, podcast aids); their tables; `frequency_rank` *population* mechanism and collection *materialisation* (a slice decision in the collections build); session-ordering by `frequency_rank` (out of scope, collections spec §4.1); entitlements/paywall (phase 2 — the activation RPCs are the seam).
+
+---
+
+## 7. Mobile IA refresh (2026-07-01) — reconcile the nav to shipped features
+
+**Why.** The 5-tab IA above was locked in June but never wired into the nav; meanwhile features shipped as *flat* top-level tabs. The live nav is a flat list of **8 mobile bottom-tabs** (Home, Lessons, Podcasts, Lezen, Progress, Morphology, Pronunciation, Profile) + a 9-item desktop sidebar — past the 3–5 mobile convention, and it buries the lessons (the grammar-explanation core). Pronunciation (ADR 0025) shipped *after* this plan and isn't in the map; reading + morphology were *reserved* here and are now live. This section reconciles the nav to what exists. **Scope: navigation restructure of existing surfaces — no feature rebuilds.**
+
+### 7.1 The five tabs, resolved to live routes
+
+| Tab | Contains (live routes re-homed) | Learner action |
+|---|---|---|
+| **Home** (`/`) | session-preview hero · streak + goal ring · continue-shortcut · read-only progress pulse → Voortgang | launch + orient (no activation, no browsing) |
+| **Leren** (`/leren`) | **Lessons (hero)** · Affix trainer (`/morphology`) · Pronunciation trainer (`/pronunciation`) · **Woordenlijsten** (top-X toggles) | study / activate |
+| **Ontdek** (`/ontdek`) | Podcasts (`/podcasts`) · Story reader (`/lezen`) — two choices, thin hub (not enough content to detail further) | immerse |
+| **Voortgang** (`/progress`) | two-axis analytics + Groei + band **coverage** (the toggles' other face) | reflect (read-only) |
+| **Profiel** (`/profile`) | account + prefs; **admin behind here**, not a tab | settings |
+
+Pronunciation slots into Leren by the plan's own taxonomy (open-to-study, sibling to the affix trainer) — the map gains it; the principle already fit. The old flat routes (`/lessons`, `/podcasts`, `/lezen`, `/morphology`, `/pronunciation`) remain valid destinations reached *through* the hubs.
+
+### 7.2 Home = launchpad (decisions)
+
+Home does one job — **launch + orient + motivate** — and looks full by doing it richly, not by borrowing other tabs' jobs:
+- **Session-preview hero:** the primary CTA shows *what's in today's session* ("24 items — 12 reviews · 6 new · 4 grammar · 2 listening"), turning a bare button into a motivating preview.
+- Streak + daily-goal glance; continue-where-you-left-off **shortcut** (a deep-link, **not** a lesson picker); a **read-only** progress pulse that taps through to Voortgang.
+- **Explicitly NOT on Home:** lesson activation, band/top-X *selection* (both are Leren actions — "one object, two faces": toggle in Leren, coverage in Voortgang), and **no at-risk nudge** (dropped 2026-07-01 — `at_risk` is a mastery *label*, not a due-date; the session is due-filtered, so a "3 slipping → start session" nudge could send you into a session that doesn't contain them = misleading. At-risk already lives in Voortgang; revisit only if a dedicated "rescue weak words" filtered session is ever built).
+
+### 7.3 Leren = study hub with Lessons promoted (decisions)
+
+- **Lessons as the hero**, de-buried. To keep 30 lessons from being a long scroll: **group into collapsible CEFR sections** (A1 · A2 · B1 …; live `lessons.level` field). Auto-expand the learner's current level; collapse the rest to a one-line summary. Thirty flat cards → ~4 headers + the current level's rows.
+- Beneath Lessons: entry points to **Affix trainer** and **Pronunciation trainer**, then the **Woordenlijsten** toggle list (the existing `components/collections/Woordenlijsten` — already a tab on the live Lessons page).
+- **Lesson card shows the grammar it teaches** (grammar-topic chips from `grammar_patterns.name`/`short_explanation`), so the overview *reveals* the grammar rather than just numbering lessons. Card = discover; the reader = study in full (full explanations + dialogue + exercises stay in `/lesson/:id`).
+
+### 7.4 Cross-cutting — deferred to a flagged follow-on (NOT in the first build)
+
+Two richer touches are **designed but explicitly out of the first mobile slice** (bigger, riskier surface; ship the structural IA first, then these):
+1. **Global docked audio player** — a persistent bottom mini-player (above the tab bar) serving grammar audio (from lesson cards *and* inside lessons) + Ontdek media, with NL/EN toggle. Reuses `LessonAudioPlayer`/`LessonGrammarAudioBand`. Until built, grammar audio stays reachable **inside** the lesson (as today).
+2. **Grammar-preview-with-play on the lesson card** — expand-in-place row revealing grammar chips + a ▶ that feeds the docked player. Depends on #1.
+
+### 7.5 First build slice (what ships now)
+
+Structural IA only: (a) **`MobileLayout` → 5 tabs**; (b) **`/leren` hub** = the live Lessons page re-homed + **CEFR-grouped collapsible lesson sections** + entry cards for Affix/Pronunciation + Woordenlijsten; (c) **`/ontdek` hub** = two entry cards → Podcasts, Story reader; (d) Home kept as launchpad (already close; no activation/at-risk added); (e) desktop **`Sidebar`** reduced to the same 5 primary items + admin (full desktop "learning-platform" layout deferred). No new tables, no RPCs, no feature rebuilds — pure front-end re-navigation of existing surfaces.
+
+### 7.6 Explicitly deferred
+
+Desktop platform layout (persistent sidebar detail, side-by-side lesson/detail); the docked player (§7.4.1); card grammar-preview-play (§7.4.2); Ontdek internal structure (until content warrants). Each is a follow-on slice.
