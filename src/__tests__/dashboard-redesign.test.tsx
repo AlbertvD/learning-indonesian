@@ -108,17 +108,24 @@ describe('Dashboard (minimal placeholder)', () => {
     expect(screen.queryByText(/zwakke woorden|weak words/i)).not.toBeInTheDocument()
   })
 
-  it('points continue-lesson at the latest ACTIVATED lesson (not reading-progress)', async () => {
-    vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([
-      { id: 'lesson-1', order_index: 1 },
-      { id: 'lesson-3', order_index: 3 },
-      { id: 'lesson-5', order_index: 5 },
-    ] as any)
-    // lessons 1 and 3 activated; 5 not — continue should pick the highest activated (3)
-    vi.mocked(listActivatedLessons).mockResolvedValue(new Set(['lesson-1', 'lesson-3']))
+  it('shows the read-only progress pulse (metric glances) linking to Voortgang', async () => {
+    vi.mocked(engagement.practiceTime).mockResolvedValue({ ...practiceWith(3), minutesThisWeek: 42, minutesLastWeek: 30 })
     renderDashboard()
-    const link = await screen.findByRole('link', { name: /doorgaan met les|continue lesson/i })
-    expect(link).toHaveAttribute('href', '/lesson/lesson-3')
+    await screen.findByRole('button', { name: /start sessie|start session/i })
+    const links = screen.getAllByRole('link')
+    expect(links.some((l) => l.getAttribute('href')?.startsWith('/progress'))).toBe(true)
+  })
+
+  it('does NOT reference lessons or word-lists on Home (launchpad only, no continue-lesson / band card)', async () => {
+    // Even with an activated lesson available, Home must not surface a
+    // continue-lesson link or any /lesson/ deep link — those are Leren actions.
+    vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([{ id: 'lesson-3', order_index: 3 }] as any)
+    vi.mocked(listActivatedLessons).mockResolvedValue(new Set(['lesson-3']))
+    renderDashboard()
+    await screen.findByRole('button', { name: /start sessie|start session/i })
+    expect(screen.queryByRole('link', { name: /doorgaan met les|continue lesson/i })).not.toBeInTheDocument()
+    const links = screen.queryAllByRole('link')
+    expect(links.every((l) => !l.getAttribute('href')?.startsWith('/lesson/'))).toBe(true)
   })
 
   it('does not render TodaysPlanHero or weekly goal rings (regression check)', async () => {
