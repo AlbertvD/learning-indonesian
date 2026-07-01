@@ -8,6 +8,7 @@ import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
 import { Dashboard } from '@/pages/Dashboard'
 import { Lessons } from '@/pages/Lessons'
+import { Ontdek } from '@/pages/Ontdek'
 import { LessonRouter } from '@/pages/LessonRouter'
 import { Session } from '@/pages/Session'
 import { LocalPreviewIndex, LocalPreviewLesson } from '@/pages/LocalPreview'
@@ -94,10 +95,18 @@ function App() {
           }
         />
         <Route
-          path="/lessons"
+          path="/leren"
           element={
             <ProtectedRoute>
               <Lessons />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ontdek"
+          element={
+            <ProtectedRoute>
+              <Ontdek />
             </ProtectedRoute>
           }
         />

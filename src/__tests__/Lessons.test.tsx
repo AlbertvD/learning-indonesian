@@ -115,10 +115,12 @@ describe('Lessons overview', () => {
     vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue(defaultOverviewRows())
   })
 
-  it('renders a flat catalog with every lesson and no recommended-lesson hero', async () => {
+  it('renders every lesson grouped under its CEFR level, no recommended-lesson hero', async () => {
     const { container } = renderLessons()
 
-    const list = await screen.findByRole('list', { name: 'Lessons' })
+    // Lessons are grouped into collapsible CEFR sections (§7.3); both fixtures
+    // are A1, and the current level opens by default, so both are visible.
+    const list = await screen.findByRole('list', { name: 'A1' })
     expect(within(list).getByText('Lesson 1')).toBeInTheDocument()
     expect(within(list).getByText('Lesson 2')).toBeInTheDocument()
     // The recommended-lesson hero was retired.

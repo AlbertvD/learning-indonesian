@@ -12,6 +12,9 @@ import {
   IconStethoscope,
   IconMailbox,
   IconBook2,
+  IconAbc,
+  IconVolume,
+  IconChevronDown,
 } from '@tabler/icons-react'
 import {
   PageContainer,
@@ -20,6 +23,7 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { LessonCard } from '@/components/lessons/LessonCard'
+import { HubCard } from '@/components/nav/HubCard'
 import { Woordenlijsten } from '@/components/collections/Woordenlijsten'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -33,6 +37,7 @@ import {
   type LessonOverviewModel,
   type LessonOverviewRow,
 } from '@/lib/lessons'
+import { groupRowsByLevel, defaultOpenLevel } from '@/lib/lessons/levelGrouping'
 import { bespokeLessonIdSet, bespokeLessonHeroByOrderIndex } from '@/pages/lessons/registry'
 import classes from './Lessons.module.css'
 
@@ -152,6 +157,7 @@ function rememberOverviewScrollPosition() {
 export function Lessons() {
   const T = useT()
   const [tab, setTab] = useState<'lessen' | 'woordenlijsten'>('lessen')
+  const [openLevel, setOpenLevel] = useState<string | null>(null)
   const [model, setModel] = useState<LessonOverviewModel>(emptyModel)
   const [loading, setLoading] = useState(true)
   const [progressRefreshFailed, setProgressRefreshFailed] = useState(false)
@@ -263,6 +269,12 @@ export function Lessons() {
     rememberOverviewScrollPosition()
   }, [])
 
+  // Open the learner's current CEFR level by default once the model loads; keep
+  // their choice thereafter (single-open accordion).
+  useEffect(() => {
+    setOpenLevel((prev) => prev ?? defaultOpenLevel(groupRowsByLevel(model.rows)))
+  }, [model])
+
   if (loading) {
     return (
       <PageContainer size="lg">
@@ -278,15 +290,42 @@ export function Lessons() {
     return row.isActivated ? T.lessons.statusActive : T.lessons.statusNotStarted
   }
 
+  const renderCard = (row: LessonOverviewRow) => {
+    const isAvailable = Boolean(row.href)
+    return (
+      <li
+        key={row.lessonId}
+        className={classes.lessonGridItem}
+        data-testid={`lesson-overview-row-${row.lessonId}`}
+        onClick={isAvailable ? rememberOverviewScrollPosition : undefined}
+      >
+        <LessonCard
+          banner={<LessonBanner orderIndex={row.orderIndex} />}
+          orderIndex={row.orderIndex}
+          title={displayTitle(row.orderIndex, row.title)}
+          level={row.level}
+          grammarTopics={row.grammarTopicTag}
+          practiced={{ label: T.lessons.practiced, percent: row.practicedPercent }}
+          mastered={{ label: T.lessons.mastered, percent: row.masteredPercent }}
+          status={{ tone: activationTone(row), label: activationLabel(row) }}
+          to={row.href ?? undefined}
+          disabled={!isAvailable}
+        />
+      </li>
+    )
+  }
+
+  const groups = groupRowsByLevel(model.rows)
+
   return (
     <PageContainer size="lg">
       <PageBody>
-        <PageHeader title={T.nav.lessons} />
+        <PageHeader title={T.nav.leren} />
 
-        {/* Two peer views of the Leren surface (foundation doc §2): the lesson
+        {/* Two peer views of the Leren surface (foundation doc §2/§7): the lesson
             grid + the check-to-schedule word-lists. Local state — these are not
             deep-linkable destinations and the grid owns scroll-restore. */}
-        <div className={classes.tabs} role="tablist" aria-label={T.nav.lessons}>
+        <div className={classes.tabs} role="tablist" aria-label={T.nav.leren}>
           <button
             type="button"
             role="tab"
@@ -295,7 +334,7 @@ export function Lessons() {
             className={classes.tab}
             onClick={() => setTab('lessen')}
           >
-            {T.nav.lessons}
+            {T.leren.lessenTab}
           </button>
           <button
             type="button"
@@ -322,32 +361,56 @@ export function Lessons() {
         )}
 
         {tab === 'lessen' ? (
-          <ol className={classes.lessonGrid} aria-label={T.lessons.title}>
-            {model.rows.map((row) => {
-              const isAvailable = Boolean(row.href)
+          <>
+            {/* Lessons grouped into collapsible CEFR sections (§7.3) so 30
+                lessons aren't a long scroll; the current level opens by default. */}
+            {groups.map((group) => {
+              const open = openLevel === group.level
               return (
-                <li
-                  key={row.lessonId}
-                  className={classes.lessonGridItem}
-                  data-testid={`lesson-overview-row-${row.lessonId}`}
-                  onClick={isAvailable ? rememberOverviewScrollPosition : undefined}
-                >
-                  <LessonCard
-                    banner={<LessonBanner orderIndex={row.orderIndex} />}
-                    orderIndex={row.orderIndex}
-                    title={displayTitle(row.orderIndex, row.title)}
-                    level={row.level}
-                    grammarTopics={row.grammarTopicTag}
-                    practiced={{ label: T.lessons.practiced, percent: row.practicedPercent }}
-                    mastered={{ label: T.lessons.mastered, percent: row.masteredPercent }}
-                    status={{ tone: activationTone(row), label: activationLabel(row) }}
-                    to={row.href ?? undefined}
-                    disabled={!isAvailable}
-                  />
-                </li>
+                <section key={group.level} className={classes.levelSection}>
+                  <button
+                    type="button"
+                    className={classes.levelHeader}
+                    aria-expanded={open}
+                    onClick={() => setOpenLevel(open ? null : group.level)}
+                  >
+                    <span className={classes.levelName}>{group.level}</span>
+                    <span className={classes.levelMeta}>
+                      {group.rows.length} {T.leren.lessenTab.toLowerCase()} · {group.masteredPercent}% {T.lessons.mastered.toLowerCase()}
+                    </span>
+                    <IconChevronDown
+                      size={18}
+                      className={`${classes.levelChevron} ${open ? classes.levelChevronOpen : ''}`}
+                    />
+                  </button>
+                  {open && (
+                    <ol className={classes.lessonGrid} aria-label={group.level}>
+                      {group.rows.map(renderCard)}
+                    </ol>
+                  )}
+                </section>
               )
             })}
-          </ol>
+
+            {/* Practice tools — secondary to the lessons hero (§7.3). */}
+            <section className={classes.toolsSection}>
+              <h2 className={classes.toolsTitle}>{T.leren.toolsTitle}</h2>
+              <div className={classes.toolsGrid}>
+                <HubCard
+                  to="/morphology"
+                  icon={<IconAbc size={24} />}
+                  title={T.leren.affixTitle}
+                  description={T.leren.affixDesc}
+                />
+                <HubCard
+                  to="/pronunciation"
+                  icon={<IconVolume size={24} />}
+                  title={T.leren.pronunciationTitle}
+                  description={T.leren.pronunciationDesc}
+                />
+              </div>
+            </section>
+          </>
         ) : (
           <Woordenlijsten />
         )}

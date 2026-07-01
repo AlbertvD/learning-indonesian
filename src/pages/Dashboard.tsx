@@ -38,7 +38,7 @@ export function Dashboard() {
   const profile = useAuthStore((state) => state.profile)
 
   const [loading, setLoading] = useState(true)
-  const [continueUrl, setContinueUrl] = useState('/lessons')
+  const [continueUrl, setContinueUrl] = useState('/leren')
   const [continueLessonNo, setContinueLessonNo] = useState<number | null>(null)
   const [currentStreak, setCurrentStreak] = useState(0)
   const [dailyActivity, setDailyActivity] = useState<DailyActivity[]>([])
