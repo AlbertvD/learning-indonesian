@@ -294,6 +294,21 @@ for (const table of EXPECTED_TABLES) {
   }
 }
 
+// ── Check: get_stability_series RPC exists (Voortgang Groei durability curve) ──
+{
+  const { error } = await supabase
+    .schema('indonesian')
+    .rpc('get_stability_series', { p_user_id: '00000000-0000-0000-0000-000000000000', p_timezone: 'UTC', p_weeks: 12 })
+  if (error && error.message.includes('does not exist')) {
+    fail(
+      'RPC function exists: get_stability_series',
+      'Function indonesian.get_stability_series not found — run: make migrate SUPABASE_SERVICE_KEY=<key>'
+    )
+  } else {
+    pass('RPC function exists: get_stability_series')
+  }
+}
+
 // ── Check: choose_meaning_from_audio_ex + dictation registered in exercise_type_availability ──
 for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audio_ex']) {
   const { data: availRow, error: availErr } = await supabase

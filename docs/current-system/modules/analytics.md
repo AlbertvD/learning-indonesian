@@ -13,13 +13,19 @@ doing. It schedules nothing and writes nothing (except one completion stamp — 
 progress. It powers three surfaces: the **home** page (decide + glance), the
 **Voortgang** page (reflect), and the **lesson tiles** (per-lesson % mastered).
 
-It has two sub-modules, one per **axis** (CONTEXT.md → Learner Progress Axes):
+It has three sub-modules (CONTEXT.md → Learner Progress Axes):
 
 - **Axis 1 — Practice Time** (input / engagement): `lib/analytics/engagement/` →
   spec [[analytics-engagement]]. Streak · minutes · sessions.
 - **Axis 2 — Mastery progression** (outcome): `lib/analytics/mastery/` → spec
   [[analytics-mastery]]. The ladder funnel, weekly movement, skill gaps, grammar
-  topics, the canonical `mastered`/`at_risk` predicates.
+  topics, the canonical `mastered`/`at_risk` predicates. Now also the **growth
+  curve** — the funnel reconstructed per week-end (`deriveFunnelSeries` /
+  `getFunnelSeries`, client-side, reusing `deriveMasteryFunnel`).
+- **Trajectory — durability** (revived 2026-06-30 for the Voortgang "Groei" tab):
+  `lib/analytics/memory/` — `stabilitySeries`, average FSRS stability over time
+  from the `get_stability_series` RPC. Consumed by **direct import**, not the
+  barrel. See `docs/plans/2026-06-30-voortgang-groei-dimension-design.md`.
 
 The leaderboard was **decommissioned** in this redesign; analytics is learner-
 facing, not competitive.

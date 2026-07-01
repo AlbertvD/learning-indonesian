@@ -16,10 +16,12 @@ import { StubbornWordsCard } from '@/components/progress/StubbornWordsCard'
 import { GrammarPatternList } from '@/components/progress/GrammarPatternList'
 import { SkillModeGapsCard } from '@/components/progress/SkillModeGapsCard'
 import { TimeComparisonCard } from '@/components/progress/TimeComparisonCard'
+import { GrowthCurveCard } from '@/components/progress/GrowthCurveCard'
+import { DurabilityCard } from '@/components/progress/DurabilityCard'
 import classes from './Progress.module.css'
 
-type Tab = 'woorden' | 'grammar' | 'morfologie' | 'skills' | 'time'
-const TABS: Tab[] = ['woorden', 'grammar', 'morfologie', 'skills', 'time']
+type Tab = 'woorden' | 'grammar' | 'morfologie' | 'skills' | 'groei' | 'time'
+const TABS: Tab[] = ['woorden', 'grammar', 'morfologie', 'skills', 'groei', 'time']
 
 export function Progress() {
   const T = useT()
@@ -49,6 +51,7 @@ export function Progress() {
                   { value: 'grammar', label: T.progress.tabGrammar },
                   { value: 'morfologie', label: T.progress.tabMorphology },
                   { value: 'skills', label: T.progress.tabSkills },
+                  { value: 'groei', label: T.progress.tabGrowth },
                   { value: 'time', label: T.progress.tabTime },
                 ]}
               />
@@ -84,6 +87,12 @@ export function Progress() {
                 />
               )}
               {tab === 'skills' && <SkillModeGapsCard userId={user.id} />}
+              {tab === 'groei' && (
+                <div className={classes.groei}>
+                  <GrowthCurveCard userId={user.id} />
+                  <DurabilityCard userId={user.id} timezone={timezone} />
+                </div>
+              )}
               {tab === 'time' && <TimeComparisonCard userId={user.id} timezone={timezone} />}
             </div>
           </>

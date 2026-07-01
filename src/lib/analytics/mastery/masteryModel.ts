@@ -465,6 +465,167 @@ export function deriveMasteryFunnelByLesson(input: {
   return result
 }
 
+// ── Growth curve (Voortgang "Groei" tab) — the funnel, over time ──────────────
+//
+// The mastery funnel is a SNAPSHOT ("where do my units sit today"). The growth
+// curve is that same funnel reconstructed per week-end, so all four rungs
+// (introduced/learning/strengthening/mastered) are lines that climb over weeks
+// — not a mastered-only flow (which would double-count and undersell the climb).
+// It reuses `deriveMasteryFunnel` VERBATIM per week-end; the only new logic is the
+// per-week-end last-known-state reconstruction from the append-only event log.
+// See docs/plans/2026-06-30-voortgang-groei-dimension-design.md §3.2.
+
+/** One capability's `state_after` at a review, as read from the event log. */
+export interface FunnelSeriesEvent {
+  capabilityId: string
+  /** ISO timestamp of the review (`created_at`). */
+  createdAt: string
+  reviewCount: number
+  lapseCount: number
+  consecutiveFailureCount: number
+  stability: number | null
+  lastReviewedAt: string | null
+}
+
+/** A week-end reconstruction point: the local week-start label + the cutoff instant. */
+export interface WeekEnd {
+  /** Timezone-local week-start date, `YYYY-MM-DD` (the x-axis label). */
+  weekStart: string
+  /** Last-known state is taken from events with `createdAt <= cutoff`. */
+  cutoff: Date
+}
+
+/** One week-end's funnel snapshot, split by content bucket (vocab/grammar/morphology). */
+export interface FunnelWeek {
+  weekStart: string
+  vocabulary: MasteryFunnel
+  grammar: MasteryFunnel
+  morphology: MasteryFunnel
+}
+
+/**
+ * The mastery funnel reconstructed for each week-end. For every week-end, only the
+ * capabilities REVIEWED by then (latest event with `createdAt <= cutoff`) are fed
+ * through the existing `deriveMasteryFunnel`, with the label clock = the week-end
+ * moment (so "mastered requires recently reviewed" is judged as-of-then). A cap
+ * with no event by a week-end is ABSENT that week — so the rung lines climb from
+ * zero as words are first reviewed (a growth curve), rather than every future word
+ * pre-counting as `introduced` (which would make the total flat).
+ *
+ * This is exact at the newest week-end: `learner_capability_state` is written
+ * lazily (only by the review-commit path, migration.sql:1883), so every cap in the
+ * live funnel's set has ≥1 event, is reviewed-by-now, and is included here too —
+ * matching `getMasteryFunnels().all`. (Because state is lazy, there are no persisted
+ * `reviewCount=0` rows, so the historical `introduced` inflation the design flagged
+ * as a limitation does not arise.) Pure — the wrapper supplies events/caps.
+ */
+export function deriveFunnelSeries(input: {
+  events: FunnelSeriesEvent[]
+  weekEnds: WeekEnd[]
+  capabilities: LearningCapabilityRow[]
+  activatedLessons: Set<string>
+  lessonOrderById: Map<string, number>
+}): FunnelWeek[] {
+  // Group events per capability, newest-first, so each week-end lookup is a
+  // "first event whose createdAt <= cutoff".
+  const byCapability = new Map<string, FunnelSeriesEvent[]>()
+  for (const event of input.events) {
+    const list = byCapability.get(event.capabilityId)
+    if (list) list.push(event)
+    else byCapability.set(event.capabilityId, [event])
+  }
+  for (const list of byCapability.values()) {
+    list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0))
+  }
+  const capabilityById = new Map(input.capabilities.map(c => [c.id, c]))
+
+  return input.weekEnds.map(({ weekStart, cutoff }) => {
+    const cutoffMs = cutoff.getTime()
+    const states: LearnerCapabilityStateRow[] = []
+    const reviewedCaps: LearningCapabilityRow[] = []
+    for (const [capabilityId, list] of byCapability) {
+      const last = list.find(event => new Date(event.createdAt).getTime() <= cutoffMs)
+      if (!last) continue // not reviewed yet as of this week-end → absent (not counted)
+      const capability = capabilityById.get(capabilityId)
+      if (!capability) continue // event for a cap outside the current set — ignore
+      reviewedCaps.push(capability)
+      states.push({
+        capability_id: capabilityId,
+        review_count: last.reviewCount,
+        lapse_count: last.lapseCount,
+        consecutive_failure_count: last.consecutiveFailureCount,
+        stability: last.stability,
+        last_reviewed_at: last.lastReviewedAt,
+      })
+    }
+    const evidence = toEvidence({
+      capabilities: reviewedCaps,
+      states,
+      activatedLessons: input.activatedLessons,
+      lessonOrderById: input.lessonOrderById,
+    })
+    const funnels = deriveMasteryFunnel({ evidence, now: cutoff })
+    return { weekStart, vocabulary: funnels.vocabulary, grammar: funnels.grammar, morphology: funnels.morphology }
+  })
+}
+
+/**
+ * The last `weeks` timezone-local Monday-week boundaries, oldest→newest. Each
+ * week's cutoff is the END of that local week (next Monday 00:00) as a UTC instant,
+ * clamped to `now` for the in-progress week. Mirrors the SQL week math the other
+ * analytics functions do server-side (get_practice_time / get_daily_activity), but
+ * client-side because the funnel is client-derived (design §3.2 Path A).
+ */
+export function weekEndsBackFrom(now: Date, timezone: string, weeks: number): WeekEnd[] {
+  // Offset (ms) that must be SUBTRACTED from a UTC-guessed wall time to get the
+  // real UTC instant for that wall time in `timezone`.
+  const offsetMs = (instant: Date): number => {
+    const parts = Object.fromEntries(
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        hour12: false,
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+      })
+        .formatToParts(instant)
+        .map(p => [p.type, p.value]),
+    ) as Record<string, string>
+    const asUTC = Date.UTC(
+      +parts.year, +parts.month - 1, +parts.day,
+      +parts.hour === 24 ? 0 : +parts.hour, +parts.minute, +parts.second,
+    )
+    return asUTC - instant.getTime()
+  }
+  // The UTC instant of local midnight for a given local calendar date.
+  const localMidnightUTC = (y: number, m: number, d: number): Date => {
+    const guess = new Date(Date.UTC(y, m - 1, d, 0, 0, 0))
+    return new Date(guess.getTime() - offsetMs(guess))
+  }
+  // Local calendar date of `now` in `timezone`, plus its ISO weekday (Mon=1).
+  const nowParts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short',
+  }).formatToParts(now)
+  const get = (t: string) => nowParts.find(p => p.type === t)!.value
+  const isoDow = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 }[get('weekday')] ?? 1
+  // This week's Monday, as a UTC-calendar anchor for day arithmetic.
+  const mondayAnchor = new Date(Date.UTC(+get('year'), +get('month') - 1, +get('day')))
+  mondayAnchor.setUTCDate(mondayAnchor.getUTCDate() - (isoDow - 1))
+
+  const nowMs = now.getTime()
+  const out: WeekEnd[] = []
+  for (let n = weeks - 1; n >= 0; n--) {
+    const start = new Date(mondayAnchor)
+    start.setUTCDate(start.getUTCDate() - n * 7)
+    const nextMonday = new Date(start)
+    nextMonday.setUTCDate(nextMonday.getUTCDate() + 7)
+    const weekStart = `${start.getUTCFullYear()}-${String(start.getUTCMonth() + 1).padStart(2, '0')}-${String(start.getUTCDate()).padStart(2, '0')}`
+    const cutoffInstant = localMidnightUTC(nextMonday.getUTCFullYear(), nextMonday.getUTCMonth() + 1, nextMonday.getUTCDate())
+    const cutoff = new Date(Math.min(nowMs, cutoffInstant.getTime()))
+    out.push({ weekStart, cutoff })
+  }
+  return out
+}
+
 // ── Stubborn ("moeilijk") words — an ACQUISITION-difficulty signal, distinct from
 // at_risk (a RETENTION loss). A word never learned (`lapseCount === 0`) that the
 // learner keeps failing (`consecutiveFailureCount >= STUBBORN_THRESHOLD`) needs a
@@ -923,6 +1084,60 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       }
     },
 
+    // Growth curve — the funnel reconstructed per week-end from the event log
+    // (design §3.2, Path A: client-derived, reuses deriveMasteryFunnel verbatim).
+    async getFunnelSeries(userId: string, timezone: string, weeks: number): Promise<FunnelWeek[]> {
+      // I1: the cap set is the learner's `learner_capability_state` rows — exactly
+      // what allLearnerEvidence uses — so the newest week-end == the live funnel.
+      const { data: stateRows, error: stateError } = await db()
+        .from('learner_capability_state')
+        .select('capability_id')
+        .eq('user_id', userId)
+      if (stateError) throw stateError
+      const capabilityIds = uniq(((stateRows ?? []) as Array<{ capability_id: string }>).map(r => r.capability_id))
+      if (capabilityIds.length === 0) return weekEndsBackFrom(new Date(), timezone, weeks).map(w => ({
+        weekStart: w.weekStart, vocabulary: emptyFunnel(), grammar: emptyFunnel(), morphology: emptyFunnel(),
+      }))
+
+      // M1: the event fetch is UNBOUNDED on time — a single owner-scoped query, no
+      // `created_at` floor. A window would misclassify caps whose last event predates
+      // it (silently, uncaught by the newest-week validator).
+      const { data: eventRows, error: eventError } = await db()
+        .from('capability_review_events')
+        .select('capability_id, created_at, state_after_json')
+        .eq('user_id', userId)
+      if (eventError) throw eventError
+
+      const [capabilities, activatedLessons, lessonOrderById] = await Promise.all([
+        capabilityRowsByIds(capabilityIds),
+        listActivatedLessons(userId, client),
+        lessonOrderMap(),
+      ])
+
+      const events: FunnelSeriesEvent[] = ((eventRows ?? []) as Array<{
+        capability_id: string; created_at: string; state_after_json: Record<string, unknown> | null
+      }>).map(row => {
+        const s = row.state_after_json ?? {}
+        return {
+          capabilityId: row.capability_id,
+          createdAt: row.created_at,
+          reviewCount: Number(s.reviewCount ?? 0),
+          lapseCount: Number(s.lapseCount ?? 0),
+          consecutiveFailureCount: Number(s.consecutiveFailureCount ?? 0),
+          stability: s.stability == null ? null : Number(s.stability),
+          lastReviewedAt: (s.lastReviewedAt as string | null) ?? null,
+        }
+      })
+
+      return deriveFunnelSeries({
+        events,
+        weekEnds: weekEndsBackFrom(new Date(), timezone, weeks),
+        capabilities,
+        activatedLessons,
+        lessonOrderById,
+      })
+    },
+
     async getSkillModeGaps(userId: string): Promise<SkillModeGap[]> {
       const evidence = await allLearnerEvidence(userId)
       return deriveSkillModeGaps({ evidence })
@@ -984,6 +1199,10 @@ export async function getMasteryFunnel(userId: string): Promise<MasteryFunnels> 
 
 export async function getMasteryFunnels(userId: string): Promise<{ all: MasteryFunnels; byLesson: Map<number, MasteryFunnels> }> {
   return (await defaultModel()).getMasteryFunnels(userId)
+}
+
+export async function getFunnelSeries(userId: string, timezone: string, weeks: number): Promise<FunnelWeek[]> {
+  return (await defaultModel()).getFunnelSeries(userId, timezone, weeks)
 }
 
 export async function getGrammarTopics(userId: string): Promise<GrammarTopic[]> {

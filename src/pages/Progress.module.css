@@ -17,3 +17,10 @@
 @media (prefers-reduced-motion: reduce) {
   .view { animation: none; }
 }
+
+/* Groei tab: growth curve above durability curve. */
+.groei {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}

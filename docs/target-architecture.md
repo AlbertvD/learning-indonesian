@@ -690,6 +690,13 @@ analytics.mastery.overview(userId)                    → MasteryOverview
 > the live barrel is now `{ engagement, upcoming, progress, mastery }`. See
 > `docs/plans/2026-06-10-learner-progress-analytics-redesign.md` + CONTEXT.md →
 > Learner Progress Axes.
+>
+> **Update 2026-06-30 (Voortgang "Groei" tab):** `memory` was **revived** as the
+> learner-facing home it previously lacked — scoped to `stabilitySeries` (the
+> durability curve, avg FSRS stability over time). It is consumed by direct import,
+> NOT re-added to the barrel. The growth curve (funnel-over-time) lives in `mastery`
+> as `deriveFunnelSeries` / `getFunnelSeries`. See
+> `docs/plans/2026-06-30-voortgang-groei-dimension-design.md`.
 
 ```
 src/lib/analytics/

@@ -1,0 +1,101 @@
+.card {
+  border-radius: 14px;
+  padding: 1rem;
+  background: var(--surface-1, rgba(128, 128, 128, 0.05));
+  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.16));
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.icon {
+  color: var(--text-secondary, #868e96);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #868e96);
+  margin: 0.1rem 0 0;
+}
+
+.headline {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.5rem;
+}
+
+.hero {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.heroUnit {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #868e96);
+}
+
+.was {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #868e96);
+}
+
+.nudge {
+  flex-basis: 100%;
+  font-size: 0.78rem;
+  color: var(--text-secondary, #868e96);
+}
+
+.empty {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #868e96);
+  margin: 0.25rem 0 0.5rem;
+  text-align: center;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.legendChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.16));
+  background: var(--surface-2, rgba(128, 128, 128, 0.08));
+  color: var(--text-primary, inherit);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.legendOff {
+  opacity: 0.4;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
