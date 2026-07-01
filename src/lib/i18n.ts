@@ -4,6 +4,8 @@ export type Lang = 'nl' | 'en'
 export const nl = {
   nav: {
     home: 'Home',
+    leren: 'Leren',
+    ontdek: 'Ontdek',
     lessons: 'Lessen',
     podcasts: 'Podcasts',
     lezen: 'Lezen',
@@ -15,6 +17,22 @@ export const nl = {
     settings: 'Instellingen',
     sections: 'Secties',
     exercises: 'Oefeningen',
+  },
+  ontdek: {
+    title: 'Ontdek',
+    subtitle: 'Luister en lees om je Indonesisch te laten groeien.',
+    podcastsTitle: 'Podcasts',
+    podcastsDesc: 'Luister naar verhalen en uitleg op jouw niveau.',
+    readerTitle: 'Verhalen lezen',
+    readerDesc: 'Lees met tik-voor-vertaling korte teksten.',
+  },
+  leren: {
+    lessenTab: 'Lessen',
+    toolsTitle: 'Oefentools',
+    affixTitle: 'Affix-trainer',
+    affixDesc: 'Leer voor- en achtervoegsels en woordfamilies.',
+    pronunciationTitle: 'Uitspraaktrainer',
+    pronunciationDesc: 'Oefen klanken, minimale paren en nazeggen.',
   },
   morphology: {
     title: 'Affix-trainer',
@@ -424,6 +442,8 @@ export const nl = {
 export const en: typeof nl = {
   nav: {
     home: 'Home',
+    leren: 'Learn',
+    ontdek: 'Discover',
     lessons: 'Lessons',
     podcasts: 'Podcasts',
     lezen: 'Reading',
@@ -435,6 +455,22 @@ export const en: typeof nl = {
     settings: 'Settings',
     sections: 'Sections',
     exercises: 'Exercises',
+  },
+  ontdek: {
+    title: 'Discover',
+    subtitle: 'Listen and read to grow your Indonesian.',
+    podcastsTitle: 'Podcasts',
+    podcastsDesc: 'Listen to stories and explanations at your level.',
+    readerTitle: 'Story reader',
+    readerDesc: 'Read short texts with tap-to-translate.',
+  },
+  leren: {
+    lessenTab: 'Lessons',
+    toolsTitle: 'Practice tools',
+    affixTitle: 'Affix trainer',
+    affixDesc: 'Learn prefixes, suffixes and word families.',
+    pronunciationTitle: 'Pronunciation trainer',
+    pronunciationDesc: 'Practise sounds, minimal pairs and shadowing.',
   },
   morphology: {
     title: 'Affix Trainer',

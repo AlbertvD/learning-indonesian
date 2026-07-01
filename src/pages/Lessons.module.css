@@ -153,3 +153,67 @@
   color: var(--text-primary);
   background: var(--accent-primary-subtle);
 }
+
+/* CEFR level sections (§7.3) — collapsible groups over the lesson grid. */
+.levelSection {
+  margin-bottom: 0.6rem;
+}
+
+.levelHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.levelName {
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.levelMeta {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #868e96);
+}
+
+.levelChevron {
+  color: var(--text-secondary, #868e96);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.levelChevronOpen {
+  transform: rotate(180deg);
+}
+
+.levelSection .lessonGrid {
+  margin-top: 0.6rem;
+}
+
+/* Practice-tools block, secondary to the lessons hero. */
+.toolsSection {
+  margin-top: 1.25rem;
+}
+
+.toolsTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary, #868e96);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0 0 0.6rem;
+}
+
+.toolsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}

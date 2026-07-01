@@ -31,7 +31,7 @@ export function LessonRouter() {
         <EmptyState
           icon={<IconAlertTriangle size={48} />}
           message="Deze les bestaat niet of is nog niet gepubliceerd."
-          cta={<Button onClick={() => navigate('/lessons')}>Terug naar lessen</Button>}
+          cta={<Button onClick={() => navigate('/leren')}>Terug naar lessen</Button>}
         />
       </PageBody>
     </PageContainer>

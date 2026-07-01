@@ -2,9 +2,9 @@
 import { NavLink } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import {
-  IconHome, IconBook, IconHeadphones, IconChartBar,
-  IconLayoutList, IconBolt, IconEye, IconAbc,
-  IconSun, IconMoon, IconBook2, IconVolume,
+  IconHome, IconBook, IconCompass, IconChartBar,
+  IconLayoutList, IconBolt, IconEye,
+  IconSun, IconMoon,
 } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -31,20 +31,22 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
   const profile = useAuthStore(s => s.profile)
   const T = useT()
 
+  // Five-tab IA (foundation plan §7.1). Profiel lives in the footer (ProfileMenu),
+  // so the primary nav is Home · Leren · Ontdek · Voortgang.
   const navItems = [
-    { label: T.nav.home,         icon: <IconHome size={17} />,       path: '/' },
-    { label: T.nav.lessons,      icon: <IconBook size={17} />,       path: '/lessons' },
-    { label: T.nav.podcasts,     icon: <IconHeadphones size={17} />, path: '/podcasts' },
-    { label: T.nav.lezen,        icon: <IconBook2 size={17} />,       path: '/lezen' },
-    { label: T.nav.progress,     icon: <IconChartBar size={17} />,   path: '/progress' },
-    { label: T.nav.morphology,   icon: <IconAbc size={17} />,         path: '/morphology' },
-    { label: T.nav.pronunciation, icon: <IconVolume size={17} />,     path: '/pronunciation' },
-    { label: T.nav.sections,     icon: <IconLayoutList size={17} />,  path: '/content/sections' },
-    { label: T.nav.exercises,    icon: <IconBolt size={17} />,        path: '/content/exercises' },
+    { label: T.nav.home,     icon: <IconHome size={17} />,     path: '/' },
+    { label: T.nav.leren,    icon: <IconBook size={17} />,     path: '/leren' },
+    { label: T.nav.ontdek,   icon: <IconCompass size={17} />,  path: '/ontdek' },
+    { label: T.nav.progress, icon: <IconChartBar size={17} />, path: '/progress' },
   ]
 
+  // Dev/coverage + review surfaces sit behind admin, not in the primary nav.
   const adminItems = profile?.isAdmin
-    ? [{ label: 'Contentcontrole', icon: <IconEye size={17} />, path: '/admin/content-review' }]
+    ? [
+        { label: 'Contentcontrole', icon: <IconEye size={17} />,        path: '/admin/content-review' },
+        { label: T.nav.sections,    icon: <IconLayoutList size={17} />, path: '/content/sections' },
+        { label: T.nav.exercises,   icon: <IconBolt size={17} />,       path: '/content/exercises' },
+      ]
     : []
 
   const initials = (profile?.fullName?.[0] ?? profile?.email?.[0] ?? 'A').toUpperCase()
