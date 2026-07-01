@@ -150,7 +150,9 @@ Reserving a module home does **not** define its schema. Each of these carries it
 | **Voortgang** (`/progress`) | two-axis analytics + Groei + band **coverage** (the toggles' other face) | reflect (read-only) |
 | **Profiel** (`/profile`) | account + prefs; **admin behind here**, not a tab | settings |
 
-Pronunciation slots into Leren by the plan's own taxonomy (open-to-study, sibling to the affix trainer) — the map gains it; the principle already fit. The old flat routes (`/lessons`, `/podcasts`, `/lezen`, `/morphology`, `/pronunciation`) remain valid destinations reached *through* the hubs.
+Pronunciation slots into Leren by the plan's own taxonomy (open-to-study, sibling to the affix trainer) — the map gains it; the principle already fit.
+
+**Route naming (staff-engineer, no dual-names — single learner, no bookmarks to preserve):** `/lessons` is **renamed to `/leren`** and the old path deleted — the hub *is* the re-homed lessons page (`Lessons.tsx`), so one name, not two. `/podcasts`, `/lezen`, `/morphology`, `/pronunciation` stay as their own distinct pages, reached *through* the Leren/Ontdek hubs — those are real separate destinations, not dual-names, so they keep their routes. Ontdek is a new thin hub at `/ontdek`.
 
 ### 7.2 Home = launchpad (decisions)
 
@@ -173,7 +175,15 @@ Two richer touches are **designed but explicitly out of the first mobile slice**
 
 ### 7.5 First build slice (what ships now)
 
-Structural IA only: (a) **`MobileLayout` → 5 tabs**; (b) **`/leren` hub** = the live Lessons page re-homed + **CEFR-grouped collapsible lesson sections** + entry cards for Affix/Pronunciation + Woordenlijsten; (c) **`/ontdek` hub** = two entry cards → Podcasts, Story reader; (d) Home kept as launchpad (already close; no activation/at-risk added); (e) desktop **`Sidebar`** reduced to the same 5 primary items + admin (full desktop "learning-platform" layout deferred). No new tables, no RPCs, no feature rebuilds — pure front-end re-navigation of existing surfaces.
+Mostly re-navigation, plus one small grid enhancement (CEFR grouping) — labelled honestly (staff-engineer):
+- (a) **`MobileLayout` → 5 tabs** (Home · Leren · Ontdek · Voortgang · Profiel).
+- (b) **`/leren`** = `Lessons.tsx` **renamed/re-homed** (`/lessons` route deleted, §7.1) + entry cards for Affix trainer + Pronunciation trainer, keeping its existing lessen/Woordenlijsten tabs. Its cards **already render grammar-topic chips** (`Lessons.tsx:340` → `row.grammarTopicTag`), so §7.3's "reveal the grammar" is largely done.
+- (c) **CEFR-grouped collapsible lesson sections** — *a small new grid feature* (not re-nav), justified by de-scrolling 30 lessons; groups the existing rows by `lessons.level`. If time-pressed it is a clean fast-follow, not a blocker.
+- (d) **`/ontdek` hub** = two entry cards → Podcasts, Story reader.
+- (e) Home kept as launchpad (already close; no activation/at-risk added).
+- (f) desktop **`Sidebar`** reduced to the same 5 primary items; **the two dev/coverage routes (`/content/sections`, `/content/exercises`) move behind admin (Profiel), not orphaned** — they keep their routes but leave the primary nav (staff-engineer). `/admin/*` already lives behind admin. Full desktop "learning-platform" layout deferred.
+
+No new tables, no RPCs, no feature rebuilds.
 
 ### 7.6 Explicitly deferred
 
