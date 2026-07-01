@@ -457,12 +457,12 @@ ResolveContext { userId: string, now: Date }
 **`CapabilityRenderPlan`** is a discriminated union keyed on `exerciseType`. Each variant carries everything the matching component in `components/exercises/implementations/` needs to render: prompt, correct answer, distractors (for MCQ types), variant id, audio url, hint, existing flag state.
 
 **Hides.**
-- Variant choice from `exercise_variants` per capability (which authored variant to show).
+- Grammar-exercise choice from the 4 typed grammar-exercise tables per capability (which authored exercise to show). (Was `exercise_variants` — dropped in Slice 4c / #102, Decision B.)
 - K-of-N distractor selection (delegates to `lib/distractors/` for the actual cascade).
 - Audio URL resolution (delegates to `lib/audio`).
 - The user's existing `content_flags` row, if any.
-- Artifact lookup via `capability_artifacts`.
-- The content joins across `learning_items`, `item_meanings`, `item_contexts`, `item_answer_variants`.
+- (Artifact lookup via `capability_artifacts` was dropped in Slice 4b / #102 — readiness derives from RENDER_CONTRACTS routing, no artifact bag.)
+- The content joins across `learning_items` (inline `translation_nl`/`translation_en`, Decision R), `item_contexts`, `item_answer_variants`. (`item_meanings` was dropped in Slice 4a.)
 - Per-exercise-type packaging logic (12 exercise types; ~5 of them MCQ-shaped).
 
 **Module structure (as shipped 2026-05-21).**
@@ -1144,10 +1144,12 @@ Inputs:
   photoDir:     string
 
 Outputs (idempotent side effects on the runtime backend):
-  lesson_sections, lesson_page_blocks, learning_items,
-  item_meanings, item_contexts, item_answer_variants,
-  learning_capabilities, capability_artifacts,
-  exercise_variants, grammar_patterns, audio bytes
+  lesson_sections, learning_items (inline translations),
+  item_contexts, item_answer_variants, learning_capabilities,
+  the 4 typed grammar-exercise tables + dialogue_clozes +
+  affixed_form_pairs, grammar_patterns, audio bytes
+  (retired: lesson_page_blocks PR5, item_meanings 4a,
+   capability_artifacts 4b, exercise_variants 4c)
 
 External dependencies:
   - Anthropic API (cataloguing + 5 Claude subagents)

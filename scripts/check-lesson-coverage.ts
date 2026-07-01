@@ -66,10 +66,8 @@ console.log('─'.repeat(70))
 await cnt('capability_content_units (junction):', sb.schema('indonesian')
   .from('capability_content_units').select('*', { count: 'exact', head: true }))
 
-// exercise_variants — break down by routing
-await cnt('exercise_variants (lesson_id grammar):', sb.schema('indonesian')
-  .from('exercise_variants').select('*', { count: 'exact', head: true })
-  .eq('lesson_id', lessonId))
+// exercise_variants count retired with the table (Slice 4c #102) — grammar
+// exercises live in the 4 typed grammar-exercise tables.
 
 // projection_version distribution
 console.log('─'.repeat(70))

@@ -49,7 +49,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
     const supabase = buildMockSupabase({
       content_units: { rows: [], countOverride: 10 },
       grammar_patterns: { rows: [], countOverride: 5 },
-      exercise_variants: { rows: [], countOverride: 3 },
     })
     const findings = await runCountParity(supabase, {
       lessonId: 'lesson-9-uuid',
@@ -58,7 +57,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         grammarPatterns: 5,
         capabilities: 0,
         learningItems: 0,
-        exerciseVariants: 3,
         clozeContexts: 0,
       },
       contentUnitIds: Array.from({ length: 10 }, (_, i) => `unit-${i}`),
@@ -71,7 +69,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
     const supabase = buildMockSupabase({
       content_units: { rows: [], countOverride: 5 },
       grammar_patterns: { rows: [], countOverride: 0 },
-      exercise_variants: { rows: [], countOverride: 0 },
     })
     const findings = await runCountParity(supabase, {
       lessonId: 'lesson-9-uuid',
@@ -80,7 +77,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         grammarPatterns: 5,
         capabilities: 0,
         learningItems: 0,
-        exerciseVariants: 3,
         clozeContexts: 0,
       },
       contentUnitIds: Array.from({ length: 10 }, (_, i) => `unit-${i}`),
@@ -94,7 +90,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
     const supabase = buildMockSupabase({
       content_units: { rows: [], countOverride: 25 }, // already had rows from prior run
       grammar_patterns: { rows: [], countOverride: 8 },
-      exercise_variants: { rows: [], countOverride: 5 },
     })
     const findings = await runCountParity(supabase, {
       lessonId: 'lesson-9-uuid',
@@ -103,7 +98,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         grammarPatterns: 5,
         capabilities: 0,
         learningItems: 0,
-        exerciseVariants: 3,
         clozeContexts: 0,
       },
       contentUnitIds: Array.from({ length: 10 }, (_, i) => `unit-${i}`),
@@ -137,7 +131,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         grammarPatterns: 0,
         capabilities: 0,
         learningItems: 0,
-        exerciseVariants: 0,
         clozeContexts: 0,
       },
       contentUnitIds,
@@ -161,7 +154,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         grammarPatterns: 0,
         capabilities: 10,
         learningItems: 0,
-        exerciseVariants: 0,
         clozeContexts: 0,
       },
       contentUnitIds: [],
@@ -247,7 +239,9 @@ describe('CS8 contentNonEmpty — required field presence checks per #22', () =>
   })
 })
 
-describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 805–923)', () => {
+describe('CS9 seedIntegrity — non-dialogue reviewability (NL-coverage; legacy 805–923)', () => {
+  // Slice 4c (#102): the "OR active exercise_variant" path was retired with the
+  // exercise_variants table; reviewability now requires translation_nl only.
   it('passes when every non-dialogue item has translation_nl in learning_items', async () => {
     const supabase = buildMockSupabase({
       // Decision R (PR 1): NL coverage read from learning_items.translation_nl.
@@ -263,7 +257,6 @@ describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 8
           { id: 'ctx-2', learning_item_id: 'item-2' },
         ],
       },
-      exercise_variants: { rows: [] },
     })
     const report = await runSeedIntegrity(supabase, {
       publishedItemIds: ['item-1', 'item-2'],
@@ -273,9 +266,9 @@ describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 8
     expect(report.totals.nonDialogueCount).toBe(2)
   })
 
-  it('flags non-dialogue items missing both translation_nl AND active variant (the 2026-04-24 incident)', async () => {
+  it('flags a non-dialogue item missing translation_nl (the 2026-04-24 incident)', async () => {
     const supabase = buildMockSupabase({
-      // item-2 has no translation_nl (null) — no NL coverage.
+      // item-2 has no translation_nl (null) — no NL coverage → unreviewable.
       learning_items: {
         rows: [
           { id: 'item-1', translation_nl: 'boek', translation_en: 'book' },
@@ -288,8 +281,6 @@ describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 8
           { id: 'ctx-2', learning_item_id: 'item-2' },
         ],
       },
-      // No active exercise_variants on item-2's context.
-      exercise_variants: { rows: [] },
     })
     const report = await runSeedIntegrity(supabase, {
       publishedItemIds: ['item-1', 'item-2'],
@@ -314,7 +305,6 @@ describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 8
           { id: 'ctx-2', learning_item_id: 'item-2' },
         ],
       },
-      exercise_variants: { rows: [] },
     })
     const report = await runSeedIntegrity(supabase, {
       publishedItemIds: ['item-1', 'item-2'],

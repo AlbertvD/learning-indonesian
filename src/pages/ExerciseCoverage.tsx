@@ -52,7 +52,7 @@ const ROWS: RowDef[] = [
     getValue: c => ({ ok: c.grammarPatterns > 0, count: c.grammarPatterns }),
   },
   {
-    label: 'exercise_variants in DB',
+    label: 'grammar exercises in DB (typed tables)',
     getValue: c => {
       const total = Object.values(c.exerciseVariants).reduce((s, n) => s + n, 0)
       return { ok: total > 0, count: total }

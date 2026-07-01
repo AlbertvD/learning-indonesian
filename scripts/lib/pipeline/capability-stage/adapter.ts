@@ -838,17 +838,7 @@ export async function deleteLegacyPatternsForLesson(
   return toDelete.map((p) => p.slug)
 }
 
-export async function countExerciseVariantsForLesson(
-  supabase: CapabilitySupabaseClient,
-  lessonId: string,
-): Promise<number> {
-  const { count } = await supabase
-    .schema('indonesian')
-    .from('exercise_variants')
-    .select('*', { count: 'exact', head: true })
-    .eq('lesson_id', lessonId)
-  return count ?? 0
-}
+// countExerciseVariantsForLesson retired with the exercise_variants table (Slice 4c #102).
 
 // ---------------------------------------------------------------------------
 // Audio coverage (Decision §11 #20: normalize via normalizeTtsText, NOT lower+trim only)
@@ -1346,8 +1336,6 @@ export async function readMeaningCoverage(
 
 export interface ChunkedContextCoverage {
   ctxCovered: Set<string>
-  /** learning_item_id → list of item_contexts.id rows. */
-  ctxIdsByItem: Map<string, string[]>
 }
 
 export async function readContextCoverage(
@@ -1355,7 +1343,6 @@ export async function readContextCoverage(
   itemIds: string[],
 ): Promise<ChunkedContextCoverage> {
   const ctxCovered = new Set<string>()
-  const ctxIdsByItem = new Map<string, string[]>()
   for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
     const chunk = itemIds.slice(i, i + CHUNK_SIZE)
     const { data, error } = await supabase
@@ -1364,31 +1351,12 @@ export async function readContextCoverage(
     if (error) throw error
     for (const r of (data ?? []) as Array<{ id: string; learning_item_id: string }>) {
       ctxCovered.add(r.learning_item_id)
-      const list = ctxIdsByItem.get(r.learning_item_id) ?? []
-      list.push(r.id)
-      ctxIdsByItem.set(r.learning_item_id, list)
     }
   }
-  return { ctxCovered, ctxIdsByItem }
+  return { ctxCovered }
 }
 
-export async function readActiveVariantContextIds(
-  supabase: CapabilitySupabaseClient,
-  contextIds: string[],
-): Promise<Set<string>> {
-  const out = new Set<string>()
-  for (let i = 0; i < contextIds.length; i += CHUNK_SIZE) {
-    const chunk = contextIds.slice(i, i + CHUNK_SIZE)
-    const { data, error } = await supabase
-      .schema('indonesian').from('exercise_variants').select('context_id')
-      .in('context_id', chunk).eq('is_active', true)
-    if (error) throw error
-    for (const r of (data ?? []) as Array<{ context_id: string | null }>) {
-      if (r.context_id) out.add(r.context_id)
-    }
-  }
-  return out
-}
+// readActiveVariantContextIds retired with the exercise_variants table (Slice 4c #102).
 
 // ---------------------------------------------------------------------------
 // Count helpers (verify/countParity.ts)

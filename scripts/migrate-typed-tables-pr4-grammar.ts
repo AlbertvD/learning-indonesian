@@ -2,7 +2,11 @@
 /**
  * migrate-typed-tables-pr4-grammar.ts
  *
- * One-shot bridge for PR 4 — moves the 716 grammar exercises from the legacy
+ * RETIRED one-shot bridge (kept as audit trail). Its source table,
+ * `exercise_variants`, was DROPPED in Slice 4c (#102); re-running now 404s.
+ * The typed rows it bridged are the live grammar-exercise source of truth.
+ *
+ * One-shot bridge for PR 4 — moved the 716 grammar exercises from the legacy
  * `exercise_variants` blob (payload_json + answer_key_json) into the 4 typed
  * grammar-exercise tables, dispatching by exercise_type:
  *   choose_correct_form_ex           → contrast_pair_exercises

@@ -1,12 +1,17 @@
 /**
  * verify/seedIntegrity.ts — CS9 seed hook (post-write).
  *
- * Extracted from capability-stage-legacy.ts:805–923. Reviewability cross-
- * check: every non-dialogue published item must have an NL meaning OR at
- * least one item_context with an active exercise_variant. Either one of
- * the two render paths satisfies filterEligible — dialogue_chunks are
- * skipped here because they're already AND-gated pre-write by the
+ * Extracted from capability-stage-legacy.ts:805–923. Reviewability check:
+ * every non-dialogue published item must have an NL meaning. dialogue_chunks
+ * are skipped here because they're already AND-gated pre-write by the
  * deferredDialogueChunks gate (vocab projector).
+ *
+ * Slice 4c (#102): the second render path — "OR ≥1 item_context with an active
+ * exercise_variant" — was retired with the exercise_variants table. The typed
+ * grammar-exercise tables key on grammar_pattern_id+lesson_id (not item_contexts),
+ * so the variant path could not be repointed; grammar renderability is certified
+ * separately (HC15 / RENDER_CONTRACTS). The invariant narrows to "NL-covered only,"
+ * which is exactly Step 6.1 — so the old Step 6.3 cross-check is now subsumed.
  *
  * "NL meaning" = learning_items.translation_nl non-empty (Decision R, PR 1).
  * item_meanings was dropped in Slice 4a; readMeaningCoverage now reads
@@ -17,7 +22,7 @@
  */
 
 import type { CapabilitySupabaseClient } from '../adapter'
-import { readMeaningCoverage, readContextCoverage, readActiveVariantContextIds } from '../adapter'
+import { readMeaningCoverage, readContextCoverage } from '../adapter'
 import type { ValidationFinding } from '../model'
 
 export interface SeedIntegrityInput {
@@ -60,7 +65,7 @@ export async function runSeedIntegrity(
   }
 
   const { nlCovered, enCovered } = await readMeaningCoverage(supabase, input.publishedItemIds)
-  const { ctxCovered, ctxIdsByItem } = await readContextCoverage(supabase, input.publishedItemIds)
+  const { ctxCovered } = await readContextCoverage(supabase, input.publishedItemIds)
 
   const nonDialogueIds = input.publishedItemIds.filter((id) => !input.dialogueItemIds.has(id))
   const dialogueCount = input.publishedItemIds.length - nonDialogueIds.length
@@ -92,38 +97,18 @@ export async function runSeedIntegrity(
     })
   }
 
-  // Step 6.3 — non-dialogue reviewability cross-check.
-  const allCtxIds = [...ctxIdsByItem.values()].flat()
-  const ctxIdsWithActiveVariant = allCtxIds.length > 0
-    ? await readActiveVariantContextIds(supabase, allCtxIds)
-    : new Set<string>()
-  const unreviewable: string[] = []
-  for (const id of nonDialogueIds) {
-    if (nlCovered.has(id)) continue                                  // NL-path satisfied
-    const itemCtxIds = ctxIdsByItem.get(id) ?? []
-    if (itemCtxIds.some((cid) => ctxIdsWithActiveVariant.has(cid))) continue // variant-path satisfied
-    unreviewable.push(id)
-  }
-  if (unreviewable.length > 0) {
-    findings.push({
-      gate: 'CS9',
-      severity: 'error',
-      message:
-        `${unreviewable.length}/${nonDialogueIds.length} non-dialogue items are unreviewable — ` +
-        `neither an NL meaning nor any context with an active exercise_variant. ` +
-        `IDs: ${unreviewable.slice(0, 10).join(', ')}` +
-        (unreviewable.length > 10 ? `, +${unreviewable.length - 10} more` : ''),
-      context: { table: 'learning_items' },
-    })
-  }
-
+  // Step 6.3 (retired Slice 4c #102) — the variant-path reviewability cross-check
+  // was "NL meaning OR a context with an active exercise_variant." With the
+  // exercise_variants table dropped, the variant path is gone and the check
+  // narrows to "NL-covered only" — which is exactly Step 6.1 above. So the set of
+  // unreviewable non-dialogue items IS `missingNl`; no separate walk/finding.
   return {
     findings,
     totals: {
       nlCovered: nlCovered.size,
       enCovered: enCovered.size,
       contextCovered: ctxCovered.size,
-      unreviewable: unreviewable.length,
+      unreviewable: missingNl.length,
       nonDialogueCount: nonDialogueIds.length,
       dialogueCount,
     },

@@ -77,6 +77,16 @@ Verified inert or read-only first; retire each in this PR:
 reads `exercise_variants`, and no view/RPC does. Container recreate-then-migrate
 is still done for hygiene, but the blast radius on the live app is zero.
 
+### 4c.1b — Live-data correction: the 4 legacy `exercise_review_comments` (decided 2026-07-01)
+The review pass assumed the 4 comments' `exercise_variant_id` held **typed** grammar-exercise ids (migrated in Slice 2). **Live data falsifies this:** all 4 resolve **only in `exercise_variants`**, none in the 4 typed tables — they are legacy-bridged comments on exercises among the 716 rows that were never bridged to typed tables (the bridge copies the source id into the typed row's id; these ids are absent there). There is no typed equivalent to repoint to. **Decision (user, 2026-07-01):** DELETE the 4 stale comments in the migration, immediately **before** the `exercise_variants` drop — they annotate exercises being retired; Operating Context = disposable single-learner test data. This resolves the June-4 B7 CASCADE-fate question (delete, not migrate). HC23 (4c.4) then stays green with `exercise_variants` removed from its resolution list.
+
+```sql
+-- delete review comments whose annotated exercise exists only as an exercise_variants
+-- row (never bridged to a typed table) — they'd orphan on the drop. 4 rows (2026-07-01).
+delete from indonesian.exercise_review_comments c
+  where exists (select 1 from indonesian.exercise_variants ev where ev.id = c.exercise_variant_id);
+```
+
 ### 4c.2 — De-FK the two CREATE blocks so a fresh rebuild survives the drop
 On a fresh `migration.sql` apply, `exercise_review_comments` and `content_flags`
 CREATE blocks inline-reference `exercise_variants(id)`. With the table's CREATE
