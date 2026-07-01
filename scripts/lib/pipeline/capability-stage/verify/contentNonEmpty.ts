@@ -9,7 +9,6 @@
  *   learning_capabilities       canonical_key, capability_type, source_ref non-empty
  *   learning_items              base_text, normalized_text, item_type non-empty
  *   item_contexts               source_text non-empty
- *   exercise_variants           payload_json + answer_key_json not {}
  *   grammar_patterns            slug, name non-empty
  *   content_units               content_unit_key, unit_kind non-empty
  *                               (payload_json is intentionally {} since Decision E —
@@ -25,7 +24,6 @@ export interface ContentNonEmptyInput {
   contentUnitIds: string[]
   capabilityIds: string[]
   learningItemIds: string[]
-  exerciseVariantIds: string[]
   grammarPatternIds: string[]
   /** item_contexts get walked via learning_item_id. */
 }
@@ -50,12 +48,6 @@ interface LearningItemRow {
   item_type: string | null
 }
 
-interface ExerciseVariantRow {
-  id: string
-  payload_json: Record<string, unknown> | null
-  answer_key_json: Record<string, unknown> | null
-}
-
 interface GrammarPatternRow {
   id: string
   slug: string | null
@@ -64,11 +56,6 @@ interface GrammarPatternRow {
 
 function nonEmptyString(value: unknown): boolean {
   return typeof value === 'string' && value.trim().length > 0
-}
-
-function objectIsNonEmpty(value: unknown): boolean {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
-  return Object.keys(value as Record<string, unknown>).length > 0
 }
 
 export async function runContentNonEmpty(
@@ -123,20 +110,6 @@ export async function runContentNonEmpty(
     // item_contexts walked via learning_item_id.
     // (item_meanings was dropped in Slice 4a — translation invariant is enforced by CS9.)
     findings.push(...(await checkItemContexts(supabase, input.learningItemIds)))
-  }
-
-  if (input.exerciseVariantIds.length > 0) {
-    const rows = await fetchRowsByIds<ExerciseVariantRow>(
-      supabase,
-      'exercise_variants',
-      'id, payload_json, answer_key_json',
-      input.exerciseVariantIds,
-    )
-    for (const row of rows) {
-      if (!objectIsNonEmpty(row.payload_json) || !objectIsNonEmpty(row.answer_key_json)) {
-        findings.push(presenceFinding('exercise_variants', row.id, 'payload_json/answer_key_json non-empty'))
-      }
-    }
   }
 
   if (input.grammarPatternIds.length > 0) {

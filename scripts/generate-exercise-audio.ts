@@ -67,61 +67,9 @@ function collectFromLearningItems(items: any[], primaryVoice: string): TextEntry
   return entries
 }
 
-function collectFromExerciseVariants(variants: any[], primaryVoice: string): TextEntry[] {
-  const entries: TextEntry[] = []
-
-  for (const variant of variants) {
-    const payload = variant.payload_json
-    if (!payload) continue
-    const type = variant.exercise_type as string
-
-    const addText = (text: string | undefined | null, source: string) => {
-      if (!text?.trim()) return
-      entries.push({
-        text: text.trim(),
-        voiceId: primaryVoice,
-        normalizedText: normalizeTtsText(text),
-        source: `exercise_variant(${type}):${source}`,
-      })
-    }
-
-    if (type === 'choose_missing_word_ex') {
-      // sentence with blank filled in
-      if (payload.sentence && payload.correctOptionId) {
-        const filled = (payload.sentence as string).replace('___', payload.correctOptionId)
-        addText(filled, 'sentence_filled')
-      }
-      // all options
-      if (Array.isArray(payload.options)) {
-        for (const option of payload.options) {
-          const optText = typeof option === 'string' ? option : option?.text ?? option?.id
-          addText(optText, 'option')
-        }
-      }
-    } else if (type === 'choose_correct_form_ex') {
-      if (Array.isArray(payload.options)) {
-        for (const option of payload.options) {
-          addText(option?.text, 'option')
-        }
-      }
-    } else if (type === 'transform_sentence_ex') {
-      addText(payload.sourceSentence, 'sourceSentence')
-      if (Array.isArray(payload.acceptableAnswers)) {
-        for (const answer of payload.acceptableAnswers) {
-          addText(answer, 'acceptableAnswer')
-        }
-      }
-    } else if (type === 'translate_sentence_ex') {
-      if (Array.isArray(payload.acceptableAnswers)) {
-        for (const answer of payload.acceptableAnswers) {
-          addText(answer, 'acceptableAnswer')
-        }
-      }
-    }
-  }
-
-  return entries
-}
+// collectFromExerciseVariants retired with the exercise_variants table (Slice 4c
+// #102). Grammar-exercise audio, if reintroduced, sources from the 4 typed
+// grammar-exercise tables; this manual build script now covers items + sections.
 
 function collectFromLessonSections(
   sections: any[],
@@ -273,7 +221,7 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
   const resolvedPrimaryVoice = primaryVoice ?? 'id-ID-Chirp3-HD-Achird'
 
   // 2. Fetch all data in parallel
-  const [learningItemsResult, exerciseVariantsResult, sectionsResult] = await Promise.all([
+  const [learningItemsResult, sectionsResult] = await Promise.all([
     // a) Learning items via item_contexts
     supabase
       .schema('indonesian')
@@ -281,14 +229,7 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
       .select('learning_items(base_text)')
       .eq('source_lesson_id', lesson.id),
 
-    // b) Exercise variants
-    supabase
-      .schema('indonesian')
-      .from('exercise_variants')
-      .select('exercise_type, payload_json')
-      .eq('lesson_id', lesson.id),
-
-    // c) Lesson sections
+    // b) Lesson sections
     supabase
       .schema('indonesian')
       .from('lesson_sections')
@@ -297,7 +238,6 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
   ])
 
   if (learningItemsResult.error) throw learningItemsResult.error
-  if (exerciseVariantsResult.error) throw exerciseVariantsResult.error
   if (sectionsResult.error) throw sectionsResult.error
 
   // Flatten learning items (join returns nested objects)
@@ -305,15 +245,13 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
     .map((row: any) => row.learning_items)
     .filter(Boolean)
 
-  const exerciseVariants = exerciseVariantsResult.data ?? []
   const sections = sectionsResult.data ?? []
 
-  console.log(`\n   Source counts: ${learningItems.length} learning items, ${exerciseVariants.length} exercise variants, ${sections.length} sections`)
+  console.log(`\n   Source counts: ${learningItems.length} learning items, ${sections.length} sections`)
 
   // 3. Collect all texts
   const allEntries: TextEntry[] = [
     ...collectFromLearningItems(learningItems, resolvedPrimaryVoice),
-    ...collectFromExerciseVariants(exerciseVariants, resolvedPrimaryVoice),
     ...collectFromLessonSections(sections, resolvedPrimaryVoice, dialogueVoices),
   ]
 

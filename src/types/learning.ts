@@ -290,25 +290,9 @@ export interface ItemContextGrammarPattern {
   created_at: string
 }
 
-// RETIRE IN PR 7 (final cleanup). The `exercise_variants` table is still
-// dual-written by the capability-stage runner (projectors/grammarExerciseRows.ts)
-// alongside the 4 typed exercise tables, so this type is referenced by writer
-// code until that table is dropped. The admin READER switched off it in PR 4a —
-// see ExerciseReviewRow below. No live reader of this type remains in src/ except
-// coverageService.ts (a row count, also PR 7).
-export interface ExerciseVariant {
-  id: string
-  exercise_type: string
-  learning_item_id: string | null    // null for grammar exercises
-  context_id: string | null          // null for grammar exercises
-  grammar_pattern_id: string | null
-  payload_json: Record<string, any>
-  answer_key_json: Record<string, any>
-  source_candidate_id: string | null
-  is_active: boolean
-  created_at: string
-  updated_at: string
-}
+// The legacy `ExerciseVariant` type + `exercise_variants` table were retired in
+// Slice 4c (#102): the writer went in #147, the table dropped here. Grammar
+// exercises live in the 4 typed rows below; the admin reader is ExerciseReviewRow.
 
 // ─── Typed grammar-exercise rows (PR 4 — pattern source_kind) ────────────────
 // One row per authored grammar exercise, keyed by grammar_pattern_id (NOT
@@ -316,7 +300,7 @@ export interface ExerciseVariant {
 // → grammar_pattern_id). These replace exercise_variants.payload_json's
 // per-exercise_type JSON shapes with typed columns (target plan Decision B).
 // Mirrors scripts/migration.sql:2483-2600. `source_candidate_id` is a naked
-// uuid (no FK; generated_exercise_candidates retires in PR 7) — currently
+// uuid (no FK; generated_exercise_candidates was dropped in Slice 4a) — currently
 // unpopulated (audit m4). The runtime reader (byKind/pattern.ts) collapses the
 // N rows per (pattern, exercise_type) to one, mirroring the legacy
 // variantByItemAndType single-pick.
@@ -390,15 +374,14 @@ export interface ClozeMcqExercisesRow {
 // VariantPreview / ExerciseSummaryCard) reads these typed rows directly instead
 // of probing the retired `exercise_variants.payload_json`.
 //
-// `id` IS the shared exercise uuid: PR 4's dual-write reuses one uuid across the
-// typed table AND exercise_variants (verified 141/189/240/146 id-matched against
-// the live DB, 2026-05-25), so exercise_review_comments.exercise_variant_id keying
-// is unchanged — comments saved against a typed row still satisfy the FK to
-// exercise_variants.id, which survives until PR 7.
+// `id` IS the typed exercise-row uuid. exercise_review_comments.exercise_variant_id
+// stores that same uuid; its FK to exercise_variants was dropped in Slice 2 and
+// the table itself in Slice 4c (#102), so keying is now against the typed rows
+// (HC23 asserts every comment resolves in one of the 4 typed tables).
 //
 // These 4 are the only exercise_types that exist as authored rows (vocab
-// exercises are generated at runtime, never persisted — verified 0 vocab rows in
-// exercise_variants). The admin browser is therefore grammar-only.
+// exercises are generated at runtime, never persisted). The admin browser is
+// therefore grammar-only.
 export type ExerciseReviewRow =
   | ({ exercise_type: 'choose_correct_form_ex' } & ContrastPairExercisesRow)
   | ({ exercise_type: 'transform_sentence_ex' } & SentenceTransformationExercisesRow)

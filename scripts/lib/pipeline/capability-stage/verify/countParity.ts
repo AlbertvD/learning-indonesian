@@ -29,7 +29,7 @@
  */
 
 import type { CapabilitySupabaseClient } from '../adapter'
-import { countRowsByIds, countTableForLesson, countExerciseVariantsForLesson } from '../adapter'
+import { countRowsByIds, countTableForLesson } from '../adapter'
 import type { ValidationFinding } from '../model'
 
 export interface CountParityInput {
@@ -39,7 +39,6 @@ export interface CountParityInput {
     grammarPatterns: number
     capabilities: number
     learningItems: number
-    exerciseVariants: number
     clozeContexts: number
     /** Optional — only set when morphology fired. */
     morphologyContentUnits?: number
@@ -77,13 +76,9 @@ export async function runCountParity(
     findings.push(parityFinding('grammar_patterns', input.declared.grammarPatterns, grammarPatternsCount))
   }
 
-  // exercise_variants: keyed by lesson_id (grammar) + context (vocab joined to lesson).
-  // The vocab branch lacks a direct lesson_id, so this only verifies the grammar-variant
-  // lower bound. seedIntegrity (CS9) catches the orphan pattern for vocab.
-  const variantsCount = await countExerciseVariantsForLesson(supabase, input.lessonId)
-  if (input.declared.exerciseVariants > 0 && variantsCount === 0) {
-    findings.push(parityFinding('exercise_variants', input.declared.exerciseVariants, variantsCount))
-  }
+  // exercise_variants parity was retired with the table (Slice 4c, #102): the writer
+  // was removed in #147 5b.2, so declared was always 0; grammar exercises now live in
+  // the 4 typed tables, certified by CS18 pattern-coverage. No exercise_variants read.
 
   return findings
 }

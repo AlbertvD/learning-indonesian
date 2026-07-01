@@ -650,14 +650,11 @@ export async function runCapabilityStage(
   const dialogueItemIds = new Set<string>()
   counts.learningItems = 0
 
-  // ---- 10. (retired Slice 5b #147) exercise_variants writer. -------------
-  // The legacy staging-candidate-driven exercise_variants writer (both the
-  // grammar and vocab branches) is gone. The pattern path (step 5d) writes the
-  // typed grammar-exercise rows directly; NO source kind writes exercise_variants
-  // anymore — this unblocks the #102/4c exercise_variants table drop. Staging
-  // write-back #1 (candidates.ts published markers) is retired with it.
-  const exerciseVariantIds: string[] = []
-  counts.exerciseVariants = 0
+  // ---- 10. (retired Slice 5b #147; table dropped Slice 4c #102) ----------
+  // The legacy staging-candidate-driven exercise_variants writer is gone (#147),
+  // and the exercise_variants table itself is dropped (#102/4c). The pattern path
+  // (step 5d) writes the typed grammar-exercise rows directly; NO source kind
+  // touches exercise_variants. The stage no longer declares or verifies it.
 
   // ---- 11. (retired Slice 5b #147) cloze contexts writer. ----------------
   // projectCloze + the cloze item_contexts writer (upsertClozeContext) are gone.
@@ -679,13 +676,11 @@ export async function runCapabilityStage(
       grammarPatterns: patternResult?.patternsUpserted ?? 0,
       capabilities: allCapabilities.length,
       learningItems: publishedItemIds.length,
-      exerciseVariants: exerciseVariantIds.length,
       clozeContexts: 0,
     },
     contentUnitIds,
     capabilityIds,
     learningItemIds: publishedItemIds,
-    exerciseVariantIds,
     grammarPatternIds: [...grammarPatternUpsert.idsBySlug.values()],
     publishedItemIds,
     dialogueItemIds,

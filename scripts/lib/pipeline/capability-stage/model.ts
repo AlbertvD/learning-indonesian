@@ -74,7 +74,6 @@ export interface CapabilityStageCounts {
   contentUnits: number
   capabilities: number
   learningItems: number
-  exerciseVariants: number
   clozeContexts: number
   deferredDialogueChunks: number
   /** PR 2: typed `dialogue_clozes` rows written. */
@@ -113,7 +112,6 @@ export const EMPTY_COUNTS: CapabilityStageCounts = {
   contentUnits: 0,
   capabilities: 0,
   learningItems: 0,
-  exerciseVariants: 0,
   clozeContexts: 0,
   deferredDialogueChunks: 0,
   dialogueClozes: 0,

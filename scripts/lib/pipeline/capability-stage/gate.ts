@@ -184,7 +184,6 @@ export async function runCapabilityGatePostWrite(
     contentUnitIds: input.contentUnitIds,
     capabilityIds: input.capabilityIds,
     learningItemIds: input.learningItemIds,
-    exerciseVariantIds: input.exerciseVariantIds,
     grammarPatternIds: input.grammarPatternIds,
   }))
 

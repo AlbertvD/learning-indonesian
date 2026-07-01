@@ -1287,8 +1287,8 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         const reportFmt = (offs: CapForSatelliteCheck[]) => {
           const sample = offs.slice(0, 5).map(describe).join(', ')
           return `Sample: ${sample}${offs.length > 5 ? ' …' : ''}\n` +
-            `   → Run scripts/migrate-typed-tables-pr4-grammar.ts to bridge the existing exercise_variants, ` +
-            `or re-publish (Stage B dual-writes the typed rows for not-yet-published candidates).`
+            `   → Re-publish the lesson (Stage B writes the typed grammar-exercise rows). ` +
+            `(The legacy exercise_variants bridge is retired — the table was dropped in Slice 4c #102.)`
         }
 
         // HC19 — contrast_grammar_pattern_cap
@@ -1386,18 +1386,20 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 //      The FK exercise_review_comments.exercise_variant_id → exercise_variants(id)
 //      was DROPPED (the column now holds a TYPED grammar-exercise row id). This
 //      health check replaces the dropped referential integrity: every comment's
-//      exercise_variant_id must resolve in one of the 4 typed exercise tables
-//      (or, for legacy bridged comments, exercise_variants). An orphan means a
-//      --regenerate/cutover deleted the typed row out from under a comment —
-//      surfaced here for admin cleanup (getOpenComments already filters it from
-//      the UI, so it is invisible, not crashing). Expect 0.
+//      exercise_variant_id must resolve in one of the 4 typed exercise tables.
+//      Slice 4c (#102): the legacy `exercise_variants` fallback was removed with
+//      the table — the 4 legacy-bridged comments that resolved only there were
+//      deleted in the same migration (they annotated unbridged, now-dropped
+//      exercises). An orphan now means a --regenerate/cutover deleted the typed
+//      row out from under a comment — surfaced here for admin cleanup
+//      (getOpenComments already filters it from the UI, so it is invisible, not
+//      crashing). Expect 0.
 {
   const RESOLVE_TABLES = [
     'contrast_pair_exercises',
     'sentence_transformation_exercises',
     'constrained_translation_exercises',
     'cloze_mcq_exercises',
-    'exercise_variants', // legacy bridged comments still resolve here
   ]
   try {
     // 1. All comment exercise_variant_ids (paginate; small today).
@@ -1417,7 +1419,7 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     if (commentIds.length === 0) {
       pass('HC23 zero orphan exercise_review_comments (no comments)')
     } else {
-      // 2. Resolve the comment ids across the 4 typed tables + exercise_variants.
+      // 2. Resolve the comment ids across the 4 typed grammar-exercise tables.
       const resolved = new Set<string>()
       const chunk = 200
       for (const table of RESOLVE_TABLES) {
@@ -1437,8 +1439,8 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         pass(`HC23 zero orphan exercise_review_comments (${commentIds.length} comment(s) all resolve)`)
       } else {
         fail('HC23 zero orphan exercise_review_comments',
-          `${offenders.length} comment(s) whose exercise_variant_id resolves in no typed exercise table ` +
-          `nor exercise_variants: ${offenders.slice(0, 5).join(', ')}${offenders.length > 5 ? ' …' : ''}\n` +
+          `${offenders.length} comment(s) whose exercise_variant_id resolves in no typed exercise table: ` +
+          `${offenders.slice(0, 5).join(', ')}${offenders.length > 5 ? ' …' : ''}\n` +
           `   → A --regenerate/cutover deleted the commented exercise. Admin: delete the stale comment(s).`)
       }
     }
@@ -1643,6 +1645,49 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     }
   } catch (err) {
     fail('HC25 capability_artifacts dropped + readiness intact', err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC37 (Slice 4c, #102): exercise_variants dropped + grammar exercises survive.
+//      Mirrors HC25 for the exercise_variants teardown (Decision B).
+//      (1) The exercise_variants table must NOT exist — confirms the drop landed
+//      and catches accidental re-creation. Probe with .select('*').limit(1) (a
+//      head-count would return null/no-error for a dropped table — see HC25).
+//      (2) The 4 typed grammar-exercise tables must collectively still carry rows —
+//      grammar exercises moved there; a collapse to zero would mean the typed
+//      writer regressed or the wrong table was dropped.
+{
+  try {
+    const { error: evErr } = await supabase
+      .schema('indonesian')
+      .from('exercise_variants')
+      .select('*')
+      .limit(1)
+    const tableGone = !!evErr && /PGRST205|could not find the table|does not exist/i.test(evErr.message ?? '')
+
+    let typedRows = 0
+    for (const table of ['contrast_pair_exercises', 'sentence_transformation_exercises',
+      'constrained_translation_exercises', 'cloze_mcq_exercises']) {
+      const { count, error } = await supabase
+        .schema('indonesian')
+        .from(table)
+        .select('*', { count: 'exact', head: true })
+      if (error) throw error
+      typedRows += count ?? 0
+    }
+
+    if (!tableGone) {
+      fail('HC37 exercise_variants dropped',
+        evErr ? `unexpected error probing exercise_variants: ${evErr.message}`
+              : 'exercise_variants still exists — the Slice 4c drop did not land (or the table was re-created)')
+    } else if (typedRows <= 0) {
+      fail('HC37 grammar exercises survive exercise_variants drop',
+        '0 rows across the 4 typed grammar-exercise tables — the typed writer regressed')
+    } else {
+      pass(`HC37 exercise_variants dropped + grammar exercises intact (${typedRows} typed grammar-exercise rows)`)
+    }
+  } catch (err) {
+    fail('HC37 exercise_variants dropped + grammar exercises intact', err instanceof Error ? err.message : String(err))
   }
 }
 

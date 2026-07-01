@@ -740,20 +740,9 @@ CREATE TABLE IF NOT EXISTS indonesian.generated_exercise_candidates (
   updated_at timestamptz DEFAULT now()
 );
 
--- Published exercise variants
-CREATE TABLE IF NOT EXISTS indonesian.exercise_variants (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  exercise_type text NOT NULL,
-  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
-  context_id uuid NOT NULL REFERENCES indonesian.item_contexts(id) ON DELETE CASCADE,
-  grammar_pattern_id uuid REFERENCES indonesian.grammar_patterns(id) ON DELETE SET NULL,
-  payload_json jsonb NOT NULL,
-  answer_key_json jsonb NOT NULL,
-  source_candidate_id uuid REFERENCES indonesian.generated_exercise_candidates(id) ON DELETE SET NULL,
-  is_active boolean NOT NULL DEFAULT true,
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
-);
+-- exercise_variants: retired (Slice 4c, #102). The legacy grammar-exercise blob
+-- was replaced by the 4 typed grammar-exercise tables (Decision B); the writer went
+-- in #147 and the table is dropped in the teardown section below. No CREATE here.
 
 -- Derived view for content review
 CREATE OR REPLACE VIEW indonesian.content_review_queue AS
@@ -805,7 +794,7 @@ ALTER TABLE indonesian.grammar_patterns ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.item_context_grammar_patterns ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.exercise_type_availability ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.generated_exercise_candidates ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.exercise_variants ENABLE ROW LEVEL SECURITY;
+-- exercise_variants RLS retired with the table (Slice 4c #102).
 
 DROP POLICY IF EXISTS "textbook_sources_read" ON indonesian.textbook_sources;
 CREATE POLICY "textbook_sources_read" ON indonesian.textbook_sources FOR SELECT TO authenticated USING (true);
@@ -847,19 +836,14 @@ CREATE POLICY "generated_exercise_candidates_admin_only" ON indonesian.generated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
-DROP POLICY IF EXISTS "exercise_variants_read" ON indonesian.exercise_variants;
-CREATE POLICY "exercise_variants_read" ON indonesian.exercise_variants FOR SELECT TO authenticated USING (true);
-DROP POLICY IF EXISTS "exercise_variants_admin_write" ON indonesian.exercise_variants;
-CREATE POLICY "exercise_variants_admin_write" ON indonesian.exercise_variants FOR ALL TO authenticated
-  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
-  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+-- exercise_variants policies retired with the table (Slice 4c #102).
 
 GRANT SELECT ON indonesian.textbook_sources TO authenticated;
 GRANT SELECT ON indonesian.textbook_pages TO authenticated;
 GRANT SELECT ON indonesian.grammar_patterns TO authenticated;
 GRANT SELECT ON indonesian.item_context_grammar_patterns TO authenticated;
 GRANT SELECT ON indonesian.exercise_type_availability TO authenticated;
-GRANT SELECT ON indonesian.exercise_variants TO authenticated;
+-- exercise_variants grant retired with the table (Slice 4c #102).
 -- generated_exercise_candidates: no grant to authenticated — admin-only via service_role
 
 -- Storage buckets
@@ -875,7 +859,10 @@ CREATE TABLE IF NOT EXISTS indonesian.content_flags (
   user_id             uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   learning_item_id    uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
   exercise_type       text NOT NULL,
-  exercise_variant_id uuid REFERENCES indonesian.exercise_variants(id) ON DELETE SET NULL,
+  -- exercise_variant_id: holds a typed grammar-exercise row id. The FK to
+  -- exercise_variants was dropped when that table was retired (Slice 4c #102);
+  -- bare uuid now (the live FK is dropped in the teardown section below).
+  exercise_variant_id uuid,
   flag_type           text NOT NULL CHECK (flag_type IN ('wrong_translation', 'bad_sentence', 'confusing', 'sunset', 'other')),
   comment             text,
   status              text NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'resolved')),
@@ -900,50 +887,10 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.content_flags TO authenticate
 CREATE INDEX IF NOT EXISTS idx_content_flags_user_status
   ON indonesian.content_flags(user_id, status);
 
--- Grammar exercises do not belong to a vocabulary item context — make both FKs nullable
--- and add lesson_id as an alternative anchor. At least one of context_id or lesson_id must be set.
-DO $$ BEGIN
-  IF EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_schema = 'indonesian' AND table_name = 'exercise_variants'
-    AND column_name = 'context_id' AND is_nullable = 'NO'
-  ) THEN
-    ALTER TABLE indonesian.exercise_variants ALTER COLUMN context_id DROP NOT NULL;
-  END IF;
-END $$;
-
-DO $$ BEGIN
-  IF EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_schema = 'indonesian' AND table_name = 'exercise_variants'
-    AND column_name = 'learning_item_id' AND is_nullable = 'NO'
-  ) THEN
-    ALTER TABLE indonesian.exercise_variants ALTER COLUMN learning_item_id DROP NOT NULL;
-  END IF;
-END $$;
-
-ALTER TABLE indonesian.exercise_variants
-  ADD COLUMN IF NOT EXISTS lesson_id uuid REFERENCES indonesian.lessons(id) ON DELETE CASCADE;
-
-DO $$ BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_constraint
-    WHERE conname = 'exercise_variants_anchor_check'
-    AND conrelid = 'indonesian.exercise_variants'::regclass
-  ) THEN
-    ALTER TABLE indonesian.exercise_variants
-      ADD CONSTRAINT exercise_variants_anchor_check
-      CHECK (context_id IS NOT NULL OR lesson_id IS NOT NULL);
-  END IF;
-END $$;
-
-CREATE INDEX IF NOT EXISTS idx_exercise_variants_lesson
-  ON indonesian.exercise_variants(lesson_id)
-  WHERE lesson_id IS NOT NULL;
-
-CREATE INDEX IF NOT EXISTS idx_exercise_variants_grammar
-  ON indonesian.exercise_variants(grammar_pattern_id)
-  WHERE grammar_pattern_id IS NOT NULL;
+-- exercise_variants nullable/anchor ALTERs + lesson_id column + the two indexes
+-- were retired with the table (Slice 4c #102). (They ALTER/INDEX a table whose
+-- CREATE is gone; on a fresh apply the ADD COLUMN / ::regclass cast / CREATE INDEX
+-- would error, so they must be removed alongside the CREATE.)
 
 -- ============================================================
 -- Grammar Pattern Scheduling — RETIRED 2026-05-07
@@ -965,7 +912,10 @@ ALTER TABLE indonesian.review_events ADD COLUMN IF NOT EXISTS
 CREATE TABLE IF NOT EXISTS indonesian.exercise_review_comments (
   id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id             uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  exercise_variant_id uuid NOT NULL REFERENCES indonesian.exercise_variants(id) ON DELETE CASCADE,
+  -- exercise_variant_id: holds a TYPED grammar-exercise row id (one of the 4 typed
+  -- tables). The FK to exercise_variants was dropped in Slice 2 and the table
+  -- retired in Slice 4c (#102); bare uuid now. Integrity is app-side + HC23.
+  exercise_variant_id uuid NOT NULL,
   comment             text NOT NULL,
   status              text NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'resolved')),
   created_at          timestamptz NOT NULL DEFAULT now(),
@@ -1005,33 +955,15 @@ CREATE INDEX IF NOT EXISTS idx_exercise_review_comments_user_status
 CREATE INDEX IF NOT EXISTS idx_exercise_review_comments_variant
   ON indonesian.exercise_review_comments(exercise_variant_id);
 
--- ── Slice 2 Task 8 (OQ2-3, architect-APPROVED 2026-06-01): decouple
--- exercise_review_comments from exercise_variants. The review UI keys comments
--- by the TYPED grammar-exercise row id (one of the 4 typed exercise tables), not
--- by exercise_variants.id. That id only coincidentally lived in exercise_variants
--- for the 716 legacy rows the PR-4 one-shot bridge migrated (it reused the uuid);
--- runner-minted typed rows get their own gen_random_uuid (adapter.ts
--- insertGrammarExerciseTyped), so once the grammar dual-write stops, the FK
--- target no longer exists and commenting on a new grammar exercise would violate
--- it. The "exercise" is a 4-table union with no shared parent — a single FK can't
--- express it. Integrity moves app-side (exerciseReviewService resolves the id
--- across the 4 typed tables) + a deep health check counts orphans
--- (check-supabase-deep.ts). ON DELETE CASCADE is given up: --regenerate/cutover
--- typed-row deletes may orphan comments; getOpenComments already filters
--- unresolvable ids. FORWARD-ONLY: re-adding the FK is unsafe once a non-bridged
--- comment exists. Name-agnostic drop (by confrelid) so it is idempotent + immune
--- to the auto-generated constraint name.
-DO $$
-DECLARE cname text;
-BEGIN
-  SELECT conname INTO cname FROM pg_constraint
-  WHERE conrelid = 'indonesian.exercise_review_comments'::regclass
-    AND contype = 'f'
-    AND confrelid = 'indonesian.exercise_variants'::regclass;
-  IF cname IS NOT NULL THEN
-    EXECUTE format('ALTER TABLE indonesian.exercise_review_comments DROP CONSTRAINT %I', cname);
-  END IF;
-END $$;
+-- ── Slice 2 Task 8 (OQ2-3, architect-APPROVED 2026-06-01): exercise_review_comments
+-- is decoupled from exercise_variants. The review UI keys comments by the TYPED
+-- grammar-exercise row id (one of the 4 typed exercise tables). The old FK to
+-- exercise_variants was dropped in Slice 2; Slice 4c (#102) retires the CREATE-block
+-- FK (above) and drops the exercise_variants table entirely, so the name-agnostic
+-- FK-drop DO block that used to live here is gone (its 'indonesian.exercise_variants'
+-- ::regclass cast would error on a fresh apply now that the table is dropped).
+-- Integrity is app-side (exerciseReviewService resolves the id across the 4 typed
+-- tables) + HC23 (check-supabase-deep.ts counts orphans).
 
 -- Exactly one source must be set (vocab review XOR grammar review)
 DO $$ BEGIN
@@ -1384,7 +1316,8 @@ create table if not exists indonesian.learning_capabilities (
   readiness_status text not null check (readiness_status in ('ready','blocked','exposure_only','deprecated','unknown')),
   publication_status text not null check (publication_status in ('draft','published','retired')),
   source_fingerprint text,
-  artifact_fingerprint text,
+  -- artifact_fingerprint retired (Slice 4c #102, Decision A tail): dead readiness
+  -- column, 0 readers; dropped in the teardown section below. No column here.
   metadata_json jsonb not null default '{}',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -2684,14 +2617,14 @@ drop table if exists indonesian.lesson_page_blocks cascade;
 -- orphan empties from the dead Decision-C path.
 --
 -- The CREATE blocks for these tables are intentionally RETAINED above and dropped
--- here with CASCADE: two KEPT tables carry FKs INTO this set
--- (grammar_patterns.introduced_by_source_id -> textbook_sources;
--- exercise_variants.source_candidate_id -> generated_exercise_candidates), so
--- deleting the CREATEs would make the kept tables' own definitions reference
--- missing tables on a fresh rebuild. CASCADE removes those two FK constraints
--- cleanly (the columns remain, unconstrained). Removing the now-dead CREATE blocks
--- + those orphaned columns is a deferred follow-up cleanup (larger, separately
--- reviewable; exercise_variants.source_candidate_id retires with the table in 4c).
+-- here with CASCADE: a KEPT table carries an FK INTO this set
+-- (grammar_patterns.introduced_by_source_id -> textbook_sources), so deleting its
+-- CREATE would make the kept table's own definition reference a missing table on a
+-- fresh rebuild. CASCADE removes that FK constraint cleanly (the column remains,
+-- unconstrained). (The other former inbound FK, exercise_variants.source_candidate_id
+-- -> generated_exercise_candidates, is gone: exercise_variants was dropped in Slice
+-- 4c #102, CREATE and all.) Removing the now-dead CREATE blocks + the orphaned column
+-- is a deferred follow-up cleanup (larger, separately reviewable).
 --
 -- content_review_queue is a dead view (zero consumers) over generated_exercise_candidates.
 -- lesson_blocks / lesson_block_reading_section have no other migration.sql blocks
@@ -2730,6 +2663,45 @@ drop table if exists indonesian.capability_artifacts cascade;
 -- live DB. Idempotent: drop-if-exists no-ops on rerun / fresh rebuild.
 alter table indonesian.learning_capabilities
   drop column if exists required_artifacts;
+
+-- ============================================================
+-- Slice 4c (#102, 2026-07-01) — drop exercise_variants (Decision B)
+-- ============================================================
+-- The legacy grammar-exercise blob is retired: grammar exercises live in the 4
+-- typed grammar-exercise tables (contrast_pair_exercises / sentence_transformation_
+-- exercises / constrained_translation_exercises / cloze_mcq_exercises). #147 5b.2
+-- (commit aeb620e4) removed the last writer → 716 frozen rows, 0 writers, and
+-- (verified live 2026-07-01) 0 views / 0 functions / 0 runtime readers depend on it.
+-- The CREATE / RLS / policy / GRANT / nullable-anchor / index / FK blocks were all
+-- removed above, so a fresh apply never creates it. Deploy ordering is moot (no app
+-- reader), but the container is still recreated before `make migrate` for hygiene.
+--
+-- First: delete the 4 legacy exercise_review_comments whose annotated exercise
+-- exists ONLY as an exercise_variants row (never bridged to a typed table — verified
+-- live 2026-07-01). They would orphan on the drop; there is no typed equivalent to
+-- repoint to. Operating Context: disposable single-learner test data (user-approved
+-- 2026-07-01). This resolves the June-4 B7 CASCADE-fate question (delete, not migrate).
+-- Guarded by to_regclass so a rerun / fresh rebuild (where exercise_variants is
+-- already gone) no-ops instead of erroring on the subquery — keeps migrate-idempotent-check green.
+do $$ begin
+  if to_regclass('indonesian.exercise_variants') is not null then
+    delete from indonesian.exercise_review_comments c
+      where exists (select 1 from indonesian.exercise_variants ev where ev.id = c.exercise_variant_id);
+  end if;
+end $$;
+
+-- Then drop the live content_flags FK explicitly (idempotent) — belt to the
+-- cascade braces of the table drop below, so the constraint goes deterministically.
+alter table indonesian.content_flags
+  drop constraint if exists content_flags_exercise_variant_id_fkey;
+
+drop table if exists indonesian.exercise_variants cascade;
+
+-- learning_capabilities.artifact_fingerprint (Decision A tail): dead readiness
+-- column, 0 readers; 4b missed it. The CREATE-block column was removed above; this
+-- drop clears it from the live DB. Idempotent: no-ops on rerun / fresh rebuild.
+alter table indonesian.learning_capabilities
+  drop column if exists artifact_fingerprint;
 
 -- ============================================================
 -- Lesson-stage Phase 1 (2026-05-09) — content.type CHECK constraint (GT5)
@@ -2856,9 +2828,10 @@ alter table indonesian.capability_review_events
 -- writers can switch to new columns before old columns are removed.
 
 -- §3.2 — Add learning_capabilities.prerequisite_keys (additive).
--- The DROP of metadata_json + source_fingerprint + artifact_fingerprint lands
--- in the Step 6 destructive block AFTER all writers have switched (per plan
--- §3.2 line 329-340 ordering rule).
+-- artifact_fingerprint was dropped in Slice 4c (#102) above (dead, 0 readers).
+-- The DROP of the remaining metadata_json + source_fingerprint lands in the Step 6
+-- destructive block AFTER all writers have switched (per plan §3.2 line 329-340
+-- ordering rule) — both still have live readers today.
 alter table indonesian.learning_capabilities
   add column if not exists prerequisite_keys text[] not null default '{}';
 

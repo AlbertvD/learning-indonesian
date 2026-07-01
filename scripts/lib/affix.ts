@@ -1,8 +1,8 @@
 /**
  * Indonesian morphological affix stripping for vocab-coverage checks.
  *
- * Single source of truth — both check-vocab-coverage.ts and lint-staging.ts
- * import from here. Don't duplicate.
+ * Single source of truth — lint-staging.ts and the capability-stage distractor
+ * selector import from here. Don't duplicate.
  *
  * Indonesian morphology is complex; we handle only the productive affixes
  * that appear in beginner content. Known limitations are documented in the
