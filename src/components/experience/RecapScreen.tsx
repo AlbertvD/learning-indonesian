@@ -22,7 +22,7 @@ export function RecapScreen({
 }: RecapScreenProps) {
   if (renderableBlocks.length === 0) {
     return (
-      <Stack gap="md">
+      <Stack gap="md" data-testid="session-recap">
         <HeroCard title="Niets te doen">
           <Text>Er zijn geen kaarten beschikbaar voor deze sessie.</Text>
         </HeroCard>
@@ -48,7 +48,7 @@ export function RecapScreen({
   const failedCount = commitFailedBlocks.size
 
   return (
-    <Stack gap="md">
+    <Stack gap="md" data-testid="session-recap">
       <HeroCard title="Sessieroute afgerond">
         <Stack gap="xs">
           <Text>

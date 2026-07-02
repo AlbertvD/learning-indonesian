@@ -9,19 +9,25 @@ export const TEST_PASSWORD = 'TestUser123!'
 // account only.
 export const ADMIN_EMAIL = 'albert@duin.home'
 
-// Playwright runs from localhost:5175 but Supabase (Kong) only allows
-// CORS from .duin.home origins. Intercept all Supabase requests and
-// inject the required CORS response headers so auth calls succeed.
+// Playwright typically runs against a localhost dev server, but Supabase
+// (Kong) only allows CORS from configured .duin.home origins. Intercept all
+// Supabase requests and inject the required CORS response headers so auth
+// calls succeed. Echoes the request's own Origin header rather than a
+// hardcoded port so this works regardless of which port/host the config's
+// baseURL points at (localhost dev server, or E2E_BASE_URL pointing at a
+// .duin.home preview deploy — where Kong already allows the origin and this
+// is a harmless no-op).
 export async function bypassSupabaseCors(page: Page) {
   const SUPABASE_URL = 'https://api.supabase.duin.home'
   await page.route(`${SUPABASE_URL}/**`, async route => {
     const request = route.request()
+    const origin = request.headers()['origin'] ?? new URL(page.url()).origin
     // Handle CORS preflight OPTIONS requests
     if (request.method() === 'OPTIONS') {
       await route.fulfill({
         status: 204,
         headers: {
-          'access-control-allow-origin': 'http://localhost:5175',
+          'access-control-allow-origin': origin,
           'access-control-allow-credentials': 'true',
           'access-control-allow-methods': 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
           'access-control-allow-headers': 'authorization,content-type,apikey,x-client-info,accept-profile,content-profile,prefer,range',
@@ -33,7 +39,7 @@ export async function bypassSupabaseCors(page: Page) {
     // Forward real requests and add CORS response headers
     const response = await route.fetch()
     const headers = { ...response.headers() }
-    headers['access-control-allow-origin'] = 'http://localhost:5175'
+    headers['access-control-allow-origin'] = origin
     headers['access-control-allow-credentials'] = 'true'
     await route.fulfill({ response, headers })
   })
@@ -42,12 +48,16 @@ export async function bypassSupabaseCors(page: Page) {
 export interface LoginOptions {
   /** Set to true to log in with the admin account (ADMIN_EMAIL). Defaults to test user. */
   admin?: boolean
+  /** Explicit email — takes precedence over `admin`. Used by e2e/smoke.spec.ts (E2E_EMAIL). */
+  email?: string
+  /** Explicit password — takes precedence over `admin`. Used by e2e/smoke.spec.ts (E2E_PASSWORD). */
+  password?: string
 }
 
 export async function login(page: Page, options: LoginOptions = {}) {
   await bypassSupabaseCors(page)
-  const email = options.admin ? ADMIN_EMAIL : TEST_EMAIL
-  const password = options.admin ? process.env.ADMIN_PASSWORD ?? TEST_PASSWORD : TEST_PASSWORD
+  const email = options.email ?? (options.admin ? ADMIN_EMAIL : TEST_EMAIL)
+  const password = options.password ?? (options.admin ? process.env.ADMIN_PASSWORD ?? TEST_PASSWORD : TEST_PASSWORD)
   await page.goto('/login')
   // Selectors are language-agnostic: the app defaults to NL (E-mail / Wachtwoord
   // / Inloggen) but may be EN (Email / Password / Log in).
