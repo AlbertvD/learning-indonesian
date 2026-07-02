@@ -128,8 +128,25 @@ const policyCount: Record<string, number> = {}
 for (const p of report.policies ?? []) {
   policyCount[p.table] = (policyCount[p.table] ?? 0) + 1
 }
+// Tables where RLS-enabled + ZERO policies is the DESIGN, not the 2026-05-02 bug
+// class: deny-all surfaces reached only via service_role (which bypasses RLS).
+// Each entry must say who the sole writer/reader is.
+const intentionallyDenyAll = new Set([
+  'signup_invite_codes', // service-role only — consumed by the signup-with-invite edge function
+])
 for (const t of report.tables) {
   if (!t.rls_enabled) continue
+  if (intentionallyDenyAll.has(t.name)) {
+    if ((policyCount[t.name] ?? 0) === 0) {
+      pass(`Policies exist: ${t.name} (deny-all by design — service-role-only surface)`)
+    } else {
+      fail(
+        `Policies exist: ${t.name}`,
+        `'indonesian.${t.name}' is declared deny-all (service-role only) but has ${policyCount[t.name]} policies — either remove them or remove it from intentionallyDenyAll.`,
+      )
+    }
+    continue
+  }
   if ((policyCount[t.name] ?? 0) === 0) {
     fail(
       `Policies exist: ${t.name}`,
