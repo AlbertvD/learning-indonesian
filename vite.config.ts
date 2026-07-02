@@ -39,6 +39,27 @@ export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Vite 8 ships on rolldown, whose OutputOptions type only accepts a
+        // function for the legacy `manualChunks` (rollup-compat) option — the
+        // object-map form documented for classic Rollup/Vite is rejected by
+        // the type checker here. `codeSplitting.groups` is rolldown's
+        // non-deprecated replacement and gives the same deterministic,
+        // named-group behaviour as the object form (no ad-hoc branching
+        // function to get wrong), plus `includeDependenciesRecursively`
+        // defaults to true — reduces the chance of circular chunks.
+        codeSplitting: {
+          groups: [
+            { name: 'vendor-react', test: /node_modules[\\/](react|react-dom|react-router|react-router-dom)[\\/]/ },
+            { name: 'vendor-mantine', test: /node_modules[\\/]@mantine[\\/]/ },
+            { name: 'vendor-supabase', test: /node_modules[\\/]@supabase[\\/]/ },
+          ],
+        },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

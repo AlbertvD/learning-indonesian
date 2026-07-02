@@ -7,13 +7,17 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
 import { Dashboard } from '@/pages/Dashboard'
-import { Lessons } from '@/pages/Lessons'
-import { Ontdek } from '@/pages/Ontdek'
-import { LessonRouter } from '@/pages/LessonRouter'
-import { Session } from '@/pages/Session'
-import { LocalPreviewIndex, LocalPreviewLesson } from '@/pages/LocalPreview'
 
-// Lazy-loaded routes (less frequently visited pages)
+// Lazy-loaded routes (less frequently visited pages, plus the heavy
+// eagerly-visited-but-large surfaces — Session/Lessons/Ontdek/LessonRouter/
+// LocalPreview — to keep the initial JS payload small; Login/Register/
+// Dashboard/Layout/ProtectedRoute stay eager as the landing surfaces)
+const Lessons = lazy(() => import('@/pages/Lessons').then(m => ({ default: m.Lessons })))
+const Ontdek = lazy(() => import('@/pages/Ontdek').then(m => ({ default: m.Ontdek })))
+const LessonRouter = lazy(() => import('@/pages/LessonRouter').then(m => ({ default: m.LessonRouter })))
+const Session = lazy(() => import('@/pages/Session').then(m => ({ default: m.Session })))
+const LocalPreviewIndex = lazy(() => import('@/pages/LocalPreview').then(m => ({ default: m.LocalPreviewIndex })))
+const LocalPreviewLesson = lazy(() => import('@/pages/LocalPreview').then(m => ({ default: m.LocalPreviewLesson })))
 const Podcasts = lazy(() => import('@/pages/Podcasts').then(m => ({ default: m.Podcasts })))
 const Podcast = lazy(() => import('@/pages/Podcast').then(m => ({ default: m.Podcast })))
 const Lezen = lazy(() => import('@/pages/Lezen').then(m => ({ default: m.Lezen })))
@@ -82,8 +86,8 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/preview" element={<LocalPreviewIndex />} />
-      <Route path="/preview/lesson/:slug" element={<LocalPreviewLesson />} />
+      <Route path="/preview" element={<LazyPage><LocalPreviewIndex /></LazyPage>} />
+      <Route path="/preview/lesson/:slug" element={<LazyPage><LocalPreviewLesson /></LazyPage>} />
 
       <Route element={<Layout />}>
         <Route
@@ -98,7 +102,7 @@ function App() {
           path="/leren"
           element={
             <ProtectedRoute>
-              <Lessons />
+              <LazyPage><Lessons /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -106,7 +110,7 @@ function App() {
           path="/ontdek"
           element={
             <ProtectedRoute>
-              <Ontdek />
+              <LazyPage><Ontdek /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -114,7 +118,7 @@ function App() {
           path="/lesson/:lessonId"
           element={
             <ProtectedRoute>
-              <LessonRouter />
+              <LazyPage><LessonRouter /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -362,7 +366,7 @@ function App() {
           path="/session"
           element={
             <ProtectedRoute>
-              <Session />
+              <LazyPage><Session /></LazyPage>
             </ProtectedRoute>
           }
         />
