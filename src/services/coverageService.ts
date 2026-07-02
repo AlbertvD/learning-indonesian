@@ -13,6 +13,7 @@
 // RLS gates this for non-admins, and the pages additionally wrap themselves in <AdminGuard>.
 
 import { supabase } from '@/lib/supabase'
+import { GRAMMAR_EXERCISE_TABLES } from '@/lib/exercise-content'
 
 export interface LessonSectionCoverage {
   lessonId: string
@@ -64,16 +65,11 @@ export async function getSectionCoverage(): Promise<LessonSectionCoverage[]> {
   return [...map.values()].sort((a, b) => a.orderIndex - b.orderIndex)
 }
 
-// The 4 typed grammar-exercise tables, paired with their exercise_type label.
-// Slice 2 Task 8: these REPLACE exercise_variants as the grammar-exercise source
-// for coverage. exercise_variants is no longer read in src/ (the
-// noExerciseVariantsReader enforcement test depends on this).
-const GRAMMAR_EXERCISE_TABLES = [
-  { table: 'contrast_pair_exercises', type: 'choose_correct_form_ex' },
-  { table: 'sentence_transformation_exercises', type: 'transform_sentence_ex' },
-  { table: 'constrained_translation_exercises', type: 'translate_sentence_ex' },
-  { table: 'cloze_mcq_exercises', type: 'choose_missing_word_ex' },
-] as const
+// GRAMMAR_EXERCISE_TABLES (imported from lib/exercise-content): the 4 typed
+// grammar-exercise tables, paired with their exercise_type label. Slice 2 Task 8:
+// these REPLACE exercise_variants as the grammar-exercise source for coverage.
+// exercise_variants is no longer read in src/ (the noExerciseVariantsReader
+// enforcement test depends on this).
 
 export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
   const [

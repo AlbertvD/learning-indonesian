@@ -111,8 +111,10 @@ export const RENDER_CONTRACTS = {
     requiredArtifacts: { vocabulary_src: [] },
   },
   choose_meaning_from_audio_ex: {
-    // Decision Q (PR 1): audio read via capability_audio_refs + audio_clips.
-    // The artifact bag no longer holds the audio_clip reference for item caps.
+    // Decision Q (PR 1): the artifact bag no longer holds the audio_clip
+    // reference for item caps. Audio resolves via audioService.fetchSessionAudioMap
+    // -> get_audio_clips RPC by (text, voice_id) -- the capability_audio_refs
+    // table was retired unwired (pre-cloud hardening, 2026-07-02).
     capabilityTypes: ['recognise_meaning_from_audio_cap', 'recognise_gist_from_audio_cap'],
     supportedSourceKinds: ['vocabulary_src'],
     requiredArtifacts: { vocabulary_src: [] },

@@ -2779,31 +2779,15 @@ comment on column indonesian.learning_items.translation_en is
 comment on column indonesian.learning_items.usage_note is
   'Optional usage note. Replaces item_meanings.usage_note. Decision R.';
 
--- §PR1.2 — capability_audio_refs (Decision Q).
--- Replaces capability_artifacts(artifact_kind=audio_clip) as the binding
--- between caps and their TTS audio. One row per (capability_id, audio_clip_id)
--- pair; voice_id is denormalised from audio_clips for query simplicity.
-create table if not exists indonesian.capability_audio_refs (
-  capability_id uuid not null references indonesian.learning_capabilities(id) on delete cascade,
-  audio_clip_id uuid not null references indonesian.audio_clips(id) on delete restrict,
-  voice_id      text not null,
-  created_at    timestamptz not null default now(),
-  primary key (capability_id, audio_clip_id)
-);
-
-create index if not exists capability_audio_refs_clip_idx
-  on indonesian.capability_audio_refs(audio_clip_id);
-
-alter table indonesian.capability_audio_refs enable row level security;
-drop policy if exists "capability_audio_refs_authenticated_read" on indonesian.capability_audio_refs;
-create policy "capability_audio_refs_authenticated_read"
-  on indonesian.capability_audio_refs for select to authenticated using (true);
-grant select on indonesian.capability_audio_refs to authenticated;
-revoke insert, update, delete on indonesian.capability_audio_refs from authenticated;
-grant all on indonesian.capability_audio_refs to service_role;
-
-comment on table indonesian.capability_audio_refs is
-  'Capability to audio_clip binding. Replaces capability_artifacts(kind=audio_clip). Decision Q.';
+-- §PR1.2 — capability_audio_refs — RETIRED (pre-cloud hardening, 2026-07-02).
+-- Created in PR 1 (Decision Q) as the intended cap-to-audio binding table
+-- (replacing capability_artifacts(artifact_kind=audio_clip)), but the writer
+-- was never wired (runner.ts explicitly skipped it) and the actual runtime
+-- audio path uses get_audio_clips RPC keyed by (text, voice_id) via
+-- audioService.fetchSessionAudioMap, bypassing this table entirely. 0 rows,
+-- 0 writers, 0 readers at retirement (confirmed docs/audits/2026-05-25-pr7-pre-drop-audit.md
+-- Check 12 + a full repo re-grep). No FK points into it; no view references it.
+drop table if exists indonesian.capability_audio_refs cascade;
 
 -- §PR1.3 — Curated distractor tables — RETIRED (cap-v2 vocabulary cutover #161).
 -- Replaced by the `distractors` pointer table (curated MCQ wrong-option pointers

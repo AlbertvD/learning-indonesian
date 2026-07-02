@@ -32,17 +32,26 @@ import {
 import type { PatternExerciseInput } from '@/lib/capabilities'
 import { patternSlugFromSourceRef } from '@/lib/capabilities'
 
-// exercise_type → typed table. The 4 grammar types this fetcher serves; any
-// other exerciseType on a pattern block is a planner bug (surfaced as a fail).
-const TABLE_BY_TYPE = {
-  choose_correct_form_ex: 'contrast_pair_exercises',
-  transform_sentence_ex: 'sentence_transformation_exercises',
-  translate_sentence_ex: 'constrained_translation_exercises',
-  choose_missing_word_ex: 'cloze_mcq_exercises',
-} as const
-type GrammarExerciseType = keyof typeof TABLE_BY_TYPE
+// The 4 typed grammar-exercise tables, paired with the exercise_type
+// discriminant they map to. Canonical source for the exercise_type <-> table
+// correlation — re-exported via the module's public surface (index.ts) for
+// exerciseReviewService / coverageService, which consume the {table, type}[]
+// shape directly (array index correlates a Promise.all result to its type).
+export const GRAMMAR_EXERCISE_TABLES = [
+  { table: 'contrast_pair_exercises', type: 'choose_correct_form_ex' },
+  { table: 'sentence_transformation_exercises', type: 'transform_sentence_ex' },
+  { table: 'constrained_translation_exercises', type: 'translate_sentence_ex' },
+  { table: 'cloze_mcq_exercises', type: 'choose_missing_word_ex' },
+] as const
+type GrammarExerciseType = typeof GRAMMAR_EXERCISE_TABLES[number]['type']
 
-const GRAMMAR_TYPES = new Set<string>(Object.keys(TABLE_BY_TYPE))
+// exercise_type → typed table, derived from GRAMMAR_EXERCISE_TABLES — this
+// fetcher needs O(1) lookup by type (the array form isn't queried by type).
+const TABLE_BY_TYPE = Object.fromEntries(
+  GRAMMAR_EXERCISE_TABLES.map(({ type, table }) => [type, table]),
+) as Record<GrammarExerciseType, string>
+
+const GRAMMAR_TYPES = new Set<string>(GRAMMAR_EXERCISE_TABLES.map(t => t.type))
 
 export async function fetchForPatternBlocks(
   client: SupabaseSchemaClient,

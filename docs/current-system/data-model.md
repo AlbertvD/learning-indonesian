@@ -63,7 +63,7 @@ Alias keys that resolve to the same canonical capability. Lets the pipeline rena
 
 ### `capability_artifacts` — RETIRED (dropped in Slice 4b, #102, 2026-06-04)
 
-The generic per-capability content bag. **Dropped** — readiness no longer reads it (it derives from `RENDER_CONTRACTS` routing), and per-content-concept structure moved to the typed satellite tables: `dialogue_clozes` (cloze_context/cloze_answer/translation:l1), `affixed_form_pairs` (root_derived_pair/allomorph_rule), the 4 grammar-exercise tables (pattern_example/explanation), and `capability_audio_refs` (audio_clip). The `learning_capabilities.required_artifacts` column was dropped with it. See `docs/adr/0008-retire-generic-capability-artifacts-abstraction.md` + data-model-target Decision A.
+The generic per-capability content bag. **Dropped** — readiness no longer reads it (it derives from `RENDER_CONTRACTS` routing), and per-content-concept structure moved to the typed satellite tables: `dialogue_clozes` (cloze_context/cloze_answer/translation:l1), `affixed_form_pairs` (root_derived_pair/allomorph_rule), the 4 grammar-exercise tables (pattern_example/explanation), and `capability_audio_refs` (audio_clip; itself retired unwired in the pre-cloud hardening pass, 2026-07-02 — its intended writer was never shipped, audio resolves via `get_audio_clips` RPC instead). The `learning_capabilities.required_artifacts` column was dropped with it. See `docs/adr/0008-retire-generic-capability-artifacts-abstraction.md` + data-model-target Decision A.
 
 ### `capability_content_units` (`content-units-lesson-blocks.sql:45`)
 

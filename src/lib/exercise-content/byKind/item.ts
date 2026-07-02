@@ -3,8 +3,10 @@
 // PR 1 changes (Decision R + Q + G2, 2026-05-22):
 // - Decision R: translations from learning_items.translation_{nl,en} directly
 //   instead of joining item_meanings. item_meanings table stays (dropped in PR 7).
-// - Decision Q: audio refs from capability_audio_refs table (not capability_artifacts).
-//   Audio is resolved via SessionAudioContext upstream.
+// - Decision Q: capability_audio_refs table was retired unwired (pre-cloud
+//   hardening, 2026-07-02) — it never had a writer. Audio resolves via
+//   audioService.fetchSessionAudioMap -> get_audio_clips RPC keyed by
+//   (text, voice_id), independent of item source-kind.
 // - Decision G2 Group B: curated distractor tables populated but not yet wired
 //   to builders (builders use poolMeaningsByItem fallback — same behaviour as today).
 //

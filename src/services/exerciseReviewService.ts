@@ -1,16 +1,13 @@
 import { supabase } from '@/lib/supabase'
 import type { ExerciseReviewRow, ReviewComment, ReviewCommentWithContext } from '@/types/learning'
+import { GRAMMAR_EXERCISE_TABLES as TYPED_TABLES } from '@/lib/exercise-content'
 
-// The 4 typed grammar-exercise tables, paired with the exercise_type discriminant
-// they map to. These are the only exercise_types that exist as authored rows
-// (PR 4a — vocab exercises are runtime-generated, never persisted). Order is
-// stable so the index lines up with the Promise.all result array below.
-const TYPED_TABLES = [
-  { table: 'contrast_pair_exercises', type: 'choose_correct_form_ex' },
-  { table: 'sentence_transformation_exercises', type: 'transform_sentence_ex' },
-  { table: 'constrained_translation_exercises', type: 'translate_sentence_ex' },
-  { table: 'cloze_mcq_exercises', type: 'choose_missing_word_ex' },
-] as const
+// TYPED_TABLES: the 4 typed grammar-exercise tables, paired with the
+// exercise_type discriminant they map to. These are the only exercise_types
+// that exist as authored rows (PR 4a — vocab exercises are runtime-generated,
+// never persisted). Order is stable so the index lines up with the Promise.all
+// result array below. Canonical source: lib/exercise-content (also consumed by
+// coverageService.ts and byKind/pattern.ts).
 
 /**
  * Tag raw PostgREST rows with their exercise_type discriminant, in TYPED_TABLES
