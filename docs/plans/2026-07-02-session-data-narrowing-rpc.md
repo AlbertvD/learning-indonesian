@@ -1,7 +1,8 @@
 ---
-status: draft
+status: approved
 branch: feat/pre-cloud-hardening
 reviewed_by: [data-architect, architect]
+approved_at: 2026-07-02
 supersedes: []
 ---
 
