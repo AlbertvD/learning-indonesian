@@ -53,42 +53,54 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        // Use setTimeout(0) to avoid Supabase auth deadlock when fetching
-        // user data immediately after sign-in inside onAuthStateChange.
-        setTimeout(async () => {
-          try {
-            // Insert only — do NOT overwrite existing display_name or language.
-            // ignoreDuplicates: true means existing data is never overwritten by
-            // auth metadata on subsequent sign-ins.
-            await supabase
-              .schema('indonesian')
-              .from('profiles')
-              .upsert(
-                {
-                  id: session.user!.id,
-                  display_name: session.user!.user_metadata?.full_name ?? null,
-                  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                },
-                { onConflict: 'id', ignoreDuplicates: true }
-              )
-            const [{ displayName, language, preferredSessionSize, timezone }, isAdmin] = await Promise.all([
-              loadProfileData(session.user!.id),
-              checkAdmin(session.user!.id),
-            ])
-            set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language, preferredSessionSize, timezone) })
-          } catch (err) {
-            console.error('[authStore] Failed to load profile after sign-in:', err)
-            set({ user: session.user, profile: null })
-          }
-        }, 0)
-
-        // Auto-activate the legacy starter lessons (1-3) for new sign-ins.
-        // Idempotent — set_lesson_activation uses ON CONFLICT DO NOTHING.
-        // Deferred per the same auth-deadlock pattern as the profile load.
+        // Only SIGNED_IN needs the profile upsert + profile/admin reload.
+        // initialize() already runs its own getSession() + profile load on
+        // startup, and supabase-js fires an INITIAL_SESSION event once the
+        // listener below is registered — gating on SIGNED_IN only (not also
+        // INITIAL_SESSION) avoids re-fetching what initialize() just loaded.
+        // TOKEN_REFRESHED / USER_UPDATED fire hourly on long-lived tabs and
+        // carry no new profile data, so they must not re-upsert or re-fetch.
         if (event === 'SIGNED_IN') {
+          // Use setTimeout(0) to avoid Supabase auth deadlock when fetching
+          // user data immediately after sign-in inside onAuthStateChange.
+          setTimeout(async () => {
+            try {
+              // Insert only — do NOT overwrite existing display_name or language.
+              // ignoreDuplicates: true means existing data is never overwritten by
+              // auth metadata on subsequent sign-ins.
+              await supabase
+                .schema('indonesian')
+                .from('profiles')
+                .upsert(
+                  {
+                    id: session.user!.id,
+                    display_name: session.user!.user_metadata?.full_name ?? null,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                  },
+                  { onConflict: 'id', ignoreDuplicates: true }
+                )
+              const [{ displayName, language, preferredSessionSize, timezone }, isAdmin] = await Promise.all([
+                loadProfileData(session.user!.id),
+                checkAdmin(session.user!.id),
+              ])
+              set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language, preferredSessionSize, timezone) })
+            } catch (err) {
+              logError({ page: 'auth', action: 'load-profile-after-signin', error: err })
+              set({ user: session.user, profile: null })
+            }
+          }, 0)
+
+          // Auto-activate the legacy starter lessons (1-3) for new sign-ins.
+          // Idempotent — set_lesson_activation uses ON CONFLICT DO NOTHING.
+          // Deferred per the same auth-deadlock pattern as the profile load.
           setTimeout(() => {
             void activateStarterLessons(session.user!.id)
           }, 0)
+        } else {
+          // TOKEN_REFRESHED, USER_UPDATED, INITIAL_SESSION, etc. — keep the
+          // store's user fresh without re-upserting or re-fetching the
+          // profile/admin state. Preserves the existing profile untouched.
+          set({ user: session.user })
         }
       } else {
         set({ user: null, profile: null })
