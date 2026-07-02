@@ -1,7 +1,7 @@
 ---
 status: draft
 branch: feat/pre-cloud-hardening
-reviewed_by: [data-architect]
+reviewed_by: [data-architect, architect]
 supersedes: []
 ---
 
@@ -780,3 +780,111 @@ No CRITICAL or MAJOR findings. Two MINOR/INFO notes, neither blocking:
 
 Still required before `status: approved`: **`architect`** sign-off (module
 placement / ADR fit / seam check) — not performed by this pass.
+
+## Architect review (2026-07-02)
+
+**Verdict: APPROVE.** `reviewed_by` updated to `[data-architect, architect]`.
+`status` stays `draft` — the user decides the flip to `approved`. My lens is the
+complement to the data-architect's writer-reader-validator pass: module placement,
+ADR fit, seams, Minimum Mechanism. Every load-bearing cite re-verified against code
+(the code is authoritative; prose lags).
+
+**Sources re-read (code, not memory):** `src/lib/session-builder/adapter.ts` (full,
+455 lines — six `Promise.all` reads at 280-306, `CAPABILITY_COLUMNS` 33-47,
+`LEARNER_STATE_COLUMNS` 60-74, local-midnight compute 277-278, in-memory assembly
+313-384); `dueFilter.ts` (full — **Trap 1**: `getDueCapabilitiesFromRows` 64-105
+filters state rows on `activationState/readinessStatus/publicationStatus/nextDueAt`
+only, never activation); `pedagogy.ts:180-420,525-581` (**Trap 2**: `satisfiedKeys`
+544-546 and `buildUnlockedSourceRefs` 245-259 read state rows only, the latter only
+active-state siblings at 251-256; lesson-activation-OR-collection gate 407-414;
+podcast / `isAllowedInSessionMode` carve-out 196-201); `docs/adr/0015-...md`;
+`docs/adr/0006-...md` (podcast null-`lesson_id` carve-out); `docs/target-architecture.md:110-137,408-418`
+(`adapter.ts` is the abstraction-translation seam that hides RPC names; it folds
+`capabilitySessionDataService.ts` INTO itself — a KEEP surface); `session-builder.md`
+(before-spec, `status: stable`; §3.1/§4/§5); `scripts/check-supabase-deep.ts:1992-2023`
+(HC39 guards exactly the removed fetch); `migration.sql` (both precedent RPCs present).
+
+### 1. Module placement — CLEAN
+
+Lands squarely at `adapter.ts`, the sanctioned seam that hides "the schema name, table
+names, **RPC names**, snake/camel mapping, RLS quirks" (`target-architecture.md:119-121`).
+Swapping six `.from(...)` reads for one `.rpc(...)` is exactly the complexity that seam
+absorbs; the output contract (`CapabilitySessionDataSnapshot`) is unchanged and the pure
+planner stays client-side. The four mappers consume snake_case rows the RPC reproduces
+field-for-field. No fold-slated file touched — `adapter.ts` is a KEEP surface that
+absorbs `capabilitySessionDataService.ts` per `target-architecture.md:415`. No #4/#4b drift.
+
+### 2. ADR fit — CONSISTENT, none contradicted
+
+- **ADR 0015** (motivating): two-layer parity obligation discharged — structural (test #4)
+  + semantic-live (HC40). Framing NOTE below.
+- **ADR 0006**: clause (D) `lesson_id IS NULL` reproduces the podcast carve-out verbatim;
+  verified against the `pedagogy.ts:407-414` gate it mirrors. Preserved, not weakened.
+- **ADR 0011 / 0001 / 0003**: read-only over published caps; no write. Unaffected.
+- No other ADR touched by a transport-only read change.
+
+### 3. Minimum Mechanism — PASSES the omission test on every element
+
+- **Clauses A-E**: each has a distinct, non-self-created justification (omit A → due caps
+  from non-activated lessons vanish; B → no lesson intros; C → collection gap-words never
+  surface; D → podcast caps never surface; E → scoped modes get no intros). No clause
+  patches a problem another clause created.
+- **`p_day_start`**: omitting it drifts sibling-bury to UTC midnight — forbidden by the
+  "identical SessionPlan" goal. Minimum-mechanism-toward-the-goal, not gold-plating.
+- **Planner NOT ported to SQL**: correctly rejected (far larger parity liability).
+- **No live-system machinery**; only the parity test kept, justified by the live flip.
+- **No goal-erosion**: all six original query outputs traced to RPC payload keys; every
+  derived value reconstructs client-side. Full deliverable reached.
+
+### 4. Cutover — old path DELETED in one move, not left as fallback
+
+Rollout step 2 deletes the five `.from(...)` reads + the `resolveActivatedMemberRefs` /
+`listActivatedLessons` calls; no coexistence branch, no flag, no dual-read. Deploy
+ordering re-deduced per-spec (migrate-first). Matches the "build the target and delete
+the old in one move" Operating-Context shape. `listLearnerCapabilityStates` correctly
+scoped out (grep-evidenced dead surface), not smuggled in.
+
+### Refactor discipline (before-spec + invariants)
+
+Before-spec exists (`session-builder.md`, `status: stable`). Transport-only refactor:
+none of the §4 invariants constrains *how* the adapter fetches — they are behavioural,
+and the parity tests prove the `SessionPlan` is byte-identical, preserving every one at
+the strongest level. Rollout step 4 commits to rewriting §3.1 + §5 (see WARNING).
+
+### Findings
+
+**CRITICAL:** none.
+
+**WARNING:**
+- The before-spec §3.1 header (`session-builder.md:129`) says "**five** parallel Supabase
+  reads," but the live adapter runs **six** (the `resolveActivatedMemberRefs` collections
+  read at `adapter.ts:305` was added later and is not reflected). The plan itself is
+  grounded in code (Problem section enumerates all six), so not a plan defect — but the
+  implementing PR's §3.1 rewrite (rollout step 4) must correct "five"→"six" and its
+  enumerated list, or the module spec ships a fresh drift.
+
+**NOTES (judgment calls; author may push back):**
+- **ADR 0015 framing.** ADR 0015's letter is about read *aggregations* (a small scalar
+  answer); this is a read *narrowing* that still ships bounded rows. The inclusion filter
+  is a parity-tested *superset* predicate (provably ⊇ what the planner selects, guarded by
+  the semantic layer), not a byte-identical mirror of one TS predicate. Spirit fits and
+  the obligation is discharged — but phrase it as "ADR-0015-adjacent: parity-tested
+  sufficiency *superset*" in the spec + `CONTEXT.md` so a future reviewer doesn't expect
+  an exact predicate mirror.
+- **`p_user_id` is redundant under INVOKER.** Every owner-scoped CTE filters on
+  `p_user_id` while RLS independently scopes to `auth.uid()`; the param can only ever
+  usefully equal `auth.uid()`. Could drop it for `auth.uid()` internally (removes a
+  footgun). Kept as a NOTE, not a finding: matches the `get_lessons_overview(p_user_id)`
+  precedent and was the directed signature. Author's call.
+- **HC39 repoint vs delete.** The truncation class is eliminated by construction, so HC39
+  could be deleted with HC40 as the regression guard. The spec's repoint-to-source-
+  assertion is a mild extra guard; "fold into HC40" (offered) is the leaner default.
+
+### Verdict
+
+**APPROVE** for architect sign-off. Module placement is exactly right, no ADR is
+contradicted, the mechanism is minimal-toward-the-goal with no goal-erosion, and the
+cutover deletes the old path in one move. The two data-architect conditions carry forward
+(Testing #1 + #4 same PR; §3.1 + §5 same commit); I add one: the §3.1 rewrite must fix the
+five→six read-count drift (WARNING above). `status` stays `draft` pending the user's
+approval decision.
