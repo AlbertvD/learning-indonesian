@@ -62,7 +62,7 @@ export default function TypedRecall({
   })
 
   return (
-    <ExerciseFrame
+    <ExerciseFrame userLanguage={userLanguage}
       variant="session"
       adminOverlay={adminOverlay}
       footer={
@@ -80,7 +80,7 @@ export default function TypedRecall({
       <ExerciseInstruction>
         {affixedFormPairData?.carrierBlanked ? promptText : t.session.recall.question}
       </ExerciseInstruction>
-      <ExercisePromptCard variant={affixedFormPairData?.carrierBlanked ? 'sentence' : 'word'}>
+      <ExercisePromptCard userLanguage={userLanguage} variant={affixedFormPairData?.carrierBlanked ? 'sentence' : 'word'}>
         {affixedFormPairData?.carrierBlanked ?? promptText}
       </ExercisePromptCard>
       <ExerciseTextInput

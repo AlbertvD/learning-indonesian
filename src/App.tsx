@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
 import { Dashboard } from '@/pages/Dashboard'
+import { useT } from '@/hooks/useT'
 
 // Lazy-loaded routes (less frequently visited pages, plus the heavy
 // eagerly-visited-but-large surfaces — Session/Lessons/Ontdek/LessonRouter/
@@ -73,11 +74,12 @@ function LazyPage({ children }: { children: React.ReactNode }) {
 }
 
 function NotFound() {
+  const T = useT()
   return (
     <Container size="sm" style={{ textAlign: 'center', paddingTop: '4rem' }}>
-      <Title order={2} mb="md">Pagina niet gevonden</Title>
-      <Text c="dimmed" mb="xl">De pagina die je zoekt bestaat niet.</Text>
-      <Button component={Link} to="/">Ga naar dashboard</Button>
+      <Title order={2} mb="md">{T.common.notFoundTitle}</Title>
+      <Text c="dimmed" mb="xl">{T.common.notFoundMessage}</Text>
+      <Button component={Link} to="/">{T.common.goToDashboard}</Button>
     </Container>
   )
 }

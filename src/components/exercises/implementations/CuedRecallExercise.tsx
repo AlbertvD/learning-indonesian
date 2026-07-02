@@ -41,9 +41,9 @@ export default function CuedRecallExercise({
   }
 
   return (
-    <ExerciseFrame variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
       <ExerciseInstruction>{t.session.exercise.chooseIndonesian}</ExerciseInstruction>
-      <ExercisePromptCard
+      <ExercisePromptCard userLanguage={userLanguage}
         variant="word"
         meta={data.cueText || undefined}
       >

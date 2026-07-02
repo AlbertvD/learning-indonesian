@@ -60,7 +60,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
           <button
             className={`${classes.pinBtn} ${locked ? classes.pinLocked : ''}`}
             onClick={onToggleLock}
-            title={locked ? 'Zijbalk losmaken' : 'Zijbalk vastzetten'}
+            title={locked ? T.common.unpinSidebar : T.common.pinSidebar}
           >
             <PinIcon />
           </button>
@@ -104,7 +104,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
         <button
           className={classes.themeBtn}
           onClick={toggleColorScheme}
-          title="Thema wisselen"
+          title={T.common.toggleTheme}
         >
           {colorScheme === 'dark'
             ? <IconSun size={14} />

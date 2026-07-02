@@ -69,7 +69,7 @@ export default function Cloze({
   )
 
   return (
-    <ExerciseFrame
+    <ExerciseFrame userLanguage={userLanguage}
       variant="session"
       adminOverlay={adminOverlay}
       footer={
@@ -90,7 +90,7 @@ export default function Cloze({
       <ExerciseInstruction icon={<IconMessage2 size={16} />}>
         {t.session.exercise.fillMissingWord}
       </ExerciseInstruction>
-      <ExercisePromptCard variant="sentence" meta={translation ?? undefined}>
+      <ExercisePromptCard userLanguage={userLanguage} variant="sentence" meta={translation ?? undefined}>
         {inlineInput}
       </ExercisePromptCard>
     </ExerciseFrame>

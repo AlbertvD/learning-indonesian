@@ -57,7 +57,7 @@ export default function ListeningMCQ({
 
   if (!audioUrl) {
     return (
-      <ExerciseFrame variant="session">
+      <ExerciseFrame userLanguage={userLanguage} variant="session">
         <ExerciseInstruction>
           {userLanguage === 'nl' ? 'Audio niet beschikbaar' : 'Audio not available'}
         </ExerciseInstruction>
@@ -66,11 +66,11 @@ export default function ListeningMCQ({
   }
 
   return (
-    <ExerciseFrame variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
       <ExerciseInstruction>
         {userLanguage === 'nl' ? 'Luister en kies de juiste vertaling' : 'Listen and choose the correct translation'}
       </ExerciseInstruction>
-      <ExercisePromptCard
+      <ExercisePromptCard userLanguage={userLanguage}
         variant="audio"
         revealSlot={scoring.isAnswered ? learningItem.base_text : undefined}
       >

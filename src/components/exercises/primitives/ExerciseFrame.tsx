@@ -13,6 +13,7 @@ import {
   type FrameVariant,
   type FrameInstructionIdContextValue,
 } from './context'
+import { translations } from '@/lib/i18n'
 import classes from './ExerciseFrame.module.css'
 
 export interface ExerciseFrameProps {
@@ -35,6 +36,8 @@ export interface ExerciseFrameProps {
   footer?: ReactNode
   /** Absolutely-positioned top-right; typically <FlagButton> for admin sessions. */
   adminOverlay?: ReactNode
+  /** MAJ-2: the landmark's SR-only aria-label is language-tagged. Default 'nl' (unchanged for callers that don't pass it). */
+  userLanguage?: 'nl' | 'en'
 }
 
 export function ExerciseFrame({
@@ -44,6 +47,7 @@ export function ExerciseFrame({
   variant = 'preview',
   footer,
   adminOverlay,
+  userLanguage = 'nl',
 }: ExerciseFrameProps) {
   const [instructionId, setInstructionId] = useState<string | null>(null)
   const instructionCtx: FrameInstructionIdContextValue = useMemo(
@@ -51,11 +55,12 @@ export function ExerciseFrame({
     [instructionId],
   )
 
+  const frameLabel = translations[userLanguage].exercisePrimitives.frameLabel
   const FrameElement = as
   const landmarkProps = as === 'main'
-    ? { role: 'main' as const, 'aria-label': 'Oefening' }
+    ? { role: 'main' as const, 'aria-label': frameLabel }
     : as === 'section'
-      ? { 'aria-label': 'Oefening' }
+      ? { 'aria-label': frameLabel }
       : {}
 
   return (

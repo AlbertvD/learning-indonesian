@@ -43,9 +43,9 @@ export default function DecomposeWordExercise({
   }
 
   return (
-    <ExerciseFrame variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
       <ExerciseInstruction>{instruction}</ExerciseInstruction>
-      <ExercisePromptCard variant="word">
+      <ExercisePromptCard userLanguage={userLanguage} variant="word">
         {data.word}
       </ExercisePromptCard>
       <ExerciseOptionGroup>

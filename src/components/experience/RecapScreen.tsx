@@ -2,6 +2,7 @@ import { Stack, Button, Text, Group, SimpleGrid } from '@mantine/core'
 import { HeroCard } from '@/components/page/primitives'
 import { capabilityDisplay } from '@/lib/session-builder'
 import type { SessionBlock } from '@/lib/session-builder'
+import { translations } from '@/lib/i18n'
 
 interface RecapScreenProps {
   renderableBlocks: SessionBlock[]
@@ -11,6 +12,7 @@ interface RecapScreenProps {
   // Leave the recap (navigate home). Completion is recorded by the player when
   // the cards run out, not here — so this is navigation only.
   onExit: () => void
+  userLanguage: 'nl' | 'en'
 }
 
 export function RecapScreen({
@@ -19,15 +21,18 @@ export function RecapScreen({
   skippedBlocks,
   commitFailedBlocks,
   onExit,
+  userLanguage,
 }: RecapScreenProps) {
+  const T = translations[userLanguage]
+
   if (renderableBlocks.length === 0) {
     return (
       <Stack gap="md" data-testid="session-recap">
-        <HeroCard title="Niets te doen">
-          <Text>Er zijn geen kaarten beschikbaar voor deze sessie.</Text>
+        <HeroCard title={T.recap.emptyTitle}>
+          <Text>{T.recap.emptyMessage}</Text>
         </HeroCard>
         <Button onClick={onExit} fullWidth>
-          Terug naar dashboard
+          {T.recap.backToDashboard}
         </Button>
       </Stack>
     )
@@ -49,19 +54,19 @@ export function RecapScreen({
 
   return (
     <Stack gap="md" data-testid="session-recap">
-      <HeroCard title="Sessieroute afgerond">
+      <HeroCard title={T.recap.completedTitle}>
         <Stack gap="xs">
           <Text>
-            {savedCount} van {effectiveTotal} vaardigheidskaarten zijn veilig opgeslagen.
+            {T.recap.savedSummary(savedCount, effectiveTotal)}
           </Text>
           {failedCount === 1 && (
             <Text c="dimmed" size="sm">
-              1 antwoord kon niet worden opgeslagen en telt niet mee voor je voortgang.
+              {T.recap.failedSingular}
             </Text>
           )}
           {failedCount >= 2 && (
             <Text c="dimmed" size="sm">
-              {failedCount} antwoorden konden niet worden opgeslagen en tellen niet mee voor je voortgang.
+              {T.recap.failedPlural(failedCount)}
             </Text>
           )}
         </Stack>
@@ -70,27 +75,27 @@ export function RecapScreen({
       <SimpleGrid cols={3}>
         <Group gap="xs" justify="center">
           <Text fw={700}>{savedDue}/{effectiveDueCount}</Text>
-          <Text size="sm" c="dimmed">herhaald</Text>
+          <Text size="sm" c="dimmed">{T.recap.reviewed}</Text>
         </Group>
         <Group gap="xs" justify="center">
           <Text fw={700}>{savedNew}/{effectiveNewCount}</Text>
-          <Text size="sm" c="dimmed">geïntroduceerd</Text>
+          <Text size="sm" c="dimmed">{T.recap.introduced}</Text>
         </Group>
         <Group gap="xs" justify="center">
           <Text fw={700}>{notTouched}</Text>
-          <Text size="sm" c="dimmed">niet aangeraakt</Text>
+          <Text size="sm" c="dimmed">{T.recap.notTouched}</Text>
         </Group>
       </SimpleGrid>
 
       <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
         {renderableBlocks.map(b => {
           const kicker = commitFailedBlocks.has(b.id)
-            ? 'Niet opgeslagen'
+            ? T.recap.kickerNotSaved
             : skippedBlocks.has(b.id)
-              ? 'Overgeslagen'
+              ? T.recap.kickerSkipped
               : b.kind === 'due_review'
-                ? 'Herhaling opgeslagen'
-                : 'Introductie gestart'
+                ? T.recap.kickerReviewSaved
+                : T.recap.kickerIntroStarted
           return (
             <li key={b.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
               <Text size="sm" c="dimmed">{kicker}</Text>
@@ -101,7 +106,7 @@ export function RecapScreen({
       </ul>
 
       <Button onClick={onExit} fullWidth>
-        Terug naar dashboard
+        {T.recap.backToDashboard}
       </Button>
     </Stack>
   )

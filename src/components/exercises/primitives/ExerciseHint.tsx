@@ -6,6 +6,7 @@
 import { useId, useState } from 'react'
 import type { ReactNode } from 'react'
 import { IconBulb, IconChevronDown } from '@tabler/icons-react'
+import { translations } from '@/lib/i18n'
 import classes from './ExerciseHint.module.css'
 
 export interface ExerciseHintProps {
@@ -13,12 +14,15 @@ export interface ExerciseHintProps {
   icon?: ReactNode
   /** default true — shown unconditionally. Set false for disclosure pattern. */
   defaultRevealed?: boolean
+  /** MAJ-2: language for the collapsed-state trigger label. Default 'nl'. */
+  userLanguage?: 'nl' | 'en'
 }
 
 export function ExerciseHint({
   children,
   icon = <IconBulb size={16} />,
   defaultRevealed = true,
+  userLanguage = 'nl',
 }: ExerciseHintProps) {
   const [revealed, setRevealed] = useState(defaultRevealed)
   const contentId = useId()
@@ -33,7 +37,7 @@ export function ExerciseHint({
         onClick={() => setRevealed(true)}
       >
         <span className={classes.icon} aria-hidden="true">{icon}</span>
-        <span>Toon hint</span>
+        <span>{translations[userLanguage].exercisePrimitives.showHint}</span>
         <IconChevronDown size={14} aria-hidden="true" />
       </button>
     )

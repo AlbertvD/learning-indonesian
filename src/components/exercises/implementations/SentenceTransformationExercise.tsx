@@ -55,7 +55,7 @@ export default function SentenceTransformationExercise({
   }
 
   return (
-    <ExerciseFrame
+    <ExerciseFrame userLanguage={userLanguage}
       variant="session"
       adminOverlay={adminOverlay}
       footer={
@@ -71,14 +71,14 @@ export default function SentenceTransformationExercise({
       <ExerciseInstruction>
         {t.session.exercise.transformPrefix} {data.transformationInstruction}
       </ExerciseInstruction>
-      <ExercisePromptCard
+      <ExercisePromptCard userLanguage={userLanguage}
         variant="transform"
         audio={sourceAudioUrl ? { url: sourceAudioUrl, autoplay: autoPlay } : undefined}
       >
         {data.sourceSentence}
       </ExercisePromptCard>
       {scoring.showHint && data.hintText && (
-        <ExerciseHint>
+        <ExerciseHint userLanguage={userLanguage}>
           {t.session.exercise.hintPrefix} {data.hintText}
         </ExerciseHint>
       )}

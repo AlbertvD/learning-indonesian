@@ -13,7 +13,7 @@ import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import type { SessionPlan, SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/lib/capabilities'
 import type { SessionAudioMap } from '@/services/audioService'
-import { translations } from '@/lib/i18n'
+import { translations, type Translations } from '@/lib/i18n'
 import { feedbackCopyFor } from './feedbackCopy'
 import { RecapScreen } from './RecapScreen'
 import { CapabilityExerciseFrame } from './CapabilityExerciseFrame'
@@ -51,14 +51,15 @@ interface SessionHeaderProps {
   totalUniqueCaps: number
   progress: number
   diagnostics: SessionPlan['diagnostics']
+  T: Translations
 }
 
-function SessionHeader({ position, queueLength, correctCount, totalUniqueCaps, progress, diagnostics }: SessionHeaderProps) {
+function SessionHeader({ position, queueLength, correctCount, totalUniqueCaps, progress, diagnostics, T }: SessionHeaderProps) {
   return (
     <Stack gap="xs" mb="md">
       <Group justify="space-between">
-        <Text size="sm" c="dimmed">Oefening {position + 1} van {queueLength}</Text>
-        <Text size="sm" c="dimmed">{correctCount}/{totalUniqueCaps} correct</Text>
+        <Text size="sm" c="dimmed">{T.session.exerciseOf} {position + 1} {T.session.of} {queueLength}</Text>
+        <Text size="sm" c="dimmed">{correctCount}/{totalUniqueCaps} {T.session.correct}</Text>
       </Group>
       <Progress value={progress} size="sm" />
       {diagnostics.length > 0 && (
@@ -278,6 +279,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
               skippedBlocks={skippedBlocks}
               commitFailedBlocks={commitFailedBlocks}
               onExit={onExit}
+              userLanguage={userLanguage}
             />
           </PageBody>
         </PageContainer>
@@ -311,6 +313,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
             totalUniqueCaps={totalUniqueCaps}
             progress={progress}
             diagnostics={profile?.isAdmin ? plan.diagnostics : []}
+            T={T}
           />
           {feedbackInput
             ? (

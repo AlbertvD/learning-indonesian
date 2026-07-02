@@ -25,13 +25,13 @@ export default function SpeakingExercise({ exerciseItem, userLanguage }: Exercis
   }
 
   return (
-    <ExerciseFrame variant="session">
+    <ExerciseFrame userLanguage={userLanguage} variant="session">
       <Alert color="blue" title={t.session.speaking.comingSoon} />
       <ExerciseInstruction icon={<IconMicrophone size={20} />}>
         {data.promptText}
       </ExerciseInstruction>
       {data.targetPatternOrScenario && (
-        <ExercisePromptCard variant="sentence">
+        <ExercisePromptCard userLanguage={userLanguage} variant="sentence">
           {data.targetPatternOrScenario}
         </ExercisePromptCard>
       )}
