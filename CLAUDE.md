@@ -11,7 +11,7 @@
 - **What "good" means now, in order: user-data safety; simple, high-quality, maintainable code; fewer tokens in the build/generation pipeline; runtime polish.** Correctness is assumed throughout.
 - Specs written under the PRE-launch lens (most of `docs/plans/` before 2026-07) must be **re-derived against this context before implementing** — their "truncate and rebuild" shortcuts are now wrong for learner-data surfaces, while their live-safety machinery may now be right.
 
-> Still open at this flip (see `docs/audits/2026-07-02-*`): content licensing of coursebook-derived lessons (user-owned), off-site backup leg (explicitly deferred), data-export path (deferred), Traefik forward-auth removal at public exposure.
+> Still open at this flip (see `docs/audits/2026-07-02-*`): content licensing of coursebook-derived lessons — RISK ACCEPTED by owner 2026-07-02 (source publisher Instituut Indonesische Cursussen, Leiden, is dissolved/bankrupt since ~2012; orphan-work posture; mitigation = progressively re-author reader pages in own words), off-site backup leg (explicitly deferred), data-export path (deferred), Traefik forward-auth removal at public exposure.
 
 ## Minimum Mechanism (counterweight to "Quality Over Speed")
 
