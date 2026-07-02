@@ -13,6 +13,7 @@ import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import type { SessionPlan, SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/lib/capabilities'
 import type { SessionAudioMap } from '@/services/audioService'
+import { translations } from '@/lib/i18n'
 import { feedbackCopyFor } from './feedbackCopy'
 import { RecapScreen } from './RecapScreen'
 import { CapabilityExerciseFrame } from './CapabilityExerciseFrame'
@@ -168,6 +169,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
     : Math.round(((correctCount + skippedCapabilityIds.size) / totalUniqueCaps) * 100)
 
   const { copy: feedbackCopy, continueLabel } = feedbackCopyFor(userLanguage)
+  const T = translations[userLanguage]
 
   async function handleAnswerReport(report: AnswerReport) {
     if (!currentBlock || submitting) return
@@ -196,10 +198,14 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
         commitFailed = true
         logError({ page: 'session', action: 'commitAnswer', error: err })
         if (wasCorrect) {
+          // Honest, not a phantom retry promise: no retry/outbox exists for a
+          // failed commit anywhere in the app, so the learner needs to know
+          // this specific review will not count — not that it'll be "handled
+          // later" (2026-07-02 UX audit MAJ-4).
           notifications.show({
             color: 'yellow',
-            title: 'Antwoord niet opgeslagen',
-            message: 'We proberen het later opnieuw.',
+            title: T.session.commitFailedTitle,
+            message: T.session.commitFailedMessage,
           })
         }
       }

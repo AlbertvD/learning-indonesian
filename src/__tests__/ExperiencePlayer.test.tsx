@@ -289,7 +289,11 @@ describe('ExperiencePlayer — stepwise shell', () => {
     await user.click(screen.getByRole('button', { name: 'Mark correct' }))
 
     await waitFor(() => {
-      expect(notifications.show).toHaveBeenCalledWith(expect.objectContaining({ color: 'yellow' }))
+      expect(notifications.show).toHaveBeenCalledWith(expect.objectContaining({
+        color: 'yellow',
+        title: 'Antwoord niet opgeslagen',
+        message: 'Je antwoord kon niet worden opgeslagen. Dit kaartje telt deze keer niet mee voor je voortgang.',
+      }))
     })
     expect(screen.queryByText('Doorgaan')).not.toBeInTheDocument()
     expect(screen.getByText('Oefening 2 van 2')).toBeInTheDocument()
@@ -403,7 +407,7 @@ describe('ExperiencePlayer — stepwise shell', () => {
     await user.click(screen.getByRole('button', { name: 'Mark correct' }))
 
     expect(await screen.findByText(/2 van 3 vaardigheidskaarten zijn veilig opgeslagen/)).toBeInTheDocument()
-    expect(screen.getByText('1 antwoord kon niet worden opgeslagen — we proberen het later opnieuw.')).toBeInTheDocument()
+    expect(screen.getByText('1 antwoord kon niet worden opgeslagen en telt niet mee voor je voortgang.')).toBeInTheDocument()
     expect(screen.getByText('Niet opgeslagen')).toBeInTheDocument()
   })
 
@@ -426,7 +430,7 @@ describe('ExperiencePlayer — stepwise shell', () => {
     await user.click(screen.getByRole('button', { name: 'Mark correct' }))
     await user.click(screen.getByRole('button', { name: 'Mark correct' }))
 
-    expect(await screen.findByText('2 antwoorden konden niet worden opgeslagen — we proberen ze later opnieuw.')).toBeInTheDocument()
+    expect(await screen.findByText('2 antwoorden konden niet worden opgeslagen en tellen niet mee voor je voortgang.')).toBeInTheDocument()
   })
 
   it('9b. Registry-missing blocks are silent-filtered', async () => {

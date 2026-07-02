@@ -403,6 +403,8 @@ export const nl = {
     failedToLoadSession: 'Sessie kon niet worden geladen. Probeer het opnieuw.',
     noExercises: 'Geen oefeningen beschikbaar voor deze sessie.',
     pipelineDryingUp: 'Je bent bijna klaar met de huidige les. Activeer de volgende les om nieuwe woorden en patronen klaar te zetten.',
+    commitFailedTitle: 'Antwoord niet opgeslagen',
+    commitFailedMessage: 'Je antwoord kon niet worden opgeslagen. Dit kaartje telt deze keer niet mee voor je voortgang.',
     recognition: {
       question: 'Wat betekent dit woord?',
     },
@@ -848,6 +850,8 @@ export const en: typeof nl = {
     failedToLoadSession: 'Failed to load session. Please try again.',
     noExercises: 'No exercises available for this session.',
     pipelineDryingUp: 'You are almost finished with the current lesson. Activate the next lesson to queue up new words and patterns.',
+    commitFailedTitle: 'Answer not saved',
+    commitFailedMessage: "Your answer could not be saved. This card won't count towards your progress this time.",
     recognition: {
       question: 'What does this word mean?',
     },

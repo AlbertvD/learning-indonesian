@@ -56,12 +56,12 @@ export function RecapScreen({
           </Text>
           {failedCount === 1 && (
             <Text c="dimmed" size="sm">
-              1 antwoord kon niet worden opgeslagen — we proberen het later opnieuw.
+              1 antwoord kon niet worden opgeslagen en telt niet mee voor je voortgang.
             </Text>
           )}
           {failedCount >= 2 && (
             <Text c="dimmed" size="sm">
-              {failedCount} antwoorden konden niet worden opgeslagen — we proberen ze later opnieuw.
+              {failedCount} antwoorden konden niet worden opgeslagen en tellen niet mee voor je voortgang.
             </Text>
           )}
         </Stack>
