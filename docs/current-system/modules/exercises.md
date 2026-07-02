@@ -126,14 +126,14 @@ function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps
 |---|---|---|
 | `ExerciseFrame` | The card shell every exercise lives in. Provides instruction-id context for accessibility wiring, footer slot, variant context. | `variant='session' \| 'review' \| 'preview'`. (The former `adminOverlay` top-right slot was removed 2026-07-02 — the admin flag now lives in the session header row; see the experience spec §3.2.) |
 | `ExerciseInstruction` | The Dutch/English instruction line above the prompt card. | Registers its id into `FrameInstructionIdContext` so the prompt card can `aria-describedby` it. |
-| `ExercisePromptCard` | The big foreground prompt — word, sentence, or audio. | `variant='word' \| 'sentence' \| 'audio'` controls type-scale. Audio variant embeds `ExerciseAudioButton` with autoplay opt-in. |
+| `ExercisePromptCard` | The big foreground prompt — word, sentence, or audio. | `variant='word' \| 'sentence' \| 'audio'` controls type-scale. Audio variant embeds `ExerciseAudioButton` with autoplay opt-in, plus `revealSlot` (post-answer transcript) and `revealMeta` (L1 meaning under the transcript — dictation, 2026-07-02). |
 | `ExerciseOption` | A single MCQ option button. | `state='neutral' \| 'selected' \| 'correct' \| 'incorrect' \| 'show-correct'` drives styling. `variant='word' \| 'sentence'` controls size. |
 | `ExerciseOptionGroup` | Vertical stack of options. | Pure layout container. |
 | `ExerciseTextInput` | The typed-answer input. | `state` drives border colour same as `ExerciseOption`. |
 | `ExerciseSubmitButton` | The "Controleer" / "Check" button. | Hidden during the auto-advance fade on correct answers. |
 | `ExerciseAudioButton` | The play-prompt control. | `variant='primary' \| 'icon'` — primary is the big circular play, icon is the inline mini button. Plays via the resolved session audio map. |
 | `ExerciseHint` | Collapsible hint reveal. | Tracks reveal in `onEvent` for FSRS hint-counting. |
-| `ExerciseFeedback` | The Doorgaan card shown after a fuzzy/wrong answer. 299 LOC — the heaviest primitive. | `layout='vocab-pair' \| 'grammar-reveal'` controls the two main shapes. Owns the "Doorgaan" button (player supplies `onContinue` + label + copy). Renders accepted variants, audio playback of the correct answer, optional explanation, commit-fail chip. |
+| `ExerciseFeedback` | The Doorgaan card shown after a fuzzy/wrong answer. 299 LOC — the heaviest primitive. | `layout='vocab-pair' \| 'grammar-reveal'` controls the two main shapes. Owns the "Doorgaan" button (player supplies `onContinue` + label + copy). Renders accepted variants, audio playback of the correct answer, optional meaning line (any layout; dictation + grammar cards supply it), optional explanation (grammar-reveal only), commit-fail chip. |
 | `FlagButton` | "Report this card" trigger. | Posts via `contentFlagService` directly; admin-only, rendered by `AdminFlagOverlay` into the session header's `flagSlot` (`ExperiencePlayer.tsx`). |
 | `LanguagePill` | "ID" / "NL" / "EN" type-coloured pill chips. | Used by `ExerciseFeedback` and primitives that show a language hint. |
 

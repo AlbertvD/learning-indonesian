@@ -23,10 +23,15 @@ export default function Dictation({
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
   const { audioMap } = useSessionAudio()
-  const { learningItem: item, answerVariants } = exerciseItem
+  const { learningItem: item, meanings, answerVariants } = exerciseItem
   const learningItem = item!
   const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
   const variants = (answerVariants ?? []).map(v => v.variant_text)
+  // L1 meaning for the post-answer reveal — dictation is the only typed exercise
+  // where the learner would otherwise never see what the word means.
+  const primaryMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
+    ?? meanings.find(m => m.translation_language === userLanguage)
+  const meaningText = primaryMeaning?.translation_text
 
   const hasPlayedRef = useRef(false)
   const [, setHasPlayedTick] = useState(0)
@@ -76,9 +81,13 @@ export default function Dictation({
       <ExerciseInstruction>
         {userLanguage === 'nl' ? 'Luister en typ wat je hoort' : 'Listen and type what you hear'}
       </ExerciseInstruction>
+      {/* isProcessing is the correct-path pause (1.5s before auto-advance) —
+          without it the reveal only flashes during the commit roundtrip and
+          the learner never actually reads the transcript + meaning. */}
       <ExercisePromptCard userLanguage={userLanguage}
         variant="audio"
-        revealSlot={scoring.isAnswered ? learningItem.base_text : undefined}
+        revealSlot={scoring.isAnswered || scoring.isProcessing ? learningItem.base_text : undefined}
+        revealMeta={scoring.isAnswered || scoring.isProcessing ? meaningText : undefined}
       >
         <ExerciseAudioButton
           variant="primary"
