@@ -3777,3 +3777,81 @@ language sql stable security invoker as $$
   );
 $$;
 grant execute on function indonesian.get_text_coverage(uuid, text[]) to authenticated;
+
+-- ============================================================================
+-- Pre-cloud-preview hardening item 1: invite-gated signup
+-- ============================================================================
+-- Self-signup via `supabase.auth.signUp` is gated behind a one-time-use invite
+-- code, consumed by the `signup-with-invite` edge function (which creates the
+-- user via the GoTrue admin API, not the public signup endpoint). This table
+-- is a SERVICE-ROLE-ONLY surface: no RLS policies, no anon/authenticated
+-- grants — the edge function is the only caller, using the service key.
+create table if not exists indonesian.signup_invite_codes (
+  code           text primary key,
+  uses_remaining int not null default 1 check (uses_remaining >= 0),
+  note           text,
+  created_at     timestamptz not null default now()
+);
+
+alter table indonesian.signup_invite_codes enable row level security;
+-- No policies — service_role bypasses RLS; anon/authenticated have zero grants.
+grant all on indonesian.signup_invite_codes to service_role;
+
+-- redeem_invite_code: atomically decrements uses_remaining if > 0, returning
+-- whether a code was found and had capacity. Called by the signup-with-invite
+-- edge function BEFORE creating the GoTrue user — redeem-first means a code
+-- can never be spent twice by two concurrent signups, and an invalid/exhausted
+-- code fails fast with no GoTrue call. On a subsequent user-creation failure
+-- the edge function calls restore_invite_code to give the code back.
+create or replace function indonesian.redeem_invite_code(p_code text)
+returns boolean
+language plpgsql
+security definer
+set search_path = indonesian, public
+as $$
+declare
+  v_found boolean;
+begin
+  if coalesce(auth.role(), '') <> 'service_role' then
+    raise exception 'redeem_invite_code requires a trusted service role caller';
+  end if;
+
+  update indonesian.signup_invite_codes
+  set uses_remaining = uses_remaining - 1
+  where code = p_code and uses_remaining > 0
+  returning true into v_found;
+
+  return coalesce(v_found, false);
+end;
+$$;
+
+revoke all on function indonesian.redeem_invite_code(text) from public;
+grant execute on function indonesian.redeem_invite_code(text) to service_role;
+
+-- restore_invite_code: increments uses_remaining back after a redeem whose
+-- follow-up GoTrue user creation failed (e.g. a typo'd, already-registered
+-- email) — so the invite code isn't burned for nothing.
+create or replace function indonesian.restore_invite_code(p_code text)
+returns boolean
+language plpgsql
+security definer
+set search_path = indonesian, public
+as $$
+declare
+  v_found boolean;
+begin
+  if coalesce(auth.role(), '') <> 'service_role' then
+    raise exception 'restore_invite_code requires a trusted service role caller';
+  end if;
+
+  update indonesian.signup_invite_codes
+  set uses_remaining = uses_remaining + 1
+  where code = p_code
+  returning true into v_found;
+
+  return coalesce(v_found, false);
+end;
+$$;
+
+revoke all on function indonesian.restore_invite_code(text) from public;
+grant execute on function indonesian.restore_invite_code(text) to service_role;

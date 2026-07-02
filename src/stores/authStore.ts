@@ -12,7 +12,6 @@ interface AuthState {
   loading: boolean
   initialize: () => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string, fullName: string) => Promise<void>
   signOut: () => Promise<void>
   updateDisplayName: (name: string) => Promise<void>
   updateLanguage: (lang: 'nl' | 'en') => Promise<void>
@@ -100,15 +99,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signIn: async (email, password) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
-  },
-
-  signUp: async (email, password, fullName) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } },
-    })
     if (error) throw error
   },
 
