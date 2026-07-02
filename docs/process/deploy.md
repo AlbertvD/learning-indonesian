@@ -15,7 +15,7 @@ The build is **fully automated**; the container recreate on the homelab is **man
 
 ## 1. Build trigger
 
-Every push to `main` triggers the GitHub Actions workflow "Build and Push Docker Image" (`.github/workflows/`). Result: a fresh image pushed to `ghcr.io/albertvd/learning-indonesian:latest`.
+Every push to `main` triggers the GitHub Actions workflow "Build and Push Docker Image" (`.github/workflows/`). Result: a fresh image pushed to `ghcr.io/albertvd/learning-indonesian:latest`. CI also tags the same build `sha-<full-sha>`; pull that tag instead of `latest` when you need a reproducible, rollback-addressable deploy rather than "whatever was last pushed."
 
 Monitor a build:
 
