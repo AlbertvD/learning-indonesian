@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client'
 import { MantineProvider, createTheme, localStorageColorSchemeManager } from '@mantine/core'
 import type { CSSVariablesResolver } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
+import { AppErrorBoundary } from '@/components/AppErrorBoundary'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { useAuthStore } from '@/stores/authStore'
@@ -298,11 +299,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         defaultColorScheme="dark"
       >
         <Notifications position="top-right" />
-        <AutoplayProvider>
-          <ListeningProvider>
-            <App />
-          </ListeningProvider>
-        </AutoplayProvider>
+        <AppErrorBoundary>
+          <AutoplayProvider>
+            <ListeningProvider>
+              <App />
+            </ListeningProvider>
+          </AutoplayProvider>
+        </AppErrorBoundary>
       </MantineProvider>
     </BrowserRouter>
   </React.StrictMode>

@@ -433,6 +433,29 @@ export async function buildForceCapabilitySession(input: {
     capabilitiesByKey: new Map([[snapshot.capability.canonicalKey, snapshot.capability]]),
     readinessByKey: new Map([[snapshot.capability.canonicalKey, snapshot.readiness]]),
   })
+  // A never-seen capability (dormant synthesized state) must route through the
+  // eligible-new path so the block carries an activationRequest — the review
+  // processor (client AND server) rejects a dormant commit without one
+  // (rejected_invalid_outcome). Found 2026-07-02 by the first e2e run with a
+  // FRESH test account: the author's account has state rows for everything, so
+  // the due-shaped bypass always worked and hid this. Mirrors what a normal
+  // session does on a first encounter.
+  if (schedulerSnapshot.activationState === 'dormant') {
+    const eligibleNew = {
+      capability: { id: outcome.meta.capabilityId, canonicalKey: outcome.meta.canonicalKey },
+      activationRequest: { reason: 'eligible_new_capability' as const },
+      reviewContext: outcome.reviewContext,
+      ...('renderPlan' in outcome ? { renderPlan: outcome.renderPlan } : { resolutionFailure: outcome.resolutionFailure }),
+    }
+    return compose({
+      sessionId: input.sessionId,
+      mode: 'standard',
+      dueCapabilities: [],
+      eligibleNewCapabilities: [eligibleNew],
+      limit: 1,
+    })
+  }
+
   const dueCapability = {
     capabilityId: outcome.meta.capabilityId,
     canonicalKeySnapshot: outcome.meta.canonicalKey,

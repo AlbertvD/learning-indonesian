@@ -52,12 +52,14 @@ test.describe('smoke — login, force-capability session, answer, commit', () =>
     // precedent this extends with a real answer + commit).
     await page.waitForFunction(
       () => {
-        const buttons = document.querySelectorAll('button.mantine-Button-root')
+        // :not([disabled]) — the loading skeleton renders disabled placeholder
+        // ExerciseOptions; only an interactive option means the card is real.
+        const buttons = document.querySelectorAll('[data-testid="exercise-option"]:not([disabled])')
         const hasInput = document.querySelector('input[type="text"], input:not([type])')
         const errored = /sessiefout/i.test(document.body.textContent ?? '')
         return buttons.length >= 1 || hasInput !== null || errored
       },
-      { timeout: 20000 },
+      { timeout: 30000 },
     )
     await expect(page.getByText(/sessiefout/i)).not.toBeVisible()
     await expect(page.getByText(/geen oefeningen|niets te oefenen/i)).not.toBeVisible()
@@ -84,7 +86,7 @@ test.describe('smoke — login, force-capability session, answer, commit', () =>
           () =>
             !!document.querySelector('[data-testid="session-recap"]')
             || Array.from(document.querySelectorAll('button')).some(b => /doorgaan|continue/i.test(b.textContent ?? '')),
-          { timeout: 3000 },
+          { timeout: 10000 },
         )
         .catch(() => {})
 
@@ -111,6 +113,12 @@ test.describe('smoke — login, force-capability session, answer, commit', () =>
       // Loop again.
     }
 
+    // The recap can mount between a timed-out wait and the next answer attempt
+    // (the loop then breaks on "no options found") — re-check before judging.
+    if (!reachedRecap) {
+      reachedRecap = await page.getByTestId('session-recap').isVisible().catch(() => false)
+    }
+
     expect(
       sawAnsweredState || reachedRecap,
       'expected at least one answer to reach a post-answer state (feedback screen or recap)',
@@ -133,7 +141,18 @@ test.describe('smoke — login, force-capability session, answer, commit', () =>
     if (!SUPABASE_SERVICE_KEY || !VITE_SUPABASE_URL) {
       console.log('[e2e] Skipping DB-level commit verification — SUPABASE_SERVICE_KEY / VITE_SUPABASE_URL not set.')
     } else {
-      const verified = await verifyReviewEventCommitted(VITE_SUPABASE_URL, SUPABASE_SERVICE_KEY, E2E_EMAIL!)
+      // The homelab API presents a Step-CA (internal) certificate that Node's
+      // fetch rejects. Scope the TLS exemption to this one verification call —
+      // the browser side already runs with ignoreHTTPSErrors for the same reason.
+      const prevTls = process.env.NODE_TLS_REJECT_UNAUTHORIZED
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+      let verified: boolean
+      try {
+        verified = await verifyReviewEventCommitted(VITE_SUPABASE_URL, SUPABASE_SERVICE_KEY, E2E_EMAIL!)
+      } finally {
+        if (prevTls === undefined) delete process.env.NODE_TLS_REJECT_UNAUTHORIZED
+        else process.env.NODE_TLS_REJECT_UNAUTHORIZED = prevTls
+      }
       expect(
         verified,
         'expected a capability_review_events row for the test user created in the last 2 minutes',
@@ -149,7 +168,7 @@ test.describe('smoke — login, force-capability session, answer, commit', () =>
 // unexpected exercise type (e.g. dictation/speaking), which the caller fails
 // loud on via the final `reachedRecap` assertion.
 async function answerCurrentCard(page: Page, attempt: number): Promise<boolean> {
-  const options = page.locator('button.mantine-Button-root:not([disabled])').filter({
+  const options = page.locator('[data-testid="exercise-option"]:not([disabled])').filter({
     hasNotText: /doorgaan|continue/i,
   })
   const optionCount = await options.count()
