@@ -1,5 +1,14 @@
 ---
-status: approved
+status: shipped
+implementation: PR #249
+merged_at: 2026-06-14
+last_verified_against_code: 2026-07-02
+implementation_paths:
+  - scripts/lib/pipeline/capability-stage/satellitePresence.ts          # Layer 1: findCapsMissingSatellite (shared predicate)
+  - scripts/lib/pipeline/capability-stage/adapter.ts                     # softRetireCapabilities (+ next_due_at clear, M1) + reconcileArtifactPresence
+  - scripts/lib/pipeline/capability-stage/runner.ts                      # Layer 2: non-item invocation (after satellite writes, before promotion)
+  - scripts/lib/pipeline/capability-stage/vocabulary/publish.ts          # Layer 2: item invocation
+  - scripts/check-supabase-deep.ts                                       # Layer 3: HC14/15/17/19/20 import the shared predicate
 reviewed_by: [architect, data-architect]   # round 2: both APPROVE. (R1: architect C1-C3/W1-W3, data-architect M1/m1 — all folded in.) Implementation note: extend/wrap retireOrphanedCapabilities to also write learner_capability_state.next_due_at=NULL before returning.
 supersedes: []
 ---
@@ -203,3 +212,26 @@ render, so a builder-side backfill would be the wrong layer).
 - The completion bug (shipped, PR #248).
 - Why cloze sanitization fails for specific short lines (a generator-quality
   question; reconciliation makes such failures *safe*, not *invisible* — §3.4).
+
+## 7. Verification (2026-07-02 — shipped in PR #249, merged 2026-06-14)
+Confirmed the three-layer gate is fully implemented, wired, and green:
+- **Layer 1** — `findCapsMissingSatellite` (`satellitePresence.ts`), unit-tested; the
+  `grammar_patterns` slug read was later chunked (PR #329) to fix a Kong 502 at scale.
+- **Layer 2** — `reconcileArtifactPresence` (`adapter.ts`) wired in `runner.ts` (non-item,
+  after satellite writes, before promotion) and `vocabulary/publish.ts` (item), per §2b.
+  Unit-tested in `adapter.test.ts`: "soft-retires a ready+published dialogue cap whose
+  dialogue_clozes row vanished, and clears next_due_at" asserts BOTH the `retired_at` set
+  AND the §2d M1 `next_due_at=NULL` state-clear, plus a no-op case and source-kind scoping.
+- **Layer 3** — HC14/15/17/19/20 import the shared predicate; `make check-supabase-deep`
+  green (HC15 123 caps, HC14 clean) 2026-07-02.
+
+**Note on the §5.2 acceptance round-trip.** The "delete a `dialogue_clozes` row → plain
+re-publish → cap soft-retired" test is **not reproducible by manual row deletion**: a plain
+re-publish *regenerates* the missing dialogue cloze (the dialogue writer rewrites the line's
+clozes), so the satellite is present again and the cap is correctly NOT retired — the
+pipeline **self-heals** (contra §1a's "seed-once skips clozes" for the dialogue case;
+distractors do skip). The retire path fires only when generation genuinely produces no row
+for a line whose cap was promoted on a prior run (§1a). That path is covered by the Layer-2
+unit test above and guarded live by HC15 (Layer 3), so the acceptance intent (§5.1/§5.5)
+holds; the manual-deletion procedure in §5.2 does not exercise it. Verified against lesson 25
+(the last HC15 offender, data-fixed via `--regenerate-dialogue` on 2026-07-01).
