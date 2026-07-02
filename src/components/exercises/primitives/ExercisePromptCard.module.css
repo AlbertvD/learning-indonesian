@@ -49,6 +49,14 @@
     color: var(--ex-fg);
   }
 
+  .revealMeta {
+    margin-top: 4px;
+    font-size: var(--ex-fs-chrome);
+    font-style: italic;
+    text-align: center;
+    color: var(--ex-fg-muted);
+  }
+
   /* ── variant: word ─────────────────────────────────────────────────────── */
   .word {
     min-height: 100px;

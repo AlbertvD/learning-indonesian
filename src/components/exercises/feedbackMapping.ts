@@ -152,6 +152,9 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
         userAnswer: response ? { text: response, lang: 'ID', role: 'typed' } : undefined,
         acceptedVariants,
         audio: promptAudioUrl ? { url: promptAudioUrl } : undefined,
+        // Both prompt and answer are the Indonesian word — without this the
+        // learner never sees what it means (2026-07-02 owner request).
+        meaning: L1Text || undefined,
         commitFailed,
       }
     }

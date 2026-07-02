@@ -287,8 +287,9 @@ export function ExerciseFeedback(props: ExerciseFeedbackProps) {
         </>
       )}
 
-      {/* Grammar-only — meaning line + explanation card */}
-      {layout === 'grammar-reveal' && meaning && (
+      {/* Meaning line — any layout that supplies one (grammar cards + dictation).
+          The explanation card below stays grammar-only. */}
+      {meaning && (
         <div className={classes.meaningLine}>
           <span className={classes.meaningLabel}>{copy.roleLabelMeaning}:</span> {meaning}
         </div>

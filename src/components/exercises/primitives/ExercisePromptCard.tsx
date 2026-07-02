@@ -20,6 +20,8 @@ export interface ExercisePromptCardProps {
   constraint?: ReactNode
   /** Audio variant only — post-answer transcript reveal. */
   revealSlot?: ReactNode
+  /** Audio variant only — secondary line under the reveal (L1 meaning of the transcript). */
+  revealMeta?: ReactNode
   /** MAJ-2: language for the variant group label + the decorative audio button default label. Default 'nl'. */
   userLanguage?: 'nl' | 'en'
 }
@@ -31,6 +33,7 @@ export function ExercisePromptCard({
   meta,
   constraint,
   revealSlot,
+  revealMeta,
   userLanguage = 'nl',
 }: ExercisePromptCardProps) {
   return (
@@ -56,6 +59,9 @@ export function ExercisePromptCard({
       {meta && <div className={classes.meta}>{meta}</div>}
       {revealSlot && variant === 'audio' && (
         <div className={classes.reveal}>{revealSlot}</div>
+      )}
+      {revealSlot && revealMeta && variant === 'audio' && (
+        <div className={classes.revealMeta}>{revealMeta}</div>
       )}
     </div>
   )
