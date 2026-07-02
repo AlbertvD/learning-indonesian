@@ -11,7 +11,7 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { IconHeadphones } from '@tabler/icons-react'
-import { textService, type TextListRow } from '@/services/textService'
+import { textService, type PodcastListRow } from '@/services/textService'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
 
@@ -24,7 +24,7 @@ function formatDuration(seconds: number | null): string | null {
 
 export function Podcasts() {
   const T = useT()
-  const [podcasts, setPodcasts] = useState<TextListRow[]>([])
+  const [podcasts, setPodcasts] = useState<PodcastListRow[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

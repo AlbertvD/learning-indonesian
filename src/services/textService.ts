@@ -81,10 +81,15 @@ export type TextListRow = Pick<
   'id' | 'title' | 'description' | 'audio_path' | 'level' | 'duration_seconds' | 'transcript_segments'
 >
 
-const LIST_COLUMNS = 'id, title, description, audio_path, level, duration_seconds, transcript_segments'
+/**
+ * The Podcasts list never reads `transcript_segments` (the per-word timing JSONB,
+ * the heaviest column on the table) — only Lezen's readability ranking does. So
+ * the Listen face gets its own narrower row + query instead of sharing listTexts.
+ */
+export type PodcastListRow = Omit<TextListRow, 'transcript_segments'>
 
-/** The single definition of "is a podcast" (has a Listen face) — used nowhere else. */
-const hasAudio = (t: TextListRow): boolean => t.audio_path != null
+const LIST_COLUMNS = 'id, title, description, audio_path, level, duration_seconds, transcript_segments'
+const PODCAST_LIST_COLUMNS = 'id, title, description, audio_path, level, duration_seconds'
 
 export const textService = {
   /** All texts (the Read face is available to every text); the reader filters readability. */
@@ -98,9 +103,19 @@ export const textService = {
     return data as TextListRow[]
   },
 
-  /** Audio-bearing texts only — the Listen face (Podcasts page). */
-  async listPodcasts(): Promise<TextListRow[]> {
-    return (await this.listTexts()).filter(hasAudio)
+  /**
+   * Audio-bearing texts only — the Listen face (Podcasts page). "Is a podcast"
+   * = has audio_path, enforced server-side so the segments JSONB never ships.
+   */
+  async listPodcasts(): Promise<PodcastListRow[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('texts')
+      .select(PODCAST_LIST_COLUMNS)
+      .not('audio_path', 'is', null)
+      .order('created_at', { ascending: false })
+    if (error) throw error
+    return data as PodcastListRow[]
   },
 
   async getText(textId: string): Promise<Podcast> {

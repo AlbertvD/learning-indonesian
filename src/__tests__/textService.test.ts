@@ -8,6 +8,7 @@ vi.mock('@/lib/supabase', () => {
     select: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
+    not: vi.fn().mockReturnThis(),
     single: vi.fn().mockReturnThis(),
     then: vi.fn(function(onFulfilled: any) {
       return Promise.resolve({ data: [], error: null }).then(onFulfilled)
@@ -69,19 +70,21 @@ describe('textService', () => {
     expect(result).toEqual(mockData)
   })
 
-  it('listPodcasts returns only audio-bearing texts (the Listen face)', async () => {
-    const mockData = [
-      { id: '1', title: 'With audio', audio_path: 'a.mp3' },
-      { id: '2', title: 'Read-only', audio_path: null },
-    ]
+  it('listPodcasts filters audio-bearing texts server-side and never selects transcript_segments', async () => {
+    const mockData = [{ id: '1', title: 'With audio', audio_path: 'a.mp3' }]
     getMock().then.mockImplementationOnce(function(onFulfilled: any) {
       return Promise.resolve({ data: mockData, error: null }).then(onFulfilled)
     })
 
     const result = await textService.listPodcasts()
 
-    expect(result).toHaveLength(1)
-    expect(result[0].id).toBe('1')
+    // "Is a podcast" = has audio_path, enforced in the query -- and the heavy
+    // per-word-timing JSONB must not ship to the Podcasts list at all.
+    expect(getMock().select).toHaveBeenCalledWith(
+      'id, title, description, audio_path, level, duration_seconds',
+    )
+    expect(getMock().not).toHaveBeenCalledWith('audio_path', 'is', null)
+    expect(result).toEqual(mockData)
   })
 
   it('getAudioUrl calls supabase storage', () => {
