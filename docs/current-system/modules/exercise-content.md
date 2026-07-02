@@ -82,6 +82,10 @@ Concretely, that means hiding:
 - `buildForExerciseType<K extends ExerciseType>(exerciseType: K, raw: RawProjectorInput): BuilderResult` — calls `projectBuilderInput` (from `@/lib/capabilities`), then dispatches to the per-type builder from `BUILDERS`.
 - `BUILDERS: Record<ExerciseType, (input: BuilderInputFor<T>) => BuilderResult>` — the 12-entry registry.
 
+**Pattern fetcher (`byKind/pattern.ts`):**
+
+- `GRAMMAR_EXERCISE_TABLES: readonly { table: string; type: string }[]` — the 4 typed grammar-exercise tables paired with their `exercise_type` discriminant. Canonical source for the exercise_type<->table correlation; `pattern.ts` derives its internal `TABLE_BY_TYPE` lookup from it, and `src/services/exerciseReviewService.ts` + `src/services/coverageService.ts` import it directly (deduped 2026-07-02, pre-cloud hardening) instead of each defining their own copy.
+
 **Types re-exported from `@/lib/capabilities` (the canonical owner):**
 
 - `CapabilityRenderContext` — output shape per block: `{ blockId, capabilityId, exerciseItem: ExerciseItem | null, audibleTexts: string[], diagnostic: ResolutionDiagnostic | null }`.

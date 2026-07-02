@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getSemanticGroup } from '@/lib/semanticGroups'
+import { getSemanticGroup } from '@/lib/distractors'
 
 describe('getSemanticGroup — new abstract groups', () => {
   it('classifies "love" (EN) as emotions', () => {

@@ -11,6 +11,7 @@ export {
   createCapabilityContentService,
   resolveCapabilityBlocks,
 } from './resolver'
+export { GRAMMAR_EXERCISE_TABLES } from './byKind/pattern'
 export type {
   CapabilityContentService,
   ResolveOptions,

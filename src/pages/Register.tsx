@@ -3,39 +3,71 @@ import { useState } from 'react'
 import { PasswordInput, TextInput, Button, Stack, Text } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
+import { FunctionsHttpError } from '@supabase/supabase-js'
 import { PageFormLayout } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
+import { supabase } from '@/lib/supabase'
+import { logError } from '@/lib/logger'
 // See Login.tsx — auth pages render before the user profile loads, so we
 // pin the language to NL (the project default) until EN-first onboarding
 // is introduced.
 import { nl as T } from '@/lib/i18n'
 
+// The edge function returns { error: <code> } on non-2xx. functions.invoke
+// never throws — it resolves { data: null, error: FunctionsHttpError } whose
+// .context is the raw Response. Best-effort parse; unknown/unparseable shapes
+// fall back to the generic message.
+async function extractErrorCode(error: unknown): Promise<string | undefined> {
+  if (!(error instanceof FunctionsHttpError)) return undefined
+  try {
+    const body = await error.context.json()
+    return typeof body?.error === 'string' ? body.error : undefined
+  } catch {
+    return undefined
+  }
+}
+
 export function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
+  const [inviteCode, setInviteCode] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-  const signUp = useAuthStore(s => s.signUp)
+  const signIn = useAuthStore(s => s.signIn)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      await signUp(email, password, fullName)
+      const { error } = await supabase.functions.invoke('signup-with-invite', {
+        body: { email, password, fullName, inviteCode },
+      })
+      if (error) throw error
+
+      await signIn(email, password)
       notifications.show({
         color: 'green',
         title: T.register.registrationSuccess,
         message: T.register.accountCreated,
       })
-      navigate('/login')
-    } catch {
+      navigate('/')
+    } catch (err) {
+      const code = await extractErrorCode(err)
+      const message = code === 'invalid_invite_code'
+        ? T.register.invalidInviteCode
+        : code === 'email_taken'
+          ? T.register.emailTaken
+          : code === 'rate_limited'
+            ? T.register.rateLimited
+            : T.register.somethingWentWrong
       notifications.show({
         color: 'red',
         title: T.register.registrationFailed,
-        message: T.register.somethingWentWrong,
+        message,
       })
+      logError({ page: 'Register', action: 'signUp', error: err })
     } finally {
       setLoading(false)
     }
@@ -67,6 +99,14 @@ export function Register() {
               placeholder={T.register.passwordPlaceholder}
               value={password}
               onChange={(e) => setPassword(e.currentTarget.value)}
+              disabled={loading}
+              required
+            />
+            <TextInput
+              label={T.register.inviteCode}
+              placeholder={T.register.inviteCodePlaceholder}
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.currentTarget.value)}
               disabled={loading}
               required
             />

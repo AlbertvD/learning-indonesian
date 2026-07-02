@@ -46,6 +46,33 @@ const CAPABILITY_COLUMNS = [
   'prerequisite_keys',
 ].join(',')
 
+// toLearnerRow only ever reads readiness_status/publication_status off a capability
+// row (see below) — listLearnerCapabilityStates needs nothing else from
+// learning_capabilities, so its select is trimmed to this narrow set (+ id, the
+// join key) rather than the full CAPABILITY_COLUMNS projection.
+const CAPABILITY_READINESS_COLUMNS = 'id, readiness_status, publication_status'
+
+// toLearnerRow's full column list for learner_capability_state — deliberately
+// excludes fsrs_state_json (an FSRS-internal jsonb blob no mapper reads; the FSRS
+// review-commit path reads/writes it via the SECURITY DEFINER RPC, not this
+// client-side adapter) and activation_source/activation_event_id/created_at/
+// updated_at (unused by any mapper below).
+const LEARNER_STATE_COLUMNS = [
+  'id',
+  'user_id',
+  'capability_id',
+  'canonical_key_snapshot',
+  'activation_state',
+  'stability',
+  'difficulty',
+  'last_reviewed_at',
+  'next_due_at',
+  'review_count',
+  'lapse_count',
+  'consecutive_failure_count',
+  'state_version',
+].join(',')
+
 interface LearningCapabilityDbRow {
   id: string
   canonical_key: string
@@ -75,8 +102,16 @@ interface LearnerCapabilityStateDbRow {
   review_count: number
   lapse_count: number
   consecutive_failure_count: number
-  state_after_json?: Record<string, unknown> | null
   state_version: number
+}
+
+// The subset of a learning_capabilities row toLearnerRow actually consults.
+// LearningCapabilityDbRow satisfies this structurally, so toLearnerRow accepts
+// either the full projection (loadCapabilitySessionData/loadForceCapabilitySnapshot)
+// or this narrower listLearnerCapabilityStates-only row.
+interface CapabilityReadinessRow {
+  readiness_status: CapabilityReadinessStatus
+  publication_status: CapabilityPublicationStatus
 }
 
 interface LessonOrderDbRow {
@@ -158,7 +193,7 @@ function toPlannerCapability(
 
 function toLearnerRow(
   row: LearnerCapabilityStateDbRow,
-  capabilityById: Map<string, LearningCapabilityDbRow>,
+  capabilityById: Map<string, CapabilityReadinessRow>,
 ): LearnerCapabilityStateRow {
   const capability = capabilityById.get(row.capability_id)
   return {
@@ -216,16 +251,16 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
     async listLearnerCapabilityStates(request) {
       const { data: capabilities, error: capabilitiesError } = await db()
         .from('learning_capabilities')
-        .select('*')
+        .select(CAPABILITY_READINESS_COLUMNS)
         .is('retired_at', null)
       if (capabilitiesError) throw capabilitiesError
-      const capabilityById = new Map<string, LearningCapabilityDbRow>(
-        ((capabilities ?? []) as LearningCapabilityDbRow[]).map(row => [row.id, row]),
+      const capabilityById = new Map<string, CapabilityReadinessRow>(
+        ((capabilities ?? []) as (CapabilityReadinessRow & { id: string })[]).map(row => [row.id, row]),
       )
 
       const { data, error } = await db()
         .from('learner_capability_state')
-        .select('*')
+        .select(LEARNER_STATE_COLUMNS)
         .eq('user_id', request.userId)
       if (error) throw error
 
@@ -256,7 +291,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
           .eq('readiness_status', 'ready')
           .eq('publication_status', 'published')
           .is('retired_at', null),
-        db().from('learner_capability_state').select('*').eq('user_id', request.userId),
+        db().from('learner_capability_state').select(LEARNER_STATE_COLUMNS).eq('user_id', request.userId),
         listActivatedLessons(request.userId, client),
         db().from('lessons').select('id, order_index'),
         db()
@@ -374,7 +409,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
       // Read any existing learner_capability_state row for this cap.
       const { data: existing, error: stateLoadError } = await db()
         .from('learner_capability_state')
-        .select('*')
+        .select(LEARNER_STATE_COLUMNS)
         .eq('user_id', userId)
         .eq('capability_id', capabilityRow.id)
         .limit(1)

@@ -15,7 +15,7 @@ if (!SUPABASE_URL || !ANON_KEY) {
 // Local dev origin — this is what the browser sends in CORS preflight
 const DEV_ORIGIN = 'http://localhost:5173'
 
-const results: { label: string; ok: boolean; detail?: string }[] = []
+const results: { label: string; ok: boolean; warn?: boolean; detail?: string }[] = []
 
 function pass(label: string) {
   results.push({ label, ok: true })
@@ -23,6 +23,12 @@ function pass(label: string) {
 
 function fail(label: string, detail: string) {
   results.push({ label, ok: false, detail })
+}
+
+// Non-blocking: the check ran fine but surfaced something worth a human's
+// attention. Does NOT count toward `failures` / the non-zero exit code.
+function warn(label: string, detail: string) {
+  results.push({ label, ok: true, warn: true, detail })
 }
 
 // ── Check 1: API reachability ─────────────────────────────────────────────
@@ -99,6 +105,36 @@ try {
   }
 } catch (err) {
   fail('Auth endpoint', `Request failed: ${(err as Error).message}`)
+}
+
+// ── Check 4b: public signup gate ───────────────────────────────────────────
+// Pre-cloud-hardening item 1 gates self-signup behind an invite code
+// (supabase/functions/signup-with-invite). The public auth.signUp endpoint
+// should be DISABLED at the GoTrue level (GOTRUE_DISABLE_SIGNUP) so nobody
+// can bypass the invite-code edge function. This is a WARNING, not a
+// failure, because it doesn't block local dev — but it must be closed
+// before any customer preview goes out.
+try {
+  const probeClient = createClient(SUPABASE_URL, ANON_KEY)
+  const probeSuffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`
+  const throwawayEmail = `signup-probe-${probeSuffix}@duin.home`
+  const { data, error } = await probeClient.auth.signUp({
+    email: throwawayEmail,
+    password: `Probe-${probeSuffix}!`,
+  })
+  if (!error && data.user) {
+    warn(
+      'Public signup gate',
+      `Public signup is still OPEN — supabase.auth.signUp succeeded and created a user ` +
+      `(id ${data.user.id}, email ${throwawayEmail}). Set GOTRUE_DISABLE_SIGNUP=true in ` +
+      `homelab-configs services/supabase/docker-compose.yml and restart GoTrue. Delete the ` +
+      `throwaway user first: DELETE FROM auth.users WHERE id = '${data.user.id}';`,
+    )
+  } else {
+    pass('Public signup gate (auth.signUp disabled)')
+  }
+} catch (err) {
+  warn('Public signup gate', `Could not determine signup gate state: ${(err as Error).message}`)
 }
 
 // ── Checks 5–7: Storage buckets ───────────────────────────────────────────
@@ -264,7 +300,10 @@ if (authed) {
 console.log(`\nSupabase health check — ${SUPABASE_URL}\n`)
 let failures = 0
 for (const r of results) {
-  if (r.ok) {
+  if (r.warn) {
+    console.log(`  ⚠ ${r.label}`)
+    console.log(`    → ${r.detail}`)
+  } else if (r.ok) {
     console.log(`  ✓ ${r.label}`)
   } else {
     console.log(`  ✗ ${r.label}`)

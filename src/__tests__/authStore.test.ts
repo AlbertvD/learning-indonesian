@@ -24,7 +24,6 @@ vi.mock('@/lib/supabase', () => ({
       getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
       onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
       signInWithPassword: vi.fn(),
-      signUp: vi.fn(),
       signOut: vi.fn(),
     },
     schema: vi.fn(() => mockChain),
@@ -121,5 +120,61 @@ describe('authStore', () => {
     )
     expect(mockChain.eq).toHaveBeenCalledWith('id', 'user-1')
     expect(useAuthStore.getState().profile?.language).toBe('en')
+  })
+
+  describe('onAuthStateChange handler', () => {
+    // Capture the listener that initialize() registers so tests can fire
+    // synthetic auth events without going through a real Supabase session.
+    async function initializeAndCaptureListener() {
+      vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: null } } as any)
+      await useAuthStore.getState().initialize()
+      const call = vi.mocked(supabase.auth.onAuthStateChange).mock.calls[0]
+      return call[0] as (event: string, session: any) => Promise<void> | void
+    }
+
+    it('TOKEN_REFRESHED with a session updates user without upserting or fetching the profile', async () => {
+      const listener = await initializeAndCaptureListener()
+      const existingProfile = { id: 'user-1', fullName: 'Existing', language: 'nl', preferredSessionSize: 15, isAdmin: false, timezone: null }
+      useAuthStore.setState({ user: null, profile: existingProfile as any })
+      vi.clearAllMocks()
+
+      const mockUser = { id: 'user-1', email: 'test@example.com', user_metadata: {} }
+      await listener('TOKEN_REFRESHED', { user: mockUser })
+
+      expect(mockChain.upsert).not.toHaveBeenCalled()
+      // No profile/admin reload — schema() should not be called for a profiles select.
+      expect(mockChain.select).not.toHaveBeenCalled()
+      expect(useAuthStore.getState().user).toEqual(mockUser)
+      // Existing profile is preserved, not cleared or reloaded.
+      expect(useAuthStore.getState().profile).toEqual(existingProfile)
+    })
+
+    it('SIGNED_IN still upserts the profile and reloads profile/admin data', async () => {
+      const listener = await initializeAndCaptureListener()
+      vi.clearAllMocks()
+      mockChain.maybeSingle
+        .mockResolvedValueOnce({ data: { display_name: 'Test User', language: 'nl', preferred_session_size: 15, timezone: null }, error: null })
+        .mockResolvedValueOnce({ data: null })
+
+      const mockUser = { id: 'user-1', email: 'test@example.com', user_metadata: { full_name: 'Test User' } }
+      await listener('SIGNED_IN', { user: mockUser })
+      // The handler defers work via setTimeout(0) to avoid the Supabase auth deadlock.
+      await new Promise((resolve) => setTimeout(resolve, 10))
+
+      expect(mockChain.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'user-1' }),
+        expect.objectContaining({ onConflict: 'id', ignoreDuplicates: true })
+      )
+      expect(useAuthStore.getState().user).toEqual(mockUser)
+      expect(useAuthStore.getState().profile).toEqual({
+        id: 'user-1',
+        email: 'test@example.com',
+        fullName: 'Test User',
+        language: 'nl',
+        preferredSessionSize: 15,
+        isAdmin: false,
+        timezone: null,
+      })
+    })
   })
 })

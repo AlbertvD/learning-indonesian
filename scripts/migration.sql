@@ -458,7 +458,18 @@ CREATE POLICY "learning_sessions_write" ON indonesian.learning_sessions FOR ALL 
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
 DROP POLICY IF EXISTS "error_logs_insert" ON indonesian.error_logs;
-CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
+-- Caller-scoped + bounded (2026-07-02 security hardening): was WITH CHECK(true),
+-- which let any authenticated user forge another user's user_id or insert
+-- unbounded text. user_id must match the caller (or be null — logger.ts logs
+-- without a user_id when auth is unavailable); message/page/action are capped
+-- to match the truncation logger.ts performs before insert.
+CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated
+  WITH CHECK (
+    (user_id = auth.uid() OR user_id IS NULL)
+    AND char_length(error_message) <= 4000
+    AND char_length(coalesce(page, '')) <= 200
+    AND char_length(coalesce(action, '')) <= 200
+  );
 
 -- Health check RPC
 CREATE OR REPLACE FUNCTION indonesian.schema_health()
@@ -1728,6 +1739,8 @@ begin
   -- First answer materialises the row; subsequent answers advance ended_at.
   -- session_type hardcoded 'learning' because only the capability path commits
   -- through this RPC (Lesson + Podcast paths produce no answers, no session).
+  -- sessionId is client-supplied; a forged/colliding id belonging to another
+  -- user must be a no-op here, never a cross-user write to their session row.
   insert into indonesian.learning_sessions (id, user_id, session_type, started_at, ended_at)
   values (
     (p_command->>'sessionId')::uuid,
@@ -1740,7 +1753,8 @@ begin
      set ended_at = greatest(
        indonesian.learning_sessions.ended_at,
        excluded.ended_at
-     );
+     )
+     where indonesian.learning_sessions.user_id = v_user_id;
 
   return jsonb_build_object(
     'idempotencyStatus', 'committed',
@@ -2765,31 +2779,15 @@ comment on column indonesian.learning_items.translation_en is
 comment on column indonesian.learning_items.usage_note is
   'Optional usage note. Replaces item_meanings.usage_note. Decision R.';
 
--- §PR1.2 — capability_audio_refs (Decision Q).
--- Replaces capability_artifacts(artifact_kind=audio_clip) as the binding
--- between caps and their TTS audio. One row per (capability_id, audio_clip_id)
--- pair; voice_id is denormalised from audio_clips for query simplicity.
-create table if not exists indonesian.capability_audio_refs (
-  capability_id uuid not null references indonesian.learning_capabilities(id) on delete cascade,
-  audio_clip_id uuid not null references indonesian.audio_clips(id) on delete restrict,
-  voice_id      text not null,
-  created_at    timestamptz not null default now(),
-  primary key (capability_id, audio_clip_id)
-);
-
-create index if not exists capability_audio_refs_clip_idx
-  on indonesian.capability_audio_refs(audio_clip_id);
-
-alter table indonesian.capability_audio_refs enable row level security;
-drop policy if exists "capability_audio_refs_authenticated_read" on indonesian.capability_audio_refs;
-create policy "capability_audio_refs_authenticated_read"
-  on indonesian.capability_audio_refs for select to authenticated using (true);
-grant select on indonesian.capability_audio_refs to authenticated;
-revoke insert, update, delete on indonesian.capability_audio_refs from authenticated;
-grant all on indonesian.capability_audio_refs to service_role;
-
-comment on table indonesian.capability_audio_refs is
-  'Capability to audio_clip binding. Replaces capability_artifacts(kind=audio_clip). Decision Q.';
+-- §PR1.2 — capability_audio_refs — RETIRED (pre-cloud hardening, 2026-07-02).
+-- Created in PR 1 (Decision Q) as the intended cap-to-audio binding table
+-- (replacing capability_artifacts(artifact_kind=audio_clip)), but the writer
+-- was never wired (runner.ts explicitly skipped it) and the actual runtime
+-- audio path uses get_audio_clips RPC keyed by (text, voice_id) via
+-- audioService.fetchSessionAudioMap, bypassing this table entirely. 0 rows,
+-- 0 writers, 0 readers at retirement (confirmed docs/audits/2026-05-25-pr7-pre-drop-audit.md
+-- Check 12 + a full repo re-grep). No FK points into it; no view references it.
+drop table if exists indonesian.capability_audio_refs cascade;
 
 -- §PR1.3 — Curated distractor tables — RETIRED (cap-v2 vocabulary cutover #161).
 -- Replaced by the `distractors` pointer table (curated MCQ wrong-option pointers
@@ -3777,3 +3775,81 @@ language sql stable security invoker as $$
   );
 $$;
 grant execute on function indonesian.get_text_coverage(uuid, text[]) to authenticated;
+
+-- ============================================================================
+-- Pre-cloud-preview hardening item 1: invite-gated signup
+-- ============================================================================
+-- Self-signup via `supabase.auth.signUp` is gated behind a one-time-use invite
+-- code, consumed by the `signup-with-invite` edge function (which creates the
+-- user via the GoTrue admin API, not the public signup endpoint). This table
+-- is a SERVICE-ROLE-ONLY surface: no RLS policies, no anon/authenticated
+-- grants — the edge function is the only caller, using the service key.
+create table if not exists indonesian.signup_invite_codes (
+  code           text primary key,
+  uses_remaining int not null default 1 check (uses_remaining >= 0),
+  note           text,
+  created_at     timestamptz not null default now()
+);
+
+alter table indonesian.signup_invite_codes enable row level security;
+-- No policies — service_role bypasses RLS; anon/authenticated have zero grants.
+grant all on indonesian.signup_invite_codes to service_role;
+
+-- redeem_invite_code: atomically decrements uses_remaining if > 0, returning
+-- whether a code was found and had capacity. Called by the signup-with-invite
+-- edge function BEFORE creating the GoTrue user — redeem-first means a code
+-- can never be spent twice by two concurrent signups, and an invalid/exhausted
+-- code fails fast with no GoTrue call. On a subsequent user-creation failure
+-- the edge function calls restore_invite_code to give the code back.
+create or replace function indonesian.redeem_invite_code(p_code text)
+returns boolean
+language plpgsql
+security definer
+set search_path = indonesian, public
+as $$
+declare
+  v_found boolean;
+begin
+  if coalesce(auth.role(), '') <> 'service_role' then
+    raise exception 'redeem_invite_code requires a trusted service role caller';
+  end if;
+
+  update indonesian.signup_invite_codes
+  set uses_remaining = uses_remaining - 1
+  where code = p_code and uses_remaining > 0
+  returning true into v_found;
+
+  return coalesce(v_found, false);
+end;
+$$;
+
+revoke all on function indonesian.redeem_invite_code(text) from public;
+grant execute on function indonesian.redeem_invite_code(text) to service_role;
+
+-- restore_invite_code: increments uses_remaining back after a redeem whose
+-- follow-up GoTrue user creation failed (e.g. a typo'd, already-registered
+-- email) — so the invite code isn't burned for nothing.
+create or replace function indonesian.restore_invite_code(p_code text)
+returns boolean
+language plpgsql
+security definer
+set search_path = indonesian, public
+as $$
+declare
+  v_found boolean;
+begin
+  if coalesce(auth.role(), '') <> 'service_role' then
+    raise exception 'restore_invite_code requires a trusted service role caller';
+  end if;
+
+  update indonesian.signup_invite_codes
+  set uses_remaining = uses_remaining + 1
+  where code = p_code
+  returning true into v_found;
+
+  return coalesce(v_found, false);
+end;
+$$;
+
+revoke all on function indonesian.restore_invite_code(text) from public;
+grant execute on function indonesian.restore_invite_code(text) to service_role;

@@ -5,7 +5,7 @@
  * tap-to-gloss cascade, and per-learner coverage ordering. Does NOT import
  * `session-builder` in Phase 1 (that is the Phase-2 harvest edge).
  */
-import type { Podcast } from '@/services/textService'
+import type { Podcast, TextListRow } from '@/services/textService'
 import {
   fetchCoverageKnownTokens,
   fetchItemGlosses,
@@ -86,9 +86,9 @@ async function coverageOf(text: ReadableText, userId: string): Promise<number> {
  * this learner. Coverage is computed per text (8-text corpus → 8 cheap RPC calls).
  */
 export async function rankReadableTexts(
-  podcasts: Podcast[],
+  podcasts: TextListRow[],
   userId: string,
-): Promise<RankedText<Podcast>[]> {
+): Promise<RankedText<TextListRow>[]> {
   const readable = podcasts.filter(isReadable)
   const ranked = await Promise.all(
     readable.map(async (p) => ({

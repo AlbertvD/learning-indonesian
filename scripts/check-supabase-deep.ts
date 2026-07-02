@@ -128,8 +128,25 @@ const policyCount: Record<string, number> = {}
 for (const p of report.policies ?? []) {
   policyCount[p.table] = (policyCount[p.table] ?? 0) + 1
 }
+// Tables where RLS-enabled + ZERO policies is the DESIGN, not the 2026-05-02 bug
+// class: deny-all surfaces reached only via service_role (which bypasses RLS).
+// Each entry must say who the sole writer/reader is.
+const intentionallyDenyAll = new Set([
+  'signup_invite_codes', // service-role only — consumed by the signup-with-invite edge function
+])
 for (const t of report.tables) {
   if (!t.rls_enabled) continue
+  if (intentionallyDenyAll.has(t.name)) {
+    if ((policyCount[t.name] ?? 0) === 0) {
+      pass(`Policies exist: ${t.name} (deny-all by design — service-role-only surface)`)
+    } else {
+      fail(
+        `Policies exist: ${t.name}`,
+        `'indonesian.${t.name}' is declared deny-all (service-role only) but has ${policyCount[t.name]} policies — either remove them or remove it from intentionallyDenyAll.`,
+      )
+    }
+    continue
+  }
   if ((policyCount[t.name] ?? 0) === 0) {
     fail(
       `Policies exist: ${t.name}`,
@@ -1986,6 +2003,39 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     }
   } catch (err) {
     fail('HC29 collections frequency-projection invariant', err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC39 (pre-cloud hardening, Item 5): PostgREST max-rows truncation guard.
+//        session-builder's adapter (src/lib/session-builder/adapter.ts) fetches
+//        ALL ready+published learning_capabilities rows client-side, unpaginated,
+//        for the planner catalog. If PGRST_DB_MAX_ROWS were ever set on the shared
+//        instance, PostgREST would silently truncate that fetch — sessions would
+//        build from a partial catalog with no error anywhere. Prefer: count=exact
+//        (the supabase-js `{ count: 'exact' }` option) returns the TRUE total
+//        alongside the (possibly truncated) row page; if data.length < count, rows
+//        were dropped server-side. One query, id column only — cheap.
+{
+  const { data, count, error } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .select('id', { count: 'exact' })
+  if (error) {
+    fail('HC39 learning_capabilities fetch not truncated by PGRST_DB_MAX_ROWS', error.message)
+  } else {
+    const returned = (data ?? []).length
+    const total = count ?? 0
+    if (returned < total) {
+      fail(
+        'HC39 learning_capabilities fetch not truncated by PGRST_DB_MAX_ROWS',
+        `Only ${returned} of ${total} row(s) returned — PGRST_DB_MAX_ROWS is truncating the response. ` +
+          `session-builder/adapter.ts fetches this table unpaginated for the session catalog; a truncated ` +
+          `fetch silently builds sessions from a partial catalog. Check/unset PGRST_DB_MAX_ROWS on the shared ` +
+          `Supabase instance (homelab-configs, services/supabase/docker-compose.yml).`,
+      )
+    } else {
+      pass(`HC39 learning_capabilities fetch not truncated by PGRST_DB_MAX_ROWS (${total} row(s) total)`)
+    }
   }
 }
 

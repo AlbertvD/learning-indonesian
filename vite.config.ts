@@ -39,6 +39,27 @@ export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Vite 8 ships on rolldown, whose OutputOptions type only accepts a
+        // function for the legacy `manualChunks` (rollup-compat) option — the
+        // object-map form documented for classic Rollup/Vite is rejected by
+        // the type checker here. `codeSplitting.groups` is rolldown's
+        // non-deprecated replacement and gives the same deterministic,
+        // named-group behaviour as the object form (no ad-hoc branching
+        // function to get wrong), plus `includeDependenciesRecursively`
+        // defaults to true — reduces the chance of circular chunks.
+        codeSplitting: {
+          groups: [
+            { name: 'vendor-react', test: /node_modules[\\/](react|react-dom|react-router|react-router-dom)[\\/]/ },
+            { name: 'vendor-mantine', test: /node_modules[\\/]@mantine[\\/]/ },
+            { name: 'vendor-supabase', test: /node_modules[\\/]@supabase[\\/]/ },
+          ],
+        },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
@@ -62,7 +83,12 @@ export default defineConfig({
     ],
     // Progress.test.tsx tests require completed implementation work on the
     // redesigned Progress page — re-enable as implementation catches up.
-    exclude: ['**/node_modules/**', 'src/__tests__/Progress.test.tsx'],
+    // e2e/** is Playwright's testDir (a real browser against a real backend,
+    // run via `bun run e2e`) — it must never be picked up by vitest, which
+    // only ever runs against the mocked Supabase client. The include globs
+    // above already scope vitest away from e2e/ (no __tests__ dir there), but
+    // this exclude keeps that true even if the include globs ever broaden.
+    exclude: ['**/node_modules/**', 'src/__tests__/Progress.test.tsx', 'e2e/**'],
     // Cap parallel workers. Default is one fork per CPU core; on an 8-core MBA
     // that means ~8 Node processes each loading React/Mantine/Supabase simultaneously.
     // maxForks: 2 keeps peak RSS to ~2× a single process (~400–600 MB total).
