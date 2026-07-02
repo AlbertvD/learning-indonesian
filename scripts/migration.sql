@@ -4008,3 +4008,54 @@ $$;
 
 revoke all on function indonesian.get_session_build_data(uuid, text, text[], timestamptz) from public;
 grant execute on function indonesian.get_session_build_data(uuid, text, text[], timestamptz) to authenticated, service_role;
+
+-- ============================================================================
+-- GDPR retention (Art. 5(1)(e) storage limitation) — 2026-07-02
+-- Daily purge of the two diagnostic tables that survive account deletion via
+-- ON DELETE SET NULL (error_logs :315, capability_resolution_failure_events
+-- :1266). 90-day rolling window for both. pg_cron extension already installed
+-- (:524). Idempotent: unschedule-if-exists (swallow the "job not found" error)
+-- then schedule under a fixed jobname.
+-- ============================================================================
+
+do $$ begin perform cron.unschedule('gdpr-retention-purge'); exception when others then null; end $$;
+
+select cron.schedule(
+  'gdpr-retention-purge',
+  '0 3 * * *',                         -- 03:00 daily (server tz), low-traffic
+  $job$
+    delete from indonesian.error_logs
+      where created_at < now() - interval '90 days';
+    delete from indonesian.capability_resolution_failure_events
+      where created_at < now() - interval '90 days';
+  $job$
+);
+
+-- Retention-job health probe. SECURITY DEFINER because cron.* is owned by the
+-- superuser and not exposed to PostgREST; mirrors schema_health() (:511-517).
+create or replace function indonesian.retention_cron_health()
+returns table (jobname text, active boolean, last_status text, last_run_at timestamptz)
+language sql
+security definer
+set search_path = pg_catalog, cron
+as $$
+  select j.jobname,
+         j.active,
+         d.status,
+         d.start_time
+  from cron.job j
+  left join lateral (
+    select status, start_time
+    from cron.job_run_details r
+    where r.jobid = j.jobid
+    order by r.start_time desc
+    limit 1
+  ) d on true
+  where j.jobname = 'gdpr-retention-purge';
+$$;
+
+revoke all on function indonesian.retention_cron_health() from public;
+-- service_role ONLY (data-architect G3): check-supabase-deep (service key) is
+-- the sole caller in the repo; an authenticated grant would expose cron-job
+-- telemetry to every browser session for no consumer.
+grant execute on function indonesian.retention_cron_health() to service_role;

@@ -1,10 +1,12 @@
 ---
-status: approved
+status: implementing
+implementation: PR pending (branch feat/launch-readiness-round-2)
 approved_at: 2026-07-02  # product defaults chosen: 90/90 window, email as confirmation phrase, 48h HC threshold
 branch: feat/launch-readiness-round-2
 reviewed_by: [architect, data-architect]
 supersedes: []
 privacy_copy_status: DRAFT — the /privacy page copy in §4 is engineering-authored placeholder text and MUST receive the user's own legal review before public launch. It is not legal advice and is not launch-ready as written.
+implementation_note: "HC number renumbered — spec text says HC40; implemented as HC41 (HC40 was consumed by the session-RPC parity check, commit 362aca6f, landed after this spec was authored). See scripts/check-supabase-deep.ts comment."
 ---
 
 # GDPR erasure + retention + privacy policy

@@ -2213,6 +2213,49 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
 }
 
+// ── HC41 (GDPR retention, docs/plans/2026-07-02-gdpr-erasure-retention.md §2.3
+//    — spec text calls this "HC40"; renumbered here because HC40 was consumed
+//    by the session-RPC parity check above, committed 362aca6f before this
+//    spec's build landed): the gdpr-retention-purge cron job exists, is
+//    active, and has a recent successful run. pg_cron installed-and-idle
+//    (migration.sql:524) does NOT guarantee the background worker is running;
+//    this catches a silently-stopped purge. Reads cron.* via the
+//    indonesian.retention_cron_health() SECURITY DEFINER function because the
+//    cron schema is not exposed to PostgREST.
+{
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .rpc('retention_cron_health')
+  if (error) {
+    fail('HC41 gdpr-retention-purge cron job healthy', error.message)
+  } else {
+    const row = (data ?? [])[0]
+    if (!row) {
+      fail('HC41 gdpr-retention-purge cron job healthy',
+        'Job not found in cron.job — the retention purge is not scheduled. ' +
+        'Re-apply scripts/migration.sql (make migrate).')
+    } else if (!row.active) {
+      fail('HC41 gdpr-retention-purge cron job healthy', 'Job exists but is inactive (cron.job.active = false).')
+    } else if (row.last_run_at == null) {
+      // Scheduled but never fired yet — acceptable within the first 24h of deploy;
+      // treat as pass with a note rather than a hard fail (would false-red a fresh migrate).
+      pass('HC41 gdpr-retention-purge cron job scheduled + active (no run yet — expected < 24h post-migrate)')
+    } else {
+      const lastRun = new Date(row.last_run_at as string)
+      const ageHours = (Date.now() - lastRun.getTime()) / 3_600_000
+      if (row.last_status !== 'succeeded') {
+        fail('HC41 gdpr-retention-purge cron job healthy',
+          `Last run status = ${row.last_status} at ${row.last_run_at} — the purge is failing.`)
+      } else if (ageHours > 48) {
+        fail('HC41 gdpr-retention-purge cron job healthy',
+          `Last successful run was ${ageHours.toFixed(0)}h ago (> 48h) — the daily job may have stalled.`)
+      } else {
+        pass(`HC41 gdpr-retention-purge cron job healthy (last succeeded ${ageHours.toFixed(0)}h ago)`)
+      }
+    }
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0
