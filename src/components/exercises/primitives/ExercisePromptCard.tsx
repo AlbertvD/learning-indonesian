@@ -4,6 +4,7 @@
 
 import type { ReactNode } from 'react'
 import { ExerciseAudioButton } from './ExerciseAudioButton'
+import { translations } from '@/lib/i18n'
 import classes from './ExercisePromptCard.module.css'
 
 export type PromptCardVariant = 'word' | 'sentence' | 'audio' | 'transform' | 'pair'
@@ -19,6 +20,8 @@ export interface ExercisePromptCardProps {
   constraint?: ReactNode
   /** Audio variant only — post-answer transcript reveal. */
   revealSlot?: ReactNode
+  /** MAJ-2: language for the variant group label + the decorative audio button default label. Default 'nl'. */
+  userLanguage?: 'nl' | 'en'
 }
 
 export function ExercisePromptCard({
@@ -28,12 +31,13 @@ export function ExercisePromptCard({
   meta,
   constraint,
   revealSlot,
+  userLanguage = 'nl',
 }: ExercisePromptCardProps) {
   return (
     <div
       className={`${classes.root} ${classes[variant]}`}
       role="group"
-      aria-label={ariaLabelForVariant(variant)}
+      aria-label={ariaLabelForVariant(variant, userLanguage)}
     >
       {constraint && variant === 'transform' && (
         <span className={classes.constraint}>{constraint}</span>
@@ -44,6 +48,7 @@ export function ExercisePromptCard({
             variant="decorative"
             audioUrl={audio.url}
             autoplay={audio.autoplay}
+            userLanguage={userLanguage}
           />
         </div>
       )}
@@ -56,12 +61,13 @@ export function ExercisePromptCard({
   )
 }
 
-function ariaLabelForVariant(v: PromptCardVariant): string {
+function ariaLabelForVariant(v: PromptCardVariant, userLanguage: 'nl' | 'en'): string {
+  const T = translations[userLanguage].exercisePrimitives
   switch (v) {
-    case 'word':      return 'Woord'
-    case 'sentence':  return 'Zin'
-    case 'audio':     return 'Audio-prompt'
-    case 'transform': return 'Omvorming'
-    case 'pair':      return 'Contrasterend paar'
+    case 'word':      return T.promptWord
+    case 'sentence':  return T.promptSentence
+    case 'audio':     return T.promptAudio
+    case 'transform': return T.promptTransform
+    case 'pair':      return T.promptPair
   }
 }

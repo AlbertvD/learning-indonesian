@@ -3853,3 +3853,209 @@ $$;
 
 revoke all on function indonesian.restore_invite_code(text) from public;
 grant execute on function indonesian.restore_invite_code(text) to service_role;
+
+-- ============================================================================
+-- Pre-cloud-preview hardening item 7: session-data narrowing RPC
+-- (docs/plans/2026-07-02-session-data-narrowing-rpc.md)
+-- ============================================================================
+-- get_session_build_data — narrowed session-build snapshot. Replaces the
+--   six-query client-side fan-out in
+--   src/lib/session-builder/adapter.ts loadCapabilitySessionData.
+--
+-- Returns ONE jsonb object (scalar → immune to PGRST_DB_MAX_ROWS row truncation,
+--   the failure mode HC39 was added to catch — HC39 is repointed below).
+-- SECURITY INVOKER: RLS on the owner-scoped tables keeps every read scoped to
+--   auth.uid(); a spoofed p_user_id yields an empty snapshot, not a leak.
+--
+-- Candidate-set sufficiency predicate (the ADR-0015 mirrored predicate; canonical
+--   definition in CONTEXT.md → "Session-build candidate sufficiency"):
+--     a ready+published+live cap is returned iff ANY of
+--       (A) it has a learner_capability_state row for p_user_id          [all modes]
+--       (B) standard mode AND its lesson_id is activated by the learner
+--       (C) standard mode AND its source_ref is in the learner's activated
+--           collection ∪ reading-harvest member refs
+--       (D) standard mode AND its lesson_id IS NULL (podcast carve-out, ADR 0006)
+--       (E) scoped mode  AND its source_ref = ANY(p_selected_source_refs)
+--   Proof that this is sufficient for every downstream consumer: see the spec's
+--   consumer→fields table. Key facts: (1) due caps come from ANY lesson (dueFilter
+--   ignores activation) → clause (A) returns ALL state rows unconditionally;
+--   (2) prerequisite/unlock satisfaction reads learner STATE rows only, and a
+--   prereq is satisfiable only if the learner already has a state for it — which
+--   (A) always returns — so no prerequisite cap needs importing into the catalog.
+--
+-- p_day_start: the browser-local midnight boundary (adapter.ts computes it via
+--   `new Date(request.now); .setHours(0,0,0,0)`, then `.toISOString()`) so the
+--   seed for sibling-burying matches the learner's wall-clock day exactly. Defaults
+--   to server-day (date_trunc('day', now())) for callers that don't pass it.
+--
+-- Idempotent. DROP FUNCTION first (safe idiom; also required if the return
+-- signature ever changes — CREATE OR REPLACE cannot alter it).
+-- ============================================================================
+drop function if exists indonesian.get_session_build_data(uuid, text, text[], timestamptz);
+create or replace function indonesian.get_session_build_data(
+  p_user_id             uuid,
+  p_mode                text,
+  p_selected_source_refs text[]      default '{}',
+  p_day_start           timestamptz  default date_trunc('day', now())
+)
+returns jsonb
+language sql stable security invoker
+set search_path = indonesian, public
+as $$
+  with
+  activated_lessons as (
+    select lla.lesson_id
+    from indonesian.learner_lesson_activation lla
+    where lla.user_id = p_user_id
+  ),
+  -- Collections ∪ reading harvest, resolved to the item source_ref form
+  -- 'learning_items/<normalized_text>' (HC9 invariant). Mirrors
+  -- lib/collections/membership.resolveActivatedMemberRefs — NO is_published
+  -- filter (that function does not filter it either).
+  activated_member_refs as (
+    select 'learning_items/' || li.normalized_text as source_ref
+    from indonesian.collection_items ci
+    join indonesian.learner_collection_activation lca
+      on lca.collection_id = ci.collection_id and lca.user_id = p_user_id
+    join indonesian.learning_items li on li.id = ci.learning_item_id
+    union
+    select 'learning_items/' || li.normalized_text
+    from indonesian.learner_reading_harvest lrh
+    join indonesian.learning_items li on li.id = lrh.learning_item_id
+    where lrh.user_id = p_user_id
+  ),
+  user_states as (
+    select s.*
+    from indonesian.learner_capability_state s
+    where s.user_id = p_user_id
+  ),
+  candidate_caps as (
+    select c.*
+    from indonesian.learning_capabilities c
+    where c.readiness_status = 'ready'
+      and c.publication_status = 'published'
+      and c.retired_at is null
+      and (
+        exists (select 1 from user_states us where us.capability_id = c.id)      -- (A)
+        or (p_mode = 'standard' and (
+             c.lesson_id in (select lesson_id from activated_lessons)            -- (B)
+             or c.source_ref in (select source_ref from activated_member_refs)   -- (C)
+             or c.lesson_id is null                                              -- (D)
+           ))
+        or (p_mode <> 'standard' and c.source_ref = any(p_selected_source_refs)) -- (E)
+      )
+  ),
+  reviewed_today as (
+    -- Local-midnight boundary supplied by the client (p_day_start) so the seed
+    -- for sibling-burying matches the learner's wall-clock day exactly, as the
+    -- current adapter does (adapter.ts:277-278). now() here would be UTC-midnight
+    -- and drift from the browser-local day.
+    select distinct e.capability_id
+    from indonesian.capability_review_events e
+    where e.user_id = p_user_id
+      and e.created_at >= p_day_start
+  )
+  select jsonb_build_object(
+    'capabilities', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', c.id,
+        'canonical_key', c.canonical_key,
+        'source_kind', c.source_kind,
+        'source_ref', c.source_ref,
+        'capability_type', c.capability_type,
+        'direction', c.direction,
+        'modality', c.modality,
+        'learner_language', c.learner_language,
+        'projection_version', c.projection_version,
+        'readiness_status', c.readiness_status,
+        'publication_status', c.publication_status,
+        'lesson_id', c.lesson_id,
+        'prerequisite_keys', coalesce(c.prerequisite_keys, array[]::text[])
+      )) from candidate_caps c
+    ), '[]'::jsonb),
+    'learner_states', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', us.id,
+        'user_id', us.user_id,
+        'capability_id', us.capability_id,
+        'canonical_key_snapshot', us.canonical_key_snapshot,
+        'activation_state', us.activation_state,
+        'stability', us.stability,
+        'difficulty', us.difficulty,
+        'last_reviewed_at', us.last_reviewed_at,
+        'next_due_at', us.next_due_at,
+        'review_count', us.review_count,
+        'lapse_count', us.lapse_count,
+        'consecutive_failure_count', us.consecutive_failure_count,
+        'state_version', us.state_version
+      )) from user_states us
+    ), '[]'::jsonb),
+    'activated_lesson_ids', coalesce((
+      select jsonb_agg(lesson_id) from activated_lessons
+    ), '[]'::jsonb),
+    'lessons', coalesce((
+      select jsonb_agg(jsonb_build_object('id', l.id, 'order_index', l.order_index))
+      from indonesian.lessons l
+    ), '[]'::jsonb),
+    'reviewed_today_capability_ids', coalesce((
+      select jsonb_agg(capability_id) from reviewed_today
+    ), '[]'::jsonb),
+    'activated_member_refs', coalesce((
+      select jsonb_agg(source_ref) from activated_member_refs
+    ), '[]'::jsonb)
+  );
+$$;
+
+revoke all on function indonesian.get_session_build_data(uuid, text, text[], timestamptz) from public;
+grant execute on function indonesian.get_session_build_data(uuid, text, text[], timestamptz) to authenticated, service_role;
+
+-- ============================================================================
+-- GDPR retention (Art. 5(1)(e) storage limitation) — 2026-07-02
+-- Daily purge of the two diagnostic tables that survive account deletion via
+-- ON DELETE SET NULL (error_logs :315, capability_resolution_failure_events
+-- :1266). 90-day rolling window for both. pg_cron extension already installed
+-- (:524). Idempotent: unschedule-if-exists (swallow the "job not found" error)
+-- then schedule under a fixed jobname.
+-- ============================================================================
+
+do $$ begin perform cron.unschedule('gdpr-retention-purge'); exception when others then null; end $$;
+
+select cron.schedule(
+  'gdpr-retention-purge',
+  '0 3 * * *',                         -- 03:00 daily (server tz), low-traffic
+  $job$
+    delete from indonesian.error_logs
+      where created_at < now() - interval '90 days';
+    delete from indonesian.capability_resolution_failure_events
+      where created_at < now() - interval '90 days';
+  $job$
+);
+
+-- Retention-job health probe. SECURITY DEFINER because cron.* is owned by the
+-- superuser and not exposed to PostgREST; mirrors schema_health() (:511-517).
+create or replace function indonesian.retention_cron_health()
+returns table (jobname text, active boolean, last_status text, last_run_at timestamptz)
+language sql
+security definer
+set search_path = pg_catalog, cron
+as $$
+  select j.jobname,
+         j.active,
+         d.status,
+         d.start_time
+  from cron.job j
+  left join lateral (
+    select status, start_time
+    from cron.job_run_details r
+    where r.jobid = j.jobid
+    order by r.start_time desc
+    limit 1
+  ) d on true
+  where j.jobname = 'gdpr-retention-purge';
+$$;
+
+revoke all on function indonesian.retention_cron_health() from public;
+-- service_role ONLY (data-architect G3): check-supabase-deep (service key) is
+-- the sole caller in the repo; an authenticated grant would expose cron-job
+-- telemetry to every browser session for no consumer.
+grant execute on function indonesian.retention_cron_health() to service_role;

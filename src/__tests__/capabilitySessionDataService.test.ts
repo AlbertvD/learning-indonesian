@@ -3,104 +3,102 @@ import { createSessionBuilderAdapter } from '@/lib/session-builder/adapter'
 
 vi.mock('@/lib/supabase', () => ({ supabase: {} }))
 
-function query(data: unknown[] = []) {
-  const chain: any = {
-    select: () => chain,
-    eq: () => chain,
-    in: () => chain,
-    is: () => chain,
-    gte: () => chain,
-    then: (resolve: (value: { data: unknown[]; error: null }) => void) => resolve({ data, error: null }),
+// Post-RPC-cutover (docs/plans/2026-07-02-session-data-narrowing-rpc.md):
+// loadCapabilitySessionData is now a single `.rpc('get_session_build_data', ...)`
+// call returning one jsonb payload shaped like the RPC's jsonb_build_object
+// output. This mock resolves that call with a caller-supplied payload and fails
+// loudly if the adapter falls back to `.from()` (it must not — the six-query
+// fan-out is deleted).
+function rpcClient(payload: Record<string, unknown>) {
+  return {
+    schema: () => ({
+      from: () => { throw new Error('loadCapabilitySessionData should call .rpc(), not .from()') },
+      rpc: () => Promise.resolve({ data: payload, error: null }),
+    }),
   }
-  return chain
+}
+
+const emptyPayload = {
+  capabilities: [],
+  learner_states: [],
+  activated_lesson_ids: [],
+  lessons: [],
+  reviewed_today_capability_ids: [],
+  activated_member_refs: [],
 }
 
 describe('capability session data service', () => {
   it('derives planner dueCount from schedulable due rows only', async () => {
-    const service = createSessionBuilderAdapter({
-      schema: () => ({
-        from: (table: string) => {
-          if (table === 'learning_capabilities') {
-            return query([{
-              id: 'capability-1',
-              canonical_key: 'capability-key',
-              source_kind: 'vocabulary_src',
-              source_ref: 'learning_items/item-1',
-              capability_type: 'recognise_meaning_from_text_cap',
-              direction: 'id_to_l1',
-              modality: 'text',
-              learner_language: 'nl',
-              projection_version: 'capability-v2',
-              readiness_status: 'ready',
-              publication_status: 'published',
-              lesson_id: 'lesson-uuid-1',
-              prerequisite_keys: [],
-            }, {
-              id: 'capability-2',
-              canonical_key: 'blocked-key',
-              source_kind: 'vocabulary_src',
-              source_ref: 'learning_items/item-2',
-              capability_type: 'recognise_meaning_from_text_cap',
-              direction: 'id_to_l1',
-              modality: 'text',
-              learner_language: 'nl',
-              projection_version: 'capability-v2',
-              readiness_status: 'blocked',
-              publication_status: 'published',
-              lesson_id: 'lesson-uuid-1',
-              prerequisite_keys: [],
-            }])
-          }
-          if (table === 'learner_capability_state') {
-            return query([{
-              id: 'state-1',
-              user_id: 'user-1',
-              capability_id: 'capability-1',
-              canonical_key_snapshot: 'capability-key',
-              activation_state: 'active',
-              stability: 1,
-              difficulty: 5,
-              last_reviewed_at: '2026-04-24T00:00:00.000Z',
-              next_due_at: '2026-04-25T00:00:00.000Z',
-              review_count: 2,
-              lapse_count: 0,
-              consecutive_failure_count: 0,
-              state_version: 1,
-            }, {
-              id: 'state-2',
-              user_id: 'user-1',
-              capability_id: 'capability-2',
-              canonical_key_snapshot: 'blocked-key',
-              activation_state: 'active',
-              stability: 1,
-              difficulty: 5,
-              last_reviewed_at: '2026-04-24T00:00:00.000Z',
-              next_due_at: '2026-04-25T00:00:00.000Z',
-              review_count: 2,
-              lapse_count: 0,
-              consecutive_failure_count: 0,
-              state_version: 1,
-            }, {
-              id: 'state-3',
-              user_id: 'user-1',
-              capability_id: 'capability-1',
-              canonical_key_snapshot: 'capability-key',
-              activation_state: 'suspended',
-              stability: 1,
-              difficulty: 5,
-              last_reviewed_at: '2026-04-24T00:00:00.000Z',
-              next_due_at: '2026-04-25T00:00:00.000Z',
-              review_count: 2,
-              lapse_count: 0,
-              consecutive_failure_count: 0,
-              state_version: 1,
-            }])
-          }
-          if (table === 'learner_lesson_activation') return query([])
-          return query([])
-        },
-      }),
-    })
+    const service = createSessionBuilderAdapter(rpcClient({
+      ...emptyPayload,
+      // The RPC's candidate_caps predicate requires readiness_status='ready' AND
+      // publication_status='published' at the top level (in addition to the A-E
+      // OR), so a 'blocked' capability never appears in the payload's
+      // `capabilities` array — same as the old query's `.eq('readiness_status',
+      // 'ready')` filter. capability-2 (blocked) is therefore absent here.
+      capabilities: [{
+        id: 'capability-1',
+        canonical_key: 'capability-key',
+        source_kind: 'vocabulary_src',
+        source_ref: 'learning_items/item-1',
+        capability_type: 'recognise_meaning_from_text_cap',
+        direction: 'id_to_l1',
+        modality: 'text',
+        learner_language: 'nl',
+        projection_version: 'capability-v2',
+        readiness_status: 'ready',
+        publication_status: 'published',
+        lesson_id: 'lesson-uuid-1',
+        prerequisite_keys: [],
+      }],
+      // learner_states is the learner's FULL state set (clause A is
+      // unconditional) — includes state-2, which points at the blocked
+      // capability-2 and is not in `capabilities`. The adapter's existing
+      // capabilityById.has(...) filter drops it, exactly as before.
+      learner_states: [{
+        id: 'state-1',
+        user_id: 'user-1',
+        capability_id: 'capability-1',
+        canonical_key_snapshot: 'capability-key',
+        activation_state: 'active',
+        stability: 1,
+        difficulty: 5,
+        last_reviewed_at: '2026-04-24T00:00:00.000Z',
+        next_due_at: '2026-04-25T00:00:00.000Z',
+        review_count: 2,
+        lapse_count: 0,
+        consecutive_failure_count: 0,
+        state_version: 1,
+      }, {
+        id: 'state-2',
+        user_id: 'user-1',
+        capability_id: 'capability-2',
+        canonical_key_snapshot: 'blocked-key',
+        activation_state: 'active',
+        stability: 1,
+        difficulty: 5,
+        last_reviewed_at: '2026-04-24T00:00:00.000Z',
+        next_due_at: '2026-04-25T00:00:00.000Z',
+        review_count: 2,
+        lapse_count: 0,
+        consecutive_failure_count: 0,
+        state_version: 1,
+      }, {
+        id: 'state-3',
+        user_id: 'user-1',
+        capability_id: 'capability-1',
+        canonical_key_snapshot: 'capability-key',
+        activation_state: 'suspended',
+        stability: 1,
+        difficulty: 5,
+        last_reviewed_at: '2026-04-24T00:00:00.000Z',
+        next_due_at: '2026-04-25T00:00:00.000Z',
+        review_count: 2,
+        lapse_count: 0,
+        consecutive_failure_count: 0,
+        state_version: 1,
+      }],
+    }))
 
     const snapshot = await service.loadCapabilitySessionData({
       userId: 'user-1',
@@ -114,50 +112,40 @@ describe('capability session data service', () => {
   })
 
   it('passes production planner gates from metadata and learner state', async () => {
-    const service = createSessionBuilderAdapter({
-      schema: () => ({
-        from: (table: string) => {
-          if (table === 'learning_capabilities') {
-            return query([{
-              id: 'capability-1',
-              canonical_key: 'capability-key',
-              source_kind: 'vocabulary_src',
-              source_ref: 'learning_items/item-1',
-              capability_type: 'recognise_meaning_from_text_cap',
-              direction: 'id_to_l1',
-              modality: 'text',
-              learner_language: 'nl',
-              projection_version: 'capability-v2',
-              readiness_status: 'ready',
-              publication_status: 'published',
-              lesson_id: 'lesson-uuid-1',
-              prerequisite_keys: [],
-            }])
-          }
-          if (table === 'learner_capability_state') {
-            return query([{
-              id: 'state-1',
-              user_id: 'user-1',
-              capability_id: 'capability-1',
-              canonical_key_snapshot: 'capability-key',
-              activation_state: 'active',
-              stability: 1,
-              difficulty: 5,
-              last_reviewed_at: '2026-04-25T11:30:00.000Z',
-              next_due_at: '2026-04-26T00:00:00.000Z',
-              review_count: 3,
-              lapse_count: 1,
-              consecutive_failure_count: 2,
-              state_version: 1,
-            }])
-          }
-          if (table === 'learner_lesson_activation') {
-            return query([{ lesson_id: 'lesson-uuid-1' }])
-          }
-          return query([])
-        },
-      }),
-    })
+    const service = createSessionBuilderAdapter(rpcClient({
+      ...emptyPayload,
+      capabilities: [{
+        id: 'capability-1',
+        canonical_key: 'capability-key',
+        source_kind: 'vocabulary_src',
+        source_ref: 'learning_items/item-1',
+        capability_type: 'recognise_meaning_from_text_cap',
+        direction: 'id_to_l1',
+        modality: 'text',
+        learner_language: 'nl',
+        projection_version: 'capability-v2',
+        readiness_status: 'ready',
+        publication_status: 'published',
+        lesson_id: 'lesson-uuid-1',
+        prerequisite_keys: [],
+      }],
+      learner_states: [{
+        id: 'state-1',
+        user_id: 'user-1',
+        capability_id: 'capability-1',
+        canonical_key_snapshot: 'capability-key',
+        activation_state: 'active',
+        stability: 1,
+        difficulty: 5,
+        last_reviewed_at: '2026-04-25T11:30:00.000Z',
+        next_due_at: '2026-04-26T00:00:00.000Z',
+        review_count: 3,
+        lapse_count: 1,
+        consecutive_failure_count: 2,
+        state_version: 1,
+      }],
+      activated_lesson_ids: ['lesson-uuid-1'],
+    }))
 
     const snapshot = await service.loadCapabilitySessionData({
       userId: 'user-1',
@@ -180,32 +168,24 @@ describe('capability session data service', () => {
   })
 
   it('loads Dutch-to-Indonesian choice as ready planner material', async () => {
-    const service = createSessionBuilderAdapter({
-      schema: () => ({
-        from: (table: string) => {
-          if (table === 'learning_capabilities') {
-            return query([{
-              id: 'choice-capability',
-              canonical_key: 'cap:v1:vocabulary_src:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl',
-              source_kind: 'vocabulary_src',
-              source_ref: 'learning_items/item-1',
-              capability_type: 'recognise_form_from_meaning_cap',
-              direction: 'l1_to_id',
-              modality: 'text',
-              learner_language: 'nl',
-              projection_version: 'capability-v2',
-              readiness_status: 'ready',
-              publication_status: 'published',
-              lesson_id: 'lesson-uuid-1',
-              prerequisite_keys: ['text-recognition-key'],
-            }])
-          }
-          if (table === 'learner_capability_state') return query([])
-          if (table === 'learner_lesson_activation') return query([])
-          return query([])
-        },
-      }),
-    })
+    const service = createSessionBuilderAdapter(rpcClient({
+      ...emptyPayload,
+      capabilities: [{
+        id: 'choice-capability',
+        canonical_key: 'cap:v1:vocabulary_src:learning_items/item-1:recognise_form_from_meaning_cap:l1_to_id:text:nl',
+        source_kind: 'vocabulary_src',
+        source_ref: 'learning_items/item-1',
+        capability_type: 'recognise_form_from_meaning_cap',
+        direction: 'l1_to_id',
+        modality: 'text',
+        learner_language: 'nl',
+        projection_version: 'capability-v2',
+        readiness_status: 'ready',
+        publication_status: 'published',
+        lesson_id: 'lesson-uuid-1',
+        prerequisite_keys: ['text-recognition-key'],
+      }],
+    }))
 
     const snapshot = await service.loadCapabilitySessionData({
       userId: 'user-1',
@@ -230,11 +210,7 @@ describe('capability session data service', () => {
   })
 
   it('carries selected lesson scope into the planner snapshot', async () => {
-    const service = createSessionBuilderAdapter({
-      schema: () => ({
-        from: () => query([]),
-      }),
-    })
+    const service = createSessionBuilderAdapter(rpcClient(emptyPayload))
 
     const snapshot = await service.loadCapabilitySessionData({
       userId: 'user-1',
@@ -251,19 +227,10 @@ describe('capability session data service', () => {
   })
 
   it('exposes the activated-lessons set so the planner can gate lesson-scoped capabilities', async () => {
-    const service = createSessionBuilderAdapter({
-      schema: () => ({
-        from: (table: string) => {
-          if (table === 'learner_lesson_activation') {
-            return query([
-              { lesson_id: 'lesson-a' },
-              { lesson_id: 'lesson-b' },
-            ])
-          }
-          return query([])
-        },
-      }),
-    })
+    const service = createSessionBuilderAdapter(rpcClient({
+      ...emptyPayload,
+      activated_lesson_ids: ['lesson-a', 'lesson-b'],
+    }))
 
     const snapshot = await service.loadCapabilitySessionData({
       userId: 'user-1',
@@ -277,34 +244,28 @@ describe('capability session data service', () => {
   })
 
   it('resolves reviewedTodayRefs from today\'s review events via capability_id → source_ref', async () => {
-    const service = createSessionBuilderAdapter({
-      schema: () => ({
-        from: (table: string) => {
-          if (table === 'learning_capabilities') {
-            return query([{
-              id: 'capability-1',
-              canonical_key: 'capability-key',
-              source_kind: 'vocabulary_src',
-              source_ref: 'learning_items/paman',
-              capability_type: 'recognise_meaning_from_text_cap',
-              direction: 'id_to_l1',
-              modality: 'text',
-              learner_language: 'nl',
-              projection_version: 'capability-v3',
-              readiness_status: 'ready',
-              publication_status: 'published',
-              lesson_id: 'lesson-uuid-1',
-              prerequisite_keys: [],
-            }])
-          }
-          if (table === 'capability_review_events') {
-            // Two events for the same word today → one distinct source_ref.
-            return query([{ capability_id: 'capability-1' }, { capability_id: 'capability-1' }])
-          }
-          return query([])
-        },
-      }),
-    })
+    const service = createSessionBuilderAdapter(rpcClient({
+      ...emptyPayload,
+      capabilities: [{
+        id: 'capability-1',
+        canonical_key: 'capability-key',
+        source_kind: 'vocabulary_src',
+        source_ref: 'learning_items/paman',
+        capability_type: 'recognise_meaning_from_text_cap',
+        direction: 'id_to_l1',
+        modality: 'text',
+        learner_language: 'nl',
+        projection_version: 'capability-v3',
+        readiness_status: 'ready',
+        publication_status: 'published',
+        lesson_id: 'lesson-uuid-1',
+        prerequisite_keys: [],
+      }],
+      // The RPC's reviewed_today CTE is `select distinct e.capability_id`, so
+      // repeat reviews of the same capability today collapse to one entry —
+      // the adapter's Set-based accumulation is idempotent over this either way.
+      reviewed_today_capability_ids: ['capability-1'],
+    }))
 
     const snapshot = await service.loadCapabilitySessionData({
       userId: 'user-1',
@@ -322,15 +283,11 @@ describe('capability session data service', () => {
       activations: Array<{ lesson_id: string }>
       lessons: Array<{ id: string; order_index: number }>
     }) {
-      return createSessionBuilderAdapter({
-        schema: () => ({
-          from: (table: string) => {
-            if (table === 'learner_lesson_activation') return query(input.activations)
-            if (table === 'lessons') return query(input.lessons)
-            return query([])
-          },
-        }),
-      })
+      return createSessionBuilderAdapter(rpcClient({
+        ...emptyPayload,
+        activated_lesson_ids: input.activations.map(a => a.lesson_id),
+        lessons: input.lessons,
+      }))
     }
 
     const loadRequest = {

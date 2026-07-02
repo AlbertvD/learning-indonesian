@@ -1,7 +1,7 @@
 ---
 module: session-builder
 surface: src/lib/session-builder/
-last_verified_against_code: 2026-06-25
+last_verified_against_code: 2026-07-02
 status: stable
 ---
 
@@ -126,17 +126,43 @@ The production implementation lives at `adapter.ts:201-310`.
 
 ## 3. Internal flow
 
-### 3.1 Adapter — five parallel Supabase reads
+### 3.1 Adapter — one `get_session_build_data` RPC call
 
-`adapter.ts`. On each invocation:
+`adapter.ts`. On each invocation, `loadCapabilitySessionData` makes **one** call to
+`indonesian.get_session_build_data(p_user_id, p_mode, p_selected_source_refs,
+p_day_start)` (SECURITY INVOKER, `migration.sql`; spec:
+`docs/plans/2026-07-02-session-data-narrowing-rpc.md`). The RPC returns a single
+`jsonb` object (scalar → structurally immune to `PGRST_DB_MAX_ROWS` row truncation)
+carrying six pieces the adapter previously fetched as six parallel queries
+(historically documented here as "five reads" — the sixth, activated
+collection/harvest member refs via `resolveActivatedMemberRefs`, was added 2026-06-13
+and never reflected; both counts are now historical):
 
-1. **Capabilities** — every `learning_capabilities` row with `readiness_status='ready'` and `publication_status='published'`. No user filter. Yields ~thousands of rows once the catalog grows.
-2. **Learner state** — every `learner_capability_state` row for the user. Includes FSRS schedule data + activation state.
-3. **Lesson activation** — every `learner_lesson_activation` row for the user (single-boolean per lesson, added by retirement #6).
-4. **Lessons** — every `lessons` row (`id`, `order_index`). Used by `deriveLessonProgression` to compute `currentLessonId` + `nextLessonNeedsExposure` for the queue-drying detector. The query is unfiltered because the lesson catalog is small (~tens of rows).
-5. **Today's review events** — `capability_review_events.capability_id` for the user where `created_at >= localMidnight` (derived from `request.now`, browser-local). Each `capability_id` is resolved to its `source_ref` in memory via `capabilityById` (no JOIN/embed/index), producing `reviewedTodayRefs: Set<string>` — the seed for sibling burying (§3.2). Added 2026-06-09.
+1. **`capabilities`** — ready+published+non-retired rows **narrowed server-side** to the
+   sufficiency predicate (clauses A–E: has-a-state-row ∪ activated-lesson ∪
+   activated-collection/harvest ref ∪ podcast null-`lesson_id` ∪ scoped source_refs).
+   Payload scales with the learner's activated surface, not the catalog.
+2. **`learner_states`** — ALL of the user's `learner_capability_state` rows,
+   unconditionally (clause A — due caps ignore activation; prerequisite satisfaction
+   reads state rows only).
+3. **`activated_lesson_ids`** — the user's `learner_lesson_activation` rows.
+4. **`lessons`** — every `lessons` row (`id`, `order_index`) for
+   `deriveLessonProgression` (small catalog).
+5. **`reviewed_today_capability_ids`** — review events since `p_day_start` (the
+   **browser-local** midnight the adapter computes from `request.now` —
+   server-side `now()` would drift the sibling-bury day boundary).
+6. **`activated_member_refs`** — collections ∪ reading-harvest member refs in the
+   `learning_items/<normalized_text>` form, mirroring
+   `lib/collections/membership.resolveActivatedMemberRefs` (ADR-0015 mirrored
+   predicate; guarded by the two-layer parity tests + live HC40).
 
-(Slice 4b, #102: the former fifth chunked query against `capability_artifacts` was removed — the table is dropped and readiness no longer reads an artifact bag.)
+Sufficiency proof (why the narrowed catalog cannot change the SessionPlan): the spec's
+consumer→fields table; guards: `scripts/__tests__/session-build-data-rpc-migration.test.ts`
+(structural), `src/lib/session-builder/__tests__/rpcSnapshotParity.test.ts` (semantic),
+HC40 in `check-supabase-deep.ts` (live RPC-vs-planner recompute).
+
+(Historical: Slice 4b, #102 removed the `capability_artifacts` read; 2026-07-02 the
+whole fan-out was replaced by this RPC.)
 
 The adapter then:
 - Builds `capabilitiesByKey: Map<string, ProjectedCapability>` and `readinessByKey: Map<string, CapabilityReadiness>` via `validateCapability`. Capabilities with incomplete metadata are recorded with `readinessByKey.set(key, { status: 'unknown', ... })` and skipped from `readyCapabilities`.
@@ -344,9 +370,18 @@ The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnosti
 
 ### Upstream (data feeds the builder)
 
-- `learning_capabilities` table — capability catalog (one row per capability, ~thousands when projected).
-- `learner_capability_state` table — per-learner FSRS state (ADR 0001). Written by the server-side review processor (`supabase/functions/commit-capability-answer-report/index.ts`, invoked via the `commit-capability-answer-report` Edge Function).
-- `learner_lesson_activation` table — single-boolean per (user, lesson). Written by `set_lesson_activation` RPC (`migration.sql:1584`); all callers route through `setLessonActivated` in `lib/lessons/activation.ts` (used by the lesson-page checkbox and the `authStore.activateStarterLessons` first-sign-in hook).
+- **`indonesian.get_session_build_data` RPC** (`scripts/migration.sql`; spec
+  `docs/plans/2026-07-02-session-data-narrowing-rpc.md`) — the adapter's sole
+  session-build read since 2026-07-02. Aggregates, server-side and
+  learner-narrowed: the capability catalog, the learner's FSRS state rows
+  (ADR 0001; written by the `commit-capability-answer-report` Edge Function),
+  lesson activations (written by the `set_lesson_activation` RPC via
+  `lib/lessons/activation.ts`), the lessons order index, today's review-event
+  capability ids, and activated collection/harvest member refs (mirroring
+  `lib/collections/membership.ts` — ADR-0015 parity-tested).
+- `loadForceCapabilitySnapshot` (dev bypass) still reads
+  `learning_capabilities`/`learner_capability_state` directly — out of the RPC's
+  scope by design.
 - (Slice 4b, #102: the `capability_artifacts` table was dropped — the adapter no longer reads it. Readiness is decided by `validateCapability` via `RENDER_CONTRACTS` routing alone.)
 
 ### Downstream (the builder feeds these)

@@ -1,7 +1,14 @@
 ---
-status: draft
-branch: feat/pre-cloud-hardening
+status: shipped
+branch: feat/launch-readiness-round-2
 reviewed_by: [data-architect, architect]
+approved_at: 2026-07-02
+implementation: PR #333
+merged_at: 2026-07-02
+implementation_paths:
+  - scripts/migration.sql
+  - src/lib/session-builder/adapter.ts
+  - scripts/check-supabase-deep.ts
 supersedes: []
 ---
 

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import { IconAlertTriangle, IconPlayerPlay, IconVolume } from '@tabler/icons-react'
 import { Loader } from '@mantine/core'
 import { triggerHaptic } from './haptics'
+import { translations } from '@/lib/i18n'
 import classes from './ExerciseAudioButton.module.css'
 
 export type AudioVariant = 'primary' | 'decorative'
@@ -21,6 +22,8 @@ export interface ExerciseAudioButtonProps {
   /** Called on manual replay (feedback screen). */
   onReplay?: () => void
   'aria-label'?: string
+  /** MAJ-2: language for the default (no explicit aria-label) state labels. Default 'nl'. */
+  userLanguage?: 'nl' | 'en'
 }
 
 export function ExerciseAudioButton({
@@ -31,6 +34,7 @@ export function ExerciseAudioButton({
   onError,
   onReplay,
   'aria-label': ariaLabel,
+  userLanguage = 'nl',
 }: ExerciseAudioButtonProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [state, setState] = useState<PlaybackState>('idle')
@@ -103,7 +107,7 @@ export function ExerciseAudioButton({
     }
   }
 
-  const label = ariaLabel ?? defaultLabel(state, variant)
+  const label = ariaLabel ?? defaultLabel(state, variant, userLanguage)
 
   return (
     <button
@@ -122,9 +126,10 @@ function variantIconSize(v: AudioVariant): number {
   return v === 'decorative' ? 16 : 24
 }
 
-function defaultLabel(state: PlaybackState, variant: AudioVariant): string {
-  if (state === 'error') return 'Audio fout'
-  if (state === 'blocked') return 'Klik om af te spelen'
-  if (state === 'played' || state === 'playing') return 'Herhaal audio'
-  return variant === 'decorative' ? 'Speel audio af' : 'Luister'
+function defaultLabel(state: PlaybackState, variant: AudioVariant, userLanguage: 'nl' | 'en'): string {
+  const T = translations[userLanguage].exercisePrimitives
+  if (state === 'error') return T.audioError
+  if (state === 'blocked') return T.audioBlocked
+  if (state === 'played' || state === 'playing') return T.audioReplay
+  return variant === 'decorative' ? T.audioPlayDecorative : T.audioPlayPrimary
 }

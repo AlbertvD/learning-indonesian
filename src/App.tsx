@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
 import { Dashboard } from '@/pages/Dashboard'
+import { useT } from '@/hooks/useT'
 
 // Lazy-loaded routes (less frequently visited pages, plus the heavy
 // eagerly-visited-but-large surfaces — Session/Lessons/Ontdek/LessonRouter/
@@ -31,6 +32,7 @@ const ExerciseCoverage = lazy(() => import('@/pages/ExerciseCoverage').then(m =>
 const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ default: m.ContentReview })))
 const DesignLab = lazy(() => import('@/pages/admin/DesignLab').then(m => ({ default: m.DesignLab })))
 const PageLab = lazy(() => import('@/pages/admin/PageLab').then(m => ({ default: m.PageLab })))
+const Privacy = lazy(() => import('@/pages/Privacy').then(m => ({ default: m.Privacy })))
 
 // ─── Bespoke lesson pages — preview routes ────────────────────────────────────
 // /lesson/:lessonId resolves to the bespoke page when one is registered (see
@@ -72,11 +74,12 @@ function LazyPage({ children }: { children: React.ReactNode }) {
 }
 
 function NotFound() {
+  const T = useT()
   return (
     <Container size="sm" style={{ textAlign: 'center', paddingTop: '4rem' }}>
-      <Title order={2} mb="md">Pagina niet gevonden</Title>
-      <Text c="dimmed" mb="xl">De pagina die je zoekt bestaat niet.</Text>
-      <Button component={Link} to="/">Ga naar dashboard</Button>
+      <Title order={2} mb="md">{T.common.notFoundTitle}</Title>
+      <Text c="dimmed" mb="xl">{T.common.notFoundMessage}</Text>
+      <Button component={Link} to="/">{T.common.goToDashboard}</Button>
     </Container>
   )
 }
@@ -88,6 +91,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/preview" element={<LazyPage><LocalPreviewIndex /></LazyPage>} />
       <Route path="/preview/lesson/:slug" element={<LazyPage><LocalPreviewLesson /></LazyPage>} />
+      <Route path="/privacy" element={<LazyPage><Privacy /></LazyPage>} />
 
       <Route element={<Layout />}>
         <Route

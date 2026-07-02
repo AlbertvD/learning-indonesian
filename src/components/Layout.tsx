@@ -6,6 +6,7 @@ import { useMediaQuery } from '@mantine/hooks'
 import { IconMenu2 } from '@tabler/icons-react'
 import { Sidebar } from './Sidebar'
 import { MobileLayout } from './MobileLayout'
+import { useT } from '@/hooks/useT'
 import classes from './Layout.module.css'
 
 const SIDEBAR_LOCKED_KEY = 'sidebar-locked'
@@ -13,6 +14,7 @@ const SIDEBAR_LOCKED_KEY = 'sidebar-locked'
 export function Layout() {
   const isMobile = useMediaQuery('(max-width: 768px)') ?? false
   const { colorScheme } = useMantineColorScheme()
+  const T = useT()
   const [locked, setLocked] = useState(
     () => localStorage.getItem(SIDEBAR_LOCKED_KEY) !== 'false'
   )
@@ -65,7 +67,7 @@ export function Layout() {
             alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer',
           }}
-          aria-label="Zijbalk wisselen"
+          aria-label={T.common.toggleSidebar}
         >
           <IconMenu2 size={20} />
         </button>

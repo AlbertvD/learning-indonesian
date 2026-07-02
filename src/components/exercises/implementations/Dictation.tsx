@@ -52,7 +52,7 @@ export default function Dictation({
 
   if (!audioUrl) {
     return (
-      <ExerciseFrame variant="session">
+      <ExerciseFrame userLanguage={userLanguage} variant="session">
         <ExerciseInstruction>
           {userLanguage === 'nl' ? 'Audio niet beschikbaar' : 'Audio not available'}
         </ExerciseInstruction>
@@ -61,7 +61,7 @@ export default function Dictation({
   }
 
   return (
-    <ExerciseFrame
+    <ExerciseFrame userLanguage={userLanguage}
       variant="session"
       adminOverlay={adminOverlay}
       footer={
@@ -77,7 +77,7 @@ export default function Dictation({
       <ExerciseInstruction>
         {userLanguage === 'nl' ? 'Luister en typ wat je hoort' : 'Listen and type what you hear'}
       </ExerciseInstruction>
-      <ExercisePromptCard
+      <ExercisePromptCard userLanguage={userLanguage}
         variant="audio"
         revealSlot={scoring.isAnswered ? learningItem.base_text : undefined}
       >

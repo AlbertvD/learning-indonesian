@@ -8,6 +8,7 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
+import { useListening } from '@/contexts/ListeningContext'
 import {
   buildSession,
   collectAudibleTexts,
@@ -55,6 +56,7 @@ export function Session() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user, profile } = useAuthStore()
+  const { listeningEnabled } = useListening()
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -68,6 +70,8 @@ export function Session() {
   const sessionModeParam = searchParams.get('mode')
   const sessionMode = parseSessionMode(sessionModeParam)
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
+  const userLanguage = (profile?.language ?? 'nl') as 'en' | 'nl'
+  const T = translations[userLanguage]
   // ?force_capability=<canonical_key> — admin-only dev bypass for the per-PR E2E
   // gate (plan §3.8). Routes through the real renderer + real review-event commit
   // path; the only thing skipped is the planner. Gated on profile.isAdmin so a
@@ -111,14 +115,14 @@ export function Session() {
         if (isLessonScopedMode(sessionMode)) {
           scope = await loadSelectedLessonScope(lessonFilter)
           if (!scope) {
-            setError('Deze les is nog niet klaar om te oefenen.')
+            setError(T.session.notReady)
             setLoading(false)
             return
           }
         } else if (isSourceRefScopedMode(sessionMode)) {
           scope = await loadSelectedAffixScope(affixFilter)
           if (!scope) {
-            setError('Dit voorvoegsel heeft nog geen oefeningen.')
+            setError(T.session.affixNotReady)
             setLoading(false)
             return
           }
@@ -131,6 +135,7 @@ export function Session() {
           now: new Date(),
           limit: preferredSessionSize,
           preferredSessionSize,
+          listeningEnabled,
           ...(scope ?? {}),
           ...(allowForceCapability && forceCapabilityKey ? { forceCapabilityKey } : {}),
           adapter: sessionBuilderAdapter,
@@ -163,14 +168,13 @@ export function Session() {
         setLoading(false)
       } catch (err) {
         logError({ page: 'session', action: 'initialize', error: err })
-        const lang = (profile?.language ?? 'nl') as 'en' | 'nl'
-        setError(translations[lang].session.failedToLoadSession)
+        setError(T.session.failedToLoadSession)
         setLoading(false)
       }
     }
 
     initSession()
-  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, affixFilter, sessionMode, forceCapabilityKey, allowForceCapability])
+  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, affixFilter, sessionMode, forceCapabilityKey, allowForceCapability, listeningEnabled, T])
 
   // Session finished (queue exhausted) — fired by ExperiencePlayer the moment the
   // cards run out, NOT on the recap button. Marks the session complete so it
@@ -228,7 +232,7 @@ export function Session() {
     return (
       <PageContainer size="md">
         <PageBody>
-          <LoadingState caption="Sessie laden..." />
+          <LoadingState caption={T.session.loadingCaption} />
         </PageBody>
       </PageContainer>
     )
@@ -238,7 +242,7 @@ export function Session() {
     return (
       <PageContainer size="sm">
         <PageBody>
-          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Sessiefout">
+          <Alert icon={<IconAlertCircle size={16} />} color="red" title={T.session.errorTitle}>
             {error}
           </Alert>
         </PageBody>
@@ -253,7 +257,7 @@ export function Session() {
       return (
         <PageContainer size="sm">
           <PageBody>
-            <Alert color="blue" title="Sessie laden">Inhoud wordt voorbereid…</Alert>
+            <Alert color="blue" title={T.session.loadingTitle}>{T.session.preparingContent}</Alert>
           </PageBody>
         </PageContainer>
       )
@@ -261,7 +265,6 @@ export function Session() {
     const dryingDiagnostic = capabilityPlan.diagnostics.find(
       d => d.reason === 'learning_pipeline_drying_up'
     )
-    const userLanguage = (profile?.language ?? 'nl') as 'en' | 'nl'
     return (
       <>
         {dryingDiagnostic && !dryingDismissed && (
@@ -271,11 +274,11 @@ export function Session() {
                 color="blue"
                 icon={<IconInfoCircle size={16} />}
                 withCloseButton
-                closeButtonLabel={userLanguage === 'nl' ? 'Sluiten' : 'Close'}
+                closeButtonLabel={T.common.dismiss}
                 onClose={() => setDryingDismissed(true)}
                 data-testid="drying-alert"
               >
-                {translations[userLanguage].session.pipelineDryingUp}
+                {T.session.pipelineDryingUp}
               </Alert>
             </PageBody>
           </PageContainer>
@@ -296,8 +299,8 @@ export function Session() {
   return (
     <PageContainer size="sm">
       <PageBody>
-        <Alert color="yellow" title="Geen oefeningen">
-          Er zijn geen oefeningen beschikbaar voor deze sessie. Probeer een andere les of oefenset.
+        <Alert color="yellow" title={T.session.noExercisesTitle}>
+          {T.session.noExercises}
         </Alert>
       </PageBody>
     </PageContainer>

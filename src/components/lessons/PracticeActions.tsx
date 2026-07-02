@@ -8,6 +8,7 @@ import {
   getLessonCapabilityPracticeSummaryByLessonId,
 } from '@/lib/lessons'
 import { logError } from '@/lib/logger'
+import { useT } from '@/hooks/useT'
 
 // Renders the two practice CTAs ("Practice this lesson · N ready" + "Review")
 // wired to the capability runtime. The host page composes the frame and owns
@@ -16,6 +17,8 @@ import { logError } from '@/lib/logger'
 // truth, no manual reload. See docs/target-architecture.md:59-61.
 export function PracticeActions({ lessonId, activated }: { lessonId: string; activated: boolean }) {
   const userId = useAuthStore(s => s.user?.id)
+  const userLanguage = useAuthStore(s => s.profile?.language ?? 'nl')
+  const T = useT()
   const [readyCount, setReadyCount] = useState(0)
   const [practicedCount, setPracticedCount] = useState(0)
 
@@ -45,13 +48,14 @@ export function PracticeActions({ lessonId, activated }: { lessonId: string; act
         hasUnpracticedEligibleItems: practiceReadyCount > 0,
         hasActivePracticedItems: practicedCount > 0,
       },
+      userLanguage,
     })
-  }, [lessonId, readyCount, practicedCount, activated])
+  }, [lessonId, readyCount, practicedCount, activated, userLanguage])
 
   if (actions.length === 0) {
     return (
       <Button variant="default" disabled fullWidth>
-        Geen oefeningen beschikbaar
+        {T.lessons.noExercisesAvailable}
       </Button>
     )
   }

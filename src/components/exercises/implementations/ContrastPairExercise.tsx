@@ -52,9 +52,9 @@ export default function ContrastPairExercise({
     .replace(/^Kies de juiste zin:\s*/i, '')
 
   return (
-    <ExerciseFrame variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
       <ExerciseInstruction>{t.session.exercise.chooseCorrect}</ExerciseInstruction>
-      <ExercisePromptCard variant="sentence">
+      <ExercisePromptCard userLanguage={userLanguage} variant="sentence">
         {displayPrompt}
       </ExercisePromptCard>
       <ExerciseOptionGroup>

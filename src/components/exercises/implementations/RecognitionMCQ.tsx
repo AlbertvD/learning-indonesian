@@ -69,9 +69,9 @@ export default function RecognitionMCQ({
     learningItem?.item_type === 'sentence' || learningItem?.item_type === 'dialogue_chunk'
 
   return (
-    <ExerciseFrame variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
       <ExerciseInstruction>{t.session.recognition.question}</ExerciseInstruction>
-      <ExercisePromptCard
+      <ExercisePromptCard userLanguage={userLanguage}
         variant={isSentenceType ? 'sentence' : 'word'}
         audio={audioUrl ? { url: audioUrl, autoplay: autoPlay } : undefined}
       >

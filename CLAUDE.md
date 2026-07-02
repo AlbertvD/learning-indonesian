@@ -2,13 +2,16 @@
 
 ## Operating Context (read first — it changes what "good" means)
 
-This app is **pre-launch / build-stage: a single learner (the author), and disposable data** — no production users, no FSRS history worth preserving (it is test data), lesson content re-derives from staging. This is load-bearing:
+**Rewritten 2026-07-02 at the commercialization flip** (invite-gated customer preview; the pre-launch "single learner, disposable data" era is over — its text lives in git history). The app now has, or is about to have, **real users whose FSRS history is the product**. This is load-bearing, and it splits the data world in two:
 
-- **Do not add machinery whose only purpose is keeping a live system safe during change** — no maintenance-window choreography, no mixed-version coexistence layers, no additive-then-subtractive "provably inert" parity rollouts, no backfill-then-cleanup dances. Truncate and rebuild freely; an intermediate state may break the deployed app (nobody is there) as long as the code is coherent and tests pass.
-- **What "good" means here, in order: simple, high-quality, maintainable code; fewer tokens in the build/generation pipeline; then runtime polish.** Correctness is assumed throughout. When a design trades simplicity for runtime safety that only matters with live users, drop the safety.
-- A spec written under a live-system lens (most of `docs/plans/`) must be **re-derived against this context before implementing** — see Minimum Mechanism.
+- **Learner data is PRECIOUS** — `learner_capability_state`, `capability_review_events`, `learning_sessions`, `profiles`, activations, `auth.users`. Never truncate, never rebuild, never "apply and see". Schema changes touching these go through the full gate chain: spec with both sign-offs → `make migrate-idempotent-check` → `make migrate` (chains the deep health checks) → `make pre-deploy` before merge. Backups exist and are drilled (nightly dump + bucket sync; `docs/process/restore-runbook.md` — re-drill quarterly); a change that would invalidate the restore path is a blocker, not a trade-off.
+- **Content data stays rebuild-friendly** — lesson/reader tables re-derive from staging (pipeline-is-writer regime), capability content is DB-authoritative-after-seeding (ADR 0011) with the flag→review loop. The build-stage freedoms still apply HERE: additive-then-subtractive parity rollouts remain over-engineering for content tables. What changed is only that a content rebuild must not take the app down for real users — publish during a session simply yields stale-until-refresh, which is fine; dropping content tables mid-day is not.
+- **Runtime safety machinery now earns its keep when it protects users or their data**: parity tests for transport changes (ADR 0015), uptime probes + ntfy alerts (live), honest failure copy, invite-gated signup, GDPR erasure/retention. The bar is still Minimum Mechanism — but "only matters with live users" is no longer a reason to drop a safety; there ARE live users.
+- **Live infra changes are incidents waiting to happen** — auth, Kong, the edge runtime, and Postgres are shared with real sessions (and with family-hub). Container recreates follow the checklist in memory (`lesson-manual-container-recreate-checklist`: full env + network aliases + probe-through-the-consumer). A few minutes of auth downtime is now a reportable incident, not a shrug.
+- **What "good" means now, in order: user-data safety; simple, high-quality, maintainable code; fewer tokens in the build/generation pipeline; runtime polish.** Correctness is assumed throughout.
+- Specs written under the PRE-launch lens (most of `docs/plans/` before 2026-07) must be **re-derived against this context before implementing** — their "truncate and rebuild" shortcuts are now wrong for learner-data surfaces, while their live-safety machinery may now be right.
 
-> Revisit this section at launch. Once there are real users with real history, the live-system safety machinery it tells you to skip becomes mandatory again.
+> Still open at this flip (see `docs/audits/2026-07-02-*`): content licensing of coursebook-derived lessons (user-owned), off-site backup leg (explicitly deferred), data-export path (deferred), Traefik forward-auth removal at public exposure.
 
 ## Minimum Mechanism (counterweight to "Quality Over Speed")
 
@@ -29,7 +32,7 @@ Everything below "Quality Over Speed", every `feedback_*` memory, and every gate
 | Generation | deterministic selection from existing data > LLM generation (LLM only for genuinely creative work, e.g. grammar authoring) |
 | Consistency enforcement | pre-write validator > DB generated column / trigger (+ sync check) |
 | Identity | store it explicitly and keep it in the key > derive-and-drop |
-| Changing a data shape (build-stage) | build the target and delete the old in one move > additive-then-subtractive parity rollout |
+| Changing a data shape | CONTENT tables: build the target and delete the old in one move > parity rollout. LEARNER-data tables: gated migration only (see Operating Context) — never truncate |
 | Storage | typed column the DB + type-checker enforce > JSON blob |
 | Read aggregation | server-side RPC aggregation (small result) > ship rows to crunch client-side; a mirrored predicate is OK if parity-tested (ADR 0015) |
 | Touching an existing module | extend a composing primitive > a new parallel per-case branch; but rebuild clean > inherit a mid-cutover accreted module |

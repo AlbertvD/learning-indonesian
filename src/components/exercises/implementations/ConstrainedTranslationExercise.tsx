@@ -82,7 +82,7 @@ export default function ConstrainedTranslationExercise({
     )
 
     return (
-      <ExerciseFrame
+      <ExerciseFrame userLanguage={userLanguage}
         variant="session"
         adminOverlay={adminOverlay}
         footer={
@@ -96,7 +96,7 @@ export default function ConstrainedTranslationExercise({
         }
       >
         <ExerciseInstruction>{t.session.exercise.chooseWord}</ExerciseInstruction>
-        <ExercisePromptCard
+        <ExercisePromptCard userLanguage={userLanguage}
           variant="sentence"
           meta={data.sourceLanguageSentence}
         >
@@ -112,7 +112,7 @@ export default function ConstrainedTranslationExercise({
     : t.session.exercise.translateWord
 
   return (
-    <ExerciseFrame
+    <ExerciseFrame userLanguage={userLanguage}
       variant="session"
       adminOverlay={adminOverlay}
       footer={
@@ -126,7 +126,7 @@ export default function ConstrainedTranslationExercise({
       }
     >
       <ExerciseInstruction>{instruction}</ExerciseInstruction>
-      <ExercisePromptCard variant="sentence">
+      <ExercisePromptCard userLanguage={userLanguage} variant="sentence">
         {data.sourceLanguageSentence}
       </ExercisePromptCard>
       <ExerciseTextInput

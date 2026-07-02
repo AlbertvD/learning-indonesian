@@ -72,9 +72,9 @@ export default function ClozeMcq({
   )
 
   return (
-    <ExerciseFrame variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
       <ExerciseInstruction>{t.session.exercise.completeSentence}</ExerciseInstruction>
-      <ExercisePromptCard
+      <ExercisePromptCard userLanguage={userLanguage}
         variant="sentence"
         meta={data.translation ?? undefined}
       >

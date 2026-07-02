@@ -9,6 +9,11 @@ on:
 
 jobs:
   cleanup:
-    uses: AlbertvD/homelab-platform/.github/workflows/cache-cleanup.yml@v1
+    # Not `pull_request`-triggered (schedule + manual dispatch only), but the
+    # underlying job is a `gh api` cache-prune call with no homelab
+    # dependency, so it's pinned to a commit SHA (not the movable `v1` tag)
+    # and run on GitHub-hosted, matching the rest of the topology hardening.
+    # See docs/audits/2026-07-02-dependency-supply-chain-audit.md §4.3.
+    uses: AlbertvD/homelab-platform/.github/workflows/cache-cleanup.yml@cf5f7735eb3512ed2dec00eb45c33fca91131542 # v1
     with:
-      runner: self-hosted
+      runner: ubuntu-latest

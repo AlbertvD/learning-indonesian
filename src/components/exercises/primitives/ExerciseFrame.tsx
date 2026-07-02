@@ -13,11 +13,20 @@ import {
   type FrameVariant,
   type FrameInstructionIdContextValue,
 } from './context'
+import { translations } from '@/lib/i18n'
 import classes from './ExerciseFrame.module.css'
 
 export interface ExerciseFrameProps {
   children: ReactNode
-  /** Use section/div when embedding inside a page that already owns the main landmark. */
+  /**
+   * MAJ-1 (docs/audits/2026-07-02-a11y-i18n-audit.md): every ExerciseFrame
+   * consumer renders inside the app shell's own <main> (Layout.tsx/
+   * MobileLayout.tsx wrap <Outlet/> in <main>) — there is no call site left
+   * where ExerciseFrame is the page's top-level landmark. Defaulting to
+   * 'section' avoids the invalid nested-<main> pair PageContainer.tsx already
+   * documents avoiding. Pass as='main' explicitly for a future standalone
+   * (non-Layout) consumer that genuinely owns the page's main landmark.
+   */
   as?: 'main' | 'section' | 'div'
   /** 'live' (default) or 'preview' (admin preview mode — question + answer halves). */
   mode?: 'live' | 'preview'
@@ -27,15 +36,18 @@ export interface ExerciseFrameProps {
   footer?: ReactNode
   /** Absolutely-positioned top-right; typically <FlagButton> for admin sessions. */
   adminOverlay?: ReactNode
+  /** MAJ-2: the landmark's SR-only aria-label is language-tagged. Default 'nl' (unchanged for callers that don't pass it). */
+  userLanguage?: 'nl' | 'en'
 }
 
 export function ExerciseFrame({
   children,
-  as = 'main',
+  as = 'section',
   mode = 'live',
   variant = 'preview',
   footer,
   adminOverlay,
+  userLanguage = 'nl',
 }: ExerciseFrameProps) {
   const [instructionId, setInstructionId] = useState<string | null>(null)
   const instructionCtx: FrameInstructionIdContextValue = useMemo(
@@ -43,11 +55,12 @@ export function ExerciseFrame({
     [instructionId],
   )
 
+  const frameLabel = translations[userLanguage].exercisePrimitives.frameLabel
   const FrameElement = as
   const landmarkProps = as === 'main'
-    ? { role: 'main' as const, 'aria-label': 'Oefening' }
+    ? { role: 'main' as const, 'aria-label': frameLabel }
     : as === 'section'
-      ? { 'aria-label': 'Oefening' }
+      ? { 'aria-label': frameLabel }
       : {}
 
   return (

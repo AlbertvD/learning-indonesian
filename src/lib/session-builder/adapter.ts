@@ -1,6 +1,4 @@
 import { supabase } from '@/lib/supabase'
-import { listActivatedLessons } from '@/lib/lessons'
-import { resolveActivatedMemberRefs } from '@/lib/collections'
 import {
   CAPABILITY_PROJECTION_VERSION,
   deriveSkillTypeFromCapabilityType,
@@ -27,6 +25,7 @@ import type {
 interface SupabaseSchemaClient {
   schema(schema: 'indonesian'): {
     from(table: string): any
+    rpc(fn: string, args: Record<string, unknown>): any
   }
 }
 
@@ -117,6 +116,23 @@ interface CapabilityReadinessRow {
 interface LessonOrderDbRow {
   id: string
   order_index: number
+}
+
+// The get_session_build_data RPC's jsonb payload shape (docs/plans/2026-07-02-
+// session-data-narrowing-rpc.md). One scalar jsonb object carrying the six
+// pieces the six-query fan-out used to assemble separately — field-for-field
+// the same snake_case row shapes the mappers below already consume, so
+// toProjectedCapability/toPlannerCapability/toLearnerRow/toPlannerState are
+// unchanged. `capabilities` is server-narrowed to the sufficiency predicate
+// (clauses A-E in the RPC); `learner_states` is the learner's FULL state set
+// (unbounded by activation — due caps can come from any lesson).
+interface SessionBuildDataPayload {
+  capabilities: LearningCapabilityDbRow[]
+  learner_states: LearnerCapabilityStateDbRow[]
+  activated_lesson_ids: string[]
+  lessons: LessonOrderDbRow[]
+  reviewed_today_capability_ids: string[]
+  activated_member_refs: string[]
 }
 
 // Derives "current lesson" + "next lesson needs exposure" from the learner's
@@ -272,45 +288,30 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
     async loadCapabilitySessionData(request: CapabilitySessionDataRequest): Promise<CapabilitySessionDataSnapshot> {
       // Local-midnight boundary for sibling burying. request.now is constructed
       // browser-side (Session.tsx), so its local date is the learner's wall-clock
-      // day; toISOString() gives the UTC instant to compare against created_at
-      // (timestamptz). See docs/plans/2026-06-09-sibling-burying-design.md.
+      // day; toISOString() gives the UTC instant the RPC compares against
+      // capability_review_events.created_at (timestamptz), via p_day_start. See
+      // docs/plans/2026-06-09-sibling-burying-design.md and
+      // docs/plans/2026-07-02-session-data-narrowing-rpc.md (open question 1).
       const dayStart = new Date(request.now)
       dayStart.setHours(0, 0, 0, 0)
 
-      const [
-        capabilitiesResult,
-        statesResult,
-        activatedLessons,
-        lessonsResult,
-        reviewEventsResult,
-        activatedCollectionRefs,
-      ] = await Promise.all([
-        db()
-          .from('learning_capabilities')
-          .select(CAPABILITY_COLUMNS)
-          .eq('readiness_status', 'ready')
-          .eq('publication_status', 'published')
-          .is('retired_at', null),
-        db().from('learner_capability_state').select(LEARNER_STATE_COLUMNS).eq('user_id', request.userId),
-        listActivatedLessons(request.userId, client),
-        db().from('lessons').select('id, order_index'),
-        db()
-          .from('capability_review_events')
-          .select('capability_id')
-          .eq('user_id', request.userId)
-          .gte('created_at', dayStart.toISOString()),
-        // Collections gate-OR (spec §5): the source_refs of words in any collection
-        // the learner has activated. Feeds plannerInput.activatedCollectionRefs so
-        // gap-word caps (homed on the un-activated "Common Words" lesson) surface.
-        resolveActivatedMemberRefs(request.userId, client),
-      ])
+      // Single narrowed-snapshot RPC — replaces the six-query client-side fan-out
+      // (learning_capabilities catalog, learner_capability_state, activated
+      // lessons, lessons, today's review events, activated collection/harvest
+      // member refs). The RPC narrows the catalog server-side to the learner's
+      // activated surface + their state (sufficiency predicate clauses A-E); see
+      // docs/plans/2026-07-02-session-data-narrowing-rpc.md for the proof. Scalar
+      // jsonb return is immune to PGRST_DB_MAX_ROWS row truncation (HC39/HC40).
+      const { data, error } = await db().rpc('get_session_build_data', {
+        p_user_id: request.userId,
+        p_mode: request.mode,
+        p_selected_source_refs: request.selectedSourceRefs ?? [],
+        p_day_start: dayStart.toISOString(),
+      })
+      if (error) throw error
 
-      if (capabilitiesResult.error) throw capabilitiesResult.error
-      if (statesResult.error) throw statesResult.error
-      if (lessonsResult.error) throw lessonsResult.error
-      if (reviewEventsResult.error) throw reviewEventsResult.error
-
-      const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
+      const payload = (data ?? {}) as Partial<SessionBuildDataPayload>
+      const capabilityRows = (payload.capabilities ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
 
       // Sibling burying seed: the distinct source_refs reviewed earlier today.
@@ -318,14 +319,15 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
       // JOIN, no embed, no new index. A reviewed cap that is no longer
       // ready/published won't be in the map; skip it (it can't be a candidate).
       const reviewedTodayRefs = new Set<string>()
-      for (const row of (reviewEventsResult.data ?? []) as { capability_id: string }[]) {
-        const ref = capabilityById.get(row.capability_id)?.source_ref
+      for (const capabilityId of (payload.reviewed_today_capability_ids ?? []) as string[]) {
+        const ref = capabilityById.get(capabilityId)?.source_ref
         if (ref) reviewedTodayRefs.add(ref)
       }
 
-      // lessonId → order_index, reused from the lessons rows already loaded above
-      // for deriveLessonProgression. Feeds the planner's lesson-priority ordering.
-      const lessonRows = (lessonsResult.data ?? []) as LessonOrderDbRow[]
+      // lessonId → order_index, reused from the lessons rows the RPC returns
+      // whole (small table) for deriveLessonProgression. Feeds the planner's
+      // lesson-priority ordering.
+      const lessonRows = (payload.lessons ?? []) as LessonOrderDbRow[]
       const lessonOrderById = new Map(lessonRows.map(lesson => [lesson.id, lesson.order_index]))
 
       const capabilitiesByKey = new Map<string, ProjectedCapability>()
@@ -342,7 +344,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         readyCapabilities.push(toPlannerCapability(row, projection, lessonOrderById))
       }
 
-      const schedulerRows = ((statesResult.data ?? []) as LearnerCapabilityStateDbRow[])
+      const schedulerRows = ((payload.learner_states ?? []) as LearnerCapabilityStateDbRow[])
         .filter(row => capabilityById.has(row.capability_id))
         .map(row => toLearnerRow(row, capabilityById))
       const dueCount = getDueCapabilitiesFromRows({
@@ -357,6 +359,12 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
           failedAt: row.lastReviewedAt!,
           consecutiveFailures: row.consecutiveFailureCount,
         }))
+      const activatedLessons = new Set<string>((payload.activated_lesson_ids ?? []) as string[])
+      // Collections gate-OR (spec §5): the source_refs of words in any collection
+      // the learner has activated, unioned with reader-harvested words. Feeds
+      // plannerInput.activatedCollectionRefs so gap-word caps (homed on the
+      // un-activated "Common Words" lesson) surface.
+      const activatedCollectionRefs = new Set<string>((payload.activated_member_refs ?? []) as string[])
       const { currentLessonId, nextLessonNeedsExposure } = deriveLessonProgression({
         activatedLessonIds: activatedLessons,
         lessons: lessonRows,

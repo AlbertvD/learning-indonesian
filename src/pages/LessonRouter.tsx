@@ -17,21 +17,23 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { bespokeLessonElements } from '@/pages/lessons/registry'
+import { useT } from '@/hooks/useT'
 
 export function LessonRouter() {
   const { lessonId } = useParams<{ lessonId: string }>()
   const navigate = useNavigate()
+  const T = useT()
   const bespoke = lessonId ? bespokeLessonElements[lessonId] : undefined
   if (bespoke) return bespoke
 
   return (
     <PageContainer size="sm">
       <PageBody>
-        <PageHeader title="Les niet gevonden" />
+        <PageHeader title={T.lessons.notFoundTitle} />
         <EmptyState
           icon={<IconAlertTriangle size={48} />}
-          message="Deze les bestaat niet of is nog niet gepubliceerd."
-          cta={<Button onClick={() => navigate('/leren')}>Terug naar lessen</Button>}
+          message={T.lessons.notFoundMessage}
+          cta={<Button onClick={() => navigate('/leren')}>{T.lessons.backToLessons}</Button>}
         />
       </PageBody>
     </PageContainer>

@@ -14,22 +14,37 @@ permissions:
   contents: read
   security-events: write
 
+# Runner topology (2026-07-02 supply-chain hardening — see
+# docs/audits/2026-07-02-dependency-supply-chain-audit.md §4.3): this
+# workflow triggers on `pull_request` from a PUBLIC repo, so any prior
+# contributor (and, per GitHub's default first-time-contributor-approval
+# setting, potentially a forked PR after one approval) can cause these jobs
+# to execute. None of the three jobs below need homelab-network locality —
+# `safety`/`dependencies` are pure static analysis + GitHub API calls,
+# `seam-contract` is a repo-local bash scan — so every job runs on
+# GitHub-hosted `ubuntu-latest`, never on the self-hosted `master-docker`
+# runner that also hosts production and the Supabase keys.
 jobs:
   safety:
-    uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@v1
+    # Pinned to a commit SHA (not the movable `v1` tag): this job carries
+    # `secrets: inherit`, so a tag-move in homelab-platform would otherwise
+    # be a silent path to this repo's secrets (audit finding, §4.3).
+    uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@cf5f7735eb3512ed2dec00eb45c33fca91131542 # v1
     with:
-      runner: self-hosted
+      runner: ubuntu-latest
     secrets: inherit
 
   dependencies:
-    uses: AlbertvD/homelab-platform/.github/workflows/dependency-audit.yml@v1
+    uses: AlbertvD/homelab-platform/.github/workflows/dependency-audit.yml@cf5f7735eb3512ed2dec00eb45c33fca91131542 # v1
     with:
       fail_on_vulnerabilities: false
-      runner: self-hosted
+      runner: ubuntu-latest
 
   seam-contract:
     name: Seam contract — viewport-math scan
-    runs-on: [self-hosted, master-docker]
+    # Pure bash scan of repo source (scripts/check-viewport-math.sh) — no
+    # homelab dependency.
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - name: Run viewport-math scanner

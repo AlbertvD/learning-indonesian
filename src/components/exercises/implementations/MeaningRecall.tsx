@@ -52,7 +52,7 @@ export default function MeaningRecall({
   })
 
   return (
-    <ExerciseFrame
+    <ExerciseFrame userLanguage={userLanguage}
       variant="session"
       adminOverlay={adminOverlay}
       footer={
@@ -68,7 +68,7 @@ export default function MeaningRecall({
       <ExerciseInstruction>
         {userLanguage === 'nl' ? 'Wat betekent dit woord?' : 'What does this word mean?'}
       </ExerciseInstruction>
-      <ExercisePromptCard
+      <ExercisePromptCard userLanguage={userLanguage}
         variant="word"
         audio={audioUrl ? { url: audioUrl, autoplay: autoPlay } : undefined}
       >

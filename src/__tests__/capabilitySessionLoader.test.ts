@@ -247,6 +247,113 @@ describe('capability session loader', () => {
     }))
   })
 
+  // Round 2.4b -- CRIT-2 (docs/audits/2026-07-02-a11y-i18n-audit.md): the Profile
+  // "disable listening exercises" toggle, wired via buildSession's listeningEnabled
+  // param -> excludeListeningCapabilities (listeningFilter.ts).
+  describe('listeningEnabled -- "disable listening exercises" opt-out', () => {
+    const audioKey = 'cap:v1:item:learning_items/audio-word:recognise_meaning_from_audio_cap:audio_to_l1:audio:nl'
+    const audioProjection = projectedCapability({
+      canonicalKey: audioKey,
+      sourceRef: 'learning_items/audio-word',
+      capabilityType: 'recognise_meaning_from_audio_cap',
+      skillType: 'recognise_mode',
+      direction: 'audio_to_l1',
+      modality: 'audio',
+      requiredArtifacts: [],
+    })
+    const newIntroKey = 'cap:v1:item:learning_items/audio-new:recognise_meaning_from_audio_cap:audio_to_l1:audio:nl'
+    const newIntroProjection = projectedCapability({
+      canonicalKey: newIntroKey,
+      sourceRef: 'learning_items/audio-new',
+      capabilityType: 'recognise_meaning_from_audio_cap',
+      skillType: 'recognise_mode',
+      direction: 'audio_to_l1',
+      modality: 'audio',
+      requiredArtifacts: [],
+    })
+
+    function adapterWithAudioAndText(): CapabilitySessionDataAdapter {
+      return {
+        listLearnerCapabilityStates: async () => {
+          throw new Error('buildSession should use the full snapshot loader')
+        },
+        loadCapabilitySessionData: async request => ({
+          schedulerRows: [
+            activeState({ userId: request.userId }), // text -- capability-1 / canonicalKey (default)
+            activeState({
+              userId: request.userId,
+              id: 'audio-state',
+              capabilityId: 'audio-capability',
+              canonicalKeySnapshot: audioKey,
+            }),
+          ],
+          plannerInput: {
+            userId: request.userId,
+            preferredSessionSize: request.preferredSessionSize,
+            dueCount: 0,
+            readyCapabilities: [plannerCapability({
+              id: 'audio-new-capability',
+              canonicalKey: newIntroKey,
+              sourceRef: newIntroProjection.sourceRef,
+              capabilityType: 'recognise_meaning_from_audio_cap',
+              skillType: 'recognise_mode',
+            })],
+            learnerCapabilityStates: [],
+            activatedLessons: new Set<string>(),
+          },
+          capabilitiesByKey: new Map([
+            [canonicalKey, projectedCapability()],
+            [audioKey, audioProjection],
+            [newIntroKey, newIntroProjection],
+          ]),
+          readinessByKey: new Map([
+            [canonicalKey, { status: 'ready', allowedExercises: ['type_meaning_ex'] }],
+            [audioKey, { status: 'ready', allowedExercises: ['choose_meaning_from_audio_ex'] }],
+            [newIntroKey, { status: 'ready', allowedExercises: ['choose_meaning_from_audio_ex'] }],
+          ]),
+          currentLessonId: null,
+          nextLessonNeedsExposure: false,
+          reviewedTodayRefs: new Set<string>(),
+        }),
+      }
+    }
+
+    it('excludes audio-modality blocks (due + new-introduction) when the preference is off', async () => {
+      const plan = await buildSession({
+        enabled: true,
+        sessionId: 'session-1',
+        userId: 'user-1',
+        mode: 'standard',
+        now,
+        limit: 15,
+        preferredSessionSize: 15,
+        listeningEnabled: false,
+        adapter: adapterWithAudioAndText(),
+      })
+
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === audioKey)).toBe(false)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === newIntroKey)).toBe(false)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === canonicalKey)).toBe(true)
+    })
+
+    it('leaves audio-modality blocks in the plan when the preference is on (default)', async () => {
+      const plan = await buildSession({
+        enabled: true,
+        sessionId: 'session-1',
+        userId: 'user-1',
+        mode: 'standard',
+        now,
+        limit: 15,
+        preferredSessionSize: 15,
+        adapter: adapterWithAudioAndText(),
+      })
+
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === audioKey)).toBe(true)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === newIntroKey)).toBe(true)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === canonicalKey)).toBe(true)
+    })
+  })
+
   it('loads lesson practice from selected lesson due, new, and active review candidates only', async () => {
     const selectedDueKey = 'selected-due-key'
     const selectedNewKey = 'selected-new-key'

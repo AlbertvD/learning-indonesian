@@ -14,7 +14,17 @@ env:
 jobs:
   build-and-push:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    runs-on: [self-hosted, master-docker]
+    # Not `pull_request`-triggered — `workflow_run` only fires after CI
+    # succeeds on `main`, and `workflow_dispatch` requires repo write access —
+    # so this job isn't exposed to the fork-PR attack the topology hardening
+    # targets (docs/audits/2026-07-02-dependency-supply-chain-audit.md §4.3
+    # action #1). Moved off the self-hosted `master-docker` runner anyway:
+    # the build needs no homelab-network locality (base images come from
+    # public registries; VITE_SUPABASE_URL/ANON_KEY are baked in as literal
+    # build-arg strings, never resolved over the network during build;
+    # registry auth is the ephemeral GITHUB_TOKEN, not a homelab secret) and
+    # GitHub-hosted minutes are free for public repos.
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -24,13 +34,11 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       - name: Install dependencies
-        # --ignore-scripts skips the `prepare: husky` lifecycle. husky is a
-        # local-dev-only git-hooks tool and has no purpose in CI; invoking it
-        # on the self-hosted runner also fails because husky v10+ uses the
-        # `||=` operator which the runner's bundled Node doesn't support.
+        # --ignore-scripts skips the `prepare: husky` lifecycle — husky is a
+        # local-dev-only git-hooks tool with no purpose in CI.
         run: bun install --ignore-scripts
 
       - name: Log in to the Container registry
