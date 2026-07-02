@@ -45,7 +45,6 @@ export interface ExerciseComponentProps {
   userLanguage: 'en' | 'nl'
   onAnswer: (outcome: AnswerOutcome) => void
   onEvent?: (event: ExerciseEventPayload) => void
-  adminOverlay?: React.ReactNode
 }
 
 export type LazyExercise = LazyExoticComponent<ComponentType<ExerciseComponentProps>>

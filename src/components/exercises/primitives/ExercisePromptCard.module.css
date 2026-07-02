@@ -18,7 +18,7 @@
     position: absolute;
     top: 12px;
     right: 12px;
-    font-size: var(--fs-xs);
+    font-size: var(--ex-fs-chrome);
     font-weight: var(--fw-semibold);
     padding: 4px 10px;
     background: var(--accent-primary-subtle);
@@ -34,17 +34,19 @@
 
   .meta {
     margin-top: 8px;
-    font-size: var(--fs-sm);
+    font-size: var(--ex-fs-chrome);
     color: var(--ex-fg-muted);
     font-style: italic;
   }
 
   .reveal {
     margin-top: 16px;
-    font-size: var(--fs-2xl);
+    font-size: var(--ex-fs-reveal);
     font-weight: var(--fw-bold);
     text-align: center;
-    color: var(--accent-primary);
+    /* --ex-fg, not accent: the word prompt owns resting-cyan alone — a cyan
+       reveal read as a second hero on audio cards (2026-07-02 type audit). */
+    color: var(--ex-fg);
   }
 
   /* ── variant: word ─────────────────────────────────────────────────────── */
@@ -58,7 +60,7 @@
   }
 
   .word .prompt {
-    font-size: var(--fs-3xl);
+    font-size: var(--ex-fs-prompt-word);
     font-weight: var(--fw-bold);
     letter-spacing: 0.03em;
     color: var(--accent-primary);
@@ -82,7 +84,7 @@
   }
 
   .sentence .prompt {
-    font-size: var(--fs-2xl);
+    font-size: var(--ex-fs-prompt-sentence);
     font-weight: var(--fw-medium);
     line-height: 1.5;
     overflow-wrap: anywhere;
@@ -115,7 +117,7 @@
   }
 
   .transform .prompt {
-    font-size: var(--fs-2xl);
+    font-size: var(--ex-fs-prompt-sentence);
     font-weight: var(--fw-medium);
     line-height: 1.5;
     overflow-wrap: anywhere;
@@ -133,7 +135,7 @@
   }
 
   .pair .prompt {
-    font-size: var(--fs-2xl);
+    font-size: var(--ex-fs-prompt-sentence);
     font-weight: var(--fw-semibold);
     /* Two tokens + vertical-rule separator are inserted by the consumer. */
   }

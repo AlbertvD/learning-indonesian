@@ -130,7 +130,6 @@ describe('dialogue_line:produce_form_from_context_cap — end-to-end capstone', 
           userLanguage="nl"
           onAnswer={onAnswer}
           onEvent={vi.fn()}
-          adminOverlay={null}
         />
       </MantineProvider>
     )

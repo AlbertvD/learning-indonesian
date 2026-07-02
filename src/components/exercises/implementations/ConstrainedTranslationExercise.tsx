@@ -19,7 +19,7 @@ import { translations } from '@/lib/i18n'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function ConstrainedTranslationExercise({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
   const data = exerciseItem.constrainedTranslationData
@@ -84,7 +84,6 @@ export default function ConstrainedTranslationExercise({
     return (
       <ExerciseFrame userLanguage={userLanguage}
         variant="session"
-        adminOverlay={adminOverlay}
         footer={
           <ExerciseSubmitButton
             onClick={scoring.submit}
@@ -114,7 +113,6 @@ export default function ConstrainedTranslationExercise({
   return (
     <ExerciseFrame userLanguage={userLanguage}
       variant="session"
-      adminOverlay={adminOverlay}
       footer={
         <ExerciseSubmitButton
           onClick={scoring.submit}

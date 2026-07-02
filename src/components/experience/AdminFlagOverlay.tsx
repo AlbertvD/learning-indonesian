@@ -1,7 +1,8 @@
 // AdminFlagOverlay — the in-session admin flag affordance.
 //
-// Rendered into every live exercise's top-right `adminOverlay` slot via
-// CapabilityExerciseFrame. For an admin it shows the FlagButton (flag icon →
+// Rendered into the session header's chrome row (ExperiencePlayer's
+// SessionHeader flagSlot) — not overlaid on the exercise, so long instructions
+// can never collide with it. For an admin it shows the FlagButton (flag icon →
 // comment → logged to content_flags); for everyone else it renders nothing, so
 // the slot is invisible to learners. This is the live wiring of the
 // flag-and-agent review loop (CONTEXT.md §Capability Review).

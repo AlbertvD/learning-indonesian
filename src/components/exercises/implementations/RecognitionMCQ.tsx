@@ -18,7 +18,7 @@ import { resolveSessionAudioUrl } from '@/services/audioService'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function RecognitionMCQ({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
   const { audioMap } = useSessionAudio()
@@ -69,7 +69,7 @@ export default function RecognitionMCQ({
     learningItem?.item_type === 'sentence' || learningItem?.item_type === 'dialogue_chunk'
 
   return (
-    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session">
       <ExerciseInstruction>{t.session.recognition.question}</ExerciseInstruction>
       <ExercisePromptCard userLanguage={userLanguage}
         variant={isSentenceType ? 'sentence' : 'word'}

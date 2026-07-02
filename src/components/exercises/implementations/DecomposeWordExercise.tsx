@@ -14,7 +14,7 @@ import { useExerciseScoring } from '@/lib/useExerciseScoring'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function DecomposeWordExercise({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const data = exerciseItem.decomposeData
   const instruction = userLanguage === 'nl'
@@ -43,7 +43,7 @@ export default function DecomposeWordExercise({
   }
 
   return (
-    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session">
       <ExerciseInstruction>{instruction}</ExerciseInstruction>
       <ExercisePromptCard userLanguage={userLanguage} variant="word">
         {data.word}

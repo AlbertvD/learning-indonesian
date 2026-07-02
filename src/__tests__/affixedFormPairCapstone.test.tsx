@@ -153,7 +153,6 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
           userLanguage="nl"
           onAnswer={onAnswer}
           onEvent={vi.fn()}
-          adminOverlay={null}
         />
       </MantineProvider>
     )
@@ -219,7 +218,6 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
           userLanguage="nl"
           onAnswer={onAnswer}
           onEvent={vi.fn()}
-          adminOverlay={null}
         />
       </MantineProvider>
     )
@@ -275,7 +273,6 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
           userLanguage="nl"
           onAnswer={onAnswer}
           onEvent={vi.fn()}
-          adminOverlay={null}
         />
       </MantineProvider>
     )
@@ -330,7 +327,7 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
     const onAnswer = vi.fn()
     render(
       <MantineProvider>
-        <DecomposeWordExercise exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} adminOverlay={null} />
+        <DecomposeWordExercise exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} />
       </MantineProvider>
     )
     // The word renders as the prompt (and also as the unsegmented-word distractor,
@@ -362,7 +359,7 @@ describe('word_form_pair_src:root_derived_* — end-to-end capstone', () => {
 
     render(
       <MantineProvider>
-        <TypedRecall exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={vi.fn()} onEvent={vi.fn()} adminOverlay={null} />
+        <TypedRecall exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={vi.fn()} onEvent={vi.fn()} />
       </MantineProvider>
     )
     // The carrier sentence (blanked) is the prompt; typing the form is graded against membelikan.
@@ -402,7 +399,7 @@ describe('word_form_pair_src reduplication (L22) — render-verify', () => {
     const onAnswer = vi.fn()
     render(
       <MantineProvider>
-        <DecomposeWordExercise exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} adminOverlay={null} />
+        <DecomposeWordExercise exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} />
       </MantineProvider>
     )
     const correct = screen.getByText('anak + anak')
@@ -434,7 +431,7 @@ describe('word_form_pair_src reduplication (L22) — render-verify', () => {
 
     render(
       <MantineProvider>
-        <DecomposeWordExercise exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={vi.fn()} onEvent={vi.fn()} adminOverlay={null} />
+        <DecomposeWordExercise exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={vi.fn()} onEvent={vi.fn()} />
       </MantineProvider>
     )
     expect(screen.getByText('ke + biru-biru + an')).toBeInTheDocument()
@@ -462,7 +459,7 @@ describe('word_form_pair_src reduplication (L22) — render-verify', () => {
     const onAnswer = vi.fn()
     render(
       <MantineProvider>
-        <TypedRecall exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} adminOverlay={null} />
+        <TypedRecall exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} />
       </MantineProvider>
     )
     expect(screen.getByText('Geef de verdubbelde vorm van: anak')).toBeInTheDocument()
@@ -494,7 +491,7 @@ describe('word_form_pair_src reduplication (L22) — render-verify', () => {
 
     render(
       <MantineProvider>
-        <TypedRecall exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={vi.fn()} onEvent={vi.fn()} adminOverlay={null} />
+        <TypedRecall exerciseItem={ctx!.exerciseItem!} userLanguage="nl" onAnswer={vi.fn()} onEvent={vi.fn()} />
       </MantineProvider>
     )
     expect(screen.getByText('Kura-kura makan apa, ___ tentu')).toBeInTheDocument()

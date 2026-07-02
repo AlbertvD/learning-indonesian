@@ -1,6 +1,8 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
+import type { ReactNode } from 'react'
 import { notifications } from '@mantine/notifications'
 import { Progress, Text, Group, Stack, VisuallyHidden } from '@mantine/core'
+import { AdminFlagOverlay } from './AdminFlagOverlay'
 import { PageContainer, PageBody } from '@/components/page/primitives'
 import { ExerciseFeedback } from '@/components/exercises/primitives'
 import { feedbackPropsFor } from '@/components/exercises/feedbackMapping'
@@ -52,14 +54,21 @@ interface SessionHeaderProps {
   progress: number
   diagnostics: SessionPlan['diagnostics']
   T: Translations
+  /** Admin flag affordance. Lives in the header chrome row — not overlaid on
+   *  the exercise — so long instructions can never collide with it and the
+   *  learner's text column keeps its full measure (2026-07-02 type audit). */
+  flagSlot?: ReactNode
 }
 
-function SessionHeader({ position, queueLength, correctCount, totalUniqueCaps, progress, diagnostics, T }: SessionHeaderProps) {
+function SessionHeader({ position, queueLength, correctCount, totalUniqueCaps, progress, diagnostics, T, flagSlot }: SessionHeaderProps) {
   return (
     <Stack gap="xs" mb="md">
       <Group justify="space-between">
-        <Text size="sm" c="dimmed">{T.session.exerciseOf} {position + 1} {T.session.of} {queueLength}</Text>
-        <Text size="sm" c="dimmed">{correctCount}/{totalUniqueCaps} {T.session.correct}</Text>
+        <Text fz="var(--ex-fs-chrome)" c="dimmed">{T.session.exerciseOf} {position + 1} {T.session.of} {queueLength}</Text>
+        <Group gap={4}>
+          <Text fz="var(--ex-fs-chrome)" c="dimmed">{correctCount}/{totalUniqueCaps} {T.session.correct}</Text>
+          {flagSlot}
+        </Group>
       </Group>
       <Progress value={progress} size="sm" />
       {diagnostics.length > 0 && (
@@ -314,6 +323,13 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
             progress={progress}
             diagnostics={profile?.isAdmin ? plan.diagnostics : []}
             T={T}
+            flagSlot={
+              <AdminFlagOverlay
+                key={currentBlock.id}
+                capabilityId={currentBlock.capabilityId}
+                exerciseType={currentBlock.renderPlan.exerciseType}
+              />
+            }
           />
           {feedbackInput
             ? (

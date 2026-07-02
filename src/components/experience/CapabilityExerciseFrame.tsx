@@ -14,7 +14,6 @@ import {
 } from '@/components/exercises/registry'
 import { ExerciseSkeleton } from '@/components/exercises/ExerciseSkeleton'
 import { ExerciseErrorBoundary } from '@/components/exercises/ExerciseErrorBoundary'
-import { AdminFlagOverlay } from './AdminFlagOverlay'
 import { normalizeAnswerResponse } from '@/lib/answerNormalization'
 import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import type { SessionBlock } from '@/lib/session-builder'
@@ -77,12 +76,6 @@ export function CapabilityExerciseFrame({
           exerciseItem={context.exerciseItem}
           userLanguage={userLanguage}
           onAnswer={handleOutcome}
-          adminOverlay={
-            <AdminFlagOverlay
-              capabilityId={block.capabilityId}
-              exerciseType={block.renderPlan.exerciseType}
-            />
-          }
         />
       </Suspense>
     </ExerciseErrorBoundary>

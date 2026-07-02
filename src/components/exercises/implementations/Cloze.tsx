@@ -16,7 +16,7 @@ import { IconMessage2 } from '@tabler/icons-react'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function Cloze({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
   const { clozeContext, answerVariants } = exerciseItem
@@ -71,7 +71,6 @@ export default function Cloze({
   return (
     <ExerciseFrame userLanguage={userLanguage}
       variant="session"
-      adminOverlay={adminOverlay}
       footer={
         <ExerciseSubmitButton
           onClick={scoring.submit}

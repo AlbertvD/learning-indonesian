@@ -4,8 +4,8 @@
 // .exerciseInput class to pin font-size ≥16px (kills iOS zoom).
 // See docs/plans/2026-04-23-exercise-framework-design.md §6.12
 //
-// Exposed as a primitive (rendered via ExerciseFrame's topRight slot for
-// admin sessions) and surfaced in the design lab.
+// Exposed as a primitive (rendered via the session header's flagSlot for
+// admin sessions — see ExperiencePlayer) and surfaced in the design lab.
 
 import { useState, useEffect } from 'react'
 import { ActionIcon, Drawer, Popover, Textarea, Button, Stack, Text } from '@mantine/core'

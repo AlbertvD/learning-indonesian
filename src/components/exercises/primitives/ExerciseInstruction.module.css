@@ -4,7 +4,7 @@
     align-items: center;
     gap: 10px;
     margin: 0;
-    font-size: var(--fs-xl);
+    font-size: var(--ex-fs-instruction);
     font-weight: var(--fw-medium);
     line-height: 1.4;
     color: var(--ex-fg-muted);
