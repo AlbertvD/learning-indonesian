@@ -4,7 +4,7 @@
 // shows the NL meaning under the Indonesian transcript.
 
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MantineProvider } from '@mantine/core'
 import Dictation from '../Dictation'
@@ -27,7 +27,13 @@ function makeExerciseItem(overrides: Partial<ExerciseItem> = {}): ExerciseItem {
       { id: 'm1', learning_item_id: 'item-1', translation_language: 'nl', translation_text: 'eten', sense_label: null, usage_note: null, is_primary: true },
     ],
     contexts: [],
-    answerVariants: [],
+    // Real-world shape: variants include NL/EN alternative translations of the
+    // item alongside ID spellings — the grader must only accept the ID ones.
+    answerVariants: [
+      { id: 'v1', learning_item_id: 'item-1', variant_text: 'makanan', variant_type: 'informal', language: 'id', is_accepted: true, notes: null },
+      { id: 'v2', learning_item_id: 'item-1', variant_text: 'food', variant_type: 'alternative_translation', language: 'en', is_accepted: true, notes: null },
+      { id: 'v3', learning_item_id: 'item-1', variant_text: 'eten', variant_type: 'alternative_translation', language: 'nl', is_accepted: true, notes: null },
+    ],
     skillType: 'produce_mode',
     exerciseType: 'type_form_from_audio_ex',
     ...overrides,
@@ -95,5 +101,35 @@ describe('Dictation — post-answer meaning reveal', () => {
     await playAndAnswer('salah')
     expect(await screen.findByText('makan')).toBeInTheDocument()
     expect(screen.queryByText('eten')).not.toBeInTheDocument()
+  })
+})
+
+describe('Dictation — variant grading is Indonesian-only', () => {
+  it('rejects the Dutch translation as a typed answer', async () => {
+    const onAnswer = vi.fn()
+    render(
+      <MantineProvider>
+        <SessionAudioProvider audioMap={audioMap}>
+          <Dictation exerciseItem={makeExerciseItem()} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} />
+        </SessionAudioProvider>
+      </MantineProvider>
+    )
+    await playAndAnswer('eten')
+    await waitFor(() => expect(onAnswer).toHaveBeenCalled())
+    expect(onAnswer.mock.calls[0][0].wasCorrect).toBe(false)
+  })
+
+  it('accepts an Indonesian spelling variant', async () => {
+    const onAnswer = vi.fn()
+    render(
+      <MantineProvider>
+        <SessionAudioProvider audioMap={audioMap}>
+          <Dictation exerciseItem={makeExerciseItem()} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} />
+        </SessionAudioProvider>
+      </MantineProvider>
+    )
+    await playAndAnswer('makanan')
+    await waitFor(() => expect(onAnswer).toHaveBeenCalled(), { timeout: 3000 })
+    expect(onAnswer.mock.calls[0][0].wasCorrect).toBe(true)
   })
 })

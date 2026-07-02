@@ -183,3 +183,22 @@ export function findIneffectiveProduceReason(
 export function normalizeAnswerResponse(rawResponse: string | null | undefined): string | null {
   return rawResponse ? rawResponse.toLowerCase().trim() : null
 }
+
+/**
+ * The variant texts a grader (or the feedback display) may treat as accepted
+ * answers, restricted to one language.
+ *
+ * `item_answer_variants` mixes ID spelling variants with NL/EN alternative
+ * translations of the same item. An answer is only ever in ONE language —
+ * passing the unfiltered list let "hier"/"here" grade as correct dictations
+ * of "di sini" (2026-07-02). Also drops `is_accepted=false` rows, which are
+ * explicitly rejected spellings/translations.
+ */
+export function acceptedVariantTexts(
+  variants: ReadonlyArray<{ variant_text: string; language: string; is_accepted: boolean }> | null | undefined,
+  language: string,
+): string[] {
+  return (variants ?? [])
+    .filter(v => v.is_accepted && v.language === language)
+    .map(v => v.variant_text)
+}

@@ -783,3 +783,49 @@ describe('ExperiencePlayer — in-session re-drill until correct', () => {
     void onAnswer
   })
 })
+
+describe('ExperiencePlayer — correct-answer feedback screen (dictation)', () => {
+  // 2026-07-02 owner decision: dictation correct answers show a real Doorgaan
+  // card (word + meaning) instead of the blink-and-advance auto path — the
+  // 1.5s in-exercise reveal was too ephemeral to read.
+  it('C1. Correct dictation answer shows the Doorgaan card (Correct badge + meaning), no re-queue; Doorgaan advances', async () => {
+    const user = userEvent.setup()
+    const blocks = [
+      makeBlock('b1', 'due_review', 'type_form_from_audio_ex'),
+      makeBlock('b2', 'due_review'),
+    ]
+    const p = makePlan(blocks)
+    const contexts = new Map(blocks.map(b => [b.id, makeOk(b)]))
+    renderPlayer({ ...baseProps, plan: p, contexts })
+
+    await user.click(screen.getByRole('button', { name: 'Mark correct' }))
+
+    expect(await screen.findByRole('button', { name: /doorgaan/i })).toBeInTheDocument()
+    // Badge text + its SR-only announcement both say "Correct".
+    expect(screen.getAllByText('Correct').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText(/eten/)).toBeInTheDocument()
+    // No re-queue on correct: header still says 1 of 2 while the card shows.
+    expect(screen.getByText('Oefening 1 van 2')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /doorgaan/i }))
+    expect(screen.getByText('Oefening 2 van 2')).toBeInTheDocument()
+    // The correct answer counted toward the capability tally.
+    expect(screen.getByText('1/2 correct')).toBeInTheDocument()
+  })
+
+  it('C2. Non-dictation correct answers keep auto-advancing (no Doorgaan card)', async () => {
+    const user = userEvent.setup()
+    const blocks = [
+      makeBlock('b1', 'due_review', 'type_meaning_ex'),
+      makeBlock('b2', 'due_review'),
+    ]
+    const p = makePlan(blocks)
+    const contexts = new Map(blocks.map(b => [b.id, makeOk(b)]))
+    renderPlayer({ ...baseProps, plan: p, contexts })
+
+    await user.click(screen.getByRole('button', { name: 'Mark correct' }))
+
+    expect(screen.queryByRole('button', { name: /doorgaan/i })).not.toBeInTheDocument()
+    expect(screen.getByText('Oefening 2 van 2')).toBeInTheDocument()
+  })
+})

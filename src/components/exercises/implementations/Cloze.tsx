@@ -10,7 +10,7 @@ import {
   ExerciseSubmitButton,
 } from '../primitives'
 import { useExerciseScoring } from '@/lib/useExerciseScoring'
-import { checkAnswer } from '@/lib/answerNormalization'
+import { checkAnswer, acceptedVariantTexts } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
 import { IconMessage2 } from '@tabler/icons-react'
 import type { ExerciseComponentProps } from '../registry'
@@ -22,7 +22,8 @@ export default function Cloze({
   const { clozeContext, answerVariants } = exerciseItem
 
   const targetWord = clozeContext?.targetWord ?? ''
-  const variants = (answerVariants ?? []).map(v => v.variant_text)
+  // The blank is filled with Indonesian — never accept the NL/EN translation rows.
+  const variants = acceptedVariantTexts(answerVariants, 'id')
 
   const scoring = useExerciseScoring<string>({
     mode: 'typed',

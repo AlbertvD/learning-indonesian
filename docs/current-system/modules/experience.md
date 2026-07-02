@@ -122,7 +122,7 @@ Two categories of silent-filter: resolution-failed blocks (logged upstream by `c
 | `isComplete` | `RecapScreen` |
 
 State transitions:
-- **Correct + not fuzzy** → add capability to `correctCapabilityIds`, `position++`, `feedback = null` (auto-advance)
+- **Correct + not fuzzy** → add capability to `correctCapabilityIds`; then dictation (`type_form_from_audio_ex`) sets `feedback = {outcome: 'correct', …}` (a real Doorgaan card — the meaning only surfaces post-answer there, 2026-07-02 owner decision), every other type auto-advances (`position++`, `feedback = null`)
 - **Fuzzy or wrong** → splice the current block back into `queue` at `position + 1 + offset` (offset = `pickRedrillOffset()` ∈ [3, 6]; clamped to `queue.length`), then set `feedback = { block, context, outcome, response, commitFailed }` (shows Doorgaan)
 - **Doorgaan tapped** → `handleContinue`: `feedback = null`, `position++`
 - **Skip outcome** → `handleSkip`: adds block to `answeredBlocks` + `skippedBlocks`, capability to `skippedCapabilityIds`, `position++` (block NOT re-inserted)
