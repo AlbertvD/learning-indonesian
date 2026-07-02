@@ -2,8 +2,9 @@
 // scripts/check-supabase-deep.ts
 // Run with: make check-supabase-deep SUPABASE_SERVICE_KEY=<key>
 // Requires: SUPABASE_SERVICE_KEY env var; VITE_SUPABASE_URL from .env.local
+import { readFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
-import { classifyDutchSeparator, classifyIndonesianSeparator } from '@/lib/capabilities'
+import { classifyDutchSeparator, classifyIndonesianSeparator, deriveSkillTypeFromCapabilityType } from '@/lib/capabilities'
 import { findIneffectiveProduceReason } from '@/lib/answerNormalization'
 import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
@@ -13,6 +14,8 @@ import { isCatalogAffix, routesToMeaningUsage } from '@/lib/capabilities/affixCa
 import { itemSlug } from '@/lib/capabilities/itemSlug'
 import { projectionViolations, type RankedItem } from './collections/projection'
 import { transcriptDrift } from './podcasts/assemble'
+import { planLearningPath, type PlannerCapability, type PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
+import { getDueCapabilitiesFromRows, type LearnerCapabilityStateRow } from '@/lib/session-builder/dueFilter'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
@@ -2006,36 +2009,207 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
 }
 
-// ── HC39 (pre-cloud hardening, Item 5): PostgREST max-rows truncation guard.
-//        session-builder's adapter (src/lib/session-builder/adapter.ts) fetches
-//        ALL ready+published learning_capabilities rows client-side, unpaginated,
-//        for the planner catalog. If PGRST_DB_MAX_ROWS were ever set on the shared
-//        instance, PostgREST would silently truncate that fetch — sessions would
-//        build from a partial catalog with no error anywhere. Prefer: count=exact
-//        (the supabase-js `{ count: 'exact' }` option) returns the TRUE total
-//        alongside the (possibly truncated) row page; if data.length < count, rows
-//        were dropped server-side. One query, id column only — cheap.
+// ── HC39 (pre-cloud hardening, Item 5) — REPOINTED 2026-07-02 (session-data
+//    narrowing RPC, docs/plans/2026-07-02-session-data-narrowing-rpc.md).
+//        Original subject: session-builder's adapter fetched ALL ready+published
+//        learning_capabilities rows client-side, unpaginated, per session build —
+//        a PGRST_DB_MAX_ROWS truncation would have silently built sessions from a
+//        partial catalog. That fetch no longer exists: loadCapabilitySessionData
+//        now calls get_session_build_data, a SCALAR jsonb RPC that returns exactly
+//        one API row regardless of catalog size — row truncation is structurally
+//        impossible for it (PGRST_DB_MAX_ROWS truncates rows in a result set; a
+//        scalar return has exactly one). Testing the old live-truncation path
+//        would test dead code. Repointed to a SOURCE assertion: the unpaginated
+//        client-side catalog fetch (`.eq('readiness_status', 'ready')` — the
+//        clause that gated it, and appears nowhere else in the file) is gone from
+//        adapter.ts. HC40 (below) is the new semantic/live guard for the RPC path.
 {
-  const { data, count, error } = await supabase
-    .schema('indonesian')
-    .from('learning_capabilities')
-    .select('id', { count: 'exact' })
-  if (error) {
-    fail('HC39 learning_capabilities fetch not truncated by PGRST_DB_MAX_ROWS', error.message)
-  } else {
-    const returned = (data ?? []).length
-    const total = count ?? 0
-    if (returned < total) {
+  try {
+    const adapterSrc = readFileSync('src/lib/session-builder/adapter.ts', 'utf8')
+    const hasOldUnpaginatedFetch = adapterSrc.includes("eq('readiness_status', 'ready')")
+    const callsNarrowingRpc = adapterSrc.includes("rpc('get_session_build_data'")
+    if (hasOldUnpaginatedFetch) {
       fail(
-        'HC39 learning_capabilities fetch not truncated by PGRST_DB_MAX_ROWS',
-        `Only ${returned} of ${total} row(s) returned — PGRST_DB_MAX_ROWS is truncating the response. ` +
-          `session-builder/adapter.ts fetches this table unpaginated for the session catalog; a truncated ` +
-          `fetch silently builds sessions from a partial catalog. Check/unset PGRST_DB_MAX_ROWS on the shared ` +
-          `Supabase instance (homelab-configs, services/supabase/docker-compose.yml).`,
+        'HC39 unpaginated learning_capabilities catalog fetch is gone from adapter.ts',
+        `adapter.ts still contains .eq('readiness_status', 'ready') — the old six-query fan-out's ` +
+          `unpaginated catalog fetch may have been reintroduced. loadCapabilitySessionData should call ` +
+          `get_session_build_data (a scalar jsonb RPC, immune to PGRST_DB_MAX_ROWS truncation) instead.`,
+      )
+    } else if (!callsNarrowingRpc) {
+      fail(
+        'HC39 unpaginated learning_capabilities catalog fetch is gone from adapter.ts',
+        `adapter.ts no longer calls get_session_build_data — loadCapabilitySessionData's transport may ` +
+          `have regressed to a different unpaginated fetch pattern.`,
       )
     } else {
-      pass(`HC39 learning_capabilities fetch not truncated by PGRST_DB_MAX_ROWS (${total} row(s) total)`)
+      pass('HC39 unpaginated learning_capabilities catalog fetch is gone from adapter.ts (session-build data now via the scalar get_session_build_data RPC)')
     }
+  } catch (err) {
+    fail('HC39 unpaginated learning_capabilities catalog fetch is gone from adapter.ts', err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC40 (pre-cloud hardening item 7, ADR-0015 layer-b, live) — session-build
+//    narrowing parity (docs/plans/2026-07-02-session-data-narrowing-rpc.md).
+//        For the seed user: (1) fetch the full ready+published catalog + all
+//        learner state the OLD (pre-cutover) way; (2) call get_session_build_data
+//        (the narrowed RPC); (3) run the pure planLearningPath +
+//        getDueCapabilitiesFromRows (fixed random, fixed `now`) over BOTH
+//        assembled inputs; (4) assert identical gate-passing (eligible new
+//        introductions) and due canonicalKey sets. Complements the structural
+//        source-scan test (scripts/__tests__/session-build-data-rpc-migration.test.ts)
+//        and the mocked snapshot-parity test
+//        (src/lib/session-builder/__tests__/rpcSnapshotParity.test.ts) — this is
+//        the live-data closing of the sufficiency-predicate proof, following the
+//        same RPC-vs-TS-recompute pattern as HC27/HC28. Expects parity = 0 diffs.
+{
+  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  try {
+    type CapRow = {
+      id: string; canonical_key: string; source_kind: CapabilitySourceKind; source_ref: string
+      capability_type: string; readiness_status: string; publication_status: string
+      lesson_id: string | null; prerequisite_keys: string[] | null
+    }
+    type StateRow = {
+      id: string; user_id: string; capability_id: string; canonical_key_snapshot: string
+      activation_state: string; stability: number | null; difficulty: number | null
+      last_reviewed_at: string | null; next_due_at: string | null
+      review_count: number; lapse_count: number; consecutive_failure_count: number; state_version: number
+    }
+    type LessonRow = { id: string; order_index: number }
+
+    async function pageAll<T>(table: string, select: string, apply?: (q: any) => any): Promise<T[]> {
+      const out: T[] = []
+      for (let from = 0; ; from += 1000) {
+        let q: any = supabase.schema('indonesian').from(table).select(select).range(from, from + 999)
+        if (apply) q = apply(q)
+        const { data, error } = await q
+        if (error) throw new Error(`${table}: ${error.message}`)
+        out.push(...((data ?? []) as T[]))
+        if (!data || data.length < 1000) break
+      }
+      return out
+    }
+
+    // Old six-query fan-out, reproduced (service_role bypasses RLS; the explicit
+    // .eq('user_id', ...) matches the pre-cutover client-side reads exactly).
+    const CAP_SELECT = 'id, canonical_key, source_kind, source_ref, capability_type, readiness_status, publication_status, lesson_id, prerequisite_keys'
+    const STATE_SELECT = 'id, user_id, capability_id, canonical_key_snapshot, activation_state, stability, difficulty, last_reviewed_at, next_due_at, review_count, lapse_count, consecutive_failure_count, state_version'
+    const fullCatalog = await pageAll<CapRow>(
+      'learning_capabilities', CAP_SELECT,
+      (q) => q.eq('readiness_status', 'ready').eq('publication_status', 'published').is('retired_at', null),
+    )
+    const states = await pageAll<StateRow>('learner_capability_state', STATE_SELECT, (q) => q.eq('user_id', TEST_USER_ID))
+    const lessons = await pageAll<LessonRow>('lessons', 'id, order_index')
+    const lessonOrderById = new Map(lessons.map(l => [l.id, l.order_index]))
+
+    function toPlannerCapabilities(caps: CapRow[]): PlannerCapability[] {
+      return caps.map(c => ({
+        id: c.id,
+        canonicalKey: c.canonical_key,
+        sourceKind: c.source_kind,
+        sourceRef: c.source_ref,
+        capabilityType: c.capability_type as any,
+        skillType: deriveSkillTypeFromCapabilityType(c.capability_type as any),
+        readinessStatus: c.readiness_status as any,
+        publicationStatus: c.publication_status as any,
+        prerequisiteKeys: c.prerequisite_keys ?? [],
+        lessonId: c.lesson_id,
+        lessonOrder: c.lesson_id != null ? lessonOrderById.get(c.lesson_id) ?? null : null,
+      }))
+    }
+
+    function toSchedulerRows(rows: StateRow[], capById: Map<string, CapRow>): LearnerCapabilityStateRow[] {
+      return rows
+        .filter(r => capById.has(r.capability_id))
+        .map(r => {
+          const cap = capById.get(r.capability_id)!
+          return {
+            id: r.id,
+            userId: r.user_id,
+            capabilityId: r.capability_id,
+            canonicalKeySnapshot: r.canonical_key_snapshot,
+            activationState: r.activation_state as LearnerCapabilityStateRow['activationState'],
+            readinessStatus: cap.readiness_status as any,
+            publicationStatus: cap.publication_status as any,
+            stability: r.stability,
+            difficulty: r.difficulty,
+            lastReviewedAt: r.last_reviewed_at,
+            nextDueAt: r.next_due_at,
+            reviewCount: r.review_count,
+            lapseCount: r.lapse_count,
+            consecutiveFailureCount: r.consecutive_failure_count,
+            stateVersion: r.state_version,
+          }
+        })
+    }
+
+    function toPlannerStates(rows: LearnerCapabilityStateRow[]): PlannerLearnerCapabilityState[] {
+      return rows.map(r => ({
+        canonicalKey: r.canonicalKeySnapshot,
+        activationState: r.activationState,
+        reviewCount: r.reviewCount,
+        successfulReviewCount: Math.max(0, r.reviewCount - r.lapseCount - r.consecutiveFailureCount),
+        stability: r.stability,
+      }))
+    }
+
+    // Fixed `now` + fixed pseudo-random shared by both runs so the due-bucket
+    // shuffle (dueFilter.ts) can't itself produce a spurious diff.
+    const now = new Date()
+    const fixedRandom = (() => {
+      let seed = 42
+      return () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff }
+    })()
+
+    const { data: rpcData, error: rpcErr } = await supabase.schema('indonesian')
+      .rpc('get_session_build_data', { p_user_id: TEST_USER_ID, p_mode: 'standard', p_selected_source_refs: [] })
+    if (rpcErr) throw new Error(rpcErr.message)
+    const payload = (rpcData ?? {}) as { capabilities?: CapRow[]; learner_states?: StateRow[]; activated_lesson_ids?: string[]; activated_member_refs?: string[] }
+
+    // Both regimes read activated_lesson_ids/activated_member_refs identically —
+    // narrowing only touches the `capabilities` field (see rpcSnapshotParity.test.ts
+    // header comment) — so reuse the RPC's values for the "old" run too.
+    const activatedLessons = new Set<string>(payload.activated_lesson_ids ?? [])
+    const activatedCollectionRefs = new Set<string>(payload.activated_member_refs ?? [])
+
+    function planFor(ready: PlannerCapability[], scheduler: LearnerCapabilityStateRow[]) {
+      const dueList = getDueCapabilitiesFromRows({ now, limit: Number.MAX_SAFE_INTEGER, rows: scheduler, random: fixedRandom })
+      const learningPlan = planLearningPath({
+        userId: TEST_USER_ID, mode: 'standard', now, preferredSessionSize: 15, dueCount: dueList.length,
+        readyCapabilities: ready, learnerCapabilityStates: toPlannerStates(scheduler),
+        activatedLessons, activatedCollectionRefs,
+      })
+      return {
+        dueKeys: new Set(dueList.map(d => d.canonicalKeySnapshot)),
+        eligibleKeys: new Set(learningPlan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)),
+      }
+    }
+
+    const oldCapById = new Map(fullCatalog.map(c => [c.id, c]))
+    const oldPlan = planFor(toPlannerCapabilities(fullCatalog), toSchedulerRows(states, oldCapById))
+
+    const newCapById = new Map((payload.capabilities ?? []).map(c => [c.id, c]))
+    const newPlan = planFor(toPlannerCapabilities(payload.capabilities ?? []), toSchedulerRows(payload.learner_states ?? [], newCapById))
+
+    const symmetricDiff = (a: Set<string>, b: Set<string>): string[] => [
+      ...[...a].filter(k => !b.has(k)),
+      ...[...b].filter(k => !a.has(k)),
+    ]
+    const dueDiff = symmetricDiff(oldPlan.dueKeys, newPlan.dueKeys)
+    const eligibleDiff = symmetricDiff(oldPlan.eligibleKeys, newPlan.eligibleKeys)
+
+    if (dueDiff.length === 0 && eligibleDiff.length === 0) {
+      pass(`HC40 session-build narrowing parity (RPC == full catalog) — due=${oldPlan.dueKeys.size} eligible=${oldPlan.eligibleKeys.size} (ADR 0015)`)
+    } else {
+      fail(
+        'HC40 session-build narrowing parity',
+        `due diff: ${dueDiff.slice(0, 5).join(', ') || 'none'}; eligible diff: ${eligibleDiff.slice(0, 5).join(', ') || 'none'} — ` +
+          `get_session_build_data's candidate_caps predicate dropped or admitted a capability the full-catalog planner run did not.`,
+      )
+    }
+  } catch (err) {
+    fail('HC40 session-build narrowing parity', err instanceof Error ? err.message : String(err))
   }
 }
 
