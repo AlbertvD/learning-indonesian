@@ -33,7 +33,9 @@
   }
 
   .meta {
-    margin-top: 8px;
+    /* 12px, not 8: the gloss is a distinct tier (the "question"), not a
+       caption glued to the sentence (owner feedback 2026-07-02). */
+    margin-top: 12px;
     font-size: var(--ex-fs-chrome);
     color: var(--ex-fg-muted);
     font-style: italic;
@@ -87,7 +89,11 @@
 
   /* ── variant: sentence ─────────────────────────────────────────────────── */
   .sentence {
-    min-height: 100px;
+    /* No reserved height + tighter bottom: the prompt group (sentence + gloss)
+       should sit close to the answers it drives — the old min-height + full
+       20px pad left a dead band above the options (owner feedback 2026-07-02). */
+    min-height: 0;
+    padding-bottom: 8px;
     text-align: left;
   }
 
