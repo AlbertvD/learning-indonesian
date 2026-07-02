@@ -51,6 +51,7 @@ export function ExerciseOption({
   const button = (
     <button
       type="button"
+      data-testid="exercise-option"
       aria-pressed={pressed || undefined}
       className={`${classes.root} ${classes[variant]} ${STATE_CLASS[state]}`}
       onClick={handleClick}
