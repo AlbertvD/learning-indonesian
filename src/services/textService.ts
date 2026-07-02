@@ -67,23 +67,39 @@ export interface Podcast {
   created_at: string
 }
 
+/**
+ * A row of the list-context query (Podcasts page, Lezen page) — deliberately narrower
+ * than `Podcast`. List pages never render `transcript_indonesian` / `transcript_english`
+ * / `transcript_dutch` (denormalized full-transcript text) or `attribution`; those are
+ * reader-only (`getText`). Lezen DOES need `transcript_segments` client-side to compute
+ * per-learner coverage ordering (`lib/reading` § `toReadableText`/`isReadable`), so that
+ * column stays. Keep this in sync with `LIST_COLUMNS` below and with what
+ * `lib/reading/readableText.ts` + the list pages actually read off each row.
+ */
+export type TextListRow = Pick<
+  Podcast,
+  'id' | 'title' | 'description' | 'audio_path' | 'level' | 'duration_seconds' | 'transcript_segments'
+>
+
+const LIST_COLUMNS = 'id, title, description, audio_path, level, duration_seconds, transcript_segments'
+
 /** The single definition of "is a podcast" (has a Listen face) — used nowhere else. */
-const hasAudio = (t: Podcast): boolean => t.audio_path != null
+const hasAudio = (t: TextListRow): boolean => t.audio_path != null
 
 export const textService = {
   /** All texts (the Read face is available to every text); the reader filters readability. */
-  async listTexts(): Promise<Podcast[]> {
+  async listTexts(): Promise<TextListRow[]> {
     const { data, error } = await supabase
       .schema('indonesian')
       .from('texts')
-      .select('*')
+      .select(LIST_COLUMNS)
       .order('created_at', { ascending: false })
     if (error) throw error
-    return data as Podcast[]
+    return data as TextListRow[]
   },
 
   /** Audio-bearing texts only — the Listen face (Podcasts page). */
-  async listPodcasts(): Promise<Podcast[]> {
+  async listPodcasts(): Promise<TextListRow[]> {
     return (await this.listTexts()).filter(hasAudio)
   },
 

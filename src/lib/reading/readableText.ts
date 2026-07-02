@@ -7,7 +7,7 @@
  * Pure — no I/O. The reader (`components/reading/`) renders `ReadableText`; the
  * gloss + coverage modules consume its tokens.
  */
-import type { Podcast, TranscriptSegment } from '@/services/textService'
+import type { TextListRow, TranscriptSegment } from '@/services/textService'
 
 export interface ReadingToken {
   /** Surface form as written, incl. punctuation — what the reader displays. */
@@ -61,7 +61,7 @@ function tokenizeSegment(idText: string): ReadingToken[] {
   })
 }
 
-export function toReadableText(podcast: Podcast): ReadableText {
+export function toReadableText(podcast: TextListRow): ReadableText {
   const segments: ReadingSegment[] = (podcast.transcript_segments ?? []).map(
     (seg: TranscriptSegment) => ({
       idx: seg.idx,
@@ -75,7 +75,7 @@ export function toReadableText(podcast: Podcast): ReadableText {
 }
 
 /** A podcast is readable iff it carries sentence-aligned segments. */
-export function isReadable(podcast: Podcast): boolean {
+export function isReadable(podcast: TextListRow): boolean {
   return (podcast.transcript_segments?.length ?? 0) > 0
 }
 

@@ -40,7 +40,7 @@ describe('textService', () => {
     })
   })
 
-  it('listTexts fetches texts from indonesian schema', async () => {
+  it('listTexts fetches texts from indonesian schema, trimmed to the list columns (not select *)', async () => {
     const mockData = [{ id: '1', title: 'Text 1', audio_path: 'a.mp3' }]
     getMock().then.mockImplementationOnce(function(onFulfilled: any) {
       return Promise.resolve({ data: mockData, error: null }).then(onFulfilled)
@@ -49,6 +49,22 @@ describe('textService', () => {
     const result = await textService.listTexts()
 
     expect(supabase.schema).toHaveBeenCalledWith('indonesian')
+    // Heavy denormalized columns (transcript_indonesian/english/dutch, attribution)
+    // must NOT be in the list select -- only what list pages actually render/consume.
+    expect(getMock().select).toHaveBeenCalledWith(
+      'id, title, description, audio_path, level, duration_seconds, transcript_segments',
+    )
+    expect(result).toEqual(mockData)
+  })
+
+  it('getText still fetches every column (the reader needs the full row)', async () => {
+    const mockData = { id: '1', title: 'Text 1', audio_path: 'a.mp3' }
+    getMock().then.mockImplementationOnce(function(onFulfilled: any) {
+      return Promise.resolve({ data: mockData, error: null }).then(onFulfilled)
+    })
+
+    const result = await textService.getText('1')
+
     expect(getMock().select).toHaveBeenCalledWith('*')
     expect(result).toEqual(mockData)
   })

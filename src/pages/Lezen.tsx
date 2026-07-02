@@ -11,7 +11,7 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { IconBook2 } from '@tabler/icons-react'
-import { textService, type Podcast } from '@/services/textService'
+import { textService, type TextListRow } from '@/services/textService'
 import { rankReadableTexts } from '@/lib/reading'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
@@ -25,7 +25,7 @@ import { useT } from '@/hooks/useT'
 export function Lezen() {
   const T = useT()
   const user = useAuthStore((s) => s.user)
-  const [stories, setStories] = useState<Podcast[]>([])
+  const [stories, setStories] = useState<TextListRow[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
