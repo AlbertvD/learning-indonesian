@@ -1,7 +1,7 @@
 ---
 status: draft
 branch: feat/pre-cloud-hardening
-reviewed_by: []
+reviewed_by: [data-architect]
 supersedes: []
 ---
 
@@ -538,3 +538,245 @@ idempotent) and **`make pre-deploy`** (lint + test + build + tier-1 + tier-2).
    `learning_capabilities(lesson_id)` (`:1859`) for arm (B). Confirm no new index is
    needed for the `source_ref = ANY(...)` arms (C/E) at catalog scale, or add a
    `learning_capabilities(source_ref)` index in this PR.
+
+
+## Data-architect review (2026-07-02)
+
+**Verdict: APPROVE.** `reviewed_by` updated to `[data-architect]`. `status` left at
+`draft` — `architect` sign-off is still required before this can move to `approved`
+(per `CLAUDE.md`'s dual-review rule for data-model-touching specs).
+
+**Sources read:** `scripts/migration.sql` (RLS/policy/index blocks at 1156-1330,
+1790-1815, 3529-3620, plus `learning_capabilities_lesson_idx`/`learning_capabilities_active_idx`
+at 1859-1860/3112-3114, `learning_capabilities_source_ref_type_uidx` at 1184-1185,
+`get_lessons_overview`/`get_collections_overview` signatures at 1908-1926/3649-3661,
+`learning_items`/`lessons` RLS at 337-421); `src/lib/session-builder/adapter.ts` (full
+file, 455 lines); `src/lib/session-builder/dueFilter.ts` (full file, 118 lines);
+`src/lib/session-builder/pedagogy.ts` (full file, 581 lines); `src/lib/session-builder/builder.ts`
+(100-511); `src/lib/collections/membership.ts` (full file); `src/lib/collections/adapter.ts`
+(full file); `src/lib/lessons/activation.ts:44-55`; `src/lib/reading/adapter.ts:29`,
+`src/lib/reading/index.ts:105`; `docs/plans/2026-06-09-sibling-burying-design.md`
+(frontmatter + lines 57-156); `scripts/check-supabase-deep.ts:1992-2023`.
+
+### Open question 1 — `p_day_start` param: CONFIRMED, keep it
+
+`adapter.ts:277-278` is genuinely local-midnight, not UTC:
+```
+const dayStart = new Date(request.now)
+dayStart.setHours(0, 0, 0, 0)
+```
+`Date.setHours` mutates in the **JS runtime's local timezone** (the browser's), so
+`dayStart` is local midnight; `.toISOString()` (line 301) then converts that instant
+to UTC for the `timestamptz` comparison. This is not incidental — the design doc this
+code implements says so explicitly: "**Local-midnight source — RESOLVED.** `now =
+new Date()` is constructed browser-side... Derive local midnight from `now`... No
+timezone config needed." (`docs/plans/2026-06-09-sibling-burying-design.md:156`,
+status: shipped, PR #185). A `now()`-based UTC boundary inside the function would
+silently drift the sibling-bury day-window by the learner's UTC offset near midnight
+— exactly the kind of transport-layer behavior change the spec's own Non-Goals
+forbid ("No change to... sibling-burying behaviour. This is a transport change; the
+SessionPlan must be identical," line 73-74). **Keep `p_day_start timestamptz`.**
+Dropping it to "simplify the signature" would be goal-erosion, not minimum mechanism
+— the goal (byte-identical `SessionPlan`) requires it.
+
+### Open question 2 — `jsonb` scalar vs `RETURNS TABLE`: CONFIRMED, keep `jsonb`
+
+The repo's "typed column over JSON blob" preference (`CLAUDE.md` Preferred-solutions
+table, "Storage" row) is scoped to **storage** — a column the DB persists and the
+type-checker enforces on read. This RPC is pure **transport**: nothing here is
+stored, and the per-item pieces (`capabilities`, `learner_states`) are heterogeneous
+arrays-of-objects that would need `jsonb_agg(jsonb_build_object(...))` **inside**
+a `RETURNS TABLE` body too — `RETURNS TABLE(capabilities jsonb, learner_states
+jsonb, ...)` would not add real column-level typing over the nested payload; it
+would only catch a wrong **piece count**, not a wrong **JSON key string** (Postgres
+does not validate `jsonb_build_object` key-literals against anything). The two
+existing precedent RPCs (`get_lessons_overview`, `migration.sql:1908-1926`;
+`get_collections_overview`, `migration.sql:3649-3661`) both use `RETURNS TABLE`
+because they return **homogeneous flat rows** — a shape this RPC does not have (six
+heterogeneous pieces, one of them user-owned FSRS state). Verified the field-count
+arithmetic between the RPC body and the existing DB-row interfaces line up exactly
+(no drift introduced by the jsonb encoding):
+- `capabilities` object (RPC lines 246-260, 13 keys) == `CAPABILITY_COLUMNS`
+  (`adapter.ts:33-47`, 13 columns) == `LearningCapabilityDbRow` (`adapter.ts:76-90`).
+- `learner_states` object (RPC lines 263-277, 13 keys) == `LEARNER_STATE_COLUMNS`
+  (`adapter.ts:60-74`, 13 columns) == `LearnerCapabilityStateDbRow` (`adapter.ts:92-106`).
+- `lessons` (RPC line 283, `id`/`order_index`) == `LessonOrderDbRow` (`adapter.ts:117-120`).
+- `activated_lesson_ids` (RPC line 280, array of `lesson_id`) == `listActivatedLessons`'s
+  return shape (`src/lib/lessons/activation.ts:44-55`, `Promise<Set<string>>` of
+  `lesson_id`).
+
+**The real cost of the jsonb choice** — a typo'd JSON key literal inside
+`jsonb_build_object` is invisible to Postgres at `CREATE FUNCTION` time and would
+only surface via the mandated parity tests (spec's Testing #1 snapshot-parity and
+#4 structural-parity) or a runtime `undefined` in a TS mapper. This is an accepted,
+correctly-priced cost **conditional on those two tests actually shipping in the same
+PR** (not deferred) — they are the substitute mechanism for the DB-level typing this
+transport shape can't give you. Consistent with `CLAUDE.md`'s "Read aggregation"
+preferred-solution row: "a mirrored predicate is OK if parity-tested (ADR 0015)."
+**Keep `jsonb`,** contingent on Testing items 1 and 4 shipping, not "TODO"'d.
+
+### Open question 3 — RLS policy confirmation: CONFIRMED, no gap
+
+Read every RLS/policy block for every table the RPC joins. All owner-scoped tables
+carry the `user_id = auth.uid()` SELECT policy the spec assumes; none is
+RLS-enabled-with-zero-policies (the 2026-05-08 outage class):
+
+| Table | RLS enabled | Owner SELECT policy | Cite |
+|---|---|---|---|
+| `learner_capability_state` | yes | `user_id = auth.uid()` | `migration.sql:1281,1293-1295` |
+| `capability_review_events` | yes | `user_id = auth.uid()` | `migration.sql:1282,1297-1299` |
+| `learner_lesson_activation` | yes | `user_id = auth.uid()` | `migration.sql:1800,1802-1806` |
+| `learner_collection_activation` | yes | `user_id = auth.uid()` | `migration.sql:3549-3552` |
+| `learner_reading_harvest` | yes | `user_id = auth.uid()` (+owner INSERT) | `migration.sql:3609-3615` |
+| `learning_capabilities` | yes | `USING (true)` to authenticated | `migration.sql:1279,1285-1287` |
+| `lessons` | yes | `USING (true)` to authenticated | `migration.sql:365,393-394` |
+| `learning_items` | yes | `USING (true)` to authenticated | `migration.sql:368,418-419` |
+| `collections`, `collection_items` | yes | `USING (true)` to authenticated | `migration.sql:3540-3545` |
+
+No CRITICAL SECURITY-INVOKER-over-RLS finding. The spec's own mandatory test 5
+(authenticated-role RLS assertion) is still worth keeping as a regression guard, but
+it is not gating a known gap — it's a trip-wire for a **future** policy drop.
+
+### Open question 4 — `listLearnerCapabilityStates` disposition: CONFIRMED dead on the only call path
+
+Traced the full call graph, not just a `src/` grep:
+- `sessionBuilderAdapter` (the real DB-backed adapter, `adapter.ts:454`) is used in
+  exactly one production call site: `Session.tsx:136`, passed into `buildSession`.
+- `buildSession` (`builder.ts:451-506`) calls **only**
+  `input.adapter.loadCapabilitySessionData(...)` (line 480) and, on the force-capability
+  path, `loadForceCapabilitySnapshot`. It never calls `.listLearnerCapabilityStates`.
+- `getDueCapabilities`/`CapabilitySchedulerReadAdapter.listLearnerCapabilityStates`
+  (the interface `listLearnerCapabilityStates` implements, `dueFilter.ts:37-45`) has
+  exactly one caller in non-test code: `builder.ts:227-234`, which supplies an
+  **inline stub** — `listLearnerCapabilityStates: async () => input.schedulerRows`
+  — not `sessionBuilderAdapter`'s real method.
+- The two `grep` hits outside `adapter.ts`/`builder.ts`/`dueFilter.ts` are both test
+  mocks (`capabilitySessionLoader.test.ts:206`, `dueFilter.test.ts:33`).
+
+**Confirmed dead on the only production path.** Safe to retire in the implementing
+PR as the spec proposes deferring — agreed this is out of scope for *this* PR (it
+would be scope creep per the spec's own framing), but flag it as a **MINOR** finding:
+once this RPC ships, `listLearnerCapabilityStates` becomes 100% unreachable
+production code (not just "no current caller" — there will be no plausible future
+caller once `loadCapabilitySessionData` is the sole entry point), so the follow-up
+retirement should be filed as a tracked item, not left indefinite.
+
+### Open question 5 — index for `source_ref = ANY(...)` (clauses C/E): CONFIRMED, no new index needed
+
+`learning_capabilities_source_ref_type_uidx` (`migration.sql:1184-1185`) is a unique
+B-tree index on `(source_ref, capability_type)`. `source_ref` is the **leading**
+column, so a predicate filtering on `source_ref` alone (`= ANY(...)` or `IN`) can use
+this index for an efficient lookup/range scan without needing `capability_type` in
+the predicate — the same way any index on `(a, b)` serves queries filtering on `a`
+alone. `learning_capabilities_source_idx` (`source_kind, source_ref`,
+`migration.sql:1176-1177`) is a red herring here (wrong leading column for a
+source_ref-only filter) but the `_uidx` above already covers it. **No new index
+required for clauses C/E.** Clause B (`lesson_id`) is already served by
+`learning_capabilities_lesson_idx` (partial, `WHERE lesson_id IS NOT NULL`,
+`migration.sql:1859-1860`) and `learning_capabilities_active_idx` (`lesson_id,
+source_kind WHERE retired_at IS NULL`, `migration.sql:3112-3114`). Clause A is served
+by `learner_capability_state_capability_idx` (`migration.sql:1237`, cited correctly
+in the spec) against a small (`user_id`-bounded) `user_states` CTE, so Postgres will
+hash it rather than lean on the index either way — fine at any realistic per-learner
+state-row count.
+
+**INFO** (not blocking, out of this agent's EXPLAIN/query-plan scope per its Scope
+boundaries): the `candidate_caps` predicate's clause (D) (`lesson_id IS NULL`) can't
+usefully share an index with A/B/C inside one OR, so at large catalog scale the
+planner will likely fall back to scanning the readiness/publication-narrowed subset
+(`learning_capabilities_readiness_publication_idx`, `migration.sql:1178-1179`) and
+evaluating the 4-way OR row-by-row. At current/near-term catalog size (low thousands
+of rows per the spec's own Problem statement) this is not a >100ms hot-path concern
+and doesn't rise to MAJOR; worth an `EXPLAIN ANALYZE` pass in the operational
+migration step once the catalog crosses ~50-100k rows, not a gate on this spec.
+
+### Trap-2 sufficiency claim: CONFIRMED — verified against pedagogy.ts, not just asserted
+
+Traced every read in `gateCandidates` (`pedagogy.ts:291-420`) and `planLearningPath`
+(`pedagogy.ts:530-581`) that could touch a prerequisite/sibling capability's own
+catalog row (as opposed to its learner-state row):
+
+- **`satisfiedKeys`** (`pedagogy.ts:544-546`): `new Set(input.learnerCapabilityStates
+  .filter(state => state.activationState === 'active' && state.successfulReviewCount
+  > 0).map(state => state.canonicalKey))`. This reads **only** `PlannerLearnerCapabilityState`
+  fields (`activationState`, `successfulReviewCount`, `canonicalKey` — all populated
+  from `learner_capability_state` columns via `toPlannerState`, `adapter.ts:218-229`).
+  It never joins back to `readyCapabilities` / the catalog. The gate check at
+  `pedagogy.ts:337` (`prereqKeys.some(key => !ctx.satisfiedKeys.has(key))`) is
+  therefore fully answerable from state rows alone. **A prerequisite capability that
+  the learner has a state for is always covered — clause (A) is unconditional across
+  every mode** (`c.readiness_status='ready' AND ... AND (exists(...user_states...) OR
+  ...)`, RPC lines 218-232) — so a prereq's state row is never missing from the
+  narrowed set for a reason the old full-catalog fetch wouldn't also produce (both
+  regimes drop states whose capability fell below ready+published — see below).
+- **`unlockedSourceRefs`** (`buildUnlockedSourceRefs`, `pedagogy.ts:245-259`) *does*
+  read a catalog field of another capability — `cap.sourceRef` via
+  `capabilityByCanonicalKey.get(state.canonicalKey)` (`pedagogy.ts:255-256`). This is
+  the one place the claim needs the stronger argument, and the spec makes it
+  correctly: the sibling capability being looked up **has an active state** (the loop
+  is `for (const state of input.learnerCapabilityStates)`, gated on
+  `state.activationState !== 'active'` at line 252) — so by clause (A) that sibling's
+  capability row is unconditionally present in the RPC's `capabilities` array
+  (provided it is itself ready+published+non-retired, the same top-level guard the
+  *old* client-side fetch already applied at `adapter.ts:288-293`). No regression.
+- **Cross-check against the client-side filter that actually gates which states reach
+  the planner at all**: `schedulerRows` (`adapter.ts:345-347`) filters
+  `statesResult.data` to `capabilityById.has(row.capability_id)` — i.e., **today**,
+  a learner's state for a capability that has become unready/unpublished/retired is
+  already silently dropped from the planner's view (pre-existing behavior, not
+  introduced by this spec). Under the RPC, `user_states` returns every raw state
+  row unconditionally, but the client-side `capabilityById` is built from the RPC's
+  `capabilities` array — which is exactly `candidate_caps`, gated by the same
+  `ready/published/not-retired` guard. So the same states get dropped, for the same
+  reason, in both regimes. **Byte-identical**, not merely "probably fine."
+
+**No consumer reads a catalog field of a capability that can be outside the narrowed
+set.** The one place that reads a catalog field of an *other* capability
+(`unlockedSourceRefs`) only does so for capabilities reachable via clause (A)
+(active-state siblings), which is unconditional. Confirmed, not refuted.
+
+### Additional verification (not one of the five open questions)
+
+- **`resolveActivatedMemberRefs` parity** (`src/lib/collections/membership.ts:35-47`,
+  `src/lib/collections/adapter.ts:14-62`): confirmed no `is_published` filter on
+  either the collection-membership or harvest path, matching the RPC comment's claim
+  verbatim (RPC lines 197-200). Confirmed `ITEM_SOURCE_REF_PREFIX = 'learning_items/'`
+  (`membership.ts:14`) matches the RPC's `'learning_items/' || li.normalized_text`
+  construction exactly (RPC lines 202, 208). Confirmed harvest is read unconditionally
+  (UNION, not gated on collection activation) in both the TS module (comment,
+  `membership.ts:33-34`) and the RPC (`union`, RPC lines 207-211).
+- **`src/lib/reading/`**: only writes `learner_reading_harvest`
+  (`src/lib/reading/adapter.ts:29`) and documents the collections-gate-OR seam as a
+  downstream reader (`src/lib/reading/index.ts:105`) — it does not read session-build
+  data itself, so it is not a consumer this RPC needs to satisfy; it is a **writer**
+  whose row shape (`user_id`, `learning_item_id`) the RPC's `learner_reading_harvest`
+  join already matches (`migration.sql:3600-3605`).
+- **`isCapabilityInScope`** (`builder.ts:122-129`) and **`resolveCandidate`**
+  (`builder.ts:183-211`) both do defensive `Map.get(...)` lookups against
+  `capabilitiesByKey` and degrade to a documented failure path
+  (`missing_capability_projection` / scope-exclusion) rather than throwing when a
+  capability is absent — consistent with due caps always being present per the Trap-1
+  argument, and safe even if that argument were ever violated by a future change.
+
+### Findings summary
+
+No CRITICAL or MAJOR findings. Two MINOR/INFO notes, neither blocking:
+
+- **MINOR** — file a follow-up issue to retire `listLearnerCapabilityStates`
+  (`adapter.ts:251-270`) once this RPC ships; it will be provably unreachable
+  production code, not merely "no current caller."
+- **INFO** — `candidate_caps`'s 4-way OR (clauses A-D) can't share one index; revisit
+  with `EXPLAIN ANALYZE` once the catalog crosses roughly 50-100k rows. Not a gate on
+  this spec (query-plan tuning is out of this agent's scope).
+
+### Conditions of this APPROVE
+
+1. Testing items 1 (snapshot parity) and 4 (structural parity) ship in the **same
+   PR** as the RPC — they are the load-bearing substitute for the DB-level typing the
+   `jsonb` transport shape forgoes (open question 2).
+2. `docs/current-system/modules/session-builder.md` §3.1 + §5 are updated in the same
+   commit, per the spec's own Rollout step 4 and `CLAUDE.md`'s spec-drift-is-a-regression
+   rule.
+
+Still required before `status: approved`: **`architect`** sign-off (module
+placement / ADR fit / seam check) — not performed by this pass.
