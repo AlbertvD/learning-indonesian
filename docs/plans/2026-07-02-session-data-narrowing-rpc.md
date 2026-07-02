@@ -1,8 +1,9 @@
 ---
-status: approved
-branch: feat/pre-cloud-hardening
+status: implementing
+branch: feat/launch-readiness-round-2
 reviewed_by: [data-architect, architect]
 approved_at: 2026-07-02
+implementation: PR TBD (branch feat/launch-readiness-round-2)
 supersedes: []
 ---
 
