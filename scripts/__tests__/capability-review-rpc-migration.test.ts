@@ -48,3 +48,28 @@ describe('capability review RPC migration', () => {
     expect(migrationSql).toContain("activation_source = coalesce(activation_source, v_state_after->>'activationSource', 'review_processor')")
   })
 })
+
+describe('learning_sessions upsert guard + error_logs insert policy (scripts/migration.sql)', () => {
+  // Unlike the paper-trail snapshot above, these fixes live in the canonical
+  // migration.sql only (scripts/migrations/*.sql is audit-only — see the
+  // "Migration source-of-truth rule" in CLAUDE.md).
+  const canonicalMigrationSql = readFileSync(
+    path.resolve('scripts/migration.sql'),
+    'utf8',
+  )
+
+  it('scopes the learning_sessions upsert to the owning user so a colliding client-supplied sessionId cannot advance another user\'s session', () => {
+    const conflictIndex = canonicalMigrationSql.indexOf('on conflict (id) do update')
+    const guardIndex = canonicalMigrationSql.indexOf('where indonesian.learning_sessions.user_id = v_user_id')
+
+    expect(conflictIndex).toBeGreaterThan(0)
+    expect(guardIndex).toBeGreaterThan(conflictIndex)
+  })
+
+  it('scopes error_logs inserts to the caller and bounds message/page/action length', () => {
+    expect(canonicalMigrationSql).toContain('(user_id = auth.uid() OR user_id IS NULL)')
+    expect(canonicalMigrationSql).toContain('char_length(error_message) <= 4000')
+    expect(canonicalMigrationSql).toContain("char_length(coalesce(page, '')) <= 200")
+    expect(canonicalMigrationSql).toContain("char_length(coalesce(action, '')) <= 200")
+  })
+})

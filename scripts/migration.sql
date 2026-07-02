@@ -458,7 +458,18 @@ CREATE POLICY "learning_sessions_write" ON indonesian.learning_sessions FOR ALL 
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
 DROP POLICY IF EXISTS "error_logs_insert" ON indonesian.error_logs;
-CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
+-- Caller-scoped + bounded (2026-07-02 security hardening): was WITH CHECK(true),
+-- which let any authenticated user forge another user's user_id or insert
+-- unbounded text. user_id must match the caller (or be null — logger.ts logs
+-- without a user_id when auth is unavailable); message/page/action are capped
+-- to match the truncation logger.ts performs before insert.
+CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated
+  WITH CHECK (
+    (user_id = auth.uid() OR user_id IS NULL)
+    AND char_length(error_message) <= 4000
+    AND char_length(coalesce(page, '')) <= 200
+    AND char_length(coalesce(action, '')) <= 200
+  );
 
 -- Health check RPC
 CREATE OR REPLACE FUNCTION indonesian.schema_health()
@@ -1728,6 +1739,8 @@ begin
   -- First answer materialises the row; subsequent answers advance ended_at.
   -- session_type hardcoded 'learning' because only the capability path commits
   -- through this RPC (Lesson + Podcast paths produce no answers, no session).
+  -- sessionId is client-supplied; a forged/colliding id belonging to another
+  -- user must be a no-op here, never a cross-user write to their session row.
   insert into indonesian.learning_sessions (id, user_id, session_type, started_at, ended_at)
   values (
     (p_command->>'sessionId')::uuid,
@@ -1740,7 +1753,8 @@ begin
      set ended_at = greatest(
        indonesian.learning_sessions.ended_at,
        excluded.ended_at
-     );
+     )
+     where indonesian.learning_sessions.user_id = v_user_id;
 
   return jsonb_build_object(
     'idempotencyStatus', 'committed',
