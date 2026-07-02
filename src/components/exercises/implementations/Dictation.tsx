@@ -19,7 +19,7 @@ import { resolveSessionAudioUrl } from '@/services/audioService'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function Dictation({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
   const { audioMap } = useSessionAudio()
@@ -63,7 +63,6 @@ export default function Dictation({
   return (
     <ExerciseFrame userLanguage={userLanguage}
       variant="session"
-      adminOverlay={adminOverlay}
       footer={
         <ExerciseSubmitButton
           onClick={scoring.submit}

@@ -20,7 +20,7 @@ import { translations } from '@/lib/i18n'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function TypedRecall({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
   const { learningItem, meanings, answerVariants, affixedFormPairData } = exerciseItem
@@ -64,7 +64,6 @@ export default function TypedRecall({
   return (
     <ExerciseFrame userLanguage={userLanguage}
       variant="session"
-      adminOverlay={adminOverlay}
       footer={
         <ExerciseSubmitButton
           onClick={scoring.submit}

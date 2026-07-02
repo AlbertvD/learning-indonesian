@@ -32,7 +32,7 @@
   .word {
     min-height: 56px;
     /* !important beats Mantine's unlayered `button { font: inherit }`. */
-    font-size: var(--fs-xl) !important;
+    font-size: var(--ex-fs-body) !important;
     justify-content: center;
     text-align: center;
   }
@@ -52,7 +52,7 @@
   .sentence {
     min-height: 88px;
     /* !important beats Mantine's unlayered `button { font: inherit }`. */
-    font-size: var(--fs-lg) !important;
+    font-size: var(--ex-fs-body) !important;
     line-height: 1.45;
     text-align: left;
   }

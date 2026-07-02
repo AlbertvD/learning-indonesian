@@ -34,8 +34,6 @@ export interface ExerciseFrameProps {
   variant?: FrameVariant
   /** Required on any frame containing <ExerciseSubmitButton> — wraps it in a sticky bottom slot. */
   footer?: ReactNode
-  /** Absolutely-positioned top-right; typically <FlagButton> for admin sessions. */
-  adminOverlay?: ReactNode
   /** MAJ-2: the landmark's SR-only aria-label is language-tagged. Default 'nl' (unchanged for callers that don't pass it). */
   userLanguage?: 'nl' | 'en'
 }
@@ -46,7 +44,6 @@ export function ExerciseFrame({
   mode = 'live',
   variant = 'preview',
   footer,
-  adminOverlay,
   userLanguage = 'nl',
 }: ExerciseFrameProps) {
   const [instructionId, setInstructionId] = useState<string | null>(null)
@@ -70,9 +67,6 @@ export function ExerciseFrame({
           {...landmarkProps}
           className={`${classes.root} ${mode === 'preview' ? classes.preview : classes.live}`}
         >
-          {adminOverlay && (
-            <div className={classes.adminOverlay}>{adminOverlay}</div>
-          )}
           <div className={`${classes.content} ${footer ? classes.contentWithFooter : ''}`}>
             {children}
           </div>

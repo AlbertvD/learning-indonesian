@@ -16,7 +16,7 @@ import { resolveSessionAudioUrl } from '@/services/audioService'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function ListeningMCQ({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const { audioMap } = useSessionAudio()
   const { learningItem: item, meanings, distractors } = exerciseItem
@@ -66,7 +66,7 @@ export default function ListeningMCQ({
   }
 
   return (
-    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session">
       <ExerciseInstruction>
         {userLanguage === 'nl' ? 'Luister en kies de juiste vertaling' : 'Listen and choose the correct translation'}
       </ExerciseInstruction>

@@ -1,7 +1,7 @@
 @layer exercises {
   .root {
     display: inline-block;
-    font-size: var(--fs-xs);
+    font-size: var(--ex-fs-chrome);
     font-weight: var(--fw-bold);
     letter-spacing: 0.05em;
     text-transform: uppercase;

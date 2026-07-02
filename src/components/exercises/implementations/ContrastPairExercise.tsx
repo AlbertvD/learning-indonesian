@@ -17,7 +17,7 @@ import { resolveSessionAudioUrl } from '@/services/audioService'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function ContrastPairExercise({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
   const { audioMap } = useSessionAudio()
@@ -52,7 +52,7 @@ export default function ContrastPairExercise({
     .replace(/^Kies de juiste zin:\s*/i, '')
 
   return (
-    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session">
       <ExerciseInstruction>{t.session.exercise.chooseCorrect}</ExerciseInstruction>
       <ExercisePromptCard userLanguage={userLanguage} variant="sentence">
         {displayPrompt}

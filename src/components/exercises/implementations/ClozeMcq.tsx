@@ -15,7 +15,7 @@ import { translations } from '@/lib/i18n'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function ClozeMcq({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
   const data = exerciseItem.clozeMcqData
@@ -72,7 +72,7 @@ export default function ClozeMcq({
   )
 
   return (
-    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session">
       <ExerciseInstruction>{t.session.exercise.completeSentence}</ExerciseInstruction>
       <ExercisePromptCard userLanguage={userLanguage}
         variant="sentence"

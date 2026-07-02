@@ -7,11 +7,11 @@
 
 @layer exercises {
   /* iOS Safari auto-zooms focused inputs below 16px. Pin any exercise-surface
-     input to max(16px, --fs-lg) via this class. Mantine's own input styles
+     input to max(16px, --ex-fs-body) via this class. Mantine's own input styles
      have been inconsistent about font-size overrides across versions, so we
      rely on the explicit layer ordering (declared in src/styles/layers.css)
      to win. !important is intentional and scoped to this layer. */
   .exerciseInput {
-    font-size: max(16px, var(--fs-lg)) !important;
+    font-size: max(16px, var(--ex-fs-body)) !important;
   }
 }

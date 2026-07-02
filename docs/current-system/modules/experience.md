@@ -109,7 +109,7 @@ Two categories of silent-filter: resolution-failed blocks (logged upstream by `c
 - **RecapScreen** (when `isComplete = position >= queueLength`)
 - **SessionHeader** + exercise body or Doorgaan card (normal play)
 
-`SessionHeader` (inlined in `ExperiencePlayer.tsx`) renders a horizontal Mantine `<Progress>` + text counters. The counters show `Oefening {position+1} van {queueLength}` (queue position; queue length grows when blocks are re-inserted) and `{correctCount}/{totalUniqueCaps} correct` (unique-capability tally). Admin profile sees `plan.diagnostics` in a collapsed `<details>`.
+`SessionHeader` (inlined in `ExperiencePlayer.tsx`) renders a horizontal Mantine `<Progress>` + text counters (sized `--ex-fs-chrome`). The counters show `Oefening {position+1} van {queueLength}` (queue position; queue length grows when blocks are re-inserted) and `{correctCount}/{totalUniqueCaps} correct` (unique-capability tally). A `flagSlot` at the right end of the counter row hosts `AdminFlagOverlay` (the admin flag affordance, keyed per block) — placed in header chrome rather than overlaid on the exercise so long instructions can never collide with it (2026-07-02 mobile type audit). Admin profile sees `plan.diagnostics` in a collapsed `<details>`.
 
 ### 3.3 State machine
 

@@ -73,6 +73,18 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--fw-bold':     '700',
     '--fw-black':    '900',
 
+    // Exercise framework — semantic TYPE tier (theme-agnostic), mirroring the
+    // --ex-* color tier: exercise components speak in roles, never raw --fs-*.
+    // The two prompt tiers clamp() so long Indonesian sentences shrink toward
+    // ~20px at 390px instead of exploding to 3-4 lines (2026-07-02 mobile
+    // exercise-UI audit, docs/audits/2026-07-02-mobile-exercise-ui-audit.md).
+    '--ex-fs-chrome':          '13px',                    // progress, meta/gloss, hint, pills
+    '--ex-fs-instruction':     '15px',                    // instruction label — secondary to the prompt
+    '--ex-fs-body':            '17px',                    // options, text input, submit
+    '--ex-fs-prompt-word':     'clamp(24px, 7vw, 32px)',  // single-word hero prompt
+    '--ex-fs-prompt-sentence': 'clamp(19px, 5.2vw, 24px)',// sentence / transform / pair prompt
+    '--ex-fs-reveal':          'var(--ex-fs-prompt-sentence)', // post-answer transcript
+
     // Border radius scale
     '--r-sm': '6px',
     '--r-md': '10px',

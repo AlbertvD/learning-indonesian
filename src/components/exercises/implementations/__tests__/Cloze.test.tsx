@@ -44,7 +44,6 @@ function renderCloze(item: ExerciseItem) {
         userLanguage="nl"
         onAnswer={vi.fn()}
         onEvent={vi.fn()}
-        adminOverlay={null}
       />
     </MantineProvider>
   )

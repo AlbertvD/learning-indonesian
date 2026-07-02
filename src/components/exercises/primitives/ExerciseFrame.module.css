@@ -33,13 +33,6 @@
     padding-bottom: 0;
   }
 
-  .adminOverlay {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 2;
-  }
-
   .footer {
     /* Inline flow — the button sits directly below the content with a clean
        gap, instead of a sticky solid-bg overlay pinned to the bottom (which

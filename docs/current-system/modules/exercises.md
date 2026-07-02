@@ -48,7 +48,7 @@ status: stable
 | `ConstrainedTranslationExercise.tsx` | 142 | `constrained_translation` | L1 → ID typed | Translate a constrained sentence |
 | `SpeakingExercise.tsx` | 46 | `speaking` | ID prompt → self-rate | Read prompt, self-rate |
 
-All conform to `ExerciseComponentProps` (`registry.ts:43-49`): `{ exerciseItem: ExerciseItem; userLanguage: 'en'|'nl'; onAnswer: (outcome: AnswerOutcome) => void; onEvent?; adminOverlay? }`. All default-export their component. All consume framework primitives only — none use raw Mantine directly.
+All conform to `ExerciseComponentProps` (`registry.ts:43-48`): `{ exerciseItem: ExerciseItem; userLanguage: 'en'|'nl'; onAnswer: (outcome: AnswerOutcome) => void; onEvent? }`. All default-export their component. All consume framework primitives only — none use raw Mantine directly.
 
 **Tests:**
 - `src/__tests__/cuedRecallExercise.test.tsx`, `contrastPairExercise.test.ts`, `sentenceTransformationExercise.test.ts`, `constrainedTranslationExercise.test.ts` — type-only smoke tests asserting `ExerciseItem` compiles with each variant's sub-data shape.
@@ -81,7 +81,7 @@ The module is **presentational + functional**: no data fetching, no service call
 
 ## 2. Public interface
 
-**The contract every implementation must satisfy** — `registry.ts:43-49`:
+**The contract every implementation must satisfy** — `registry.ts:43-48`:
 
 ```typescript
 interface ExerciseComponentProps {
@@ -89,7 +89,6 @@ interface ExerciseComponentProps {
   userLanguage: 'en' | 'nl'
   onAnswer: (outcome: AnswerOutcome) => void
   onEvent?: (event: ExerciseEventPayload) => void
-  adminOverlay?: React.ReactNode
 }
 
 type AnswerOutcome =
@@ -125,7 +124,7 @@ function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps
 
 | Primitive | Purpose | Notable behaviour |
 |---|---|---|
-| `ExerciseFrame` | The card shell every exercise lives in. Provides instruction-id context for accessibility wiring, footer slot, variant context. | `variant='session' \| 'review' \| 'preview'`. The `adminOverlay` slot is admin-only top-right (typically `FlagButton`). |
+| `ExerciseFrame` | The card shell every exercise lives in. Provides instruction-id context for accessibility wiring, footer slot, variant context. | `variant='session' \| 'review' \| 'preview'`. (The former `adminOverlay` top-right slot was removed 2026-07-02 — the admin flag now lives in the session header row; see the experience spec §3.2.) |
 | `ExerciseInstruction` | The Dutch/English instruction line above the prompt card. | Registers its id into `FrameInstructionIdContext` so the prompt card can `aria-describedby` it. |
 | `ExercisePromptCard` | The big foreground prompt — word, sentence, or audio. | `variant='word' \| 'sentence' \| 'audio'` controls type-scale. Audio variant embeds `ExerciseAudioButton` with autoplay opt-in. |
 | `ExerciseOption` | A single MCQ option button. | `state='neutral' \| 'selected' \| 'correct' \| 'incorrect' \| 'show-correct'` drives styling. `variant='word' \| 'sentence'` controls size. |
@@ -135,7 +134,7 @@ function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps
 | `ExerciseAudioButton` | The play-prompt control. | `variant='primary' \| 'icon'` — primary is the big circular play, icon is the inline mini button. Plays via the resolved session audio map. |
 | `ExerciseHint` | Collapsible hint reveal. | Tracks reveal in `onEvent` for FSRS hint-counting. |
 | `ExerciseFeedback` | The Doorgaan card shown after a fuzzy/wrong answer. 299 LOC — the heaviest primitive. | `layout='vocab-pair' \| 'grammar-reveal'` controls the two main shapes. Owns the "Doorgaan" button (player supplies `onContinue` + label + copy). Renders accepted variants, audio playback of the correct answer, optional explanation, commit-fail chip. |
-| `FlagButton` | "Report this card" trigger. | Posts via `exerciseReviewService` directly; admin-only via `adminOverlay`. |
+| `FlagButton` | "Report this card" trigger. | Posts via `contentFlagService` directly; admin-only, rendered by `AdminFlagOverlay` into the session header's `flagSlot` (`ExperiencePlayer.tsx`). |
 | `LanguagePill` | "ID" / "NL" / "EN" type-coloured pill chips. | Used by `ExerciseFeedback` and primitives that show a language hint. |
 
 Three context providers in `primitives/context.ts`: `FrameInstructionIdContext`, `FrameFooterContext` (with the `FOOTER_SLOT_SYMBOL` sentinel), `FrameVariantContext`. `primitives/haptics.ts` exports `triggerHaptic(event)` for tap/correct/wrong feedback.
@@ -144,7 +143,7 @@ Three context providers in `primitives/context.ts`: `FrameInstructionIdContext`,
 
 Each of the 12 components follows the same shape (`implementations/RecognitionMCQ.tsx` is the canonical example):
 
-1. Destructure `exerciseItem`, `userLanguage`, `onAnswer`, `onEvent`, `adminOverlay` from props.
+1. Destructure `exerciseItem`, `userLanguage`, `onAnswer`, `onEvent` from props.
 2. Hook calls — `useSessionAudio()`, `useAutoplay()`, `useState(...)` for any local UI state.
 3. Derive the prompt + correct answer + distractors (MCQ types) or accepted variants (typed types) from the item's sub-data.
 4. `useExerciseScoring({ mode, checkCorrect, onAnswer, onEvent })` — the shared scoring hook that:
@@ -219,7 +218,7 @@ The player owns `onContinue` / `continueLabel` / `copy`; the adapter owns everyt
 
 1. **Registry exhaustiveness is not compile-enforced.** `exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>>` permits omission. The dispatcher silent-skips missing types at runtime — visible only via the `registryMissCount` log in `ExperiencePlayer.tsx:89-98`. A `satisfies` check at module load would catch this earlier; not added today.
 2. **`feedbackMapping.ts`'s 12-way switch is duplicated logic relative to the implementations.** Each implementation knows its data shape; the feedback adapter re-knows it to project the right `promptShown` / `correctAnswer` / `direction`. A refactor that has each implementation declare its own feedback projection would remove the duplication; out of scope for the cleanup.
-3. **`primitives/FlagButton.tsx` is showcased in DesignLab but not yet wired into any production card.** The `ExerciseFrame.adminOverlay` slot exists for this, but no implementation currently passes it. Admin-flagging from inside a session is therefore not surfaced today.
+3. ~~`primitives/FlagButton.tsx` is showcased in DesignLab but not yet wired into any production card.~~ Resolved: `AdminFlagOverlay` renders `FlagButton` into the session header's `flagSlot` for every live exercise (wiring restored 2026-06-14; moved 2026-07-02 from the per-exercise `adminOverlay` overlay — since removed — to the header row).
 4. **`speaking` exercise type has no commit path.** `SpeakingExercise.tsx` displays the prompt + target but emits no answer report — the player advances past it as a self-rate. The `feedbackMapping.ts:228-239` branch exists defensively but is unreachable through the normal flow.
 
 ---

@@ -14,7 +14,7 @@ import { translations } from '@/lib/i18n'
 import type { ExerciseComponentProps } from '../registry'
 
 export default function CuedRecallExercise({
-  exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
+  exerciseItem, userLanguage, onAnswer, onEvent,
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
   const data = exerciseItem.cuedRecallData
@@ -41,7 +41,7 @@ export default function CuedRecallExercise({
   }
 
   return (
-    <ExerciseFrame userLanguage={userLanguage} variant="session" adminOverlay={adminOverlay}>
+    <ExerciseFrame userLanguage={userLanguage} variant="session">
       <ExerciseInstruction>{t.session.exercise.chooseIndonesian}</ExerciseInstruction>
       <ExercisePromptCard userLanguage={userLanguage}
         variant="word"

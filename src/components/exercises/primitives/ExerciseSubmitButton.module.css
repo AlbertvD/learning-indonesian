@@ -8,7 +8,7 @@
     width: 100%;
     padding: 16px 20px;
     font-family: inherit;
-    font-size: var(--fs-lg);
+    font-size: var(--ex-fs-body);
     font-weight: var(--fw-semibold);
     background: var(--accent-primary);
     color: var(--text-on-accent);
