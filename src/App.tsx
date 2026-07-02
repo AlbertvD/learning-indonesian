@@ -31,6 +31,7 @@ const ExerciseCoverage = lazy(() => import('@/pages/ExerciseCoverage').then(m =>
 const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ default: m.ContentReview })))
 const DesignLab = lazy(() => import('@/pages/admin/DesignLab').then(m => ({ default: m.DesignLab })))
 const PageLab = lazy(() => import('@/pages/admin/PageLab').then(m => ({ default: m.PageLab })))
+const Privacy = lazy(() => import('@/pages/Privacy').then(m => ({ default: m.Privacy })))
 
 // ─── Bespoke lesson pages — preview routes ────────────────────────────────────
 // /lesson/:lessonId resolves to the bespoke page when one is registered (see
@@ -88,6 +89,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/preview" element={<LazyPage><LocalPreviewIndex /></LazyPage>} />
       <Route path="/preview/lesson/:slug" element={<LazyPage><LocalPreviewLesson /></LazyPage>} />
+      <Route path="/privacy" element={<LazyPage><Privacy /></LazyPage>} />
 
       <Route element={<Layout />}>
         <Route

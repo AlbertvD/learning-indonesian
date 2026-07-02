@@ -382,7 +382,7 @@ export function Profile() {
           <Stack gap="md">
             <Text size="sm" c="dimmed">
               {T.profile.deleteAccountDescription}{' '}
-              <a href="/privacy">{T.profile.deleteAccountPrivacyLink}</a>
+              <a href="/privacy">{T.privacy.viewLink}</a>
             </Text>
             <Group justify="flex-end">
               <Button

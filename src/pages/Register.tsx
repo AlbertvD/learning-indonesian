@@ -118,6 +118,9 @@ export function Register() {
         <Text size="sm" c="dimmed">
           {T.register.alreadyHaveAccount} <a href="/login">{T.register.logIn}</a>
         </Text>
+        <Text size="sm" c="dimmed">
+          <a href="/privacy">{T.privacy.viewLink}</a>
+        </Text>
       </Stack>
     </PageFormLayout>
   )
