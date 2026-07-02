@@ -11,11 +11,14 @@ import {
   Slider,
   Box,
   Select,
+  Modal,
 } from '@mantine/core'
 import { useMantineColorScheme } from '@mantine/core'
 import { IconMoon, IconSun, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import { useMediaQuery } from '@mantine/hooks'
+import { useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
+import { FunctionsHttpError } from '@supabase/supabase-js'
 import {
   PageContainer,
   PageBody,
@@ -27,8 +30,23 @@ import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
+import { supabase } from '@/lib/supabase'
 import { useAutoplay } from '@/contexts/AutoplayContext'
 import { useListening } from '@/contexts/ListeningContext'
+
+// The edge function returns { error: <code> } on non-2xx. functions.invoke
+// never throws — it resolves { data: null, error: FunctionsHttpError } whose
+// .context is the raw Response. Best-effort parse; unknown/unparseable shapes
+// fall back to the generic message. Mirrors Register.tsx's extractErrorCode.
+async function extractErrorCode(error: unknown): Promise<string | undefined> {
+  if (!(error instanceof FunctionsHttpError)) return undefined
+  try {
+    const body = await error.context.json()
+    return typeof body?.error === 'string' ? body.error : undefined
+  } catch {
+    return undefined
+  }
+}
 
 export function Profile() {
   const T = useT()
@@ -42,6 +60,8 @@ export function Profile() {
   const updateLanguage = useAuthStore((state) => state.updateLanguage)
   const updatePreferredSessionSize = useAuthStore((state) => state.updatePreferredSessionSize)
   const updateTimezone = useAuthStore((state) => state.updateTimezone)
+  const signOut = useAuthStore((state) => state.signOut)
+  const navigate = useNavigate()
 
   const [loading, setLoading] = useState(true)
   const [displayName, setDisplayName] = useState('')
@@ -51,6 +71,9 @@ export function Profile() {
   const [savingLang, setSavingLang] = useState(false)
   const [savingSessionSize, setSavingSessionSize] = useState(false)
   const [savingTimezone, setSavingTimezone] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [deletingAccount, setDeletingAccount] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -172,6 +195,30 @@ export function Profile() {
     const newSize = Math.min(50, sessionSize + 1)
     setSessionSize(newSize)
     handleSessionSizeChange(newSize)
+  }
+
+  async function handleDeleteAccount() {
+    setDeletingAccount(true)
+    try {
+      const { error } = await supabase.functions.invoke('delete-account')
+      if (error) throw error
+      // Success: no further authenticated writes are needed or possible —
+      // the account (and every row FK'd to it) is already gone server-side.
+      await signOut()
+      navigate('/login')
+    } catch (err) {
+      const code = await extractErrorCode(err)
+      const message = code === 'invalid_user_jwt' || code === 'missing_user_jwt'
+        ? T.profile.deleteAccountSessionExpired
+        : T.profile.somethingWentWrong
+      notifications.show({
+        color: 'red',
+        title: T.profile.deleteAccountFailedTitle,
+        message,
+      })
+      logError({ page: 'profile', action: 'deleteAccount', error: err })
+      setDeletingAccount(false)
+    }
   }
 
   if (loading) {
@@ -330,7 +377,70 @@ export function Profile() {
             </Box>
           </Stack>
         </SettingsCard>
+
+        <SettingsCard title={T.profile.deleteAccountSectionTitle}>
+          <Stack gap="md">
+            <Text size="sm" c="dimmed">
+              {T.profile.deleteAccountDescription}{' '}
+              <a href="/privacy">{T.profile.deleteAccountPrivacyLink}</a>
+            </Text>
+            <Group justify="flex-end">
+              <Button
+                color="red"
+                variant="outline"
+                onClick={() => setDeleteModalOpen(true)}
+              >
+                {T.profile.deleteAccountButton}
+              </Button>
+            </Group>
+          </Stack>
+        </SettingsCard>
       </PageBody>
+
+      <Modal
+        opened={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false)
+          setDeleteConfirmText('')
+        }}
+        title={T.profile.deleteAccountModalTitle}
+      >
+        <Stack gap="md">
+          <Text size="sm" c="red">
+            {T.profile.deleteAccountModalWarning}
+          </Text>
+          <Text size="sm">
+            {T.profile.deleteAccountConfirmInstruction}{' '}
+            <Text component="span" fw={700}>{user?.email}</Text>
+          </Text>
+          <TextInput
+            value={deleteConfirmText}
+            onChange={(e) => setDeleteConfirmText(e.currentTarget.value)}
+            placeholder={T.profile.deleteAccountConfirmPlaceholder}
+            disabled={deletingAccount}
+          />
+          <Group justify="flex-end" gap="sm">
+            <Button
+              variant="default"
+              onClick={() => {
+                setDeleteModalOpen(false)
+                setDeleteConfirmText('')
+              }}
+              disabled={deletingAccount}
+            >
+              {T.profile.deleteAccountCancelButton}
+            </Button>
+            <Button
+              color="red"
+              onClick={handleDeleteAccount}
+              loading={deletingAccount}
+              disabled={!user?.email || deleteConfirmText !== user.email}
+            >
+              {T.profile.deleteAccountConfirmButton}
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
     </PageContainer>
   )
 }
