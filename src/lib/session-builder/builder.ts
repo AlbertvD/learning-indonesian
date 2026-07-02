@@ -12,6 +12,7 @@ import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/
 import { compose } from '@/lib/session-builder/compose'
 import { buildQueueDryingDiagnostic } from '@/lib/session-builder/drying'
 import { buryThinSiblings } from '@/lib/session-builder/siblingBury'
+import { excludeListeningCapabilities } from '@/lib/session-builder/listeningFilter'
 import { isLessonScopedMode, isScopedMode } from '@/lib/session-builder/model'
 import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session-builder/model'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
@@ -459,6 +460,12 @@ export async function buildSession(input: {
   selectedLessonId?: string
   selectedSourceRefs?: string[]
   forceCapabilityKey?: string
+  // Profile "disable listening exercises" opt-out (src/lib/listeningPreferences.ts).
+  // Defaults to true (unset = listening enabled) so existing callers/tests are
+  // unaffected. false strips every audio-modality capability from the snapshot
+  // before the planner runs — see listeningFilter.ts. The force-capability bypass
+  // is intentionally exempt (a dev/admin override, not a learner session).
+  listeningEnabled?: boolean
   adapter: CapabilitySessionDataAdapter & Partial<ForceCapabilityAdapter>
 }): Promise<SessionPlan> {
   if (!input.enabled) {
@@ -477,7 +484,7 @@ export async function buildSession(input: {
     })
   }
 
-  const snapshot = await input.adapter.loadCapabilitySessionData({
+  const rawSnapshot = await input.adapter.loadCapabilitySessionData({
     userId: input.userId,
     mode: input.mode,
     now: input.now,
@@ -486,6 +493,9 @@ export async function buildSession(input: {
     selectedLessonId: input.selectedLessonId,
     selectedSourceRefs: input.selectedSourceRefs,
   })
+  const snapshot = input.listeningEnabled === false
+    ? excludeListeningCapabilities(rawSnapshot)
+    : rawSnapshot
 
   return loadCapabilitySessionPlan({
     enabled: input.enabled,

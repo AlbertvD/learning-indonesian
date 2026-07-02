@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { notifications } from '@mantine/notifications'
-import { Progress, Text, Group, Stack } from '@mantine/core'
+import { Progress, Text, Group, Stack, VisuallyHidden } from '@mantine/core'
 import { PageContainer, PageBody } from '@/components/page/primitives'
 import { ExerciseFeedback } from '@/components/exercises/primitives'
 import { feedbackPropsFor } from '@/components/exercises/feedbackMapping'
@@ -134,6 +134,18 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
   const [submitting, setSubmitting] = useState(false)
   // Guards the one-shot completion fire (see the exhaustion effect below).
   const completedRef = useRef(false)
+  // CRIT-1 (docs/audits/2026-07-02-a11y-i18n-audit.md): correct answers
+  // auto-advance with zero non-visual feedback -- wrong/fuzzy get a rich
+  // aria-live="assertive" announcement via ExerciseFeedback, but a correct
+  // answer never mounts that component. This visually-hidden aria-live="polite"
+  // region fires "Correct"/i18n equivalent alongside the existing state
+  // transition -- it does NOT add any delay to the auto-advance (the 1500ms
+  // correct-answer pause already happened inside useExerciseScoring before
+  // onAnswer/handleAnswerReport is even called). `id` forces a fresh child
+  // node on every correct answer so screen readers re-announce even when two
+  // consecutive correct answers produce the identical announcement text.
+  const [correctAnnouncement, setCorrectAnnouncement] = useState<{ text: string; id: number } | null>(null)
+  const announceIdRef = useRef(0)
 
   // Reset queue when renderableBlocks changes (new session plan).
   useEffect(() => {
@@ -218,6 +230,8 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
 
     if (wasCorrect) {
       setCorrectCapabilityIds(s => { const n = new Set(s); n.add(currentBlock.capabilityId); return n })
+      announceIdRef.current += 1
+      setCorrectAnnouncement({ text: feedbackCopy.announceCorrect, id: announceIdRef.current })
       setPosition(p => p + 1)
     } else {
       // Wrong / fuzzy: re-queue this block 3–6 capabilities later and show
@@ -287,6 +301,9 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
     <SessionAudioProvider audioMap={audioMap}>
       <PageContainer size="md">
         <PageBody>
+          <VisuallyHidden role="status" aria-live="polite">
+            {correctAnnouncement && <span key={correctAnnouncement.id}>{correctAnnouncement.text}</span>}
+          </VisuallyHidden>
           <SessionHeader
             position={position}
             queueLength={queueLength}
