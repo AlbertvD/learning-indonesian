@@ -192,11 +192,23 @@ render, so a builder-side backfill would be the wrong layer).
 1. After publishing any lesson, **zero** active+ready+published caps have a missing
    required satellite row, **and zero** HC14 violations (no past-due state row on a
    retired cap) — verified by `make check-supabase-deep`.
-2. **Round-trip (per source kind):** delete a `dialogue_clozes` (and separately an
-   `affixed_form_pairs`, a `contrast_pair`, a recognition) row for an active cap →
-   re-publish that lesson → the cap is **soft-retired** AND its `learner_capability_state.next_due_at`
-   is NULL; restore the row → re-publish → the cap **re-activates** (ready/published,
-   schedulable again). Idempotent.
+2. **Retire path — fixture-driven, NOT live manual deletion** (revised 2026-07-02; see §7).
+   The retire path is proven by the **Layer-2 unit fixture** (`adapter.test.ts` →
+   `reconcileArtifactPresence`): a ready+published cap whose `findCapsMissingSatellite`
+   reports its required satellite **absent** is **soft-retired** AND its
+   `learner_capability_state.next_due_at` is set **NULL** (§2d M1); a cap whose satellite
+   is present is untouched (no-op); source-kind scoping holds (the item sweep never
+   touches non-item caps and vice-versa). Per-source-kind satellite-absence — dialogue
+   (`dialogue_clozes`), affixed (`affixed_form_pairs`), and pattern
+   contrast·recognise·produce (the typed grammar-exercise tables) — is covered by the
+   **Layer-1 fixtures** in `satellitePresence.test.ts`. Re-activation on re-emission is
+   the `upsertCapabilities retired_at:null` unit test.
+   **The original "delete a satellite row → plain re-publish → observe soft-retire"
+   live procedure is retired** (§7): a plain re-publish *regenerates* a deleted
+   `dialogue_clozes` row (self-heal), so it never reaches the retire path; and relying on
+   which source kinds are seed-once vs regenerated makes the procedure per-kind-fragile.
+   The fixture models the only real trigger — generation yields **no** row for a line/
+   pattern whose cap was promoted on a **prior** run (§1a) — directly and deterministically.
 3. **Guard the §2b ordering:** a satellite row written **this run** is NOT retired
    (after-satellite-writes ordering); a cap soft-retired **this run** is NOT
    re-promoted in the same run (before-promotion ordering).
@@ -204,9 +216,10 @@ render, so a builder-side backfill would be the wrong layer).
    caps **fills to `preferredSessionSize`** (no silent N−2) — the original bug
    cannot recur.
 5. **Three-layer coverage** (`project_three_layer_invariant_gates`): the shared
-   `satellitePresence` predicate + unit tests (Layer 1); the two scoped
-   reconciliation invocations (Layer 2, pipeline); HC14/15/17/19/20 importing the
-   same predicate (Layer 3, live DB).
+   `satellitePresence` predicate + per-source-kind unit fixtures (Layer 1); the two
+   scoped reconciliation invocations, with `reconcileArtifactPresence`'s
+   retire + `next_due_at`-clear path unit-tested in `adapter.test.ts` (Layer 2,
+   pipeline); HC14/15/17/19/20 importing the same predicate (Layer 3, live DB).
 
 ## 6. Out of scope
 - The completion bug (shipped, PR #248).
