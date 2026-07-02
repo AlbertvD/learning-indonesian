@@ -1,10 +1,12 @@
 // src/components/ProtectedRoute.tsx
 import React, { useEffect } from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { Center, Loader } from '@mantine/core'
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuthStore()
+  const location = useLocation()
 
   // Dev-only bypass: append `?bypassAuth=1` to any URL to view pages without signing in.
   // This is safe because it's only enabled during `vite` dev mode.
@@ -28,19 +30,6 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     }
   }, [devBypass])
 
-  const redirectedRef = React.useRef(false)
-  useEffect(() => {
-    if (!loading && !user && !redirectedRef.current && !devBypass) {
-      redirectedRef.current = true
-      if (import.meta.env.DEV) {
-        // In dev mode, redirect to local login page instead of auth.duin.home
-        window.location.href = '/login'
-      } else {
-        window.location.href = `https://auth.duin.home/login?next=${encodeURIComponent(window.location.href)}`
-      }
-    }
-  }, [user, loading, devBypass])
-
   if (loading) {
     return (
       <Center h="100vh">
@@ -51,7 +40,22 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (!user) {
     if (devBypass) return <>{children}</>
-    return null
+    // Previously bounced every logged-out visit to `https://auth.duin.home/login`
+    // — the homelab SSO login form. That form converts whatever the visitor
+    // types into `<name>@duin.home` (see `duinhuis-auth`'s login page), so it
+    // structurally cannot authenticate a paying customer's own email; it can
+    // only ever be used to reach this app when signed in as a homelab user.
+    // Route to this app's own /login instead, carrying a `next` param so the
+    // learner lands back where they were headed (docs/audits/
+    // 2026-07-02-ux-failure-modes-audit.md CRIT-1).
+    //
+    // NOTE: the Traefik-level `duinhuis-auth@docker` forward-auth middleware
+    // on this container is a separate infra-layer gate that still bounces
+    // unauthenticated requests before they ever reach this React app. That
+    // middleware needs removing in homelab-configs at cloud-exposure time —
+    // out of scope for this fix.
+    const next = `${location.pathname}${location.search}`
+    return <Navigate to={`/login?next=${encodeURIComponent(next)}`} replace />
   }
 
   return <>{children}</>

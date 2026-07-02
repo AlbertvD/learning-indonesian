@@ -1,7 +1,7 @@
 // src/pages/Login.tsx
 import { useState } from 'react'
 import { PasswordInput, TextInput, Button, Stack, Text } from '@mantine/core'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
 import { PageFormLayout } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
@@ -16,6 +16,7 @@ export function Login() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const signIn = useAuthStore(s => s.signIn)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,7 +25,11 @@ export function Login() {
 
     try {
       await signIn(email, password)
-      navigate('/')
+      // ProtectedRoute carries a `?next=` param when it bounces a logged-out
+      // visitor here so they land back where they were headed. Only accept a
+      // same-app relative path — never redirect off-site from a query param.
+      const next = searchParams.get('next')
+      navigate(next && next.startsWith('/') && !next.startsWith('//') ? next : '/')
     } catch {
       notifications.show({
         color: 'red',
