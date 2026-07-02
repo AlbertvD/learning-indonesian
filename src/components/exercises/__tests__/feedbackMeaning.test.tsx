@@ -52,6 +52,48 @@ describe('feedbackPropsFor — dictation meaning', () => {
   })
 })
 
+describe('ExerciseFeedback — accepted-variants display dedup', () => {
+  it('omits the variant identical to the correct answer from "Ook goed"', () => {
+    const { copy, continueLabel } = feedbackCopyFor('nl')
+    render(
+      <MantineProvider>
+        <ExerciseFeedback
+          outcome="correct"
+          layout="vocab-pair"
+          direction="audio→ID"
+          promptShown={{ text: 'makan', lang: 'ID', role: 'heard' }}
+          correctAnswer={{ text: 'makan', lang: 'ID', role: 'said' }}
+          acceptedVariants={['makan', 'makanan']}
+          copy={copy}
+          continueLabel={continueLabel}
+          onContinue={vi.fn()}
+        />
+      </MantineProvider>
+    )
+    expect(screen.getByText(/Ook goed/).textContent).toBe('Ook goed: makanan')
+  })
+
+  it('hides the "Ook goed" row entirely when the only variant equals the answer', () => {
+    const { copy, continueLabel } = feedbackCopyFor('nl')
+    render(
+      <MantineProvider>
+        <ExerciseFeedback
+          outcome="correct"
+          layout="vocab-pair"
+          direction="audio→ID"
+          promptShown={{ text: 'makan', lang: 'ID', role: 'heard' }}
+          correctAnswer={{ text: 'makan', lang: 'ID', role: 'said' }}
+          acceptedVariants={['makan']}
+          copy={copy}
+          continueLabel={continueLabel}
+          onContinue={vi.fn()}
+        />
+      </MantineProvider>
+    )
+    expect(screen.queryByText(/Ook goed/)).not.toBeInTheDocument()
+  })
+})
+
 describe('ExerciseFeedback — meaning line in vocab-pair layout', () => {
   it('renders the meaning line when meaning is set on a vocab-pair card', () => {
     const { copy, continueLabel } = feedbackCopyFor('nl')

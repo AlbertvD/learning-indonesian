@@ -47,6 +47,8 @@ function makeItem(exerciseType: ExerciseType): ExerciseItem {
     answerVariants: [
       { id: 'v1', learning_item_id: 'i1', variant_text: 'eetje', variant_type: 'informal', language: 'nl', is_accepted: true, notes: null },
       { id: 'v2', learning_item_id: 'i1', variant_text: 'verboden', variant_type: 'alternative_translation', language: 'nl', is_accepted: false, notes: null },
+      { id: 'v3', learning_item_id: 'i1', variant_text: 'mkn', variant_type: 'informal', language: 'id', is_accepted: true, notes: null },
+      { id: 'v4', learning_item_id: 'i1', variant_text: 'food', variant_type: 'alternative_translation', language: 'en', is_accepted: true, notes: null },
     ],
     skillType: 'recall_mode',
     exerciseType,
@@ -132,6 +134,19 @@ describe('16. buildFeedbackInput adapter', () => {
       commitFailed: false,
     })
     expect(result.promptAudioUrl).toContain('makan')
+  })
+
+  it('acceptedVariants for dictation are Indonesian-only (no NL/EN translation leak)', () => {
+    const result = buildFeedbackInput({
+      block: makeBlock('type_form_from_audio_ex'),
+      context: makeContext('type_form_from_audio_ex'),
+      response: 'makan',
+      outcome: 'wrong',
+      userLanguage: 'nl',
+      audioMap,
+      commitFailed: false,
+    })
+    expect(result.acceptedVariants).toEqual(['mkn'])
   })
 
   it('promptAudioUrl set for dictation', () => {

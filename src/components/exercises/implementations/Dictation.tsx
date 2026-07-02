@@ -12,7 +12,7 @@ import {
   ExerciseAudioButton,
 } from '../primitives'
 import { useExerciseScoring } from '@/lib/useExerciseScoring'
-import { checkAnswer } from '@/lib/answerNormalization'
+import { checkAnswer, acceptedVariantTexts } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
 import { useSessionAudio } from '@/contexts/SessionAudioContext'
 import { resolveSessionAudioUrl } from '@/services/audioService'
@@ -26,7 +26,9 @@ export default function Dictation({
   const { learningItem: item, meanings, answerVariants } = exerciseItem
   const learningItem = item!
   const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
-  const variants = (answerVariants ?? []).map(v => v.variant_text)
+  // The learner types what they HEARD — only Indonesian variants may grade
+  // as correct, never the NL/EN alternative-translation rows.
+  const variants = acceptedVariantTexts(answerVariants, 'id')
   // L1 meaning for the post-answer reveal — dictation is the only typed exercise
   // where the learner would otherwise never see what the word means.
   const primaryMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
@@ -38,6 +40,10 @@ export default function Dictation({
 
   const scoring = useExerciseScoring<string>({
     mode: 'typed',
+    // Short pulse only: the player shows a full correct-feedback card for
+    // dictation (word + meaning + Doorgaan), so the default 1.5s pre-commit
+    // pause would just delay it.
+    correctDelayMs: 500,
     checkCorrect: (response) => {
       const r = checkAnswer(response, learningItem.base_text, variants)
       return { isCorrect: r.isCorrect, isFuzzy: r.isFuzzy }

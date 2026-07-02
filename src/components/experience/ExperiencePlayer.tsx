@@ -41,7 +41,7 @@ export interface ExperiencePlayerProps {
 interface FeedbackState {
   block: SessionBlock
   context: CapabilityRenderContext
-  outcome: 'fuzzy' | 'wrong'
+  outcome: 'correct' | 'fuzzy' | 'wrong'
   response: string | null
   commitFailed: boolean
 }
@@ -240,9 +240,23 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
 
     if (wasCorrect) {
       setCorrectCapabilityIds(s => { const n = new Set(s); n.add(currentBlock.capabilityId); return n })
-      announceIdRef.current += 1
-      setCorrectAnnouncement({ text: feedbackCopy.announceCorrect, id: announceIdRef.current })
-      setPosition(p => p + 1)
+      // Dictation gets a real correct screen (2026-07-02 owner decision): the
+      // meaning only surfaces post-answer there, and the auto-advance pause was
+      // too brief to read it. The card's own assertive badge announces the
+      // outcome, so the polite announcement below is skipped on this path.
+      if (currentBlock.renderPlan.exerciseType === 'type_form_from_audio_ex') {
+        setFeedback({
+          block: currentBlock,
+          context: contexts.get(currentBlock.id)!,
+          outcome: 'correct',
+          response: report.rawResponse,
+          commitFailed,
+        })
+      } else {
+        announceIdRef.current += 1
+        setCorrectAnnouncement({ text: feedbackCopy.announceCorrect, id: announceIdRef.current })
+        setPosition(p => p + 1)
+      }
     } else {
       // Wrong / fuzzy: re-queue this block 3–6 capabilities later and show
       // the Doorgaan feedback card. No max cap — the block stays in the

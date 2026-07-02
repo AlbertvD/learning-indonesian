@@ -156,6 +156,10 @@ export function ExerciseFeedback(props: ExerciseFeedbackProps) {
   const userWasWrong = outcome === 'wrong' || (outcome === 'fuzzy')
   const userText = userAnswer?.text?.trim() || copy.emptyAnswer
 
+  // "Ook goed" is for OTHER accepted spellings — repeating the canonical
+  // answer right under itself is noise (seen on dictation, 2026-07-02).
+  const shownVariants = acceptedVariants?.filter(v => v !== correctAnswer.text)
+
   // Fuzzy-typed diff-pair: collapses userAnswer + correctAnswer into one card.
   const showDiffPair = outcome === 'fuzzy' && (userAnswer?.role === 'typed')
 
@@ -277,10 +281,10 @@ export function ExerciseFeedback(props: ExerciseFeedbackProps) {
                 />
               )}
             </div>
-            {acceptedVariants && acceptedVariants.length > 0 && (
+            {shownVariants && shownVariants.length > 0 && (
               <div className={classes.alsoAccepted}>
-                {copy.alsoAccepted}: {acceptedVariants.slice(0, 3).join(', ')}
-                {acceptedVariants.length > 3 && <span> +{acceptedVariants.length - 3}</span>}
+                {copy.alsoAccepted}: {shownVariants.slice(0, 3).join(', ')}
+                {shownVariants.length > 3 && <span> +{shownVariants.length - 3}</span>}
               </div>
             )}
           </div>

@@ -15,7 +15,7 @@ import {
   ExerciseSubmitButton,
 } from '../primitives'
 import { useExerciseScoring } from '@/lib/useExerciseScoring'
-import { checkAnswer } from '@/lib/answerNormalization'
+import { checkAnswer, acceptedVariantTexts } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
 import type { ExerciseComponentProps } from '../registry'
 
@@ -41,7 +41,8 @@ export default function TypedRecall({
       ?? meanings.find(m => m.translation_language === userLanguage)
     promptText = primary?.translation_text ?? ''
     acceptedAnswer = item.base_text
-    acceptedVariants = (answerVariants ?? []).map(v => v.variant_text)
+    // The typed answer is Indonesian — never accept the NL/EN translation rows.
+    acceptedVariants = acceptedVariantTexts(answerVariants, 'id')
   }
 
   const scoring = useExerciseScoring<string>({

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeAnswer, checkAnswer, normalizeAnswerResponse, findIneffectiveProduceReason } from '@/lib/answerNormalization'
+import { normalizeAnswer, checkAnswer, normalizeAnswerResponse, findIneffectiveProduceReason, acceptedVariantTexts } from '@/lib/answerNormalization'
 
 describe('normalizeAnswer', () => {
   it('trims whitespace', () => {
@@ -203,5 +203,28 @@ describe('findIneffectiveProduceReason', () => {
   it('still flags a slash answer even when the cross-language source differs', () => {
     expect(findIneffectiveProduceReason('Teman koopt fruit op de markt.', ['Teman / beli buah / di pasar.']))
       .toBe('slash_fragments_answer')
+  })
+})
+
+describe('acceptedVariantTexts', () => {
+  // 2026-07-02: item_answer_variants carries NL/EN alternative translations of
+  // the item alongside ID spelling variants. Graders and the feedback display
+  // must only ever see the variants in the ANSWER's language — mixing let
+  // "hier"/"here" pass as correct dictations of "di sini".
+  const variants = [
+    { id: 'v1', learning_item_id: 'i1', variant_text: 'di sini', variant_type: 'alternative_translation' as const, language: 'id', is_accepted: true, notes: null },
+    { id: 'v2', learning_item_id: 'i1', variant_text: 'here', variant_type: 'alternative_translation' as const, language: 'en', is_accepted: true, notes: null },
+    { id: 'v3', learning_item_id: 'i1', variant_text: 'hier', variant_type: 'alternative_translation' as const, language: 'nl', is_accepted: true, notes: null },
+    { id: 'v4', learning_item_id: 'i1', variant_text: 'disini', variant_type: 'informal' as const, language: 'id', is_accepted: false, notes: null },
+  ]
+
+  it('returns only accepted variants in the requested language', () => {
+    expect(acceptedVariantTexts(variants, 'id')).toEqual(['di sini'])
+    expect(acceptedVariantTexts(variants, 'nl')).toEqual(['hier'])
+  })
+
+  it('handles undefined and empty inputs', () => {
+    expect(acceptedVariantTexts(undefined, 'id')).toEqual([])
+    expect(acceptedVariantTexts([], 'id')).toEqual([])
   })
 })

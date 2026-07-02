@@ -1,4 +1,5 @@
 import { resolveSessionAudioUrl } from '@/services/audioService'
+import { acceptedVariantTexts } from '@/lib/answerNormalization'
 import type { FeedbackMapInput, FeedbackProps } from '@/components/exercises/feedbackMapping'
 import type { SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/lib/capabilities'
@@ -12,7 +13,7 @@ export function buildFeedbackInput(args: {
   block: SessionBlock
   context: CapabilityRenderContext
   response: string | null
-  outcome: 'fuzzy' | 'wrong'
+  outcome: 'correct' | 'fuzzy' | 'wrong'
   userLanguage: 'nl' | 'en'
   audioMap: SessionAudioMap
   commitFailed: boolean
@@ -20,12 +21,14 @@ export function buildFeedbackInput(args: {
   const { block, context, response, outcome, userLanguage, audioMap, commitFailed } = args
   const item = context.exerciseItem!
   const isGrammar = GRAMMAR_CAPABILITY_TYPES.has(block.renderPlan.capabilityType)
-  const acceptedVariants = item.answerVariants
-    .filter(v => v.is_accepted)
-    .map(v => v.variant_text)
+  const exerciseType = block.renderPlan.exerciseType
+  // Variants shown as "Ook goed" must match the ANSWER's language: only
+  // type_meaning_ex answers in L1; every other variant-consuming type answers
+  // in Indonesian. The unfiltered list mixed "here"/"hier" into dictation.
+  const answerLanguage = exerciseType === 'type_meaning_ex' ? userLanguage : 'id'
+  const acceptedVariants = acceptedVariantTexts(item.answerVariants, answerLanguage)
 
   let promptAudioUrl: string | undefined
-  const exerciseType = block.renderPlan.exerciseType
   if (exerciseType === 'choose_meaning_from_audio_ex' || exerciseType === 'type_form_from_audio_ex') {
     const baseText = item.learningItem?.base_text
     if (baseText) {
