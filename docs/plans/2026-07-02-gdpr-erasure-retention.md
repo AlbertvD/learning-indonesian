@@ -1,6 +1,12 @@
 ---
-status: implementing
-implementation: PR pending (branch feat/launch-readiness-round-2)
+status: shipped
+implementation: PR #333
+merged_at: 2026-07-02
+implementation_paths:
+  - scripts/migration.sql
+  - supabase/functions/delete-account/
+  - src/pages/{Profile,Privacy}.tsx
+  - scripts/check-supabase-deep.ts
 approved_at: 2026-07-02  # product defaults chosen: 90/90 window, email as confirmation phrase, 48h HC threshold
 branch: feat/launch-readiness-round-2
 reviewed_by: [architect, data-architect]
