@@ -207,7 +207,8 @@
 
   /* ── Grammar additions ─────────────────────────────────────────────────── */
   .meaningLine {
-    font-size: var(--fs-md);
+    /* Reading content — body tier, not the raw 16px (owner: too small, 2026-07-02) */
+    font-size: var(--ex-fs-body);
     color: var(--ex-fg);
     line-height: 1.5;
   }
@@ -225,7 +226,8 @@
   }
 
   .explanationText {
-    font-size: var(--fs-sm);
+    /* Reading content — body tier, not the raw 14px (owner: too small, 2026-07-02) */
+    font-size: var(--ex-fs-body);
     line-height: 1.5;
     color: var(--ex-fg);
   }
