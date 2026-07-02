@@ -285,6 +285,27 @@ Email is **not configured** on the self-hosted Supabase instance. GoTrue has `GO
 
 Password resets are handled by an admin via Supabase Studio. If email is needed in the future it's a GoTrue SMTP config change — no app code changes required.
 
+## Signup gating
+
+Self-signup is gated behind a one-time-use invite code (pre-cloud-hardening item 1). `Register.tsx` no longer calls `supabase.auth.signUp` directly — it invokes the `signup-with-invite` edge function (`supabase/functions/signup-with-invite/index.ts`), which redeems an `indonesian.signup_invite_codes` row via the `redeem_invite_code`/`restore_invite_code` RPCs (service-role-only, no anon/authenticated grants) and then creates the user via the GoTrue admin API (`/auth/v1/admin/users`), bypassing the public signup endpoint entirely. It also carries a basic per-IP in-memory rate limit (5/hour) — best-effort, per-instance; real rate limiting for a cloud-facing preview belongs at the gateway.
+
+Two manual steps this depends on, neither automated by `make migrate`:
+
+1. **Close the public signup endpoint at the GoTrue level** — set `GOTRUE_DISABLE_SIGNUP=true` in `homelab-configs/services/supabase/docker-compose.yml` and restart the GoTrue container. Without this, `supabase.auth.signUp` still works for anyone who calls it directly (the app no longer does, but the endpoint itself stays open until this flag is set). `make check-supabase` has a WARNING-level check for this ("Public signup gate") — it does not fail the gate, so don't skip this step just because CI/`make pre-deploy` is green.
+2. **Seed invite codes** — as an admin, insert directly into `indonesian.signup_invite_codes` (service-role only, e.g. via Supabase Studio SQL editor or `psql`):
+   ```sql
+   insert into indonesian.signup_invite_codes (code, uses_remaining, note)
+   values ('welcome-preview-1', 1, 'customer preview invite');
+   ```
+
+**Edge function deployment.** `signup-with-invite` deploys the same way as `commit-capability-answer-report` (self-hosted edge functions are bind-mounted, not pushed via `supabase functions deploy`): SCP the file to the homelab bind-mount path, then restart the edge functions container.
+```bash
+scp supabase/functions/signup-with-invite/index.ts \
+    mrblond@master-docker:/opt/docker/appdata/supabase/functions/signup-with-invite/index.ts
+ssh mrblond@master-docker "sudo docker restart supabase-edge-functions"
+```
+`docker` on the homelab requires `sudo` — a plain `docker restart` fails with "permission denied on /var/run/docker.sock".
+
 ## Key Conventions
 
 - Path alias `@/` maps to `src/`
