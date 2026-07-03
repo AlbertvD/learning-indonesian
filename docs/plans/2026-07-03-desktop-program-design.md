@@ -1,6 +1,6 @@
 ---
-status: draft
-reviewed_by: []
+status: approved
+reviewed_by: [architect]   # APPROVE-WITH-CHANGES 2026-07-03; C1 (CRIT-1 already fixed on main), C2 (ProfileMenu carries lang/logout not admin links), C3 (checklist step-1 derivation) all folded in inline. No data-model touch → no data-architect needed.
 supersedes: []
 ---
 
@@ -41,7 +41,7 @@ supersedes: []
 
 | Finding | Source | Resolved by |
 |---|---|---|
-| CRIT-1 — logged-out visits bounce to the unusable `auth.duin.home` SSO form | ux-failure-modes audit §1 | Slice 1 (redirect to landing/`/login`) |
+| CRIT-1 — logged-out visits bounce to the unusable `auth.duin.home` SSO form | ux-failure-modes audit §1 | **Already fixed on main** (2026-07-02): `ProtectedRoute` now renders `<Navigate to="/login?next=…">` (`ProtectedRoute.tsx:43-58`) with a regression test. Slice 1 builds the landing surface that flow lands on. |
 | §A first-run — new user lands on empty dashboard, no guidance | ux-failure-modes audit §A | Slice 3 (checklist) |
 | MAJ-3 — "Niets te doen" recap has no diagnosis or CTA | ux-failure-modes audit §5 | Slice 3 (recap CTA) |
 | Sidebar brands the app "Bahasa Indonesia", not "Kamoe Bisa" | this program's grounding pass | Slice 2 |
@@ -67,10 +67,13 @@ supersedes: []
 
 ### Slice 1 — Landing page + CRIT-1 fix
 
-**Route behavior.** `/` renders the landing page for logged-out visitors; authenticated users see Home
-exactly as now. `ProtectedRoute`'s production SSO bounce (`src/components/ProtectedRoute.tsx:39`) is
-replaced by a redirect to the landing/login preserving the intended destination — no visit ever reaches
-`auth.duin.home`.
+**Route behavior.** The SSO bounce (audit CRIT-1) is **already fixed on main** — `ProtectedRoute`
+renders `<Navigate to="/login?next=…">` (`ProtectedRoute.tsx:43-58`, regression-tested). Slice 1's
+actual route work: (a) `/` currently sits inside the `ProtectedRoute`+`Layout` wrapper
+(`App.tsx:99-107`), so logged-out visitors are redirected to `/login` — move `/` out of that wrapper
+for the unauthenticated case so it renders the **public landing page** (authenticated users see Home
+exactly as now); (b) retarget the logged-out redirect from `/login` to the landing page, preserving
+the `next` destination.
 
 **Bundle discipline.** The landing page is a `React.lazy` route chunk; the app entry chunk must not
 grow (round-1 split baseline: 252 KB gz first visit). Screenshots/product imagery as optimized static
@@ -110,8 +113,11 @@ one mode. Accepted trade-off: power users lose the full-width-content option.
 Rail contents (top → bottom):
 1. **Kamoe Bisa wordmark** (replaces "Bahasa Indonesia").
 2. **"Start sessie" CTA** — filled tamarind, routes to the session exactly like the Dashboard button.
-3. **5 destinations** — Home · Leren · Ontdek · Voortgang · **Profiel** (promoted to a real nav item;
-   the footer `ProfileMenu` is deleted; its admin links move to the Profiel page — mobile symmetry).
+3. **5 destinations** — Home · Leren · Ontdek · Voortgang · **Profiel** (promoted to a real nav item —
+   realigning to foundation §7.1, which always listed Profiel as a primary destination). The footer
+   `ProfileMenu` is deleted; everything it carries — language switch, profile link, logout
+   (`ProfileMenu.tsx:33-37,92-95`) — already exists on the Profiel page (`Profile.tsx:63,207,307`).
+   Stated UX delta: logout goes from a 1-click popover to Profiel → sign out (accepted).
 4. **Admin section** — unchanged: divider + admin links, admins only.
 5. **Footer glance** — streak + today's-goal in one compact row (same store Home reads; taps through to
    Home), plus the theme toggle.
@@ -130,11 +136,15 @@ fast-follow. Measure, don't guess, in the slice-3 PR.
 
 **First-run checklist ("Aan de slag")** — replaces the hero position for new accounts, on desktop AND
 mobile:
-- ① *Bekijk je eerste les* → `/leren`; done when any lesson reader has been opened.
-- ② *Doe je eerste sessie* → session; done when `learning_sessions` has a completed row.
-- ③ *Ontdek podcasts & verhalen* → `/ontdek`; done on first visit (one localStorage flag) or dismissable.
-- All steps derive from **existing account state — no new tables, no new columns**. Card disappears
-  permanently once all steps complete (derivable, so no persistence needed beyond step ③'s flag).
+- ① *Bekijk je eerste les* → `/leren`; done via a **localStorage flag set on first lesson-reader
+  open**. (No persisted signal exists: the reader is passive per ADR 0005, and lesson-activation rows
+  can't serve — lessons 1–3 are auto-activated at signup, so activation is already-true for every new
+  account.)
+- ② *Doe je eerste sessie* → session; done when `learning_sessions` has a completed row (existing data).
+- ③ *Ontdek podcasts & verhalen* → `/ontdek`; done on first visit (localStorage flag) or dismissable.
+- **Zero Supabase changes**: ② reads existing account state; ① and ③ are per-device localStorage
+  flags — acceptable for a nudge card (worst case: a device switch re-shows a step). Card disappears
+  once all steps complete.
 
 **Empty-recap fix (MAJ-3):** RecapScreen's "Niets te doen" distinguishes *geen les geactiveerd*
 (CTA → `/leren`) from *alles gedaan voor vandaag* (positive framing + link to Ontdek).
@@ -155,8 +165,8 @@ as an app mechanism.
 
 ### Schema changes
 - **N/A** — no new tables, columns, RLS, or grants. Checklist state derives from existing
-  `learning_sessions` + lesson-reader visit + one localStorage flag; session preview is a pure read of
-  existing data.
+  `learning_sessions` (step ②) + two per-device localStorage flags (steps ① and ③); session preview is
+  a pure read of existing data.
 
 ### homelab-configs changes
 - [ ] PostgREST schema exposure — **N/A** (no new schema surface).
@@ -170,9 +180,10 @@ as an app mechanism.
 
 ## Testing
 
-- **Slice 1:** RTL — logged-out `/` renders landing; logged-in `/` renders Home; protected route while
-  logged out redirects to landing (never `auth.duin.home`) and returns to the intended destination after
-  login. Bundle-size assertion or manual check that the entry chunk didn't grow.
+- **Slice 1:** RTL — logged-out `/` renders landing; logged-in `/` renders Home; logged-out protected
+  route redirects to the landing page and returns to the `next` destination after login (extends the
+  existing `ProtectedRoute.test.tsx` regression test). Bundle-size assertion or manual check that the
+  entry chunk didn't grow.
 - **Slice 2:** RTL — rail renders 5 destinations + CTA; admin links admin-only; no `sidebar-locked`
   reads remain (grep).
 - **Slice 3:** RTL — checklist step states derive correctly from mocked account state; card absent for
