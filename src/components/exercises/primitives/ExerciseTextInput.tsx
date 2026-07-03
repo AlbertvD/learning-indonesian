@@ -22,6 +22,10 @@ export interface ExerciseTextInputProps {
   inline?: boolean
   /** Cloze: width set to max(4ch, hintedAnswerLength + 1 ch). */
   hintedAnswerLength?: number
+  /** Retry-mode exercises: "try again" line under the input after a wrong
+   *  attempt (aria-live so screen readers hear it — the attempt is otherwise
+   *  visually silent). Block mode only. */
+  retryNotice?: string
 }
 
 const STATE_CLASS: Record<InputState, string> = {
@@ -44,6 +48,7 @@ export const ExerciseTextInput = forwardRef<HTMLInputElement, ExerciseTextInputP
       label,
       inline = false,
       hintedAnswerLength,
+      retryNotice,
     },
     ref,
   ) {
@@ -86,6 +91,11 @@ export const ExerciseTextInput = forwardRef<HTMLInputElement, ExerciseTextInputP
           ].join(' ')}
           style={inlineStyle}
         />
+        {!inline && (
+          <div role="status" aria-live="polite" className={classes.retryNotice}>
+            {retryNotice}
+          </div>
+        )}
       </>
     )
   },

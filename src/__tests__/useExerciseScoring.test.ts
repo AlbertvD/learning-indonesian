@@ -115,6 +115,66 @@ describe('useExerciseScoring — retry + gated configs', () => {
     expect(result.current.phase).toBe('answered-wrong')
   })
 
+  it('wrong retry keeps the typed response and shows the wrong state until edited', () => {
+    // 2026-07-03 owner report: the input was cleared + reset to idle on a wrong
+    // retry attempt — visually identical to "the grader ignored my answer".
+    const { result } = renderHook(() => useExerciseScoring<string>({
+      mode: 'typed',
+      checkCorrect: () => wrong,
+      onAnswer: vi.fn(),
+      allowRetry: true,
+      maxFailures: 2,
+    }))
+    act(() => { result.current.setResponse('mijn foute zin') })
+    act(() => { result.current.submit() })
+    expect(result.current.phase).toBe('wrong-retry')
+    expect(result.current.response).toBe('mijn foute zin')
+    expect(result.current.inputState).toBe('wrong')
+    // Editing clears the wrong state so the learner sees a fresh attempt.
+    act(() => { result.current.setResponse('mijn foute zin 2') })
+    expect(result.current.inputState).toBe('idle')
+  })
+
+  it('correct after a failed retry commits as fuzzy (qualified success)', () => {
+    // 2026-07-03 owner decision: needing a retry = weaker recall — commit as
+    // fuzzy so the player re-drills it and FSRS rates it Hard, not Good.
+    let attempt = 0
+    const onAnswer = vi.fn()
+    const { result } = renderHook(() => useExerciseScoring<string>({
+      mode: 'typed',
+      checkCorrect: () => (attempt === 0 ? wrong : correct),
+      onAnswer,
+      allowRetry: true,
+      maxFailures: 2,
+    }))
+    act(() => { result.current.setResponse('fout') })
+    act(() => { result.current.submit() })
+    attempt = 1
+    act(() => { result.current.setResponse('goed') })
+    act(() => { result.current.submit() })
+    expect(result.current.phase).toBe('answered-fuzzy')
+    expect(onAnswer).toHaveBeenCalledWith(expect.objectContaining({ outcome: 'fuzzy', failureCount: 1 }))
+  })
+
+  it('first-try correct still commits as correct in retry mode', async () => {
+    vi.useFakeTimers()
+    const onAnswer = vi.fn()
+    const { result } = renderHook(() => useExerciseScoring<string>({
+      mode: 'typed',
+      checkCorrect: () => correct,
+      onAnswer,
+      allowRetry: true,
+      maxFailures: 2,
+      correctDelayMs: 100,
+    }))
+    act(() => { result.current.setResponse('goed') })
+    act(() => { result.current.submit() })
+    act(() => { vi.advanceTimersByTime(150) })
+    expect(result.current.phase).toBe('answered-correct')
+    expect(onAnswer).toHaveBeenCalledWith(expect.objectContaining({ outcome: 'correct' }))
+    vi.useRealTimers()
+  })
+
   it('gate=false blocks submit with dispatch', () => {
     let gateOpen = false
     const config: ScoringConfig<string> = {

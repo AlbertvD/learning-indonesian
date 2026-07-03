@@ -161,7 +161,11 @@ export function ExerciseFeedback(props: ExerciseFeedbackProps) {
   const shownVariants = acceptedVariants?.filter(v => v !== correctAnswer.text)
 
   // Fuzzy-typed diff-pair: collapses userAnswer + correctAnswer into one card.
-  const showDiffPair = outcome === 'fuzzy' && (userAnswer?.role === 'typed')
+  // Skipped when the texts are identical — a retried-correct commits as fuzzy
+  // with the user's (correct) answer, and an X → X pair would be nonsense.
+  const showDiffPair = outcome === 'fuzzy'
+    && (userAnswer?.role === 'typed')
+    && userAnswer?.text !== correctAnswer.text
 
   return (
     <section role="region" aria-label="Feedback" className={classes.root}>

@@ -96,6 +96,17 @@
     border-color: var(--warning);
   }
 
+  /* Retry-mode "try again" line. The element stays mounted (aria-live region
+     must exist before its content changes to announce), so empty = no height. */
+  .retryNotice {
+    margin-top: 6px;
+    font-size: var(--ex-fs-chrome);
+    color: var(--ex-wrong-fg);
+  }
+  .retryNotice:empty {
+    display: none;
+  }
+
   .srOnly {
     position: absolute;
     width: 1px;
