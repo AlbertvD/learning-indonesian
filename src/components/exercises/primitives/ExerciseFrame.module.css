@@ -5,7 +5,6 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: var(--ex-pad-y) var(--ex-pad-x);
     width: 100%;
   }
 
@@ -43,7 +42,6 @@
        ExerciseOption's padding !important). */
     position: relative;
     margin-top: var(--ex-zone-gap) !important;
-    padding-bottom: max(0px, env(safe-area-inset-bottom));
   }
 
   /* No longer needed — the footer is in normal flow, not a scroll overlay. */
@@ -68,7 +66,6 @@
 
   @container exercise (min-width: 769px) {
     .root {
-      padding: 24px var(--ex-pad-x);
       /* Mobile pad-y is tighter via token; desktop keeps its original breathing. */
     }
     .content {

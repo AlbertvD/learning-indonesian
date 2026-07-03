@@ -11,7 +11,6 @@
   }
 
   .sheetBody {
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
 
   /* Textarea gets .exerciseInput class from primitives/global.css for

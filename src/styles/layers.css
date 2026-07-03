@@ -4,7 +4,14 @@
    (via JS import in main.tsx) — before @mantine/core/styles.css — so the
    declaration wins. `exercises` always beats `mantine` in the cascade.
 
+   `base` (added 2026-07-03) holds the global reset from index.css: an
+   UNLAYERED reset beats every layered rule regardless of specificity, which
+   silently zeroed all margins/paddings authored in @layer exercises (the
+   dead-margins bug class — see PR #341). In `base`, the reset loses to the
+   layers above it, as a reset should. All previously-dead declarations were
+   deleted in the same change, so rendering is unchanged.
+
    See docs/plans/2026-04-23-exercise-framework-design.md §5.5
 ───────────────────────────────────────────────────────────────────────────── */
 
-@layer mantine, exercises;
+@layer base, mantine, exercises;
