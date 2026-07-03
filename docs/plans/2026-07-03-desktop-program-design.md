@@ -1,5 +1,6 @@
 ---
-status: approved
+status: implementing
+implementation: PR #345 (slice 1 — landing page); slices 2-4 pending
 reviewed_by: [architect]   # APPROVE-WITH-CHANGES 2026-07-03; C1 (CRIT-1 already fixed on main), C2 (ProfileMenu carries lang/logout not admin links), C3 (checklist step-1 derivation) all folded in inline. No data-model touch → no data-architect needed.
 supersedes: []
 ---

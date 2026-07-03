@@ -1,0 +1,583 @@
+/* src/pages/Landing.module.css — public marketing landing page.
+ *
+ * The one sanctioned exception to the page framework (design plan §Grounding):
+ * a marketing surface with its own layout, lazy-loaded, LIGHT-ONLY regardless
+ * of the app color scheme — so its warm-paper palette is scoped here instead
+ * of living in the theme-varying cssVariablesResolver blocks. Shared brand
+ * constants (--rail-*, --font-display) come from main.tsx. When slice 2/3
+ * retune the app themes to the warm direction, these locals collapse into the
+ * global tokens.
+ */
+
+.landing {
+  --land-paper: #fbf8f2;
+  --land-paper-2: #f4ede1;
+  --land-card: #ffffff;
+  --land-ink: #1e2a25;
+  --land-ink-2: #45534b;
+  --land-muted: #77857b;
+  --land-line: #e7dece;
+  --land-line-soft: #efe8da;
+  --land-accent: #c64a26;
+  --land-accent-deep: #a63b1c;
+  --land-accent-ink: #fcf3ed;
+  --land-gold: #be8836;
+  --land-sage: #6e9384;
+  --land-shadow-lift:
+    0 2px 4px rgba(30, 42, 37, 0.05), 0 30px 60px -30px rgba(30, 42, 37, 0.4);
+
+  min-height: 100vh; /* skip-check: landing is the sanctioned outside-the-page-framework marketing surface (design plan §Grounding) — it owns its own full-height ground */
+  min-height: 100dvh; /* skip-check: dvh refinement of the line above */
+  background: var(--land-paper);
+  color: var(--land-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.serif {
+  font-family: var(--font-display);
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+/* ---------- buttons & links ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  padding: 11px 20px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  white-space: nowrap;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--land-accent-deep);
+  outline-offset: 2px;
+}
+.btnFill {
+  background: var(--land-accent);
+  color: var(--land-accent-ink);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 10px 22px -12px rgba(198, 74, 38, 0.9);
+}
+.btnFill:hover {
+  background: var(--land-accent-deep);
+  transform: translateY(-1px);
+}
+.btnLg {
+  padding: 14px 26px;
+  font-size: 15px;
+}
+.linkQuiet {
+  color: var(--land-ink);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+}
+.linkQuiet:hover {
+  border-bottom-color: var(--land-ink);
+}
+
+/* ---------- wordmark ---------- */
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: inherit;
+  text-decoration: none;
+}
+.wordmark .mark {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  color: var(--land-accent);
+}
+.wordmark .mark svg {
+  display: block;
+}
+.wordmark .name {
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* ---------- header ---------- */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 56px;
+  border-bottom: 1px solid var(--land-line-soft);
+}
+.headActions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 64px;
+  padding: 84px 56px 76px;
+  align-items: center;
+}
+.heroEyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--land-accent-deep);
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 26px;
+}
+.heroEyebrow::before {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: var(--land-accent);
+}
+.hero h1 {
+  font-size: clamp(38px, 5.5vw, 62px);
+  line-height: 1.02;
+  margin: 0 0 24px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--land-accent-deep);
+}
+.heroSub {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--land-ink-2);
+  max-width: 42ch;
+  margin: 0 0 36px;
+}
+.heroCtas {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ---------- flashcard specimen deck ---------- */
+
+.deck {
+  position: relative;
+  margin: 8px 0 8px auto;
+  max-width: 380px;
+}
+.deckBack {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: var(--land-card);
+  border: 1px solid var(--land-line);
+}
+.deckBack1 {
+  transform: translate(14px, 18px) rotate(2.5deg);
+  opacity: 0.55;
+}
+.deckBack2 {
+  transform: translate(26px, 34px) rotate(4.5deg);
+  opacity: 0.3;
+}
+.spec {
+  position: relative;
+  background: var(--land-card);
+  border: 1px solid var(--land-line);
+  border-radius: 18px;
+  padding: 30px 32px 26px;
+  box-shadow: var(--land-shadow-lift);
+}
+.specTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--land-muted);
+}
+.specTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.specTag i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--land-accent);
+  display: inline-block;
+}
+.specCount {
+  font-variant-numeric: tabular-nums;
+}
+.specWord {
+  font-size: 58px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: 20px 0 8px;
+}
+.specPhon {
+  font-size: 14px;
+  color: var(--land-muted);
+  font-style: italic;
+}
+.specRule {
+  height: 1px;
+  background: var(--land-line);
+  margin: 22px 0;
+}
+.specGloss {
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+.specEx {
+  font-size: 14px;
+  color: var(--land-ink-2);
+  line-height: 1.5;
+}
+.specEx .id {
+  font-style: italic;
+  color: var(--land-ink);
+}
+.specEx .tr {
+  display: block;
+  color: var(--land-muted);
+}
+.specFoot {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--land-line);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--land-sage);
+  font-weight: 600;
+}
+
+/* ---------- section chrome ---------- */
+
+.section {
+  padding: 0 56px;
+}
+.sectionAiry {
+  padding-top: 8px;
+  padding-bottom: 76px;
+}
+.lead {
+  max-width: 60ch;
+  margin-bottom: 40px;
+}
+.leadKicker {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--land-muted);
+}
+.leadTitle {
+  font-size: clamp(26px, 3.4vw, 34px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 12px 0 0;
+}
+
+/* ---------- how it works — editorial numbered columns ---------- */
+
+.flow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 44px;
+  border-top: 1px solid var(--land-ink);
+  padding-top: 8px;
+}
+.flowCol {
+  padding-top: 24px;
+}
+.flowIdx {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--land-accent-deep);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+.flowCol h3 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 14px 0 8px;
+}
+.flowCol p {
+  font-size: 15px;
+  color: var(--land-ink-2);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ---------- feature grid — hairline-divided spec table ---------- */
+
+.grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--land-line);
+}
+.g4 {
+  padding: 30px 26px 30px 0;
+  border-left: 1px solid var(--land-line);
+}
+.g4:first-child {
+  border-left: none;
+}
+.g4:not(:first-child) {
+  padding-left: 26px;
+}
+.g4Ic {
+  width: 34px;
+  height: 34px;
+  color: var(--rail-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.g4 h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 5px;
+  letter-spacing: -0.005em;
+}
+.g4 p {
+  font-size: 14px;
+  color: var(--land-ink-2);
+  margin: 0;
+  line-height: 1.55;
+}
+.g4Bar {
+  margin-top: 12px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--land-paper-2);
+  overflow: hidden;
+}
+.g4Bar > i {
+  display: block;
+  height: 100%;
+  width: 64%;
+  background: var(--land-gold);
+  border-radius: 3px;
+}
+.g4BarCap {
+  font-size: 12px;
+  color: var(--land-muted);
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- invite band ---------- */
+
+.invite {
+  position: relative;
+  margin: 84px 56px 0;
+  background: var(--rail-surface);
+  color: var(--rail-ink);
+  border-radius: 20px;
+  padding: 52px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  overflow: hidden;
+}
+.invite::after {
+  content: '';
+  position: absolute;
+  right: -80px;
+  top: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 1px solid var(--rail-hairline);
+  box-shadow: 0 0 0 40px rgba(237, 231, 215, 0.03);
+}
+.inviteTxt {
+  position: relative;
+  max-width: 54ch;
+}
+.inviteEyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--land-gold);
+  margin-bottom: 14px;
+}
+.invite h2 {
+  font-size: clamp(24px, 3vw, 30px);
+  font-weight: 600;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+.invite p {
+  margin: 0;
+  color: var(--rail-ink-muted);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+.invite .btnFill {
+  position: relative;
+  flex: none;
+}
+
+/* ---------- footer ---------- */
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 28px 56px;
+  margin-top: 40px;
+  border-top: 1px solid var(--land-line);
+  font-size: 13.5px;
+  color: var(--land-muted);
+}
+.footLinks {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+.footLinks a {
+  color: var(--land-ink-2);
+  text-decoration: none;
+}
+.footLinks a:hover {
+  color: var(--land-ink);
+}
+.langSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--land-line);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.langSwitch button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: var(--land-muted);
+}
+.langSwitch button[aria-pressed='true'] {
+  color: var(--land-ink);
+  font-weight: 700;
+}
+.langSwitch button:focus-visible {
+  outline: 2px solid var(--land-accent-deep);
+  outline-offset: 2px;
+}
+
+/* ---------- responsive (the mockup framed desktop only; a logged-out
+   phone visit lands here too, so collapse gracefully) ---------- */
+
+@media (max-width: 900px) {
+  .head,
+  .section,
+  .foot {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 56px 24px 56px;
+  }
+  .deck {
+    margin: 0 auto;
+  }
+  .flow {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .grid4 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .g4:nth-child(odd) {
+    border-left: none;
+    padding-left: 0;
+  }
+  .g4:nth-child(even) {
+    padding-left: 26px;
+  }
+  .invite {
+    margin: 64px 24px 0;
+    padding: 36px 28px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .grid4 {
+    grid-template-columns: 1fr;
+  }
+  .g4 {
+    border-left: none;
+    padding-left: 0;
+  }
+  .g4:not(:first-child) {
+    padding-left: 0;
+    border-top: 1px solid var(--land-line-soft);
+  }
+  .headActions .linkQuiet {
+    display: none;
+  }
+  .specWord {
+    font-size: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+  .btnFill:hover {
+    transform: none;
+  }
+}

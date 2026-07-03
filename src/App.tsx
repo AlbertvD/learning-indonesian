@@ -8,6 +8,7 @@ import { PwaUpdatePrompt } from '@/components/PwaUpdatePrompt'
 import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
 import { Dashboard } from '@/pages/Dashboard'
+import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 
 // Lazy-loaded routes (less frequently visited pages, plus the heavy
@@ -34,6 +35,7 @@ const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ de
 const DesignLab = lazy(() => import('@/pages/admin/DesignLab').then(m => ({ default: m.DesignLab })))
 const PageLab = lazy(() => import('@/pages/admin/PageLab').then(m => ({ default: m.PageLab })))
 const Privacy = lazy(() => import('@/pages/Privacy').then(m => ({ default: m.Privacy })))
+const Landing = lazy(() => import('@/pages/Landing').then(m => ({ default: m.Landing })))
 
 // ─── Bespoke lesson pages — preview routes ────────────────────────────────────
 // /lesson/:lessonId resolves to the bespoke page when one is registered (see
@@ -86,10 +88,21 @@ function NotFound() {
 }
 
 function App() {
+  const { user, loading } = useAuthStore()
+  // `/` is the public landing page for logged-out visitors and Home for
+  // authenticated users (desktop program slice 1). While auth state is still
+  // resolving, keep the protected variant mounted — ProtectedRoute shows the
+  // full-page loader — so a logged-in refresh never flashes the landing page.
+  // Same dev bypass as ProtectedRoute so `/?bypassAuth=1` still previews Home.
+  const devBypass = import.meta.env.DEV
+    && new URL(window.location.href).searchParams.get('bypassAuth') === '1'
+  const showLanding = !user && !loading && !devBypass
+
   return (
     <>
       <PwaUpdatePrompt />
       <Routes>
+      {showLanding && <Route path="/" element={<LazyPage><Landing /></LazyPage>} />}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/preview" element={<LazyPage><LocalPreviewIndex /></LazyPage>} />
@@ -97,14 +110,16 @@ function App() {
       <Route path="/privacy" element={<LazyPage><Privacy /></LazyPage>} />
 
       <Route element={<Layout />}>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        {!showLanding && (
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        )}
         <Route
           path="/leren"
           element={
