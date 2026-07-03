@@ -88,6 +88,7 @@ export default function SentenceTransformationExercise({
         onChange={scoring.setResponse}
         onSubmit={scoring.submit}
         state={scoring.inputState}
+        retryNotice={scoring.phase === 'wrong-retry' ? t.session.exercise.tryAgain : undefined}
       />
     </ExerciseFrame>
   )

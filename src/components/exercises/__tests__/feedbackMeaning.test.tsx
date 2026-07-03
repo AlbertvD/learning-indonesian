@@ -94,6 +94,31 @@ describe('ExerciseFeedback — accepted-variants display dedup', () => {
   })
 })
 
+describe('ExerciseFeedback — fuzzy diff-pair with identical texts', () => {
+  it('skips the diff pair when the typed answer equals the correct answer (retried-correct)', () => {
+    // A correct answer after a failed retry commits as fuzzy — user text and
+    // correct answer are identical, so an X → X diff pair would be nonsense.
+    const { copy, continueLabel } = feedbackCopyFor('nl')
+    render(
+      <MantineProvider>
+        <ExerciseFeedback
+          outcome="fuzzy"
+          layout="grammar-reveal"
+          direction="ID→ID"
+          promptShown={{ text: 'Di pasar ada banyak sayur.', lang: 'ID', role: 'shown' }}
+          correctAnswer={{ text: 'Di pasar ada banyak sayuran.', lang: 'ID', role: 'target' }}
+          userAnswer={{ text: 'Di pasar ada banyak sayuran.', lang: 'ID', role: 'typed' }}
+          copy={copy}
+          continueLabel={continueLabel}
+          onContinue={vi.fn()}
+        />
+      </MantineProvider>
+    )
+    expect(screen.queryByText('→')).not.toBeInTheDocument()
+    expect(screen.getByText('Bijna goed')).toBeInTheDocument()
+  })
+})
+
 describe('ExerciseFeedback — meaning line in vocab-pair layout', () => {
   it('renders the meaning line when meaning is set on a vocab-pair card', () => {
     const { copy, continueLabel } = feedbackCopyFor('nl')

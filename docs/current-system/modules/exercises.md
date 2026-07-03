@@ -129,7 +129,7 @@ function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps
 | `ExercisePromptCard` | The big foreground prompt — word, sentence, or audio. | `variant='word' \| 'sentence' \| 'audio'` controls type-scale. Audio variant embeds `ExerciseAudioButton` with autoplay opt-in, plus `revealSlot` (post-answer transcript) and `revealMeta` (L1 meaning under the transcript — dictation, 2026-07-02). |
 | `ExerciseOption` | A single MCQ option button. | `state='neutral' \| 'selected' \| 'correct' \| 'incorrect' \| 'show-correct'` drives styling. `variant='word' \| 'sentence'` controls size. |
 | `ExerciseOptionGroup` | Vertical stack of options. | Pure layout container. |
-| `ExerciseTextInput` | The typed-answer input. | `state` drives border colour same as `ExerciseOption`. |
+| `ExerciseTextInput` | The typed-answer input. | `state` drives border colour same as `ExerciseOption`. `retryNotice` (block mode, aria-live) renders the "try again" line for retry-mode exercises — a wrong retry-attempt keeps the typed answer + shows the wrong state until edited (2026-07-03). |
 | `ExerciseSubmitButton` | The "Controleer" / "Check" button. | Hidden during the auto-advance fade on correct answers. |
 | `ExerciseAudioButton` | The play-prompt control. | `variant='primary' \| 'icon'` — primary is the big circular play, icon is the inline mini button. Plays via the resolved session audio map. |
 | `ExerciseHint` | Collapsible hint reveal. | Tracks reveal in `onEvent` for FSRS hint-counting. |
@@ -206,7 +206,7 @@ The player owns `onContinue` / `continueLabel` / `copy`; the adapter owns everyt
 
 ### Sibling (consumed alongside)
 
-- **`src/lib/useExerciseScoring.ts`** — the scoring hook every implementation uses. Owns the `mode='tap'`/`'typed'` state machine, latency tracking, correct/fuzzy/wrong outcome.
+- **`src/lib/useExerciseScoring.ts`** — the scoring hook every implementation uses. Owns the `mode='tap'`/`'typed'` state machine, latency tracking, correct/fuzzy/wrong outcome. In retry mode (`allowRetry`), a correct answer after ≥1 failed attempt commits as **fuzzy** (qualified success → Bijna-goed card, in-session re-drill, FSRS Hard — 2026-07-03 owner decision).
 - **`src/lib/i18n.ts`** — `translations[userLanguage]` per-locale string table for instruction copy.
 - **`src/lib/answerNormalization.ts`** — `normalizeAnswerResponse(raw)` applied at the frame boundary (`CapabilityExerciseFrame.tsx:60`) before the report ships upstream.
 - **`src/services/exerciseReviewService.ts`** — `FlagButton` writes user-flagged variants here directly.

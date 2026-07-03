@@ -148,7 +148,9 @@ function reduce<TResponse = string>(
       return {
         ...state,
         phase: 'wrong-retry',
-        response: '',
+        // Keep the typed response: clearing it made a wrong attempt look like
+        // the app silently discarded the answer (owner report 2026-07-03) —
+        // and retyping a whole sentence is hostile. The learner edits in place.
         committedResponse: action.response,
         latencyMs: action.latencyMs,
         failureCount: state.failureCount + 1,
@@ -282,6 +284,15 @@ export function useExerciseScoring<TResponse = string>(
     }
 
     if (result.isCorrect && !result.isFuzzy) {
+      // A correct answer AFTER a failed retry-attempt is a qualified success:
+      // commit as fuzzy so the player shows the Bijna-goed card, re-drills the
+      // block in-session, and FSRS rates it Hard instead of Good (owner
+      // decision 2026-07-03). Only retry-mode exercises can reach here with
+      // failureCount > 0 — everything else commits wrong on the first miss.
+      if (state.failureCount > 0) {
+        commit('fuzzy')
+        return
+      }
       // Show processing briefly to enable the correct-pulse animation, then
       // commit + advance via the delay.
       dispatch({ type: 'MARK_PROCESSING', response, latencyMs })
@@ -350,6 +361,9 @@ export function useExerciseScoring<TResponse = string>(
     state.phase === 'answered-fuzzy'   ? 'fuzzy' :
     state.phase === 'answered-wrong'   ? 'wrong' :
     state.phase === 'processing'       ? 'disabled' :
+    // Retry mode: show the wrong state on the kept answer; editing it resets
+    // the visual so the learner sees a fresh attempt.
+    state.phase === 'wrong-retry' && state.response === state.committedResponse ? 'wrong' :
     'idle'
 
   const optionState = useCallback(
