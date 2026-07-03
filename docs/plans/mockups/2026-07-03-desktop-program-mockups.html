@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kamoe Bisa — Desktop designvoorstel</title>
+<style>
+  :root {
+    --paper:      #FBF8F2;
+    --paper-2:    #F4EDE1;
+    --card:       #FFFFFF;
+    --ink:        #1E2A25;
+    --ink-2:      #45534B;
+    --muted:      #77857B;
+    --line:       #E7DECE;
+    --line-soft:  #EFE8DA;
+    --rail:       #1F3D36;
+    --rail-hi:    #274A41;
+    --rail-ink:   #EDE7D7;
+    --rail-muted: #91A89A;
+    --rail-line:  rgba(237,231,215,0.13);
+    --accent:     #C64A26;
+    --accent-deep:#A63B1C;
+    --accent-ink: #FCF3ED;
+    --accent-soft:#F5E3D7;
+    --gold:       #BE8836;
+    --sage:       #6E9384;
+    --shadow-card: 0 1px 2px rgba(30,42,37,0.04), 0 14px 34px -22px rgba(30,42,37,0.30);
+    --shadow-lift: 0 2px 4px rgba(30,42,37,0.05), 0 30px 60px -30px rgba(30,42,37,0.40);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 64px 24px 120px;
+    line-height: 1.55;
+    font-size: 15px;
+  }
+  .serif {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Charter", Georgia, "Times New Roman", serif;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  .board { max-width: 1160px; margin: 0 auto; }
+
+  /* ---------- board chrome ---------- */
+  .board-head { max-width: 60ch; margin-bottom: 8px; }
+  .kicker {
+    text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; font-weight: 700;
+    color: var(--accent-deep);
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .kicker::before { content: ""; width: 22px; height: 1px; background: var(--accent); display: inline-block; }
+  .board-head h1 { font-size: 34px; line-height: 1.12; margin: 16px 0 12px; font-weight: 600; letter-spacing: -0.015em; }
+  .board-head p { color: var(--ink-2); margin: 0; font-size: 16px; max-width: 56ch; }
+
+  .screen-label { display: flex; align-items: baseline; gap: 16px; margin: 72px 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .screen-label .num { font: 700 13px/1 ui-monospace, "SF Mono", Menlo, monospace; color: var(--accent-deep); letter-spacing: 0.08em; }
+  .screen-label h2 { font-size: 18px; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+  .screen-label .note { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+  /* ---------- browser frame ---------- */
+  .frame-scroll { overflow-x: auto; border-radius: 14px; }
+  .frame {
+    min-width: 1000px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow-lift); overflow: hidden;
+  }
+  .frame-bar { display: flex; align-items: center; gap: 8px; padding: 11px 16px; background: var(--paper-2); border-bottom: 1px solid var(--line); }
+  .dot { width: 11px; height: 11px; border-radius: 50%; background: #D8CDB8; }
+  .dot:nth-child(1){ background:#E0A594; } .dot:nth-child(2){ background:#E0CB94; } .dot:nth-child(3){ background:#A9C4A0; }
+  .url { margin-left: 12px; font: 12px/1 ui-monospace, "SF Mono", Menlo, monospace; color: var(--muted); background: var(--card); border: 1px solid var(--line); border-radius: 7px; padding: 5px 14px; }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border-radius: 10px; font-size: 14px; font-weight: 600; letter-spacing: 0.005em;
+    padding: 11px 20px; border: 1px solid transparent; cursor: pointer;
+    text-decoration: none; color: inherit; transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:focus-visible { outline: 2px solid var(--accent-deep); outline-offset: 2px; }
+  .btn-fill { background: var(--accent); color: var(--accent-ink); box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 10px 22px -12px rgba(198,74,38,0.9); }
+  .btn-fill:hover { background: var(--accent-deep); transform: translateY(-1px); }
+  .btn-line { border-color: var(--line); background: transparent; color: var(--ink); }
+  .btn-line:hover { border-color: var(--ink-2); }
+  .btn-lg { padding: 14px 26px; font-size: 15px; }
+  .btn-sm { padding: 8px 15px; font-size: 13px; border-radius: 8px; }
+  .link-quiet { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 14px; border-bottom: 1px solid transparent; padding-bottom: 1px; }
+  .link-quiet:hover { border-bottom-color: var(--ink); }
+
+  /* ---------- wordmark ---------- */
+  .wordmark { display: inline-flex; align-items: center; gap: 11px; }
+  .wordmark .mark { width: 30px; height: 30px; flex: none; color: var(--accent); }
+  .wordmark .mark svg { display: block; }
+  .wordmark .name { font-weight: 600; font-size: 20px; letter-spacing: -0.02em; }
+
+  /* ================= SCREEN 01 — LANDING ================= */
+  .land { background: var(--paper); }
+  .land-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 56px; border-bottom: 1px solid var(--line-soft); }
+  .land-head .actions { display: flex; gap: 20px; align-items: center; }
+
+  .hero { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 64px; padding: 84px 56px 76px; align-items: center; }
+  .hero-eyebrow { text-transform: uppercase; letter-spacing: 0.16em; font-size: 12px; font-weight: 700; color: var(--accent-deep); display: inline-flex; align-items: center; gap: 11px; margin-bottom: 26px; }
+  .hero-eyebrow::before { content:""; width: 26px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: 62px; line-height: 1.02; margin: 0 0 24px; font-weight: 600; letter-spacing: -0.025em; }
+  .hero h1 em { font-style: italic; color: var(--accent-deep); }
+  .hero .sub { font-size: 18px; line-height: 1.6; color: var(--ink-2); max-width: 42ch; margin: 0 0 36px; }
+  .hero .ctas { display: flex; gap: 16px; align-items: center; }
+
+  /* flashcard specimen deck (the memorable moment) */
+  .deck { position: relative; margin: 8px 0 8px auto; max-width: 380px; }
+  .deck-back { position: absolute; inset: 0; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
+  .deck-back-1 { transform: translate(14px, 18px) rotate(2.5deg); opacity: 0.55; }
+  .deck-back-2 { transform: translate(26px, 34px) rotate(4.5deg); opacity: 0.30; }
+  .spec { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 30px 32px 26px; box-shadow: var(--shadow-lift); }
+  .spec-top { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--muted); }
+  .spec-tag { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; letter-spacing: 0.02em; }
+  .spec-tag i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  .spec-count { font-variant-numeric: tabular-nums; }
+  .spec-word { font-size: 58px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; margin: 20px 0 8px; }
+  .spec-phon { font-size: 14px; color: var(--muted); font-style: italic; }
+  .spec-rule { height: 1px; background: var(--line); margin: 22px 0; }
+  .spec-gloss { font-size: 26px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .spec-ex { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+  .spec-ex .id { font-style: italic; color: var(--ink); }
+  .spec-ex .tr { display: block; color: var(--muted); }
+  .spec-foot { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--sage); font-weight: 600; }
+  .spec-foot svg { color: var(--sage); }
+
+  /* section lead */
+  .lead { max-width: 60ch; margin-bottom: 40px; }
+  .lead-kicker { text-transform: uppercase; letter-spacing: 0.16em; font-size: 12px; font-weight: 700; color: var(--muted); }
+  .lead-title { font-size: 34px; line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; margin: 12px 0 0; }
+
+  .section { padding: 0 56px; }
+  .section.airy { padding-top: 8px; padding-bottom: 84px; }
+
+  /* how it works — editorial numbered columns, no boxes */
+  .flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 44px; border-top: 1px solid var(--ink); padding-top: 8px; }
+  .flow-col { padding-top: 24px; }
+  .flow-num { font-family: inherit; }
+  .flow-idx { font-size: 15px; font-weight: 700; color: var(--accent-deep); font-variant-numeric: tabular-nums; letter-spacing: 0.06em; }
+  .flow-col h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; margin: 14px 0 8px; }
+  .flow-col p { font-size: 15px; color: var(--ink-2); margin: 0; line-height: 1.6; }
+
+  /* feature grid — hairline-divided spec table, no floating cards */
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+  .g4 { padding: 30px 26px 30px 0; border-left: 1px solid var(--line); }
+  .g4:first-child { border-left: none; }
+  .g4:not(:first-child) { padding-left: 26px; }
+  .g4-ic { width: 34px; height: 34px; color: var(--rail); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+  .g4 h3 { font-size: 16px; font-weight: 600; margin: 0 0 5px; letter-spacing: -0.005em; }
+  .g4 p { font-size: 14px; color: var(--ink-2); margin: 0; line-height: 1.55; }
+  .g4-bar { margin-top: 12px; height: 5px; border-radius: 3px; background: var(--paper-2); overflow: hidden; }
+  .g4-bar > i { display: block; height: 100%; width: 64%; background: var(--gold); border-radius: 3px; }
+  .g4-bar-cap { font-size: 12px; color: var(--muted); margin-top: 6px; font-variant-numeric: tabular-nums; }
+
+  /* invite band */
+  .invite { position: relative; margin: 84px 56px 0; background: var(--rail); color: var(--rail-ink); border-radius: 20px; padding: 52px 56px; display: flex; align-items: center; justify-content: space-between; gap: 40px; overflow: hidden; }
+  .invite::after { content: ""; position: absolute; right: -80px; top: -80px; width: 320px; height: 320px; border-radius: 50%; border: 1px solid var(--rail-line); box-shadow: 0 0 0 40px rgba(237,231,215,0.03); }
+  .invite .txt { position: relative; max-width: 54ch; }
+  .invite .eyebrow { text-transform: uppercase; letter-spacing: 0.16em; font-size: 11.5px; font-weight: 700; color: var(--gold); margin-bottom: 14px; }
+  .invite h2 { font-size: 30px; font-weight: 600; margin: 0 0 10px; letter-spacing: -0.02em; }
+  .invite p { margin: 0; color: var(--rail-muted); font-size: 15.5px; line-height: 1.6; }
+  .invite .btn-fill { position: relative; flex: none; }
+
+  .land-foot { display: flex; justify-content: space-between; align-items: center; padding: 28px 56px; margin-top: 40px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--muted); }
+  .land-foot .links { display: flex; gap: 26px; align-items: center; }
+  .land-foot a { color: var(--ink-2); text-decoration: none; }
+  .land-foot a:hover { color: var(--ink); }
+  .lang-switch { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 12px; letter-spacing: 0.04em; }
+  .lang-switch b { color: var(--ink); }
+
+  /* ================= SCREEN 02/04 — APP SHELL ================= */
+  .app { display: grid; grid-template-columns: 246px 1fr; min-height: 660px; background: var(--paper); }
+  .rail {
+    background: var(--rail); color: var(--rail-ink);
+    display: flex; flex-direction: column; padding: 26px 18px 20px;
+    background-image: radial-gradient(rgba(237,231,215,0.045) 1px, transparent 1.4px);
+    background-size: 20px 20px;
+  }
+  .rail .wordmark { padding: 0 8px; margin-bottom: 26px; }
+  .rail .wordmark .mark { color: var(--gold); }
+  .rail .wordmark .name { color: var(--rail-ink); font-size: 18px; }
+  .rail-cta { background: var(--accent); color: var(--accent-ink); border: none; border-radius: 11px; padding: 13px 14px; font-size: 14.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; margin-bottom: 28px; box-shadow: 0 10px 22px -14px rgba(0,0,0,0.7); transition: background .15s; }
+  .rail-cta:hover { background: var(--accent-deep); }
+  .rail-sec { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--rail-muted); font-weight: 700; padding: 0 12px 10px; }
+  .rail-nav { display: flex; flex-direction: column; gap: 3px; }
+  .rail-nav a { position: relative; display: flex; align-items: center; gap: 13px; padding: 11px 12px; border-radius: 9px; color: var(--rail-muted); font-size: 14.5px; font-weight: 500; text-decoration: none; transition: background .15s, color .15s; }
+  .rail-nav a:hover { color: var(--rail-ink); background: rgba(237,231,215,0.06); }
+  .rail-nav a.active { background: rgba(237,231,215,0.10); color: var(--rail-ink); font-weight: 600; }
+  .rail-nav a.active::before { content: ""; position: absolute; left: -18px; top: 50%; transform: translateY(-50%); width: 3px; height: 20px; border-radius: 0 3px 3px 0; background: var(--gold); }
+  .rail-nav svg { flex: none; }
+  .rail-spacer { flex: 1; min-height: 24px; }
+  .rail-glance { border-top: 1px solid var(--rail-line); padding-top: 16px; display: flex; align-items: center; gap: 14px; }
+  .glance-streak { display: flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--rail-ink); }
+  .glance-streak .n { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .glance-goal { font-size: 12.5px; color: var(--rail-muted); }
+  .theme-toggle { margin-left: auto; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--rail-line); background: transparent; color: var(--rail-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .theme-toggle:hover { color: var(--rail-ink); border-color: rgba(237,231,215,0.28); }
+
+  .home { padding: 44px 48px; }
+  .home .greet { margin-bottom: 30px; }
+  .home .greet h1 { font-size: 32px; font-weight: 600; margin: 0 0 5px; letter-spacing: -0.02em; }
+  .home .greet p { margin: 0; color: var(--muted); font-size: 14.5px; }
+  .home-grid { display: grid; grid-template-columns: minmax(0,1.9fr) minmax(0,1fr); gap: 24px; align-items: start; }
+  .home-main, .home-side { display: flex; flex-direction: column; gap: 20px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+
+  /* the memorable moment: deep-green "today" panel */
+  .today { position: relative; background: var(--rail); color: var(--rail-ink); border: none; border-radius: 18px; padding: 32px 34px; overflow: hidden; box-shadow: var(--shadow-card);
+    background-image: radial-gradient(rgba(237,231,215,0.04) 1px, transparent 1.4px); background-size: 22px 22px; }
+  .today-label { text-transform: uppercase; letter-spacing: 0.16em; font-size: 11.5px; font-weight: 700; color: var(--gold); margin-bottom: 16px; }
+  .today-count { display: flex; align-items: baseline; gap: 12px; margin-bottom: 22px; }
+  .today-count .big { font-size: 58px; font-weight: 600; line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .today-count .lbl { font-size: 17px; color: var(--rail-ink); font-weight: 500; }
+  .compo-bar { display: flex; height: 10px; border-radius: 6px; overflow: hidden; background: rgba(237,231,215,0.10); margin-bottom: 16px; }
+  .compo-bar > span { display: block; height: 100%; }
+  .compo-legend { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-bottom: 28px; }
+  .compo-legend .lg { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--rail-ink); }
+  .compo-legend .lg i { width: 9px; height: 9px; border-radius: 3px; flex: none; }
+  .compo-legend .lg b { font-variant-numeric: tabular-nums; }
+  .compo-legend .lg span { color: var(--rail-muted); }
+  .c-herhaling { background: #C6D3C7; } .c-nieuw { background: var(--accent); } .c-gram { background: var(--gold); } .c-luister { background: var(--sage); }
+  .today .btn-fill { box-shadow: 0 10px 24px -12px rgba(0,0,0,0.6); }
+
+  /* row cards */
+  .row-card { display: flex; align-items: center; gap: 18px; transition: border-color .15s, box-shadow .15s; }
+  .row-card:hover { border-color: var(--line); box-shadow: var(--shadow-card); }
+  .row-card .ic { width: 44px; height: 44px; border-radius: 12px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--paper-2); color: var(--rail); }
+  .row-card .t { flex: 1; min-width: 0; }
+  .row-card h3 { font-size: 15px; margin: 0 0 3px; font-weight: 600; letter-spacing: -0.005em; }
+  .row-card p { font-size: 13.5px; color: var(--muted); margin: 0; }
+  .row-card .go { font-size: 13.5px; font-weight: 600; color: var(--accent-deep); white-space: nowrap; }
+
+  /* side cards */
+  .side-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); font-weight: 700; margin: 0 0 16px; }
+  .streak-line { display: flex; align-items: baseline; gap: 11px; }
+  .streak-line .big { font-size: 40px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .streak-line .u { color: var(--muted); font-size: 14px; }
+  .mini-bars { display: flex; align-items: flex-end; gap: 7px; height: 60px; margin-top: 20px; }
+  .mini-bars i { display: block; flex: 1; border-radius: 4px 4px 0 0; background: var(--paper-2); }
+  .mini-bars i.hi { background: var(--gold); }
+  .mini-cap { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 8px; letter-spacing: 0.02em; }
+  .pulse-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; padding: 11px 0; border-bottom: 1px solid var(--line-soft); }
+  .pulse-row:last-of-type { border-bottom: none; }
+  .pulse-row .lbl { color: var(--ink-2); }
+  .pulse-row .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .pulse-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 13.5px; font-weight: 600; color: var(--accent-deep); text-decoration: none; }
+  .pulse-link:hover { gap: 9px; }
+
+  /* ================= SCREEN 03 — checklist stepper ================= */
+  .check-card { padding: 32px 34px; }
+  .check-head .sh-label { text-transform: uppercase; letter-spacing: 0.16em; font-size: 11.5px; color: var(--accent-deep); font-weight: 700; margin-bottom: 12px; }
+  .check-head h2 { font-size: 26px; font-weight: 600; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .check-head > p { color: var(--ink-2); font-size: 15px; margin: 0 0 28px; max-width: 50ch; }
+  .stepper { position: relative; }
+  .stepper::before { content: ""; position: absolute; left: 17px; top: 18px; bottom: 26px; width: 2px; background: var(--line); }
+  .step-item { position: relative; display: flex; align-items: flex-start; gap: 18px; padding: 4px 0 26px; }
+  .step-item:last-child { padding-bottom: 0; }
+  .node { position: relative; z-index: 1; width: 36px; height: 36px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; background: var(--paper); border: 2px solid var(--line); color: var(--muted); }
+  .step-item.done .node { background: var(--rail); border-color: var(--rail); color: var(--rail-ink); }
+  .step-item.current .node { background: var(--card); border-color: var(--accent); color: var(--accent-deep); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .step-body { flex: 1; padding-top: 3px; }
+  .step-body h3 { font-size: 16px; margin: 0; font-weight: 600; letter-spacing: -0.005em; }
+  .step-item.done .step-body h3 { color: var(--muted); font-weight: 500; }
+  .step-body p { font-size: 13.5px; color: var(--muted); margin: 4px 0 0; max-width: 44ch; }
+  .step-item.current { background: var(--paper); border-radius: 14px; margin: -4px -14px 22px; padding: 16px 14px 18px; }
+  .step-item.current::after { display: none; }
+  .step-action { margin-left: auto; align-self: center; }
+
+  /* ================= dark mode ================= */
+  .dark {
+    --paper:    #141C18;
+    --paper-2:  #1B2420;
+    --card:     #1D2822;
+    --ink:      #ECE7D8;
+    --ink-2:    #B4C0B7;
+    --muted:    #849A8D;
+    --line:     #2B3731;
+    --line-soft:#242F29;
+    --accent-deep: #E5865C;
+    --accent-soft: #3A2A21;
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 16px 34px -22px rgba(0,0,0,0.6);
+  }
+  .dark .row-card .ic { background: #263029; color: #A9C4B4; }
+  .dark .mini-bars i { background: #2B372F; }
+  .dark .mini-bars i.hi { background: var(--gold); }
+  .dark .rail { box-shadow: 1px 0 0 rgba(237,231,215,0.05); }
+  .dark .card { box-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+
+  .footnote { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-2); max-width: 72ch; line-height: 1.65; }
+  .footnote b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="board">
+
+  <header class="board-head">
+    <span class="kicker">Kamoe Bisa · desktopprogramma</span>
+    <h1 class="serif">Warm-editorial designvoorstel</h1>
+    <p>Vier schermen uit het programma: de landingspagina, de app-shell met Home als vertrekpunt, de eerste-gebruik-variant en de donkere modus. Papier &amp; inkt als grond, diep batikgroen voor de rail, tamarinde als enige actiekleur.</p>
+  </header>
+
+  <!-- ================= SCREEN 01 ================= -->
+  <div class="screen-label">
+    <span class="num">01</span>
+    <h2>Landingspagina</h2>
+    <span class="note">uitgelogd bezoek aan / — lazy geladen chunk</span>
+  </div>
+  <div class="frame-scroll"><div class="frame">
+    <div class="frame-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">kamoebisa.nl</span></div>
+    <div class="land">
+
+      <div class="land-head">
+        <span class="wordmark serif">
+          <span class="mark">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <circle cx="16" cy="16" r="6.5" fill="currentColor"/>
+              <g stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <line x1="16" y1="2.5" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="29.5"/>
+                <line x1="2.5" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="29.5" y2="16"/>
+                <line x1="6.4" y1="6.4" x2="8.9" y2="8.9"/><line x1="23.1" y1="23.1" x2="25.6" y2="25.6"/>
+                <line x1="6.4" y1="25.6" x2="8.9" y2="23.1"/><line x1="23.1" y1="8.9" x2="25.6" y2="6.4"/>
+              </g>
+            </svg>
+          </span>
+          <span class="name">Kamoe Bisa</span>
+        </span>
+        <span class="actions">
+          <a class="link-quiet" href="#" onclick="return false">Inloggen</a>
+          <a class="btn btn-fill" href="#" onclick="return false">Aanmelden met code</a>
+        </span>
+      </div>
+
+      <div class="hero">
+        <div>
+          <span class="hero-eyebrow">Alleen op uitnodiging</span>
+          <h1 class="serif">Leer Indonesisch dat<br><em>blijft hangen</em>.</h1>
+          <p class="sub">Echte lessen met grammatica, dialogen en audio — en een dagelijkse sessie die precies weet wanneer je een woord bijna vergeet, en het dán terugbrengt.</p>
+          <div class="ctas">
+            <a class="btn btn-fill btn-lg" href="#" onclick="return false">Ik heb een uitnodigingscode</a>
+            <a class="link-quiet" href="#" onclick="return false">Al een account? Inloggen&nbsp;→</a>
+          </div>
+        </div>
+
+        <div class="deck" role="img" aria-label="Een woordkaart uit de app: pasar betekent de markt">
+          <div class="deck-back deck-back-2"></div>
+          <div class="deck-back deck-back-1"></div>
+          <div class="spec">
+            <div class="spec-top">
+              <span class="spec-tag"><i></i> Woordenschat · markt</span>
+              <span class="spec-count">nr. 412</span>
+            </div>
+            <div class="spec-word serif">pasar</div>
+            <div class="spec-phon">/ˈpa.sar/ · zelfstandig naamwoord</div>
+            <div class="spec-rule"></div>
+            <div class="spec-gloss serif">de markt</div>
+            <div class="spec-ex"><span class="id">“Saya pergi ke pasar.”</span><span class="tr">Ik ga naar de markt.</span></div>
+            <div class="spec-foot">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/></svg>
+              Volgende herhaling over 3 dagen
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section airy" style="padding-bottom:76px">
+        <div class="lead">
+          <span class="lead-kicker">Zo werkt het</span>
+          <h2 class="lead-title serif">Lezen, oefenen, onthouden — elke dag een beetje.</h2>
+        </div>
+        <div class="flow">
+          <div class="flow-col">
+            <span class="flow-idx serif">01</span>
+            <h3>Lees een les</h3>
+            <p>Grammatica helder uitgelegd, met dialogen uit het echte leven.</p>
+          </div>
+          <div class="flow-col">
+            <span class="flow-idx serif">02</span>
+            <h3>Oefen één sessie per dag</h3>
+            <p>De app plant slim: woorden die je bijna vergeet komen terug, wat je al kent blijft weg.</p>
+          </div>
+          <div class="flow-col">
+            <span class="flow-idx serif">03</span>
+            <h3>Zie je woordenschat groeien</h3>
+            <p>Volg per woord hoe goed je het kent — van eerste kennismaking tot blijvend gekend.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" style="padding-bottom:8px">
+        <div class="lead" style="margin-bottom:28px">
+          <span class="lead-kicker">Wat je krijgt</span>
+        </div>
+        <div class="grid4">
+          <div class="g4">
+            <span class="g4-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H6a2 2 0 0 0-2 2z"/><path d="M4 20.5A1.5 1.5 0 0 1 5.5 19H19"/></svg></span>
+            <h3>30 lessen, A1–B1</h3>
+            <p>Een doorlopende cursus, van eerste woorden tot vlot lezen.</p>
+          </div>
+          <div class="g4">
+            <span class="g4-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></span>
+            <h3>Podcasts &amp; verhalen</h3>
+            <p>Luister en lees op jouw niveau, met meelezen per zin.</p>
+          </div>
+          <div class="g4">
+            <span class="g4-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M6 8h12"/><circle cx="7" cy="15" r="2.4"/><circle cx="17" cy="15" r="2.4"/></svg></span>
+            <h3>Uitspraak &amp; woordbouw</h3>
+            <p>Train de affixen en klanken — de motor van het Indonesisch.</p>
+          </div>
+          <div class="g4">
+            <span class="g4-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V13"/><path d="M10 20V6"/><path d="M16 20v-9"/><path d="M22 20H2"/></svg></span>
+            <h3>Voortgang per woord</h3>
+            <p>Zie hoeveel je kent van de 1000 meest gebruikte woorden.</p>
+            <div class="g4-bar"><i></i></div>
+            <div class="g4-bar-cap">640 / 1000 gekend</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="invite">
+        <div class="txt">
+          <div class="eyebrow">Besloten preview</div>
+          <h2 class="serif">Kamoe Bisa is nu op uitnodiging</h2>
+          <p>We bouwen de app samen met een kleine groep leerders. Heb je een code gekregen? Dan kun je meteen aan de slag.</p>
+        </div>
+        <a class="btn btn-fill btn-lg" href="#" onclick="return false">Ik heb een uitnodigingscode</a>
+      </div>
+
+      <div class="land-foot">
+        <span>© 2026 Kamoe Bisa · gemaakt in Nederland</span>
+        <span class="links">
+          <a href="#" onclick="return false">Privacy</a>
+          <a href="#" onclick="return false">Contact</a>
+          <span class="lang-switch"><b>NL</b> · EN</span>
+        </span>
+      </div>
+
+    </div>
+  </div></div>
+
+  <!-- ================= SCREEN 02 ================= -->
+  <div class="screen-label">
+    <span class="num">02</span>
+    <h2>App-shell + Home als vertrekpunt</h2>
+    <span class="note">vaste rail 246px · groen "Vandaag"-paneel als focus</span>
+  </div>
+  <div class="frame-scroll"><div class="frame">
+    <div class="frame-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">kamoebisa.nl/home</span></div>
+    <div class="app">
+
+      <nav class="rail" aria-label="Hoofdnavigatie">
+        <span class="wordmark serif">
+          <span class="mark"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="6.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="16" y1="2.5" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="29.5"/><line x1="2.5" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="29.5" y2="16"/><line x1="6.4" y1="6.4" x2="8.9" y2="8.9"/><line x1="23.1" y1="23.1" x2="25.6" y2="25.6"/><line x1="6.4" y1="25.6" x2="8.9" y2="23.1"/><line x1="23.1" y1="8.9" x2="25.6" y2="6.4"/></g></svg></span>
+          <span class="name">Kamoe Bisa</span>
+        </span>
+
+        <button class="rail-cta"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Start sessie</button>
+
+        <div class="rail-sec">Menu</div>
+        <div class="rail-nav">
+          <a class="active" href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg> Home</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19.5A2 2 0 0 1 6 17.5h13"/></svg> Leren</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 6-4 2 2-6z"/></svg> Ontdek</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-6"/><path d="M22 20H2"/></svg> Voortgang</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-3.5 3-6 7-6s7 2.5 7 6"/></svg> Profiel</a>
+        </div>
+
+        <div class="rail-spacer"></div>
+
+        <div class="rail-glance">
+          <span class="glance-streak"><svg width="14" height="14" viewBox="0 0 24 24" fill="#BE8836" aria-hidden="true"><path d="M12 2s5 4.5 5 9.5a5 5 0 0 1-10 0c0-1.5.5-3 1.4-4.3.3 1 .9 1.8 1.6 2.3C10 7 10.7 4 12 2z"/></svg> <span class="n">12</span> dagen</span>
+          <span class="glance-goal">doel ✓</span>
+          <button class="theme-toggle" title="Thema wisselen" aria-label="Thema wisselen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        </div>
+      </nav>
+
+      <main class="home">
+        <div class="greet">
+          <h1 class="serif">Selamat pagi, Albert</h1>
+          <p>Donderdag 3 juli · je sessie staat klaar</p>
+        </div>
+
+        <div class="home-grid">
+          <div class="home-main">
+            <div class="today">
+              <div class="today-label">Vandaag</div>
+              <div class="today-count">
+                <span class="big serif">24</span>
+                <span class="lbl">oefeningen staan klaar</span>
+              </div>
+              <div class="compo-bar" aria-hidden="true">
+                <span class="c-herhaling" style="width:50%"></span>
+                <span class="c-nieuw" style="width:25%"></span>
+                <span class="c-gram" style="width:16.6%"></span>
+                <span class="c-luister" style="width:8.4%"></span>
+              </div>
+              <div class="compo-legend">
+                <span class="lg"><i class="c-herhaling"></i><b>12</b>&nbsp;<span>herhalingen</span></span>
+                <span class="lg"><i class="c-nieuw"></i><b>6</b>&nbsp;<span>nieuw</span></span>
+                <span class="lg"><i class="c-gram"></i><b>4</b>&nbsp;<span>grammatica</span></span>
+                <span class="lg"><i class="c-luister"></i><b>2</b>&nbsp;<span>luisteren</span></span>
+              </div>
+              <button class="btn btn-fill btn-lg"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Start sessie · ± 8 min</button>
+            </div>
+
+            <div class="card row-card">
+              <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19.5A2 2 0 0 1 6 17.5h13"/></svg></span>
+              <span class="t"><h3>Verder met Les 7 · Di pasar</h3><p>Grammatica: vraagwoorden — nog 2 onderdelen te lezen</p></span>
+              <span class="go">Verder lezen →</span>
+            </div>
+
+            <div class="card row-card">
+              <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v2"/><path d="M12 19v2"/><path d="m5.5 5.5 1.5 1.5"/><path d="m17 17 1.5 1.5"/><path d="M3 12h2"/><path d="M19 12h2"/><circle cx="12" cy="12" r="4.5"/></svg></span>
+              <span class="t"><h3>Studietip</h3><p>Luister vandaag de podcast bij Les 6 — herhaling in een andere vorm werkt het best.</p></span>
+            </div>
+          </div>
+
+          <div class="home-side">
+            <div class="card">
+              <h3 class="side-title">Streak</h3>
+              <div class="streak-line">
+                <span class="big serif">12</span><span class="u">dagen op rij</span>
+              </div>
+              <div class="mini-bars" aria-hidden="true"><i style="height:38%"></i><i style="height:55%"></i><i style="height:42%"></i><i style="height:70%"></i><i style="height:48%"></i><i style="height:62%"></i><i class="hi" style="height:90%"></i></div>
+              <div class="mini-cap"><span>vr</span><span>za</span><span>zo</span><span>ma</span><span>di</span><span>wo</span><span>do</span></div>
+            </div>
+
+            <div class="card">
+              <h3 class="side-title">Je woordenschat</h3>
+              <div class="pulse-row"><span class="lbl">Woorden gekend</span><span class="v">412</span></div>
+              <div class="pulse-row"><span class="lbl">Top-1000 dekking</span><span class="v">64%</span></div>
+              <div class="pulse-row"><span class="lbl">Deze week geleerd</span><span class="v">+18</span></div>
+              <a class="pulse-link" href="#" onclick="return false">Naar voortgang →</a>
+            </div>
+          </div>
+        </div>
+      </main>
+
+    </div>
+  </div></div>
+
+  <!-- ================= SCREEN 03 ================= -->
+  <div class="screen-label">
+    <span class="num">03</span>
+    <h2>Eerste gebruik — “Aan de slag”</h2>
+    <span class="note">vervangt het Vandaag-paneel voor nieuwe accounts · stappen volgen echte status</span>
+  </div>
+  <div class="frame-scroll"><div class="frame">
+    <div class="frame-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">kamoebisa.nl/home — nieuw account</span></div>
+    <div class="app" style="min-height:auto">
+      <nav class="rail" style="min-height:520px" aria-label="Hoofdnavigatie">
+        <span class="wordmark serif">
+          <span class="mark"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="6.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="16" y1="2.5" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="29.5"/><line x1="2.5" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="29.5" y2="16"/><line x1="6.4" y1="6.4" x2="8.9" y2="8.9"/><line x1="23.1" y1="23.1" x2="25.6" y2="25.6"/><line x1="6.4" y1="25.6" x2="8.9" y2="23.1"/><line x1="23.1" y1="8.9" x2="25.6" y2="6.4"/></g></svg></span>
+          <span class="name">Kamoe Bisa</span>
+        </span>
+        <button class="rail-cta"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Start sessie</button>
+        <div class="rail-sec">Menu</div>
+        <div class="rail-nav">
+          <a class="active" href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg> Home</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19.5A2 2 0 0 1 6 17.5h13"/></svg> Leren</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 6-4 2 2-6z"/></svg> Ontdek</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-6"/><path d="M22 20H2"/></svg> Voortgang</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-3.5 3-6 7-6s7 2.5 7 6"/></svg> Profiel</a>
+        </div>
+        <div class="rail-spacer"></div>
+        <div class="rail-glance">
+          <span class="glance-streak"><svg width="14" height="14" viewBox="0 0 24 24" fill="#8B9A90" aria-hidden="true"><path d="M12 2s5 4.5 5 9.5a5 5 0 0 1-10 0c0-1.5.5-3 1.4-4.3.3 1 .9 1.8 1.6 2.3C10 7 10.7 4 12 2z"/></svg> <span class="n">0</span> dagen</span>
+          <span class="glance-goal">doel 0/1</span>
+        </div>
+      </nav>
+
+      <main class="home">
+        <div class="greet">
+          <h1 class="serif">Selamat datang, Sanne</h1>
+          <p>Welkom bij Kamoe Bisa — in drie stappen zit je in je ritme</p>
+        </div>
+
+        <div class="home-grid">
+          <div class="home-main">
+            <div class="card check-card">
+              <div class="check-head">
+                <div class="sh-label">Aan de slag</div>
+                <h2 class="serif">Je eerste week Indonesisch</h2>
+                <p>Doe deze drie dingen en je routine staat. De app onthoudt wat je gedaan hebt — dit lijstje verdwijnt vanzelf.</p>
+              </div>
+              <div class="stepper">
+                <div class="step-item done">
+                  <span class="node"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12 5 5L20 6"/></svg></span>
+                  <div class="step-body"><h3>Bekijk je eerste les</h3></div>
+                </div>
+                <div class="step-item current">
+                  <span class="node">2</span>
+                  <div class="step-body"><h3>Doe je eerste sessie</h3><p>Zo'n 5 minuten. De woorden uit Les 1 komen terug tot je ze kent.</p></div>
+                  <span class="step-action"><button class="btn btn-fill btn-sm">Start</button></span>
+                </div>
+                <div class="step-item todo">
+                  <span class="node">3</span>
+                  <div class="step-body"><h3>Ontdek podcasts &amp; verhalen</h3><p>Luisteren en lezen op jouw niveau.</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-side">
+            <div class="card">
+              <h3 class="side-title">Je woordenschat</h3>
+              <div class="pulse-row"><span class="lbl">Woorden gekend</span><span class="v">0</span></div>
+              <div class="pulse-row"><span class="lbl">Top-1000 dekking</span><span class="v">—</span></div>
+              <a class="pulse-link" href="#" onclick="return false">Naar voortgang →</a>
+            </div>
+            <div class="card row-card">
+              <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></span>
+              <span class="t"><h3>Nog geen streak</h3><p>Je eerste sessie start je reeks.</p></span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div></div>
+
+  <!-- ================= SCREEN 04 — dark ================= -->
+  <div class="screen-label">
+    <span class="num">04</span>
+    <h2>Donkere modus</h2>
+    <span class="note">warm groen-zwart, nooit puur zwart · de rail is in beide thema's identiek</span>
+  </div>
+  <div class="frame-scroll"><div class="frame">
+    <div class="frame-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">kamoebisa.nl/home — donker thema</span></div>
+    <div class="app dark">
+      <nav class="rail" aria-label="Hoofdnavigatie">
+        <span class="wordmark serif">
+          <span class="mark"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="6.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="16" y1="2.5" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="29.5"/><line x1="2.5" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="29.5" y2="16"/><line x1="6.4" y1="6.4" x2="8.9" y2="8.9"/><line x1="23.1" y1="23.1" x2="25.6" y2="25.6"/><line x1="6.4" y1="25.6" x2="8.9" y2="23.1"/><line x1="23.1" y1="8.9" x2="25.6" y2="6.4"/></g></svg></span>
+          <span class="name">Kamoe Bisa</span>
+        </span>
+        <button class="rail-cta"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Start sessie</button>
+        <div class="rail-sec">Menu</div>
+        <div class="rail-nav">
+          <a class="active" href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg> Home</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19.5A2 2 0 0 1 6 17.5h13"/></svg> Leren</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 6-4 2 2-6z"/></svg> Ontdek</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-6"/><path d="M22 20H2"/></svg> Voortgang</a>
+          <a href="#" onclick="return false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-3.5 3-6 7-6s7 2.5 7 6"/></svg> Profiel</a>
+        </div>
+        <div class="rail-spacer"></div>
+        <div class="rail-glance">
+          <span class="glance-streak"><svg width="14" height="14" viewBox="0 0 24 24" fill="#BE8836" aria-hidden="true"><path d="M12 2s5 4.5 5 9.5a5 5 0 0 1-10 0c0-1.5.5-3 1.4-4.3.3 1 .9 1.8 1.6 2.3C10 7 10.7 4 12 2z"/></svg> <span class="n">12</span> dagen</span>
+          <span class="glance-goal">doel ✓</span>
+          <button class="theme-toggle" title="Thema wisselen" aria-label="Thema wisselen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><g stroke-linecap="round"><line x1="12" y1="3" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21"/><line x1="3" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21" y2="12"/></g></svg></button>
+        </div>
+      </nav>
+
+      <main class="home">
+        <div class="greet">
+          <h1 class="serif">Selamat malam, Albert</h1>
+          <p>Donderdag 3 juli · nog één sessie tot je doel</p>
+        </div>
+
+        <div class="home-grid">
+          <div class="home-main">
+            <div class="today">
+              <div class="today-label">Vandaag</div>
+              <div class="today-count">
+                <span class="big serif">24</span>
+                <span class="lbl">oefeningen staan klaar</span>
+              </div>
+              <div class="compo-bar" aria-hidden="true">
+                <span class="c-herhaling" style="width:50%"></span>
+                <span class="c-nieuw" style="width:25%"></span>
+                <span class="c-gram" style="width:16.6%"></span>
+                <span class="c-luister" style="width:8.4%"></span>
+              </div>
+              <div class="compo-legend">
+                <span class="lg"><i class="c-herhaling"></i><b>12</b>&nbsp;<span>herhalingen</span></span>
+                <span class="lg"><i class="c-nieuw"></i><b>6</b>&nbsp;<span>nieuw</span></span>
+                <span class="lg"><i class="c-gram"></i><b>4</b>&nbsp;<span>grammatica</span></span>
+                <span class="lg"><i class="c-luister"></i><b>2</b>&nbsp;<span>luisteren</span></span>
+              </div>
+              <button class="btn btn-fill btn-lg"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Start sessie · ± 8 min</button>
+            </div>
+
+            <div class="card row-card">
+              <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19.5A2 2 0 0 1 6 17.5h13"/></svg></span>
+              <span class="t"><h3>Verder met Les 7 · Di pasar</h3><p>Grammatica: vraagwoorden — nog 2 onderdelen te lezen</p></span>
+              <span class="go">Verder lezen →</span>
+            </div>
+          </div>
+
+          <div class="home-side">
+            <div class="card">
+              <h3 class="side-title">Streak</h3>
+              <div class="streak-line"><span class="big serif">12</span><span class="u">dagen op rij</span></div>
+              <div class="mini-bars" aria-hidden="true"><i style="height:38%"></i><i style="height:55%"></i><i style="height:42%"></i><i style="height:70%"></i><i style="height:48%"></i><i style="height:62%"></i><i class="hi" style="height:90%"></i></div>
+              <div class="mini-cap"><span>vr</span><span>za</span><span>zo</span><span>ma</span><span>di</span><span>wo</span><span>do</span></div>
+            </div>
+            <div class="card">
+              <h3 class="side-title">Je woordenschat</h3>
+              <div class="pulse-row"><span class="lbl">Woorden gekend</span><span class="v">412</span></div>
+              <div class="pulse-row"><span class="lbl">Top-1000 dekking</span><span class="v">64%</span></div>
+              <a class="pulse-link" href="#" onclick="return false">Naar voortgang →</a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div></div>
+
+  <p class="footnote"><b>Bij het beoordelen:</b> dit is een richtingsvoorstel, geen pixel-spec. Eén bewuste afwijking van het vorige voorstel — de hero toont geen nagemaakt telefoonscherm meer, maar een echte woordkaart als “specimen” (eerlijker en zonder CDN-afbeeldingen), en het Vandaag-blok op Home is nu het diepgroene focuspunt in plaats van weer een witte kaart. De donkere oefen-speler zelf blijft ongewijzigd. Zeg het als je liever een lichte rail ziet — het diepgroen is de gedurfde keuze.</p>
+</div>
+</body>
+</html>
