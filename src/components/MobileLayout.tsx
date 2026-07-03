@@ -21,7 +21,7 @@ export function MobileLayout() {
   return (
     <div className={`${classes.root} ${colorScheme === 'light' ? classes.light : ''}`}>
       <header className={classes.topBar}>
-        <span className={classes.title}>Bahasa Indonesia</span>
+        <span className={classes.title}>Kamoe Bisa</span>
       </header>
 
       <main className={classes.content}>

@@ -24,13 +24,31 @@ import './index.css'
 // CSS modules and inline styles reference var(--token-name) defined below.
 
 const theme = createTheme({
-  primaryColor: 'cyan',
+  // Warm-editorial retune (desktop program slice 2): tamarind is the single
+  // action color; primaryShade 6 keeps filled buttons the same tamarind in
+  // both themes (the mockup's dark CTA is unchanged from light).
+  primaryColor: 'tamarind',
+  primaryShade: 6,
   defaultRadius: 'md',
   fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
   fontFamilyMonospace: "'Courier New', monospace",
   headings: { fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" },
 
   colors: {
+    tamarind: [
+      '#FCF3ED', // 0 — lightest
+      '#F5E3D7', // 1
+      '#EDCDBA', // 2
+      '#E3B096', // 3
+      '#DA9370', // 4
+      '#D0764B', // 5
+      '#C64A26', // 6 ← primary fill (both themes)
+      '#A63B1C', // 7 — hover / light-mode text accent
+      '#8A3117', // 8
+      '#6E2712', // 9 — darkest
+    ],
+    // Legacy scale — admin surfaces and bespoke lesson pages still reference
+    // cyan explicitly; keep their exact colors until those surfaces are retuned.
     cyan: [
       '#E0FFFE', // 0 — lightest
       '#B3FBFF', // 1
@@ -38,9 +56,9 @@ const theme = createTheme({
       '#4DF6FF', // 3
       '#1AF4FF', // 4
       '#00ECFF', // 5
-      '#00E5FF', // 6 ← primary (dark mode)
+      '#00E5FF', // 6
       '#00C4DB', // 7
-      '#009DB3', // 8 ← primary (light mode)
+      '#009DB3', // 8
       '#00778C', // 9 — darkest
     ],
   },
@@ -73,6 +91,7 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--rail-ink':            '#EDE7D7',
     '--rail-ink-muted':      '#91A89A',
     '--rail-hairline':       'rgba(237,231,215,0.13)',
+    '--rail-gold':           '#CE9E45',   // streak/goal accent; ≥4.5:1 on the rail green
     '--fs-xs':    '12px',
     '--fs-sm':    '14px',
     '--fs-md':    '16px',
@@ -152,7 +171,7 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--warning-glow':   'rgba(255,149,0,0.40)',
 
     // Accent border (for pills, badges)
-    '--accent-primary-border': 'rgba(0,229,255,0.20)',
+    '--accent-primary-border': 'rgba(198,74,38,0.25)',
 
     // Ring chart target marker (goal marker — yellow, same in both themes)
     '--ring-target':      '#fcc419',
@@ -163,8 +182,7 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
 
     // Layout
     '--card-compact-height':  '48px',
-    '--sidebar-width':        '230px',   // canonical — matches Layout.tsx:83 (fixes 220/230 drift)
-    '--sidebar-width-closed': '64px',    // overlay mode when sidebar is unlocked
+    '--sidebar-width':        '240px',   // fixed rail, always visible ≥769px (desktop program slice 2)
 
     // App chrome (consumed by PageContainer fit + MobileLayout)
     '--app-top-bar-h':        '52px',
@@ -172,37 +190,39 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
   },
 
   dark: {
+    // Warm green-black, never pure black (desktop program slice 2; mockup
+    // screen 04). All values WCAG-AA checked against ground + card.
     // Overlays & shadows
-    '--bg-scrim':   'rgba(11,11,18,0.75)',
-    '--bg-overlay': 'rgba(20,20,28,0.96)',
+    '--bg-scrim':   'rgba(13,18,15,0.75)',
+    '--bg-overlay': 'rgba(20,26,22,0.96)',
     '--shadow-sm':  '0 4px 16px rgba(0,0,0,0.30)',
     '--shadow-md':  '0 8px 32px rgba(0,0,0,0.50)',
     '--shadow-lg':  '0 12px 48px rgba(0,0,0,0.30)',
     // Backgrounds
-    '--bg-main':    '#000000',
-    '--bg-surface': '#0C0C0E',
-    '--bg-hover':   '#2C2C2E',
+    '--bg-main':    '#141C18',
+    '--bg-surface': '#1B2420',
+    '--bg-hover':   '#242F29',
 
-    // Brand
-    '--accent-primary':       '#00E5FF',
-    '--accent-primary-dim':   '#00A8CC',
-    '--accent-primary-glow':  'rgba(0,229,255,0.16)',
-    '--accent-primary-subtle':'rgba(0,229,255,0.09)',
+    // Brand — tamarind text-accent lightened for contrast (6.5:1 on ground)
+    '--accent-primary':       '#E5865C',
+    '--accent-primary-dim':   '#C96A43',
+    '--accent-primary-glow':  'rgba(229,134,92,0.16)',
+    '--accent-primary-subtle':'rgba(229,134,92,0.09)',
 
     // Text
-    '--text-primary':   '#FFFFFF',
-    '--text-secondary': '#8E8E93',
-    '--text-tertiary':  '#55525C',
+    '--text-primary':   '#ECE7D8',
+    '--text-secondary': '#849A8D',
+    '--text-tertiary':  '#5E6E64',
 
     // Borders
-    '--border':       '#2C2C2E',
-    '--border-light': '#3C3C3E',
+    '--border':       '#2B3731',
+    '--border-light': '#35433C',
 
     // Card system
-    '--card-bg':           'rgba(255,255,255,0.10)',
-    '--card-border':       'rgba(255,255,255,0.07)',
-    '--card-hover-bg':     '#2C2C2E',
-    '--card-hover-border': '#00E5FF',
+    '--card-bg':           '#1D2822',
+    '--card-border':       '#2B3731',
+    '--card-hover-bg':     '#243029',
+    '--card-hover-border': '#E5865C',
 
     // Blur
     '--blur-card':  '16px',
@@ -213,9 +233,10 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--teal':        '#00C7BE',
     '--teal-subtle': 'rgba(0,199,190,0.10)',
 
-    // Hero card (gradient planning card)
-    '--hero-gradient':    'linear-gradient(135deg, #0c8599 0%, #1a2a3a 60%, rgba(255,255,255,0.10) 100%)',
-    '--hero-border':      'rgba(21, 170, 191, 0.25)',
+    // Hero card (gradient planning card) — deep batik-green until the slice-3
+    // Home redesign replaces this card outright
+    '--hero-gradient':    'linear-gradient(135deg, #274A41 0%, #1F3D36 60%, rgba(237,231,215,0.08) 100%)',
+    '--hero-border':      'rgba(237, 231, 215, 0.18)',
     '--hero-text':        '#ffffff',
     '--hero-text-dim':    'rgba(255, 255, 255, 0.85)',
     '--hero-text-muted':  'rgba(255, 255, 255, 0.45)',
@@ -239,38 +260,40 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
   },
 
   light: {
+    // Warm paper & ink (desktop program slice 2; mockup screens 01-03).
+    // All values WCAG-AA checked against paper + card.
     // Overlays & shadows
-    '--bg-scrim':   'rgba(255,255,255,0.80)',
-    '--bg-overlay': 'rgba(248,248,252,0.96)',
-    '--shadow-sm':  '0 4px 16px rgba(0,0,0,0.08)',
-    '--shadow-md':  '0 8px 32px rgba(0,0,0,0.10)',
-    '--shadow-lg':  '0 12px 48px rgba(0,0,0,0.08)',
+    '--bg-scrim':   'rgba(251,248,242,0.80)',
+    '--bg-overlay': 'rgba(249,244,235,0.96)',
+    '--shadow-sm':  '0 4px 16px rgba(30,42,37,0.08)',
+    '--shadow-md':  '0 8px 32px rgba(30,42,37,0.10)',
+    '--shadow-lg':  '0 12px 48px rgba(30,42,37,0.08)',
 
     // Backgrounds
-    '--bg-main':    '#FFFFFF',
-    '--bg-surface': '#E1E1E3',
-    '--bg-hover':   '#E8E8ED',
+    '--bg-main':    '#FBF8F2',
+    '--bg-surface': '#F4EDE1',
+    '--bg-hover':   '#EFE8DA',
 
-    // Brand
-    '--accent-primary':       '#0099B8',
-    '--accent-primary-dim':   '#006B88',
-    '--accent-primary-glow':  'rgba(0,153,184,0.16)',
-    '--accent-primary-subtle':'rgba(0,153,184,0.08)',
+    // Brand — deep tamarind as the text-capable accent (6.1:1 on paper)
+    '--accent-primary':       '#A63B1C',
+    '--accent-primary-dim':   '#8A3117',
+    '--accent-primary-glow':  'rgba(166,59,28,0.16)',
+    '--accent-primary-subtle':'rgba(198,74,38,0.08)',
 
     // Text
-    '--text-primary':   '#000000',
-    '--text-secondary': '#86868B',
-    '--text-tertiary':  '#A2A2A7',
+    '--text-primary':   '#1E2A25',
+    '--text-secondary': '#5F6D64',
+    '--text-tertiary':  '#77857B',
 
     // Borders
-    '--border':       '#D1D1D9',
-    '--border-light': '#E5E5EA',
+    '--border':       '#E7DECE',
+    '--border-light': '#EFE8DA',
 
     // Card system
-    '--card-bg':           'rgba(0,153,184,0.07)',
-    '--card-border':       '#D1D1D9',
-    '--card-hover-bg':     '#E8E8ED',
-    '--card-hover-border': '#0099B8',
+    '--card-bg':           '#FFFFFF',
+    '--card-border':       '#E7DECE',
+    '--card-hover-bg':     '#F4EDE1',
+    '--card-hover-border': '#C64A26',
 
     // Blur
     '--blur-card':  '16px',
