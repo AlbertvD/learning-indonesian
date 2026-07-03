@@ -40,13 +40,12 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (!user) {
     if (devBypass) return <>{children}</>
-    // Previously bounced every logged-out visit to `https://auth.duin.home/login`
-    // — the homelab SSO login form. That form converts whatever the visitor
-    // types into `<name>@duin.home` (see `duinhuis-auth`'s login page), so it
-    // structurally cannot authenticate a paying customer's own email; it can
-    // only ever be used to reach this app when signed in as a homelab user.
-    // Route to this app's own /login instead, carrying a `next` param so the
-    // learner lands back where they were headed (docs/audits/
+    // Logged-out visits land on the public landing page at `/` (desktop
+    // program slice 1), carrying a `next` param the landing page forwards to
+    // /login so the learner still lands back where they were headed. Never
+    // bounce to `https://auth.duin.home/login` — the homelab SSO form converts
+    // whatever the visitor types into `<name>@duin.home`, so it structurally
+    // cannot authenticate a customer's own email (docs/audits/
     // 2026-07-02-ux-failure-modes-audit.md CRIT-1).
     //
     // NOTE: the Traefik-level `duinhuis-auth@docker` forward-auth middleware
@@ -55,7 +54,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     // middleware needs removing in homelab-configs at cloud-exposure time —
     // out of scope for this fix.
     const next = `${location.pathname}${location.search}`
-    return <Navigate to={`/login?next=${encodeURIComponent(next)}`} replace />
+    return <Navigate to={`/?next=${encodeURIComponent(next)}`} replace />
   }
 
   return <>{children}</>

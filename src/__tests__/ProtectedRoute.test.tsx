@@ -3,9 +3,10 @@
 // CRIT-1 fix (2026-07-02 UX audit): ProtectedRoute used to bounce every
 // logged-out visit to the homelab SSO (`https://auth.duin.home/login`), a
 // login form that structurally cannot authenticate a paying customer's own
-// email. It must now route to this app's own /login via a declarative
-// <Navigate>, carrying a `next` param so Login.tsx can send the learner back
-// to where they were headed.
+// email. It must stay inside the app via a declarative <Navigate> — since the
+// desktop program's slice 1, to the public landing page at `/` — carrying a
+// `next` param the landing page forwards to /login so the learner still lands
+// back where they were headed.
 
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
@@ -25,11 +26,11 @@ vi.mock('@/stores/authStore', () => {
 
 // Renders the in-app location it lands on so tests can assert both "we
 // stayed inside the app" and the `next` return-to param, without depending
-// on Login.tsx internals or touching window.location (jsdom's window.location
+// on Landing.tsx internals or touching window.location (jsdom's window.location
 // is not safely mockable across environments).
-function LoginProbe() {
+function LandingProbe() {
   const location = useLocation()
-  return <div data-testid="login-probe">{location.pathname}{location.search}</div>
+  return <div data-testid="landing-probe">{location.pathname}{location.search}</div>
 }
 
 function renderAt(path: string) {
@@ -45,7 +46,7 @@ function renderAt(path: string) {
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={<LoginProbe />} />
+          <Route path="/" element={<LandingProbe />} />
         </Routes>
       </MemoryRouter>
     </MantineProvider>,
@@ -59,11 +60,11 @@ describe('ProtectedRoute', () => {
     mockState.loading = false
   })
 
-  it("sends a logged-out visitor to the app's own /login (not the homelab SSO), preserving where they were headed", () => {
+  it('sends a logged-out visitor to the public landing page (not the homelab SSO), preserving where they were headed', () => {
     renderAt('/dashboard?tab=woordenlijsten')
 
-    const probe = screen.getByTestId('login-probe')
-    expect(probe).toHaveTextContent('/login')
+    const probe = screen.getByTestId('landing-probe')
+    expect(probe.textContent).toMatch(/^\/\?next=/)
     expect(probe.textContent).toContain(encodeURIComponent('/dashboard?tab=woordenlijsten'))
     expect(screen.queryByText('Protected content')).not.toBeInTheDocument()
   })
@@ -73,7 +74,7 @@ describe('ProtectedRoute', () => {
     renderAt('/dashboard')
 
     expect(screen.getByText('Protected content')).toBeInTheDocument()
-    expect(screen.queryByTestId('login-probe')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('landing-probe')).not.toBeInTheDocument()
   })
 
   it('shows a loader instead of redirecting while auth state is still resolving', () => {
@@ -81,6 +82,6 @@ describe('ProtectedRoute', () => {
     renderAt('/dashboard')
 
     expect(screen.queryByText('Protected content')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('login-probe')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('landing-probe')).not.toBeInTheDocument()
   })
 })

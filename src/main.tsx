@@ -59,6 +59,20 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     // (the resolver can't emit @media rules).
     '--font-sans': "'Plus Jakarta Sans', system-ui, sans-serif",
     '--font-mono': "'Courier New', monospace",
+
+    // Warm-editorial brand constants (desktop program, docs/plans/
+    // 2026-07-03-desktop-program-design.md §Token discipline). Theme-agnostic
+    // by design: the deep batik-green rail is the brand constant, identical in
+    // light and dark. The display serif is a system stack — no webfont (CSP +
+    // bundle discipline). Tamarind/gold are theme-VARYING and land as the
+    // --accent-primary retune in slice 2; until then the landing page (light-
+    // only marketing surface) carries its own scoped light values.
+    '--font-display': "'Iowan Old Style', 'Palatino Linotype', Palatino, Charter, Georgia, 'Times New Roman', serif",
+    '--rail-surface':        '#1F3D36',
+    '--rail-surface-raised': '#274A41',
+    '--rail-ink':            '#EDE7D7',
+    '--rail-ink-muted':      '#91A89A',
+    '--rail-hairline':       'rgba(237,231,215,0.13)',
     '--fs-xs':    '12px',
     '--fs-sm':    '14px',
     '--fs-md':    '16px',
