@@ -33,16 +33,20 @@
   }
 
   .meta {
-    /* 12px, not 8: the gloss is a distinct tier (the "question"), not a
-       caption glued to the sentence (owner feedback 2026-07-02). */
-    margin-top: 12px;
+    /* 20px: the gloss is a distinct tier (the "question"), not a caption glued
+       to the sentence (owner feedback 2026-07-02 + 2026-07-03 screenshots).
+       !important defeats the unlayered `* { margin: 0 }` reset, which beats
+       @layer rules — without it this margin computes to 0 (same idiom as
+       ExerciseFrame .footer / ExerciseOption padding). */
+    margin-top: 20px !important;
     font-size: var(--ex-fs-chrome);
     color: var(--ex-fg-muted);
     font-style: italic;
   }
 
   .reveal {
-    margin-top: 16px;
+    /* !important defeats the unlayered `* { margin: 0 }` reset (see .meta). */
+    margin-top: 16px !important;
     font-size: var(--ex-fs-reveal);
     font-weight: var(--fw-bold);
     text-align: center;
@@ -52,7 +56,8 @@
   }
 
   .revealMeta {
-    margin-top: 4px;
+    /* !important defeats the unlayered `* { margin: 0 }` reset (see .meta). */
+    margin-top: 4px !important;
     font-size: var(--ex-fs-chrome);
     font-style: italic;
     text-align: center;
