@@ -22,7 +22,6 @@
     display: block;
     width: 100%;
     min-height: 56px;
-    padding: 14px 16px;
     background: transparent;
     border: 1px solid var(--ex-card-border);
     border-radius: var(--r-md);
@@ -55,8 +54,6 @@
        (affordance). --ex-card-border was too faint to locate. */
     border: 1.5px solid var(--ex-fg-muted);
     border-radius: var(--r-sm);
-    padding: 2px 8px;
-    margin: 0 4px;
     text-align: center;
   }
 
@@ -114,7 +111,6 @@
     width: 1px;
     height: 1px;
     padding: 0;
-    margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
