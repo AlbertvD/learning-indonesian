@@ -110,8 +110,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signIn: async (email, password) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
+    // Set the user immediately: Login navigates to the `?next=` destination as
+    // soon as this resolves, and ProtectedRoute would bounce that navigation if
+    // it still saw user=null. The SIGNED_IN handler above defers its store
+    // update behind a profile fetch (auth-deadlock setTimeout), which loses the
+    // race. A user-without-profile store state is already legal — the
+    // INITIAL_SESSION branch produces it too; the profile follows moments later.
+    if (data.user) set({ user: data.user })
   },
 
   signOut: async () => {
