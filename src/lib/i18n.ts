@@ -168,6 +168,10 @@ export const nl = {
     rateLimited: 'Te veel pogingen. Probeer het later opnieuw.',
     somethingWentWrong: 'Er ging iets mis. Probeer het opnieuw.',
   },
+  pwa: {
+    updateTitle: 'Nieuwe versie beschikbaar',
+    updateButton: 'Vernieuwen',
+  },
   login: {
     title: 'Welkom terug',
     noAccount: 'Heb je nog geen account?',
@@ -705,6 +709,10 @@ export const en: typeof nl = {
     emailTaken: 'This email address is already registered.',
     rateLimited: 'Too many attempts. Please try again later.',
     somethingWentWrong: 'Something went wrong. Please try again.',
+  },
+  pwa: {
+    updateTitle: 'New version available',
+    updateButton: 'Refresh',
   },
   login: {
     title: 'Welcome back',

@@ -10,7 +10,12 @@ export default defineConfig({
     react(),
     // Skip PWA plugin during tests — it adds overhead and isn't needed
     ...(!isTest ? [VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': the new SW waits for the user's tap (PwaUpdatePrompt shows a
+      // "Nieuwe versie beschikbaar" notification). autoUpdate made deploys
+      // invisible until a lucky reload. Registration is manual via
+      // virtual:pwa-register in PwaUpdatePrompt, so auto-injection is off.
+      registerType: 'prompt',
+      injectRegister: false,
       workbox: {
         runtimeCaching: [{
           urlPattern: /\/storage\/v1\/object\/public\/indonesian-tts\//,

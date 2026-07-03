@@ -4,6 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import { Container, Title, Text, Button, Center, Loader } from '@mantine/core'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { PwaUpdatePrompt } from '@/components/PwaUpdatePrompt'
 import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
 import { Dashboard } from '@/pages/Dashboard'
@@ -86,7 +87,9 @@ function NotFound() {
 
 function App() {
   return (
-    <Routes>
+    <>
+      <PwaUpdatePrompt />
+      <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/preview" element={<LazyPage><LocalPreviewIndex /></LazyPage>} />
@@ -455,7 +458,8 @@ function App() {
           }
         />
       </Route>
-    </Routes>
+      </Routes>
+    </>
   )
 }
 
