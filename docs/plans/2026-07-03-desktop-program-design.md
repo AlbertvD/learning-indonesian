@@ -63,6 +63,23 @@ supersedes: []
   slice 1; light/dark contrast must pass WCAG AA (the a11y audit's light-mode token audit is the
   precedent).
 
+### Token discipline (binding — this is where the changes land)
+
+All visual changes go through the app's existing two-layer framework, never bespoke per-page values:
+
+1. **Design tokens** — every new color/type/radius value lands as a semantic token in `src/main.tsx`
+   `cssVariablesResolver` (`main.tsx:55`), theme-scoped in the light and dark blocks like the existing
+   `--accent-primary` / `--text-*` / `--card-*` roles. New tokens this program adds: a `--rail-*` group
+   (surface, ink, muted, hairline), a `--font-display` serif stack, and warm surface/border retunes.
+   The mockup's raw hexes are pitch-only; components reference tokens exclusively.
+2. **Page framework primitives** — new/changed pages compose `PageContainer`/`PageBody`/`PageHeader` +
+   card primitives (`src/components/page/primitives/`); the rail is a new shell component styled via
+   the tokens. Verify primitive ripple in `/admin/page-lab` per slice.
+3. **Accent decision:** the global `--accent-primary` is currently cyan `#00E5FF` (`main.tsx:173`).
+   The warm direction retunes this token per theme (tamarind on light; contrast-checked variant on
+   dark) rather than adding a parallel accent — the `--ex-*` exercise tier keeps its own values and is
+   untouched, so the session player does not shift. The page-lab pass is the ripple check.
+
 ## The four slices (each one PR, shippable alone, in order)
 
 ### Slice 1 — Landing page + CRIT-1 fix
