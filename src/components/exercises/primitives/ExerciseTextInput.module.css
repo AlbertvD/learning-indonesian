@@ -99,7 +99,9 @@
   /* Retry-mode "try again" line. The element stays mounted (aria-live region
      must exist before its content changes to announce), so empty = no height. */
   .retryNotice {
-    margin-top: 6px;
+    /* !important defeats the unlayered `* { margin: 0 }` reset (same idiom as
+       ExerciseFrame .footer / ExercisePromptCard .meta). */
+    margin-top: 6px !important;
     font-size: var(--ex-fs-chrome);
     color: var(--ex-wrong-fg);
   }
