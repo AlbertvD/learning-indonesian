@@ -29,8 +29,21 @@ ${itemsJson}
     }`
 
 let src = readFileSync(`${DIR}/lesson.ts`, 'utf-8')
-if (src.includes(JSON.stringify(TITLE))) {
-  throw new Error(`Section "${TITLE}" already present — edit/remove it before re-injecting.`)
+// Idempotent replace: a previous injection is always the LAST section (this
+// script inserts right before the array close), so splice it out first.
+const startMarker = `,\n    {\n      "title": ${JSON.stringify(TITLE)}`
+const existingIdx = src.indexOf(startMarker)
+if (existingIdx !== -1) {
+  const endMarker = '\n  ]\n}'
+  const endIdx = src.indexOf(endMarker, existingIdx)
+  if (endIdx === -1) throw new Error(`Found an existing "${TITLE}" section but not the sections-array close`)
+  const span = src.slice(existingIdx, endIdx)
+  const titleCount = (span.match(/"title":/g) ?? []).length
+  if (titleCount !== 1) {
+    throw new Error(`Existing "${TITLE}" section is not the last section (${titleCount} sections in span) — remove it by hand`)
+  }
+  src = src.slice(0, existingIdx) + src.slice(endIdx)
+  console.log(`Replacing existing "${TITLE}" section`)
 }
 // Insert before the sections-array close. The file ends with the last section's
 // `    }` then `  ]` (sections) then `}` (lesson). Add a comma + the new section.

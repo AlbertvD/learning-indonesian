@@ -1,0 +1,121 @@
+{
+  "title": "Kisah Timun Mas",
+  "description": "Dit is een eenvoudig verhaal over een moedig meisje genaamd Timun Mas dat ontsnapt aan een grote reus.",
+  "level": "A2",
+  "duration_seconds": null,
+  "audio_filename": null,
+  "transcript_indonesian": "Dahulu kala, ada seorang nenek tua yang baik hati.\n\nNenek itu hidup sendirian dan sangat ingin punya anak.\n\nSuatu hari, seorang raksasa besar datang.\n\nRaksasa itu memberi nenek sebuah biji timun.\n\n\"Tanam biji ini,\" kata raksasa, \"Nanti kamu akan punya anak.\"\n\nNenek menanam biji itu dengan senang hati.\n\nBiji itu tumbuh menjadi timun yang sangat besar.\n\nKetika nenek membuka timun itu, ada bayi perempuan cantik di dalamnya!\n\nNenek memberi nama bayi itu Timun Mas.\n\nTimun Mas tumbuh menjadi gadis yang pintar dan ceria.\n\nTetapi, raksasa kembali dan ingin makan Timun Mas!\n\nNenek memberi Timun Mas empat bungkusan kecil dan menyuruhnya lari.\n\nTimun Mas segera lari; ia melempar garam yang menjadi laut luas.\n\nRaksasa tidak bisa mengejar; lalu Timun Mas melempar jarum yang menjadi hutan bambu tajam.\n\nRaksasa semakin sulit; Timun Mas melempar biji timun menjadi kebun timun besar, dan raksasa makan timun-timun itu.\n\nTerakhir, Timun Mas melempar terasi yang menjadi lumpur panas mendidih.\n\nRaksasa jatuh dan tenggelam di lumpur itu.\n\nAkhirnya, Timun Mas selamat dan hidup bahagia dengan neneknya.",
+  "transcript_dutch": "Lang geleden leefde er een vriendelijke oude grootmoeder.\n\nDe grootmoeder leefde alleen en wilde heel graag kinderen hebben.\n\nOp een dag kwam er een grote reus.\n\nDe reus gaf de grootmoeder een komkommerzaadje.\n\n\"Plant dit zaadje,\" zei de reus, \"Dan zul je later een kind krijgen.\"\n\nDe grootmoeder plantte het zaadje met plezier.\n\nHet zaadje groeide uit tot een zeer grote komkommer.\n\nToen de grootmoeder de komkommer opende, zat er een prachtig babymeisje in!\n\nDe grootmoeder gaf de baby de naam Timun Mas.\n\nTimun Mas groeide op tot een slim en vrolijk meisje.\n\nMaar de reus keerde terug en wilde Timun Mas opeten!\n\nDe grootmoeder gaf Timun Mas vier kleine pakjes en zei haar te rennen.\n\nTimun Mas rende onmiddellijk; ze gooide zout dat een uitgestrekte zee werd.\n\nDe reus kon niet volgen; toen gooide Timun Mas naalden die een scherp bamboebos werden.\n\nDe reus had het steeds moeilijker; Timun Mas gooide komkommerzaadjes die een grote komkommertuin werden, en de reus at die komkommers op.\n\nTenslotte gooide Timun Mas garnalenpasta die veranderde in kokende hete modder.\n\nDe reus viel en verdronk in die modder.\n\nUiteindelijk was Timun Mas veilig en leefde ze gelukkig met haar grootmoeder.",
+  "transcript_english": "Once upon a time, there lived a kind old grandmother.\n\nThe grandmother lived alone and deeply wished to have a child.\n\nOne day, a large giant came.\n\nThe giant gave the grandmother a cucumber seed.\n\n\"Plant this seed,\" said the giant, \"Later you will have a child.\"\n\nThe grandmother happily planted the seed.\n\nThe seed grew into a very large cucumber.\n\nWhen the grandmother opened the cucumber, there was a beautiful baby girl inside!\n\nThe grandmother named the baby Timun Mas.\n\nTimun Mas grew into a smart and cheerful girl.\n\nHowever, the giant returned and wanted to eat Timun Mas!\n\nThe grandmother gave Timun Mas four small packages and told her to run.\n\nTimun Mas immediately ran; she threw salt which turned into a vast sea.\n\nThe giant couldn't chase her; then Timun Mas threw needles which became a sharp bamboo forest.\n\nThe giant had more difficulty; Timun Mas threw cucumber seeds which became a large cucumber patch, and the giant ate those cucumbers.\n\nFinally, Timun Mas threw shrimp paste which turned into boiling hot mud.\n\nThe giant fell and drowned in that mud.\n\nFinally, Timun Mas was safe and lived happily with her grandmother.",
+  "transcript_segments": [
+    {
+      "idx": 0,
+      "id": "Dahulu kala, ada seorang nenek tua yang baik hati.",
+      "nl": "Lang geleden leefde er een vriendelijke oude grootmoeder.",
+      "en": "Once upon a time, there lived a kind old grandmother."
+    },
+    {
+      "idx": 1,
+      "id": "Nenek itu hidup sendirian dan sangat ingin punya anak.",
+      "nl": "De grootmoeder leefde alleen en wilde heel graag kinderen hebben.",
+      "en": "The grandmother lived alone and deeply wished to have a child."
+    },
+    {
+      "idx": 2,
+      "id": "Suatu hari, seorang raksasa besar datang.",
+      "nl": "Op een dag kwam er een grote reus.",
+      "en": "One day, a large giant came."
+    },
+    {
+      "idx": 3,
+      "id": "Raksasa itu memberi nenek sebuah biji timun.",
+      "nl": "De reus gaf de grootmoeder een komkommerzaadje.",
+      "en": "The giant gave the grandmother a cucumber seed."
+    },
+    {
+      "idx": 4,
+      "id": "\"Tanam biji ini,\" kata raksasa, \"Nanti kamu akan punya anak.\"",
+      "nl": "\"Plant dit zaadje,\" zei de reus, \"Dan zul je later een kind krijgen.\"",
+      "en": "\"Plant this seed,\" said the giant, \"Later you will have a child.\""
+    },
+    {
+      "idx": 5,
+      "id": "Nenek menanam biji itu dengan senang hati.",
+      "nl": "De grootmoeder plantte het zaadje met plezier.",
+      "en": "The grandmother happily planted the seed."
+    },
+    {
+      "idx": 6,
+      "id": "Biji itu tumbuh menjadi timun yang sangat besar.",
+      "nl": "Het zaadje groeide uit tot een zeer grote komkommer.",
+      "en": "The seed grew into a very large cucumber."
+    },
+    {
+      "idx": 7,
+      "id": "Ketika nenek membuka timun itu, ada bayi perempuan cantik di dalamnya!",
+      "nl": "Toen de grootmoeder de komkommer opende, zat er een prachtig babymeisje in!",
+      "en": "When the grandmother opened the cucumber, there was a beautiful baby girl inside!"
+    },
+    {
+      "idx": 8,
+      "id": "Nenek memberi nama bayi itu Timun Mas.",
+      "nl": "De grootmoeder gaf de baby de naam Timun Mas.",
+      "en": "The grandmother named the baby Timun Mas."
+    },
+    {
+      "idx": 9,
+      "id": "Timun Mas tumbuh menjadi gadis yang pintar dan ceria.",
+      "nl": "Timun Mas groeide op tot een slim en vrolijk meisje.",
+      "en": "Timun Mas grew into a smart and cheerful girl."
+    },
+    {
+      "idx": 10,
+      "id": "Tetapi, raksasa kembali dan ingin makan Timun Mas!",
+      "nl": "Maar de reus keerde terug en wilde Timun Mas opeten!",
+      "en": "However, the giant returned and wanted to eat Timun Mas!"
+    },
+    {
+      "idx": 11,
+      "id": "Nenek memberi Timun Mas empat bungkusan kecil dan menyuruhnya lari.",
+      "nl": "De grootmoeder gaf Timun Mas vier kleine pakjes en zei haar te rennen.",
+      "en": "The grandmother gave Timun Mas four small packages and told her to run."
+    },
+    {
+      "idx": 12,
+      "id": "Timun Mas segera lari; ia melempar garam yang menjadi laut luas.",
+      "nl": "Timun Mas rende onmiddellijk; ze gooide zout dat een uitgestrekte zee werd.",
+      "en": "Timun Mas immediately ran; she threw salt which turned into a vast sea."
+    },
+    {
+      "idx": 13,
+      "id": "Raksasa tidak bisa mengejar; lalu Timun Mas melempar jarum yang menjadi hutan bambu tajam.",
+      "nl": "De reus kon niet volgen; toen gooide Timun Mas naalden die een scherp bamboebos werden.",
+      "en": "The giant couldn't chase her; then Timun Mas threw needles which became a sharp bamboo forest."
+    },
+    {
+      "idx": 14,
+      "id": "Raksasa semakin sulit; Timun Mas melempar biji timun menjadi kebun timun besar, dan raksasa makan timun-timun itu.",
+      "nl": "De reus had het steeds moeilijker; Timun Mas gooide komkommerzaadjes die een grote komkommertuin werden, en de reus at die komkommers op.",
+      "en": "The giant had more difficulty; Timun Mas threw cucumber seeds which became a large cucumber patch, and the giant ate those cucumbers."
+    },
+    {
+      "idx": 15,
+      "id": "Terakhir, Timun Mas melempar terasi yang menjadi lumpur panas mendidih.",
+      "nl": "Tenslotte gooide Timun Mas garnalenpasta die veranderde in kokende hete modder.",
+      "en": "Finally, Timun Mas threw shrimp paste which turned into boiling hot mud."
+    },
+    {
+      "idx": 16,
+      "id": "Raksasa jatuh dan tenggelam di lumpur itu.",
+      "nl": "De reus viel en verdronk in die modder.",
+      "en": "The giant fell and drowned in that mud."
+    },
+    {
+      "idx": 17,
+      "id": "Akhirnya, Timun Mas selamat dan hidup bahagia dengan neneknya.",
+      "nl": "Uiteindelijk was Timun Mas veilig en leefde ze gelukkig met haar grootmoeder.",
+      "en": "Finally, Timun Mas was safe and lived happily with her grandmother."
+    }
+  ],
+  "attribution": null
+}

@@ -36,6 +36,27 @@ describe('assembleEpisode', () => {
   })
 })
 
+describe('assembleEpisode (read-only text, slice 4 #304)', () => {
+  const record = assembleEpisode({
+    title: 'Kancil dan Buaya',
+    description: 'Een fabel om te lezen.',
+    level: 'A1',
+    segments,
+    audio_filename: null,
+    duration_seconds: null,
+  })
+
+  it('carries null audio metadata for an audio-less text', () => {
+    expect(record.audio_filename).toBeNull()
+    expect(record.duration_seconds).toBeNull()
+  })
+
+  it('still denormalizes the full-text columns (HC36 invariant)', () => {
+    expect(record.transcript_indonesian).toBe('Ibu pergi ke pasar.\n\nDia membeli ikan.')
+    expect(record.transcript_segments).toEqual(segments)
+  })
+})
+
 describe('retimeRecord', () => {
   const existing: PodcastData = {
     title: 'Di Pasar',

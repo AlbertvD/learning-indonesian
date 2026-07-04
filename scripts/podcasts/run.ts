@@ -12,6 +12,12 @@
 //   re-time --retime <record.json>     (STT existing audio → timings; no Gemini/TTS)
 //   resume  --resume <record.json>      (re-seed existing record + MP3; no STT)
 //
+// Add --read-only to invent/adapt to seed an audio-less `texts` row (the Read
+// face only, Lezen — slice 4 #304): author → translate → seed with
+// audio_path = NULL; narrate/STT/align are skipped entirely (no TTS credential
+// needed). Resume detects a read-only record (audio_filename null) and re-seeds
+// it without an MP3.
+//
 // Requires (non-dry-run): GEMINI_API_KEY, ~/.config/gcloud/tts-indonesian.json
 // (Speech-to-Text API enabled on its project), SUPABASE_SERVICE_KEY. Prefix direct
 // runs with NODE_TLS_REJECT_UNAUTHORIZED=0 for the homelab seed upload.
@@ -23,7 +29,7 @@ import { transcribeWordOffsets } from './stt'
 import { authorStory, adaptStory, type StoryDraft } from './storyAuthor'
 import { translateSegments } from './translate'
 import { synthesizeEpisode, DEFAULT_STORY_VOICE } from './narrator'
-import { persistSeedRecord, seedEpisode } from './seed'
+import { persistSeedRecord, seedEpisode, seedText, slugify } from './seed'
 import type { Level } from './pacing'
 import type { PodcastData } from '../data/podcasts'
 import type { PodcastAttribution } from '@/services/textService'
@@ -58,10 +64,6 @@ function arg(name: string): string | undefined {
   return i >= 0 ? process.argv[i + 1] : undefined
 }
 
-function slugify(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().split(/\s+/).slice(0, 5).join('-')
-}
-
 // Rough duration estimate from word count + per-sentence pauses (display only;
 // the live slice can refine with a real probe).
 function estimateDurationSeconds(wordCount: number, sentenceCount: number, speed: number): number {
@@ -76,6 +78,12 @@ async function main() {
   const resumePath = arg('resume')
   if (resumePath) {
     const record = JSON.parse(readFileSync(resumePath, 'utf8')) as PodcastData
+    if (!record.audio_filename) {
+      console.log(`[story-podcast] resume read-only "${record.title}" → seed (no audio)`)
+      await seedText(record)
+      console.log(`  ✓ seeded read-only "${record.title}"`)
+      return
+    }
     const mp3 = readFileSync(`content/podcasts/${record.audio_filename}`)
     console.log(`[story-podcast] resume "${record.title}" → seed (${mp3.length} bytes)`)
     await seedEpisode(record, mp3)
@@ -91,6 +99,7 @@ async function main() {
   const retimePath = arg('retime')
   if (retimePath) {
     const record = JSON.parse(readFileSync(retimePath, 'utf8')) as PodcastData
+    if (!record.audio_filename) throw new Error('cannot re-time a read-only text (no audio)')
     const mp3 = readFileSync(`content/podcasts/${record.audio_filename}`)
     console.log(`[story-podcast] retime "${record.title}" → STT word offsets (${mp3.length} bytes)`)
     const sttWords = await transcribeWordOffsets(mp3)
@@ -106,6 +115,7 @@ async function main() {
   const topic = arg('topic') ?? 'a small everyday moment in Indonesia'
   const sourcePath = arg('source')
   const dryRun = process.argv.includes('--dry-run')
+  const readOnly = process.argv.includes('--read-only')
   const voice = arg('voice') ?? process.env.PODCAST_VOICE ?? DEFAULT_STORY_VOICE
 
   if (!LEVELS.includes(level)) {
@@ -123,11 +133,14 @@ async function main() {
     attribution = loadAttribution(attrPath)
   }
 
-  console.log(`[story-podcast] level=${level} ${adapt ? `source="${sourcePath}"` : `topic="${topic}"`} voice=${voice}${dryRun ? ' (dry-run)' : ''}`)
+  console.log(`[story-podcast] level=${level} ${adapt ? `source="${sourcePath}"` : `topic="${topic}"`} ${readOnly ? 'read-only' : `voice=${voice}`}${dryRun ? ' (dry-run)' : ''}`)
 
   if (dryRun) {
     const step = adapt ? `adapt source (Gemini, → ${level}, credit ${attribution!.license})` : 'author (Gemini)'
-    console.log(`  would: ${step} → translate ID→NL/EN → narrate (Chirp3-HD SSML) → STT word-timings (align to script) → assemble → seed (bucket + podcasts row)`)
+    const tail = readOnly
+      ? 'assemble → seed audio-less texts row (audio_path NULL, no bucket write)'
+      : 'narrate (Chirp3-HD SSML) → STT word-timings (align to script) → assemble → seed (bucket + podcasts row)'
+    console.log(`  would: ${step} → translate ID→NL/EN → ${tail}`)
     console.log('  no API calls or writes made.')
     return
   }
@@ -144,6 +157,25 @@ async function main() {
 
   console.log('  translating…')
   const segments = await translateSegments(draft.sentences)
+
+  // Read-only text (slice 4 #304): no narration — assemble the untimed segments
+  // and seed the row with audio_path NULL. Lezen lists it; Listen filters it out.
+  if (readOnly) {
+    const record = assembleEpisode({
+      title: draft.title,
+      description: draft.description,
+      level,
+      segments,
+      audio_filename: null,
+      duration_seconds: null,
+      attribution,
+    })
+    const seedPath = persistSeedRecord(record)
+    console.log(`  seeding read-only text… (record → ${seedPath})`)
+    await seedText(record)
+    console.log(`  ✓ seeded read-only "${record.title}" (${segments.length} sentences)`)
+    return
+  }
 
   console.log('  narrating…')
   const mp3 = await synthesizeEpisode(segments, level, voice)

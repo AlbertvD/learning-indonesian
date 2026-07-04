@@ -1,0 +1,121 @@
+{
+  "title": "Sore Hujan Pak Budi",
+  "description": "Een verhaal over een ojekchauffeur die wacht in de regen in Jakarta.",
+  "level": "A2",
+  "duration_seconds": null,
+  "audio_filename": null,
+  "transcript_indonesian": "Ini Jakarta, di sore hari.\n\nHujan turun perlahan.\n\nPak Budi adalah seorang pengemudi ojek.\n\nDia duduk di pinggir jalan, menunggu penumpang.\n\nMotornya parkir di dekat sebuah pohon besar.\n\nUdara terasa sejuk dan damai.\n\nPak Budi melihat air hujan di jalanan.\n\nKadang, ada mobil atau motor lewat dengan pelan.\n\nTapi, tidak banyak orang di luar karena hujan ini.\n\nPak Budi minum teh hangat dari termos kecilnya.\n\nTeh itu terasa sangat enak di cuaca dingin.\n\nDia tersenyum tipis, merasa nyaman.\n\nIni bukan hari yang sibuk untuknya.\n\nTapi, Pak Budi tidak merasa sedih atau bosan.\n\nDia menikmati waktu tenang ini.\n\nMungkin sebentar lagi hujan akan berhenti.\n\nLalu, penumpang akan datang lagi untuk Pak Budi.\n\nUntuk sekarang, dia hanya melihat kota dan merasakan suasana.",
+  "transcript_dutch": "Dit is Jakarta, in de namiddag.\n\nDe regen valt langzaam.\n\nMeneer Budi is een ojekchauffeur.\n\nHij zit aan de kant van de weg, wachtend op passagiers.\n\nZijn motor staat geparkeerd bij een grote boom.\n\nDe lucht voelt koel en vredig aan.\n\nMeneer Budi ziet het regenwater op straat.\n\nSoms rijdt er langzaam een auto of motor voorbij.\n\nMaar er zijn niet veel mensen buiten vanwege deze regen.\n\nMeneer Budi drinkt warme thee uit zijn kleine thermosfles.\n\nDe thee smaakt erg lekker in dit koude weer.\n\nHij glimlacht zachtjes, zich comfortabel voelend.\n\nDit is geen drukke dag voor hem.\n\nMaar meneer Budi voelt zich niet verdrietig of verveeld.\n\nHij geniet van deze rustige tijd.\n\nMisschien stopt de regen zo meteen.\n\nDan zullen er weer passagiers komen voor meneer Budi.\n\nVoor nu kijkt hij alleen maar naar de stad en voelt hij de sfeer.",
+  "transcript_english": "This is Jakarta, in the afternoon.\n\nThe rain is falling slowly.\n\nMr. Budi is an ojek driver.\n\nHe is sitting by the roadside, waiting for passengers.\n\nHis motorcycle is parked near a large tree.\n\nThe air feels cool and peaceful.\n\nMr. Budi sees the rainwater on the streets.\n\nSometimes, a car or motorcycle passes by slowly.\n\nBut there aren't many people outside because of this rain.\n\nMr. Budi drinks warm tea from his small thermos.\n\nThe tea tastes very good in this cold weather.\n\nHe smiles faintly, feeling comfortable.\n\nThis is not a busy day for him.\n\nBut Mr. Budi does not feel sad or bored.\n\nHe is enjoying this quiet time.\n\nMaybe the rain will stop soon.\n\nThen, passengers will come again for Mr. Budi.\n\nFor now, he just looks at the city and feels the atmosphere.",
+  "transcript_segments": [
+    {
+      "idx": 0,
+      "id": "Ini Jakarta, di sore hari.",
+      "nl": "Dit is Jakarta, in de namiddag.",
+      "en": "This is Jakarta, in the afternoon."
+    },
+    {
+      "idx": 1,
+      "id": "Hujan turun perlahan.",
+      "nl": "De regen valt langzaam.",
+      "en": "The rain is falling slowly."
+    },
+    {
+      "idx": 2,
+      "id": "Pak Budi adalah seorang pengemudi ojek.",
+      "nl": "Meneer Budi is een ojekchauffeur.",
+      "en": "Mr. Budi is an ojek driver."
+    },
+    {
+      "idx": 3,
+      "id": "Dia duduk di pinggir jalan, menunggu penumpang.",
+      "nl": "Hij zit aan de kant van de weg, wachtend op passagiers.",
+      "en": "He is sitting by the roadside, waiting for passengers."
+    },
+    {
+      "idx": 4,
+      "id": "Motornya parkir di dekat sebuah pohon besar.",
+      "nl": "Zijn motor staat geparkeerd bij een grote boom.",
+      "en": "His motorcycle is parked near a large tree."
+    },
+    {
+      "idx": 5,
+      "id": "Udara terasa sejuk dan damai.",
+      "nl": "De lucht voelt koel en vredig aan.",
+      "en": "The air feels cool and peaceful."
+    },
+    {
+      "idx": 6,
+      "id": "Pak Budi melihat air hujan di jalanan.",
+      "nl": "Meneer Budi ziet het regenwater op straat.",
+      "en": "Mr. Budi sees the rainwater on the streets."
+    },
+    {
+      "idx": 7,
+      "id": "Kadang, ada mobil atau motor lewat dengan pelan.",
+      "nl": "Soms rijdt er langzaam een auto of motor voorbij.",
+      "en": "Sometimes, a car or motorcycle passes by slowly."
+    },
+    {
+      "idx": 8,
+      "id": "Tapi, tidak banyak orang di luar karena hujan ini.",
+      "nl": "Maar er zijn niet veel mensen buiten vanwege deze regen.",
+      "en": "But there aren't many people outside because of this rain."
+    },
+    {
+      "idx": 9,
+      "id": "Pak Budi minum teh hangat dari termos kecilnya.",
+      "nl": "Meneer Budi drinkt warme thee uit zijn kleine thermosfles.",
+      "en": "Mr. Budi drinks warm tea from his small thermos."
+    },
+    {
+      "idx": 10,
+      "id": "Teh itu terasa sangat enak di cuaca dingin.",
+      "nl": "De thee smaakt erg lekker in dit koude weer.",
+      "en": "The tea tastes very good in this cold weather."
+    },
+    {
+      "idx": 11,
+      "id": "Dia tersenyum tipis, merasa nyaman.",
+      "nl": "Hij glimlacht zachtjes, zich comfortabel voelend.",
+      "en": "He smiles faintly, feeling comfortable."
+    },
+    {
+      "idx": 12,
+      "id": "Ini bukan hari yang sibuk untuknya.",
+      "nl": "Dit is geen drukke dag voor hem.",
+      "en": "This is not a busy day for him."
+    },
+    {
+      "idx": 13,
+      "id": "Tapi, Pak Budi tidak merasa sedih atau bosan.",
+      "nl": "Maar meneer Budi voelt zich niet verdrietig of verveeld.",
+      "en": "But Mr. Budi does not feel sad or bored."
+    },
+    {
+      "idx": 14,
+      "id": "Dia menikmati waktu tenang ini.",
+      "nl": "Hij geniet van deze rustige tijd.",
+      "en": "He is enjoying this quiet time."
+    },
+    {
+      "idx": 15,
+      "id": "Mungkin sebentar lagi hujan akan berhenti.",
+      "nl": "Misschien stopt de regen zo meteen.",
+      "en": "Maybe the rain will stop soon."
+    },
+    {
+      "idx": 16,
+      "id": "Lalu, penumpang akan datang lagi untuk Pak Budi.",
+      "nl": "Dan zullen er weer passagiers komen voor meneer Budi.",
+      "en": "Then, passengers will come again for Mr. Budi."
+    },
+    {
+      "idx": 17,
+      "id": "Untuk sekarang, dia hanya melihat kota dan merasakan suasana.",
+      "nl": "Voor nu kijkt hij alleen maar naar de stad en voelt hij de sfeer.",
+      "en": "For now, he just looks at the city and feels the atmosphere."
+    }
+  ],
+  "attribution": null
+}
