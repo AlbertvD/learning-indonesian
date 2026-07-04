@@ -30,8 +30,113 @@ export const lesson = {
       }
     },
     {
-      "title": "Woordenlijst",
+      "title": "Dialoog: Naik taksi",
       "order_index": 1,
+      "content": {
+        "type": "dialogue",
+        "lines": [
+          {
+            "text": "Selamat pagi, Pak! Jangan naik bus! Mari ke sini. Taksi lebih gampang.",
+            "speaker": "Sopir taksi 1",
+            "translation": "Goedemorgen, meneer! Neem niet de bus! Kom hierheen. De taxi is veel makkelijker.",
+            "translation_en": "Good morning, sir! Don't take the bus! Come here. Taxi is much easier."
+          },
+          {
+            "text": "Berapa ongkos ke hotel Istana?",
+            "speaker": "Bapak Ahmad",
+            "translation": "Wat kost een rit naar hotel Istana?",
+            "translation_en": "How much does a ride to Hotel Istana cost?"
+          },
+          {
+            "text": "Hanya Rp 3.900 Pak. Hotel itu jauh sekali!",
+            "speaker": "Sopir taksi 1",
+            "translation": "Maar Rp 3.900, meneer. Dat hotel is heel ver weg!",
+            "translation_en": "Only Rp 3,900, sir. That hotel is very far away!"
+          },
+          {
+            "text": "Aah, terlalu mahal. Rp 2.600 deh!",
+            "speaker": "Bapak Ahmad",
+            "translation": "Aah, veel te duur. Rp 2.600, kom op!",
+            "translation_en": "Ah, much too expensive. Rp 2,600, come on!"
+          },
+          {
+            "text": "Tidak bisa, Pak. Saya rugi dan hotel itu jauh betul.",
+            "speaker": "Sopir taksi 1",
+            "translation": "Dat kan niet, meneer. Dan lijd ik verlies, en dat hotel is echt ver.",
+            "translation_en": "That won't work, sir. Then I lose money, and that hotel is really far."
+          },
+          {
+            "text": "Ya, sudah, biarlah.",
+            "speaker": "Bapak Ahmad",
+            "translation": "Nou ja, laat dan maar.",
+            "translation_en": "Well, okay then."
+          },
+          {
+            "text": "Coba taksi saya, Pak! Taksi ini 'full AC', Pak.",
+            "speaker": "Sopir taksi 2",
+            "translation": "Probeer mijn taxi, meneer! Deze taxi heeft volledige airco, meneer.",
+            "translation_en": "Try my taxi, sir! This taxi has full air conditioning, sir."
+          },
+          {
+            "text": "Ke hotel Istana berapa harganya?",
+            "speaker": "Bapak Ahmad",
+            "translation": "Wat is de prijs naar hotel Istana?",
+            "translation_en": "What's the price to Hotel Istana?"
+          },
+          {
+            "text": "Rp 3.500 Pak.",
+            "speaker": "Sopir taksi 2",
+            "translation": "Rp 3.500, meneer.",
+            "translation_en": "Rp 3,500, sir."
+          },
+          {
+            "text": "Rp 3.000! Cukup deh!",
+            "speaker": "Bapak Ahmad",
+            "translation": "Rp 3.000! Dat is genoeg!",
+            "translation_en": "Rp 3,000! That's enough!"
+          },
+          {
+            "text": "Silakan masuk, Pak, kita berangkat.",
+            "speaker": "Sopir taksi 2",
+            "translation": "Stapt u in, meneer, we vertrekken.",
+            "translation_en": "Get in, sir, we're leaving."
+          },
+          {
+            "text": "Bisa dalam 20 menit ke hotel Istana? Ada janji jam 09.15 (sembilan lewat seperempat) di sana.",
+            "speaker": "Bapak Ahmad",
+            "translation": "Kan het binnen 20 minuten naar hotel Istana? Ik heb daar een afspraak om 09.15 uur (kwart over negen).",
+            "translation_en": "Can you get to Hotel Istana in 20 minutes? I have an appointment there at 09.15 (quarter past nine)."
+          },
+          {
+            "text": "Bisa Pak! Mobil ini masih baru sih!",
+            "speaker": "Sopir taksi 2",
+            "translation": "Dat kan, meneer! Deze auto is immers nog nieuw!",
+            "translation_en": "Yes, sir! This car is still new!"
+          },
+          {
+            "text": "Ambil koper saya yang besar itu, ya Mas.",
+            "speaker": "Bapak Ahmad",
+            "translation": "Pak die grote koffer van mij even, ja?",
+            "translation_en": "Get my big suitcase for me, will you?"
+          },
+          {
+            "text": "Koper besar yang biru itu, Pak?",
+            "speaker": "Sopir taksi 2",
+            "translation": "Die grote blauwe koffer, meneer?",
+            "translation_en": "The big blue suitcase, sir?"
+          },
+          {
+            "text": "Bukan yang biru, tetapi yang hitam!",
+            "speaker": "Bapak Ahmad",
+            "translation": "Niet de blauwe, maar de zwarte!",
+            "translation_en": "Not the blue one, but the black one!"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Woordenlijst",
+      "order_index": 2,
       "content": {
         "type": "vocabulary",
         "items": [
@@ -315,7 +420,7 @@ export const lesson = {
     },
     {
       "title": "Belum = nog niet",
-      "order_index": 2,
+      "order_index": 3,
       "content": {
         "type": "grammar",
         "categories": [
@@ -360,7 +465,7 @@ export const lesson = {
     },
     {
       "title": "Bukan = 1. niet, geen / 2. nietwaar?, is 't niet?",
-      "order_index": 3,
+      "order_index": 4,
       "content": {
         "type": "grammar",
         "categories": [
@@ -441,7 +546,7 @@ export const lesson = {
     },
     {
       "title": "Tidak = niet, nee",
-      "order_index": 4,
+      "order_index": 5,
       "content": {
         "type": "grammar",
         "categories": [
@@ -500,7 +605,7 @@ export const lesson = {
     },
     {
       "title": "Verbod: Jangan = doe het niet, niet doen!",
-      "order_index": 5,
+      "order_index": 6,
       "content": {
         "type": "grammar",
         "categories": [
@@ -545,7 +650,7 @@ export const lesson = {
     },
     {
       "title": "Gebiedende wijs, uitnodiging, aansporing",
-      "order_index": 6,
+      "order_index": 7,
       "content": {
         "type": "grammar",
         "categories": [
@@ -636,7 +741,7 @@ export const lesson = {
     },
     {
       "title": "-kah?",
-      "order_index": 7,
+      "order_index": 8,
       "content": {
         "type": "grammar",
         "categories": [
@@ -681,7 +786,7 @@ export const lesson = {
     },
     {
       "title": "Dagindeling",
-      "order_index": 8,
+      "order_index": 9,
       "content": {
         "type": "grammar",
         "categories": [
@@ -741,7 +846,7 @@ export const lesson = {
     },
     {
       "title": "Tijdsindeling",
-      "order_index": 9,
+      "order_index": 10,
       "content": {
         "type": "grammar",
         "categories": [
@@ -893,7 +998,7 @@ export const lesson = {
     },
     {
       "title": "OEFENINGEN",
-      "order_index": 10,
+      "order_index": 11,
       "content": {
         "type": "exercises",
         "sections": [

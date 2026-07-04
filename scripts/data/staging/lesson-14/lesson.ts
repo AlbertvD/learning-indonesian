@@ -24,8 +24,66 @@ export const lesson = {
       }
     },
     {
-      "title": "Woordenlijst",
+      "title": "Dialoog: Menelepon",
       "order_index": 1,
+      "content": {
+        "type": "dialogue",
+        "intro": "Sudah sejak bertahun-tahun di Indonesia, terutama di kota besar, terdapat banyak orang yang memakai telepon. Dan tentu saja orang Indonesia senang sekali menelepon teman. Kadang-kadang mereka suka bercakap-cakap lama sekali, seperti Tina dan Resti, dua orang teman baik yang saling mengenal sejak kuliah di universitas. Resti memutar nomor telepon Tina: 709220 (tujuh-kosong-sembilan-dua-dua-kosong).",
+        "lines": [
+          {
+            "text": "Iya ... halo!?",
+            "speaker": "Tina",
+            "translation": "Ja ... hallo!?",
+            "translation_en": "Yes ... hello!?"
+          },
+          {
+            "text": "Hai Tin, apa kabar? Saya sudah lama tidak mendengar sesuatu dari kamu. Sibuk ya?",
+            "speaker": "Resti",
+            "translation": "Hoi Tin, hoe gaat het? Ik heb al lang niets van je gehoord. Druk zeker?",
+            "translation_en": "Hi Tin, how are you? I haven't heard from you in ages. You're busy, huh?"
+          },
+          {
+            "text": "Aduh, Res, saya mau menelepon kamu tetapi terus tidak jadi. Begini, Res, saya baru mendengar ada orang yang mau .......",
+            "speaker": "Tina",
+            "translation": "Ach, Res, ik wilde je bellen maar het kwam er steeds niet van. Moet je horen, Res, ik heb net gehoord dat er iemand is die .......",
+            "translation_en": "Oh, Res, I wanted to call you but it never happened. Listen, Res, I just heard that there's someone who ......."
+          },
+          {
+            "text": "Lama sekali mereka ngomong sehingga mereka betul-betul lupa waktu.",
+            "speaker": "Verteller",
+            "translation": "Ze kletsen heel lang, zodat ze de tijd helemaal vergeten.",
+            "translation_en": "They chat for so long that they completely lose track of time."
+          },
+          {
+            "text": "Aduh, Tin, sekarang sudah jam 5 dan saya harus memasak, nanti suamiku pulang dari kantor dan dia pasti lapar. Tidak ada pembantu karena Lebaran. Tidak enak, 'kan? Saya harus bekerja keras di rumah.",
+            "speaker": "Resti",
+            "translation": "Ach, Tin, het is al 5 uur en ik moet koken; straks komt mijn man thuis van kantoor en hij heeft vast honger. Er is geen hulp vanwege Lebaran. Niet fijn, hè? Ik moet hard werken in huis.",
+            "translation_en": "Oh, Tin, it's already 5 o'clock and I have to cook; my husband will be home from the office soon and he'll be hungry for sure. There's no help because of Lebaran. Not nice, right? I have to work hard at home."
+          },
+          {
+            "text": "Sama juga di sini. Pembantu saya kembali ke desanya dan sudah satu minggu tidak pulang-pulang. Saya harus berbelanja dan memasak dan menyetrika dan mencuci dan ya ...... capek pokoknya!! Suamimu bagaimana, masih senang dengan kerjanya?",
+            "speaker": "Tina",
+            "translation": "Hier precies hetzelfde. Mijn hulp is terug naar haar dorp en is al een week niet komen opdagen. Ik moet boodschappen doen en koken en strijken en wassen en ja ...... gewoon doodmoe!! En jouw man, heeft hij het nog naar zijn zin op zijn werk?",
+            "translation_en": "Exactly the same here. My helper went back to her village and hasn't come back for a week. I have to shop and cook and iron and wash and yes ...... just dead tired!! How's your husband, is he still enjoying his work?"
+          },
+          {
+            "text": "Dia cukup baik, tetapi agak bosan dengan kerjanya. Tin, sorry deh tetapi aku benar-benar harus memasak. Besok saja kita ngobrol lagi, oke?",
+            "speaker": "Resti",
+            "translation": "Met hem gaat het best goed, maar hij is zijn werk een beetje beu. Tin, sorry hoor, maar ik moet nu echt gaan koken. Laten we morgen weer verder kletsen, oké?",
+            "translation_en": "He's doing quite well, but he's a bit tired of his work. Tin, sorry but I really have to go cook now. Let's chat again tomorrow, okay?"
+          },
+          {
+            "text": "Sampai besok ya Res, sampaikan salamku kepada suamimu ya, jangan lupa!",
+            "speaker": "Tina",
+            "translation": "Tot morgen, Res, doe de groeten aan je man, niet vergeten!",
+            "translation_en": "See you tomorrow, Res, give my regards to your husband, don't forget!"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Woordenlijst",
+      "order_index": 2,
       "content": {
         "type": "vocabulary",
         "items": [
@@ -274,7 +332,7 @@ export const lesson = {
     },
     {
       "title": "Grammatica - WERKWOORDSVORM MET ME-: Vervolg",
-      "order_index": 2,
+      "order_index": 3,
       "content": {
         "type": "grammar",
         "categories": [
@@ -661,7 +719,7 @@ export const lesson = {
     },
     {
       "title": "OEFENINGEN",
-      "order_index": 3,
+      "order_index": 4,
       "content": {
         "type": "exercises",
         "sections": [
