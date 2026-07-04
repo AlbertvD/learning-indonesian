@@ -16,7 +16,9 @@
 .main {
   flex: 1;
   padding-left: var(--sidebar-width);
-  padding-right: 24px;
+  /* No right padding on purpose: bespoke lesson pages are full-bleed editorial
+     surfaces whose color bands must run rail→edge (desktop slice 4). Every
+     framework page owns its own gutters via PageContainer / Container. */
   overflow: auto;
   height: 100vh;
   box-sizing: border-box;

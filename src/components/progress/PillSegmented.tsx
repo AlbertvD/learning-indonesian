@@ -1,10 +1,10 @@
 // src/components/progress/PillSegmented.tsx
 //
-// A pill-shaped segmented control with a sliding gradient indicator — the clean,
+// A pill-shaped segmented control with a sliding indicator — the clean,
 // modern filter pattern (Mobbin/Eleken). Thin wrapper over Mantine's
-// SegmentedControl (which already animates the indicator), restyled into the
-// voortgang cool→green gradient language. Reused for the tab switch and the
-// vocab/grammar filter.
+// SegmentedControl (which already animates the indicator), filled with the
+// app's tamarind action color (desktop slice 4 warm retune). Reused for the
+// tab switch and the vocab/grammar filter.
 import { SegmentedControl } from '@mantine/core'
 import classes from './PillSegmented.module.css'
 

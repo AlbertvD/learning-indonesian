@@ -33,11 +33,13 @@
 }
 
 .title {
-  font-family: var(--font-sans);
+  /* Editorial serif display face — the same voice as the Home greeting, the
+     rail wordmark and the lesson-card titles (desktop slice 4 unification). */
+  font-family: var(--font-display, var(--font-sans));
   font-size: var(--fs-3xl);
   font-weight: var(--fw-semibold);
   line-height: 1.15;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   margin: 0;
 }

@@ -116,44 +116,6 @@
   .lessonGridItem:nth-child(4n)   { grid-column: span 7; }
 }
 
-/* ── Lessen / Woordenlijsten tab pills ─────────────────────────────────────
-   A two-pill segmented control between the page header and the content.
-   Local-state view switch (not deep-linkable); matches the app's pill language
-   and the StatusPill geometry. */
-.tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
-  margin-bottom: 18px;
-  max-width: 360px;
-  border: 1px solid var(--card-border);
-  border-radius: var(--r-xl);
-  background: var(--card-bg);
-}
-
-.tab {
-  height: 44px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  border-radius: var(--r-xl);
-  font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  transition: var(--transition-base);
-}
-
-.tab[data-active] {
-  background: var(--accent-primary);
-  color: var(--text-on-accent);
-}
-
-.tab:not([data-active]):hover {
-  color: var(--text-primary);
-  background: var(--accent-primary-subtle);
-}
-
 /* CEFR level sections (§7.3) — collapsible groups over the lesson grid. */
 .levelSection {
   margin-bottom: 0.6rem;
