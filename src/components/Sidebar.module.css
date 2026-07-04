@@ -41,33 +41,6 @@
 }
 
 /* Start sessie CTA — the single tamarind action, same in both themes */
-.cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  border: none;
-  border-radius: 11px;
-  padding: 13px 14px;
-  margin-bottom: 28px;
-  /* tamarind scale, not --accent-primary: the rail is theme-invariant */
-  background: var(--mantine-color-tamarind-6);
-  color: var(--text-on-accent);
-  font-family: var(--font-sans);
-  font-size: 14.5px;
-  font-weight: var(--fw-semibold);
-  cursor: pointer;
-  box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.7);
-  transition: background 0.15s ease;
-}
-.cta:hover {
-  background: var(--mantine-color-tamarind-7);
-}
-.cta:focus-visible {
-  outline: 2px solid var(--rail-ink);
-  outline-offset: 2px;
-}
-
 /* Section label */
 .sectionLabel {
   font-size: 10.5px;

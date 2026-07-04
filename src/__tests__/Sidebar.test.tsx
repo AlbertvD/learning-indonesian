@@ -2,11 +2,11 @@
 //
 // Desktop program slice 2: the persistent rail. Five destinations (Home ·
 // Leren · Ontdek · Voortgang · Profiel — Profiel promoted to a primary nav
-// item, foundation plan §7.1), a Start-sessie CTA, admin links behind the
-// admin role, and no trace of the deleted ProfileMenu / pin machinery.
+// item, foundation plan §7.1), admin links behind the admin role, and no
+// trace of the deleted ProfileMenu / pin machinery. The Start-session CTA was
+// removed from the rail — users start a session from Home.
 
 import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
@@ -33,12 +33,6 @@ vi.mock('@/lib/analytics/engagement', () => ({
   engagement: { practiceTime: mockPracticeTime },
 }))
 
-const mockNavigate = vi.hoisted(() => vi.fn())
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
-  return { ...actual, useNavigate: () => mockNavigate }
-})
-
 function renderSidebar() {
   return render(
     <MantineProvider>
@@ -58,26 +52,18 @@ describe('Sidebar (rail)', () => {
     })
   })
 
-  it('renders the Kamoe Bisa wordmark, the Start-sessie CTA and all five destinations', () => {
+  it('renders the Kamoe Bisa wordmark and all five destinations (no Start-session CTA)', () => {
     renderSidebar()
 
     expect(screen.getByText('Kamoe Bisa')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Start sessie/ })).toBeInTheDocument()
+    // The Start-session CTA was removed from the rail (users start from Home).
+    expect(screen.queryByRole('button', { name: /Start sessie/ })).not.toBeInTheDocument()
     for (const [label, path] of [
       ['Home', '/'], ['Leren', '/leren'], ['Ontdek', '/ontdek'],
       ['Voortgang', '/progress'], ['Profiel', '/profile'],
     ] as const) {
       expect(screen.getByRole('link', { name: label })).toHaveAttribute('href', path)
     }
-  })
-
-  it('routes the CTA to the session', async () => {
-    const user = userEvent.setup()
-    renderSidebar()
-
-    await user.click(screen.getByRole('button', { name: /Start sessie/ }))
-
-    expect(mockNavigate).toHaveBeenCalledWith('/session')
   })
 
   it('hides admin links for regular users and shows them for admins', () => {

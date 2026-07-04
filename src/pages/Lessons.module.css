@@ -160,53 +160,54 @@
   margin-top: 0.6rem;
 }
 
-/* Four content-type cards at the top of Leren (§7.3). 2×2 on mobile. */
-.typeGrid {
+/* ─── Mobile hub (§7.3) ───────────────────────────────────────────────────
+   The four Leren surfaces as a 2×2 grid of descriptive cards that divide the
+   viewport height. `dvh` tracks the mobile browser's collapsing chrome, and
+   `grid-template-rows: repeat(2, 1fr)` splits the space evenly; the per-card
+   min-height is the floor, so on a very short screen the cards keep a usable
+   size and the page scrolls instead of clipping the text. */
+.hub {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.6rem;
-  margin: 0.25rem 0 1.25rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(140px, 1fr));
+  gap: 0.7rem;
+  min-height: calc(100dvh - 200px);
+  margin-top: 0.5rem;
 }
 
-@media (min-width: 700px) {
-  .typeGrid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.typeCard {
+.hubCard {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 0.9rem 0.5rem;
-  border-radius: 14px;
+  gap: 0.45rem;
+  padding: 1rem;
+  border-radius: 16px;
   border: 1px solid var(--card-border);
   background: var(--card-bg);
   color: var(--text-primary);
-  cursor: pointer;
+  text-align: left;
   text-decoration: none;
-  text-align: center;
+  cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 }
 
-.typeCard:active {
+.hubCard:active {
   transform: scale(0.98);
 }
 
-.typeCard:hover {
-  background: var(--accent-primary-subtle);
-}
-
-.typeCardActive {
+.hubCard:hover {
   border-color: var(--accent-primary, #4dabf7);
-  background: var(--accent-primary-subtle);
-  color: var(--accent-primary, #4dabf7);
 }
 
-.typeLabel {
-  font-size: 0.82rem;
-  font-weight: 600;
+.hubLabel {
+  font-size: 1.02rem;
+  font-weight: 700;
   line-height: 1.15;
+}
+
+.hubDesc {
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: var(--text-secondary, #868e96);
 }

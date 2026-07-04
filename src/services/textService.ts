@@ -106,6 +106,9 @@ export const textService = {
   /**
    * Audio-bearing texts only — the Listen face (Podcasts page). "Is a podcast"
    * = has audio_path, enforced server-side so the segments JSONB never ships.
+   * The pronunciation podcast (`audio_path_en IS NOT NULL`, ADR 0025) is excluded:
+   * it lives only inside the Uitspraak trainer (`getPronunciationPodcast`), not in
+   * the generic Listen list.
    */
   async listPodcasts(): Promise<PodcastListRow[]> {
     const { data, error } = await supabase
@@ -113,9 +116,28 @@ export const textService = {
       .from('texts')
       .select(PODCAST_LIST_COLUMNS)
       .not('audio_path', 'is', null)
+      .is('audio_path_en', null)
       .order('created_at', { ascending: false })
     if (error) throw error
     return data as PodcastListRow[]
+  },
+
+  /**
+   * The single pronunciation podcast (ADR 0025) — the one `texts` row carrying
+   * twin NL/EN audio (`audio_path_en IS NOT NULL` uniquely identifies it). Consumed
+   * by the Uitspraak trainer only; returns null if it has not been seeded yet.
+   */
+  async getPronunciationPodcast(): Promise<Podcast | null> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('texts')
+      .select('*')
+      .not('audio_path_en', 'is', null)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    if (error) throw error
+    return data as Podcast | null
   },
 
   async getText(textId: string): Promise<Podcast> {

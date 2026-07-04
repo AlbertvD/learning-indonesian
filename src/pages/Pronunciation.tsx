@@ -5,13 +5,14 @@
 // audio from the existing audio_clips path. No ASR, no FSRS (ADR 0025).
 
 import { useEffect, useState } from 'react'
-import { Alert, Stack } from '@mantine/core'
-import { IconAlertCircle, IconVolume } from '@tabler/icons-react'
+import { Alert, Paper, Stack, Text, Title } from '@mantine/core'
+import { IconAlertCircle, IconVolume, IconHeadphones } from '@tabler/icons-react'
 import { PageContainer, PageBody, PageHeader, LoadingState, EmptyState } from '@/components/page/primitives'
-import { BackLink } from '@/components/nav/BackLink'
+import { LerenNav } from '@/components/lessons/LerenNav'
 import { PitfallCard } from '@/components/pronunciation'
 import { getPitfallsForL1 } from '@/lib/pronunciation/pitfallCatalog'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
+import { textService, type Podcast } from '@/services/textService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
@@ -25,6 +26,7 @@ export function Pronunciation() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [audioMap, setAudioMap] = useState<SessionAudioMap>(new Map())
+  const [podcast, setPodcast] = useState<Podcast | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -36,8 +38,14 @@ export function Pronunciation() {
           ...p.examples,
           ...(p.minimalPairs ?? []).flatMap((mp) => [mp.a, mp.b]),
         ])
-        const map = await fetchSessionAudioMap(words.map((text) => ({ text, voiceId: null })))
-        if (!cancelled) setAudioMap(map)
+        const [map, pronunciationPodcast] = await Promise.all([
+          fetchSessionAudioMap(words.map((text) => ({ text, voiceId: null }))),
+          textService.getPronunciationPodcast(),
+        ])
+        if (!cancelled) {
+          setAudioMap(map)
+          setPodcast(pronunciationPodcast)
+        }
       } catch (err) {
         if (cancelled) return
         logError({ page: 'pronunciation', action: 'fetchAudio', error: err })
@@ -52,11 +60,33 @@ export function Pronunciation() {
     }
   }, [language, T.pronunciation.loadError])
 
+  // L1 routing (ADR 0025): the English learner hears the English twin
+  // (audio_path_en); everyone else hears the NL host track (audio_path).
+  const podcastSource = podcast
+    ? (language === 'en' && podcast.audio_path_en ? podcast.audio_path_en : podcast.audio_path)
+    : null
+  const podcastUrl = podcastSource ? textService.getAudioUrl(podcastSource) : ''
+
   return (
     <PageContainer size="lg">
       <PageBody>
-        <BackLink to="/leren" label={T.nav.backToLeren} />
+        <LerenNav />
         <PageHeader title={T.pronunciation.title} subtitle={T.pronunciation.subtitle} />
+
+        {!loading && !error && podcastUrl && (
+          <Paper withBorder radius="md" p="lg" mb="md">
+            <Stack gap="sm">
+              <Stack gap={4}>
+                <Title order={4} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <IconHeadphones size={20} color="var(--accent-primary)" />
+                  {T.pronunciation.podcastHeading}
+                </Title>
+                <Text size="sm" c="dimmed">{T.pronunciation.podcastBlurb}</Text>
+              </Stack>
+              <audio controls preload="none" style={{ width: '100%' }} src={podcastUrl} />
+            </Stack>
+          </Paper>
+        )}
 
         {loading && <LoadingState caption={T.pronunciation.title} />}
 

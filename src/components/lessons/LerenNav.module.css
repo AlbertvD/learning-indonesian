@@ -1,0 +1,66 @@
+/* LerenNav — the persistent desktop switcher row for the four Leren surfaces.
+   Desktop-only: on mobile the surfaces are a hub (Lessons.tsx) and each trainer
+   shows a back link instead. The card visuals match the former in-page type
+   cards (moved here from Lessons.module.css). */
+
+.nav {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+    margin: 0.25rem 0 1.25rem;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.9rem 0.5rem;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.card:hover {
+  background: var(--accent-primary-subtle);
+}
+
+.cardActive {
+  border-color: var(--accent-primary, #4dabf7);
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary, #4dabf7);
+}
+
+.label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+/* The back link that stands in for the row on mobile (hidden on desktop, where
+   the row itself is the way between surfaces). */
+.mobileBack {
+  display: block;
+}
+
+@media (min-width: 769px) {
+  .mobileBack {
+    display: none;
+  }
+}

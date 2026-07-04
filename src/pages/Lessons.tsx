@@ -18,7 +18,8 @@ import {
   IconListCheck,
   IconChevronDown,
 } from '@tabler/icons-react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useMediaQuery } from '@mantine/hooks'
 import {
   PageContainer,
   PageBody,
@@ -26,6 +27,7 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { LessonCard } from '@/components/lessons/LessonCard'
+import { LerenNav } from '@/components/lessons/LerenNav'
 import { Woordenlijsten } from '@/components/collections/Woordenlijsten'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -158,7 +160,13 @@ function rememberOverviewScrollPosition() {
 
 export function Lessons() {
   const T = useT()
-  const [tab, setTab] = useState<'lessen' | 'woordenlijsten'>('lessen')
+  const isMobile = useMediaQuery('(max-width: 768px)') ?? false
+  // The selected surface is addressable via ?v= so the desktop switcher (LerenNav)
+  // and the mobile hub both drive it by navigation: no ?v = Lessen (desktop) /
+  // the hub (mobile); ?v=woorden = Woordenlijsten. Affix/Uitspraak are their own
+  // routes. `activeSurface` mirrors LerenNav's derivation.
+  const [searchParams] = useSearchParams()
+  const surface = searchParams.get('v') === 'woorden' ? 'woordenlijsten' : 'lessen'
   const [openLevel, setOpenLevel] = useState<string | null>(null)
   const [model, setModel] = useState<LessonOverviewModel>(emptyModel)
   const [loading, setLoading] = useState(true)
@@ -319,92 +327,112 @@ export function Lessons() {
 
   const groups = groupRowsByLevel(model.rows)
 
+  const notices = (
+    <>
+      {loadFailed && (
+        <div className={classes.notice} role="status">
+          {T.common.somethingWentWrong}
+        </div>
+      )}
+      {progressRefreshFailed && (
+        <div className={classes.notice} role="status">
+          {T.lessons.progressRefreshFailed}
+        </div>
+      )}
+    </>
+  )
+
+  // Lessons grouped into collapsible CEFR sections (§7.3) so 30 lessons aren't a
+  // long scroll; the current level opens by default.
+  const lessenGroups = groups.map((group) => {
+    const open = openLevel === group.level
+    return (
+      <section key={group.level} className={classes.levelSection}>
+        <button
+          type="button"
+          className={classes.levelHeader}
+          aria-expanded={open}
+          onClick={() => setOpenLevel(open ? null : group.level)}
+        >
+          <span className={classes.levelName}>{group.level}</span>
+          <span className={classes.levelMeta}>
+            {group.rows.length} {T.leren.lessenTab.toLowerCase()} · {group.masteredPercent}% {T.lessons.mastered.toLowerCase()}
+          </span>
+          <IconChevronDown
+            size={18}
+            className={`${classes.levelChevron} ${open ? classes.levelChevronOpen : ''}`}
+          />
+        </button>
+        {open && (
+          <ol className={classes.lessonGrid} aria-label={group.level}>
+            {group.rows.map(renderCard)}
+          </ol>
+        )}
+      </section>
+    )
+  })
+
+  const surfaceContent = (which: 'lessen' | 'woordenlijsten') =>
+    which === 'lessen' ? <>{notices}{lessenGroups}</> : <Woordenlijsten />
+
+  // Mobile, no surface selected: the four surfaces are a hub of descriptive
+  // cards that divide the viewport height. Each opens its surface full-width
+  // (Lessen/Woordenlijsten via ?v= on this page; Affix/Uitspraak their routes),
+  // which then shows a back link — the shape the trainers already use.
+  const noSurfaceSelected = !searchParams.get('v')
+  if (isMobile && noSurfaceSelected) {
+    return (
+      <PageContainer size="lg">
+        <PageBody>
+          <PageHeader title={T.nav.leren} />
+          <div className={classes.hub}>
+            <Link to="/leren?v=lessen" className={classes.hubCard}>
+              <IconBook size={26} />
+              <span className={classes.hubLabel}>{T.leren.lessenTab}</span>
+              <span className={classes.hubDesc}>{T.leren.lessenDesc}</span>
+            </Link>
+            <Link to="/leren?v=woorden" className={classes.hubCard}>
+              <IconListCheck size={26} />
+              <span className={classes.hubLabel}>{T.collections.title}</span>
+              <span className={classes.hubDesc}>{T.leren.woordenlijstenDesc}</span>
+            </Link>
+            <Link to="/morphology" className={classes.hubCard}>
+              <IconAbc size={26} />
+              <span className={classes.hubLabel}>{T.leren.affixTitle}</span>
+              <span className={classes.hubDesc}>{T.leren.affixDesc}</span>
+            </Link>
+            <Link to="/pronunciation" className={classes.hubCard}>
+              <IconVolume size={26} />
+              <span className={classes.hubLabel}>{T.leren.pronunciationTitle}</span>
+              <span className={classes.hubDesc}>{T.leren.pronunciationDesc}</span>
+            </Link>
+          </div>
+        </PageBody>
+      </PageContainer>
+    )
+  }
+
+  if (isMobile) {
+    return (
+      <PageContainer size="lg">
+        <PageBody>
+          <LerenNav />
+          <PageHeader title={surface === 'lessen' ? T.leren.lessenTab : T.collections.title} />
+          {surfaceContent(surface)}
+        </PageBody>
+      </PageContainer>
+    )
+  }
+
+  // Desktop: the four icons persist at the top for every surface (LerenNav is
+  // rendered here and on the Affix/Uitspraak trainer pages), with the selected
+  // surface's content underneath. Lessen/Woordenlijsten swap via ?v=.
   return (
     <PageContainer size="lg">
       <PageBody>
         <PageHeader title={T.nav.leren} />
-
-        {/* Four content-type cards (§7.3): Lessons + Woordenlijsten swap inline
-            (default Lessons); Affix + Pronunciation jump to their full trainer
-            pages (which offer a back link). */}
-        <div className={classes.typeGrid} role="tablist" aria-label={T.nav.leren}>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'lessen'}
-            className={`${classes.typeCard} ${tab === 'lessen' ? classes.typeCardActive : ''}`}
-            onClick={() => setTab('lessen')}
-          >
-            <IconBook size={22} />
-            <span className={classes.typeLabel}>{T.leren.lessenTab}</span>
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'woordenlijsten'}
-            className={`${classes.typeCard} ${tab === 'woordenlijsten' ? classes.typeCardActive : ''}`}
-            onClick={() => setTab('woordenlijsten')}
-          >
-            <IconListCheck size={22} />
-            <span className={classes.typeLabel}>{T.collections.title}</span>
-          </button>
-          <Link to="/morphology" className={classes.typeCard}>
-            <IconAbc size={22} />
-            <span className={classes.typeLabel}>{T.leren.affixTitle}</span>
-          </Link>
-          <Link to="/pronunciation" className={classes.typeCard}>
-            <IconVolume size={22} />
-            <span className={classes.typeLabel}>{T.leren.pronunciationTitle}</span>
-          </Link>
-        </div>
-
-        {loadFailed && (
-          <div className={classes.notice} role="status">
-            {T.common.somethingWentWrong}
-          </div>
-        )}
-
-        {progressRefreshFailed && (
-          <div className={classes.notice} role="status">
-            {T.lessons.progressRefreshFailed}
-          </div>
-        )}
-
-        {tab === 'lessen' ? (
-          <>
-            {/* Lessons grouped into collapsible CEFR sections (§7.3) so 30
-                lessons aren't a long scroll; the current level opens by default. */}
-            {groups.map((group) => {
-              const open = openLevel === group.level
-              return (
-                <section key={group.level} className={classes.levelSection}>
-                  <button
-                    type="button"
-                    className={classes.levelHeader}
-                    aria-expanded={open}
-                    onClick={() => setOpenLevel(open ? null : group.level)}
-                  >
-                    <span className={classes.levelName}>{group.level}</span>
-                    <span className={classes.levelMeta}>
-                      {group.rows.length} {T.leren.lessenTab.toLowerCase()} · {group.masteredPercent}% {T.lessons.mastered.toLowerCase()}
-                    </span>
-                    <IconChevronDown
-                      size={18}
-                      className={`${classes.levelChevron} ${open ? classes.levelChevronOpen : ''}`}
-                    />
-                  </button>
-                  {open && (
-                    <ol className={classes.lessonGrid} aria-label={group.level}>
-                      {group.rows.map(renderCard)}
-                    </ol>
-                  )}
-                </section>
-              )
-            })}
-          </>
-        ) : (
-          <Woordenlijsten />
-        )}
+        <LerenNav />
+        {surfaceContent(surface)}
       </PageBody>
     </PageContainer>
   )
