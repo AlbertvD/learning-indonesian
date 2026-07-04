@@ -6,8 +6,11 @@
 
 .indicator {
   border-radius: 999px;
-  background: linear-gradient(135deg, #4dabf7, #20c997);
-  box-shadow: 0 3px 10px rgba(32, 201, 151, 0.28);
+  /* Filled-control tamarind (same fill both themes, like the rail CTA /
+     Mantine primaryShade 6) — replaced the pre-retune cool blue→teal
+     gradient (desktop slice 4). White label passes AA on tamarind-6. */
+  background: var(--mantine-color-tamarind-6);
+  box-shadow: 0 3px 10px rgba(198, 74, 38, 0.28);
 }
 
 .label {
