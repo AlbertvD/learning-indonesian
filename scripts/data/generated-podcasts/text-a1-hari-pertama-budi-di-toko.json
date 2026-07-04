@@ -1,0 +1,85 @@
+{
+  "title": "Hari Pertama Budi di Toko",
+  "description": "Een verhaal over Budi's eerste dag dat hij helpt in de kleine familiewinkel.",
+  "level": "A1",
+  "duration_seconds": null,
+  "audio_filename": null,
+  "transcript_indonesian": "Pagi ini, Budi sangat senang.\n\nIni hari pertamanya bantu Ibu di toko.\n\nToko Ibu kecil, tapi banyak barang.\n\nMereka jual roti, teh, dan banyak lagi.\n\nBudi taruh roti di rak.\n\nLalu, seorang pelanggan datang.\n\nPelanggan itu mau beli teh.\n\nBudi bantu Ibu beri teh.\n\nPelanggan itu senyum pada Budi.\n\nBudi juga senyum.\n\nIbu bilang, \"Terima kasih, Budi. Kamu hebat!\"\n\nBudi sangat senang bantu Ibu hari ini.",
+  "transcript_dutch": "Vanochtend is Budi erg blij.\n\nHet is zijn eerste dag dat hij moeder helpt in de winkel.\n\nMoeders winkel is klein, maar heeft veel spullen.\n\nZe verkopen brood, thee en nog veel meer.\n\nBudi legt het brood op het schap.\n\nDaarna kwam er een klant.\n\nDie klant wilde thee kopen.\n\nBudi hielp moeder de thee te geven.\n\nDie klant glimlachte naar Budi.\n\nBudi glimlachte ook.\n\nMoeder zei: \"Dank je wel, Budi. Je bent geweldig!\"\n\nBudi was erg blij om moeder vandaag te helpen.",
+  "transcript_english": "This morning, Budi is very happy.\n\nThis is his first day helping Mom at the store.\n\nMom's store is small, but has many items.\n\nThey sell bread, tea, and much more.\n\nBudi puts the bread on the shelf.\n\nThen, a customer came.\n\nThat customer wanted to buy tea.\n\nBudi helped Mom give the tea.\n\nThat customer smiled at Budi.\n\nBudi also smiled.\n\nMom said, \"Thank you, Budi. You are great!\"\n\nBudi was very happy to help Mom today.",
+  "transcript_segments": [
+    {
+      "idx": 0,
+      "id": "Pagi ini, Budi sangat senang.",
+      "nl": "Vanochtend is Budi erg blij.",
+      "en": "This morning, Budi is very happy."
+    },
+    {
+      "idx": 1,
+      "id": "Ini hari pertamanya bantu Ibu di toko.",
+      "nl": "Het is zijn eerste dag dat hij moeder helpt in de winkel.",
+      "en": "This is his first day helping Mom at the store."
+    },
+    {
+      "idx": 2,
+      "id": "Toko Ibu kecil, tapi banyak barang.",
+      "nl": "Moeders winkel is klein, maar heeft veel spullen.",
+      "en": "Mom's store is small, but has many items."
+    },
+    {
+      "idx": 3,
+      "id": "Mereka jual roti, teh, dan banyak lagi.",
+      "nl": "Ze verkopen brood, thee en nog veel meer.",
+      "en": "They sell bread, tea, and much more."
+    },
+    {
+      "idx": 4,
+      "id": "Budi taruh roti di rak.",
+      "nl": "Budi legt het brood op het schap.",
+      "en": "Budi puts the bread on the shelf."
+    },
+    {
+      "idx": 5,
+      "id": "Lalu, seorang pelanggan datang.",
+      "nl": "Daarna kwam er een klant.",
+      "en": "Then, a customer came."
+    },
+    {
+      "idx": 6,
+      "id": "Pelanggan itu mau beli teh.",
+      "nl": "Die klant wilde thee kopen.",
+      "en": "That customer wanted to buy tea."
+    },
+    {
+      "idx": 7,
+      "id": "Budi bantu Ibu beri teh.",
+      "nl": "Budi hielp moeder de thee te geven.",
+      "en": "Budi helped Mom give the tea."
+    },
+    {
+      "idx": 8,
+      "id": "Pelanggan itu senyum pada Budi.",
+      "nl": "Die klant glimlachte naar Budi.",
+      "en": "That customer smiled at Budi."
+    },
+    {
+      "idx": 9,
+      "id": "Budi juga senyum.",
+      "nl": "Budi glimlachte ook.",
+      "en": "Budi also smiled."
+    },
+    {
+      "idx": 10,
+      "id": "Ibu bilang, \"Terima kasih, Budi. Kamu hebat!\"",
+      "nl": "Moeder zei: \"Dank je wel, Budi. Je bent geweldig!\"",
+      "en": "Mom said, \"Thank you, Budi. You are great!\""
+    },
+    {
+      "idx": 11,
+      "id": "Budi sangat senang bantu Ibu hari ini.",
+      "nl": "Budi was erg blij om moeder vandaag te helpen.",
+      "en": "Budi was very happy to help Mom today."
+    }
+  ],
+  "attribution": null
+}

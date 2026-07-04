@@ -24,8 +24,9 @@ export interface AssembleInput {
   description: string | null
   level: Level
   segments: TranscriptSegment[]
-  audio_filename: string
-  duration_seconds: number
+  /** NULL for a read-only text (no narration — seeds via seedText). */
+  audio_filename: string | null
+  duration_seconds: number | null
   /** CC attribution for a sourced episode; null/omitted for LLM-original. */
   attribution?: PodcastAttribution | null
 }

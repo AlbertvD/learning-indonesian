@@ -13,6 +13,10 @@ const supabase = createClient('https://api.supabase.duin.home', serviceKey)
 const audioDir = 'content/podcasts'
 
 for (const podcast of podcasts) {
+  if (!podcast.audio_filename) {
+    console.warn('Read-only record (no audio_filename) — seed via scripts/podcasts/run.ts --resume, skipping:', podcast.title)
+    continue
+  }
   const localPath = `${audioDir}/${podcast.audio_filename}`
   const storagePath = `podcasts/${podcast.audio_filename}`
 

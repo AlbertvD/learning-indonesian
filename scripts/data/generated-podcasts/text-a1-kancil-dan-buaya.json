@@ -1,0 +1,79 @@
+{
+  "title": "Kancil dan Buaya",
+  "description": "Dit is een eenvoudig verhaal over Kancil, het slimme hertje, dat krokodillen voor de gek houdt om een rivier over te steken.",
+  "level": "A1",
+  "duration_seconds": null,
+  "audio_filename": null,
+  "transcript_indonesian": "Kancil adalah seekor hewan kecil yang pandai.\n\nSuatu hari, Kancil lapar sekali.\n\nDia melihat banyak buah enak di seberang sungai.\n\nTapi, di sungai itu ada banyak buaya besar.\n\nKancil punya ide.\n\nKancil memanggil buaya-buaya itu, \"Hai buaya! Aku mau hitung kalian!\"\n\nBuaya-buaya itu senang dan berbaris.\n\nKancil melompat dari satu buaya ke buaya lain.\n\nSatu, dua, tiga... sampai Kancil di seberang.\n\nKancil tertawa dan berkata, \"Terima kasih, buaya!\"\n\nLalu, Kancil makan buah-buahnya dengan senang.",
+  "transcript_dutch": "Kancil is een slim klein dier.\n\nOp een dag had Kancil heel veel honger.\n\nHij zag veel lekker fruit aan de overkant van de rivier.\n\nMaar, in die rivier waren veel grote krokodillen.\n\nKancil had een idee.\n\nKancil riep de krokodillen, \"Hoi krokodillen! Ik wil jullie tellen!\"\n\nDe krokodillen waren blij en stonden in een rij.\n\nKancil sprong van de ene krokodil naar de andere.\n\nEén, twee, drie... totdat Kancil aan de overkant was.\n\nKancil lachte en zei, \"Bedankt, krokodillen!\"\n\nDaarna at Kancil blij de vruchten op.",
+  "transcript_english": "Kancil is a clever little animal.\n\nOne day, Kancil was very hungry.\n\nHe saw a lot of delicious fruit across the river.\n\nBut, in that river there were many big crocodiles.\n\nKancil had an idea.\n\nKancil called out to the crocodiles, \"Hey crocodiles! I want to count you!\"\n\nThe crocodiles were happy and lined up.\n\nKancil jumped from one crocodile to another.\n\nOne, two, three... until Kancil was across.\n\nKancil laughed and said, \"Thank you, crocodiles!\"\n\nThen, Kancil happily ate the fruits.",
+  "transcript_segments": [
+    {
+      "idx": 0,
+      "id": "Kancil adalah seekor hewan kecil yang pandai.",
+      "nl": "Kancil is een slim klein dier.",
+      "en": "Kancil is a clever little animal."
+    },
+    {
+      "idx": 1,
+      "id": "Suatu hari, Kancil lapar sekali.",
+      "nl": "Op een dag had Kancil heel veel honger.",
+      "en": "One day, Kancil was very hungry."
+    },
+    {
+      "idx": 2,
+      "id": "Dia melihat banyak buah enak di seberang sungai.",
+      "nl": "Hij zag veel lekker fruit aan de overkant van de rivier.",
+      "en": "He saw a lot of delicious fruit across the river."
+    },
+    {
+      "idx": 3,
+      "id": "Tapi, di sungai itu ada banyak buaya besar.",
+      "nl": "Maar, in die rivier waren veel grote krokodillen.",
+      "en": "But, in that river there were many big crocodiles."
+    },
+    {
+      "idx": 4,
+      "id": "Kancil punya ide.",
+      "nl": "Kancil had een idee.",
+      "en": "Kancil had an idea."
+    },
+    {
+      "idx": 5,
+      "id": "Kancil memanggil buaya-buaya itu, \"Hai buaya! Aku mau hitung kalian!\"",
+      "nl": "Kancil riep de krokodillen, \"Hoi krokodillen! Ik wil jullie tellen!\"",
+      "en": "Kancil called out to the crocodiles, \"Hey crocodiles! I want to count you!\""
+    },
+    {
+      "idx": 6,
+      "id": "Buaya-buaya itu senang dan berbaris.",
+      "nl": "De krokodillen waren blij en stonden in een rij.",
+      "en": "The crocodiles were happy and lined up."
+    },
+    {
+      "idx": 7,
+      "id": "Kancil melompat dari satu buaya ke buaya lain.",
+      "nl": "Kancil sprong van de ene krokodil naar de andere.",
+      "en": "Kancil jumped from one crocodile to another."
+    },
+    {
+      "idx": 8,
+      "id": "Satu, dua, tiga... sampai Kancil di seberang.",
+      "nl": "Eén, twee, drie... totdat Kancil aan de overkant was.",
+      "en": "One, two, three... until Kancil was across."
+    },
+    {
+      "idx": 9,
+      "id": "Kancil tertawa dan berkata, \"Terima kasih, buaya!\"",
+      "nl": "Kancil lachte en zei, \"Bedankt, krokodillen!\"",
+      "en": "Kancil laughed and said, \"Thank you, crocodiles!\""
+    },
+    {
+      "idx": 10,
+      "id": "Lalu, Kancil makan buah-buahnya dengan senang.",
+      "nl": "Daarna at Kancil blij de vruchten op.",
+      "en": "Then, Kancil happily ate the fruits."
+    }
+  ],
+  "attribution": null
+}
