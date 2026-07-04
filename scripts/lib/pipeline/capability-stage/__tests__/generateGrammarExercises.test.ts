@@ -157,6 +157,14 @@ describe('parseResponse', () => {
     expect(parseResponse(wrapped)).toHaveLength(1)
   })
 
+  it('extracts the array from a prose preamble (same live failure mode as dialogue cloze)', () => {
+    const wrapped =
+      'Here are the exercises I generated after considering each pattern:\n\n' +
+      candidateJson(VALID_CONTRAST) +
+      '\n\nEach follows the constraints.'
+    expect(parseResponse(wrapped)).toHaveLength(1)
+  })
+
   it('drops candidates with an unrecognized exercise_type (e.g. speaking)', () => {
     const raw = JSON.stringify([
       { exercise_type: 'speaking', grammar_pattern_slug: 'l4-bukan-negatie', payload: {} },

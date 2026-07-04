@@ -246,6 +246,18 @@ describe('parseDialogueClozeResponse', () => {
     expect(parseDialogueClozeResponse('not json at all')).toBeNull()
   })
 
+  it('extracts the object from a prose preamble (live lesson-28 failure: the model reasons before the JSON)', () => {
+    const parsed = parseDialogueClozeResponse(
+      'Looking at the candidates, "wakil" is the strongest content word.\n\n' +
+        'The token in the line is `wakil` (no trailing punctuation).\n\n' +
+        '{"answer":"wakil","sentence_with_blank":"Sudah saya cek pada ___ setempat."}',
+    )
+    expect(parsed).toEqual({
+      answer: 'wakil',
+      sentence_with_blank: 'Sudah saya cek pada ___ setempat.',
+    })
+  })
+
   it('returns null when required fields are missing or non-string', () => {
     expect(parseDialogueClozeResponse('{"answer":"pohon"}')).toBeNull()
     expect(parseDialogueClozeResponse('{"answer":1,"sentence_with_blank":"___"}')).toBeNull()

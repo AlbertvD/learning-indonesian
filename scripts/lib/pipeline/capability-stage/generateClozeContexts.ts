@@ -17,6 +17,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 import { ANTHROPIC_MAX_RETRIES, GENERATION_THROTTLE_MS, sleep } from '../generationThrottle'
+import { extractLlmJson } from './parseLlmJson'
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -320,18 +321,16 @@ These are the vocab words in the line that have enough same-category distractors
 export function parseDialogueClozeResponse(
   raw: string,
 ): { answer: string; sentence_with_blank: string } | null {
-  const cleaned = raw.replace(/^```json\s*/u, '').replace(/\s*```\s*$/u, '').trim()
-  try {
-    const parsed = JSON.parse(cleaned)
-    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return null
-    const answer = (parsed as Record<string, unknown>).answer
-    const swb = (parsed as Record<string, unknown>).sentence_with_blank
-    if (typeof answer !== 'string' || answer.length === 0) return null
-    if (typeof swb !== 'string' || swb.length === 0) return null
-    return { answer, sentence_with_blank: swb }
-  } catch {
-    return null
-  }
+  // extractLlmJson tolerates a prose preamble / code fence around the object
+  // (the model ignores the "JSON only" instruction on long lines — live on
+  // lesson 28); the shape checks here + the sanitizer stay the content authority.
+  const parsed = extractLlmJson(raw, '{', '}')
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return null
+  const answer = (parsed as Record<string, unknown>).answer
+  const swb = (parsed as Record<string, unknown>).sentence_with_blank
+  if (typeof answer !== 'string' || answer.length === 0) return null
+  if (typeof swb !== 'string' || swb.length === 0) return null
+  return { answer, sentence_with_blank: swb }
 }
 
 // ---------------------------------------------------------------------------
