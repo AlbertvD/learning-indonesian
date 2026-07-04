@@ -33,13 +33,13 @@ export function Ontdek() {
   // First-run checklist step ③ (desktop program slice 3): done on first visit.
   useEffect(() => { setFirstRunFlag(ONTDEK_VISITED_KEY) }, [])
   return (
-    <PageContainer size="lg">
-      <PageBody>
+    <PageContainer size="lg" fit={isMobile}>
+      <PageBody variant={isMobile ? 'fit' : 'auto'}>
         <PageHeader title={T.ontdek.title} subtitle={T.ontdek.subtitle} />
         <div className={classes.grid}>
           <MediaShowcaseCard
             featured={!isMobile}
-            banner={<BannerPanel tone="gold" icon={<IconHeadphones size={56} stroke={1.6} />} />}
+            banner={<BannerPanel tone="gold" icon={<IconHeadphones size={isMobile ? 42 : 56} stroke={1.6} />} />}
             eyebrow={T.ontdek.podcastsEyebrow}
             title={T.ontdek.podcastsTitle}
             subtitle={T.ontdek.podcastsDesc}
@@ -48,7 +48,7 @@ export function Ontdek() {
           />
           <MediaShowcaseCard
             featured={!isMobile}
-            banner={<BannerPanel tone="ink" icon={<IconBook2 size={56} stroke={1.6} />} />}
+            banner={<BannerPanel tone="ink" icon={<IconBook2 size={isMobile ? 42 : 56} stroke={1.6} />} />}
             eyebrow={T.ontdek.readerEyebrow}
             title={T.ontdek.readerTitle}
             subtitle={T.ontdek.readerDesc}

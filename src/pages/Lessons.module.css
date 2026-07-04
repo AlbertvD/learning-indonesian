@@ -161,17 +161,19 @@
 }
 
 /* ─── Mobile hub (§7.3) ───────────────────────────────────────────────────
-   The four Leren surfaces as a 2×2 grid of descriptive cards that divide the
-   viewport height. `dvh` tracks the mobile browser's collapsing chrome, and
-   `grid-template-rows: repeat(2, 1fr)` splits the space evenly; the per-card
-   min-height is the floor, so on a very short screen the cards keep a usable
-   size and the page scrolls instead of clipping the text. */
+   The four Leren surfaces as a 2×2 grid of descriptive cards that fill the
+   content area exactly. The hub is a flex child of a <PageBody variant="fit">
+   inside a <PageContainer fit>, whose height is `100dvh − app chrome` from the
+   real layout tokens — so `flex: 1` fills precisely the space below the header
+   without overshooting the viewport (no more `calc()` chrome guesswork). The
+   two grid rows split that height evenly. */
 .hub {
+  flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(140px, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 0.7rem;
-  min-height: calc(100dvh - 200px);
   margin-top: 0.5rem;
 }
 
