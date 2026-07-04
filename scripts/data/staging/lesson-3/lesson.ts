@@ -1156,6 +1156,21 @@ export const lesson = {
           }
         ]
       }
+    },
+    {
+      "title": "Cultuur: Van hindoe-boeddhistische rijken tot de islam",
+      "order_index": 9,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "In de eerste eeuw van onze jaartelling vestigden zich, vooral aan de kusten, groepen uit India afkomstige hindoes en boeddhisten. Met hun strenge maatschappelijke organisatie en verfijnde materiële cultuur verkregen ze grote invloed op Sumatra en Java. De machthebbers van de rijken die in deze periode werden gesticht waren sterk door het boeddhisme en hindoeïsme geïnspireerd. Vermoedelijk om gespaard te blijven voor de aanvallen van benden zeerovers die de kust en de havenplaatsen constant onveilig maakten, verplaatsten de vorsten hun rijken naar de binnenlanden.",
+          "Verondersteld wordt dat in de 7e eeuw het rijk van Sriwijaya opkwam dat gevestigd zou zijn op Sumatra, en een deel van Java en het Maleise schiereiland beheerste. Sriwijaya controleerde daarmee de zeeëngte tussen Sumatra en het vasteland en kwam daardoor tot grote bloei. Boeddhistische monniken en geleerden uit China, India en andere Aziatische landen bezochten hun collega's in het boeddhistisch centrum op Sumatra.",
+          "In de 8e eeuw bereikte het boeddhisme in Indonesië een hoogtepunt met de bouw van de op Midden-Java gelegen Borobudur.",
+          "Vanaf de 9e eeuw verloor het boeddhisme terrein en verschillende staten met hindoeïstische cultuurelementen namen de macht over. Deze waren echter niet krachtig genoeg om een eenheid te scheppen, totdat in de 13e eeuw het rijk van Majapahit (spreek uit: Modjopahit) ontstond, dat onder leiding van de energieke opperbevelhebber Gajah Mada tot grote bloei kwam. Bijna drie eeuwen lang had Majapahit controle over de scheepvaart en belangrijke kustplaatsen langs de handelsroutes in de Indonesische archipel. De architectuur kreeg een eigen karakter (ook wel Hindoe-Javaans genoemd) en de Javaanse literatuur kwam tot ongekende bloei.",
+          "Aan het eind van de 14e eeuw verzwakten interne oorlogen Majapahit en vanaf de 15e eeuw verloor het geleidelijk zijn invloed aan islamitisch georiënteerde rijkjes, die gelegen waren aan de Noordkust van Java. De islam, gebracht door kooplieden uit India, verspreidde zich vanaf de 12e eeuw op vreedzame wijze langs de kusten van Sumatra en Java. In de loop der eeuwen kregen de islamitische gemeenschappen in de havenplaatsen grote economische macht en gingen lokale machthebbers over tot de islam. Deels om zich te onttrekken aan de invloed van Majapahit, dat in het binnenland lag, deels vanwege een verschil in religieuze opvatting, splitsten deze lokale machthebbers zich af en stichtten zij eigen rijkjes.",
+          "De macht van deze islamitische vorstendommen nam in de 16e eeuw toe en het rijk van Majapahit viel uiteen. De Hindoe-Javaanse vorsten gingen over tot de islam of zochten hun heil op het hindoeïstische eiland Bali, waar we tot op heden veel elementen van deze oude cultuur kunnen aantreffen."
+        ]
+      }
     }
   ]
 }
