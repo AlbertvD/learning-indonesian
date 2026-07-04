@@ -1158,11 +1158,15 @@ export const lesson = {
       }
     },
     {
-      "title": "Cultuur: Van hindoe-boeddhistische rijken tot de islam",
+      "title": "Cultuur: Geschiedenis",
       "order_index": 9,
       "content": {
         "type": "text",
         "paragraphs": [
+          "Ongeveer drieduizend jaar voor de christelijke jaartelling begon de migratie van volkeren van het Aziatische vasteland naar het grootste eilandencomplex ter wereld: Indonesië. Verondersteld wordt dat deze migratie een eeuwenlang proces is geweest dat via drie routes heeft plaatsgevonden:\nA. via Thailand en Maleisië naar Sumatra en Java\nB. via Zuid China en Vietnam naar Kalimantan\nC. via de Filippijnen naar Sulawesi, de Molukse eilanden en Irian Jaya (zie de kaart hieronder).",
+          "De verschillende volkeren bezaten ieder een specifieke eigen cultuur, taal en maatschappelijke ordening. Als gevolg van de migratie werden sommige volkeren door andere verdrongen of overheerst. Daarbij vond uitwisseling van cultuurelementen plaats. Typische kenmerken van verschillende van deze volkeren vinden we bijvoorbeeld nog terug bij de Minangkabau en de Batak op Sumatra, de Dayak op Kalimantan maar ook bij tientallen andere ethnische groepen in het huidige Indonesië.",
+          "Tot op heden wordt Indonesië dan ook gekenmerkt door een grote culturele verscheidenheid, terwijl tegelijkertijd intensieve culturele uitwisseling tussen de bevolkingsgroepen plaatsvindt.",
+          "Kaart: migratieroutes van volkeren van het vasteland van Azië naar Indonesië — A. via Thailand en Maleisië naar Sumatra, Java en verder; B. via Vietnam naar Kalimantan; C. via de Filippijnen naar Sulawesi, de Molukken en Irian Jaya.",
           "In de eerste eeuw van onze jaartelling vestigden zich, vooral aan de kusten, groepen uit India afkomstige hindoes en boeddhisten. Met hun strenge maatschappelijke organisatie en verfijnde materiële cultuur verkregen ze grote invloed op Sumatra en Java. De machthebbers van de rijken die in deze periode werden gesticht waren sterk door het boeddhisme en hindoeïsme geïnspireerd. Vermoedelijk om gespaard te blijven voor de aanvallen van benden zeerovers die de kust en de havenplaatsen constant onveilig maakten, verplaatsten de vorsten hun rijken naar de binnenlanden.",
           "Verondersteld wordt dat in de 7e eeuw het rijk van Sriwijaya opkwam dat gevestigd zou zijn op Sumatra, en een deel van Java en het Maleise schiereiland beheerste. Sriwijaya controleerde daarmee de zeeëngte tussen Sumatra en het vasteland en kwam daardoor tot grote bloei. Boeddhistische monniken en geleerden uit China, India en andere Aziatische landen bezochten hun collega's in het boeddhistisch centrum op Sumatra.",
           "In de 8e eeuw bereikte het boeddhisme in Indonesië een hoogtepunt met de bouw van de op Midden-Java gelegen Borobudur.",
