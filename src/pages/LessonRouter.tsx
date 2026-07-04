@@ -17,6 +17,7 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { bespokeLessonElements } from '@/pages/lessons/registry'
+import { FIRST_LESSON_OPENED_KEY, setFirstRunFlag } from '@/lib/firstRun'
 import { useT } from '@/hooks/useT'
 
 export function LessonRouter() {
@@ -24,7 +25,12 @@ export function LessonRouter() {
   const navigate = useNavigate()
   const T = useT()
   const bespoke = lessonId ? bespokeLessonElements[lessonId] : undefined
-  if (bespoke) return bespoke
+  if (bespoke) {
+    // First-run checklist step ① (desktop program slice 3): the reader is
+    // passive (ADR 0005), so opening a lesson page is the only signal there is.
+    setFirstRunFlag(FIRST_LESSON_OPENED_KEY)
+    return bespoke
+  }
 
   return (
     <PageContainer size="sm">
