@@ -1,6 +1,56 @@
+/* Ontdek.module.css — the Discover hub's two featured entries.
+ *
+ * Card chrome comes from the framework primitive `MediaShowcaseCard`; this
+ * file owns the page grid and the banner internals (the deep batik-green
+ * panel — same theme-constant surface as the rail — with a haloed glyph).
+ */
+
 .grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
   margin-top: 0.5rem;
 }
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+
+/* ─── Banner panel (rendered inside MediaShowcaseCard.banner slot) ────────
+   Theme-constant like the rail: identical in light and dark. */
+
+.panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(120% 140% at 85% -20%, var(--rail-surface-raised) 0%, transparent 60%),
+    var(--rail-surface);
+}
+
+/* Soft ring behind the glyph, in the rail's hairline ink. */
+.panelHalo {
+  position: absolute;
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  border: 1px solid var(--rail-hairline);
+  background: rgba(237, 231, 215, 0.06);
+}
+
+.panelIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel[data-tone='gold'] .panelIcon { color: var(--rail-gold); }
+.panel[data-tone='ink']  .panelIcon { color: var(--rail-ink); }
