@@ -1,0 +1,168 @@
+/* FirstRunChecklist.module.css — the "Aan de slag" stepper card (mockup
+   screen 03): a warm card with a vertical progress spine, done-nodes in the
+   rail green, the current step highlighted with a tamarind ring. */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 32px 34px;
+}
+
+.label {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 11.5px;
+  color: var(--accent-primary);
+  font-weight: var(--fw-bold);
+  margin-bottom: 12px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: var(--fw-semibold);
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.intro {
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin: 0 0 28px;
+  max-width: 50ch;
+  line-height: 1.55;
+}
+
+.stepper {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.stepper::before {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: 18px;
+  bottom: 26px;
+  width: 2px;
+  background: var(--border);
+}
+
+.step {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 4px 0 26px;
+}
+.step:last-child {
+  padding-bottom: 0;
+}
+
+.node {
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  background: var(--bg-main);
+  border: 2px solid var(--border);
+  color: var(--text-secondary);
+}
+.done .node {
+  background: var(--rail-surface);
+  border-color: var(--rail-surface);
+  color: var(--rail-ink);
+}
+.current .node {
+  background: var(--card-bg);
+  border-color: var(--mantine-color-tamarind-6);
+  color: var(--accent-primary);
+  box-shadow: 0 0 0 4px var(--accent-primary-subtle);
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  padding-top: 3px;
+}
+.body h3 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+}
+.done .body h3 {
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+}
+.body p {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin: 4px 0 0;
+  max-width: 44ch;
+  line-height: 1.5;
+}
+
+.current {
+  background: var(--bg-main);
+  border-radius: 14px;
+  margin: -4px -14px 22px;
+  padding: 16px 14px 18px;
+}
+
+.stepAction {
+  margin-left: auto;
+  align-self: center;
+  flex: none;
+}
+.actionRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 15px;
+  background: var(--mantine-color-tamarind-6);
+  color: var(--text-on-accent);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.action:hover {
+  background: var(--mantine-color-tamarind-7);
+}
+
+.skip {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.skip:hover {
+  color: var(--text-primary);
+}

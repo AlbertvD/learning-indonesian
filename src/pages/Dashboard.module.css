@@ -1,35 +1,104 @@
-/* Home hero — the focal "start session" action, led with (not buried). */
-.hero {
+/* Dashboard.module.css — Home launchpad (desktop program slice 3): serif
+   greeting, then a two-zone grid (focal action left, momentum right) that
+   stacks to one column below the desktop breakpoint via the page container. */
+
+.greet {
+  margin-bottom: 30px;
+}
+.greet h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: var(--fw-semibold);
+  margin: 0 0 5px;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+.greet p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14.5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.mainCol,
+.sideCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+@container page (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Fallback hero — the plain focal action when the preview read is
+   unavailable; mirrors the pre-slice-3 hero. */
+.fallbackHero {
   border-radius: 18px;
   padding: 1.25rem;
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--accent-primary, #4dabf7) 22%, transparent),
-    color-mix(in srgb, var(--accent-primary, #4dabf7) 6%, transparent));
-  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.16));
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
 }
-
-.heroTitle {
+.fallbackTitle {
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: var(--fw-bold);
   line-height: 1.2;
+  color: var(--text-primary);
 }
 
-.heroSub {
-  font-size: 0.85rem;
-  color: var(--text-secondary, #868e96);
-  margin-top: 0.15rem;
+/* Woordenschat pulse card (right column) */
+.pulseCard {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
 }
-
-.streakWrap {
-  margin-top: 1rem;
+.pulseTitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-secondary);
+  font-weight: var(--fw-bold);
+  margin: 0 0 12px;
 }
-
-.secondary {
+.pulseRow {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-secondary);
+}
+.pulseRow:last-of-type {
+  border-bottom: none;
+}
+.pulseRow b {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+.pulseLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 13.5px;
+  font-weight: var(--fw-semibold);
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.pulseLink:hover {
+  text-decoration: underline;
 }

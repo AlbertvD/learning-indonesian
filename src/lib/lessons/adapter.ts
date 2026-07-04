@@ -209,14 +209,14 @@ export async function getLesson(lessonId: string): Promise<Lesson> {
   return data as Lesson
 }
 
-export async function getLessonsBasic(): Promise<{ id: string; order_index: number }[]> {
+export async function getLessonsBasic(): Promise<{ id: string; order_index: number; title: string | null }[]> {
   const { data, error } = await supabase
     .schema('indonesian')
     .from('lessons')
-    .select('id, order_index')
+    .select('id, order_index, title')
     .order('order_index')
   if (error) throw error
-  return (data ?? []) as { id: string; order_index: number }[]
+  return (data ?? []) as { id: string; order_index: number; title: string | null }[]
 }
 
 export async function getLessonsWithVoice(): Promise<{ id: string; order_index: number; primary_voice: string | null }[]> {

@@ -17,7 +17,7 @@ import type { CapabilityRenderContext } from '@/lib/capabilities'
 import type { SessionAudioMap } from '@/services/audioService'
 import { translations, type Translations } from '@/lib/i18n'
 import { feedbackCopyFor } from './feedbackCopy'
-import { RecapScreen } from './RecapScreen'
+import { RecapScreen, type EmptySessionReason } from './RecapScreen'
 import { CapabilityExerciseFrame } from './CapabilityExerciseFrame'
 import type { SessionAnswerEvent } from './types'
 
@@ -36,6 +36,8 @@ export interface ExperiencePlayerProps {
   // Fired when the learner leaves the recap screen (the "Terug naar dashboard"
   // button). Navigation only — completion has already been recorded via onComplete.
   onExit: () => void
+  // Why an empty plan came up empty — passed through to RecapScreen (MAJ-3).
+  emptyReason?: EmptySessionReason
 }
 
 interface FeedbackState {
@@ -94,7 +96,7 @@ function pickRedrillOffset(): number {
 }
 
 export function ExperiencePlayer(props: ExperiencePlayerProps) {
-  const { plan, contexts, audioMap, userLanguage, onAnswer, onComplete, onExit } = props
+  const { plan, contexts, audioMap, userLanguage, onAnswer, onComplete, onExit, emptyReason } = props
   const { profile } = useAuthStore()
 
   const renderableBlocks = useMemo(() => {
@@ -303,6 +305,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
               commitFailedBlocks={commitFailedBlocks}
               onExit={onExit}
               userLanguage={userLanguage}
+              emptyReason={emptyReason}
             />
           </PageBody>
         </PageContainer>

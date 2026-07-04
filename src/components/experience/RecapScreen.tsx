@@ -1,8 +1,15 @@
+import { Link } from 'react-router-dom'
 import { Stack, Button, Text, Group, SimpleGrid } from '@mantine/core'
 import { HeroCard } from '@/components/page/primitives'
 import { capabilityDisplay } from '@/lib/session-builder'
 import type { SessionBlock } from '@/lib/session-builder'
 import { translations } from '@/lib/i18n'
+
+// Why an empty session came up empty (ux audit MAJ-3, desktop program slice 3):
+// "no lesson active" needs a diagnosis + CTA to Leren; "caught up" is a
+// positive state that points onward to Ontdek. Undefined keeps the generic
+// copy (scoped modes and older callers).
+export type EmptySessionReason = 'no_active_lesson' | 'caught_up'
 
 interface RecapScreenProps {
   renderableBlocks: SessionBlock[]
@@ -13,6 +20,7 @@ interface RecapScreenProps {
   // the cards run out, not here — so this is navigation only.
   onExit: () => void
   userLanguage: 'nl' | 'en'
+  emptyReason?: EmptySessionReason
 }
 
 export function RecapScreen({
@@ -22,16 +30,29 @@ export function RecapScreen({
   commitFailedBlocks,
   onExit,
   userLanguage,
+  emptyReason,
 }: RecapScreenProps) {
   const T = translations[userLanguage]
 
   if (renderableBlocks.length === 0) {
+    const empty =
+      emptyReason === 'no_active_lesson'
+        ? { title: T.recap.emptyNoLessonTitle, message: T.recap.emptyNoLessonMessage, cta: T.recap.emptyNoLessonCta, to: '/leren' }
+        : emptyReason === 'caught_up'
+          ? { title: T.recap.emptyCaughtUpTitle, message: T.recap.emptyCaughtUpMessage, cta: T.recap.emptyCaughtUpCta, to: '/ontdek' }
+          : { title: T.recap.emptyTitle, message: T.recap.emptyMessage, cta: null, to: null }
+
     return (
       <Stack gap="md" data-testid="session-recap">
-        <HeroCard title={T.recap.emptyTitle}>
-          <Text>{T.recap.emptyMessage}</Text>
+        <HeroCard title={empty.title}>
+          <Text>{empty.message}</Text>
         </HeroCard>
-        <Button onClick={onExit} fullWidth>
+        {empty.cta && empty.to && (
+          <Button component={Link} to={empty.to} fullWidth>
+            {empty.cta}
+          </Button>
+        )}
+        <Button variant={empty.cta ? 'default' : 'filled'} onClick={onExit} fullWidth>
           {T.recap.backToDashboard}
         </Button>
       </Stack>

@@ -1,38 +1,51 @@
 // src/__tests__/dashboard-redesign.test.tsx
 //
-// Tests for the minimal Dashboard placeholder shipped with retirement #4
-// (goal subsystem). The polished Dashboard redesign is tracked separately.
-//
-// Surface under test (per docs/plans/2026-05-07-retire-goal-subsystem.md
-// §"Test surgery" + architect-R1 I7 concrete assertions):
-// - streak counter sourced from learnerProgressService.getCurrentStreakDays
-// - "Today" CTA navigates to /session
-// - lapsing alert renders when lapsing count > 0 (and is absent when 0)
-// - continue-lesson card with the resolved URL
-// - regression: TodaysPlanHero / weekly goal rings are NOT rendered
+// Home launchpad (desktop program slice 3,
+// docs/plans/2026-07-03-desktop-program-design.md §Slice 3):
+// - "Vandaag" session-preview panel from a buildSession pure read (established
+//   accounts), with the Start CTA routing to /session
+// - "Aan de slag" first-run checklist replaces the panel until all three steps
+//   are done; the buildSession preview is NOT fetched while it shows
+// - continue-reading shortcut to the highest activated lesson (sanctioned by
+//   slice 3 — supersedes the older "no lesson links on Home" launchpad rule)
+// - right column: streak + time pulse + woordenschat pulse → Voortgang
 //
 // Mock at the service layer per project convention.
 
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 
-// Mock services at the module level
 vi.mock('@/lib/analytics/engagement')
 vi.mock('@/lib/analytics/mastery/masteryModel')
 vi.mock('@/lib/lessons/adapter')
 vi.mock('@/lib/lessons/activation')
-vi.mock('@/lib/collections')
 vi.mock('@/lib/supabase')
+vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
+vi.mock('@/lib/firstRun', () => ({
+  FIRST_LESSON_OPENED_KEY: 'first_lesson_opened',
+  ONTDEK_VISITED_KEY: 'ontdek_visited',
+  readFirstRunFlag: vi.fn(() => false),
+  setFirstRunFlag: vi.fn(),
+  hasCompletedSession: vi.fn(),
+}))
+vi.mock('@/lib/session-builder', () => ({
+  buildSession: vi.fn(),
+  sessionBuilderAdapter: {},
+}))
+vi.mock('@/contexts/ListeningContext', () => ({
+  useListening: () => ({ listeningEnabled: true, setListeningEnabled: vi.fn() }),
+}))
 
 import { engagement } from '@/lib/analytics/engagement'
 import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
 import * as lessonsAdapter from '@/lib/lessons/adapter'
 import { listActivatedLessons } from '@/lib/lessons/activation'
-import { getCollectionsOverview } from '@/lib/collections'
+import { readFirstRunFlag, setFirstRunFlag, hasCompletedSession } from '@/lib/firstRun'
+import { buildSession } from '@/lib/session-builder'
 import { Dashboard } from '@/pages/Dashboard'
 
 const mockNavigate = vi.fn()
@@ -45,7 +58,7 @@ vi.mock('@/stores/authStore', () => ({
   useAuthStore: vi.fn((selector: (s: any) => any) =>
     selector({
       user: { id: 'user-1', email: 'test@duin.home' },
-      profile: { fullName: 'Albert', email: 'test@duin.home', preferredSessionSize: 15 },
+      profile: { fullName: 'Albert', email: 'test@duin.home', preferredSessionSize: 15, language: 'nl' },
     })
   ),
 }))
@@ -61,16 +74,6 @@ function renderDashboard() {
   )
 }
 
-beforeEach(() => {
-  vi.clearAllMocks()
-  vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(0))
-  vi.mocked(engagement.dailyActivity).mockResolvedValue([])
-  vi.mocked(getWeeklyMovement).mockResolvedValue({ advancedVocab: 0, advancedGrammar: 0, advancedMorphology: 0, reachedMastered: 0, slipped: 0 })
-  vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([])
-  vi.mocked(listActivatedLessons).mockResolvedValue(new Set<string>())
-  vi.mocked(getCollectionsOverview).mockResolvedValue([])
-})
-
 function practiceWith(streakDays: number) {
   return {
     streakDays,
@@ -85,57 +88,147 @@ function practiceWith(streakDays: number) {
   }
 }
 
-describe('Dashboard (minimal placeholder)', () => {
-  it('renders the streak counter from analytics.engagement', async () => {
-    vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(7))
+function establishedAccount() {
+  vi.mocked(readFirstRunFlag).mockReturnValue(true)
+  vi.mocked(hasCompletedSession).mockResolvedValue(true)
+}
+
+beforeEach(() => {
+  vi.clearAllMocks()
+  vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(0))
+  vi.mocked(engagement.dailyActivity).mockResolvedValue([])
+  vi.mocked(getWeeklyMovement).mockResolvedValue({ advancedVocab: 0, advancedGrammar: 0, advancedMorphology: 0, reachedMastered: 0, slipped: 0 })
+  vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([])
+  vi.mocked(listActivatedLessons).mockResolvedValue(new Set<string>())
+  vi.mocked(readFirstRunFlag).mockReturnValue(false)
+  vi.mocked(hasCompletedSession).mockResolvedValue(false)
+  vi.mocked(buildSession).mockResolvedValue({
+    id: 'plan-1', mode: 'standard', title: '', recapPolicy: 'standard', diagnostics: [],
+    blocks: [
+      { kind: 'due_review', renderPlan: { capabilityType: 'recognise_meaning_cap' } },
+      { kind: 'due_review', renderPlan: { capabilityType: 'recognise_grammar_pattern_cap' } },
+      { kind: 'new_introduction', renderPlan: { capabilityType: 'recognise_meaning_from_audio_cap' } },
+    ],
+  } as any)
+})
+
+describe('Dashboard — first-run checklist', () => {
+  it('shows the checklist for a new account and does NOT fetch the session preview', async () => {
     renderDashboard()
-    // The streak now lives in the StreakBar hero; its number + label are separate
-    // nodes, so assert via the bar's accessible name (aria-label "7 …").
-    expect(await screen.findByLabelText(/7\s+(dagen achter elkaar|days in a row)/i)).toBeInTheDocument()
+
+    expect(await screen.findByTestId('first-run-checklist')).toBeInTheDocument()
+    expect(screen.getByText('Je eerste week Indonesisch')).toBeInTheDocument()
+    // step 1 is current → its action shows; the preview stays unfetched
+    expect(screen.getByRole('link', { name: 'Bekijk' })).toHaveAttribute('href', '/leren')
+    expect(buildSession).not.toHaveBeenCalled()
   })
 
-  it('renders the Today CTA and navigates to /session on click', async () => {
+  it('derives step state from account + device flags (session done, lesson current)', async () => {
+    vi.mocked(hasCompletedSession).mockResolvedValue(true)
     renderDashboard()
-    const cta = await screen.findByRole('button', { name: /start sessie|start session/i })
-    expect(cta).toBeInTheDocument()
-    await userEvent.click(cta)
+
+    const checklist = await screen.findByTestId('first-run-checklist')
+    expect(checklist).toBeInTheDocument()
+    // lesson (step ①) is still the current step → its CTA shows
+    expect(screen.getByRole('link', { name: 'Bekijk' })).toBeInTheDocument()
+  })
+
+  it('lets the learner skip step ③ (dismissable), persisting the device flag', async () => {
+    const user = userEvent.setup()
+    // steps ① + ② done, only ontdek open → skip completes the checklist
+    vi.mocked(readFirstRunFlag).mockImplementation((key: string) => key === 'first_lesson_opened')
+    vi.mocked(hasCompletedSession).mockResolvedValue(true)
+    renderDashboard()
+
+    await user.click(await screen.findByRole('button', { name: 'Overslaan' }))
+
+    expect(setFirstRunFlag).toHaveBeenCalledWith('ontdek_visited')
+    // checklist replaced by the Vandaag panel
+    await waitFor(() => expect(screen.queryByTestId('first-run-checklist')).not.toBeInTheDocument())
+  })
+
+  it('is absent for established accounts', async () => {
+    establishedAccount()
+    renderDashboard()
+
+    await screen.findByText('Vandaag')
+    expect(screen.queryByTestId('first-run-checklist')).not.toBeInTheDocument()
+  })
+})
+
+describe('Dashboard — Vandaag session preview', () => {
+  it('renders the preview counts from the buildSession pure read and starts the session', async () => {
+    establishedAccount()
+    const user = userEvent.setup()
+    renderDashboard()
+
+    expect(await screen.findByText('oefeningen staan klaar')).toBeInTheDocument()
+    expect(screen.getByText('herhalingen')).toBeInTheDocument()
+    expect(screen.getByText('grammatica')).toBeInTheDocument()
+    expect(screen.getByText('luisteren')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /start sessie/i }))
     expect(mockNavigate).toHaveBeenCalledWith('/session')
   })
 
-  it('removes the lapsing-rescue card (moved to voortgang)', async () => {
+  it('falls back to the plain start hero when the preview read fails', async () => {
+    establishedAccount()
+    vi.mocked(buildSession).mockRejectedValue(new Error('offline'))
     renderDashboard()
-    await screen.findByRole('button', { name: /start sessie|start session/i })
-    expect(screen.queryByText(/zwakke woorden|weak words/i)).not.toBeInTheDocument()
+
+    const cta = await screen.findByRole('button', { name: /start sessie/i })
+    expect(cta).toBeInTheDocument()
+    expect(screen.queryByText('oefeningen staan klaar')).not.toBeInTheDocument()
+  })
+})
+
+describe('Dashboard — launchpad chrome', () => {
+  it('greets with the Indonesian time-of-day greeting', async () => {
+    establishedAccount()
+    renderDashboard()
+
+    expect(await screen.findByText(/Selamat (pagi|siang|sore|malam), Albert/)).toBeInTheDocument()
   })
 
-  it('shows the read-only progress pulse (metric glances) linking to Voortgang', async () => {
-    vi.mocked(engagement.practiceTime).mockResolvedValue({ ...practiceWith(3), minutesThisWeek: 42, minutesLastWeek: 30 })
+  it('shows the continue-reading shortcut to the highest activated lesson (slice-3 sanctioned)', async () => {
+    establishedAccount()
+    vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([
+      { id: 'l-3', order_index: 3, title: 'Di Bandar Udara' },
+      { id: 'l-7', order_index: 7, title: 'Di Pasar' },
+      { id: 'l-9', order_index: 9, title: 'Di Hotel' },
+    ])
+    vi.mocked(listActivatedLessons).mockResolvedValue(new Set(['l-3', 'l-7']))
     renderDashboard()
-    await screen.findByRole('button', { name: /start sessie|start session/i })
-    const links = screen.getAllByRole('link')
-    expect(links.some((l) => l.getAttribute('href')?.startsWith('/progress'))).toBe(true)
+
+    const shortcut = await screen.findByRole('link', { name: /Doorgaan met les 7 · Di Pasar/ })
+    expect(shortcut).toHaveAttribute('href', '/lesson/l-7')
   })
 
-  it('does NOT reference lessons or word-lists on Home (launchpad only, no continue-lesson / band card)', async () => {
-    // Even with an activated lesson available, Home must not surface a
-    // continue-lesson link or any /lesson/ deep link — those are Leren actions.
-    vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([{ id: 'lesson-3', order_index: 3 }] as any)
-    vi.mocked(listActivatedLessons).mockResolvedValue(new Set(['lesson-3']))
+  it('shows the woordenschat pulse linking to Voortgang', async () => {
+    establishedAccount()
+    vi.mocked(getWeeklyMovement).mockResolvedValue({ advancedVocab: 5, advancedGrammar: 1, advancedMorphology: 0, reachedMastered: 2, slipped: 1 })
     renderDashboard()
-    await screen.findByRole('button', { name: /start sessie|start session/i })
-    expect(screen.queryByRole('link', { name: /doorgaan met les|continue lesson/i })).not.toBeInTheDocument()
-    const links = screen.queryAllByRole('link')
-    expect(links.every((l) => !l.getAttribute('href')?.startsWith('/lesson/'))).toBe(true)
+
+    expect(await screen.findByText('Je woordenschat')).toBeInTheDocument()
+    expect(screen.getByText('+5')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /naar voortgang/i })).toHaveAttribute('href', '/progress?tab=woorden')
   })
 
-  it('does not render TodaysPlanHero or weekly goal rings (regression check)', async () => {
+  it('renders the streak from analytics.engagement', async () => {
+    establishedAccount()
+    vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(7))
     renderDashboard()
-    await screen.findByRole('button', { name: /start sessie|start session/i })
-    // Hardcoded literal NL+EN copy of the retired keys — architect-R1 (v2) N1:
-    // referencing T.dashboard.todaysPlan after its drop in the same commit
-    // would tsc-fail or trivially pass. Hardcoding anchors regression.
+
+    expect(await screen.findByLabelText(/7\s+(dagen achter elkaar|days in a row)/i)).toBeInTheDocument()
+  })
+
+  it('does not resurrect the retired goal-subsystem surfaces (regression check)', async () => {
+    establishedAccount()
+    renderDashboard()
+
+    await screen.findByText('Vandaag')
     expect(screen.queryByText(/planning van vandaag|today.?s plan/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/wekelijkse doelen|weekly goals/i)).not.toBeInTheDocument()
-    expect(screen.queryByText(/aanbevolen acties|recommended actions/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/zwakke woorden|weak words/i)).not.toBeInTheDocument()
   })
 })

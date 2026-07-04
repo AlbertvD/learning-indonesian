@@ -23,6 +23,8 @@ import { getLessonSourceRefsByLessonId } from '@/lib/lessons'
 import { loadSelectedAffixScope } from '@/lib/morphology'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'
+import type { EmptySessionReason } from '@/components/experience/RecapScreen'
+import { listActivatedLessons } from '@/lib/lessons/activation'
 import { resolveCapabilityBlocks, type CapabilityRenderContext } from '@/lib/exercise-content'
 import { logError } from '@/lib/logger'
 import { commitCapabilityAnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
@@ -64,6 +66,7 @@ export function Session() {
   const [capabilityContexts, setCapabilityContexts] = useState<Map<string, CapabilityRenderContext> | null>(null)
   const [capabilityAudioMap, setCapabilityAudioMap] = useState<SessionAudioMap | null>(null)
   const [dryingDismissed, setDryingDismissed] = useState(false)
+  const [emptyReason, setEmptyReason] = useState<EmptySessionReason | undefined>(undefined)
 
   const lessonFilter = searchParams.get('lesson')
   const affixFilter = searchParams.get('affix')
@@ -141,6 +144,19 @@ export function Session() {
           adapter: sessionBuilderAdapter,
         })
         setCapabilityPlan(capabilityPlan)
+
+        // Empty standard session → diagnose WHY for the recap (ux audit MAJ-3):
+        // a brand-new account with nothing activated needs a "go activate a
+        // lesson" CTA; an account that's simply done for today gets positive
+        // framing. Scoped modes (lesson/affix) keep the generic copy.
+        if (capabilityPlan.blocks.length === 0 && sessionMode === 'standard') {
+          try {
+            const activated = await listActivatedLessons(user.id)
+            setEmptyReason(activated.size === 0 ? 'no_active_lesson' : 'caught_up')
+          } catch {
+            // diagnosis is best-effort — generic empty copy still renders
+          }
+        }
 
         // Resolve render contexts + fetch audio map. ExperiencePlayer is
         // presentational and depends on both being present before mount.
@@ -291,6 +307,7 @@ export function Session() {
           onAnswer={handleCapabilityAnswer}
           onComplete={handleSessionComplete}
           onExit={handleExit}
+          emptyReason={emptyReason}
         />
       </>
     )

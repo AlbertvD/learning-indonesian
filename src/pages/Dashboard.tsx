@@ -1,27 +1,58 @@
 // src/pages/Dashboard.tsx
 //
-// Home — a launchpad (foundation plan §7.2): lead with the focal action (start
-// today's session) as a hero, then momentum (streak), then a read-only progress
-// pulse (this-week practice time + rung movement) that taps through to Voortgang.
-// It does NOT reference content surfaces — no lesson activation/continue and no
-// word-list selection (those are Leren actions); richer analytics live on Voortgang.
+// Home — the launchpad (desktop program slice 3, foundation plan §7.2). A
+// two-zone grid on desktop: left leads with the focal action — the deep-green
+// "Vandaag" session-preview panel (or the "Aan de slag" first-run checklist
+// for accounts that haven't finished the three first-run steps) — followed by
+// a continue-reading shortcut and a study tip; right is momentum (streak) and
+// the read-only pulses that tap through to Voortgang. Mobile stacks the same
+// components in one column.
+//
+// The session preview calls buildSession as a PURE READ for plan counts only —
+// no render contexts, no audio resolution, no DB writes (the learning_sessions
+// row only materialises on a first answer). Exactly the Dashboard-preview use
+// docs/target-architecture.md:344 blesses.
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Text, Button } from '@mantine/core'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconTrendingUp, IconTrendingDown, IconArrowUpRight } from '@tabler/icons-react'
+import { IconTrendingUp, IconTrendingDown, IconArrowUpRight, IconBook, IconBulb } from '@tabler/icons-react'
 import { PageContainer, PageBody, ListCard, LoadingState } from '@/components/page/primitives'
 import { StreakBar } from '@/components/dashboard/StreakBar'
+import { TodayPanel } from '@/components/dashboard/TodayPanel'
+import { FirstRunChecklist, type ChecklistSteps } from '@/components/dashboard/FirstRunChecklist'
+import { summarizeSessionPlan, type SessionPreviewCounts } from '@/components/dashboard/sessionPreview'
 import { engagement } from '@/lib/analytics/engagement'
 import type { DailyActivity } from '@/lib/analytics/engagement'
-import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
+import { getWeeklyMovement, type WeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
+import { listActivatedLessons } from '@/lib/lessons/activation'
+import { getLessonsBasic } from '@/lib/lessons/adapter'
+import {
+  FIRST_LESSON_OPENED_KEY,
+  ONTDEK_VISITED_KEY,
+  readFirstRunFlag,
+  setFirstRunFlag,
+  hasCompletedSession,
+} from '@/lib/firstRun'
+import { useListening } from '@/contexts/ListeningContext'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import classes from './Dashboard.module.css'
 
-function todayKey(): string {
-  return new Date().toLocaleDateString('en-CA')
+// Time-of-day greeting — Indonesian in both UI languages (it's the brand
+// moment, not translatable copy).
+function greeting(hour: number): string {
+  if (hour < 11) return 'Selamat pagi'
+  if (hour < 15) return 'Selamat siang'
+  if (hour < 18) return 'Selamat sore'
+  return 'Selamat malam'
+}
+
+interface ContinueTarget {
+  id: string
+  orderIndex: number
+  title: string
 }
 
 export function Dashboard() {
@@ -29,45 +60,55 @@ export function Dashboard() {
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
+  const { listeningEnabled } = useListening()
+  // Effects key on the stable id, not the user object — the auth store swaps
+  // the object reference on TOKEN_REFRESHED (hourly), which must not refetch
+  // Home or reset checklist state.
+  const userId = user?.id
 
   const [loading, setLoading] = useState(true)
   const [currentStreak, setCurrentStreak] = useState(0)
   const [dailyActivity, setDailyActivity] = useState<DailyActivity[]>([])
   const [minutesThisWeek, setMinutesThisWeek] = useState(0)
   const [minutesLastWeek, setMinutesLastWeek] = useState(0)
-  const [advancedVocab, setAdvancedVocab] = useState(0)
-  const [advancedGrammar, setAdvancedGrammar] = useState(0)
-  const [advancedMorphology, setAdvancedMorphology] = useState(0)
-
-  // Welcome line only on the first Dashboard view of the day.
-  const [showWelcome] = useState(() => {
-    try {
-      const seen = localStorage.getItem('welcome_seen_date')
-      if (seen === todayKey()) return false
-      localStorage.setItem('welcome_seen_date', todayKey())
-      return true
-    } catch {
-      return true
-    }
-  })
+  const [movement, setMovement] = useState<WeeklyMovement | null>(null)
+  const [checklist, setChecklist] = useState<ChecklistSteps | null>(null)
+  const [continueTarget, setContinueTarget] = useState<ContinueTarget | null>(null)
+  const [preview, setPreview] = useState<SessionPreviewCounts | null>(null)
+  const [previewFailed, setPreviewFailed] = useState(false)
+  // Render-stable clock for the greeting / date line / tip-of-day (the purity
+  // rule bans new Date() in render; a mid-visit hour change is not worth
+  // re-rendering for).
+  const [now] = useState(() => new Date())
 
   useEffect(() => {
     async function fetchData() {
-      if (!user) return
+      if (!userId) return
       try {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const [pt, daily, movement] = await Promise.all([
-          engagement.practiceTime(user.id, tz),
-          engagement.dailyActivity(user.id, tz, 5),
-          getWeeklyMovement(user.id, tz),
+        const [pt, daily, weeklyMovement, sessionDone, activated, lessons] = await Promise.all([
+          engagement.practiceTime(userId, tz),
+          engagement.dailyActivity(userId, tz, 7),
+          getWeeklyMovement(userId, tz),
+          hasCompletedSession(userId).catch(() => true), // fail closed: don't nag established users
+          listActivatedLessons(userId).catch(() => new Set<string>()),
+          getLessonsBasic().catch(() => []),
         ])
         setCurrentStreak(pt.streakDays)
         setDailyActivity(daily)
         setMinutesThisWeek(pt.minutesThisWeek)
         setMinutesLastWeek(pt.minutesLastWeek)
-        setAdvancedVocab(movement.advancedVocab)
-        setAdvancedGrammar(movement.advancedGrammar)
-        setAdvancedMorphology(movement.advancedMorphology)
+        setMovement(weeklyMovement)
+        setChecklist({
+          lessonOpened: readFirstRunFlag(FIRST_LESSON_OPENED_KEY),
+          sessionDone,
+          ontdekVisited: readFirstRunFlag(ONTDEK_VISITED_KEY),
+        })
+        const activatedLessons = lessons
+          .filter(lesson => activated.has(lesson.id))
+          .sort((a, b) => b.order_index - a.order_index)
+        const current = activatedLessons[0]
+        setContinueTarget(current ? { id: current.id, orderIndex: current.order_index, title: current.title ?? '' } : null)
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
@@ -80,7 +121,47 @@ export function Dashboard() {
       }
     }
     fetchData()
-  }, [user, T.common.error, T.common.somethingWentWrong])
+  }, [userId, T.common.error, T.common.somethingWentWrong])
+
+  const showChecklist =
+    checklist != null && !(checklist.lessonOpened && checklist.sessionDone && checklist.ontdekVisited)
+
+  // Session preview — only when the Vandaag panel is actually shown, as a pure
+  // read (counts only; no contexts/audio). Measured in dev so the plan's
+  // "measure, don't guess" fallback decision stays revisitable.
+  useEffect(() => {
+    if (!userId || loading || showChecklist || preview !== null || previewFailed) return
+    let cancelled = false
+    async function loadPreview() {
+      try {
+        // Dynamic import: the session-builder is a heavy module the Session
+        // page already lazy-loads; a static import here would drag it into the
+        // eager entry chunk (slice-1 bundle rule).
+        const { buildSession, sessionBuilderAdapter } = await import('@/lib/session-builder')
+        const t0 = performance.now()
+        const plan = await buildSession({
+          enabled: true,
+          sessionId: crypto.randomUUID(),
+          userId: userId!,
+          mode: 'standard',
+          now: new Date(),
+          limit: profile?.preferredSessionSize ?? 15,
+          preferredSessionSize: profile?.preferredSessionSize ?? 15,
+          listeningEnabled,
+          adapter: sessionBuilderAdapter,
+        })
+        if (import.meta.env.DEV) {
+          console.debug(`[home] session preview built in ${Math.round(performance.now() - t0)}ms`)
+        }
+        if (!cancelled) setPreview(summarizeSessionPlan(plan.blocks))
+      } catch (err) {
+        logError({ page: 'dashboard', action: 'sessionPreview', error: err })
+        if (!cancelled) setPreviewFailed(true)
+      }
+    }
+    loadPreview()
+    return () => { cancelled = true }
+  }, [userId, loading, showChecklist, preview, previewFailed, profile?.preferredSessionSize, listeningEnabled])
 
   if (loading) {
     return (
@@ -93,6 +174,9 @@ export function Dashboard() {
   }
 
   const name = profile?.fullName?.split(' ')[0] ?? profile?.email ?? 'User'
+  const locale = (profile?.language ?? 'nl') === 'nl' ? 'nl-NL' : 'en-US'
+  const dateLine = now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })
+
   const weekDelta = minutesThisWeek - minutesLastWeek
   const TrendIcon = weekDelta > 0 ? IconTrendingUp : weekDelta < 0 ? IconTrendingDown : IconArrowUpRight
   const trendColor = weekDelta > 0 ? 'var(--success)' : weekDelta < 0 ? 'var(--danger)' : 'var(--text-secondary)'
@@ -100,51 +184,92 @@ export function Dashboard() {
     weekDelta === 0
       ? T.dashboard.sameAsLastWeek
       : `${weekDelta > 0 ? '+' : ''}${weekDelta} ${T.dashboard.minVsLastWeek}`
-  const movementSubtitle =
-    advancedVocab + advancedGrammar + advancedMorphology === 0
-      ? T.dashboard.movementNone
-      : [
-          `${advancedVocab} ${T.dashboard.movementWords}`,
-          `${advancedGrammar} ${T.dashboard.movementGrammar}`,
-          ...(advancedMorphology > 0 ? [`${advancedMorphology} ${T.dashboard.movementMorphology}`] : []),
-        ].join(' · ')
+
+  const dayOfYear = Math.floor(
+    (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86_400_000,
+  )
+  const studyTip = T.dashboard.studyTips[dayOfYear % T.dashboard.studyTips.length]
 
   return (
     <PageContainer size="lg">
       <PageBody>
-        {showWelcome && (
-          <Text size="sm" c="dimmed" mb="sm">
-            {T.dashboard.welcomeBack}, {name}
-          </Text>
-        )}
+        <header className={classes.greet}>
+          <h1>{greeting(now.getHours())}, {name}</h1>
+          <p>
+            {dateLine}
+            {preview !== null && preview.total > 0 && <> · {T.dashboard.greetSessionReady}</>}
+          </p>
+        </header>
 
-        {/* Focal action — lead with it (§7.2), don't bury it below stats. */}
-        <div className={classes.hero}>
-          <div className={classes.heroTitle}>{T.dashboard.readyToPractice}</div>
-          <Button onClick={() => navigate('/session')} size="lg" fullWidth>
-            {T.dashboard.startTodaysSessionMinimal}
-          </Button>
-        </div>
+        <div className={classes.grid}>
+          <div className={classes.mainCol}>
+            {showChecklist ? (
+              <FirstRunChecklist
+                steps={checklist!}
+                onSkipOntdek={() => {
+                  setFirstRunFlag(ONTDEK_VISITED_KEY)
+                  setChecklist(c => (c ? { ...c, ontdekVisited: true } : c))
+                }}
+              />
+            ) : preview !== null ? (
+              <TodayPanel counts={preview} onStart={() => navigate('/session')} />
+            ) : (
+              // Preview unavailable (still loading or failed): the plain focal
+              // action so Home never blocks on the preview read.
+              <div className={classes.fallbackHero}>
+                <div className={classes.fallbackTitle}>{T.dashboard.readyToPractice}</div>
+                <Button onClick={() => navigate('/session')} size="lg" fullWidth>
+                  {T.dashboard.startTodaysSessionMinimal}
+                </Button>
+              </div>
+            )}
 
-        {/* Momentum */}
-        <div className={classes.streakWrap}>
-          <StreakBar streakDays={currentStreak} days={dailyActivity} />
-        </div>
+            {continueTarget && (
+              <ListCard
+                to={`/lesson/${continueTarget.id}`}
+                icon={<IconBook size={18} />}
+                title={`${T.dashboard.continueLesson} ${continueTarget.orderIndex}${continueTarget.title ? ` · ${continueTarget.title}` : ''}`}
+                subtitle={T.dashboard.continueLessonSub}
+              />
+            )}
 
-        {/* Read-only progress pulse — glances that tap through to Voortgang. */}
-        <div className={classes.secondary}>
-          <ListCard
-            to="/progress?tab=time"
-            icon={<TrendIcon size={18} color={trendColor} />}
-            title={`${minutesThisWeek} ${T.progress.minutesShort} ${T.dashboard.thisWeekLower}`}
-            subtitle={deltaLabel}
-          />
-          <ListCard
-            to="/progress?tab=groei"
-            icon={<IconArrowUpRight size={18} color="var(--accent-primary)" />}
-            title={T.dashboard.movementTitle}
-            subtitle={movementSubtitle}
-          />
+            <ListCard
+              icon={<IconBulb size={18} />}
+              title={T.dashboard.studyTipTitle}
+              subtitle={studyTip}
+              trailing={<></>}
+            />
+          </div>
+
+          <div className={classes.sideCol}>
+            <StreakBar streakDays={currentStreak} days={dailyActivity} />
+
+            <ListCard
+              to="/progress?tab=time"
+              icon={<TrendIcon size={18} color={trendColor} />}
+              title={`${minutesThisWeek} ${T.progress.minutesShort} ${T.dashboard.thisWeekLower}`}
+              subtitle={deltaLabel}
+            />
+
+            <div className={classes.pulseCard}>
+              <h3 className={classes.pulseTitle}>{T.dashboard.vocabPulseTitle}</h3>
+              <div className={classes.pulseRow}>
+                <span>{T.dashboard.vocabPulseUp}</span>
+                <b>+{movement?.advancedVocab ?? 0}</b>
+              </div>
+              <div className={classes.pulseRow}>
+                <span>{T.dashboard.vocabPulseMastered}</span>
+                <b>{movement?.reachedMastered ?? 0}</b>
+              </div>
+              <div className={classes.pulseRow}>
+                <span>{T.dashboard.vocabPulseSlipped}</span>
+                <b>{movement?.slipped ?? 0}</b>
+              </div>
+              <Link className={classes.pulseLink} to="/progress?tab=woorden">
+                {T.dashboard.toProgress} →
+              </Link>
+            </div>
+          </div>
         </div>
       </PageBody>
     </PageContainer>

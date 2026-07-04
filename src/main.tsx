@@ -92,6 +92,10 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--rail-ink-muted':      '#91A89A',
     '--rail-hairline':       'rgba(237,231,215,0.13)',
     '--rail-gold':           '#CE9E45',   // streak/goal accent; ≥4.5:1 on the rail green
+    // Home "Vandaag" panel composition-bar categories (sit on the rail green;
+    // new + grammar reuse tamarind-6 / --rail-gold)
+    '--today-review':        '#C6D3C7',
+    '--today-listening':     '#6E9384',
     '--fs-xs':    '12px',
     '--fs-sm':    '14px',
     '--fs-md':    '16px',
