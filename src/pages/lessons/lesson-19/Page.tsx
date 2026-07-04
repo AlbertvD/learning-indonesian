@@ -1,17 +1,21 @@
-// Lesson 19 — Bab 3: Zinsbouw (Sentence structure) — bespoke reader page.
+// Lesson 19 — Bab 3: Zinsbouw — bespoke reader page.
 //
-// A syntax-only chapter: no vocabulary, no dialogue. Two grammatical movements
-// drive the page. First, the architecture of an Indonesian sentence — agens,
-// handeling, patiens, and the optional partijen 3 and 4 with their marker
-// words — rendered as a horizontal SLOT DIAGRAM, then the full word-order recipe
-// as an ordered track. Second, the connectives: reason/cause (sebab, karena)
-// and purpose/consequence (supaya tegenover sehingga), each an accent-coded tile
-// with aligned Indonesisch → Nederlands example pairs. The recurring textbook
-// scene — the president opening a school in Denpasar — gives the hero its place.
+// Once a grammar-only chapter (its source photos began mid-chapter), lesson 19
+// has regained its front pages and is now a full travelogue. Five movements:
 //
-// The exercises section is the practice surface's content (the session engine
-// renders the prompts); the reader only gets an editorial teaser of the four
-// latihan, never the prompts themselves.
+//   1. Dialogue "Dari Lombok" — Linda and Paul meet again on Bali and Paul
+//      recounts his crossing: ferry versus plane, Gunung Rinjani out of reach,
+//      a borrowed motorbike that runs dry on a road that turns from asphalt to
+//      stones and sand, and the truck that carries them back to Mataram. A
+//      route ribbon traces the itinerary the book prints as a little map.
+//   2. Woordenlijst — the words of the journey, green chips.
+//   3. "Voor de liefhebber · Sepeda motor" — 25 motorcycle parts, set as a
+//      workshop parts-inventory with mono index numbers, an enthusiast's extra.
+//   4. Tata Bahasa · Zinsbouw — the intellectual heart (it was the whole lesson
+//      until today): a participant SLOT DIAGRAM (agens — handeling — patiens +
+//      the optional partijen with their marker words), the word-order TRACK, and
+//      the connectives (sebab/karena · supaya tegenover sehingga) as tiles.
+//   5. Latihan — named, not previewed; the prompts live in the session engine.
 //
 // Re-roll by re-running:
 //   NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/fetch-lesson-content.ts 19 --pretty > src/pages/lessons/lesson-19/content.json
@@ -24,8 +28,11 @@ import { PracticeActions } from '@/components/lessons/PracticeActions'
 import content from './content.json'
 import classes from './Page.module.css'
 
+type Item = { dutch: string; indonesian: string; audioUrl?: string }
 type Example = { dutch: string; indonesian: string; audioUrl?: string }
 type GrammarCategory = { title: string; rules: string[]; examples?: Example[] }
+type DialogueLine = { text: string; speaker: string; translation: string; audioUrl?: string }
+type ExerciseSub = { title: string; instruction: string; type: string }
 
 const meta = content.meta
 const sections = content.sections
@@ -58,9 +65,7 @@ function PlayButton({ src }: { src?: string }) {
   )
 }
 
-// ─── Example pair: Indonesisch → Nederlands, aligned ───────────────────────
-// The Indonesian sits on the left as the primary line; the Dutch reading sits
-// beneath, de-emphasised. Used inside the connective tiles.
+// ─── Example pair: Indonesisch primary, Nederlands beneath ──────────────────
 
 function ExampleRow({ ex }: { ex: Example }) {
   return (
@@ -74,24 +79,153 @@ function ExampleRow({ ex }: { ex: Example }) {
   )
 }
 
-// ─── Movement 1: The sentence architecture ─────────────────────────────────
-// cat[0] = participants (agens/patiens/partij 3/partij 4 + marker words)
-// cat[1] = the usual word order in an active sentence
+// ─── Movement 1: Dialogue "Dari Lombok" ─────────────────────────────────────
+// A narrator sets the scene; Linda and Paul trade the story of the trip.
+// A route ribbon (derived from the waypoints named in the dialogue) traces
+// the little map the book prints alongside the page.
 
-// The four participant slots, distilled from cat[0]'s rules into a diagram.
+const ROUTE = ['Denpasar', 'Padang Bai', 'feri · 6 jam', 'Mataram', 'Lombok Utara'] as const
+
+function speakerTone(speaker: string): 'narrator' | 'linda' | 'paul' {
+  const s = speaker.toLowerCase()
+  if (s.includes('narrator')) return 'narrator'
+  if (s.includes('linda')) return 'linda'
+  return 'paul'
+}
+
+function DialogueScene({ section }: { section: typeof sections[number] }) {
+  const c = section.content as { lines: DialogueLine[] }
+  return (
+    <section className={classes.section} aria-labelledby="s-dial">
+      <div className={classes.dialogueBand}>
+        <p className={classes.dialogueEyebrow}>Dialoog · Reisverhaal</p>
+        <h2 id="s-dial" className={classes.sectionTitle}>Dari Lombok</h2>
+
+        <p className={classes.dialogueSetup}>
+          Paul is net terug van Lombok en komt Linda weer tegen op Bali. Ze vraagt hoe het was — en Paul
+          vertelt: over de veerboot die hij liet schieten, de Gunung Rinjani die te ver bleek, en een geleende
+          motor die op een weg vol stenen en zand mogok raakte. Bensin habis.
+        </p>
+
+        {/* Route ribbon — the itinerary the book marks on its map of Java, Bali, Lombok */}
+        <div className={classes.routeRibbon} aria-label="Reisroute">
+          {ROUTE.map((stop, i) => (
+            <span key={stop} className={classes.routeStopWrap}>
+              <span className={classes.routeStop} data-terminal={i === 0 || i === ROUTE.length - 1}>{stop}</span>
+              {i < ROUTE.length - 1 && <span className={classes.routeArrow} aria-hidden="true">→</span>}
+            </span>
+          ))}
+        </div>
+
+        <div className={classes.dialogueLines}>
+          {c.lines.map((line, i) => {
+            const tone = speakerTone(line.speaker)
+            if (tone === 'narrator') {
+              return (
+                <p key={i} className={classes.narratorLine}>
+                  <span className={classes.narratorId}>
+                    {line.text}
+                    <PlayButton src={line.audioUrl} />
+                  </span>
+                  <span className={classes.narratorNl}>{line.translation}</span>
+                </p>
+              )
+            }
+            return (
+              <div key={i} className={classes.dialogueLine} data-speaker-tone={tone}>
+                <div className={classes.dialogueSpeaker}>{line.speaker}</div>
+                <div className={classes.dialogueBody}>
+                  <div className={classes.dialogueIdRow}>
+                    <span className={classes.dialogueId}>{line.text}</span>
+                    <PlayButton src={line.audioUrl} />
+                  </div>
+                  <div className={classes.dialogueNl}>{line.translation}</div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Movement 2: Woordenlijst — the words of the journey ────────────────────
+
+function VocabList({ section }: { section: typeof sections[number] }) {
+  const c = section.content as { items: Item[] }
+  return (
+    <section className={classes.section} aria-labelledby="s-vocab">
+      <p className={classes.vocabEyebrow}>Woordenlijst</p>
+      <h2 id="s-vocab" className={classes.sectionTitle}>De woorden van de oversteek</h2>
+      <p className={classes.sectionLede}>
+        Reiswoorden en verhaalwoorden door elkaar — <em>feri</em>, <em>bensin</em>, <em>bengkel</em>,
+        <em> mogok</em> — met de verbindingswoorden die de dialoog aan elkaar knopen: <em>sedangkan</em>,
+        <em> apalagi</em>, <em>kebetulan</em>.
+      </p>
+      <div className={classes.itemGrid}>
+        {c.items.map((item, i) => (
+          <div key={i} className={classes.itemChip}>
+            <PlayButton src={item.audioUrl} />
+            <span className={classes.itemId}>{item.indonesian}</span>
+            <span className={classes.itemSep} />
+            <span className={classes.itemNl}>{item.dutch}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+// ─── Movement 3: Sepeda motor — a workshop parts-inventory ──────────────────
+// The book's playful "voor de liefhebber" extra: 25 labelled parts of a
+// motorcycle, laid out like a parts manifest with mono index numbers.
+
+function SepedaMotorSpread({ section }: { section: typeof sections[number] }) {
+  const c = section.content as { items: Item[] }
+  return (
+    <section className={classes.section} aria-labelledby="s-moto">
+      <p className={classes.motoEyebrow}>Voor de liefhebber</p>
+      <h2 id="s-moto" className={classes.sectionTitle}>Sepeda motor — onderdeel voor onderdeel</h2>
+      <p className={classes.sectionLede}>
+        De motor waarmee Paul strandde, uit elkaar gehaald. Een werkplaatslijst van namen — van de
+        <em> ban</em> tot de <em>knalpot</em> — voor wie graag onder de kap kijkt.
+      </p>
+      <ol className={classes.partsGrid}>
+        {c.items.map((item, i) => (
+          <li key={i} className={classes.partRow}>
+            <span className={classes.partNum}>{String(i + 1).padStart(2, '0')}</span>
+            <span className={classes.partBody}>
+              <span className={classes.partIdRow}>
+                <span className={classes.partId}>{item.indonesian}</span>
+                <PlayButton src={item.audioUrl} />
+              </span>
+              <span className={classes.partNl}>{item.dutch}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+// ─── Movement 4: Tata Bahasa · Zinsbouw ─────────────────────────────────────
+// cat[0] = participants (agens/patiens + partij 3/4 + marker words)
+// cat[1] = the usual word order in an active sentence
+// cat[2] = reason / cause (sebab, karena, sebab itu, karena itu)
+// cat[3] = purpose / consequence (supaya tegenover sehingga)
+
 const SLOTS = [
   { tag: '1', role: 'agens', gloss: 'wie de handeling uitvoert', accent: 'cyan' },
   { tag: 'V', role: 'handeling', gloss: 'de werkwoordsvorm', accent: 'amber' },
   { tag: '2', role: 'patiens', gloss: 'wie de handeling ondergaat', accent: 'purple' },
 ] as const
 
-// The optional participants and their marker words.
 const PARTIJEN = [
   { tag: '3', role: 'voor wie / waarvoor', markers: ['bagi', 'buat', 'kepada', 'untuk'], accent: 'teal' },
   { tag: '4', role: 'met wie / waarmee', markers: ['dengan', 'sama', 'tanpa'], accent: 'green' },
 ] as const
 
-// The full word-order track, with the marker word that introduces each slot.
 const ORDER = [
   { label: 'tijd', marker: 'waktu, pada …' },
   { label: 'partij 1', marker: 'agens' },
@@ -108,10 +242,10 @@ function ArchitectureSection({ cats }: { cats: GrammarCategory[] }) {
   const wordOrder = cats[1]
   return (
     <section className={classes.section} aria-labelledby="s-arch">
-      <p className={classes.archEyebrow}>Zinsarchitectuur</p>
+      <p className={classes.archEyebrow}>Tata Bahasa · Zinsbouw</p>
       <h2 id="s-arch" className={classes.sectionTitle}>Wie doet wat, voor wie, waarmee</h2>
 
-      {/* The participant slot diagram — the visual heart of the lesson. */}
+      {/* The participant slot diagram — the visual heart of the chapter */}
       <div className={classes.schema}>
         <div className={classes.schemaCore}>
           {SLOTS.map((s, i) => (
@@ -139,19 +273,17 @@ function ArchitectureSection({ cats }: { cats: GrammarCategory[] }) {
         </div>
       </div>
 
-      {/* Rules from cat[0] — the explanation behind the diagram. */}
       <ul className={classes.archRules}>
         {participants.rules.map((r, i) => <li key={i}>{r}</li>)}
       </ul>
 
-      {/* The two cat[0] examples — building up from bare to + participants. */}
       {participants.examples && participants.examples.length > 0 && (
         <div className={classes.archExamples}>
           {participants.examples.map((ex, i) => <ExampleRow key={i} ex={ex} />)}
         </div>
       )}
 
-      {/* The full word-order recipe — cat[1] — as an ordered track. */}
+      {/* The full word-order recipe — cat[1] — as an ordered track */}
       <p className={classes.orderCaption}>De gebruikelijke volgorde in een actieve zin</p>
       <ol className={classes.orderTrack}>
         {ORDER.map((o, i) => (
@@ -176,9 +308,7 @@ function ArchitectureSection({ cats }: { cats: GrammarCategory[] }) {
   )
 }
 
-// ─── Movement 2: The connectives ────────────────────────────────────────────
-// cat[2] = reason/cause (sebab, karena, sebab itu, karena itu)
-// cat[3] = purpose/consequence (supaya tegenover sehingga)
+const CONN_ACCENTS = ['purple', 'teal'] as const
 
 function ConnectiveTile({ cat, accent, index }: { cat: GrammarCategory; accent: string; index: number }) {
   return (
@@ -201,15 +331,14 @@ function ConnectiveTile({ cat, accent, index }: { cat: GrammarCategory; accent: 
   )
 }
 
-const CONN_ACCENTS = ['purple', 'teal'] as const
-
 function ConnectivesSection({ cats }: { cats: GrammarCategory[] }) {
   return (
     <section className={classes.section} aria-labelledby="s-conn">
       <p className={classes.connEyebrow}>Verbindingswoorden</p>
       <h2 id="s-conn" className={classes.sectionTitle}>Reden, doel en gevolg aan elkaar knopen</h2>
       <p className={classes.connCaption}>
-        Twee clausules verbinden — en het verbindingswoord zegt of het tweede deel een <em>oorzaak</em>, een <em>beoogd doel</em> of een <em>vanzelf optredend gevolg</em> is.
+        Twee clausules verbinden — en het verbindingswoord zegt of het tweede deel een <em>oorzaak</em>,
+        een <em>beoogd doel</em> of een <em>vanzelf optredend gevolg</em> is.
       </p>
       <div className={classes.connGrid}>
         {cats.map((cat, i) => (
@@ -220,25 +349,26 @@ function ConnectivesSection({ cats }: { cats: GrammarCategory[] }) {
   )
 }
 
-// ─── Practice teaser — names the four latihan, never the prompts ────────────
+// ─── Movement 5: Latihan — named, not previewed ─────────────────────────────
+// The exercise prompts are the session engine's content; the reader gets only
+// the four latihan titles + their instruction, drawn straight from the data.
 
-const LATIHAN = [
-  { num: 'I', label: 'Zet de dialoog "Sepeda motor mogok" om in Indonesische zinnen' },
-  { num: 'II', label: 'Puzzel: vertaal de trefwoorden en vind het spreekwoord' },
-  { num: 'III', label: 'Kies de juiste BER-, ME- of DI-werkwoordsvorm' },
-  { num: 'IV', label: 'Bouw een goede zin uit de losse zinsonderdelen' },
-]
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'] as const
 
-function PracticeTeaser() {
+function LatihanTeaser({ section }: { section: typeof sections[number] }) {
+  const c = section.content as { sections: ExerciseSub[] }
   return (
-    <section className={classes.section} aria-labelledby="s-teaser">
-      <p className={classes.teaserEyebrow}>Latihan</p>
-      <h2 id="s-teaser" className={classes.sectionTitle}>Vier oefeningen op zinsbouw</h2>
-      <ol className={classes.teaserList}>
-        {LATIHAN.map(l => (
-          <li key={l.num} className={classes.teaserItem}>
-            <span className={classes.teaserNum}>{l.num}</span>
-            <span className={classes.teaserLabel}>{l.label}</span>
+    <section className={classes.section} aria-labelledby="s-lat">
+      <p className={classes.latEyebrow}>Latihan</p>
+      <h2 id="s-lat" className={classes.sectionTitle}>Vier oefeningen op zinsbouw</h2>
+      <ol className={classes.latList}>
+        {c.sections.map((sub, i) => (
+          <li key={i} className={classes.latItem}>
+            <span className={classes.latNum}>{ROMAN[i]}</span>
+            <span className={classes.latBody}>
+              <span className={classes.latTitle}>{sub.title.replace(/^Latihan\s+[IVX]+\s+—\s+/, '')}</span>
+              <span className={classes.latInstruction}>{sub.instruction}</span>
+            </span>
           </li>
         ))}
       </ol>
@@ -250,26 +380,29 @@ function PracticeTeaser() {
 
 export default function Lesson19Page() {
   const activation = useLessonActivation(meta.id)
-  const grammar = sections[0].content as { categories: GrammarCategory[] }
+  const grammar = sections[3].content as { categories: GrammarCategory[] }
   const cats = grammar.categories
 
   return (
     <article className={classes.page}>
-      {/* Hero band — full-bleed, decorated */}
+      {/* Hero band — full-bleed, warm travelogue mood */}
       <header className={classes.heroBand}>
         <div className={classes.heroInner}>
           <div className={classes.heroLeft}>
             <div className={classes.heroBadgeRow}>
               <span className={classes.heroBadge}>{meta.level}</span>
               <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-              <span className={classes.heroBadgeTag}>Zinsbouw</span>
+              <span className={classes.heroBadgeTag}>Bab 3 · Zinsbouw</span>
             </div>
             <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Zinsbouw</span>
-              <span className={classes.heroTitleNl}>Hoe een Indonesische zin in elkaar zit</span>
+              <span className={classes.heroTitleId}>Dari Lombok</span>
+              <span className={classes.heroTitleNl}>Terug van Lombok — en de bouw van de zin</span>
             </h1>
             <p className={classes.heroDescription}>
-              <em>Presiden membuka sekolah baru.</em> De president opent een nieuwe school. Voeg er voor wie, waarmee, wanneer en waar aan toe — en de zin groeit zonder van vorm te veranderen. Dit hoofdstuk gaat over de plaats van de woorden, niet over hun vorm.
+              Paul komt terug van Lombok met een verhaal: geen veerboot maar het vliegtuig, de Gunung Rinjani
+              net niet gehaald, en een geleende motor die stilviel toen de weg veranderde <em>dari aspal
+              menjadi batu-batu dan pasir</em>. En onder het reisverhaal ligt de grammatica van dit hoofdstuk:
+              hoe een Indonesische zin in elkaar zit.
             </p>
           </div>
         </div>
@@ -279,15 +412,16 @@ export default function Lesson19Page() {
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
-            Indonesisch verbuigt niet — het <em>ordent</em>. Welke partij vooraan staat, bepaalt waar de nadruk ligt; welke werkwoordsvorm je kiest, bepaalt de volgorde. Begin een zin met <em>Di Denpasar …</em> en je zegt: de plaats is het belangrijkst.
+            Een goed reisverhaal en een goede zin bouw je op dezelfde manier: <em>wie</em> doet <em>wat</em>,
+            voor wie, waarmee, wanneer en waar. Indonesisch verbuigt niet — het <em>ordent</em>. Zet
+            <em> Di Denpasar …</em> vooraan en je zegt: de plaats is het belangrijkst.
           </p>
-          <p className={classes.ledeMeta}>Les 19 · B1 · Grammatica · Bahasa Indonesia</p>
+          <p className={classes.ledeMeta}>Les 19 · {meta.level} · Selamat Datang 2 · Bahasa Indonesia</p>
         </div>
       </section>
 
       {/* Lesson audio — band between the lede and the main content.
-          Authored behind a runtime guard: invisible until audio_path is set,
-          then it lights up with no page edit. */}
+          Authored behind a runtime guard: invisible until audio_path is set. */}
       <LessonGrammarAudioBand
         nl={meta.lesson_audio_url}
         en={meta.lesson_audio_url_en}
@@ -299,9 +433,12 @@ export default function Lesson19Page() {
       {/* Main content — single column, aligned to lede width */}
       <section className={classes.shellBand}>
         <main className={classes.shell}>
+          <DialogueScene section={sections[0]} />
+          <VocabList section={sections[1]} />
+          <SepedaMotorSpread section={sections[2]} />
           <ArchitectureSection cats={cats} />
           <ConnectivesSection cats={[cats[2], cats[3]]} />
-          <PracticeTeaser />
+          <LatihanTeaser section={sections[4]} />
         </main>
       </section>
 
@@ -310,7 +447,7 @@ export default function Lesson19Page() {
         <div className={classes.closingInner}>
           <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
           <p className={classes.closingLede}>
-            Activeer de les en de zinspatronen en verbindingswoorden verschijnen automatisch in je oefensessies.
+            Activeer de les en de woorden, zinnen en zinspatronen verschijnen automatisch in je oefensessies.
           </p>
           <div className={classes.closingActivation}>
             <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />

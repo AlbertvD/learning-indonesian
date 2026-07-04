@@ -14,6 +14,455 @@
     {
       "order_index": 0,
       "content": {
+        "type": "dialogue",
+        "lines": [
+          {
+            "text": "Sebelum Linda dan Paul datang ke Indonesia mereka belum pernah saling mengenal. Mereka bertemu di Bali. Linda sudah dua kali ke Indonesia, sedangkan Paul sudah tinggal di Denpasar selama beberapa bulan. Sekarang Paul baru kembali dari Lombok dan bertemu lagi dengan Linda di Bali.",
+            "speaker": "narrator",
+            "translation": "Voordat Linda en Paul naar Indonesië kwamen, kenden ze elkaar niet. Ze ontmoetten elkaar op Bali. Linda was al twee keer in Indonesië geweest, terwijl Paul al enkele maanden in Denpasar woonde. Nu is Paul net teruggekomen van Lombok en ontmoet hij Linda weer op Bali.",
+            "translation_en": "Before Linda and Paul came to Indonesia, they didn't know each other. They met in Bali. Linda had been to Indonesia twice, while Paul had been living in Denpasar for a few months. Now Paul has just returned from Lombok and is meeting Linda again in Bali.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sebelum-linda-dan-paul-aff46808.mp3"
+          },
+          {
+            "text": "Eh, kapan pulang dari Lombok?",
+            "speaker": "Linda",
+            "translation": "Wanneer ben je teruggekomen van Lombok?",
+            "translation_en": "When did you get back from Lombok?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/eh-kapan-pulang-dari-5c57e291.mp3"
+          },
+          {
+            "text": "O, sudah seminggu yang lalu.",
+            "speaker": "Paul",
+            "translation": "O, dat is al een week geleden.",
+            "translation_en": "Oh, that was a week ago.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/o-sudah-seminggu-yang-3c1b5ae6.mp3"
+          },
+          {
+            "text": "Bagaimana di sana? Ayo, cerita, dong!",
+            "speaker": "Linda",
+            "translation": "Hoe was het daar? Kom op, vertel eens!",
+            "translation_en": "How was it there? Come on, tell me!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bagaimana-di-sana-ayo-8c3c3008.mp3"
+          },
+          {
+            "text": "Aduh, saya benar-benar tidak tahu bagaimana mau memulai cerita saya. Lombok bagus sekali. Lain dari Bali. Bali begitu hijau dan ramai. Lombok juga sudah mulai ramai, tetapi masih lebih sepi dibandingkan dengan Bali.",
+            "speaker": "Paul",
+            "translation": "Ach, ik weet echt niet hoe ik mijn verhaal moet beginnen. Lombok is echt prachtig. Heel anders dan Bali. Bali is zo groen en druk. Lombok wordt ook al drukker, maar het is nog veel rustiger vergeleken met Bali.",
+            "translation_en": "Oh, I really don't know how to start my story. Lombok is really beautiful. Very different from Bali. Bali is so green and busy. Lombok is getting busier too, but it's still much quieter compared to Bali.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/aduh-saya-benarbenar-tidak-95bea508.mp3"
+          },
+          {
+            "text": "Ya, tentu saja, Lombok belum begitu dikenal turis. Kalau saya ingin ke sana, bagaimana caranya?",
+            "speaker": "Linda",
+            "translation": "Ja, natuurlijk, Lombok is nog niet zo bekend bij toeristen. Als ik daar heen wil gaan, hoe kan ik dat doen?",
+            "translation_en": "Yes, of course, Lombok isn't as well known to tourists yet. If I want to go there, how can I do that?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ya-tentu-saja-lombok-26004908.mp3"
+          },
+          {
+            "text": "Begini ya, kalau mau ke Lombok bisa naik feri, tapi makan waktu lama. Dari Denpasar harus ke Padang Bai dulu. Wah, jauh sekali. Terus naik feri selama 6 jam. Itu saya tidak mau. Jadi, saya naik pesawat udara saja.",
+            "speaker": "Paul",
+            "translation": "Nou, je kunt met de veerboot gaan, maar dat duurt erg lang. Vanaf Denpasar moet je eerst naar Padang Bai. Wow, dat is echt ver weg. En dan nog eens 6 uur met de veerboot. Dat wil ik niet doen. Dus ben ik gewoon met het vliegtuig gegaan.",
+            "translation_en": "Well, you can take the ferry, but it takes a long time. From Denpasar you have to go to Padang Bai first. Wow, that's really far. Then you take the ferry for 6 hours. I didn't want to do that. So I just took the airplane.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/begini-ya-kalau-mau-e7dab22d.mp3"
+          },
+          {
+            "text": "Apa kamu ke Gunung Rinjani? Katanya di sana indah.",
+            "speaker": "Linda",
+            "translation": "Ben je naar de Gunung Rinjani geweest? Ze zeggen dat het daar heel mooi is.",
+            "translation_en": "Did you go to Gunung Rinjani? They say it's beautiful there.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/apa-kamu-ke-gunung-04ee225c.mp3"
+          },
+          {
+            "text": "Tidak, tidak ada waktu. Gunung Rinjani jauh sekali. Jadi saya hanya keliling-keliling di sekitar kota Mataram saja.",
+            "speaker": "Paul",
+            "translation": "Nee, ik had geen tijd. De Gunung Rinjani is echt heel ver weg. Dus ben ik alleen wat rond Mataram gaan rondkijken.",
+            "translation_en": "No, I didn't have time. Gunung Rinjani is really far away. So I just traveled around the Mataram area.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tidak-tidak-ada-waktu-d8a97bc5.mp3"
+          },
+          {
+            "text": "Kamu tinggal di mana di sana?",
+            "speaker": "Linda",
+            "translation": "Waar heb je daar gelogeerd?",
+            "translation_en": "Where did you stay there?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kamu-tinggal-di-mana-71457318.mp3"
+          },
+          {
+            "text": "Aduh, ada cerita yang lucu. Kebetulan saya bertemu dengan seorang Perancis di Mataram. Kami tinggal di losmen dan di situ ada orang yang sepeda motornya boleh kami pakai. Kami berdua naik sepeda motor itu ke Lombok Utara. Indah sekali! Pertama-tama jalanan di sana bagus. Tapi sebentar kemudian jalan berubah dari aspal menjadi batu-batu dan pasir. Kemudian motor mogok. Bensinnya habis. Kami lupa memeriksanya. Apalagi kami capek betul. Tapi tidak apa-apa. Ada orang yang mendorong sepeda motor sampai ke warung untuk membeli bensin, tapi juga kebetulan habis. Terus sebuah truk besar datang. Kami naik ke atas truk itu bersama dengan motor dan menumpang sampai ke suatu kota kecil. Di sana kami membeli bensin di bengkel sehingga kami dapat kembali ke kota Mataram.",
+            "speaker": "Paul",
+            "translation": "Ach, dat is een grappig verhaal. Toevallig ontmoette ik een Fransman in Mataram. We zaten in een losmen en daar was iemand die ons zijn scooter liet gebruiken. We reden met die scooter naar Noord-Lombok. Prachtig was het! Eerst waren de wegen daar heel goed. Maar even later veranderden de wegen van asfalt in stenen en zand. Toen viel de motor stil. Er was geen benzine meer. We waren vergeten dat te controleren. En bovendien waren we doodmoe. Maar het was niet erg. Iemand duwde de scooter helemaal naar een winkeltje om benzine te kopen, maar daar was het ook op. Toen kwam een grote vrachtwagen langs. We klommen erop met de scooter en reden met die vrachtwagen tot een klein stadje. Daar kochten we benzine bij een werkplaats, zodat we terug konden naar Mataram.",
+            "translation_en": "Oh, there's a funny story. I happened to meet a Frenchman in Mataram. We stayed at a guesthouse and there was someone who let us use his motorcycle. We both rode that motorcycle to North Lombok. It was beautiful! At first the roads there were really good. But shortly after, the road changed from asphalt to stones and sand. Then the motorcycle broke down. It ran out of gas. We forgot to check it. And besides, we were completely exhausted. But it was fine. Someone pushed the motorcycle all the way to a shop to buy gas, but it was also out there. Then a big truck came by. We climbed on top of it with the motorcycle and rode with that truck to a small town. There we bought gas at a garage so we could get back to Mataram.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/aduh-ada-cerita-yang-422e6d86.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "bovendien / vooral",
+            "english": "besides / especially",
+            "indonesian": "apalagi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/apalagi-2e6ffc05.mp3"
+          },
+          {
+            "dutch": "asfalt",
+            "english": "asphalt",
+            "indonesian": "aspal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/aspal-2edb6387.mp3"
+          },
+          {
+            "dutch": "ten behoeve van",
+            "english": "for / on behalf of",
+            "indonesian": "bagi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bagi-afda6402.mp3"
+          },
+          {
+            "dutch": "steen",
+            "english": "stone",
+            "indonesian": "batu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/batu-f8aef22e.mp3"
+          },
+          {
+            "dutch": "echt / heus",
+            "english": "really / truly",
+            "indonesian": "benar-benar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/benarbenar-6011b3ed.mp3"
+          },
+          {
+            "dutch": "garage",
+            "english": "garage",
+            "indonesian": "bengkel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bengkel-cfe05b08.mp3"
+          },
+          {
+            "dutch": "benzine",
+            "english": "gasoline",
+            "indonesian": "bensin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bensin-7624af93.mp3"
+          },
+          {
+            "dutch": "weggooien",
+            "english": "throw away",
+            "indonesian": "buang, mem~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/buang-mem-bd035cc7.mp3"
+          },
+          {
+            "dutch": "vergeleken (met)",
+            "english": "compared (with)",
+            "indonesian": "dibandingkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/dibandingkan-ebb10202.mp3"
+          },
+          {
+            "dutch": "rondom",
+            "english": "around",
+            "indonesian": "di sekitar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/di-sekitar-650d8df7.mp3"
+          },
+          {
+            "dutch": "duwen",
+            "english": "push",
+            "indonesian": "dorong, men~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/dorong-men-e719c677.mp3"
+          },
+          {
+            "dutch": "manier / wijze",
+            "english": "way / manner",
+            "indonesian": "cara",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/cara-a64e4943.mp3"
+          },
+          {
+            "dutch": "ferry / veerboot",
+            "english": "ferry",
+            "indonesian": "feri",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/feri-38860799.mp3"
+          },
+          {
+            "dutch": "fraai / mooi",
+            "english": "beautiful / lovely",
+            "indonesian": "indah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/indah-ddc1fdae.mp3"
+          },
+          {
+            "dutch": "pinda",
+            "english": "peanut",
+            "indonesian": "kacang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kacang-ad6673ec.mp3"
+          },
+          {
+            "dutch": "men zegt",
+            "english": "they say",
+            "indonesian": "kata, ~nya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kata-nya-2c6cb205.mp3"
+          },
+          {
+            "dutch": "toevallig",
+            "english": "by chance / it happened that",
+            "indonesian": "kebetulan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kebetulan-df0bb702.mp3"
+          },
+          {
+            "dutch": "rondreizen",
+            "english": "travel around",
+            "indonesian": "keliling-keliling",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kelilingkeliling-9be87a73.mp3"
+          },
+          {
+            "dutch": "kennen",
+            "english": "know / be acquainted with",
+            "indonesian": "kenal, mengenal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kenal-mengenal-88e9b101.mp3"
+          },
+          {
+            "dutch": "anders / andere",
+            "english": "other / different",
+            "indonesian": "lain",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lain-7601abe6.mp3"
+          },
+          {
+            "dutch": "boos",
+            "english": "angry",
+            "indonesian": "marah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/marah-4b41db6f.mp3"
+          },
+          {
+            "dutch": "weigeren / panne",
+            "english": "refuse / breakdown",
+            "indonesian": "mogok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/mogok-7e414d90.mp3"
+          },
+          {
+            "dutch": "veld",
+            "english": "field",
+            "indonesian": "padang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/padang-7a365e5e.mp3"
+          },
+          {
+            "dutch": "aanvankelijk",
+            "english": "initially",
+            "indonesian": "pertama-tama",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pertamatama-d6a63c1e.mp3"
+          },
+          {
+            "dutch": "redevoering",
+            "english": "speech",
+            "indonesian": "pidato",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pidato-78bffce6.mp3"
+          },
+          {
+            "dutch": "officieel",
+            "english": "official",
+            "indonesian": "resmi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/resmi-993da589.mp3"
+          },
+          {
+            "dutch": "met",
+            "english": "with",
+            "indonesian": "sama",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sama-9402617e.mp3"
+          },
+          {
+            "dutch": "terwijl (bij tegenstelling)",
+            "english": "while (in contrast)",
+            "indonesian": "sedangkan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sedangkan-5932cf0b.mp3"
+          },
+          {
+            "dutch": "motorfiets",
+            "english": "motorcycle",
+            "indonesian": "sepeda motor",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sepeda-motor-1a285aca.mp3"
+          },
+          {
+            "dutch": "stil / rustig",
+            "english": "quiet / peaceful",
+            "indonesian": "sepi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sepi-5f15db50.mp3"
+          },
+          {
+            "dutch": "vrachtwagen / truck",
+            "english": "truck",
+            "indonesian": "truk",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/truk-25bb2166.mp3"
+          },
+          {
+            "dutch": "meerijden",
+            "english": "ride along",
+            "indonesian": "tumpang, menumpang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tumpang-menumpang-520b774e.mp3"
+          },
+          {
+            "dutch": "veranderen",
+            "english": "change",
+            "indonesian": "ubah, ber~",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/ubah-ber-51fc23d0.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "band",
+            "english": "tire",
+            "indonesian": "ban",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/ban-49628b9f.mp3"
+          },
+          {
+            "dutch": "bougie",
+            "english": "spark plug",
+            "indonesian": "busi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/busi-bdae4b2b.mp3"
+          },
+          {
+            "dutch": "spaak",
+            "english": "spoke",
+            "indonesian": "jari-jari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/jarijari-ce85f329.mp3"
+          },
+          {
+            "dutch": "kabel",
+            "english": "cable",
+            "indonesian": "kabel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kabel-794d5e42.mp3"
+          },
+          {
+            "dutch": "carburateur",
+            "english": "carburetor",
+            "indonesian": "karburator",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/karburator-a3a646b3.mp3"
+          },
+          {
+            "dutch": "cylinderkop",
+            "english": "cylinder head",
+            "indonesian": "kepala silinder",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kepala-silinder-ad28ba80.mp3"
+          },
+          {
+            "dutch": "uitlaat",
+            "english": "exhaust",
+            "indonesian": "knalpot",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/knalpot-de2390da.mp3"
+          },
+          {
+            "dutch": "lamp",
+            "english": "lamp",
+            "indonesian": "lampu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lampu-3c5956d3.mp3"
+          },
+          {
+            "dutch": "achterlicht",
+            "english": "tail light",
+            "indonesian": "lampu belakang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lampu-belakang-4f8ddbed.mp3"
+          },
+          {
+            "dutch": "knipperlicht",
+            "english": "turn signal",
+            "indonesian": "lampu tanda belok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/lampu-tanda-belok-861f40bb.mp3"
+          },
+          {
+            "dutch": "motor",
+            "english": "motor",
+            "indonesian": "motor",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/motor-b1989099.mp3"
+          },
+          {
+            "dutch": "velg",
+            "english": "rim",
+            "indonesian": "pelek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pelek-88a6a820.mp3"
+          },
+          {
+            "dutch": "schokbreker",
+            "english": "shock absorber",
+            "indonesian": "peredam kejut, sokbreker",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/peredam-kejut-sokbreker-99b58ef8.mp3"
+          },
+          {
+            "dutch": "versnelling",
+            "english": "gear",
+            "indonesian": "persneling",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/persneling-1405a41a.mp3"
+          },
+          {
+            "dutch": "voetsteun aan voorzijde",
+            "english": "front footrest",
+            "indonesian": "pijakan depan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pijakan-depan-4f4acdbd.mp3"
+          },
+          {
+            "dutch": "frame",
+            "english": "frame",
+            "indonesian": "rangka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/rangka-2c9d5815.mp3"
+          },
+          {
+            "dutch": "handrem",
+            "english": "hand brake",
+            "indonesian": "rem tangan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/rem-tangan-e3ba2c94.mp3"
+          },
+          {
+            "dutch": "schijfrem",
+            "english": "disc brake",
+            "indonesian": "rem cakram",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/rem-cakram-98f787bf.mp3"
+          },
+          {
+            "dutch": "zadel",
+            "english": "saddle",
+            "indonesian": "sadel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sadel-a3ed8699.mp3"
+          },
+          {
+            "dutch": "stuur",
+            "english": "handlebars",
+            "indonesian": "setir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/setir-89fb9a41.mp3"
+          },
+          {
+            "dutch": "cylinder",
+            "english": "cylinder",
+            "indonesian": "silinder",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/silinder-4c006e2a.mp3"
+          },
+          {
+            "dutch": "spatbord",
+            "english": "fender",
+            "indonesian": "spatbor",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/spatbor-19ce8345.mp3"
+          },
+          {
+            "dutch": "achteruitkijkspiegel",
+            "english": "mirror",
+            "indonesian": "spion",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/spion-f8129443.mp3"
+          },
+          {
+            "dutch": "tank",
+            "english": "tank",
+            "indonesian": "tangki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tangki-c6749b0f.mp3"
+          },
+          {
+            "dutch": "voetversnellingspook",
+            "english": "gear lever",
+            "indonesian": "tuas persneling",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tuas-persneling-7186209e.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
         "type": "grammar",
         "categories": [
           {
@@ -169,7 +618,7 @@
       }
     },
     {
-      "order_index": 1,
+      "order_index": 4,
       "content": {
         "type": "exercises",
         "sections": [
