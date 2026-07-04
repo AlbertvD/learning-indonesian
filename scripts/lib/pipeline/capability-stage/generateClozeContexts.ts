@@ -361,9 +361,22 @@ export function sanitizeGeneratedCloze(
   if (!candidates.some((c) => c.normalized === answerNorm)) return null
 
   // The blank, filled with the answer, must reproduce the original line exactly.
-  if (sentenceWithBlank.replace('___', answerText) !== line.text) return null
+  if (sentenceWithBlank.replace('___', answerText) === line.text) {
+    return { sentenceWithBlank, answerText }
+  }
 
-  return { sentenceWithBlank, answerText }
+  // Retry with the answer's trailing punctuation stripped: candidate tokens
+  // keep their trailing punctuation ("sana?"), and the model sometimes echoes
+  // it in the answer while (correctly) blanking only the bare word — the
+  // reconstruction then doubles the mark ("sana??"). The prompt explicitly
+  // allows dropping a trailing mark; exact whole-line reconstruction is still
+  // required, so this widens nothing about content. (Live: lesson 19 line-3.)
+  const bareAnswer = answerText.replace(/[.,!?;:]+$/u, '')
+  if (bareAnswer && sentenceWithBlank.replace('___', bareAnswer) === line.text) {
+    return { sentenceWithBlank, answerText: bareAnswer }
+  }
+
+  return null
 }
 
 // ---------------------------------------------------------------------------

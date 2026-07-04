@@ -7,8 +7,391 @@ export const lesson = {
   "order_index": 19,
   "sections": [
     {
-      "title": "TATA BAHASA - Zinsbouw",
+      "title": "Dari Lombok",
       "order_index": 0,
+      "content": {
+        "type": "dialogue",
+        "lines": [
+          {
+            "speaker": "narrator",
+            "text": "Sebelum Linda dan Paul datang ke Indonesia mereka belum pernah saling mengenal. Mereka bertemu di Bali. Linda sudah dua kali ke Indonesia, sedangkan Paul sudah tinggal di Denpasar selama beberapa bulan. Sekarang Paul baru kembali dari Lombok dan bertemu lagi dengan Linda di Bali.",
+            "translation": "Voordat Linda en Paul naar Indonesië kwamen, kenden ze elkaar niet. Ze ontmoetten elkaar op Bali. Linda was al twee keer in Indonesië geweest, terwijl Paul al enkele maanden in Denpasar woonde. Nu is Paul net teruggekomen van Lombok en ontmoet hij Linda weer op Bali.",
+            "translation_en": "Before Linda and Paul came to Indonesia, they didn't know each other. They met in Bali. Linda had been to Indonesia twice, while Paul had been living in Denpasar for a few months. Now Paul has just returned from Lombok and is meeting Linda again in Bali."
+          },
+          {
+            "speaker": "Linda",
+            "text": "Eh, kapan pulang dari Lombok?",
+            "translation": "Wanneer ben je teruggekomen van Lombok?",
+            "translation_en": "When did you get back from Lombok?"
+          },
+          {
+            "speaker": "Paul",
+            "text": "O, sudah seminggu yang lalu.",
+            "translation": "O, dat is al een week geleden.",
+            "translation_en": "Oh, that was a week ago."
+          },
+          {
+            "speaker": "Linda",
+            "text": "Bagaimana di sana? Ayo, cerita, dong!",
+            "translation": "Hoe was het daar? Kom op, vertel eens!",
+            "translation_en": "How was it there? Come on, tell me!"
+          },
+          {
+            "speaker": "Paul",
+            "text": "Aduh, saya benar-benar tidak tahu bagaimana mau memulai cerita saya. Lombok bagus sekali. Lain dari Bali. Bali begitu hijau dan ramai. Lombok juga sudah mulai ramai, tetapi masih lebih sepi dibandingkan dengan Bali.",
+            "translation": "Ach, ik weet echt niet hoe ik mijn verhaal moet beginnen. Lombok is echt prachtig. Heel anders dan Bali. Bali is zo groen en druk. Lombok wordt ook al drukker, maar het is nog veel rustiger vergeleken met Bali.",
+            "translation_en": "Oh, I really don't know how to start my story. Lombok is really beautiful. Very different from Bali. Bali is so green and busy. Lombok is getting busier too, but it's still much quieter compared to Bali."
+          },
+          {
+            "speaker": "Linda",
+            "text": "Ya, tentu saja, Lombok belum begitu dikenal turis. Kalau saya ingin ke sana, bagaimana caranya?",
+            "translation": "Ja, natuurlijk, Lombok is nog niet zo bekend bij toeristen. Als ik daar heen wil gaan, hoe kan ik dat doen?",
+            "translation_en": "Yes, of course, Lombok isn't as well known to tourists yet. If I want to go there, how can I do that?"
+          },
+          {
+            "speaker": "Paul",
+            "text": "Begini ya, kalau mau ke Lombok bisa naik feri, tapi makan waktu lama. Dari Denpasar harus ke Padang Bai dulu. Wah, jauh sekali. Terus naik feri selama 6 jam. Itu saya tidak mau. Jadi, saya naik pesawat udara saja.",
+            "translation": "Nou, je kunt met de veerboot gaan, maar dat duurt erg lang. Vanaf Denpasar moet je eerst naar Padang Bai. Wow, dat is echt ver weg. En dan nog eens 6 uur met de veerboot. Dat wil ik niet doen. Dus ben ik gewoon met het vliegtuig gegaan.",
+            "translation_en": "Well, you can take the ferry, but it takes a long time. From Denpasar you have to go to Padang Bai first. Wow, that's really far. Then you take the ferry for 6 hours. I didn't want to do that. So I just took the airplane."
+          },
+          {
+            "speaker": "Linda",
+            "text": "Apa kamu ke Gunung Rinjani? Katanya di sana indah.",
+            "translation": "Ben je naar de Gunung Rinjani geweest? Ze zeggen dat het daar heel mooi is.",
+            "translation_en": "Did you go to Gunung Rinjani? They say it's beautiful there."
+          },
+          {
+            "speaker": "Paul",
+            "text": "Tidak, tidak ada waktu. Gunung Rinjani jauh sekali. Jadi saya hanya keliling-keliling di sekitar kota Mataram saja.",
+            "translation": "Nee, ik had geen tijd. De Gunung Rinjani is echt heel ver weg. Dus ben ik alleen wat rond Mataram gaan rondkijken.",
+            "translation_en": "No, I didn't have time. Gunung Rinjani is really far away. So I just traveled around the Mataram area."
+          },
+          {
+            "speaker": "Linda",
+            "text": "Kamu tinggal di mana di sana?",
+            "translation": "Waar heb je daar gelogeerd?",
+            "translation_en": "Where did you stay there?"
+          },
+          {
+            "speaker": "Paul",
+            "text": "Aduh, ada cerita yang lucu. Kebetulan saya bertemu dengan seorang Perancis di Mataram. Kami tinggal di losmen dan di situ ada orang yang sepeda motornya boleh kami pakai. Kami berdua naik sepeda motor itu ke Lombok Utara. Indah sekali! Pertama-tama jalanan di sana bagus. Tapi sebentar kemudian jalan berubah dari aspal menjadi batu-batu dan pasir. Kemudian motor mogok. Bensinnya habis. Kami lupa memeriksanya. Apalagi kami capek betul. Tapi tidak apa-apa. Ada orang yang mendorong sepeda motor sampai ke warung untuk membeli bensin, tapi juga kebetulan habis. Terus sebuah truk besar datang. Kami naik ke atas truk itu bersama dengan motor dan menumpang sampai ke suatu kota kecil. Di sana kami membeli bensin di bengkel sehingga kami dapat kembali ke kota Mataram.",
+            "translation": "Ach, dat is een grappig verhaal. Toevallig ontmoette ik een Fransman in Mataram. We zaten in een losmen en daar was iemand die ons zijn scooter liet gebruiken. We reden met die scooter naar Noord-Lombok. Prachtig was het! Eerst waren de wegen daar heel goed. Maar even later veranderden de wegen van asfalt in stenen en zand. Toen viel de motor stil. Er was geen benzine meer. We waren vergeten dat te controleren. En bovendien waren we doodmoe. Maar het was niet erg. Iemand duwde de scooter helemaal naar een winkeltje om benzine te kopen, maar daar was het ook op. Toen kwam een grote vrachtwagen langs. We klommen erop met de scooter en reden met die vrachtwagen tot een klein stadje. Daar kochten we benzine bij een werkplaats, zodat we terug konden naar Mataram.",
+            "translation_en": "Oh, there's a funny story. I happened to meet a Frenchman in Mataram. We stayed at a guesthouse and there was someone who let us use his motorcycle. We both rode that motorcycle to North Lombok. It was beautiful! At first the roads there were really good. But shortly after, the road changed from asphalt to stones and sand. Then the motorcycle broke down. It ran out of gas. We forgot to check it. And besides, we were completely exhausted. But it was fine. Someone pushed the motorcycle all the way to a shop to buy gas, but it was also out there. Then a big truck came by. We climbed on top of it with the motorcycle and rode with that truck to a small town. There we bought gas at a garage so we could get back to Mataram."
+          }
+        ]
+      }
+    },
+    {
+      "title": "Woordenlijst",
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "indonesian": "apalagi",
+            "dutch": "bovendien / vooral",
+            "english": "besides / especially"
+          },
+          {
+            "indonesian": "aspal",
+            "dutch": "asfalt",
+            "english": "asphalt"
+          },
+          {
+            "indonesian": "bagi",
+            "dutch": "ten behoeve van",
+            "english": "for / on behalf of"
+          },
+          {
+            "indonesian": "batu",
+            "dutch": "steen",
+            "english": "stone"
+          },
+          {
+            "indonesian": "benar-benar",
+            "dutch": "echt / heus",
+            "english": "really / truly"
+          },
+          {
+            "indonesian": "bengkel (bengkèl)",
+            "dutch": "garage",
+            "english": "garage"
+          },
+          {
+            "indonesian": "bensin",
+            "dutch": "benzine",
+            "english": "gasoline"
+          },
+          {
+            "indonesian": "buang, mem~",
+            "dutch": "weggooien",
+            "english": "throw away"
+          },
+          {
+            "indonesian": "dibandingkan",
+            "dutch": "vergeleken (met)",
+            "english": "compared (with)"
+          },
+          {
+            "indonesian": "di sekitar",
+            "dutch": "rondom",
+            "english": "around"
+          },
+          {
+            "indonesian": "dorong, men~",
+            "dutch": "duwen",
+            "english": "push"
+          },
+          {
+            "indonesian": "cara",
+            "dutch": "manier / wijze",
+            "english": "way / manner"
+          },
+          {
+            "indonesian": "feri",
+            "dutch": "ferry / veerboot",
+            "english": "ferry"
+          },
+          {
+            "indonesian": "indah",
+            "dutch": "fraai / mooi",
+            "english": "beautiful / lovely"
+          },
+          {
+            "indonesian": "kacang",
+            "dutch": "pinda",
+            "english": "peanut"
+          },
+          {
+            "indonesian": "kata, ~nya",
+            "dutch": "men zegt",
+            "english": "they say"
+          },
+          {
+            "indonesian": "kebetulan",
+            "dutch": "toevallig",
+            "english": "by chance / it happened that"
+          },
+          {
+            "indonesian": "keliling-keliling",
+            "dutch": "rondreizen",
+            "english": "travel around"
+          },
+          {
+            "indonesian": "kenal, mengenal",
+            "dutch": "kennen",
+            "english": "know / be acquainted with"
+          },
+          {
+            "indonesian": "lain",
+            "dutch": "anders / andere",
+            "english": "other / different"
+          },
+          {
+            "indonesian": "marah",
+            "dutch": "boos",
+            "english": "angry"
+          },
+          {
+            "indonesian": "mogok",
+            "dutch": "weigeren / panne",
+            "english": "refuse / breakdown"
+          },
+          {
+            "indonesian": "padang",
+            "dutch": "veld",
+            "english": "field"
+          },
+          {
+            "indonesian": "pertama-tama",
+            "dutch": "aanvankelijk",
+            "english": "initially"
+          },
+          {
+            "indonesian": "pidato",
+            "dutch": "redevoering",
+            "english": "speech"
+          },
+          {
+            "indonesian": "resmi",
+            "dutch": "officieel",
+            "english": "official"
+          },
+          {
+            "indonesian": "sama",
+            "dutch": "met",
+            "english": "with"
+          },
+          {
+            "indonesian": "sedangkan",
+            "dutch": "terwijl (bij tegenstelling)",
+            "english": "while (in contrast)"
+          },
+          {
+            "indonesian": "sepeda motor",
+            "dutch": "motorfiets",
+            "english": "motorcycle"
+          },
+          {
+            "indonesian": "sepi",
+            "dutch": "stil / rustig",
+            "english": "quiet / peaceful"
+          },
+          {
+            "indonesian": "truk",
+            "dutch": "vrachtwagen / truck",
+            "english": "truck"
+          },
+          {
+            "indonesian": "tumpang, menumpang",
+            "dutch": "meerijden",
+            "english": "ride along"
+          },
+          {
+            "indonesian": "ubah, ber~",
+            "dutch": "veranderen",
+            "english": "change"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Voor de liefhebber - Sepeda motor",
+      "order_index": 2,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "indonesian": "ban",
+            "dutch": "band",
+            "english": "tire"
+          },
+          {
+            "indonesian": "busi",
+            "dutch": "bougie",
+            "english": "spark plug"
+          },
+          {
+            "indonesian": "jari-jari",
+            "dutch": "spaak",
+            "english": "spoke"
+          },
+          {
+            "indonesian": "kabel",
+            "dutch": "kabel",
+            "english": "cable"
+          },
+          {
+            "indonesian": "karburator",
+            "dutch": "carburateur",
+            "english": "carburetor"
+          },
+          {
+            "indonesian": "kepala silinder",
+            "dutch": "cylinderkop",
+            "english": "cylinder head"
+          },
+          {
+            "indonesian": "knalpot",
+            "dutch": "uitlaat",
+            "english": "exhaust"
+          },
+          {
+            "indonesian": "lampu",
+            "dutch": "lamp",
+            "english": "lamp"
+          },
+          {
+            "indonesian": "lampu belakang",
+            "dutch": "achterlicht",
+            "english": "tail light"
+          },
+          {
+            "indonesian": "lampu tanda belok",
+            "dutch": "knipperlicht",
+            "english": "turn signal"
+          },
+          {
+            "indonesian": "motor",
+            "dutch": "motor",
+            "english": "motor"
+          },
+          {
+            "indonesian": "pelek",
+            "dutch": "velg",
+            "english": "rim"
+          },
+          {
+            "indonesian": "peredam kejut, sokbreker",
+            "dutch": "schokbreker",
+            "english": "shock absorber"
+          },
+          {
+            "indonesian": "persneling",
+            "dutch": "versnelling",
+            "english": "gear"
+          },
+          {
+            "indonesian": "pijakan depan",
+            "dutch": "voetsteun aan voorzijde",
+            "english": "front footrest"
+          },
+          {
+            "indonesian": "rangka",
+            "dutch": "frame",
+            "english": "frame"
+          },
+          {
+            "indonesian": "rem tangan",
+            "dutch": "handrem",
+            "english": "hand brake"
+          },
+          {
+            "indonesian": "rem cakram",
+            "dutch": "schijfrem",
+            "english": "disc brake"
+          },
+          {
+            "indonesian": "sadel",
+            "dutch": "zadel",
+            "english": "saddle"
+          },
+          {
+            "indonesian": "setir",
+            "dutch": "stuur",
+            "english": "handlebars"
+          },
+          {
+            "indonesian": "silinder",
+            "dutch": "cylinder",
+            "english": "cylinder"
+          },
+          {
+            "indonesian": "spatbor",
+            "dutch": "spatbord",
+            "english": "fender"
+          },
+          {
+            "indonesian": "spion",
+            "dutch": "achteruitkijkspiegel",
+            "english": "mirror"
+          },
+          {
+            "indonesian": "tangki",
+            "dutch": "tank",
+            "english": "tank"
+          },
+          {
+            "indonesian": "tuas persneling",
+            "dutch": "voetversnellingspook",
+            "english": "gear lever"
+          }
+        ]
+      }
+    },
+    {
+      "title": "TATA BAHASA - Zinsbouw",
+      "order_index": 3,
       "content": {
         "type": "grammar",
         "categories": [
@@ -155,7 +538,7 @@ export const lesson = {
     },
     {
       "title": "LATIHAN",
-      "order_index": 1,
+      "order_index": 4,
       "content": {
         "type": "exercises",
         "sections": [
