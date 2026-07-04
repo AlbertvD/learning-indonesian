@@ -58,8 +58,8 @@ describe('getExerciseCoverage', () => {
     setTables({
       lessons: [{ id: 'l-1', order_index: 1, title: 'One' }],
       item_contexts: [
-        { id: 'ctx-1', source_lesson_id: 'l-1', learning_item_id: 'item-a', context_type: 'anchor' },
-        { id: 'ctx-2', source_lesson_id: 'l-1', learning_item_id: 'item-b', context_type: 'cloze' },
+        { id: 'ctx-1', source_lesson_id: 'l-1', learning_item_id: 'item-a' },
+        { id: 'ctx-2', source_lesson_id: 'l-1', learning_item_id: 'item-b' },
       ],
       // Slice 4a: hasMeanings is sourced from learning_items.translation_nl
       // (Decision R), not the retired item_meanings table. item-a has a
@@ -75,8 +75,39 @@ describe('getExerciseCoverage', () => {
     const [row] = await getExerciseCoverage()
     expect(row?.learningItems).toBe(2)
     expect(row?.hasMeanings).toBe(true)
-    expect(row?.clozeContexts).toBe(1)
     expect(row?.exerciseVariants).toEqual({ choose_correct_form_ex: 1, choose_missing_word_ex: 1 })
+  })
+
+  it('counts dialogue clozes through their line join and affixed pairs by lesson', async () => {
+    setTables({
+      lessons: [
+        { id: 'l-1', order_index: 1, title: 'One' },
+        { id: 'l-2', order_index: 2, title: 'Two (no dialogue)' },
+      ],
+      item_contexts: [],
+      learning_items: [],
+      grammar_patterns: [],
+      lesson_dialogue_lines: [
+        { id: 'line-1', lesson_id: 'l-1' },
+        { id: 'line-2', lesson_id: 'l-1' },
+      ],
+      dialogue_clozes: [
+        { dialogue_line_id: 'line-1' },
+        { dialogue_line_id: 'orphan-line' }, // no known line → ignored
+      ],
+      lesson_section_affixed_pairs: [
+        { lesson_id: 'l-1' },
+        { lesson_id: 'l-1' },
+      ],
+    })
+
+    const [one, two] = await getExerciseCoverage()
+    expect(one?.dialogueLines).toBe(2)
+    expect(one?.dialogueClozes).toBe(1)
+    expect(one?.affixedPairs).toBe(2)
+    // no dialogue at all → the page renders the cloze cell as n/a, not a gap
+    expect(two?.dialogueLines).toBe(0)
+    expect(two?.dialogueClozes).toBe(0)
   })
 
   it('counts grammar patterns via introduced_by_lesson_id and the typed tables, deduped', async () => {
