@@ -2,9 +2,9 @@
   margin-top: 0.75rem;
   border-radius: 12px;
   background: var(--surface-1, rgba(128, 128, 128, 0.05));
-  /* thin gradient spine — the same cool→green language as the gauges/funnel */
+  /* thin gradient spine — the same tamarind→success language as the funnel */
   border-left: 3px solid transparent;
-  border-image: linear-gradient(180deg, #4dabf7, #20c997, #2f9e44) 1;
+  border-image: linear-gradient(180deg, var(--accent-primary), var(--success)) 1;
   overflow: hidden;
 }
 
@@ -70,7 +70,7 @@
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #20c997, #2f9e44);
+  background: linear-gradient(135deg, var(--accent-primary), var(--success));
 }
 
 .tip:nth-child(1) { animation-delay: 0.02s; }

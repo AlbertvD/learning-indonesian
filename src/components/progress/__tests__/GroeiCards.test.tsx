@@ -33,7 +33,7 @@ describe('GrowthCurveCard', () => {
       week('2026-06-08', { introduced: 4, learning: 6, strengthening: 2, mastered: 8 }),
     ])
 
-    wrap(<GrowthCurveCard userId="user-1" />)
+    wrap(<GrowthCurveCard userId="user-1" bucket="vocabulary" />)
 
     // One legend chip per rung (the 4 selectable lines).
     const introduced = await screen.findByRole('button', { name: /Geïntroduceerd/ })
@@ -52,7 +52,7 @@ describe('GrowthCurveCard', () => {
 
   it('shows the empty state when no rung has data', async () => {
     vi.mocked(getFunnelSeries).mockResolvedValue([week('2026-06-01', {}), week('2026-06-08', {})])
-    wrap(<GrowthCurveCard userId="user-1" />)
+    wrap(<GrowthCurveCard userId="user-1" bucket="vocabulary" />)
     expect(await screen.findByText(/Nog niet genoeg geschiedenis/)).toBeInTheDocument()
   })
 })

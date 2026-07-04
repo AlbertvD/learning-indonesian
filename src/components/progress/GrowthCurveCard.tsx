@@ -13,7 +13,6 @@ import { IconChartLine } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
 import { getFunnelSeries, type FunnelWeek } from '@/lib/analytics/mastery/masteryModel'
 import { logError } from '@/lib/logger'
-import { PillSegmented } from './PillSegmented'
 import { TrendChart, type TrendSeries } from './TrendChart'
 import classes from './GroeiCard.module.css'
 
@@ -22,22 +21,27 @@ type Bucket = 'vocabulary' | 'grammar' | 'morphology'
 const RUNGS = ['introduced', 'learning', 'strengthening', 'mastered'] as const
 type Rung = (typeof RUNGS)[number]
 
+// New scheme (main.tsx tokens): a warm progression that ends on success —
+// neutral → light tamarind → tamarind accent → success green (mastered).
+// Replaces the pre-retune cool gray/blue/indigo/teal palette.
 const RUNG_COLOR: Record<Rung, string> = {
-  introduced: 'var(--mantine-color-gray-5, #adb5bd)',
-  learning: 'var(--mantine-color-blue-5, #4dabf7)',
-  strengthening: 'var(--mantine-color-indigo-5, #748ffc)',
-  mastered: 'var(--mantine-color-teal-6, #0ca678)',
+  introduced: 'var(--text-secondary)',
+  learning: 'var(--mantine-color-tamarind-4)',
+  strengthening: 'var(--accent-primary)',
+  mastered: 'var(--success)',
 }
 
 export interface GrowthCurveCardProps {
   userId: string
+  /** Which content bucket to plot. Supplied by the host Progress tab
+   * (Woordenschat/Grammatica/Morfologie) — no in-card toggle. */
+  bucket: Bucket
 }
 
-export function GrowthCurveCard({ userId }: GrowthCurveCardProps) {
+export function GrowthCurveCard({ userId, bucket }: GrowthCurveCardProps) {
   const T = useT()
   const timezone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone, [])
   const [series, setSeries] = useState<FunnelWeek[] | null>(null)
-  const [bucket, setBucket] = useState<Bucket>('vocabulary')
   const [hidden, setHidden] = useState<Set<Rung>>(new Set())
 
   useEffect(() => {
@@ -99,17 +103,6 @@ export function GrowthCurveCard({ userId }: GrowthCurveCardProps) {
           <p className={classes.subtitle}>{T.progress.growthCurveSubtitle}</p>
         </div>
       </div>
-
-      <PillSegmented
-        fullWidth
-        value={bucket}
-        onChange={(v) => setBucket(v as Bucket)}
-        data={[
-          { value: 'vocabulary', label: T.progress.tabWoordenschat },
-          { value: 'grammar', label: T.progress.tabGrammar },
-          { value: 'morphology', label: T.progress.tabMorphology },
-        ]}
-      />
 
       {!hasData ? (
         <p className={classes.empty}>{T.progress.growthCurveEmpty}</p>

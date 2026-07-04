@@ -96,7 +96,7 @@ export function DurabilityCard({ userId, timezone }: DurabilityCardProps) {
               {
                 key: 'stability',
                 label: T.progress.durabilityTitle,
-                color: 'var(--mantine-color-teal-6, #0ca678)',
+                color: 'var(--accent-primary)',
                 values: series.map((w) => w.avgStabilityDays),
               },
             ]}
