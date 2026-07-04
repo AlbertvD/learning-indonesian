@@ -28,7 +28,13 @@ export interface LessonExerciseCoverage {
   title: string
   learningItems: number
   hasMeanings: boolean
-  clozeContexts: number
+  /** Dialogue lines in the reader — the dialogue-cloze denominator (0 = the
+   *  lesson has no dialogue, so a cloze count of 0 is n/a, not a gap). */
+  dialogueLines: number
+  /** In-stage generated dialogue cloze rows (dialogue_clozes via lesson_dialogue_lines). */
+  dialogueClozes: number
+  /** Morphology content: lesson_section_affixed_pairs rows (feeds the affix caps). */
+  affixedPairs: number
   grammarPatterns: number
   exerciseVariants: Record<string, number>
 }
@@ -77,14 +83,26 @@ export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
     { data: contexts, error: ctxError },
     { data: translatedItems, error: translatedError },
     { data: grammarPatternsByLesson, error: gpLessonError },
+    { data: dialogueLines, error: dlgLinesError },
+    { data: dialogueClozeRows, error: dlgClozeError },
+    { data: affixedPairRows, error: affixedError },
     ...typedResults
   ] = await Promise.all([
     supabase.schema('indonesian').from('lessons').select('id, order_index, title').order('order_index'),
-    supabase.schema('indonesian').from('item_contexts').select('id, source_lesson_id, learning_item_id, context_type'),
+    // item_contexts is the item→lesson link (learning_items has no lesson column).
+    // The old vocab-cloze carrier count was dropped with its rows: item-source
+    // cloze was closed NOT_PLANNED (#148); dialogue/grammar cloze are the live paths.
+    supabase.schema('indonesian').from('item_contexts').select('id, source_lesson_id, learning_item_id'),
     // Slice 4a (Decision R): hasMeanings is sourced from learning_items.translation_nl,
     // not the retired item_meanings table. An item "has a meaning" iff it carries a translation.
     supabase.schema('indonesian').from('learning_items').select('id').not('translation_nl', 'is', null),
     supabase.schema('indonesian').from('grammar_patterns').select('id, introduced_by_lesson_id').not('introduced_by_lesson_id', 'is', null),
+    // Dialogue cloze: dialogue_clozes carries no lesson_id — join client-side
+    // via lesson_dialogue_lines (both small tables).
+    supabase.schema('indonesian').from('lesson_dialogue_lines').select('id, lesson_id'),
+    supabase.schema('indonesian').from('dialogue_clozes').select('dialogue_line_id'),
+    // Morphology content rows (the affix-trainer / word-form-pair caps source).
+    supabase.schema('indonesian').from('lesson_section_affixed_pairs').select('lesson_id'),
     // Grammar exercises now live in the 4 typed tables (each carries lesson_id +
     // grammar_pattern_id), NOT exercise_variants. Vocab exercises are
     // runtime-generated (never persisted), so there is no vocab-exercise row source.
@@ -97,6 +115,9 @@ export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
   if (ctxError) throw ctxError
   if (translatedError) throw translatedError
   if (gpLessonError) throw gpLessonError
+  if (dlgLinesError) throw dlgLinesError
+  if (dlgClozeError) throw dlgClozeError
+  if (affixedError) throw affixedError
   // Typed grammar-exercise rows, paired with their exercise_type.
   const typedExercises: Array<{ lesson_id: string; grammar_pattern_id: string; type: string }> = []
   typedResults.forEach((res, i) => {
@@ -119,25 +140,21 @@ export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
       title: lesson.title,
       learningItems: 0,
       hasMeanings: false,
-      clozeContexts: 0,
+      dialogueLines: 0,
+      dialogueClozes: 0,
+      affixedPairs: 0,
       grammarPatterns: 0,
       exerciseVariants: {},
     })
   }
 
-  // learning_items, meanings, cloze contexts — via item_contexts
+  // learning_items + meanings — via item_contexts (the item→lesson link)
   const lessonItemIds = new Map<string, Set<string>>()
   for (const ctx of contexts ?? []) {
-    if (!ctx.source_lesson_id) continue
-    const cov = coverageMap.get(ctx.source_lesson_id)
-    if (!cov) continue
-
-    if (ctx.learning_item_id) {
-      if (!lessonItemIds.has(ctx.source_lesson_id)) lessonItemIds.set(ctx.source_lesson_id, new Set())
-      lessonItemIds.get(ctx.source_lesson_id)!.add(ctx.learning_item_id)
-    }
-
-    if (ctx.context_type === 'cloze') cov.clozeContexts++
+    if (!ctx.source_lesson_id || !ctx.learning_item_id) continue
+    if (!coverageMap.has(ctx.source_lesson_id)) continue
+    if (!lessonItemIds.has(ctx.source_lesson_id)) lessonItemIds.set(ctx.source_lesson_id, new Set())
+    lessonItemIds.get(ctx.source_lesson_id)!.add(ctx.learning_item_id)
   }
 
   for (const [lessonId, itemIds] of lessonItemIds) {
@@ -145,6 +162,26 @@ export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
     if (!cov) continue
     cov.learningItems = itemIds.size
     cov.hasMeanings = [...itemIds].some(id => translatedItemIds.has(id))
+  }
+
+  // Dialogue cloze per lesson — dialogue_clozes joined client-side through
+  // lesson_dialogue_lines (the cloze row carries only dialogue_line_id).
+  const lessonByDialogueLine = new Map<string, string>()
+  for (const line of dialogueLines ?? []) {
+    lessonByDialogueLine.set(line.id, line.lesson_id)
+    const cov = coverageMap.get(line.lesson_id)
+    if (cov) cov.dialogueLines++
+  }
+  for (const cloze of dialogueClozeRows ?? []) {
+    const lessonId = lessonByDialogueLine.get(cloze.dialogue_line_id)
+    const cov = lessonId ? coverageMap.get(lessonId) : undefined
+    if (cov) cov.dialogueClozes++
+  }
+
+  // Morphology content rows per lesson.
+  for (const pair of affixedPairRows ?? []) {
+    const cov = coverageMap.get(pair.lesson_id)
+    if (cov) cov.affixedPairs++
   }
 
   // Grammar patterns per lesson:

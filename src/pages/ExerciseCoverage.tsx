@@ -19,6 +19,9 @@ import classes from './ContentCoverage.module.css'
 interface CellValue {
   ok: boolean
   count?: number
+  /** Not applicable for this lesson (e.g. dialogue cloze on a lesson without
+   *  dialogue) — rendered as a neutral em-dash instead of a false ❌. */
+  na?: boolean
 }
 
 interface RowDef {
@@ -26,6 +29,10 @@ interface RowDef {
   getValue: (c: LessonExerciseCoverage) => CellValue
 }
 
+// The two legacy vocab-cloze rows (item_contexts carriers + the vocab
+// choose_missing_word heuristic) were removed 2026-07-04: item-source cloze
+// was closed NOT_PLANNED (#148), nothing reads those carriers, and the live
+// cloze paths are dialogue cloze + the grammar cloze_mcq table below.
 const ROWS: RowDef[] = [
   {
     label: 'learning_items in DB',
@@ -40,12 +47,15 @@ const ROWS: RowDef[] = [
     getValue: c => ({ ok: c.learningItems > 0 && c.hasMeanings }),
   },
   {
-    label: 'cloze contexts (item_contexts)',
-    getValue: c => ({ ok: c.clozeContexts > 0, count: c.clozeContexts }),
+    label: 'dialogue cloze (dialogue_clozes)',
+    getValue: c =>
+      c.dialogueLines === 0
+        ? { ok: true, na: true }
+        : { ok: c.dialogueClozes > 0, count: c.dialogueClozes },
   },
   {
-    label: 'cloze / choose_missing_word_ex (vocabulary)',
-    getValue: c => ({ ok: c.clozeContexts > 0 }),
+    label: 'affix pairs / morphology (lesson_section_affixed_pairs)',
+    getValue: c => ({ ok: c.affixedPairs > 0, count: c.affixedPairs }),
   },
   {
     label: 'grammar_patterns in DB',
@@ -77,7 +87,10 @@ const ROWS: RowDef[] = [
 
 // ── Cell ────────────────────────────────────────────────────────────────────
 
-function Cell({ ok, count }: CellValue) {
+function Cell({ ok, count, na }: CellValue) {
+  if (na) {
+    return <td className={classes.cell}>—</td>
+  }
   const label = ok ? '✅' : '❌'
   const countStr = count !== undefined ? ` ${count}` : ''
   return (
