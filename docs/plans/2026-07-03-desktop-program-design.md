@@ -1,6 +1,6 @@
 ---
 status: implementing
-implementation: PR #345 (slice 1 — landing, merged) · PR #346 (slice 2 — rail shell, merged) · PR #347 (slice 3 — Home launchpad); slice 4 pending
+implementation: PR #345 (slice 1 — landing, merged) · PR #346 (slice 2 — rail shell, merged) · PR #347 (slice 3 — Home launchpad, merged) · PR #348 (slice 4 — per-page passes)
 reviewed_by: [architect]   # APPROVE-WITH-CHANGES 2026-07-03; C1 (CRIT-1 already fixed on main), C2 (ProfileMenu carries lang/logout not admin links), C3 (checklist step-1 derivation) all folded in inline. No data-model touch → no data-architect needed.
 supersedes: []
 ---
