@@ -8,12 +8,12 @@
 // the theme toggle. The old footer ProfileMenu is deleted — language, profile
 // and sign-out all live on the Profiel page.
 import { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import {
   IconHome, IconBook, IconCompass, IconChartBar, IconUser,
   IconLayoutList, IconBolt, IconEye,
-  IconSun, IconMoon, IconFlame, IconPlayerPlayFilled,
+  IconSun, IconMoon, IconFlame,
 } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -31,7 +31,6 @@ export function Sidebar() {
   const user = useAuthStore(s => s.user)
   const profile = useAuthStore(s => s.profile)
   const T = useT()
-  const navigate = useNavigate()
   const { pathname } = useLocation()
   const [glance, setGlance] = useState<Glance | null>(null)
 
@@ -76,11 +75,6 @@ export function Sidebar() {
         </span>
         <span className={classes.wordmarkName}>Kamoe Bisa</span>
       </span>
-
-      <button className={classes.cta} onClick={() => navigate('/session')}>
-        <IconPlayerPlayFilled size={15} />
-        {T.dashboard.startTodaysSessionMinimal}
-      </button>
 
       <div className={classes.sectionLabel}>{T.rail.menu}</div>
       <div className={classes.nav}>
