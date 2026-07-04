@@ -9,7 +9,10 @@ vi.mock('@/lib/supabase', () => {
     order: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     not: vi.fn().mockReturnThis(),
+    is: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
     single: vi.fn().mockReturnThis(),
+    maybeSingle: vi.fn().mockReturnThis(),
     then: vi.fn(function(onFulfilled: any) {
       return Promise.resolve({ data: [], error: null }).then(onFulfilled)
     })
@@ -84,7 +87,32 @@ describe('textService', () => {
       'id, title, description, audio_path, level, duration_seconds',
     )
     expect(getMock().not).toHaveBeenCalledWith('audio_path', 'is', null)
+    // The pronunciation podcast (audio_path_en set) is trainer-only and must be
+    // excluded from the generic Listen list.
+    expect(getMock().is).toHaveBeenCalledWith('audio_path_en', null)
     expect(result).toEqual(mockData)
+  })
+
+  it('getPronunciationPodcast fetches the single audio_path_en-bearing row (full columns)', async () => {
+    const mockRow = { id: 'p', title: 'Uitspraak · Pronunciation', audio_path: 'nl.mp3', audio_path_en: 'en.mp3' }
+    getMock().then.mockImplementationOnce(function(onFulfilled: any) {
+      return Promise.resolve({ data: mockRow, error: null }).then(onFulfilled)
+    })
+
+    const result = await textService.getPronunciationPodcast()
+
+    // Identified uniquely by the English twin; needs the full row for playback.
+    expect(getMock().select).toHaveBeenCalledWith('*')
+    expect(getMock().not).toHaveBeenCalledWith('audio_path_en', 'is', null)
+    expect(result).toEqual(mockRow)
+  })
+
+  it('getPronunciationPodcast returns null when the row is not seeded', async () => {
+    getMock().then.mockImplementationOnce(function(onFulfilled: any) {
+      return Promise.resolve({ data: null, error: null }).then(onFulfilled)
+    })
+    const result = await textService.getPronunciationPodcast()
+    expect(result).toBeNull()
   })
 
   it('getAudioUrl calls supabase storage', () => {
