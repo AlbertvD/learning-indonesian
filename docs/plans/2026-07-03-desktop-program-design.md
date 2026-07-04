@@ -1,6 +1,16 @@
 ---
-status: implementing
-implementation: PR #345 (slice 1 — landing, merged) · PR #346 (slice 2 — rail shell, merged) · PR #347 (slice 3 — Home launchpad, merged) · PR #348 (slice 4 — per-page passes)
+status: shipped
+implementation: PR #345 (slice 1 — landing) · PR #346 (slice 2 — rail shell) · PR #347 (slice 3 — Home launchpad) · PR #348 (slice 4 — per-page passes); all merged
+merged_at: 2026-07-04
+implementation_paths:
+  - src/pages/Landing.tsx
+  - src/components/Sidebar.tsx
+  - src/components/Layout.tsx
+  - src/pages/Dashboard.tsx
+  - src/components/dashboard/
+  - src/pages/Ontdek.tsx
+  - src/components/page/primitives/PageHeader.module.css
+  - src/components/progress/PillSegmented.module.css
 reviewed_by: [architect]   # APPROVE-WITH-CHANGES 2026-07-03; C1 (CRIT-1 already fixed on main), C2 (ProfileMenu carries lang/logout not admin links), C3 (checklist step-1 derivation) all folded in inline. No data-model touch → no data-architect needed.
 supersedes: []
 ---
