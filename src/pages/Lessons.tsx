@@ -382,27 +382,27 @@ export function Lessons() {
   const noSurfaceSelected = !searchParams.get('v')
   if (isMobile && noSurfaceSelected) {
     return (
-      <PageContainer size="lg">
-        <PageBody>
+      <PageContainer size="lg" fit>
+        <PageBody variant="fit">
           <PageHeader title={T.nav.leren} />
           <div className={classes.hub}>
             <Link to="/leren?v=lessen" className={classes.hubCard}>
-              <IconBook size={26} />
+              <IconBook size={22} />
               <span className={classes.hubLabel}>{T.leren.lessenTab}</span>
               <span className={classes.hubDesc}>{T.leren.lessenDesc}</span>
             </Link>
             <Link to="/leren?v=woorden" className={classes.hubCard}>
-              <IconListCheck size={26} />
+              <IconListCheck size={22} />
               <span className={classes.hubLabel}>{T.collections.title}</span>
               <span className={classes.hubDesc}>{T.leren.woordenlijstenDesc}</span>
             </Link>
             <Link to="/morphology" className={classes.hubCard}>
-              <IconAbc size={26} />
+              <IconAbc size={22} />
               <span className={classes.hubLabel}>{T.leren.affixTitle}</span>
               <span className={classes.hubDesc}>{T.leren.affixDesc}</span>
             </Link>
             <Link to="/pronunciation" className={classes.hubCard}>
-              <IconVolume size={26} />
+              <IconVolume size={22} />
               <span className={classes.hubLabel}>{T.leren.pronunciationTitle}</span>
               <span className={classes.hubDesc}>{T.leren.pronunciationDesc}</span>
             </Link>

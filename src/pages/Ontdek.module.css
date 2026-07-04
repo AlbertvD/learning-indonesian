@@ -5,24 +5,26 @@
  * panel — same theme-constant surface as the rail — with a haloed glyph).
  */
 
-/* Mobile: the two cards divide the viewport height so both always fit, whatever
-   the phone size. `dvh` tracks the collapsing browser chrome; the per-row floor
-   keeps each card usable and lets the page scroll on a very short screen rather
-   than clip. Desktop restores the roomy side-by-side layout. */
+/* Mobile: the two cards divide the content area exactly. The grid is a flex
+   child of a <PageBody variant="fit"> inside a <PageContainer fit>, whose height
+   is `100dvh − app chrome` from the real layout tokens — so `flex: 1` fills the
+   space below the header without overshooting the viewport (no `calc()` chrome
+   guesswork). Desktop restores the roomy side-by-side block layout. */
 .grid {
+  flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: repeat(2, minmax(190px, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 14px;
-  min-height: calc(100dvh - 190px);
   margin-top: 0.5rem;
 }
 
 @media (min-width: 900px) {
   .grid {
+    flex: none;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto;
-    min-height: 0;
     gap: 24px;
   }
 }
@@ -34,7 +36,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 120px;
+  min-height: 96px;
   display: flex;
   align-items: center;
   justify-content: center;
