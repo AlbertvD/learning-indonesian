@@ -123,8 +123,14 @@ export function Dashboard() {
     fetchData()
   }, [userId, T.common.error, T.common.somethingWentWrong])
 
-  const showChecklist =
-    checklist != null && !(checklist.lessonOpened && checklist.sessionDone && checklist.ontdekVisited)
+  // Visibility is gated on the ACCOUNT-level signal only (first completed
+  // session, fail-closed above) — never on the per-device flags. Steps ① and ③
+  // are localStorage ticks, so an established learner on a fresh device would
+  // otherwise see the card again with the session hero gone and no way to
+  // dismiss it (live report 2026-07-04: mobile had no session entry at all —
+  // desktop hides the defect behind the rail CTA). The device flags still
+  // drive the step ticks inside the card for genuinely-first-week accounts.
+  const showChecklist = checklist != null && !checklist.sessionDone
 
   // Session preview — only when the Vandaag panel is actually shown, as a pure
   // read (counts only; no contexts/audio). Measured in dev so the plan's

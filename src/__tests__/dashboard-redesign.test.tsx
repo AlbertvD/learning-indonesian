@@ -4,15 +4,17 @@
 // docs/plans/2026-07-03-desktop-program-design.md §Slice 3):
 // - "Vandaag" session-preview panel from a buildSession pure read (established
 //   accounts), with the Start CTA routing to /session
-// - "Aan de slag" first-run checklist replaces the panel until all three steps
-//   are done; the buildSession preview is NOT fetched while it shows
+// - "Aan de slag" first-run checklist replaces the panel until the account has
+//   its first completed session (account-level signal — never the per-device
+//   flags, which only drive the step ticks); the buildSession preview is NOT
+//   fetched while it shows
 // - continue-reading shortcut to the highest activated lesson (sanctioned by
 //   slice 3 — supersedes the older "no lesson links on Home" launchpad rule)
 // - right column: streak + time pulse + woordenschat pulse → Voortgang
 //
 // Mock at the service layer per project convention.
 
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
@@ -44,7 +46,7 @@ import { engagement } from '@/lib/analytics/engagement'
 import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
 import * as lessonsAdapter from '@/lib/lessons/adapter'
 import { listActivatedLessons } from '@/lib/lessons/activation'
-import { readFirstRunFlag, setFirstRunFlag, hasCompletedSession } from '@/lib/firstRun'
+import { readFirstRunFlag, hasCompletedSession } from '@/lib/firstRun'
 import { buildSession } from '@/lib/session-builder'
 import { Dashboard } from '@/pages/Dashboard'
 
@@ -123,28 +125,27 @@ describe('Dashboard — first-run checklist', () => {
     expect(buildSession).not.toHaveBeenCalled()
   })
 
-  it('derives step state from account + device flags (session done, lesson current)', async () => {
+  it('hides for an account with a completed session even when the device flags are absent', async () => {
+    // Regression (live report 2026-07-04): an established learner on a fresh
+    // device has sessionDone=true from the DB but no localStorage flags. The
+    // card must NOT come back — on mobile it replaced the session hero with
+    // no session entry and no way to dismiss.
     vi.mocked(hasCompletedSession).mockResolvedValue(true)
+    vi.mocked(readFirstRunFlag).mockReturnValue(false)
     renderDashboard()
 
-    const checklist = await screen.findByTestId('first-run-checklist')
-    expect(checklist).toBeInTheDocument()
-    // lesson (step ①) is still the current step → its CTA shows
-    expect(screen.getByRole('link', { name: 'Bekijk' })).toBeInTheDocument()
+    await screen.findByText('Vandaag')
+    expect(screen.queryByTestId('first-run-checklist')).not.toBeInTheDocument()
   })
 
-  it('lets the learner skip step ③ (dismissable), persisting the device flag', async () => {
-    const user = userEvent.setup()
-    // steps ① + ② done, only ontdek open → skip completes the checklist
+  it('keeps the session step as the current CTA once the lesson step is ticked', async () => {
     vi.mocked(readFirstRunFlag).mockImplementation((key: string) => key === 'first_lesson_opened')
-    vi.mocked(hasCompletedSession).mockResolvedValue(true)
+    vi.mocked(hasCompletedSession).mockResolvedValue(false)
     renderDashboard()
 
-    await user.click(await screen.findByRole('button', { name: 'Overslaan' }))
-
-    expect(setFirstRunFlag).toHaveBeenCalledWith('ontdek_visited')
-    // checklist replaced by the Vandaag panel
-    await waitFor(() => expect(screen.queryByTestId('first-run-checklist')).not.toBeInTheDocument())
+    await screen.findByTestId('first-run-checklist')
+    // step ② is current → its Start CTA is the session entry on every viewport
+    expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
   })
 
   it('is absent for established accounts', async () => {
