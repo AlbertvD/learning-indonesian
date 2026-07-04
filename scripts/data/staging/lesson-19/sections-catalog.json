@@ -1,9 +1,9 @@
 {
   "lesson": 19,
-  "generatedAt": "2026-06-18T05:38:09.365Z",
-  "sourcePages": 6,
+  "generatedAt": "2026-07-04T11:47:38.585Z",
+  "sourcePages": 8,
   "lessonMeta": {
-    "title": "Bab 3 - Zinsbouw",
+    "title": "Bab 3 - Dari Lombok",
     "level": "A1",
     "module_id": "module-1",
     "order_index": 19
@@ -11,36 +11,412 @@
   "sections": [
     {
       "id": 0,
-      "type": "grammar",
-      "title": "TATA BAHASA - Zinsbouw",
+      "type": "dialogue",
+      "title": "Dari Lombok",
       "source_pages": [
-        1,
-        2,
-        3,
-        4
+        1
       ],
       "confidence": "high",
-      "raw_text": "TATA BAHASA\n\nZinsbouw\n\nEen zin bevat informatie over diverse partijen. Het verband tussen die partijen wordt aangegeven door middel van een bepaalde werkwoordsvorm, hier handeling genoemd.\n\nDe volgorde, dat wil zeggen de plaatsing van de partijen in een zin, hangt af van hetgeen de spreker onder de aandacht wil brengen. Verandert de focus, dat wil zeggen de nadruk op een bepaalde partij, dan verandert de volgorde in de zin.\n\nAan de hand van enkele schema's zullen we de partijen nader toelichten en de functie van de handeling (werkwoordsvorm) verduidelijken.\n\nWe verstaan onder:\n\npartij 1  agens   : persoon / zaak die de handeling uitvoert\npartij 2  patiens : persoon / zaak die de handeling ondergaat\n\nLaten we uitgaan van een eenvoudige zin met de volgende structuur:\n\nSchema 1:  partij 1 —— handeling —— partij 2\n           agens       werkwoordsvorm   patiens\n\nZin a:  Presiden membuka sekolah baru.\n\nIn zin a is:\npartij 1    agens           presiden\nhandeling   werkwoordsvorm  membuka\npartij 2    patiens         sekolah baru\n\nSchema 1 kan men uitbreiden door toevoeging van een derde en een vierde partij.\n\nPartij 3 geeft aan: ten behoeve van wie of ten behoeve van wat de handeling wordt uitgevoerd.\n\nPartij 4 geeft aan: met wie of waarmee een handeling wordt uitgevoerd.\n\nDe volgorde waarin de partijen in de zin worden gezet, wordt bepaald door de handeling (werkwoordsvorm). Met andere woorden, door het kiezen van een bepaalde werkwoordsvorm kunnen we bepalen welke partij eerder en welke partij later genoemd wordt.\n\n---\n\nSchema 2:\n\n        (persoon / zaak voor wie / waarvoor\n         de handeling wordt uitgevoerd)*\n                    partij 3\n                        |\npartij 1 —— handeling —— partij 2\n(agens)                  (patiens)\n                        |\n                    partij 4\n         (persoon / zaak waarmee\n          de handeling wordt uitgevoerd)**\n\n*  Indien een derde partij voorkomt, wordt deze dikwijls voorafgegaan door één van de volgende woorden: bagi, buat, kepada, untuk.\n** Indien een vierde partij voorkomt, wordt deze dikwijls voorafgegaan door één van de volgende woorden: dengan, sama, tanpa.\n\nZin b:  Presiden membuka sekolah baru buat guru dengan pidato.\n\npartij 1    presiden\nhandeling   membuka\npartij 2    sekolah baru\npartij 3    buat guru        (voor de onderwijzers)\npartij 4    dengan pidato    (met een redevoering)\n\nSchema 2 kan vervolgens worden uitgebreid door gegevens toe te voegen over de tijd, de wijze en de plaats van de handeling.\n\nSchema 3:\n\n        (persoon / zaak voor wie / waarvoor\n         de handeling wordt uitgevoerd)\n                    partij 3\n                        |                          <——\npartij 1 —— handeling —— partij 2         tijd, wijze & plaats\n(agens)                  (patiens)              (variabel)\n                        |                          <——\n                    partij 4\n         (persoon / zaak waarmee\n          de handeling wordt uitgevoerd)\n\n---\n\nZin c:  Pekan lalu presiden secara resmi membuka sekolah baru buat guru dengan pidato di Denpasar.\n\nWe onderscheiden in zin c:\npartij 1              presiden\nhandeling             membuka\npartij 2              sekolah baru\npartij 3              buat guru\npartij 4              dengan pidato\ntijdsbepaling         pekan lalu       (vorige week)\nwijze van uitvoering  secara resmi     (officieel)\nplaatsbepaling        di Denpasar      (in Denpasar)\n\nInformatie over de plaats of de tijd van handeling komt bij voorkeur aan het begin of het einde van de zin. Dat wat het belangrijkste is, komt aan het begin van de zin. In de bovenstaande zin is dit het tijdstip waarop de president de school opent. Als de plaats waar dit gebeurt belangrijker is, dan zou de zin beginnen met Di Denpasar.\n\nZin c kunnen we verder uitbreiden door het toevoegen van specifieke gegevens over de partijen. De zinsbouw verandert daardoor echter niet. Voorbeeld:\n\nZin d:  Pekan lalu pada hari Senin presiden secara resmi membuka sekolah baru \"Generasi Muda Bali\" buat guru Bali dengan pidato di kota Denpasar.\n\nwie                  partij 1              presiden\ndoet iets            handeling             membuka\nmet iemand / iets    partij 2              sekolah baru \"Generasi Muda Bali\"\nvoor wie             partij 3              buat guru Bali\nwaarmee              partij 4              dengan pidato\nwanneer              tijdsbepaling I       pekan lalu\nwanneer              tijdsbepaling II      pada hari Senin\nhoe                  wijze van uitvoering  secara resmi\nwaar                 plaatsbepaling I      di Denpasar\nwaar                 plaatsbepaling II     (di) kota\n\nEen gebruikelijke volgorde in een aktieve Indonesische zin is als volgt:\n\ntijdsbepaling\npartij 1 (agens)           waktu, pada ...\nwijze van uitvoering\nhandeling                  secara ... (plus bijwoord --> cepat, lekas)\npartij 2 (patiens)\npartij 3 (voor wie)        bagi, buat, kepada, untuk\npartij 4 (met wie/waarmee) dengan, sama, tanpa\nplaatsbepaling             dari, di, ke\n\n---\n\nDoor het toevoegen van meer informatie verandert de zinsbouw niet wezenlijk.\n\na. Presiden membuka sekolah baru\nb. Presiden membuka sekolah baru buat guru dengan pidato\nc. Pekan lalu presiden secara resmi membuka sekolah baru buat guru dengan pidato di Denpasar\nd. Pekan lalu pada hari Senin presiden secara resmi membuka sekolah baru \"Generasi Muda Bali\" buat guru Bali dengan pidato di kota Denpasar\n\n---\n\nReden, oorzaak, gevolg, doel\n\nAan zinnen kunnen worden toegevoegd een reden, oorzaak, gevolg of doel.\n\nVoorbeeld: Saya berangkat ke Sukabumi\n\nSebab ibu saya sakit saya berangkat ke Sukabumi supaya saya bisa membantunya\nOmdat mijn moeder ziek is, vertrek ik naar Sukabumi, opdat ik haar kan helpen\n\nEnkele woorden om een reden of oorzaak in te leiden zijn:\n\nomdat                                    sebab, karena\nOmdat hij nog aan het eten is,           Sebab dia sedang makan,\nvertrekken wij wat later                 kita berangkat sebentar lagi\nOmdat de ferry niet komt, moeten         Karena feri tidak datang, orang harus tunggu lama\nde mensen lang wachten\n\ndaarom                                   sebab itu, karena itu\nVader is ziek en gaat daarom niet        Bapak sakit, sebab itu dia tidak ke kantor\nnaar kantoor\nDe banken zijn al gesloten, daarom       Bank sudah tutup, karena itu tidak bisa menukar\nkunnen wij geen geld wisselen            uang\n\nSehingga, supaya\n\nEnkele woorden om een doel of gevolg in te leiden zijn:\n\nzodat (met als gevolg ...)               sehingga\nZij is ziek en eet niet zodat zij afvalt Dia sakit dan tidak makan sehingga\n                                         badannya menjadi kurus\n\nopdat (met het doel om ...)              supaya\nZij eet weinig opdat zij afvalt          Dia makan sedikit supaya badannya menjadi kurus"
+      "lines": [
+        {
+          "speaker": "narrator",
+          "text": "Sebelum Linda dan Paul datang ke Indonesia mereka belum pernah saling mengenal. Mereka bertemu di Bali. Linda sudah dua kali ke Indonesia, sedangkan Paul sudah tinggal di Denpasar selama beberapa bulan. Sekarang Paul baru kembali dari Lombok dan bertemu lagi dengan Linda di Bali."
+        },
+        {
+          "speaker": "Linda",
+          "text": "Eh, kapan pulang dari Lombok?"
+        },
+        {
+          "speaker": "Paul",
+          "text": "O, sudah seminggu yang lalu."
+        },
+        {
+          "speaker": "Linda",
+          "text": "Bagaimana di sana? Ayo, cerita, dong!"
+        },
+        {
+          "speaker": "Paul",
+          "text": "Aduh, saya benar-benar tidak tahu bagaimana mau memulai cerita saya. Lombok bagus sekali. Lain dari Bali. Bali begitu hijau dan ramai. Lombok juga sudah mulai ramai, tetapi masih lebih sepi dibandingkan dengan Bali."
+        },
+        {
+          "speaker": "Linda",
+          "text": "Ya, tentu saja, Lombok belum begitu dikenal turis. Kalau saya ingin ke sana, bagaimana caranya?"
+        },
+        {
+          "speaker": "Paul",
+          "text": "Begini ya, kalau mau ke Lombok bisa naik feri, tapi makan waktu lama. Dari Denpasar harus ke Padang Bai dulu. Wah, jauh sekali. Terus naik feri selama 6 jam. Itu saya tidak mau. Jadi, saya naik pesawat udara saja."
+        },
+        {
+          "speaker": "Linda",
+          "text": "Apa kamu ke Gunung Rinjani? Katanya di sana indah."
+        },
+        {
+          "speaker": "Paul",
+          "text": "Tidak, tidak ada waktu. Gunung Rinjani jauh sekali. Jadi saya hanya keliling-keliling di sekitar kota Mataram saja."
+        },
+        {
+          "speaker": "Linda",
+          "text": "Kamu tinggal di mana di sana?"
+        },
+        {
+          "speaker": "Paul",
+          "text": "Aduh, ada cerita yang lucu. Kebetulan saya bertemu dengan seorang Perancis di Mataram. Kami tinggal di losmen dan di situ ada orang yang sepeda motornya boleh kami pakai. Kami berdua naik sepeda motor itu ke Lombok Utara. Indah sekali! Pertama-tama jalanan di sana bagus. Tapi sebentar kemudian jalan berubah dari aspal menjadi batu-batu dan pasir. Kemudian motor mogok. Bensinnya habis. Kami lupa memeriksanya. Apalagi kami capek betul. Tapi tidak apa-apa. Ada orang yang mendorong sepeda motor sampai ke warung untuk membeli bensin, tapi juga kebetulan habis. Terus sebuah truk besar datang. Kami naik ke atas truk itu bersama dengan motor dan menumpang sampai ke suatu kota kecil. Di sana kami membeli bensin di bengkel sehingga kami dapat kembali ke kota Mataram."
+        }
+      ]
     },
     {
       "id": 1,
-      "type": "exercises",
-      "title": "LATIHAN",
+      "type": "vocabulary",
+      "title": "Woordenlijst",
       "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "apalagi",
+          "dutch": "bovendien / vooral",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "aspal",
+          "dutch": "asfalt",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bagi",
+          "dutch": "ten behoeve van",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "batu",
+          "dutch": "steen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "benar-benar",
+          "dutch": "echt / heus",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "bengkel (bengkèl)",
+          "dutch": "garage",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bensin",
+          "dutch": "benzine",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "buang, mem~",
+          "dutch": "weggooien",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "dibandingkan",
+          "dutch": "vergeleken (met)",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "di sekitar",
+          "dutch": "rondom",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "dorong, men~",
+          "dutch": "duwen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "cara",
+          "dutch": "manier / wijze",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "feri",
+          "dutch": "ferry / veerboot",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "indah",
+          "dutch": "fraai / mooi",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kacang",
+          "dutch": "pinda",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kata, ~nya",
+          "dutch": "men zegt",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kebetulan",
+          "dutch": "toevallig",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "keliling-keliling",
+          "dutch": "rondreizen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kenal, mengenal",
+          "dutch": "kennen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "lain",
+          "dutch": "anders / andere",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "marah",
+          "dutch": "boos",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "mogok",
+          "dutch": "weigeren / panne",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "padang",
+          "dutch": "veld",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pertama-tama",
+          "dutch": "aanvankelijk",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "pidato",
+          "dutch": "redevoering",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "resmi",
+          "dutch": "officieel",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "sama",
+          "dutch": "met",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "sedangkan",
+          "dutch": "terwijl (bij tegenstelling)",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "sepeda motor",
+          "dutch": "motorfiets",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sepi",
+          "dutch": "stil / rustig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "truk",
+          "dutch": "vrachtwagen / truck",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tumpang, menumpang",
+          "dutch": "meerijden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "ubah, ber~",
+          "dutch": "veranderen",
+          "pos": "verb"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "vocabulary",
+      "title": "Voor de liefhebber - Sepeda Motor",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "ban",
+          "dutch": "band",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "busi",
+          "dutch": "bougie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jari-jari",
+          "dutch": "spaak",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kabel",
+          "dutch": "kabel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "karburator",
+          "dutch": "carburateur",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kepala silinder",
+          "dutch": "cylinderkop",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "knalpot",
+          "dutch": "uitlaat",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lampu",
+          "dutch": "lamp",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lampu belakang",
+          "dutch": "achterlicht",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lampu tanda belok",
+          "dutch": "knipperlicht",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "motor",
+          "dutch": "motor",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pelek",
+          "dutch": "velg",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "peredam kejut, sokbreker",
+          "dutch": "schokbreker",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "persneling",
+          "dutch": "versnelling",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pijakan depan",
+          "dutch": "voetsteun aan voorzijde",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rangka",
+          "dutch": "frame",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rem tangan",
+          "dutch": "handrem",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rem cakram",
+          "dutch": "schijfrem",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sadel",
+          "dutch": "zadel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "setir",
+          "dutch": "stuur",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "silinder",
+          "dutch": "cylinder",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "spatbor",
+          "dutch": "spatbord",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "spion",
+          "dutch": "achteruitkijkspiegel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tangki",
+          "dutch": "tank",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tuas persneling",
+          "dutch": "voetversnellingspook",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "grammar",
+      "title": "Tata Bahasa - Zinsbouw",
+      "source_pages": [
+        3,
+        4,
         5,
         6
       ],
       "confidence": "high",
-      "raw_text": "LATIHAN\n\nLatihan I.  Zet de dialoog om in Indonesische zinnen.\n            Maak bij de reactie van persoon B gebruik van de woorden die gegeven zijn.\n\nDialoog:  Sepeda motor mogok.\n\nPersoon A                                    Persoon B\n1.  Meneer, kunt u mij helpen?               wat is er?\n2.  Wij hebben panne met de motor            hoe komt dat?\n3.  Dat weten wij niet                       kan ik helpen?\n4.  Is er hier in de buurt een garage?       in de stad\n5.  Dat is wel ver lopen                     met mij meerijden\n6.  Ik ben bang dat de motor dan wordt       doe hem op slot\n    gestolen\n7.  Is er hier een telefoon in de buurt?     ja, 3 km van hier\n8.  Dan moeten we hem maar achter die        help mee\n    boom duwen\n9.  Ojee, nu zie ik het, de benzine is op!  benzine in mijn auto\n10. Kan ik die misschien van u kopen?        jawel hoor\n11. Is Rp 10.000 genoeg?                     goed\n\nLatihan II.  Vul onderstaande puzzel in. Het eindresultaat is een\n             spreekwoord dat ongeveer hetzelfde betekent als sama saja.\n\n1.  kort\n2.  staart\n3.  een ogenblik\n4.  adres\n5.  zout\n6.  ik weet niet\n7.  erf\n8.  weg\n9.  bezitten\n10. geschreven\n11. links\n12. zoet\n13. postzegel\n14. zingen\n15. men zegt\n16. goud\n17. zee\n\nSpreekwoord: ........................... = ........................... (Ned.)\n\nLatihan III.  Gebruik een BER-, ME- of DI-werkwoordsvorm in de volgende zinnen:\n\n1.  henti    Sepeda motor .......... di muka bengkel\n2.  ingat    Siapa masih .......... alamat Bapak Subrata?\n3.  ganggu   Tadi malam Pak Dodi .......... oleh anak-anak\n4.  suara    Penyanyi itu .......... bagus sekali\n5.  diri     Siapa .......... di depan ruang itu?\n6.  dorong   Mobil ini rusak. Harus ..........\n7.  curi     Paket pos .......... dari lemari\n8.  sangka,\n    angkat   Turis .......... bus akan .......... sekarang\n9.  tumpang  Setiap hari anak itu .......... bus ke sekolah\n10. asal     Bapak .......... dari mana?\n\nLatihan IV.  Maak een goede zin uit de volgende zinsonderdelen en vertaal de zin.\n\n1.  berkenalan dengan - kemarin - teman Awan - kebetulan - saya\n2.  dari - dan - Dewi - dia - Mataram - berasal - namanya\n3.  diundang - mampir - saya - ke rumahnya\n4.  bermaksud - besok - pergi - saya - ke sana\n5.  mau - Awan - juga - ke rumah Dewi - singgah\n6.  boleh - saya - sepeda motor - naik - ikut\n7.  berangkat - sebelum - kabel rem - mengganti - kami\n8.  jalan raya - sepi - pada jam enam - masih - pagi\n9.  makan - perjalanan - satu jam - walaupun begitu - waktu\n10. kami - lupa - tidak - oleh-oleh - membawa - juga"
+      "raw_text": "TATA BAHASA\n\nZinsbouw\n\nEen zin bevat informatie over diverse partijen. Het verband tussen die partijen wordt aangegeven door middel van een bepaalde werkwoordsvorm, hier handeling genoemd.\n\nDe volgorde, dat wil zeggen de plaatsing van de partijen in een zin, hangt af van hetgeen de spreker onder de aandacht wil brengen. Verandert de focus, dat wil zeggen de nadruk op een bepaalde partij, dan verandert de volgorde in de zin.\n\nAan de hand van enkele schema's zullen we de partijen nader toelichten en de functie van de handeling (werkwoordsvorm) verduidelijken.\n\nWe verstaan onder:\n\npartij 1  agens   : persoon / zaak die de handeling uitvoert\npartij 2  patiens : persoon / zaak die de handeling ondergaat\n\nLaten we uitgaan van een eenvoudige zin met de volgende structuur:\n\nSchema 1:  partij 1 —— handeling —— partij 2\n           agens        werkwoordsvorm   patiens\n\nZin a:  Presiden membuka sekolah baru.\n\nIn zin a is:\npartij 1    agens           presiden\nhandeling   werkwoordsvorm  membuka\npartij 2    patiens         sekolah baru\n\nSchema 1 kan men uitbreiden door toevoeging van een derde en een vierde partij.\n\nPartij 3 geeft aan: ten behoeve van wie of ten behoeve van wat de handeling wordt uitgevoerd.\n\nPartij 4 geeft aan: met wie of waarmee een handeling wordt uitgevoerd.\n\nDe volgorde waarin de partijen in de zin worden gezet, wordt bepaald door de handeling (werkwoordsvorm). Met andere woorden, door het kiezen van een bepaalde werkwoordsvorm kunnen we bepalen welke partij eerder en welke partij later genoemd wordt.\n\nSchema 2:\n\n           (persoon / zaak voor wie / waarvoor\n            de handeling wordt uitgevoerd)*\n                        partij 3\n                           |\npartij 1 —— handeling —— partij 2\n(agens)   |              (patiens)\n                           |\n                        partij 4\n           (persoon / zaak waarmee\n            de handeling wordt uitgevoerd)**\n\n*  Indien een derde partij voorkomt, wordt deze dikwijls voorafgegaan door één van de volgende woorden: bagi, buat, kepada, untuk.\n** Indien een vierde partij voorkomt, wordt deze dikwijls voorafgegaan door één van de volgende woorden: dengan, sama, tanpa.\n\nZin b:  Presiden membuka sekolah baru buat guru dengan pidato.\n\npartij 1    presiden\nhandeling   membuka\npartij 2    sekolah baru\npartij 3    buat guru        (voor de onderwijzers)\npartij 4    dengan pidato    (met een redevoering)\n\nSchema 2 kan vervolgens worden uitgebreid door gegevens toe te voegen over de tijd, de wijze en de plaats van de handeling.\n\nSchema 3:\n           (persoon / zaak voor wie / waarvoor\n            de handeling wordt uitgevoerd)\n                        partij 3\n                           |\npartij 1 —— handeling —— partij 2     [tijd, wijze & plaats (variabel)]\n(agens)   |              (patiens)\n                           |\n                        partij 4\n           (persoon / zaak waarmee\n            de handeling wordt uitgevoerd)\n\nZin c:  Pekan lalu presiden secara resmi membuka sekolah baru buat guru dengan pidato di Denpasar.\n\nWe onderscheiden in zin c:\npartij 1              presiden\nhandeling             membuka\npartij 2              sekolah baru\npartij 3              buat guru\npartij 4              dengan pidato\ntijdsbepaling         pekan lalu       (vorige week)\nwijze van uitvoering  secara resmi     (officieel)\nplaatsbepaling        di Denpasar      (in Denpasar)\n\nInformatie over de plaats of de tijd van handeling komt bij voorkeur aan het begin of het einde van de zin. Dat wat het belangrijkste is, komt aan het begin van de zin. In de bovenstaande zin is dit het tijdstip waarop de president de school opent. Als de plaats waar dit gebeurt belangrijker is, dan zou de zin beginnen met Di Denpasar.\n\nZin c kunnen we verder uitbreiden door het toevoegen van specifieke gegevens over de partijen. De zinsbouw verandert daardoor echter niet. Voorbeeld:\n\nZin d:  Pekan lalu pada hari Senin presiden secara resmi membuka sekolah baru \"Generasi Muda Bali\" buat guru Bali dengan pidato di kota Denpasar.\n\nwie                   partij 1           presiden\ndoet iets             handeling          membuka\nmet iemand / iets     partij 2           sekolah baru \"Generasi Muda Bali\"\nvoor wie              partij 3           buat guru Bali\nwaarmee               partij 4           dengan pidato\nwanneer               tijdsbepaling I    pekan lalu\nwanneer               tijdsbepaling II   pada hari Senin\nhoe                   wijze van uitvoering  secara resmi\nwaar                  plaatsbepaling I   di Denpasar\nwaar                  plaatsbepaling II  (di) kota\n\nEen gebruikelijke volgorde in een aktieve Indonesische zin is als volgt:\n\ntijdsbepaling                     waktu, pada ...\npartij 1 (agens)\nwijze van uitvoering              secara ... (plus bijwoord --> cepat, lekas)\nhandeling\npartij 2 (patiens)\npartij 3 (voor wie)               bagi, buat, kepada, untuk\npartij 4 (met wie / waarmee)      dengan, sama, tanpa\nplaatsbepaling                    dari, di, ke\n\nDoor het toevoegen van meer informatie verandert de zinsbouw niet wezenlijk.\n\na. Presiden membuka sekolah baru\nb. Presiden membuka sekolah baru buat guru dengan pidato\nc. Pekan lalu presiden secara resmi membuka sekolah baru buat guru dengan pidato di Denpasar\nd. Pekan lalu pada hari Senin presiden secara resmi membuka sekolah baru \"Generasi Muda Bali\" buat guru Bali dengan pidato di kota Denpasar"
+    },
+    {
+      "id": 4,
+      "type": "grammar",
+      "title": "Tata Bahasa - Reden, oorzaak, gevolg, doel",
+      "source_pages": [
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "Reden, oorzaak, gevolg, doel\n\nAan zinnen kunnen worden toegevoegd een reden, oorzaak, gevolg of doel.\n\nVoorbeeld:  Saya berangkat ke Sukabumi\n\nSebab ibu saya sakit saya berangkat ke Sukabumi supaya saya bisa membantunya\nOmdat mijn moeder ziek is, vertrek ik naar Sukabumi, opdat ik haar kan helpen\n\nEnkele woorden om een reden of oorzaak in te leiden zijn:\n\nomdat                                    sebab, karena\nOmdat hij nog aan het eten is,           Sebab dia sedang makan,\nvertrekken wij wat later                 kita berangkat sebentar lagi\nOmdat de ferry niet komt, moeten         Karena feri tidak datang, orang harus tunggu lama\nde mensen lang wachten\n\ndaarom                                   sebab itu, karena itu\nVader is ziek en gaat daarom niet        Bapak sakit, sebab itu dia tidak ke kantor\nnaar kantoor\nDe banken zijn al gesloten, daarom       Bank sudah tutup, karena itu tidak bisa menukar\nkunnen wij geen geld wisselen            uang\n\nSehingga, supaya\n\nEnkele woorden om een doel of gevolg in te leiden zijn:\n\nzodat (met als gevolg ...)               sehingga\nZij is ziek en eet niet zodat zij afvalt Dia sakit dan tidak makan sehingga badannya menjadi kurus\n\nopdat (met het doel om ...)              supaya\nZij eet weinig opdat zij afvalt          Dia makan sedikit supaya badannya menjadi kurus"
+    },
+    {
+      "id": 5,
+      "type": "exercises",
+      "title": "Latihan",
+      "source_pages": [
+        7,
+        8
+      ],
+      "confidence": "high",
+      "raw_text": "LATIHAN\n\nLatihan I.  Zet de dialoog om in Indonesische zinnen.\nMaak bij de reactie van persoon B gebruik van de woorden die gegeven zijn.\nDialoog: Sepeda motor mogok.\n\nPersoon A                                          Persoon B\n1. Meneer, kunt u mij helpen?                      wat is er?\n2. Wij hebben panne met de motor                   hoe komt dat?\n3. Dat weten wij niet                              kan ik helpen?\n4. Is er hier in de buurt een garage?              in de stad\n5. Dat is wel ver lopen                            met mij meerijden\n6. Ik ben bang dat de motor dan wordt gestolen     doe hem op slot\n7. Is er hier een telefoon in de buurt?            ja, 3 km van hier\n8. Dan moeten we hem maar achter die boom duwen    help mee\n9. Ojee, nu zie ik het, de benzine is op!          benzine in mijn auto\n10. Kan ik die misschien van u kopen?              jawel hoor\n11. Is Rp 10.000 genoeg?                           goed\n\nLatihan II. Vul onderstaande puzzel in. Het eindresultaat is een spreekwoord dat ongeveer hetzelfde betekent als sama saja.\n\n1. kort\n2. staart\n3. een ogenblik\n4. adres\n5. zout\n6. ik weet niet\n7. erf\n8. weg\n9. bezitten\n10. geschreven\n11. links\n12. zoet\n13. postzegel\n14. zingen\n15. men zegt\n16. goud\n17. zee\n\nSpreekwoord: ......................... = ......................... (Ned.)\n\nLatihan III. Gebruik een BER-, ME- of DI-werkwoordsvorm in de volgende zinnen:\n\n1. henti      Sepeda motor .......... di muka bengkel\n2. ingat      Siapa masih .......... alamat Bapak Subrata?\n3. ganggu     Tadi malam Pak Dodi .......... oleh anak-anak\n4. suara      Penyanyi itu .......... bagus sekali\n5. diri       Siapa .......... di depan ruang itu?\n6. dorong     Mobil ini rusak. Harus ..........\n7. curi       Paket pos .......... dari lemari\n8. sangka,\n   angkat     Turis .......... bus akan .......... sekarang\n9. tumpang    Setiap hari anak itu .......... bus ke sekolah\n10. asal      Bapak .......... dari mana?\n\nLatihan IV. Maak een goede zin uit de volgende zinsonderdelen en vertaal de zin.\n\n1. berkenalan dengan - kemarin - teman Awan - kebetulan - saya\n2. dari - dan - Dewi - dia - Mataram - berasal - namanya\n3. diundang - mampir - saya - ke rumahnya\n4. bermaksud - besok - pergi - saya - ke sana\n5. mau - Awan - juga - ke rumah Dewi - singgah\n6. boleh - saya - sepeda motor - naik - ikut\n7. berangkat - sebelum - kabel rem - mengganti - kami\n8. jalan raya - sepi - pada jam enam - masih - pagi\n9. makan - perjalanan - satu jam - walaupun begitu - waktu\n10. kami - lupa - tidak - oleh-oleh - membawa - juga"
     }
   ],
   "flags": [
-    "Image page 1 (IMG_1590.jpg): OCR page 1 was missing the opening paragraphs of the TATA BAHASA section ('Een zin bevat informatie...') and Schema 1 details; recovered from image.",
-    "Image page 2 (IMG_1591.jpg): OCR page 2 header text garbled ('Dareoon zaak voor whas des'); corrected to 'persoon / zaak voor wie / waarvoor de handeling wordt uitgevoerd' from image. Schema 3 diagram recovered from image.",
-    "Image page 3 (IMG_1592.jpg): Additional content recovered from image: 'Een gebruikelijke volgorde in een aktieve Indonesische zin is als volgt' table with tijdsbepaling, partij 1, wijze van uitvoering, etc.",
-    "Image page 4 (IMG_1593.jpg): 'Sehingga, supaya' section content ('Dia makan sedikit supaya badannya menjadi kurus') recovered from image; OCR page 4 cut off mid-sentence.",
-    "Image page 5 (IMG_1594.jpg): Full Latihan II clue list (items 5-17: zout, ik weet niet, erf, weg, bezitten, geschreven, links, zoet, postzegel, zingen, men zegt, goud, zee) recovered from image; OCR only showed partial list.",
-    "Lesson number not explicitly shown as 'Les N' but page header shows 'Bab 3'; lesson title set accordingly."
+    "Image IMG_1590.jpg reveals the full grammar section header 'TATA BAHASA' and 'Zinsbouw' which was missing from OCR page 3.",
+    "Image IMG_1592.jpg confirms the 'Sehingga, supaya' subsection content including the full Indonesian example sentences that were truncated in OCR page 6.",
+    "Image IMG_1594.jpg confirms Latihan II has 17 items (not just partial as in OCR page 7); full list recovered from image.",
+    "Image IMG_1592.jpg shows Schema 3 diagram with 'tijd, wijze & plaats (variabel)' oval which was not captured in OCR pages 4-5.",
+    "Image IMG_1592.jpg confirms the additional summary table for active Indonesian sentence order (tijdsbepaling through plaatsbepaling) present on page 5 of OCR but also confirmed in image."
   ],
-  "sourceImages": 6
+  "sourceImages": 8
 }
