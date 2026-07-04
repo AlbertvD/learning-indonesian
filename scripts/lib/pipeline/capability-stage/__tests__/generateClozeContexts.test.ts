@@ -282,6 +282,17 @@ describe('sanitizeGeneratedCloze', () => {
     expect(ok).toEqual({ sentenceWithBlank: 'Saya benar benar jatuh dari sebuah ___.', answerText: 'pohon' })
   })
 
+  it('accepts an answer echoing the candidate\'s trailing punctuation, storing the bare word (live lesson-19 line-3)', () => {
+    const qLine = line('Bagaimana di sana? Ayo, cerita, dong!')
+    const qCandidates: ClozeCandidate[] = [{ token: 'sana?', normalized: 'sana', pos: 'noun' }]
+    const ok = sanitizeGeneratedCloze(
+      { answer: 'sana?', sentence_with_blank: 'Bagaimana di ___? Ayo, cerita, dong!' },
+      qLine,
+      qCandidates,
+    )
+    expect(ok).toEqual({ sentenceWithBlank: 'Bagaimana di ___? Ayo, cerita, dong!', answerText: 'sana' })
+  })
+
   it('rejects when sentence_with_blank does not contain exactly one ___', () => {
     expect(sanitizeGeneratedCloze(
       { answer: 'pohon', sentence_with_blank: 'Saya jatuh dari ___ ___.' }, dialogueLine, candidates,
