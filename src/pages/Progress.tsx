@@ -20,8 +20,8 @@ import { GrowthCurveCard } from '@/components/progress/GrowthCurveCard'
 import { DurabilityCard } from '@/components/progress/DurabilityCard'
 import classes from './Progress.module.css'
 
-type Tab = 'woorden' | 'grammar' | 'morfologie' | 'skills' | 'groei' | 'time'
-const TABS: Tab[] = ['woorden', 'grammar', 'morfologie', 'skills', 'groei', 'time']
+type Tab = 'woorden' | 'grammar' | 'morfologie' | 'skills' | 'time'
+const TABS: Tab[] = ['woorden', 'grammar', 'morfologie', 'skills', 'time']
 
 export function Progress() {
   const T = useT()
@@ -41,9 +41,10 @@ export function Progress() {
 
         {user && (
           <>
+            {/* Scrollable so the strip never clips a tab when labels/count grow
+                (the six-tab strip previously hid Groei + Tijd past the pill edge). */}
             <div className={classes.tabs}>
               <PillSegmented
-                fullWidth
                 value={tab}
                 onChange={(v) => setTab(v as Tab)}
                 data={[
@@ -51,7 +52,6 @@ export function Progress() {
                   { value: 'grammar', label: T.progress.tabGrammar },
                   { value: 'morfologie', label: T.progress.tabMorphology },
                   { value: 'skills', label: T.progress.tabSkills },
-                  { value: 'groei', label: T.progress.tabGrowth },
                   { value: 'time', label: T.progress.tabTime },
                 ]}
               />
@@ -59,41 +59,52 @@ export function Progress() {
 
             {/* key re-mounts the active view so it animates in on every switch */}
             <div key={tab} className={classes.view}>
+              {/* Each content tab pairs its current-state funnel with its
+                  growth-over-time curve for the same bucket (the Groei tab was
+                  removed; growth now lives where the funnel does). */}
               {tab === 'woorden' && (
-                <MasteryFunnelPanel
-                  userId={user.id}
-                  kind="vocabulary"
-                  unitLabel={T.progress.unitWords}
-                  footer={() => <StubbornWordsCard userId={user.id} />}
-                />
+                <div className={classes.sections}>
+                  <MasteryFunnelPanel
+                    userId={user.id}
+                    kind="vocabulary"
+                    unitLabel={T.progress.unitWords}
+                    footer={() => <StubbornWordsCard userId={user.id} />}
+                  />
+                  <GrowthCurveCard userId={user.id} bucket="vocabulary" />
+                </div>
               )}
               {tab === 'grammar' && (
-                <MasteryFunnelPanel
-                  userId={user.id}
-                  kind="grammar"
-                  unitLabel={T.progress.grammarUnitPatterns}
-                  footer={(scope) =>
-                    scope.lessonNumber != null
-                      ? <GrammarPatternList userId={user.id} lessonNumber={scope.lessonNumber} />
-                      : null
-                  }
-                />
+                <div className={classes.sections}>
+                  <MasteryFunnelPanel
+                    userId={user.id}
+                    kind="grammar"
+                    unitLabel={T.progress.grammarUnitPatterns}
+                    footer={(scope) =>
+                      scope.lessonNumber != null
+                        ? <GrammarPatternList userId={user.id} lessonNumber={scope.lessonNumber} />
+                        : null
+                    }
+                  />
+                  <GrowthCurveCard userId={user.id} bucket="grammar" />
+                </div>
               )}
               {tab === 'morfologie' && (
-                <MasteryFunnelPanel
-                  userId={user.id}
-                  kind="morphology"
-                  unitLabel={T.progress.morphologyUnitAffixes}
-                />
+                <div className={classes.sections}>
+                  <MasteryFunnelPanel
+                    userId={user.id}
+                    kind="morphology"
+                    unitLabel={T.progress.morphologyUnitAffixes}
+                  />
+                  <GrowthCurveCard userId={user.id} bucket="morphology" />
+                </div>
               )}
               {tab === 'skills' && <SkillModeGapsCard userId={user.id} />}
-              {tab === 'groei' && (
-                <div className={classes.groei}>
-                  <GrowthCurveCard userId={user.id} />
+              {tab === 'time' && (
+                <div className={classes.sections}>
+                  <TimeComparisonCard userId={user.id} timezone={timezone} />
                   <DurabilityCard userId={user.id} timezone={timezone} />
                 </div>
               )}
-              {tab === 'time' && <TimeComparisonCard userId={user.id} timezone={timezone} />}
             </div>
           </>
         )}

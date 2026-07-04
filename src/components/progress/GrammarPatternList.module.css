@@ -78,19 +78,21 @@
   color: var(--text-secondary, #868e96);
 }
 
+/* Rung tints on the new scheme — neutral → tamarind → accent → success —
+   mirroring GrowthCurveCard's rung colors (was cool blue/cyan/teal). */
 .chip.introduced {
-  background: color-mix(in srgb, #4dabf7 18%, transparent);
-  color: #4dabf7;
+  background: color-mix(in srgb, var(--text-secondary) 18%, transparent);
+  color: var(--text-secondary);
 }
 
 .chip.learning {
-  background: color-mix(in srgb, #3bc9db 20%, transparent);
-  color: #1098ad;
+  background: color-mix(in srgb, var(--mantine-color-tamarind-5) 20%, transparent);
+  color: var(--mantine-color-tamarind-5);
 }
 
 .chip.strengthening {
-  background: color-mix(in srgb, #20c997 20%, transparent);
-  color: #0ca678;
+  background: color-mix(in srgb, var(--accent-primary) 20%, transparent);
+  color: var(--accent-primary);
 }
 
 .chip.mastered {

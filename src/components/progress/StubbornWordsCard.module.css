@@ -1,5 +1,5 @@
-/* A distinct violet accent so "moeilijk" reads as its own thing, separate from the
-   warning-orange at-risk banner and the blue→green funnel. */
+/* "Moeilijk" words are an attention list — the warning token (on the new scheme)
+   rather than the pre-retune off-brand violet. */
 .card {
   display: flex;
   flex-direction: column;
@@ -12,8 +12,8 @@
   gap: 0.6rem;
   border-radius: 12px;
   padding: 0.7rem 0.85rem;
-  background: color-mix(in srgb, #7048e8 11%, transparent);
-  border-left: 3px solid #7048e8;
+  background: var(--warning-subtle);
+  border-left: 3px solid var(--warning);
 }
 
 .icon {
@@ -30,7 +30,7 @@
 .title {
   font-size: 0.86rem;
   font-weight: 700;
-  color: #9775fa;
+  color: var(--warning);
 }
 
 .explain {
@@ -50,6 +50,6 @@
   font-weight: 600;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
-  background: color-mix(in srgb, #7048e8 16%, transparent);
+  background: var(--warning-subtle);
   color: var(--text-primary, #f1f3f5);
 }

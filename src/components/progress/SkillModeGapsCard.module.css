@@ -103,8 +103,8 @@
   height: 100%;
   border-radius: 999px;
   width: 0;
-  /* cool → green gradient, like the journey funnel */
-  background: linear-gradient(90deg, #4dabf7, #3bc9db 40%, #20c997 75%, #2f9e44);
+  /* tamarind → success gradient, like the journey funnel */
+  background: linear-gradient(90deg, var(--mantine-color-tamarind-5), var(--mantine-color-tamarind-6) 45%, var(--success));
   animation: grow 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
