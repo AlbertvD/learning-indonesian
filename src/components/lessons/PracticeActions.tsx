@@ -70,7 +70,6 @@ export function PracticeActions({ lessonId, activated }: { lessonId: string; act
             component={Link}
             to={action.href}
             variant={isPrimary ? 'filled' : 'default'}
-            color={isPrimary ? 'cyan' : undefined}
             leftSection={action.kind === 'practice' ? <IconPlayerPlay size={16} /> : <IconRotateClockwise size={16} />}
             fullWidth
           >
