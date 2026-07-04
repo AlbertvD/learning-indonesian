@@ -1,80 +1,94 @@
-// src/components/Sidebar.tsx
-import { NavLink } from 'react-router-dom'
+// src/components/Sidebar.tsx — the persistent deep-green rail (desktop program
+// slice 2, docs/plans/2026-07-03-desktop-program-design.md §Slice 2).
+//
+// Always visible ≥769px, identical in both themes (the brand constant). Top to
+// bottom: Kamoe Bisa wordmark · "Start sessie" CTA · the five destinations
+// (Home · Leren · Ontdek · Voortgang · Profiel, foundation plan §7.1) · admin
+// links (admins only) · a footer glance (streak + today's goal → Home) with
+// the theme toggle. The old footer ProfileMenu is deleted — language, profile
+// and sign-out all live on the Profiel page.
+import { useEffect, useState } from 'react'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import {
-  IconHome, IconBook, IconCompass, IconChartBar,
+  IconHome, IconBook, IconCompass, IconChartBar, IconUser,
   IconLayoutList, IconBolt, IconEye,
-  IconSun, IconMoon,
+  IconSun, IconMoon, IconFlame, IconPlayerPlayFilled,
 } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
-import { ProfileMenu } from './ProfileMenu'
+import { engagement } from '@/lib/analytics/engagement'
+import { SunMark } from './SunMark'
 import classes from './Sidebar.module.css'
 
-// Pin SVG (thumbtack)
-const PinIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={13} height={13}>
-    <path d="M12 17v5"/>
-    <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/>
-  </svg>
-)
-
-interface SidebarProps {
-  visible: boolean
-  locked: boolean
-  onToggleLock: () => void
-  onClose: () => void
+interface Glance {
+  streakDays: number
+  minutesToday: number
 }
 
-export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps) {
+export function Sidebar() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const user = useAuthStore(s => s.user)
   const profile = useAuthStore(s => s.profile)
   const T = useT()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+  const [glance, setGlance] = useState<Glance | null>(null)
 
-  // Five-tab IA (foundation plan §7.1). Profiel lives in the footer (ProfileMenu),
-  // so the primary nav is Home · Leren · Ontdek · Voortgang.
+  // Streak + today's-goal glance — the same engagement read Home does. Re-read
+  // on route change so finishing a session (recap → navigate) refreshes it.
+  // Decorative: on failure it simply stays hidden.
+  useEffect(() => {
+    let cancelled = false
+    if (!user) return
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+    engagement
+      .practiceTime(user.id, tz)
+      .then(pt => {
+        if (!cancelled) setGlance({ streakDays: pt.streakDays, minutesToday: pt.minutesToday })
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [user, pathname])
+
   const navItems = [
-    { label: T.nav.home,     icon: <IconHome size={17} />,     path: '/' },
-    { label: T.nav.leren,    icon: <IconBook size={17} />,     path: '/leren' },
-    { label: T.nav.ontdek,   icon: <IconCompass size={17} />,  path: '/ontdek' },
-    { label: T.nav.progress, icon: <IconChartBar size={17} />, path: '/progress' },
+    { label: T.nav.home,     icon: <IconHome size={18} />,     path: '/' },
+    { label: T.nav.leren,    icon: <IconBook size={18} />,     path: '/leren' },
+    { label: T.nav.ontdek,   icon: <IconCompass size={18} />,  path: '/ontdek' },
+    { label: T.nav.progress, icon: <IconChartBar size={18} />, path: '/progress' },
+    { label: T.nav.profile,  icon: <IconUser size={18} />,     path: '/profile' },
   ]
 
   // Dev/coverage + review surfaces sit behind admin, not in the primary nav.
   const adminItems = profile?.isAdmin
     ? [
-        { label: 'Contentcontrole', icon: <IconEye size={17} />,        path: '/admin/content-review' },
-        { label: T.nav.sections,    icon: <IconLayoutList size={17} />, path: '/content/sections' },
-        { label: T.nav.exercises,   icon: <IconBolt size={17} />,       path: '/content/exercises' },
+        { label: 'Contentcontrole', icon: <IconEye size={18} />,        path: '/admin/content-review' },
+        { label: T.nav.sections,    icon: <IconLayoutList size={18} />, path: '/content/sections' },
+        { label: T.nav.exercises,   icon: <IconBolt size={18} />,       path: '/content/exercises' },
       ]
     : []
 
-  const initials = (profile?.fullName?.[0] ?? profile?.email?.[0] ?? 'A').toUpperCase()
-
   return (
-    <nav className={`${classes.sidebar} ${visible ? classes.visible : ''}`}>
-      {/* Logo + pin */}
-      <div className={classes.logo}>
-        <div className={classes.logoMark}>
-          <div className={classes.logoName}>Bahasa Indonesia</div>
-          <button
-            className={`${classes.pinBtn} ${locked ? classes.pinLocked : ''}`}
-            onClick={onToggleLock}
-            title={locked ? T.common.unpinSidebar : T.common.pinSidebar}
-          >
-            <PinIcon />
-          </button>
-        </div>
-      </div>
+    <nav className={classes.rail} aria-label={T.rail.mainNav}>
+      <span className={classes.wordmark}>
+        <span className={classes.wordmarkMark}>
+          <SunMark size={28} />
+        </span>
+        <span className={classes.wordmarkName}>Kamoe Bisa</span>
+      </span>
 
-      {/* Nav */}
+      <button className={classes.cta} onClick={() => navigate('/session')}>
+        <IconPlayerPlayFilled size={15} />
+        {T.dashboard.startTodaysSessionMinimal}
+      </button>
+
+      <div className={classes.sectionLabel}>{T.rail.menu}</div>
       <div className={classes.nav}>
         {navItems.map(item => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) => `${classes.navItem} ${isActive ? classes.navActive : ''}`}
-            onClick={() => { if (!locked) onClose() }}
           >
             {item.icon}
             {item.label}
@@ -88,7 +102,6 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) => `${classes.navItem} ${isActive ? classes.navActive : ''}`}
-                onClick={() => { if (!locked) onClose() }}
               >
                 {item.icon}
                 {item.label}
@@ -98,17 +111,30 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
         )}
       </div>
 
-      {/* User footer */}
-      <div className={classes.userFooter}>
-        <ProfileMenu initials={initials} profile={profile} />
+      <div className={classes.spacer} />
+
+      <div className={classes.glance}>
+        {glance && (
+          <Link to="/" className={classes.glanceLink}>
+            <span className={classes.glanceStreak}>
+              <IconFlame
+                size={15}
+                className={glance.streakDays > 0 ? classes.flameLit : classes.flameOut}
+              />
+              <span className={classes.glanceCount}>{glance.streakDays}</span> {T.rail.days}
+            </span>
+            <span className={classes.glanceGoal}>
+              {glance.minutesToday > 0 ? T.rail.goalDone : T.rail.goalOpen}
+            </span>
+          </Link>
+        )}
         <button
-          className={classes.themeBtn}
+          className={classes.themeToggle}
           onClick={toggleColorScheme}
           title={T.common.toggleTheme}
+          aria-label={T.common.toggleTheme}
         >
-          {colorScheme === 'dark'
-            ? <IconSun size={14} />
-            : <IconMoon size={14} />}
+          {colorScheme === 'dark' ? <IconSun size={14} /> : <IconMoon size={14} />}
         </button>
       </div>
     </nav>

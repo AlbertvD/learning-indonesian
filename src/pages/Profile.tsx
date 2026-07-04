@@ -14,7 +14,7 @@ import {
   Modal,
 } from '@mantine/core'
 import { useMantineColorScheme } from '@mantine/core'
-import { IconMoon, IconSun, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
+import { IconMoon, IconSun, IconChevronLeft, IconChevronRight, IconLogout } from '@tabler/icons-react'
 import { useMediaQuery } from '@mantine/hooks'
 import { useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
@@ -253,6 +253,21 @@ export function Profile() {
             <Group gap="sm">
               <Text fw={500} w={120}>{T.profile.memberSince}</Text>
               <Text c="dimmed">{memberSince}</Text>
+            </Group>
+            {/* Sign-out lives here since the rail's ProfileMenu was deleted
+                (desktop program slice 2); this is also the first sign-out
+                control mobile has ever had. */}
+            <Group justify="flex-end">
+              <Button
+                variant="default"
+                leftSection={<IconLogout size={16} />}
+                onClick={async () => {
+                  await signOut()
+                  navigate('/')
+                }}
+              >
+                {T.nav.logout}
+              </Button>
             </Group>
           </Stack>
         </SettingsCard>
