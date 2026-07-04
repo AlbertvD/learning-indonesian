@@ -149,19 +149,48 @@ function buildSupabaseMock(opts: {
           return { error: null }
         },
       }),
-      // PR 6: typed-table writers + the dialogue writer use delete-then-insert.
+      // PR 6: typed-table writers use delete-then-insert; the dialogue writer
+      // prunes with .eq().not('source_line_ref','in',…) (id-preserving upsert).
       delete: () => ({
         in: async (col: string, vals: unknown[]) => {
           store[table] = rowsOf(table).filter((r) => !vals.includes(r[col]))
           return { error: null }
         },
-        eq: async (col: string, val: unknown) => {
-          store[table] = rowsOf(table).filter((r) => r[col] !== val)
-          return { error: null }
+        eq: (col: string, val: unknown) => {
+          const run = (keep?: { col: string; refs: Set<string> }) => {
+            store[table] = rowsOf(table).filter(
+              (r) => r[col] !== val || (keep ? keep.refs.has(r[keep.col]) : false),
+            )
+            return { error: null }
+          }
+          return {
+            not: (ncol: string, _op: string, list: string) => ({
+              then: (onResolve: (v: { error: null }) => unknown) =>
+                onResolve(run({
+                  col: ncol,
+                  refs: new Set(list.slice(1, -1).split(',').map((s) => s.replace(/^"|"$/g, ''))),
+                })),
+            }),
+            then: (onResolve: (v: { error: null }) => unknown) => onResolve(run()),
+          }
         },
       }),
       upsert: (payload: any, opts2?: { onConflict?: string }) => {
         recorder.upserts.push({ table, payload, onConflict: opts2?.onConflict })
+        if (Array.isArray(payload)) {
+          // Batch upsert keyed by the conflict column (dialogue lines on
+          // source_line_ref) — id-preserving, like the real DB.
+          const key = opts2?.onConflict ?? 'id'
+          for (const row of payload) {
+            const idx = rowsOf(table).findIndex((r) => r[key] === row[key])
+            if (idx >= 0) rowsOf(table)[idx] = { ...rowsOf(table)[idx], ...row }
+            else rowsOf(table).push({ ...row, id: `${table}-${rowsOf(table).length}` })
+          }
+          return {
+            then: (onResolve: (v: { error: null }) => unknown) => onResolve({ error: null }),
+            select: () => ({ single: async () => ({ data: null, error: null }) }),
+          }
+        }
         // lesson_sections upserts one row per call, keyed by order_index.
         const id = `sec-${payload?.order_index ?? rowsOf(table).length}`
         const existingIdx = rowsOf(table).findIndex((r) => r.order_index === payload?.order_index)
