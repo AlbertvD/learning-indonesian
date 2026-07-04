@@ -159,53 +159,81 @@ export interface DialogueLineInput {
 }
 
 /**
- * Replace every `lesson_dialogue_lines` row for the lesson.
+ * Replace the lesson's `lesson_dialogue_lines` set, PRESERVING row ids.
  *
- * Strategy: delete all of the LESSON's rows, then bulk-insert the new ones.
- * Lesson-scoped (not section-scoped) on purpose: sections are upserted by
- * (lesson_id, order_index), so a reshuffle can change which section id bears
- * which content type — a section-id-scoped delete then strands the old rows
- * under a section that is no longer a dialogue section (live on lesson 19,
- * 2026-07-04: stale grammar categories under the new dialogue section made
- * the pattern projector throw on duplicate slugs). Safe because the table is
- * a regenerable projection of `lesson_sections.content.lines[]` — no
- * referenced user state (caps FK to capability_id, not the line); re-publish
- * is the canonical writer, and each publish writes the lesson's full set.
+ * Why id-preserving (2026-07-04, the gate-eats-clozes bug): `dialogue_clozes`
+ * FKs `dialogue_line_id` ON DELETE CASCADE, and `--dry-run` runs Stage A LIVE
+ * (Stage B's dry validation needs the DB state only a live Stage A produces)
+ * while Stage B stays dry. A delete-all+reinsert here therefore cascaded away
+ * the lesson's dialogue clozes on EVERY dry-run (incl. the release gate's
+ * embedded pre-flight), and nothing rewrote them until the next live publish.
+ * Upserting on the UNIQUE `source_line_ref` makes an unchanged-content rewrite
+ * a pure in-place UPDATE — ids stable, clozes survive.
+ *
+ * Strategy, still lesson-scoped (the 71375f4f fix — a section reshuffle must
+ * not strand rows under a type-changed section, live on lesson 19):
+ *   1. prune the LESSON's rows whose source_line_ref is no longer present
+ *      (their clozes cascade — correct: the line is gone);
+ *   2. "park" the survivors at line_index+10000 via a first upsert, so a
+ *      reshuffle cannot transiently violate UNIQUE (section_id, line_index);
+ *   3. upsert the full new set on source_line_ref with final values.
  *
  * Idempotent across re-runs: re-publishing the same lesson reproduces the
- * same set of rows.
+ * same set of rows (same ids).
  */
 export async function replaceLessonDialogueLines(
   supabase: SupabaseClient,
   lessonId: string,
   lines: DialogueLineInput[],
 ): Promise<number> {
-  const { error: deleteError } = await supabase
+  const newRefs = lines.map((line) => line.source_line_ref)
+
+  // 1. Prune stale rows (lesson-scoped). With no surviving refs this clears
+  //    the lesson's whole set, matching the old delete-all behaviour.
+  let prune = supabase
     .schema('indonesian')
     .from('lesson_dialogue_lines')
     .delete()
     .eq('lesson_id', lessonId)
+  if (newRefs.length > 0) {
+    prune = prune.not('source_line_ref', 'in', `(${newRefs.map((r) => `"${r}"`).join(',')})`)
+  }
+  const { error: deleteError } = await prune
   if (deleteError) throw deleteError
 
   if (lines.length === 0) return 0
 
-  const { error: insertError } = await supabase
+  const rowFor = (line: DialogueLineInput, lineIndex: number) => ({
+    section_id: line.section_id,
+    lesson_id: line.lesson_id,
+    line_index: lineIndex,
+    source_line_ref: line.source_line_ref,
+    text: line.text,
+    speaker: line.speaker,
+    translation: line.translation,
+    translation_nl: line.translation_nl,
+    translation_en: line.translation_en,
+  })
+
+  // 2. Parking pass: survivors move to a collision-free index band first.
+  const { error: parkError } = await supabase
     .schema('indonesian')
     .from('lesson_dialogue_lines')
-    .insert(
-      lines.map((line) => ({
-        section_id: line.section_id,
-        lesson_id: line.lesson_id,
-        line_index: line.line_index,
-        source_line_ref: line.source_line_ref,
-        text: line.text,
-        speaker: line.speaker,
-        translation: line.translation,
-        translation_nl: line.translation_nl,
-        translation_en: line.translation_en,
-      })),
+    .upsert(
+      lines.map((line) => rowFor(line, line.line_index + 10000)),
+      { onConflict: 'source_line_ref' },
     )
-  if (insertError) throw insertError
+  if (parkError) throw parkError
+
+  // 3. Final pass: land every row at its real index.
+  const { error: upsertError } = await supabase
+    .schema('indonesian')
+    .from('lesson_dialogue_lines')
+    .upsert(
+      lines.map((line) => rowFor(line, line.line_index)),
+      { onConflict: 'source_line_ref' },
+    )
+  if (upsertError) throw upsertError
 
   return lines.length
 }

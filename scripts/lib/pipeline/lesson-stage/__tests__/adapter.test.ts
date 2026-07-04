@@ -4,6 +4,7 @@ import {
   upsertLessonSections,
   fetchExistingAudioClips,
   cleanSectionDisplayContent,
+  replaceLessonDialogueLines,
 } from '../adapter'
 
 describe('cleanSectionDisplayContent', () => {
@@ -77,12 +78,14 @@ function buildSupabaseMock(options: {
   updates: UpdateCall[]
   rpcCalls: RpcCall[]
   selects: Array<{ table: string; eqs: Record<string, unknown> }>
+  deletes: Array<{ table: string; eqs: Record<string, unknown>; notIn?: string }>
 } {
   const upserts: UpsertCall[] = []
   const inserts: InsertCall[] = []
   const updates: UpdateCall[] = []
   const rpcCalls: RpcCall[] = []
   const selects: Array<{ table: string; eqs: Record<string, unknown> }> = []
+  const deletes: Array<{ table: string; eqs: Record<string, unknown>; notIn?: string }> = []
 
   const tableBuilder = (table: string) => {
     const eqs: Record<string, unknown> = {}
@@ -135,6 +138,26 @@ function buildSupabaseMock(options: {
         }
         return updateBuilder
       },
+      delete: () => ({
+        eq: (col: string, val: unknown) => {
+          const call = { table, eqs: { [col]: val } as Record<string, unknown>, notIn: undefined as string | undefined }
+          return {
+            not: (_ncol: string, _op: string, list: string) => {
+              call.notIn = list
+              return {
+                then: (onResolve: (value: { error: Error | null }) => unknown) => {
+                  deletes.push(call)
+                  return onResolve({ error: null })
+                },
+              }
+            },
+            then: (onResolve: (value: { error: Error | null }) => unknown) => {
+              deletes.push(call)
+              return onResolve({ error: null })
+            },
+          }
+        },
+      }),
       upsert: (payload: Record<string, unknown>, opts?: { onConflict?: string }) => {
         upserts.push({ table, payload, onConflict: opts?.onConflict })
         return {
@@ -169,8 +192,70 @@ function buildSupabaseMock(options: {
     }),
   }
 
-  return { client, upserts, inserts, updates, rpcCalls, selects }
+  return { client, upserts, inserts, updates, rpcCalls, selects, deletes }
 }
+
+describe('replaceLessonDialogueLines (id-preserving — the gate-eats-clozes fix)', () => {
+  const lines = [
+    {
+      section_id: 's1',
+      lesson_id: 'lid',
+      line_index: 0,
+      source_line_ref: 'lesson-6/section-1/line-0',
+      text: 'Selamat pagi, Pak!',
+      speaker: 'Sopir taksi 1',
+      translation: 'Goedemorgen, meneer!',
+      translation_nl: 'Goedemorgen, meneer!',
+      translation_en: null,
+    },
+    {
+      section_id: 's1',
+      lesson_id: 'lid',
+      line_index: 1,
+      source_line_ref: 'lesson-6/section-1/line-1',
+      text: 'Berapa ongkos?',
+      speaker: 'Bapak Ahmad',
+      translation: 'Wat kost het?',
+      translation_nl: 'Wat kost het?',
+      translation_en: null,
+    },
+  ]
+
+  it('never deletes surviving refs (upserts on source_line_ref so row ids — and their dialogue_clozes — survive)', async () => {
+    const { client, deletes, upserts, inserts } = buildSupabaseMock({})
+    const count = await replaceLessonDialogueLines(client, 'lid', lines)
+    expect(count).toBe(2)
+    // Prune is lesson-scoped but EXCLUDES the refs being (re)written.
+    expect(deletes).toHaveLength(1)
+    expect(deletes[0]).toMatchObject({ table: 'lesson_dialogue_lines', eqs: { lesson_id: 'lid' } })
+    expect(deletes[0].notIn).toContain('lesson-6/section-1/line-0')
+    expect(deletes[0].notIn).toContain('lesson-6/section-1/line-1')
+    // No bare inserts — everything lands via upsert on the unique ref.
+    expect(inserts).toHaveLength(0)
+    const lineUpserts = upserts.filter((u) => u.table === 'lesson_dialogue_lines')
+    expect(lineUpserts).toHaveLength(2)
+    expect(lineUpserts.every((u) => u.onConflict === 'source_line_ref')).toBe(true)
+  })
+
+  it('parks survivors out of the (section_id, line_index) band before landing final indexes', async () => {
+    const { client, upserts } = buildSupabaseMock({})
+    await replaceLessonDialogueLines(client, 'lid', lines)
+    const [park, final] = upserts.filter((u) => u.table === 'lesson_dialogue_lines')
+    const parkRows = park.payload as unknown as Array<{ line_index: number }>
+    const finalRows = final.payload as unknown as Array<{ line_index: number }>
+    expect(parkRows.map((r) => r.line_index)).toEqual([10000, 10001])
+    expect(finalRows.map((r) => r.line_index)).toEqual([0, 1])
+  })
+
+  it('clears the whole lesson set when no lines remain (old delete-all behaviour)', async () => {
+    const { client, deletes, upserts } = buildSupabaseMock({})
+    const count = await replaceLessonDialogueLines(client, 'lid', [])
+    expect(count).toBe(0)
+    expect(deletes).toHaveLength(1)
+    expect(deletes[0].notIn).toBeUndefined()
+    expect(upserts).toHaveLength(0)
+  })
+})
 
 describe('upsertLesson', () => {
   it('inserts when no existing lesson is found', async () => {
