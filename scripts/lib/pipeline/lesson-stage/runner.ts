@@ -229,13 +229,11 @@ export async function runLessonStage(
   // inside `lesson_sections.content.lines[]`. capability-stage's
   // dialogue_clozes projector FKs to these rows by id.
   const dialogueLineInputs: DialogueLineInput[] = []
-  const dialogueSectionIds: string[] = []
   for (const section of staging.lesson.sections) {
     const content = section.content as { type?: unknown; lines?: unknown } | undefined
     if (content?.type !== 'dialogue') continue
     const sectionId = sectionIdsByOrderIndex.get(section.order_index)
     if (!sectionId) continue
-    dialogueSectionIds.push(sectionId)
     if (!Array.isArray(content.lines)) continue
     for (const [idx, raw] of (content.lines as Array<Record<string, unknown>>).entries()) {
       const text = typeof raw?.text === 'string' ? raw.text.trim() : ''
@@ -264,7 +262,7 @@ export async function runLessonStage(
   }
   const dialogueLineCount = await replaceLessonDialogueLines(
     supabase,
-    dialogueSectionIds,
+    lesson.id,
     dialogueLineInputs,
   )
 
@@ -272,11 +270,9 @@ export async function runLessonStage(
   // projection's section order_index → DB section_id, then replace each typed
   // table. Write-only at merge — the future Capability Stage (#98/#99) reads them.
   const itemRowInputs: ItemRowInput[] = []
-  const itemSectionIds = new Set<string>()
   for (const row of projected.itemRows) {
     const sectionId = sectionIdsByOrderIndex.get(row.sourceSectionOrderIndex)
     if (!sectionId) continue
-    itemSectionIds.add(sectionId)
     itemRowInputs.push({
       section_id: sectionId,
       lesson_id: lesson.id,
@@ -290,17 +286,15 @@ export async function runLessonStage(
   }
   const itemRowCount = await replaceLessonSectionItemRows(
     supabase,
-    [...itemSectionIds],
+    lesson.id,
     itemRowInputs,
   )
 
   const grammarCategoryInputs: GrammarCategoryInput[] = []
   const grammarTopicInputs: GrammarTopicInput[] = []
-  const grammarSectionIds = new Set<string>()
   for (const cat of projected.grammarCategories) {
     const sectionId = sectionIdsByOrderIndex.get(cat.sourceSectionOrderIndex)
     if (!sectionId) continue
-    grammarSectionIds.add(sectionId)
     grammarCategoryInputs.push({
       section_id: sectionId,
       lesson_id: lesson.id,
@@ -315,7 +309,6 @@ export async function runLessonStage(
   for (const topic of projected.grammarTopics) {
     const sectionId = sectionIdsByOrderIndex.get(topic.sourceSectionOrderIndex)
     if (!sectionId) continue
-    grammarSectionIds.add(sectionId)
     grammarTopicInputs.push({
       section_id: sectionId,
       lesson_id: lesson.id,
@@ -324,12 +317,12 @@ export async function runLessonStage(
   }
   const grammarCategoryCount = await replaceLessonSectionGrammarCategories(
     supabase,
-    [...grammarSectionIds],
+    lesson.id,
     grammarCategoryInputs,
   )
   const grammarTopicCount = await replaceLessonSectionGrammarTopics(
     supabase,
-    [...grammarSectionIds],
+    lesson.id,
     grammarTopicInputs,
   )
 

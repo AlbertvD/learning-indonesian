@@ -159,29 +159,32 @@ export interface DialogueLineInput {
 }
 
 /**
- * Replace every `lesson_dialogue_lines` row for the given dialogue sections.
+ * Replace every `lesson_dialogue_lines` row for the lesson.
  *
- * Strategy: delete all rows for the affected `section_id`s, then bulk-insert
- * the new ones. This is safe because `lesson_dialogue_lines` is a
- * regenerable projection of `lesson_sections.content.lines[]` — there is no
- * referenced user state (caps FK to capability_id, not the line). Re-publish
- * is the canonical writer.
+ * Strategy: delete all of the LESSON's rows, then bulk-insert the new ones.
+ * Lesson-scoped (not section-scoped) on purpose: sections are upserted by
+ * (lesson_id, order_index), so a reshuffle can change which section id bears
+ * which content type — a section-id-scoped delete then strands the old rows
+ * under a section that is no longer a dialogue section (live on lesson 19,
+ * 2026-07-04: stale grammar categories under the new dialogue section made
+ * the pattern projector throw on duplicate slugs). Safe because the table is
+ * a regenerable projection of `lesson_sections.content.lines[]` — no
+ * referenced user state (caps FK to capability_id, not the line); re-publish
+ * is the canonical writer, and each publish writes the lesson's full set.
  *
  * Idempotent across re-runs: re-publishing the same lesson reproduces the
  * same set of rows.
  */
 export async function replaceLessonDialogueLines(
   supabase: SupabaseClient,
-  sectionIds: string[],
+  lessonId: string,
   lines: DialogueLineInput[],
 ): Promise<number> {
-  if (sectionIds.length === 0) return 0
-
   const { error: deleteError } = await supabase
     .schema('indonesian')
     .from('lesson_dialogue_lines')
     .delete()
-    .in('section_id', sectionIds)
+    .eq('lesson_id', lessonId)
   if (deleteError) throw deleteError
 
   if (lines.length === 0) return 0
@@ -226,18 +229,18 @@ export interface ItemRowInput {
   l2_translation: string | null
 }
 
-/** Replace lesson_section_item_rows for the given (item-bearing) section ids. */
+/** Replace lesson_section_item_rows for the lesson (lesson-scoped delete —
+ *  see replaceLessonDialogueLines for why section-scoped deletes strand rows). */
 export async function replaceLessonSectionItemRows(
   supabase: SupabaseClient,
-  sectionIds: string[],
+  lessonId: string,
   rows: ItemRowInput[],
 ): Promise<number> {
-  if (sectionIds.length === 0) return 0
   const { error: deleteError } = await supabase
     .schema('indonesian')
     .from('lesson_section_item_rows')
     .delete()
-    .in('section_id', sectionIds)
+    .eq('lesson_id', lessonId)
   if (deleteError) throw deleteError
   if (rows.length === 0) return 0
   const { error: insertError } = await supabase
@@ -259,18 +262,18 @@ export interface GrammarCategoryInput {
   examples: Array<{ indonesian: string; dutch: string | null; english: string | null }> | null
 }
 
-/** Replace lesson_section_grammar_categories for the given grammar section ids. */
+/** Replace lesson_section_grammar_categories for the lesson (lesson-scoped
+ *  delete — see replaceLessonDialogueLines for why). */
 export async function replaceLessonSectionGrammarCategories(
   supabase: SupabaseClient,
-  sectionIds: string[],
+  lessonId: string,
   rows: GrammarCategoryInput[],
 ): Promise<number> {
-  if (sectionIds.length === 0) return 0
   const { error: deleteError } = await supabase
     .schema('indonesian')
     .from('lesson_section_grammar_categories')
     .delete()
-    .in('section_id', sectionIds)
+    .eq('lesson_id', lessonId)
   if (deleteError) throw deleteError
   if (rows.length === 0) return 0
   const { error: insertError } = await supabase
@@ -287,18 +290,18 @@ export interface GrammarTopicInput {
   topic_label: string
 }
 
-/** Replace lesson_section_grammar_topics for the given grammar section ids. */
+/** Replace lesson_section_grammar_topics for the lesson (lesson-scoped
+ *  delete — see replaceLessonDialogueLines for why). */
 export async function replaceLessonSectionGrammarTopics(
   supabase: SupabaseClient,
-  sectionIds: string[],
+  lessonId: string,
   rows: GrammarTopicInput[],
 ): Promise<number> {
-  if (sectionIds.length === 0) return 0
   const { error: deleteError } = await supabase
     .schema('indonesian')
     .from('lesson_section_grammar_topics')
     .delete()
-    .in('section_id', sectionIds)
+    .eq('lesson_id', lessonId)
   if (deleteError) throw deleteError
   if (rows.length === 0) return 0
   const { error: insertError } = await supabase
