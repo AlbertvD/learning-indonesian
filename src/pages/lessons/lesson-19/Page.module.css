@@ -1,11 +1,12 @@
 /* ─────────────────────────────────────────────────────────────────────────────
-   Page.module.css — Lesson 19: Bab 3 · Zinsbouw (Sentence structure)
+   Page.module.css — Lesson 19: Bab 3 · Zinsbouw
 
-   A syntax-only chapter. No vocabulary, no dialogue. The page is built around
-   two unique treatments: a horizontal PARTICIPANT SLOT DIAGRAM (agens —
-   handeling — patiens, + optional partijen 3/4 with marker chips) and a
-   numbered WORD-ORDER TRACK. The connectives render as two accent-coded tiles
-   with aligned Indonesisch → Nederlands example pairs.
+   A travelogue chapter that also holds the sentence-structure theory. Five
+   movements, each with its own accent: a teal DIALOGUE scene with a route
+   ribbon; a green WOORDENLIJST chip grid; an amber SEPEDA MOTOR parts-inventory
+   set like a workshop manifest; the cyan/purple GRAMMAR heart — a participant
+   SLOT DIAGRAM + a numbered WORD-ORDER TRACK + connective tiles; and a
+   ring-target LATIHAN roster.
 ───────────────────────────────────────────────────────────────────────────── */
 
 /* ─── Page root ──────────────────────────────────────────────────────────── */
@@ -29,13 +30,13 @@
 
 @media (max-width: 720px) { .band { padding: 40px 0; } }
 
-/* ─── Hero — indigo/violet "structural" mood ─────────────────────────────── */
+/* ─── Hero — warm travelogue mood (batik-green → tamarind) ────────────────── */
 
 .heroBand {
   composes: band;
-  background-color: #2a2a5e;
+  background-color: #16563c;
   background-image:
-    linear-gradient(135deg, rgba(40, 38, 92, 0.86) 0%, rgba(26, 30, 56, 0.84) 50%, rgba(157, 122, 255, 0.26) 100%),
+    linear-gradient(135deg, rgba(15, 61, 43, 0.86) 0%, rgba(26, 42, 40, 0.80) 52%, rgba(255, 149, 0, 0.30) 100%),
     url('/lesson-19-hero.webp');
   background-size: cover;
   background-position: center;
@@ -50,20 +51,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle at 84% 20%, rgba(157, 122, 255, 0.22), transparent 44%),
-    radial-gradient(circle at 10% 86%, rgba(0, 199, 190, 0.14), transparent 40%);
-  pointer-events: none;
-}
-
-/* A faint grid texture — a quiet nod to a sentence "schema". */
-.heroBand::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-  background-size: 40px 40px;
+    radial-gradient(circle at 84% 22%, rgba(255, 149, 0, 0.22), transparent 44%),
+    radial-gradient(circle at 8% 86%, rgba(0, 199, 190, 0.14), transparent 40%);
   pointer-events: none;
 }
 
@@ -83,9 +72,9 @@
   font-size: var(--fs-xs);
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(252, 196, 25, 0.18);
-  color: var(--ring-target);
-  border: 1px solid rgba(252, 196, 25, 0.30);
+  background: rgba(255, 149, 0, 0.18);
+  color: var(--warning);
+  border: 1px solid rgba(255, 149, 0, 0.30);
 }
 
 .heroBadgeAlt {
@@ -97,9 +86,9 @@
 
 .heroBadgeTag {
   composes: heroBadge;
-  background: rgba(157, 122, 255, 0.16);
-  color: var(--mix-recall);
-  border-color: rgba(157, 122, 255, 0.30);
+  background: rgba(50, 215, 75, 0.16);
+  color: var(--success);
+  border-color: rgba(50, 215, 75, 0.30);
 }
 
 .heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
@@ -145,7 +134,7 @@
 
 .ledeQuote em {
   font-style: italic;
-  color: var(--mix-recall);
+  color: var(--success);
   font-weight: var(--fw-semibold);
 }
 
@@ -162,7 +151,7 @@
   content: '';
   width: 32px;
   height: 2px;
-  background: var(--mix-recall);
+  background: var(--success);
   border-radius: 999px;
   flex-shrink: 0;
 }
@@ -220,6 +209,16 @@
   font-style: italic;
 }
 
+.sectionLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 28px;
+  max-width: 72ch;
+}
+
+.sectionLede em { font-style: normal; font-weight: var(--fw-semibold); color: var(--text-primary); }
+
 /* ─── Shared example pair (Indonesisch primary, Nederlands beneath) ───────── */
 
 .archExamples,
@@ -255,12 +254,269 @@
   line-height: 1.5;
 }
 
-/* ─── Movement 1: Sentence architecture ──────────────────────────────────── */
+/* ─── Movement 1: Dialogue "Dari Lombok" ─────────────────────────────────── */
+
+.dialogueBand {
+  background: linear-gradient(135deg, rgba(0,199,190,0.08) 0%, rgba(255,149,0,0.05) 100%);
+  border-radius: var(--r-xl);
+  padding: 48px 36px;
+  margin: 0 -36px;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .dialogueBand { padding: 32px 20px; margin: 0; }
+}
+
+.dialogueBand::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(0,199,190,0.14), transparent 70%);
+  pointer-events: none;
+}
+
+.dialogueEyebrow { composes: sectionEyebrow; color: var(--teal); }
+.dialogueEyebrow::before { background: var(--teal); }
+
+.dialogueSetup {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 24px;
+  max-width: 72ch;
+  position: relative;
+  z-index: 1;
+}
+
+/* Route ribbon — the little itinerary map, as a chip trail */
+.routeRibbon {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 4px;
+  margin: 0 0 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.routeStopWrap { display: inline-flex; align-items: center; gap: 4px; }
+
+.routeStop {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--card-border);
+  white-space: nowrap;
+}
+
+.routeStop[data-terminal='true'] {
+  color: var(--teal);
+  background: color-mix(in srgb, var(--teal) 12%, transparent);
+  border-color: color-mix(in srgb, var(--teal) 30%, transparent);
+}
+
+.routeArrow {
+  color: var(--text-tertiary);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-sm);
+}
+
+.dialogueLines {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Narrator: stage-direction prose, centered, no card — frames the scene */
+.narratorLine {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px auto;
+  max-width: 74ch;
+  text-align: center;
+  padding: 4px 0;
+}
+
+.narratorId {
+  font-size: var(--fs-md);
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.55;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.narratorNl {
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.dialogueLine {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--r-md);
+}
+
+@media (max-width: 720px) {
+  .dialogueLine { grid-template-columns: 1fr; gap: 6px; }
+}
+
+.dialogueSpeaker {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.dialogueLine[data-speaker-tone='linda'] .dialogueSpeaker { color: var(--teal); }
+.dialogueLine[data-speaker-tone='paul']  .dialogueSpeaker { color: var(--warning); }
+
+.dialogueBody { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+.dialogueIdRow { display: flex; align-items: baseline; gap: 12px; }
+
+.dialogueId {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  line-height: 1.55;
+  flex: 1;
+  min-width: 0;
+}
+
+.dialogueNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ─── Movement 2: Woordenlijst — green chips ──────────────────────────────── */
+
+.vocabEyebrow { composes: sectionEyebrow; color: var(--success); }
+.vocabEyebrow::before { background: var(--success); }
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.itemChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(50,215,75,0.05);
+  border: 1px solid rgba(50,215,75,0.18);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.itemChip:hover { transform: translateY(-1px); border-color: var(--success); }
+
+.itemId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  min-width: 7em;
+}
+
+.itemSep {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.itemNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Movement 3: Sepeda motor — workshop parts-inventory ─────────────────── */
+
+.motoEyebrow { composes: sectionEyebrow; color: var(--warning); }
+.motoEyebrow::before { background: var(--warning); }
+
+.partsGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px 24px;
+}
+
+@media (max-width: 760px) { .partsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .partsGrid { grid-template-columns: 1fr; } }
+
+.partRow {
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding: 12px 4px;
+  border-bottom: 1px dashed var(--card-border);
+}
+
+.partNum {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--warning);
+  letter-spacing: 0.06em;
+}
+
+.partBody { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+
+.partIdRow { display: flex; align-items: baseline; gap: 8px; }
+
+.partId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.partNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* ─── Movement 4a: Sentence architecture ─────────────────────────────────── */
 
 .archEyebrow { composes: sectionEyebrow; color: var(--accent-primary); }
 .archEyebrow::before { background: var(--accent-primary); }
 
-/* The slot diagram — the visual heart of the lesson. */
+/* The slot diagram — the visual heart of the chapter */
 .schema {
   display: flex;
   flex-direction: column;
@@ -349,9 +605,7 @@
 
 .schemaSlot[data-optional='true'] {
   background: var(--card-bg);
-  border-top-width: 1px;
-  border-left: 3px solid var(--slot-accent, var(--accent-primary));
-  border-top-color: var(--card-border);
+  border-top-width: 3px;
 }
 
 .markerChips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
@@ -426,7 +680,6 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
-  counter-reset: none;
 }
 
 @media (max-width: 760px) { .orderTrack { grid-template-columns: repeat(2, 1fr); } }
@@ -463,7 +716,7 @@
   color: var(--text-tertiary);
 }
 
-/* ─── Movement 2: Connectives ────────────────────────────────────────────── */
+/* ─── Movement 4b: Connectives ───────────────────────────────────────────── */
 
 .connEyebrow { composes: sectionEyebrow; color: var(--mix-recall); }
 .connEyebrow::before { background: var(--mix-recall); }
@@ -549,45 +802,55 @@
   border-top: 1px dashed var(--card-border);
 }
 
-/* ─── Practice teaser ────────────────────────────────────────────────────── */
+/* ─── Movement 5: Latihan roster ─────────────────────────────────────────── */
 
-.teaserEyebrow { composes: sectionEyebrow; color: var(--ring-target); }
-.teaserEyebrow::before { background: var(--ring-target); }
+.latEyebrow { composes: sectionEyebrow; color: var(--ring-target); }
+.latEyebrow::before { background: var(--ring-target); }
 
-.teaserList {
+.latList {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
-@media (max-width: 600px) { .teaserList { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .latList { grid-template-columns: 1fr; } }
 
-.teaserItem {
+.latItem {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
-  padding: 14px 18px;
+  padding: 16px 18px;
   border-radius: var(--r-md);
   background: rgba(252, 196, 25, 0.05);
   border: 1px solid rgba(252, 196, 25, 0.20);
 }
 
-.teaserNum {
+.latNum {
   font-family: var(--font-mono);
   font-size: var(--fs-md);
   font-weight: var(--fw-black);
   color: var(--ring-target);
   flex-shrink: 0;
-  min-width: 1.6em;
+  min-width: 1.8em;
+  line-height: 1.4;
 }
 
-.teaserLabel {
-  font-size: var(--fs-sm);
+.latBody { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+.latTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
   color: var(--text-primary);
-  line-height: 1.45;
+  line-height: 1.4;
+}
+
+.latInstruction {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 /* ─── Inline play button ─────────────────────────────────────────────────── */
