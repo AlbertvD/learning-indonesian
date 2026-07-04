@@ -43,6 +43,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 import { findIneffectiveProduceReason } from '@/lib/answerNormalization'
+import { extractLlmJson } from './parseLlmJson'
 import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { extractAnswerKey } from './validators/candidatePayload'
 import { SCHEMA_BY_TYPE } from './validators/grammarExercises'
@@ -239,30 +240,28 @@ const GENERATED_TYPE_SET = new Set<string>(GENERATED_EXERCISE_TYPES)
  * `validateCandidate` so the two concerns stay testable in isolation.
  */
 export function parseResponse(raw: string): GrammarExerciseCandidate[] {
-  const cleaned = raw.replace(/^```json\s*/, '').replace(/\s*```\s*$/, '').trim()
-  try {
-    const parsed = JSON.parse(cleaned)
-    if (!Array.isArray(parsed)) return []
+  // extractLlmJson tolerates a prose preamble / code fence around the array
+  // (same live failure mode as the dialogue-cloze parser); the shape checks
+  // below remain the content authority.
+  const parsed = extractLlmJson(raw, '[', ']')
+  if (!Array.isArray(parsed)) return []
 
-    const result: GrammarExerciseCandidate[] = []
-    for (const c of parsed) {
-      if (typeof c !== 'object' || c === null) continue
-      const exerciseType = (c as Record<string, unknown>).exercise_type
-      const slug = (c as Record<string, unknown>).grammar_pattern_slug
-      const payload = (c as Record<string, unknown>).payload
-      if (typeof exerciseType !== 'string' || !GENERATED_TYPE_SET.has(exerciseType)) continue
-      if (typeof slug !== 'string' || slug.length === 0) continue
-      if (typeof payload !== 'object' || payload === null || Array.isArray(payload)) continue
-      result.push({
-        exercise_type: exerciseType as GeneratedExerciseType,
-        grammar_pattern_slug: slug,
-        payload: payload as Record<string, unknown>,
-      })
-    }
-    return result
-  } catch {
-    return []
+  const result: GrammarExerciseCandidate[] = []
+  for (const c of parsed) {
+    if (typeof c !== 'object' || c === null) continue
+    const exerciseType = (c as Record<string, unknown>).exercise_type
+    const slug = (c as Record<string, unknown>).grammar_pattern_slug
+    const payload = (c as Record<string, unknown>).payload
+    if (typeof exerciseType !== 'string' || !GENERATED_TYPE_SET.has(exerciseType)) continue
+    if (typeof slug !== 'string' || slug.length === 0) continue
+    if (typeof payload !== 'object' || payload === null || Array.isArray(payload)) continue
+    result.push({
+      exercise_type: exerciseType as GeneratedExerciseType,
+      grammar_pattern_slug: slug,
+      payload: payload as Record<string, unknown>,
+    })
   }
+  return result
 }
 
 // ---------------------------------------------------------------------------
