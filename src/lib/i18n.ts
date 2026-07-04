@@ -55,11 +55,14 @@ export const nl = {
   },
   leren: {
     lessenTab: 'Lessen',
+    lessenDesc: 'Werk de cursus door, les voor les.',
+    woordenlijstenDesc: 'Oefen woorden per thema en frequentie.',
     toolsTitle: 'Oefentools',
     affixTitle: 'Affix-trainer',
     affixDesc: 'Leer voor- en achtervoegsels en woordfamilies.',
     pronunciationTitle: 'Uitspraaktrainer',
     pronunciationDesc: 'Oefen klanken, minimale paren en nazeggen.',
+    backToHub: 'Terug naar Leren',
   },
   morphology: {
     title: 'Affix-trainer',
@@ -652,11 +655,14 @@ export const en: typeof nl = {
   },
   leren: {
     lessenTab: 'Lessons',
+    lessenDesc: 'Work through the course, lesson by lesson.',
+    woordenlijstenDesc: 'Practise words by theme and frequency.',
     toolsTitle: 'Practice tools',
     affixTitle: 'Affix trainer',
     affixDesc: 'Learn prefixes, suffixes and word families.',
     pronunciationTitle: 'Pronunciation trainer',
     pronunciationDesc: 'Practise sounds, minimal pairs and shadowing.',
+    backToHub: 'Back to Learn',
   },
   morphology: {
     title: 'Affix Trainer',
