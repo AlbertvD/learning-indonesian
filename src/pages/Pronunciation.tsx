@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import { Alert, Paper, Stack, Text, Title } from '@mantine/core'
 import { IconAlertCircle, IconVolume, IconHeadphones } from '@tabler/icons-react'
 import { PageContainer, PageBody, PageHeader, LoadingState, EmptyState } from '@/components/page/primitives'
-import { BackLink } from '@/components/nav/BackLink'
+import { LerenNav } from '@/components/lessons/LerenNav'
 import { PitfallCard } from '@/components/pronunciation'
 import { getPitfallsForL1 } from '@/lib/pronunciation/pitfallCatalog'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
@@ -70,7 +70,7 @@ export function Pronunciation() {
   return (
     <PageContainer size="lg">
       <PageBody>
-        <BackLink to="/leren" label={T.nav.backToLeren} />
+        <LerenNav />
         <PageHeader title={T.pronunciation.title} subtitle={T.pronunciation.subtitle} />
 
         {!loading && !error && podcastUrl && (

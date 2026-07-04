@@ -17,9 +17,8 @@ import {
   IconVolume,
   IconListCheck,
   IconChevronDown,
-  IconArrowLeft,
 } from '@tabler/icons-react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useMediaQuery } from '@mantine/hooks'
 import {
   PageContainer,
@@ -28,6 +27,7 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { LessonCard } from '@/components/lessons/LessonCard'
+import { LerenNav } from '@/components/lessons/LerenNav'
 import { Woordenlijsten } from '@/components/collections/Woordenlijsten'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -161,12 +161,12 @@ function rememberOverviewScrollPosition() {
 export function Lessons() {
   const T = useT()
   const isMobile = useMediaQuery('(max-width: 768px)') ?? false
-  const [tab, setTab] = useState<'lessen' | 'woordenlijsten'>('lessen')
-  // Mobile only: the four surfaces are a hub. 'hub' shows the descriptive cards;
-  // selecting Lessen/Woordenlijsten opens its content in-place with a back link
-  // (Affix/Uitspraak navigate to their own routes, which already back to /leren).
-  // Desktop ignores this and keeps the persistent four-card switcher.
-  const [mobileView, setMobileView] = useState<'hub' | 'lessen' | 'woordenlijsten'>('hub')
+  // The selected surface is addressable via ?v= so the desktop switcher (LerenNav)
+  // and the mobile hub both drive it by navigation: no ?v = Lessen (desktop) /
+  // the hub (mobile); ?v=woorden = Woordenlijsten. Affix/Uitspraak are their own
+  // routes. `activeSurface` mirrors LerenNav's derivation.
+  const [searchParams] = useSearchParams()
+  const surface = searchParams.get('v') === 'woorden' ? 'woordenlijsten' : 'lessen'
   const [openLevel, setOpenLevel] = useState<string | null>(null)
   const [model, setModel] = useState<LessonOverviewModel>(emptyModel)
   const [loading, setLoading] = useState(true)
@@ -375,25 +375,27 @@ export function Lessons() {
   const surfaceContent = (which: 'lessen' | 'woordenlijsten') =>
     which === 'lessen' ? <>{notices}{lessenGroups}</> : <Woordenlijsten />
 
-  // Mobile: the four surfaces are a hub. Bare /leren shows the descriptive cards;
-  // selecting a surface opens it full-width with a back link — the same
-  // hub → full page → back shape the Affix and Uitspraak trainers already use.
-  if (isMobile && mobileView === 'hub') {
+  // Mobile, no surface selected: the four surfaces are a hub of descriptive
+  // cards that divide the viewport height. Each opens its surface full-width
+  // (Lessen/Woordenlijsten via ?v= on this page; Affix/Uitspraak their routes),
+  // which then shows a back link — the shape the trainers already use.
+  const noSurfaceSelected = !searchParams.get('v')
+  if (isMobile && noSurfaceSelected) {
     return (
       <PageContainer size="lg">
         <PageBody>
           <PageHeader title={T.nav.leren} />
           <div className={classes.hub}>
-            <button type="button" className={classes.hubCard} onClick={() => setMobileView('lessen')}>
+            <Link to="/leren?v=lessen" className={classes.hubCard}>
               <IconBook size={26} />
               <span className={classes.hubLabel}>{T.leren.lessenTab}</span>
               <span className={classes.hubDesc}>{T.leren.lessenDesc}</span>
-            </button>
-            <button type="button" className={classes.hubCard} onClick={() => setMobileView('woordenlijsten')}>
+            </Link>
+            <Link to="/leren?v=woorden" className={classes.hubCard}>
               <IconListCheck size={26} />
               <span className={classes.hubLabel}>{T.collections.title}</span>
               <span className={classes.hubDesc}>{T.leren.woordenlijstenDesc}</span>
-            </button>
+            </Link>
             <Link to="/morphology" className={classes.hubCard}>
               <IconAbc size={26} />
               <span className={classes.hubLabel}>{T.leren.affixTitle}</span>
@@ -411,61 +413,26 @@ export function Lessons() {
   }
 
   if (isMobile) {
-    const which = mobileView === 'woordenlijsten' ? 'woordenlijsten' : 'lessen'
     return (
       <PageContainer size="lg">
         <PageBody>
-          <button type="button" className={classes.backToHub} onClick={() => setMobileView('hub')}>
-            <IconArrowLeft size={16} />
-            {T.leren.backToHub}
-          </button>
-          <PageHeader title={which === 'lessen' ? T.leren.lessenTab : T.collections.title} />
-          {surfaceContent(which)}
+          <LerenNav />
+          <PageHeader title={surface === 'lessen' ? T.leren.lessenTab : T.collections.title} />
+          {surfaceContent(surface)}
         </PageBody>
       </PageContainer>
     )
   }
 
-  // Desktop: the four cards are a persistent switcher — Lessons + Woordenlijsten
-  // swap inline (default Lessons); Affix + Pronunciation jump to their full
-  // trainer pages (which offer a back link).
+  // Desktop: the four icons persist at the top for every surface (LerenNav is
+  // rendered here and on the Affix/Uitspraak trainer pages), with the selected
+  // surface's content underneath. Lessen/Woordenlijsten swap via ?v=.
   return (
     <PageContainer size="lg">
       <PageBody>
         <PageHeader title={T.nav.leren} />
-
-        <div className={classes.typeGrid} role="tablist" aria-label={T.nav.leren}>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'lessen'}
-            className={`${classes.typeCard} ${tab === 'lessen' ? classes.typeCardActive : ''}`}
-            onClick={() => setTab('lessen')}
-          >
-            <IconBook size={22} />
-            <span className={classes.typeLabel}>{T.leren.lessenTab}</span>
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'woordenlijsten'}
-            className={`${classes.typeCard} ${tab === 'woordenlijsten' ? classes.typeCardActive : ''}`}
-            onClick={() => setTab('woordenlijsten')}
-          >
-            <IconListCheck size={22} />
-            <span className={classes.typeLabel}>{T.collections.title}</span>
-          </button>
-          <Link to="/morphology" className={classes.typeCard}>
-            <IconAbc size={22} />
-            <span className={classes.typeLabel}>{T.leren.affixTitle}</span>
-          </Link>
-          <Link to="/pronunciation" className={classes.typeCard}>
-            <IconVolume size={22} />
-            <span className={classes.typeLabel}>{T.leren.pronunciationTitle}</span>
-          </Link>
-        </div>
-
-        {surfaceContent(tab)}
+        <LerenNav />
+        {surfaceContent(surface)}
       </PageBody>
     </PageContainer>
   )

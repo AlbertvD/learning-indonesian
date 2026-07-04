@@ -62,7 +62,6 @@ export const nl = {
     affixDesc: 'Leer voor- en achtervoegsels en woordfamilies.',
     pronunciationTitle: 'Uitspraaktrainer',
     pronunciationDesc: 'Oefen klanken, minimale paren en nazeggen.',
-    backToHub: 'Terug naar Leren',
   },
   morphology: {
     title: 'Affix-trainer',
@@ -662,7 +661,6 @@ export const en: typeof nl = {
     affixDesc: 'Learn prefixes, suffixes and word families.',
     pronunciationTitle: 'Pronunciation trainer',
     pronunciationDesc: 'Practise sounds, minimal pairs and shadowing.',
-    backToHub: 'Back to Learn',
   },
   morphology: {
     title: 'Affix Trainer',

@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom'
 import { Alert } from '@mantine/core'
 import { IconAlertCircle, IconAbc, IconSearchOff } from '@tabler/icons-react'
 import { PageContainer, PageBody, PageHeader, LoadingState, EmptyState } from '@/components/page/primitives'
-import { BackLink } from '@/components/nav/BackLink'
+import { LerenNav } from '@/components/lessons/LerenNav'
 import { AffixCatalogGrid, AffixDetailView } from '@/components/morphology'
 import { getAffixCatalog, getAffixDetail, type AffixCatalogTile, type AffixDetail } from '@/lib/morphology'
 import { useAuthStore } from '@/stores/authStore'
@@ -61,7 +61,7 @@ export function AffixTrainer() {
   return (
     <PageContainer size="lg">
       <PageBody>
-        <BackLink to="/leren" label={T.nav.backToLeren} />
+        <LerenNav />
         {!affix && <PageHeader title={T.morphology.title} subtitle={T.morphology.subtitle} />}
 
         {loading && <LoadingState caption={T.morphology.title} />}
