@@ -95,7 +95,7 @@ const CONFIG: Record<string, AffixConfig> = {
     affixBase: 'i',
     category: 'Hoofdfunctie van de werkwoordsvorm met -i',
     freqGate: true,
-    exclude: ['mal', 'mau'], // mali (= Mali, homograph), maui (nonstandard) slip the freq gate
+    exclude: ['mal', 'mau', 'bab'], // mali (= Mali), babi (= pig) are homographs; maui nonstandard
   },
   'se-': {
     lesson: 2,
@@ -116,6 +116,20 @@ const CONFIG: Record<string, AffixConfig> = {
     pos: ['verb', 'noun', 'adjective'],
     affixBase: 'an',
     category: 'PE-vorm versus PE-...-AN-vorm versus kale -AN-vorm: uitvoerder, proces, resultaat',
+    freqGate: true,
+  },
+  'meN-…-kan': {
+    lesson: 21,
+    pos: ['verb', 'adjective', 'noun'],
+    affixBase: 'meng- -kan', // kaikki confix decomposition key: "meng- -kan|<root>"
+    category: 'De werkwoordsvorm met -KAN — hoofdfunctie', // matches the hand-authored L21 pairs
+    freqGate: true,
+  },
+  'di-…-kan': {
+    lesson: 21,
+    pos: ['verb', 'adjective', 'noun'],
+    affixBase: 'di- -kan', // kaikki confix decomposition key: "di- -kan|<root>"
+    category: 'ME-...-KAN naast DI-...-KAN', // matches the hand-authored L21 pairs
     freqGate: true,
   },
   'meN-…-i': {
@@ -188,6 +202,17 @@ const CONFIG: Record<string, AffixConfig> = {
       'mata', 'paru', 'laki', 'langit', 'layang', 'gula', 'kuda', // mata-mata=spy, paru-paru=lungs, laki-laki=man, …
       'hati', 'tiba', 'tiap', 'masing', 'mula', 'benar', 'sama', 'tahu', 'pagi', 'kira', 'moga', 'ada', 'salah', // frozen adverbs
     ],
+  },
+  'reduplication-an': {
+    lesson: 22,
+    pos: ['noun'],
+    affixBase: 'reduplication',
+    category: 'Verdubbeling van het zelfstandig naamwoord plus -AN',
+    // Kaikki attests only 5 taught-noun forms and the freq corpus is word-tokenized
+    // (hyphenated redups mostly absent), so NO freq gate — curate the tiny pool by
+    // exclude instead. anak-anakan (doll) + mata-mataan (mata-mata = spy) are
+    // lexicalised meaning-shifts, not the variety-collective this category teaches.
+    exclude: ['anak', 'mata'],
   },
 }
 
