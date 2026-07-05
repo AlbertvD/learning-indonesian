@@ -1,0 +1,48 @@
+.prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.promptChip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--card-bg);
+  padding: 0.55rem 0.7rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.promptChip:hover {
+  border-color: var(--accent-primary);
+}
+
+.promptChip:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.promptTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.promptExample {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--text-secondary, #868e96);
+}
+
+.promptLink {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  margin-top: 0.1rem;
+}

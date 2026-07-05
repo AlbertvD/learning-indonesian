@@ -3617,6 +3617,37 @@ grant select, insert on indonesian.learner_reading_harvest to authenticated;
 revoke update, delete on indonesian.learner_reading_harvest from authenticated;
 grant all on indonesian.learner_reading_harvest to service_role;
 
+-- ── Word mnemonics: the stubborn-word memory-hook workshop ───────────────────
+-- docs/plans/2026-07-05-stubborn-word-mnemonic-workshop.md §5. One free-text
+-- association per (learner, source_ref) — word-level, shared across every
+-- capability of that word. Keyed by source_ref (not a learning_items uuid): it
+-- covers vocab/grammar/affix with one shape and is stable across content
+-- republishes (learning_items uuids are rewritten from staging on publish).
+create table if not exists indonesian.learner_word_mnemonics (
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  source_ref  text not null,          -- the stubborn item's identity (e.g. 'learning_items/pintar',
+                                       -- 'lesson-6/pattern/...') — the SAME key deriveStubbornWords emits
+  note        text not null check (char_length(note) between 1 and 1000),
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  primary key (user_id, source_ref)
+);
+-- No separate (user_id) index: the PK (user_id, source_ref) is a leftmost-prefix
+-- btree that already serves every `where user_id = auth.uid()` filter + the batch fetch.
+
+comment on column indonesian.learner_word_mnemonics.note is
+  'Learner-authored memory hook. May contain personal facts by design (self-reference prompt); cascade-deleted with the account.';
+
+alter table indonesian.learner_word_mnemonics enable row level security;
+
+drop policy if exists "word mnemonics owner all" on indonesian.learner_word_mnemonics;
+create policy "word mnemonics owner all"
+  on indonesian.learner_word_mnemonics for all to authenticated
+  using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+grant select, insert, update, delete on indonesian.learner_word_mnemonics to authenticated;
+grant all on indonesian.learner_word_mnemonics to service_role;
+
 -- ── Common Words: the hidden gap-word home lesson (spec §4.4) ────────────────
 -- Frequency words not in any coursebook lesson need a lesson home (ADR 0006:
 -- learning_capabilities.lesson_id is NOT NULL for non-podcast caps). A single

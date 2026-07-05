@@ -168,6 +168,7 @@ function renderPlayer(props: Parameters<typeof ExperiencePlayer>[0]) {
 
 const baseProps = {
   audioMap: new Map(),
+  mnemonicMap: new Map<string, string>(),
   userLanguage: 'nl' as const,
   onAnswer: vi.fn(async () => {}),
   onComplete: vi.fn(),

@@ -54,6 +54,25 @@ export interface ExerciseFeedbackProps {
   answerAudio?: { url: string }
   /** Rendered above the outcome badge when processReview threw. */
   commitFailed?: boolean
+  /** The word's saved mnemonic (design §6 case 1) — shown below the correct-answer
+   *  card. Text + label are both pre-resolved by the caller; this primitive never
+   *  imports i18n. */
+  mnemonic?: { text: string; label: string }
+  /** A create-a-mnemonic affordance for a note-less word (design §6 cases 2/3). The
+   *  `prominent` tier carries the full reframe copy (word tipped stubborn); `quiet`
+   *  is a single low-emphasis link (an earlier miss). All strings pre-resolved by
+   *  the caller. Rendered only together with `onCreateMnemonic`. */
+  mnemonicOffer?: {
+    tier: 'prominent' | 'quiet'
+    buttonLabel: string
+    title?: string
+    body?: string
+    expectancy?: string
+    dismissLabel?: string
+  }
+  /** Fired when the learner taps the create-a-mnemonic affordance. Callback-only —
+   *  this primitive never imports or mounts the mnemonics workshop itself. */
+  onCreateMnemonic?: () => void
   onContinue: () => void
   /** Bubbles audio_replayed etc. upstream to analytics. */
   onEvent?: (event: { type: string; payload?: Record<string, unknown> }) => void
@@ -122,11 +141,15 @@ export function ExerciseFeedback(props: ExerciseFeedbackProps) {
     promptShown, correctAnswer, userAnswer,
     acceptedVariants, meaning, explanation, audio, answerAudio,
     commitFailed = false,
+    mnemonic, mnemonicOffer, onCreateMnemonic,
     onContinue, onEvent, continueLabel, copy,
   } = props
 
   const continueRef = useRef<HTMLButtonElement>(null)
   const [continueReady, setContinueReady] = useState(false)
+  // "Niet nu" only hides the prominent offer for this one feedback screen — v1 has
+  // no persisted snooze (design §6); the next miss on this word re-offers.
+  const [mnemonicOfferDismissed, setMnemonicOfferDismissed] = useState(false)
 
   // Focus Continue on mount, but wait 400ms so the aria-live assertive
   // announcement fires first. Pointer-events:none for the same window to
@@ -293,6 +316,44 @@ export function ExerciseFeedback(props: ExerciseFeedbackProps) {
             )}
           </div>
         </>
+      )}
+
+      {/* Saved mnemonic (resurface) — below the correct-answer card, either layout
+          (design §6 case 1: a saved note always wins, shown on any wrong answer). */}
+      {mnemonic && (
+        <div className={classes.mnemonicCard}>
+          <div className={classes.cardLabel}>{mnemonic.label}</div>
+          <div className={classes.mnemonicText}>{mnemonic.text}</div>
+        </div>
+      )}
+
+      {/* Create-a-mnemonic affordance — no note yet (design §6 cases 2/3). Callback-
+          only: this primitive never imports or mounts the mnemonics workshop. */}
+      {mnemonicOffer && onCreateMnemonic && mnemonicOffer.tier === 'prominent' && !mnemonicOfferDismissed && (
+        <div className={classes.mnemonicOfferCard}>
+          {mnemonicOffer.title && <div className={classes.mnemonicOfferTitle}>{mnemonicOffer.title}</div>}
+          {mnemonicOffer.body && <div className={classes.mnemonicOfferBody}>{mnemonicOffer.body}</div>}
+          {mnemonicOffer.expectancy && <div className={classes.mnemonicOfferExpectancy}>{mnemonicOffer.expectancy}</div>}
+          <div className={classes.mnemonicOfferActions}>
+            <button type="button" className={classes.mnemonicOfferButton} onClick={onCreateMnemonic}>
+              {mnemonicOffer.buttonLabel}
+            </button>
+            {mnemonicOffer.dismissLabel && (
+              <button
+                type="button"
+                className={classes.mnemonicOfferDismiss}
+                onClick={() => setMnemonicOfferDismissed(true)}
+              >
+                {mnemonicOffer.dismissLabel}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+      {mnemonicOffer && onCreateMnemonic && mnemonicOffer.tier === 'quiet' && (
+        <button type="button" className={classes.mnemonicQuietLink} onClick={onCreateMnemonic}>
+          {mnemonicOffer.buttonLabel}
+        </button>
       )}
 
       {/* Meaning line — any layout that supplies one (grammar cards + dictation).

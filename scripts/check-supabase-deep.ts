@@ -56,6 +56,7 @@ const EXPECTED_TABLES = [
   'collection_items',
   'learner_collection_activation',
   'learner_reading_harvest',     // reader Phase 2 §4: tapped-word harvest membership
+  'learner_word_mnemonics',      // stubborn-word mnemonic workshop: one hook per (user, source_ref)
 ]
 
 // Expected grants: table → { role → privileges[] }
@@ -82,6 +83,8 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   // Reading harvest: owner-RLS, learner-writable DIRECTLY (membership row, not
   // capability state) — owner SELECT + INSERT, no UPDATE/DELETE (reader §4).
   learner_reading_harvest: { authenticated: ['SELECT', 'INSERT'] },
+  // Word mnemonics: owner-RLS, fully owner-editable (create/edit/delete your own hook).
+  learner_word_mnemonics: { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
 }
 
 // ── Fetch schema health report ─────────────────────────────────────────────

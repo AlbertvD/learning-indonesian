@@ -223,6 +223,95 @@
     color: var(--ex-fg);
   }
 
+  /* ── Mnemonic workshop surface (resurface / create) ────────────────────── */
+  .mnemonicCard {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: 1px solid var(--ex-card-border);
+    border-radius: var(--r-md);
+    background: var(--card-bg);
+    padding: 10px 12px;
+  }
+
+  .mnemonicText {
+    font-size: var(--ex-fs-body);
+    line-height: 1.5;
+    color: var(--ex-fg);
+  }
+
+  .mnemonicOfferCard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid var(--warning-border);
+    background: var(--warning-subtle);
+    border-radius: var(--r-md);
+    padding: 12px 14px;
+  }
+
+  .mnemonicOfferTitle {
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-md);
+    color: var(--ex-fg);
+  }
+
+  .mnemonicOfferBody {
+    font-size: var(--ex-fs-body);
+    line-height: 1.5;
+    color: var(--ex-fg);
+  }
+
+  .mnemonicOfferExpectancy {
+    font-size: var(--fs-sm);
+    font-style: italic;
+    color: var(--ex-fg-muted);
+  }
+
+  .mnemonicOfferActions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .mnemonicOfferButton {
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    background: var(--accent-primary);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--r-md);
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+
+  .mnemonicOfferButton:hover {
+    background: var(--accent-primary-dim);
+  }
+
+  .mnemonicOfferDismiss {
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    color: var(--ex-fg-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .mnemonicQuietLink {
+    align-self: flex-start;
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    color: var(--ex-fg-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
   /* ── Continue button host ──────────────────────────────────────────────── */
   .continueHost {
     opacity: 0;
@@ -274,7 +363,10 @@
     .meaningLine,
     .explanationCard,
     .continueHost,
-    .diffPair {
+    .diffPair,
+    .mnemonicCard,
+    .mnemonicOfferCard,
+    .mnemonicQuietLink {
       grid-column: 1 / -1;
     }
 
