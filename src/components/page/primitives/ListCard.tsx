@@ -26,10 +26,18 @@ import { IconChevronRight } from '@tabler/icons-react'
 import { cx } from './cx'
 import classes from './ListCard.module.css'
 
+/**
+ * Medallion tint, drawn from the brand ramp (main.tsx tokens). `accent` is the
+ * default tamarind every existing caller already gets; the others let a hub of
+ * sibling destinations carry per-surface identity without leaving the palette.
+ */
+export type ListCardTone = 'accent' | 'gold' | 'teal' | 'sage' | 'rail'
+
 export interface ListCardProps {
   /**
    * Left-side icon. Pre-sized by the caller — ListCard does not resize the
-   * icon itself; it only centers it inside a 36×36 accented square.
+   * icon itself; it only centers it inside the accented square (36×36 by
+   * default, 48×48 under `feature`).
    */
   icon: ReactNode
   /** Primary label. Rendered as the title line. */
@@ -48,9 +56,20 @@ export interface ListCardProps {
    * If omitted, the root renders as a plain <div>.
    */
   to?: string
+  /**
+   * Medallion hue. Defaults to `accent` (tamarind) so every existing caller
+   * is unchanged; hubs pass a per-surface tone for identity within the palette.
+   */
+  tone?: ListCardTone
+  /**
+   * Feature variant: a roomier card with a 48×48 medallion and a display-serif
+   * title. Use for hub / launcher rows that lead a page; leave off for dense
+   * lists where the compact 36×36 row is the right density.
+   */
+  feature?: boolean
 }
 
-export function ListCard({ icon, title, subtitle, trailing, to }: ListCardProps) {
+export function ListCard({ icon, title, subtitle, trailing, to, tone = 'accent', feature = false }: ListCardProps) {
   const content = (
     <>
       <div className={cx(classes.icon)}>{icon}</div>
@@ -64,13 +83,15 @@ export function ListCard({ icon, title, subtitle, trailing, to }: ListCardProps)
     </>
   )
 
+  const rootClass = cx(classes.root, feature && classes.feature)
+
   if (to !== undefined) {
     return (
-      <Link to={to} className={cx(classes.root)}>
+      <Link to={to} className={rootClass} data-tone={tone}>
         {content}
       </Link>
     )
   }
 
-  return <div className={cx(classes.root)}>{content}</div>
+  return <div className={rootClass} data-tone={tone}>{content}</div>
 }

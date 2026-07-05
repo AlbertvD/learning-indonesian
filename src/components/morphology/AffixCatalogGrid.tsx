@@ -8,11 +8,14 @@ import { LessonCard } from '@/components/lessons/LessonCard'
 import { useT } from '@/hooks/useT'
 import type { AffixCatalogTile, AffixType } from '@/lib/morphology'
 
+// Affix-type banners drawn from the brand ramp (tamarind / teal / gold /
+// batik-green) — each type keeps a distinct hue, but all four stay in the
+// warm-editorial palette instead of the former off-brand indigo/purple/sky set.
 const TYPE_GRADIENT: Record<AffixType, string> = {
-  prefix: 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)',
-  suffix: 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)',
-  confix: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-  reduplication: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+  prefix: 'linear-gradient(135deg, #C64A26 0%, #8A3117 100%)',        // tamarind
+  suffix: 'linear-gradient(135deg, #17867F 0%, #0C5A55 100%)',        // teal
+  confix: 'linear-gradient(135deg, #B4862F 0%, #7E5F1E 100%)',        // gold
+  reduplication: 'linear-gradient(135deg, #3A6A5C 0%, #1F3D36 100%)', // batik green
 }
 
 type Tone = 'success' | 'warning' | 'danger' | 'accent' | 'neutral'

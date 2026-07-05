@@ -1,7 +1,12 @@
-/* LerenNav — the persistent desktop switcher row for the four Leren surfaces.
-   Desktop-only: on mobile the surfaces are a hub (Lessons.tsx) and each trainer
-   shows a back link instead. The card visuals match the former in-page type
-   cards (moved here from Lessons.module.css). */
+/* bespoke-css-ok: the shared hub-switcher chrome, extracted from the former
+   LerenNav.module.css so the Leren and Ontdek section navs render from ONE
+   definition instead of duplicating it. These are nav tabs (a switcher row +
+   a mobile back link), not per-page content cards — the page-primitive card
+   family doesn't model a switcher. */
+
+/* SurfaceNav — the persistent desktop switcher row for a hub's surfaces
+   (Leren: 4 surfaces; Ontdek: 2). Desktop-only: on mobile the surfaces are a
+   hub landing and each destination shows the back link below instead. */
 
 .nav {
   display: none;
@@ -10,13 +15,14 @@
 @media (min-width: 769px) {
   .nav {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
     gap: 0.6rem;
     margin: 0.25rem 0 1.25rem;
   }
 }
 
-.card {
+.tab {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,15 +39,15 @@
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 }
 
-.card:active {
+.tab:active {
   transform: scale(0.98);
 }
 
-.card:hover {
+.tab:hover {
   background: var(--accent-primary-subtle);
 }
 
-.cardActive {
+.tabActive {
   border-color: var(--accent-primary, #4dabf7);
   background: var(--accent-primary-subtle);
   color: var(--accent-primary, #4dabf7);

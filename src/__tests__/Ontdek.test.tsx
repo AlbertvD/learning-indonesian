@@ -1,9 +1,13 @@
 // src/__tests__/Ontdek.test.tsx
 //
-// Desktop program slice 4: the Discover hub's two entries became featured
-// showcase cards. The page's behavior contract is small and must survive the
-// visual rebuild: both destinations link out correctly, and visiting the page
-// still sets the first-run checklist step-③ flag (slice 3 relies on it).
+// The Discover hub's two entries are the shared hub card (ListCard `feature`).
+// The page's behavior contract is small and must survive the visual rebuild:
+// both destinations link out correctly, and visiting the page still sets the
+// first-run checklist step-③ flag (slice 3 relies on it).
+//
+// The two-card hub is the MOBILE landing; on desktop the page lands on its first
+// surface (Podcasts) with the persistent switcher instead. We pin useMediaQuery
+// to mobile so this exercises the hub itself.
 
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
@@ -17,6 +21,13 @@ vi.mock('@/stores/authStore', () => {
   const useAuthStore: any = (selector?: (s: any) => any) => (selector ? selector(state) : state)
   useAuthStore.getState = () => state
   return { useAuthStore }
+})
+
+// Pin the viewport to mobile so <Ontdek/> renders the two-card hub (its mobile
+// landing) rather than delegating to <Podcasts/> on desktop.
+vi.mock('@mantine/hooks', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@mantine/hooks')>()
+  return { ...actual, useMediaQuery: () => true }
 })
 
 function renderOntdek() {

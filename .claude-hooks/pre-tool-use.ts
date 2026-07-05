@@ -7,6 +7,7 @@
  * 3. Destructive git operations
  * 4. Portainer API redeployments (wipes UI-managed env vars)
  * 5. Edit/Write/MultiEdit without a prior Read of the same file
+ * 6. Bespoke card CSS in a page/component module (reuse page/primitives instead)
  */
 
 import { readFile, realpath, stat } from "node:fs/promises";
@@ -217,6 +218,72 @@ export function checkInfraRedeploy(command: string): CheckResult {
 	return ALLOWED;
 }
 
+/**
+ * Blocks hand-rolled card chrome in a page/component CSS module. The page
+ * framework (`src/components/page/primitives/`: ListCard, MediaShowcaseCard,
+ * ActionCard, StatCard, HeroCard) owns card surface + tone tints + hover; a
+ * page that reconstructs `--card-bg` + `border-radius` (or names a `.*card` /
+ * `.*tile` class) is re-inventing a primitive. This is the guardrail behind
+ * feedback_ui_default_to_existing_framework — the 2026-07-05 `.hubCard` miss.
+ *
+ * NOT a hard wall: an added `bespoke-css-ok: <reason>` comment in the same edit
+ * satisfies it, so a genuinely-justified bespoke case is a conscious, written
+ * decision rather than a silent one. Primitives themselves are exempt (that IS
+ * where card chrome belongs).
+ */
+export function checkBespokeCardCss(
+	toolName: string,
+	toolInput: Record<string, unknown>,
+): CheckResult {
+	if (toolName !== "Edit" && toolName !== "MultiEdit" && toolName !== "Write") {
+		return ALLOWED;
+	}
+
+	const filePath = typeof toolInput.file_path === "string" ? toolInput.file_path : "";
+	if (!filePath.endsWith(".module.css")) return ALLOWED;
+	if (!filePath.includes("/src/")) return ALLOWED;
+	// Primitives are the sanctioned home for reusable card chrome.
+	if (filePath.includes("/primitives/")) return ALLOWED;
+
+	// The text this edit is ADDING (Write.content / Edit.new_string / all
+	// MultiEdit new_strings). We only judge what's being introduced.
+	let added = "";
+	if (toolName === "Write") {
+		added = typeof toolInput.content === "string" ? toolInput.content : "";
+	} else if (toolName === "Edit") {
+		added = typeof toolInput.new_string === "string" ? toolInput.new_string : "";
+	} else if (Array.isArray(toolInput.edits)) {
+		added = (toolInput.edits as Array<Record<string, unknown>>)
+			.map((e) => (typeof e.new_string === "string" ? e.new_string : ""))
+			.join("\n");
+	}
+	if (!added.trim()) return ALLOWED;
+
+	// Explicit, written escape hatch — a justified bespoke case is allowed.
+	if (/bespoke-css-ok/i.test(added)) return ALLOWED;
+
+	// Signal A: a class selector named like a card/tile.
+	const namesACard = /\.[A-Za-z0-9_-]*(card|tile)\b/i.test(added);
+	// Signal B: the card-surface fingerprint — card token + a radius together.
+	const hasCardToken = /var\(--card-(bg|border|hover)/.test(added);
+	const hasRadius = /border-radius\s*:/.test(added);
+	const rebuildsCardChrome = hasCardToken && hasRadius;
+
+	if (namesACard || rebuildsCardChrome) {
+		return {
+			blocked: true,
+			message:
+				`Bespoke card CSS in ${filePath} blocked. The page framework ` +
+				"(src/components/page/primitives/ — ListCard, MediaShowcaseCard, ActionCard, " +
+				"StatCard, HeroCard) already owns card surface, tone tints, and hover. Reuse a " +
+				"primitive and add an additive prop/variant if it's missing something, instead of " +
+				"reconstructing card chrome in a page module (see feedback_ui_default_to_existing_framework). " +
+				"If this genuinely isn't a card, add a `/* bespoke-css-ok: <reason> */` comment to the edit to proceed.",
+		};
+	}
+	return ALLOWED;
+}
+
 async function main(): Promise<void> {
 	const inputData = await readStdinJson();
 
@@ -262,6 +329,9 @@ async function main(): Promise<void> {
 
 	const readBeforeEditResult = await checkReadBeforeEdit(toolName, toolInput, transcriptPath);
 	if (readBeforeEditResult.blocked) block(readBeforeEditResult.message);
+
+	const bespokeCardResult = checkBespokeCardCss(toolName, toolInput);
+	if (bespokeCardResult.blocked) block(bespokeCardResult.message);
 
 	await appendLog(LOG_FILE, event);
 	await rotateIfNeeded(LOG_FILE);

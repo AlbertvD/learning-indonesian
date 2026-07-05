@@ -28,7 +28,7 @@ export function AffixDetailView({ detail }: { detail: AffixDetail }) {
         <div>
           <Group gap={8} align="center">
             <Title order={2}>{detail.affix}</Title>
-            <Badge variant="light" color="indigo">{detail.affixType}</Badge>
+            <Badge variant="light" color="tamarind">{detail.affixType}</Badge>
           </Group>
           <Text c="dimmed">{detail.gloss}</Text>
         </div>
