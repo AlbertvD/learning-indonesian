@@ -115,3 +115,45 @@ Each tags evidence: **[local]** already-settled, **[web]** new this pass, **[bot
 - `[extracted, not re-verified 2026-07-05]`: Nelson & Leonesio 1988 labor-in-vain (PubMed 2972804); self-generated sentences beat supplied d=0.73 (PMC10873923); Wyra, Lawson & Hungi 2007 bidirectional keyword training + imagery-ability predictor (ScienceDirect S0959475207000357); low-concreteness predicts lower L2 knowledge (Cambridge BLC); Wang/Thomas/Ouellette long-delay keyword forgetting controversy.
 
 _All web claims came from the 2026-07-05 deep-research fan-out (5 angles, 14 primary sources, 66 extracted claims → top 25). The workflow's automated verification pass failed on a rate-limit; the eight load-bearing findings above were re-verified by hand against the primary source. No Indonesian-specific mnemonic study exists — findings are L2-general, with the van Hell and Frontiers studies notable for using **Dutch-L1** learners specifically._
+
+---
+
+## Appendix — Full extracted-claim ledger (evidence trail)
+
+The complete set of claims the deep-research pass extracted, preserved here so the full evidence trail is durable (the raw workflow transcript was session-temporary). `✓` = re-verified by hand against the primary source on 2026-07-05; `~` = extracted from the source but not independently re-fetched this pass (plausible, cited for completeness). Effect sizes are as reported in the source.
+
+**A1 — Keyword mnemonic: meta-analytic verdict + boundary conditions**
+- ✓ Campos et al. 2004 (363 high-schoolers, Latin): keyword advantage over rote was **confined to high-imageability/high-vividness words** — "for low-vividness words, learning method had no significant effect." `pubmed.ncbi.nlm.nih.gov/15114905`
+- ✓ Campos 2004: **peer-generated keywords beat both experimenter-supplied and self-generated** for high-vividness words — self-generated did *not* beat a well-chosen supplied keyword. `15114905`
+- ✓ van Hell & Candia Mahn 1997 (Dutch-L1→Spanish; English-L1→Dutch): among **experienced** learners **rote *outperformed* keyword**; among inexperienced, equal recall but **keyword had longer retrieval latencies** + questions about lexical-representation quality. `Language Learning 47:507–546` (abstract + secondary)
+- ~ Wang/Thomas/Ouellette long-delay **accelerated-forgetting** controversy for the keyword method (flagged, not re-verified; reconciled by the "scaffold that fades" framing).
+
+**A2 — Keyword + retrieval practice, combined (the mechanism)**
+- ✓ Zhou et al. (110 Chinese undergrads, 20 Eng-Chinese pairs, 2 test trials): final-test means — restudy 6.46, plain test-test 4.64, **supplied-keyword+test 9.29 (d=1.17 vs plain retrieval), self-generated-keyword+test 11.39 (d=1.91)**. `PMC10839596`
+- ✓ Zhou: mechanism = lifting **first-retrieval success over the ~50% testing-effect threshold** — plain 25.36%, supplied-keyword 42.86%, self-generated 59.30%. `PMC10839596`
+- ✓ Zhou: self-generated numerically > supplied on the final test (11.39 vs 9.29) but **not significant (p=.179)**; underpowered (n≈28/cell). College learners "could independently identify effective keywords." `PMC10839596`
+
+**A3 — Learner-generated vs supplied, incl. AI**
+- ✓ SMART (Balepur et al., EMNLP 2024): fine-tuned LLaMA-2 mnemonic generator **judged by experts to match GPT-4** at far lower cost. `aclanthology.org/2024.emnlp-main.786`
+- ✓ SMART: **expressed preference (ratings) diverged from observed learning outcomes** — "what students *think* is helpful does not always capture what is *truly* helpful." `aclanthology.org/2024.emnlp-main.786`
+- ✓ LLM keyword mnemonics rate **comparable to human-generated** on imageability/coherence/usefulness (automated + human eval). `arXiv 2409.13952`
+- ~ Overgenerate-and-rank pipeline (LLM produces many cues → rank by psycholinguistic measures) is viable at scale. `arXiv 2409.13952`
+- ~ Self-generated **contextual sentences** beat supplied example sentences (EFL n=26; mean diff 3.42, t(25)=3.72, p=.001, **d=0.73**); authors recommend learners construct their own contexts. `PMC10873923`
+- ~ Wyra, Lawson & Hungi 2007 (not "Beaton"): training **bidirectional retrieval** through the keyword mediator improved recall over the standard keyword procedure; **self-rated imagery ability predicts** keyword-method recall. `ScienceDirect S0959475207000357` (abstract only)
+
+**A4 — Mediator resurfacing / cue timing**
+- ✓ Pyc & Rawson 2010 **mediator-effectiveness hypothesis**: a mediator aids final recall only if (a) retrievable from the cue AND (b) it elicits the target; test-restudy produced mediators more likely on both counts than restudy (retrieval group "more than twice as likely to correctly recall the target"). `science.org/10.1126/science.1191465` (paywalled; via citing PMC10839596 + secondary)
+- ✓ Kornell & Vaughn 2016 **two-stage account**: Stage 1 (retrieval attempt) potentiates Stage 2 (processing the answer when it appears); **unsuccessful retrieval enhances learning IF feedback follows**. `Kornell.Vaughn.2016` (review summary; PDF 403)
+- ~ The pretesting/failed-retrieval benefit **shrinks toward zero for semantically unrelated cue–target pairs** (the FL-word-pair analog) — attribution nuanced (Grimaldi & Karpicke pole); treat as a gradient. A semantic mediator manufactures the missing relation. `Kornell.Vaughn.2016`
+
+**A5 — Why words become stubborn + item-difficulty predictors**
+- ~ Nelson & Leonesio 1988 **labor-in-vain**: large increases in self-paced study time on the hardest items yield little/no recall gain. `pubmed.ncbi.nlm.nih.gov/2972804`
+- ~ **Low word concreteness** independently predicts lower probability of knowing an L2 word (≈63% higher knowing-probability per unit on the Brysbaert 1–5 scale). `Cambridge, Bilingualism: Language & Cognition` (word-level-variables paper)
+- ~ L1-influence model of what makes an L2 word hard to learn (orthographic/phonological/semantic distance from L1). `arXiv 2605.12281`
+
+**A6 — Other encoding interventions (ranked)**
+- ✓ **Self-reference** (learner writes a sentence linking the word to their own life): Hebrew-L1→rare English words — **30.3% vs 14.3% immediate (d=0.71); 17.0% vs 10.2% at 1 week (d=0.52)** vs translation practice. `PMC12426137`
+- ✓ **Contrasting confusable words** (Dutch-L1 children→English): contrasted similar words recalled **33% vs 27%**, held at 1-week retention; desirable-difficulty pattern (learning-phase accuracy **61% vs 69%**); mechanism = selective attention to distinctive features. **Limit: only *skilled* readers benefited.** `Frontiers in Psychology 10.3389/fpsyg.2021.688160`
+- Also in scope (from the local spine, not re-fetched this pass): dual-coding/imagery d≈0.4–0.7 (Paivio; `memory/research_audio_sla.md`), the drawing effect (Wammes — robust in L1, thin L2 evidence), morphological deconstruction (app-native via the Affix Trainer), phonological anchoring (the keyword's sound-alike).
+
+**Two of the 14 fetched sources whose specific claims fell outside the top-25 ranked set** (kept for completeness): `journals.sagepub.com/10.1080/17470218.2015.1094494` and the L1-influence model above.
