@@ -1,6 +1,15 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #372
+merged_at: 2026-07-05
+implementation_paths:
+  - src/lib/mnemonics/
+  - src/components/mnemonics/MnemonicWorkshop.tsx
+  - src/components/experience/ExperiencePlayer.tsx
+  - src/components/exercises/primitives/ExerciseFeedback.tsx
+  - src/components/progress/StubbornWordsCard.tsx
+  - src/pages/Session.tsx
+  - scripts/migration.sql (indonesian.learner_word_mnemonics)
 reviewed_by: [staff-engineer, architect, data-architect]
 supersedes: []
 ---
