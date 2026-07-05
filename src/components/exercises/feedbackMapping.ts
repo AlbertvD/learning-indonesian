@@ -46,14 +46,22 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
 
   switch (item.exerciseType) {
     case 'choose_meaning_ex': {
-      // ID → L1 MCQ
-      const base = item.learningItem?.base_text ?? ''
+      // ID → L1 MCQ. The ADR-0021 morphology meaning card carries no learningItem
+      // or meanings — its prompt (the derived form) and correct gloss live in
+      // cuedRecallData, exactly as RecognitionMCQ renders it (its `isAffixed`
+      // path). Mirror that here, otherwise a wrong answer collapses both fields to
+      // '' and the feedback card renders blank.
+      const isAffixed = !item.learningItem && !!item.cuedRecallData
+      const base = isAffixed
+        ? (item.cuedRecallData?.promptMeaningText ?? '')
+        : (item.learningItem?.base_text ?? '')
+      const correctText = isAffixed ? (item.cuedRecallData?.correctOptionId ?? '') : L1Text
       return {
         outcome,
         layout: 'vocab-pair',
         direction: 'ID→L1',
         promptShown: { text: base, lang: 'ID', role: 'shown' },
-        correctAnswer: { text: L1Text, lang: L1, role: 'target' },
+        correctAnswer: { text: correctText, lang: L1, role: 'target' },
         userAnswer: response ? { text: response, lang: L1, role: 'picked' } : undefined,
         acceptedVariants,
         commitFailed,
