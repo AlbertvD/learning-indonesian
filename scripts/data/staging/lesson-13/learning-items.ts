@@ -407,7 +407,7 @@ export const learningItems = [
     "base_text": "mau tidak mau",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
-    "translation_nl": "of je wilt / niet",
+    "translation_nl": "goedschiks of kwaadschiks",
     "translation_en": "",
     "source_page": 4,
     "review_status": "pending_review",

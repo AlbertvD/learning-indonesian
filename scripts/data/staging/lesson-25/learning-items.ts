@@ -409,7 +409,7 @@ export const learningItems = [
     "base_text": "walaupun demikian",
     "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "alhoewel dat zo is",
+    "translation_nl": "desondanks",
     "translation_en": "",
     "source_page": 2,
     "review_status": "pending_review",

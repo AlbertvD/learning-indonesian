@@ -467,7 +467,7 @@ export const learningItems = [
     "base_text": "surat kilat khusus",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
-    "translation_nl": "extra snelle expresse brief",
+    "translation_nl": "expresbrief",
     "translation_en": "",
     "source_page": 4,
     "review_status": "pending_review",

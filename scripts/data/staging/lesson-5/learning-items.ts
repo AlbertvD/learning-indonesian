@@ -80,7 +80,7 @@ export const learningItems = [
   {
     "base_text": "belajar",
     "item_type": "word",
-    "translation_nl": "leren (zie ook Les 11)",
+    "translation_nl": "leren",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -344,7 +344,7 @@ export const learningItems = [
   {
     "base_text": "pembantu",
     "item_type": "word",
-    "translation_nl": "hulp in de huishouding",
+    "translation_nl": "huishoudelijke hulp",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -443,7 +443,7 @@ export const learningItems = [
   {
     "base_text": "setrop susu",
     "item_type": "word",
-    "translation_nl": "zoet drankje (melk met siroop)",
+    "translation_nl": "melk met siroop",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -487,7 +487,7 @@ export const learningItems = [
   {
     "base_text": "Taman Mini",
     "item_type": "word",
-    "translation_nl": "Klein Indonesie - park met traditionele Indonesische gebouwen in Jakarta",
+    "translation_nl": "themapark Jakarta",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",

@@ -505,7 +505,7 @@ export const learningItems = [
     "base_text": "Senja Utama",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
-    "translation_nl": "naam van de sneltrein op het traject Jakarta-Yogyakarta vice versa",
+    "translation_nl": "sneltrein Jakarta-Yogya",
     "translation_en": "",
     "source_page": 2,
     "review_status": "pending_review",

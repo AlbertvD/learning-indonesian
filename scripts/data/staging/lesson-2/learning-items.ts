@@ -47,7 +47,7 @@ export const learningItems = [
   {
     "base_text": "ekor",
     "item_type": "word",
-    "translation_nl": "staart(classificeerwoord)",
+    "translation_nl": "staart",
     "context_type": "vocabulary_list",
     "source_page": 2,
     "review_status": "published",

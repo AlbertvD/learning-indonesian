@@ -374,7 +374,7 @@ export const learningItems = [
     "base_text": "si",
     "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "de (persoonlijk lidwoord)",
+    "translation_nl": "de",
     "translation_en": "",
     "source_page": 2,
     "review_status": "pending_review",

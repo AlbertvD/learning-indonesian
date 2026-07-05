@@ -629,7 +629,7 @@ export const learningItems = [
     "base_text": "sebaiknya",
     "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "'t is beter dat",
+    "translation_nl": "het is beter",
     "translation_en": "",
     "source_page": 4,
     "review_status": "published",
