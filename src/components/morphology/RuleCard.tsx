@@ -29,7 +29,7 @@ export function RuleCard({ detail }: { detail: AffixDetail }) {
             <Text size="sm" fw={600} c="dimmed" mb={4}>{T.morphology.allomorphsTitle}</Text>
             <Group gap={6}>
               {detail.allomorphClasses.map((cls) => (
-                <Badge key={cls} variant="outline" color="indigo">{cls}-</Badge>
+                <Badge key={cls} variant="outline" color="tamarind">{cls}-</Badge>
               ))}
             </Group>
           </div>

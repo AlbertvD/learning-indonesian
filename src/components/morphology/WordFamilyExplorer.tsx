@@ -61,8 +61,8 @@ export function WordFamilyExplorer({ families, affix }: { families: WordFamily[]
                       <Tooltip label={form.label.replace('_', ' ')} withArrow>
                         <Badge size="xs" circle color={LABEL_COLOR[form.label]} />
                       </Tooltip>
-                      <Text size="sm" fw={isCurrent ? 700 : 500} c={isCurrent ? 'indigo' : undefined}>{form.derivedText}</Text>
-                      <Badge size="xs" variant={isCurrent ? 'filled' : 'outline'} color={isCurrent ? 'indigo' : 'gray'}>{form.affix}</Badge>
+                      <Text size="sm" fw={isCurrent ? 700 : 500} c={isCurrent ? 'var(--accent-primary)' : undefined}>{form.derivedText}</Text>
+                      <Badge size="xs" variant={isCurrent ? 'filled' : 'outline'} color={isCurrent ? 'tamarind' : 'gray'}>{form.affix}</Badge>
                       {form.derivedMeaning && (
                         <Text size="xs" c="dimmed">{form.derivedMeaning}</Text>
                       )}
