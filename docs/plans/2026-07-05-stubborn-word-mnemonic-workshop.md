@@ -1,5 +1,6 @@
 ---
-status: approved
+status: implementing
+implementation: PR #372
 reviewed_by: [staff-engineer, architect, data-architect]
 supersedes: []
 ---
