@@ -1,7 +1,7 @@
 ---
 doc_type: process
 surface: .github/workflows/, homelab container management
-last_verified_against_code: 2026-06-08
+last_verified_against_code: 2026-07-05
 status: stable
 ---
 
