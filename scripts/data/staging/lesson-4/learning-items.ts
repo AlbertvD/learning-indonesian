@@ -289,7 +289,7 @@ export const learningItems = [
   {
     "base_text": "suka",
     "item_type": "word",
-    "translation_nl": "houden van (lekker vinden)",
+    "translation_nl": "houden van",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -344,7 +344,7 @@ export const learningItems = [
   {
     "base_text": "nasi goreng",
     "item_type": "phrase",
-    "translation_nl": "gekookte rijst, daarna met kruiden gebakken",
+    "translation_nl": "gebakken rijst",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -366,7 +366,7 @@ export const learningItems = [
   {
     "base_text": "kopi tubruk",
     "item_type": "phrase",
-    "translation_nl": "zwarte koffie met suiker",
+    "translation_nl": "zwarte koffie",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -580,7 +580,7 @@ export const learningItems = [
   {
     "base_text": "nasi kuning",
     "item_type": "phrase",
-    "translation_nl": "met kruiden geel gekookte rijst",
+    "translation_nl": "gele rijst",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -1008,7 +1008,7 @@ export const learningItems = [
   {
     "base_text": "padi",
     "item_type": "word",
-    "translation_nl": "rijstplant",
+    "translation_nl": "rijst(plant)",
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
@@ -1118,7 +1118,7 @@ export const learningItems = [
   {
     "base_text": "sambal",
     "item_type": "word",
-    "translation_nl": "pasta van Spaanse pepers",
+    "translation_nl": "chilipasta",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",

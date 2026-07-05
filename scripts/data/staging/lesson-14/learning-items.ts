@@ -184,7 +184,7 @@ export const learningItems = [
     "base_text": "Lebaran",
     "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "feestdag aan einde van de vasten",
+    "translation_nl": "Suikerfeest",
     "translation_en": "",
     "source_page": 2,
     "review_status": "pending_review",

@@ -433,7 +433,7 @@ export const learningItems = [
     "base_text": "sedang",
     "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "bezig te … (iets aan het doen zijn)",
+    "translation_nl": "bezig (te)",
     "translation_en": "busy doing",
     "source_page": 4,
     "review_status": "published",

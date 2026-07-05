@@ -425,7 +425,7 @@ export const learningItems = [
     "base_text": "ada baiknya",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
-    "translation_nl": "het is beter dat ...",
+    "translation_nl": "het is beter",
     "translation_en": "",
     "source_page": 2,
     "review_status": "pending_review",

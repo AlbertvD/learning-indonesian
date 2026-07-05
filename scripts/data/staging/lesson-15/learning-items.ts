@@ -114,7 +114,7 @@ export const learningItems = [
     "base_text": "Ki",
     "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "titel voor wijze man",
+    "translation_nl": "wijze",
     "translation_en": "",
     "source_page": 4,
     "review_status": "pending_review",

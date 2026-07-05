@@ -124,7 +124,7 @@ export const learningItems = [
   {
     "base_text": "naik bus",
     "item_type": "phrase",
-    "translation_nl": "met de bus gaan",
+    "translation_nl": "de bus nemen",
     "context_type": "lesson_snippet",
     "source_page": 3,
     "review_status": "published",
@@ -377,7 +377,7 @@ export const learningItems = [
   {
     "base_text": "naik mobil",
     "item_type": "phrase",
-    "translation_nl": "met de auto gaan",
+    "translation_nl": "de auto nemen",
     "context_type": "lesson_snippet",
     "source_page": 3,
     "review_status": "published",
@@ -685,7 +685,7 @@ export const learningItems = [
   {
     "base_text": "naik sepeda",
     "item_type": "phrase",
-    "translation_nl": "met de fiets gaan",
+    "translation_nl": "de fiets nemen",
     "context_type": "lesson_snippet",
     "source_page": 3,
     "review_status": "published",
