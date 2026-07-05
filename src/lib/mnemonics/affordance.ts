@@ -42,27 +42,29 @@ export function resolveMnemonicAffordance(input: ResolveMnemonicAffordanceInput)
 
   if (input.note) return { kind: 'resurface', note: input.note }
 
+  // The evidence is the session-BUILD-time schedule snapshot (capabilityReviewProcessor):
+  // it does NOT include the wrong answer the learner just gave. Count that answer — their
+  // real consecutive-failure streak is one higher. Without this, a word's FIRST miss in a
+  // session (snapshot streak 0) offered nothing at all, so a plain "I got it wrong" never
+  // surfaced the create option (owner-reported 2026-07-05).
+  const streak = input.evidence.consecutiveFailureCount + 1
+  const adjusted: MnemonicGateEvidence = { ...input.evidence, consecutiveFailureCount: streak }
+
   // isStubborn() only reads lapseCount/reviewCount/consecutiveFailureCount, so a
   // MnemonicGateEvidence value structurally satisfies it despite being a strict
   // subset of CapabilityMasteryEvidence's required fields — the cast is safe.
-  if (isStubborn(input.evidence as CapabilityMasteryEvidence)) {
+  if (isStubborn(adjusted as CapabilityMasteryEvidence)) {
     return {
       kind: 'offer',
       tier: 'prominent',
       sourceRef: input.sourceRef,
-      failureCount: input.evidence.consecutiveFailureCount,
+      failureCount: streak,
     }
   }
 
-  // An earlier miss (1-3 consecutive failures) on a word with no note yet: the
-  // quiet, no-reframe affordance (design §6 case 3 / §6a A'). Also fires for a
-  // genuinely-lapsed word (lapseCount > 0) that isn't yet re-flagged stubborn by
-  // isStubborn's own gate — deliberately: never suppress the ability to start a
-  // hook, just withhold the alarmist "not on you, {n}x" framing from a word that
-  // has a retention history rather than a pure acquisition failure.
-  if (input.evidence.consecutiveFailureCount >= 1) {
-    return { kind: 'offer', tier: 'quiet', sourceRef: input.sourceRef }
-  }
-
-  return { kind: 'none' }
+  // Any other wrong answer on a note-less word → the quiet, no-reframe opt-in (design §6
+  // case 3 / §6a A'). This includes a genuinely-lapsed word (lapseCount > 0) that isStubborn
+  // rules out — deliberately: never suppress the ability to start a hook, just withhold the
+  // alarmist "not on you, {n}x" framing from a retention failure rather than an acquisition one.
+  return { kind: 'offer', tier: 'quiet', sourceRef: input.sourceRef }
 }

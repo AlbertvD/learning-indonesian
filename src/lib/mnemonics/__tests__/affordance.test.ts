@@ -29,34 +29,36 @@ describe('resolveMnemonicAffordance', () => {
     expect(result).toEqual({ kind: 'resurface', note: 'schilder die heel slim is' })
   })
 
-  it('offers the prominent create affordance once the word is genuinely stubborn', () => {
+  it('offers the prominent create affordance on the miss that REACHES stubborn (snapshot 3 + this = 4)', () => {
     const result = resolveMnemonicAffordance({
       sourceRef: SOURCE_REF,
       note: undefined,
-      evidence: evidence({ consecutiveFailureCount: 4 }),
+      // Build-time snapshot shows 3 prior consecutive failures; the current wrong answer
+      // makes it the 4th → stubborn. failureCount reflects the streak INCLUDING this miss.
+      evidence: evidence({ consecutiveFailureCount: 3 }),
       outcome: 'wrong',
     })
     expect(result).toEqual({ kind: 'offer', tier: 'prominent', sourceRef: SOURCE_REF, failureCount: 4 })
   })
 
-  it('offers the quiet create affordance on an earlier miss (1-3 consecutive failures)', () => {
+  it('offers the quiet create affordance on an earlier miss (below the stubborn threshold)', () => {
     const result = resolveMnemonicAffordance({
       sourceRef: SOURCE_REF,
       note: undefined,
-      evidence: evidence({ consecutiveFailureCount: 2 }),
+      evidence: evidence({ consecutiveFailureCount: 2 }), // +1 = 3, still < 4
       outcome: 'wrong',
     })
     expect(result).toEqual({ kind: 'offer', tier: 'quiet', sourceRef: SOURCE_REF })
   })
 
-  it('shows nothing for a fresh miss not yet reflected in the build-time evidence', () => {
+  it('counts the just-made wrong answer: a FIRST miss (snapshot streak 0) still offers the quiet link', () => {
     const result = resolveMnemonicAffordance({
       sourceRef: SOURCE_REF,
       note: undefined,
       evidence: evidence({ consecutiveFailureCount: 0 }),
       outcome: 'wrong',
     })
-    expect(result).toEqual({ kind: 'none' })
+    expect(result).toEqual({ kind: 'offer', tier: 'quiet', sourceRef: SOURCE_REF })
   })
 
   it('never gives a lapsed word the prominent (acquisition-framed) offer, even at >=4 failures', () => {
