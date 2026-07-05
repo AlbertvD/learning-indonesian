@@ -76,11 +76,26 @@ export function buildRecognitionMCQ(input: BuilderInputFor<'choose_meaning_ex'>)
     ? (input.curatedRecognitionDistractors.get(capabilityId) ?? null)
     : null
 
-  let distractors: string[]
+  let distractors: string[] | undefined
   if (curatedRow && curatedRow.length >= 3) {
-    // Curated path: use exactly 3 curated NL wrong-option strings.
-    distractors = curatedRow.slice(0, 3)
-  } else {
+    // Curated path: exclude the correct answer and de-dupe (normalized) before
+    // taking 3. Two items can share one NL gloss, so a raw slice(0,3) can repeat
+    // the answer or another distractor (owner flags "Two times the same choice" /
+    // "Duplicate"). If a malformed row de-dupes below 3, fall through to the pool
+    // path rather than render duplicates — the content defect is caught at seed
+    // time by the curated-distractor validators, not the learner's session.
+    const norm = (s: string) => s.trim().toLowerCase()
+    const answerNorm = norm(correctAnswer)
+    const seen = new Set<string>()
+    const cleaned = curatedRow.filter(d => {
+      const n = norm(d)
+      if (n === answerNorm || seen.has(n)) return false
+      seen.add(n)
+      return true
+    })
+    if (cleaned.length >= 3) distractors = cleaned.slice(0, 3)
+  }
+  if (!distractors) {
     // Pool fallback path (unchanged behaviour from before Task 8).
     const pool: DistractorCandidate[] = input.poolItems
       .filter(i => i.id !== learningItem.id)
