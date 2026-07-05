@@ -18,14 +18,16 @@ import {
   IconListCheck,
   IconChevronDown,
 } from '@tabler/icons-react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { useMediaQuery } from '@mantine/hooks'
 import {
   PageContainer,
   PageBody,
   PageHeader,
   LoadingState,
+  ListCard,
 } from '@/components/page/primitives'
+import { SimpleGrid } from '@mantine/core'
 import { LessonCard } from '@/components/lessons/LessonCard'
 import { LerenNav } from '@/components/lessons/LerenNav'
 import { Woordenlijsten } from '@/components/collections/Woordenlijsten'
@@ -381,32 +383,49 @@ export function Lessons() {
   // which then shows a back link — the shape the trainers already use.
   const noSurfaceSelected = !searchParams.get('v')
   if (isMobile && noSurfaceSelected) {
+    // Mobile only: the four Leren surfaces as one shared card (ListCard
+    // `feature` + a per-surface tone from the brand ramp), stacked as the /leren
+    // landing. On desktop the switcher row (LerenNav) is always shown and /leren
+    // lands straight on Lessen — so there's no "pick a card, then a menu appears"
+    // detour on a screen with room for the persistent row.
     return (
-      <PageContainer size="lg" fit>
-        <PageBody variant="fit">
+      <PageContainer size="lg">
+        <PageBody>
           <PageHeader title={T.nav.leren} />
-          <div className={classes.hub}>
-            <Link to="/leren?v=lessen" className={classes.hubCard}>
-              <IconBook size={22} />
-              <span className={classes.hubLabel}>{T.leren.lessenTab}</span>
-              <span className={classes.hubDesc}>{T.leren.lessenDesc}</span>
-            </Link>
-            <Link to="/leren?v=woorden" className={classes.hubCard}>
-              <IconListCheck size={22} />
-              <span className={classes.hubLabel}>{T.collections.title}</span>
-              <span className={classes.hubDesc}>{T.leren.woordenlijstenDesc}</span>
-            </Link>
-            <Link to="/morphology" className={classes.hubCard}>
-              <IconAbc size={22} />
-              <span className={classes.hubLabel}>{T.leren.affixTitle}</span>
-              <span className={classes.hubDesc}>{T.leren.affixDesc}</span>
-            </Link>
-            <Link to="/pronunciation" className={classes.hubCard}>
-              <IconVolume size={22} />
-              <span className={classes.hubLabel}>{T.leren.pronunciationTitle}</span>
-              <span className={classes.hubDesc}>{T.leren.pronunciationDesc}</span>
-            </Link>
-          </div>
+          <SimpleGrid cols={{ base: 1 }} spacing="sm" mt="md">
+            <ListCard
+              feature
+              tone="accent"
+              to="/leren?v=lessen"
+              icon={<IconBook size={25} />}
+              title={T.leren.lessenTab}
+              subtitle={T.leren.lessenDesc}
+            />
+            <ListCard
+              feature
+              tone="gold"
+              to="/leren?v=woorden"
+              icon={<IconListCheck size={25} />}
+              title={T.collections.title}
+              subtitle={T.leren.woordenlijstenDesc}
+            />
+            <ListCard
+              feature
+              tone="teal"
+              to="/morphology"
+              icon={<IconAbc size={25} />}
+              title={T.leren.affixTitle}
+              subtitle={T.leren.affixDesc}
+            />
+            <ListCard
+              feature
+              tone="sage"
+              to="/pronunciation"
+              icon={<IconVolume size={25} />}
+              title={T.leren.pronunciationTitle}
+              subtitle={T.leren.pronunciationDesc}
+            />
+          </SimpleGrid>
         </PageBody>
       </PageContainer>
     )

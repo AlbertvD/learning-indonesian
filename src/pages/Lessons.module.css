@@ -160,56 +160,8 @@
   margin-top: 0.6rem;
 }
 
-/* ─── Mobile hub (§7.3) ───────────────────────────────────────────────────
-   The four Leren surfaces as a 2×2 grid of descriptive cards that fill the
-   content area exactly. The hub is a flex child of a <PageBody variant="fit">
-   inside a <PageContainer fit>, whose height is `100dvh − app chrome` from the
-   real layout tokens — so `flex: 1` fills precisely the space below the header
-   without overshooting the viewport (no more `calc()` chrome guesswork). The
-   two grid rows split that height evenly. */
-.hub {
-  flex: 1;
-  min-height: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 0.7rem;
-  margin-top: 0.5rem;
-}
-
-.hubCard {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 0.45rem;
-  padding: 1rem;
-  border-radius: 16px;
-  border: 1px solid var(--card-border);
-  background: var(--card-bg);
-  color: var(--text-primary);
-  text-align: left;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
-}
-
-.hubCard:active {
-  transform: scale(0.98);
-}
-
-.hubCard:hover {
-  border-color: var(--accent-primary, #4dabf7);
-}
-
-.hubLabel {
-  font-size: 1.02rem;
-  font-weight: 700;
-  line-height: 1.15;
-}
-
-.hubDesc {
-  font-size: 0.8rem;
-  line-height: 1.3;
-  color: var(--text-secondary, #868e96);
-}
+/* The mobile Leren hub is now a <Stack> of shared `ListCard feature` rows
+   (Lessons.tsx) — one card language with the Ontdek hub. The bespoke `.hub`
+   grid + `.hubCard`/`.hubLabel`/`.hubDesc` chrome it replaced were removed
+   2026-07-05; the card chrome, tone tints, and serif title all live in the
+   ListCard primitive now. */
