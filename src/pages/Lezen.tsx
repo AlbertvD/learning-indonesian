@@ -11,6 +11,7 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { IconBook2 } from '@tabler/icons-react'
+import { OntdekNav } from '@/components/nav/OntdekNav'
 import { textService, type TextListRow } from '@/services/textService'
 import { rankReadableTexts } from '@/lib/reading'
 import { useAuthStore } from '@/stores/authStore'
@@ -62,6 +63,7 @@ export function Lezen() {
   return (
     <PageContainer size="lg">
       <PageBody>
+        <OntdekNav />
         <PageHeader title={T.reading.title} />
         {stories.length === 0 ? (
           <EmptyState icon={<IconBook2 size={48} />} message={T.reading.noStories} />
@@ -69,6 +71,7 @@ export function Lezen() {
           stories.map((story) => (
             <ListCard
               key={story.id}
+              tone="rail"
               to={`/lezen/${story.id}`}
               icon={<IconBook2 size={20} />}
               title={story.title}

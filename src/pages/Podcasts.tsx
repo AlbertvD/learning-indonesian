@@ -11,6 +11,7 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { IconHeadphones } from '@tabler/icons-react'
+import { OntdekNav } from '@/components/nav/OntdekNav'
 import { textService, type PodcastListRow } from '@/services/textService'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
@@ -55,6 +56,7 @@ export function Podcasts() {
   return (
     <PageContainer size="lg">
       <PageBody>
+        <OntdekNav />
         <PageHeader title={T.nav.podcasts} />
 
         {podcasts.length === 0 ? (
@@ -68,8 +70,9 @@ export function Podcasts() {
             return (
               <ListCard
                 key={podcast.id}
+                tone="gold"
                 to={`/podcast/${podcast.id}`}
-                icon={<Text fw={700}>{String(i + 1).padStart(2, '0')}</Text>}
+                icon={<Text fw={700} c="inherit">{String(i + 1).padStart(2, '0')}</Text>}
                 title={podcast.title}
                 subtitle={podcast.description ?? undefined}
                 trailing={(

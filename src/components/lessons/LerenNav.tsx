@@ -1,18 +1,15 @@
-// The Leren section chrome, shared by all four surfaces (Lessen, Woordenlijsten,
-// Affix trainer, Uitspraak trainer). It renders two viewport-exclusive things:
-//   • Desktop — the persistent switcher row, so the four icons always sit above
-//     the content and you can jump between surfaces without losing the row.
-//   • Mobile — a "back to Leren" link, since the surfaces are reached from the
-//     Leren hub (Lessons.tsx) one at a time.
+// The Leren section nav, shared by all four surfaces (Lessen, Woordenlijsten,
+// Affix trainer, Uitspraak trainer). It's a thin wrapper over the shared
+// <SurfaceNav/> that pins the Leren-specific items + active-surface derivation;
+// SurfaceNav owns the desktop switcher row / mobile back-link rendering.
+//
 // Active state is derived from the location, so every page renders <LerenNav/>
 // with no props. Routes are unchanged, so reader→/morphology?affix= deep links
-// keep working (and now show the row too).
-import type { ReactNode } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+// keep working (and still show the row too).
+import { useLocation } from 'react-router-dom'
 import { IconBook, IconListCheck, IconAbc, IconVolume } from '@tabler/icons-react'
-import { BackLink } from '@/components/nav/BackLink'
+import { SurfaceNav } from '@/components/nav/SurfaceNav'
 import { useT } from '@/hooks/useT'
-import classes from './LerenNav.module.css'
 
 type SurfaceKey = 'lessen' | 'woordenlijsten' | 'affix' | 'uitspraak'
 
@@ -27,31 +24,18 @@ export function LerenNav() {
   const { pathname, search } = useLocation()
   const active = activeSurface(pathname, search)
 
-  const items: { key: SurfaceKey; label: string; icon: ReactNode; to: string }[] = [
-    { key: 'lessen', label: T.leren.lessenTab, icon: <IconBook size={22} />, to: '/leren' },
-    { key: 'woordenlijsten', label: T.collections.title, icon: <IconListCheck size={22} />, to: '/leren?v=woorden' },
-    { key: 'affix', label: T.leren.affixTitle, icon: <IconAbc size={22} />, to: '/morphology' },
-    { key: 'uitspraak', label: T.leren.pronunciationTitle, icon: <IconVolume size={22} />, to: '/pronunciation' },
-  ]
-
   return (
-    <>
-      <nav className={classes.nav} aria-label={T.nav.leren}>
-        {items.map((item) => (
-          <Link
-            key={item.key}
-            to={item.to}
-            aria-current={active === item.key ? 'page' : undefined}
-            className={`${classes.card} ${active === item.key ? classes.cardActive : ''}`}
-          >
-            {item.icon}
-            <span className={classes.label}>{item.label}</span>
-          </Link>
-        ))}
-      </nav>
-      <div className={classes.mobileBack}>
-        <BackLink to="/leren" label={T.nav.backToLeren} />
-      </div>
-    </>
+    <SurfaceNav
+      ariaLabel={T.nav.leren}
+      activeKey={active}
+      backTo="/leren"
+      backLabel={T.nav.backToLeren}
+      items={[
+        { key: 'lessen', label: T.leren.lessenTab, icon: <IconBook size={22} />, to: '/leren' },
+        { key: 'woordenlijsten', label: T.collections.title, icon: <IconListCheck size={22} />, to: '/leren?v=woorden' },
+        { key: 'affix', label: T.leren.affixTitle, icon: <IconAbc size={22} />, to: '/morphology' },
+        { key: 'uitspraak', label: T.leren.pronunciationTitle, icon: <IconVolume size={22} />, to: '/pronunciation' },
+      ]}
+    />
   )
 }
