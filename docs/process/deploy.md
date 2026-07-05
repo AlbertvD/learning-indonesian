@@ -90,7 +90,7 @@ ssh mrblond@master-docker "sudo docker stop learning-indonesian && sudo docker r
   --label 'traefik.http.routers.learning-indonesian.tls.certresolver=stepca' \
   --label 'traefik.http.routers.learning-indonesian.middlewares=duinhuis-auth@docker' \
   --label 'traefik.http.services.learning-indonesian.loadbalancer.server.port=80' \
-  --label 'traefik.http.routers.learning-indonesian-static.rule=Host(\`indonesian.duin.home\`) && (Path(\`/manifest.webmanifest\`) || PathRegexp(\`^/pwa-icon\`))' \
+  --label 'traefik.http.routers.learning-indonesian-static.rule=Host(\`indonesian.duin.home\`) && (Path(\`/manifest.webmanifest\`) || Path(\`/sw.js\`) || PathPrefix(\`/pwa-icon\`) || PathPrefix(\`/workbox-\`))' \
   --label 'traefik.http.routers.learning-indonesian-static.entrypoints=websecure' \
   --label 'traefik.http.routers.learning-indonesian-static.tls.certresolver=stepca' \
   --label 'traefik.http.routers.learning-indonesian-static.service=learning-indonesian' \
@@ -124,4 +124,5 @@ A successful deploy ends with `Status: running` and a recent image digest.
 - The Portainer MCP `local` environment id is `3`. Its `dockerProxy` tool can pull images and recreate containers — verified 2026-05-09.
 - SSH to `mrblond@master-docker` remains available as the fallback when Portainer is offline.
 - The `docker-compose.yml` reference in `homelab-configs/services/learning-indonesian/` is kept for documentation. The container is managed directly via `docker run` as above — the compose file is not the source of truth.
+- **Two routers on purpose.** The main router carries `duinhuis-auth@docker` (the whole app is behind forward-auth). The `-static` router has **no** auth middleware and matches only the **public PWA plumbing** — `/manifest.webmanifest`, `/sw.js`, `/pwa-icon*`, `/workbox-*` — so the browser can fetch the manifest, install/**update** the service worker, and load its workbox chunk **without** a login cookie. This matters because a service-worker script fetch that gets *redirected* (307→auth on a stale cookie) fails per spec and silently kills the update — the "deploys invisible" symptom. Its longer rule gives it higher default priority, so it wins for those paths; everything else falls through to the auth'd main router. **Use `Path`/`PathPrefix`, NOT `PathRegexp`** — the homelab Traefik build rejects `PathRegexp` ("unsupported function"), which silently *disables* the router (the bug this replaced; found 2026-07-05). Verify after a recreate: cookieless `curl -k https://indonesian.duin.home/sw.js` must be `200`, and `curl -k https://indonesian.duin.home/` must be `307`.
 - Pre-deploy gauntlet: run `make pre-deploy` locally before merging anything that touches `scripts/migration.sql`. GitHub Actions cannot reach the homelab; the gauntlet runs locally.
