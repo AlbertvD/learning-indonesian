@@ -28,6 +28,38 @@ function makeDictationItem(): ExerciseItem {
   }
 }
 
+// The ADR-0021 morphology meaning card has no learningItem/meanings — its
+// prompt + correct gloss live in cuedRecallData. The feedback mapper must read
+// them there, else a wrong answer renders a blank feedback card (owner flag).
+function makeAffixedMeaningItem(): ExerciseItem {
+  return {
+    learningItem: null,
+    meanings: [],
+    contexts: [],
+    answerVariants: [],
+    skillType: 'recognise_mode',
+    exerciseType: 'choose_meaning_ex',
+    cuedRecallData: {
+      promptMeaningText: 'membaca',
+      options: ['lezen', 'schrijven', 'eten', 'slapen'],
+      correctOptionId: 'lezen',
+    },
+  }
+}
+
+describe('feedbackPropsFor — choose_meaning_ex morphology (cuedRecallData) card', () => {
+  it('reads prompt + correct answer from cuedRecallData so the card is not blank', () => {
+    const props = feedbackPropsFor({
+      item: makeAffixedMeaningItem(),
+      response: 'eten',
+      outcome: 'wrong',
+      userLanguage: 'nl',
+    })
+    expect(props.promptShown?.text).toBe('membaca')
+    expect(props.correctAnswer?.text).toBe('lezen')
+  })
+})
+
 describe('feedbackPropsFor — dictation meaning', () => {
   it('passes the L1 meaning for type_form_from_audio_ex', () => {
     const props = feedbackPropsFor({

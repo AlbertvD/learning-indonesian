@@ -263,6 +263,46 @@ describe('buildRecognitionMCQ', () => {
     }
   })
 
+  it('de-dupes curated distractors so no option repeats', () => {
+    const capabilityId = 'cap-1'
+    const curated = ['dup', 'dup', 'wrong-2', 'wrong-3']  // one duplicate
+    const r = buildForExerciseType('choose_meaning_ex', baseInput({
+      curatedRecognitionDistractors: new Map([[capabilityId, curated]]),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      const d = r.exerciseItem.distractors ?? []
+      expect(d).toHaveLength(3)
+      expect(new Set(d.map(s => s.toLowerCase())).size).toBe(3)
+    }
+  })
+
+  it('excludes a curated distractor equal to the correct answer', () => {
+    const capabilityId = 'cap-1'
+    const curated = ['einde', 'wrong-1', 'wrong-2', 'wrong-3']  // 'einde' == the answer
+    const r = buildForExerciseType('choose_meaning_ex', baseInput({
+      curatedRecognitionDistractors: new Map([[capabilityId, curated]]),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      const d = r.exerciseItem.distractors ?? []
+      expect(d).not.toContain('einde')
+      expect(d).toHaveLength(3)
+    }
+  })
+
+  it('falls back to pool when curated de-dupes below 3 (malformed row, not a duplicate render)', () => {
+    const capabilityId = 'cap-1'
+    const curated = ['einde', 'dup', 'dup']  // answer + one usable distractor → 1 after clean
+    const r = buildForExerciseType('choose_meaning_ex', baseInput({
+      curatedRecognitionDistractors: new Map([[capabilityId, curated]]),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      expect(r.exerciseItem.distractors?.every((s: string) => s.startsWith('pool-meaning-'))).toBe(true)
+    }
+  })
+
   it('falls back to pool when no curated row exists (empty map)', () => {
     // Pool path with sufficient items → succeeds; distractors come from pool
     const r = buildForExerciseType('choose_meaning_ex', baseInput({

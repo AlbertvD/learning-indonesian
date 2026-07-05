@@ -44,7 +44,18 @@ export default function RecognitionMCQ({
   // The affixed path's options are pre-shuffled by the builder; use them as-is.
   const [shuffledOptions] = useState(() => {
     if (isAffixed) return cuedRecallData!.options
-    const all = [correctAnswer, ...(distractors ?? [])].slice(0, 4)
+    // De-dupe (normalized) so a distractor equal to the answer or to another
+    // distractor can't render as a repeated option (the builder excludes these on
+    // the curated path; this guards every path at assembly).
+    const seen = new Set<string>()
+    const all: string[] = []
+    for (const opt of [correctAnswer, ...(distractors ?? [])]) {
+      const n = opt.trim().toLowerCase()
+      if (seen.has(n)) continue
+      seen.add(n)
+      all.push(opt)
+      if (all.length === 4) break
+    }
     return [...all].sort(() => Math.random() - 0.5)
   })
 
