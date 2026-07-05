@@ -43,8 +43,11 @@ const ON_DELETE_RE = /on\s+delete\s+(cascade|set\s+null)/i
 describe('GDPR erasure — auth.users FK cascade completeness (fixture-level, architect W2)', () => {
   const clauses = findAuthUsersFkClauses(masterSql)
 
-  it('finds all 12 REFERENCES auth.users occurrences (audit §2 baseline, re-verified spec §1.2)', () => {
-    expect(clauses.length).toBe(12)
+  it('finds all 13 REFERENCES auth.users occurrences (audit §2 baseline + learner_word_mnemonics)', () => {
+    // 12 audit baseline + 1 for indonesian.learner_word_mnemonics (stubborn-word
+    // mnemonic workshop, cascade-erased with the account — verified by the
+    // ON DELETE CASCADE completeness assertion below).
+    expect(clauses.length).toBe(13)
   })
 
   it('every REFERENCES auth.users(id) clause carries an explicit ON DELETE CASCADE or ON DELETE SET NULL', () => {

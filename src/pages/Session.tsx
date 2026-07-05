@@ -22,6 +22,7 @@ import { translations } from '@/lib/i18n'
 import { getLessonSourceRefsByLessonId } from '@/lib/lessons'
 import { loadSelectedAffixScope } from '@/lib/morphology'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
+import { fetchMnemonicsForRefs } from '@/lib/mnemonics'
 import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'
 import type { EmptySessionReason } from '@/components/experience/RecapScreen'
 import { listActivatedLessons } from '@/lib/lessons/activation'
@@ -65,6 +66,7 @@ export function Session() {
   const [capabilityPlan, setCapabilityPlan] = useState<SessionPlan | null>(null)
   const [capabilityContexts, setCapabilityContexts] = useState<Map<string, CapabilityRenderContext> | null>(null)
   const [capabilityAudioMap, setCapabilityAudioMap] = useState<SessionAudioMap | null>(null)
+  const [mnemonicMap, setMnemonicMap] = useState<Map<string, string>>(new Map())
   const [dryingDismissed, setDryingDismissed] = useState(false)
   const [emptyReason, setEmptyReason] = useState<EmptySessionReason | undefined>(undefined)
 
@@ -175,6 +177,15 @@ export function Session() {
             ? await fetchSessionAudioMap(audioTexts.map((text) => ({ text, voiceId: null })))
             : new Map() as SessionAudioMap
           setCapabilityAudioMap(audioMap)
+
+          // Prefetch the session's saved mnemonics, mirroring audioMap exactly —
+          // ExperiencePlayer stays DB-read-free (docs/current-system/modules/mnemonics.md).
+          const mnemonicSourceRefs = [...new Set(capabilityPlan.blocks.map((b) => b.renderPlan.sourceRef))]
+          const notes = await fetchMnemonicsForRefs(user.id, mnemonicSourceRefs).catch((err) => {
+            logError({ page: 'session', action: 'fetchMnemonicsForRefs', error: err })
+            return new Map<string, string>()
+          })
+          setMnemonicMap(notes)
         } catch (err) {
           logError({ page: 'session', action: 'resolveCapabilityBlocks', error: err })
           setCapabilityContexts(new Map())
@@ -303,6 +314,7 @@ export function Session() {
           plan={capabilityPlan}
           contexts={capabilityContexts}
           audioMap={capabilityAudioMap}
+          mnemonicMap={mnemonicMap}
           userLanguage={userLanguage}
           onAnswer={handleCapabilityAnswer}
           onComplete={handleSessionComplete}

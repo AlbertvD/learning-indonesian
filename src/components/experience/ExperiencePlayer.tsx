@@ -20,11 +20,16 @@ import { feedbackCopyFor } from './feedbackCopy'
 import { RecapScreen, type EmptySessionReason } from './RecapScreen'
 import { CapabilityExerciseFrame } from './CapabilityExerciseFrame'
 import type { SessionAnswerEvent } from './types'
+import { resolveMnemonicAffordance, labelForSourceRef, type MnemonicAffordance } from '@/lib/mnemonics'
+import { MnemonicWorkshop } from '@/components/mnemonics/MnemonicWorkshop'
 
 export interface ExperiencePlayerProps {
   plan: SessionPlan
   contexts: Map<string, CapabilityRenderContext>
   audioMap: SessionAudioMap
+  /** Host-prefetched saved mnemonics for this session's words, keyed by `source_ref`
+   *  (mirrors `audioMap`) — see docs/current-system/modules/mnemonics.md. */
+  mnemonicMap: Map<string, string>
   userLanguage: 'nl' | 'en'
   onAnswer: (event: SessionAnswerEvent) => Promise<void>
   // Fired ONCE when the card queue is exhausted (every renderable block answered
@@ -95,9 +100,29 @@ function pickRedrillOffset(): number {
   return 3 + Math.floor(Math.random() * 4)
 }
 
+/** Fully-resolved copy + tier for a create-mnemonic offer — ExerciseFeedback never
+ *  imports i18n itself (design §4.2/§6a); this is where T.mnemonic.* gets read and
+ *  the "{n}" failure count gets interpolated. */
+function mnemonicOfferProps(
+  affordance: Extract<MnemonicAffordance, { kind: 'offer' }>,
+  T: Translations,
+): { tier: 'prominent' | 'quiet'; buttonLabel: string; title?: string; body?: string; expectancy?: string; dismissLabel?: string } {
+  if (affordance.tier === 'quiet') {
+    return { tier: 'quiet', buttonLabel: T.mnemonic.quietOffer }
+  }
+  return {
+    tier: 'prominent',
+    buttonLabel: T.mnemonic.offerButton,
+    title: T.mnemonic.offerTitle,
+    body: T.mnemonic.offerBody.replace('{n}', String(affordance.failureCount ?? '')),
+    expectancy: T.mnemonic.offerExpectancy,
+    dismissLabel: T.mnemonic.offerDismiss,
+  }
+}
+
 export function ExperiencePlayer(props: ExperiencePlayerProps) {
-  const { plan, contexts, audioMap, userLanguage, onAnswer, onComplete, onExit, emptyReason } = props
-  const { profile } = useAuthStore()
+  const { plan, contexts, audioMap, mnemonicMap, userLanguage, onAnswer, onComplete, onExit, emptyReason } = props
+  const { profile, user } = useAuthStore()
 
   const renderableBlocks = useMemo(() => {
     const out: SessionBlock[] = []
@@ -144,6 +169,11 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
   const [commitFailedBlocks, setCommitFailedBlocks] = useState<Set<string>>(() => new Set())
   const [feedback, setFeedback] = useState<FeedbackState | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  // Session-local overlay on top of the host-prefetched mnemonicMap: a note saved
+  // mid-session (via the workshop) takes effect immediately for a later redrill of
+  // the same word, without waiting for a re-fetch.
+  const [mnemonicOverride, setMnemonicOverride] = useState<Map<string, string>>(new Map())
+  const [workshopOpen, setWorkshopOpen] = useState(false)
   // Guards the one-shot completion fire (see the exhaustion effect below).
   const completedRef = useRef(false)
   // CRIT-1 (docs/audits/2026-07-02-a11y-i18n-audit.md): correct answers
@@ -169,6 +199,8 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
     setCorrectCapabilityIds(new Set())
     setCommitFailedBlocks(new Set())
     setFeedback(null)
+    setMnemonicOverride(new Map())
+    setWorkshopOpen(false)
     completedRef.current = false
   }, [renderableBlocks])
 
@@ -290,6 +322,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
 
   function handleContinue() {
     setFeedback(null)
+    setWorkshopOpen(false)
     setPosition(p => p + 1)
   }
 
@@ -325,6 +358,24 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
       })
     : null
 
+  // The mnemonic decision (design §6) — only meaningful on the feedback screen.
+  // `note` checks this session's freshly-saved overrides first so a same-session
+  // redrill resurfaces instead of re-offering (see mnemonicOverride above).
+  const workshopSourceRef = feedback ? feedback.block.renderPlan.sourceRef : null
+  const mnemonicAffordance: MnemonicAffordance | null = feedback && workshopSourceRef
+    ? resolveMnemonicAffordance({
+        sourceRef: workshopSourceRef,
+        note: mnemonicOverride.get(workshopSourceRef) ?? mnemonicMap.get(workshopSourceRef),
+        evidence: feedback.block.reviewContext.schedulerSnapshot,
+        outcome: feedback.outcome === 'correct' ? 'correct' : 'wrong',
+      })
+    : null
+  const workshopLabel = workshopSourceRef ? labelForSourceRef(workshopSourceRef) : ''
+  const workshopIsAffixed = feedback
+    ? feedback.block.renderPlan.capabilityType === 'recognise_word_form_link_cap'
+      || feedback.block.renderPlan.capabilityType === 'produce_derived_form_cap'
+    : false
+
   return (
     <SessionAudioProvider audioMap={audioMap}>
       <PageContainer size="md">
@@ -355,6 +406,15 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
                   copy={feedbackCopy}
                   continueLabel={continueLabel}
                   onContinue={handleContinue}
+                  mnemonic={mnemonicAffordance?.kind === 'resurface'
+                    ? { text: mnemonicAffordance.note, label: T.mnemonic.resurfaceLabel }
+                    : undefined}
+                  mnemonicOffer={mnemonicAffordance?.kind === 'offer'
+                    ? mnemonicOfferProps(mnemonicAffordance, T)
+                    : undefined}
+                  onCreateMnemonic={mnemonicAffordance?.kind === 'offer'
+                    ? () => setWorkshopOpen(true)
+                    : undefined}
                 />
               )
             : (
@@ -367,6 +427,17 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
                   onSkip={handleSkip}
                 />
               )}
+          {user && workshopSourceRef && (
+            <MnemonicWorkshop
+              userId={user.id}
+              sourceRef={workshopSourceRef}
+              label={workshopLabel}
+              isAffixed={workshopIsAffixed}
+              opened={workshopOpen}
+              onClose={() => setWorkshopOpen(false)}
+              onSaved={(note) => setMnemonicOverride(m => new Map(m).set(workshopSourceRef, note))}
+            />
+          )}
         </PageBody>
       </PageContainer>
     </SessionAudioProvider>
