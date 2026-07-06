@@ -28,14 +28,14 @@
             "speaker": "Joyce",
             "translation": "Hallo, Jumilah, Jumilah!",
             "translation_en": "Hello, Jumilah, Jumilah!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/halo-jumilah-jumilah-77777ff9.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/halo-jumilah-jumilah-9beac659.mp3"
           },
           {
             "text": "Tidak ada jawaban, mungkin ia lagi tidur siang. Kita 'kan berjanji mau mampir jam empat sore dan sekarang baru jam tiga. Mari, kita jalan-jalan dulu sebentar.",
             "speaker": "Harry",
             "translation": "Er komt geen antwoord, misschien slaapt ze een middagdutje. We hadden afgesproken om vier uur langs te komen en het is nu pas drie uur. Laten we eerst nog even een rondje gaan lopen.",
             "translation_en": "There is no answer, maybe she is taking an afternoon nap. We agreed to come by at four o'clock and it is only three now. Let's go for a short walk first.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tidak-ada-jawaban-mungkin-30470996.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tidak-ada-jawaban-mungkin-3dde749a.mp3"
           },
           {
             "text": "Tetapi sebenarnya Jumilah sudah mendengar mereka, dan dari dalam rumah berlari ke luar.",
@@ -49,21 +49,21 @@
             "speaker": "Jumilah",
             "translation": "Hé, waar komen jullie vandaan? Ik hoorde iemand buiten, dus ik keek even. Hallo, hoe gaat het? Kom erin.",
             "translation_en": "Hey, where are you coming from? I heard someone outside, so I looked. Hello, how are you? Come in.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hai-dari-mana-saya-7b08c5d1.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/hai-dari-mana-saya-3da54f26.mp3"
           },
           {
             "text": "Kami tidak mengganggu 'kan? Soalnya kami datang terlalu siang.",
             "speaker": "Harry",
             "translation": "We storen toch niet? Het punt is dat we nogal vroeg zijn gekomen.",
             "translation_en": "We're not bothering you, are we? The thing is we came rather early.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kami-tidak-mengganggu-kan-00eced00.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kami-tidak-mengganggu-kan-2e456259.mp3"
           },
           {
             "text": "Oh, tidak apa-apa. Saya sudah menunggu kalian.",
             "speaker": "Jumilah",
             "translation": "Oh, dat geeft niet. Ik zat al op jullie te wachten.",
             "translation_en": "Oh, that's fine. I was already waiting for you.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/oh-tidak-apaapa-saya-beb37c82.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/oh-tidak-apaapa-saya-e58ad72f.mp3"
           },
           {
             "text": "Pintu halaman dibukanya dan mereka bertiga masuk ke dalam rumah lalu duduk di ruang tamu. Minuman dan makanan baru saja ditaruh di meja oleh pembantu.",
@@ -77,28 +77,28 @@
             "speaker": "Jumilah",
             "translation": "Alsjeblieft, eet smakelijk. Deze cake heb ik zelf gemaakt. Dit recept is echt het lekkerste. Let op, zeg niet dat het niet lekker is, hè!",
             "translation_en": "Please, help yourselves. I made this cake myself. This recipe is the best. Be careful, don't say it's not good, okay!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mari-silakan-kue-ini-cfed6b24.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mari-silakan-kue-ini-aabfe8b2.mp3"
           },
           {
             "text": "Enak sekali. Nanti, jangan lupa kasih resepmu ya.",
             "speaker": "Joyce",
             "translation": "Heerlijk! Later, vergeet niet om je recept aan me te geven, ja?",
             "translation_en": "Delicious! Later, don't forget to give me your recipe, okay?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/enak-sekali-nanti-jangan-8754aebe.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/enak-sekali-nanti-jangan-bfdb34c6.mp3"
           },
           {
             "text": "Di mana orang tuamu? Saya ingin sekali bertemu dengan mereka.",
             "speaker": "Harry",
             "translation": "Waar zijn je ouders? Ik zou hen graag willen ontmoeten.",
             "translation_en": "Where are your parents? I would very much like to meet them.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/di-mana-orang-tuamu-a50c0f09.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/di-mana-orang-tuamu-bd14cc04.mp3"
           },
           {
             "text": "Saya mencari orang tua saya dulu. Tunggu sebentar, ya.",
             "speaker": "Jumilah",
             "translation": "Ik ga mijn ouders even halen. Wacht even, goed?",
             "translation_en": "I'll get my parents. Wait a moment, okay?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/saya-mencari-orang-tua-84a87928.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saya-mencari-orang-tua-4ac92fcf.mp3"
           },
           {
             "text": "Ayah dan ibu Jumilah sudah lama ingin berkenalan dengan teman anaknya. Tamu asing jarang berkunjung ke rumah mereka, jadi tentu saja mereka senang sekali.",
@@ -112,35 +112,35 @@
             "speaker": "Ayah",
             "translation": "Nou, eindelijk ontmoeten we elkaar nog voordat jullie naar je land terugkeren. Jumilah heeft ons al veel over jullie verteld.",
             "translation_en": "Well, we finally meet before you return to your country. Jumilah has told us a lot about you.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nah-akhirnya-kita-bertemu-7b2e03dc.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/nah-akhirnya-kita-bertemu-cb5c3ecd.mp3"
           },
           {
             "text": "Saya juga senang sekali. Ayo kita bercakap-cakap sambil makan. Kue ini khas Jawa, coba saja.",
             "speaker": "Ibu",
             "translation": "Ik ben ook erg blij. Laten we dan nu praten terwijl we eten. Probeer eens deze taart, het is een Javaanse specialiteit.",
             "translation_en": "I'm very pleased too. Let's chat while we eat. Try this cake, it's a Javanese specialty.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-juga-senang-sekali-88fb05b8.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/kore/saya-juga-senang-sekali-f998d103.mp3"
           },
           {
             "text": "Jangan pakai tangan kiri, ya Harry, seperti dulu. 'Kan tidak sopan!",
             "speaker": "Joyce",
             "translation": "Niet met je linkerhand, hè Harry, zoals je gewend bent. Dat is niet netjes!",
             "translation_en": "Don't use your left hand, Harry, like you usually do. That's not polite!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jangan-pakai-tangan-kiri-6d6d23ed.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/jangan-pakai-tangan-kiri-e0d48517.mp3"
           },
           {
             "text": "O, ya, hampir lupa lagi. Saya tahu, soalnya saya kidal. Selalu memakai tangan kiri.",
             "speaker": "Harry",
             "translation": "O ja, ik was het bijna vergeten. Ik weet het, want ik ben linkshandig. Ik gebruik altijd mijn linkerhand.",
             "translation_en": "Oh yes, I almost forgot. I understand, because I'm left-handed. I always use my left hand.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/o-ya-hampir-lupa-61db2e25.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/o-ya-hampir-lupa-79bb4840.mp3"
           },
           {
             "text": "Memang itu adat orang Indonesia, tetapi dengan orang asing kami sudah mengerti. Sama seperti: jangan minum sampai isi gelas betul-betul habis. Kalau begitu disangka mau minum lagi!",
             "speaker": "Jumilah",
             "translation": "Dat is inderdaad een Indonesische gewoonte, maar met buitenlanders begrijpen we dat al. Net als: drink het glas niet helemaal leeg. Dan zou je de indruk wekken dat je nog meer wilt drinken!",
             "translation_en": "That is indeed an Indonesian custom, but with foreigners we understand already. Just like: don't drink your glass completely empty. Then people would think you want more to drink!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/memang-itu-adat-orang-7cd19e63.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/memang-itu-adat-orang-3e31af39.mp3"
           }
         ]
       }

@@ -67,6 +67,7 @@ const CHIRP3_TO_WAVENET_FALLBACK: Record<string, string> = {
   'id-ID-Chirp3-HD-Despina': 'id-ID-Wavenet-A',   // female
   'id-ID-Chirp3-HD-Sulafat': 'id-ID-Wavenet-D',   // female
   'id-ID-Chirp3-HD-Gacrux': 'id-ID-Wavenet-A',    // female
+  'id-ID-Chirp3-HD-Kore': 'id-ID-Wavenet-D',      // female (4th female voice, added 2026-07-06)
   'id-ID-Chirp3-HD-Achird': 'id-ID-Wavenet-B',    // male
   'id-ID-Chirp3-HD-Algenib': 'id-ID-Wavenet-C',   // male
   'id-ID-Chirp3-HD-Orus': 'id-ID-Wavenet-B',      // male

@@ -70,8 +70,8 @@
           {
             "dutch": "trots zijn op",
             "english": "be proud of",
-            "indonesian": "mem-kan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/memkan-0225fe6d.mp3"
+            "indonesian": "membanggakan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/membanggakan-d6d60b61.mp3"
           },
           {
             "dutch": "bloem",
@@ -316,8 +316,8 @@
           {
             "dutch": "... jaar oud zijn",
             "english": "be ... years old",
-            "indonesian": "ber-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ber-c9cd9fb5.mp3"
+            "indonesian": "berusia",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/berusia-910b024e.mp3"
           }
         ]
       }

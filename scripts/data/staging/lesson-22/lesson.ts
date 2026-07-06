@@ -59,7 +59,7 @@ export const lesson = {
             "english": "proud"
           },
           {
-            "indonesian": "mem-kan",
+            "indonesian": "membanggakan",
             "dutch": "trots zijn op",
             "english": "be proud of"
           },
@@ -264,7 +264,7 @@ export const lesson = {
             "english": "age"
           },
           {
-            "indonesian": "ber-",
+            "indonesian": "berusia",
             "dutch": "... jaar oud zijn",
             "english": "be ... years old"
           }

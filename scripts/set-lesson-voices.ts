@@ -34,7 +34,7 @@ export const VOICE_ROTATION = [
 ]
 
 const MALE_VOICES = ['id-ID-Chirp3-HD-Achird', 'id-ID-Chirp3-HD-Algenib', 'id-ID-Chirp3-HD-Orus']
-const FEMALE_VOICES = ['id-ID-Chirp3-HD-Despina', 'id-ID-Chirp3-HD-Sulafat', 'id-ID-Chirp3-HD-Gacrux']
+const FEMALE_VOICES = ['id-ID-Chirp3-HD-Despina', 'id-ID-Chirp3-HD-Sulafat', 'id-ID-Chirp3-HD-Gacrux', 'id-ID-Chirp3-HD-Kore']
 
 // ---------------------------------------------------------------------------
 // Gender detection helpers
@@ -48,10 +48,11 @@ function detectGender(speaker: string): 'female' | 'male' | 'ambiguous' {
 
   // Female honorifics / names
   if (/\b(Bu|Ibu|Mbak|Nona)\b/.test(s)) return 'female'
-  if (/\b(Titin|Ninik|Dewi|Yulia|Yati)\b/i.test(s)) return 'female'
+  if (/\b(Titin|Ninik|Dewi|Yulia|Yati|Tina|Tin|Laura|Joyce|Linda|Jumilah|Narti|Sulastri|Rai|Ida)\b/i.test(s)) return 'female'
 
-  // Male honorifics
-  if (/\b(Pak|Bapak|Mas|Bang)\b/.test(s)) return 'male'
+  // Male honorifics / roles / names
+  if (/\b(Pak|Bapak|Mas|Bang|Ayah)\b/.test(s)) return 'male'
+  if (/\b(Harry|Paul|Nanang|Wawan|Imran|Sarto|Piro|Ahmad|Bakri|Rusli|Wija|Oka|Mulyono|Rachmat)\b/i.test(s)) return 'male'
 
   return 'ambiguous'
 }
