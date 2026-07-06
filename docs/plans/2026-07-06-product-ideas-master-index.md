@@ -25,6 +25,10 @@ status: draft
 **Growth:** B1 public loanword quiz ⭐ (no-account viral quiz = growth-layer leg 0) · B2 Tong Tong Fair / Moesson channel · B3 Kata-van-de-week newsletter · B4 public reader demo · B5 cadeau-abonnement · B6 Leiden connection · **B7 "na Duolingo" exit-ramp SEO + public "route to B1" map (market-research addition; now in the growth-layer spec)**.
 **Top three if forced:** B1, A1, A3 — A7 Spreektaal is the strongest *content* differentiator once Bet 1 ships.
 
+## Lesson chapter experience — `2026-07-06-lesson-chapter-experience-program.md`
+
+The lesson-page redesign (user-initiated 2026-07-06): scroll-documents (11–20 screens, zero nav, buried CTA — measured in `docs/research/2026-07-06-lesson-page-ux-review.md`) → navigable chapters via one shared `ChapterExperience` component + per-page editorial re-grouping. Interim scroll-spy phase CUT by omission test. Pilot lesson 5, then agent-driven rollout with a content-parity guard (mount strategy must be decided before the guard — spec §3). Staff-engineer-checked; pure frontend, no Supabase surface.
+
 ## Market research — `docs/research/2026-07-06-market-research-competitive-landscape.md`
 
 Verified 2026-07-06: **every mass-market app caps Indonesian at A2** (Duolingo ¼-length/formal-only; Babbel HAS Indonesian but A2 ceiling — correction; Busuu none); **bahasa gaul register gap** = biggest new product insight (→ A7); Kaiwa exists (AI speaking) → Percakapan differentiates on learner-model + FSRS (folded into its spec); NL heritage ~1.7M is the primary segment, vacation stream modest (growth spec corrected); Bali 5-yr nomad visa (2025) strengthens the EN wedge; Australia = supply-vacuum narrative, not a schools channel (EN spec corrected); pricing anchor ~€9.99/mo / €79/yr vs local courses at hundreds of euros. Corrections from its §5 are APPLIED (2026-07-06) to the percakapan / growth-layer / en-audience specs.
