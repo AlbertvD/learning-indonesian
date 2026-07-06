@@ -13,6 +13,7 @@
 // renderer treats as a wrong option. One-directional: `item_answer_variants`
 // is never itself a distractor source, so there is no reverse risk.
 import { resolveDistractorMaps } from '@/lib/exercise-content/byKind/item'
+import { splitAlternatives } from '@/lib/capabilities'
 
 /** Matches `resolveDistractorMaps`'s inline itemById parameter shape
  *  (byKind/item.ts:76) — not separately exported there, so mirrored here. */
@@ -166,4 +167,62 @@ export function buildDistractorTextsByItem(
   addAll(curatedRecognitionDistractors)
   addAll(curatedCuedRecallDistractors)
   return out
+}
+
+/**
+ * Build a corpus map: normalized accepted-answer text -> the set of
+ * learning_item ids for which that text is an accepted answer (their primary
+ * gloss for ONE language, plus any `/`;`-split alternatives — the same split
+ * the runtime grader applies, so this sees exactly what would grade correct).
+ * Pass the per-language gloss (translation_nl OR translation_en) as `text`;
+ * build one map per language and check same-language candidates against it.
+ */
+export function buildAnswerOwnersByText(
+  items: ReadonlyArray<{ id: string; text: string | null }>,
+): Map<string, Set<string>> {
+  const out = new Map<string, Set<string>>()
+  for (const { id, text } of items) {
+    if (!text) continue
+    for (const alt of splitAlternatives(text)) {
+      const norm = normalizeVariantText(alt)
+      if (norm.length === 0) continue
+      const set = out.get(norm) ?? new Set<string>()
+      set.add(id)
+      out.set(norm, set)
+    }
+  }
+  return out
+}
+
+/**
+ * Drop candidates whose normalized text is already an accepted answer of a
+ * DIFFERENT item in the corpus — a false-accept the per-item distractor check
+ * (`dropDistractorCollisions`) structurally cannot catch, because it only sees
+ * one item's own MCQ distractors. Example: `lapangan -> "square"` when a
+ * separate item `alun-alun` means "square" — accepting it would credit the
+ * learner for another word's meaning. EXACT-match only: near-synonyms (e.g.
+ * "square" vs "town square") are NOT caught here and remain a human-review
+ * concern per the generate->review->apply gate (plan §Part 1). A candidate
+ * whose text is owned ONLY by its own item is kept (harmless redundancy with
+ * the primary gloss). `answerOwnersByText` MUST be built from the same language
+ * as the candidates (NL candidates against the NL owners map, etc.).
+ */
+export function dropCorpusCollisions(
+  candidates: readonly CandidateVariant[],
+  answerOwnersByText: ReadonlyMap<string, ReadonlySet<string>>,
+): { kept: CandidateVariant[]; dropped: CandidateVariant[] } {
+  const kept: CandidateVariant[] = []
+  const dropped: CandidateVariant[] = []
+  for (const c of candidates) {
+    const owners = answerOwnersByText.get(normalizeVariantText(c.variantText))
+    let collidesOther = false
+    if (owners) {
+      for (const id of owners) {
+        if (id !== c.learningItemId) { collidesOther = true; break }
+      }
+    }
+    if (collidesOther) dropped.push(c)
+    else kept.push(c)
+  }
+  return { kept, dropped }
 }

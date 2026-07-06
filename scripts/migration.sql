@@ -274,6 +274,17 @@ CREATE TABLE IF NOT EXISTS indonesian.item_answer_variants (
   notes text
 );
 
+-- Answer-variant coverage (docs/plans/2026-07-06-answer-variant-coverage.md):
+-- the natively-idempotent unique-index the enrich-answer-variants.ts apply step
+-- upserts against via ON CONFLICT (learning_item_id, variant_text, language)
+-- DO NOTHING. is_accepted is deliberately OUT of the key so a no-op against a
+-- pre-existing row never resurrects a DB-authored rejection as accepted.
+-- Pre-flight (2026-07-06, live DB): zero collisions — GROUP BY
+-- (learning_item_id, variant_text, language) HAVING count(*) > 1 returned 0 rows,
+-- so the ~262 pre-existing out-of-band rows do not block this index.
+CREATE UNIQUE INDEX IF NOT EXISTS item_answer_variants_item_text_lang_key
+  ON indonesian.item_answer_variants (learning_item_id, variant_text, language);
+
 -- SM-2 / learner-state tables (learner_item_state, learner_skill_state,
 -- review_events, lesson_progress) were removed 2026-07-01 (#150, epic #98) — the
 -- capability model (ADR 0001-0004) + two-axis analytics (#206-229) replaced them.

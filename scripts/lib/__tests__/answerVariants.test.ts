@@ -3,9 +3,11 @@ import {
   normalizeVariantText,
   toCandidateVariant,
   dropDistractorCollisions,
+  dropCorpusCollisions,
   dedupeCandidates,
   toInsertRow,
   buildDistractorTextsByItem,
+  buildAnswerOwnersByText,
   type CandidateVariant,
 } from '../answerVariants'
 
@@ -153,5 +155,58 @@ describe('buildDistractorTextsByItem', () => {
   it('produces an empty map when there are no capability rows', () => {
     const result = buildDistractorTextsByItem([], [], new Map(), 'nl')
     expect(result.size).toBe(0)
+  })
+})
+
+describe('buildAnswerOwnersByText', () => {
+  it('maps each item gloss (and /-alternatives) to its owning item id', () => {
+    const owners = buildAnswerOwnersByText([
+      { id: 'alun-alun', text: 'town square' },
+      { id: 'lapangan', text: 'field / veld' },
+      { id: 'nil', text: null },
+    ])
+    expect(owners.get('town square')).toEqual(new Set(['alun-alun']))
+    expect(owners.get('field')).toEqual(new Set(['lapangan']))
+    expect(owners.get('veld')).toEqual(new Set(['lapangan']))
+    expect(owners.has('')).toBe(false)
+  })
+
+  it('a string owned by two items records both', () => {
+    const owners = buildAnswerOwnersByText([
+      { id: 'a', text: 'koffie' },
+      { id: 'b', text: 'koffie' },
+    ])
+    expect(owners.get('koffie')).toEqual(new Set(['a', 'b']))
+  })
+})
+
+describe('dropCorpusCollisions', () => {
+  const cand = (learningItemId: string, variantText: string): CandidateVariant => ({
+    learningItemId, variantText, language: 'en', variantType: 'alternative_translation',
+  })
+
+  it("drops a candidate that is another item's accepted answer (false-accept)", () => {
+    const owners = new Map<string, Set<string>>([['square', new Set(['alun-alun'])]])
+    const { kept, dropped } = dropCorpusCollisions([cand('lapangan', 'Square')], owners)
+    expect(kept).toEqual([])
+    expect(dropped).toHaveLength(1)
+  })
+
+  it("keeps a candidate owned only by its OWN item (harmless redundancy)", () => {
+    const owners = new Map<string, Set<string>>([['field', new Set(['lapangan'])]])
+    const { kept, dropped } = dropCorpusCollisions([cand('lapangan', 'field')], owners)
+    expect(kept).toHaveLength(1)
+    expect(dropped).toEqual([])
+  })
+
+  it('keeps a candidate with no corpus owner at all', () => {
+    const { kept } = dropCorpusCollisions([cand('lapangan', 'meadow')], new Map())
+    expect(kept).toHaveLength(1)
+  })
+
+  it('drops when owned by BOTH own and another item (still ambiguous)', () => {
+    const owners = new Map<string, Set<string>>([['x', new Set(['lapangan', 'other'])]])
+    const { dropped } = dropCorpusCollisions([cand('lapangan', 'x')], owners)
+    expect(dropped).toHaveLength(1)
   })
 })

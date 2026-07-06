@@ -43,7 +43,9 @@ import {
   toCandidateVariant,
   dedupeCandidates,
   dropDistractorCollisions,
+  dropCorpusCollisions,
   buildDistractorTextsByItem,
+  buildAnswerOwnersByText,
   toInsertRow,
   type CandidateVariant,
   type ItemForDistractorResolution,
@@ -301,19 +303,45 @@ async function runApply(): Promise<void> {
   const distractorTextsNl = buildDistractorTextsByItem(capabilityRows, distractorPointerRows, distractorItemById, 'nl')
   const distractorTextsEn = buildDistractorTextsByItem(capabilityRows, distractorPointerRows, distractorItemById, 'en')
 
+  // Corpus-wide false-accept guard: a candidate whose text is the accepted
+  // answer of a DIFFERENT item would credit the learner for another word's
+  // meaning (e.g. `lapangan -> "square"` vs `alun-alun` = "square"). The
+  // per-item distractor check above structurally can't see this. Fetch the
+  // WHOLE item corpus (paginated — a plain select caps at 1000 rows in
+  // PostgREST, which would silently miss collisions with items past the first
+  // page and defeat the guard).
+  const corpus: Array<{ id: string; translation_nl: string | null; translation_en: string | null }> = []
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await db
+      .from('learning_items')
+      .select('id, translation_nl, translation_en')
+      .range(from, from + 999)
+    if (error) throw error
+    const page = (data ?? []) as typeof corpus
+    corpus.push(...page)
+    if (page.length < 1000) break
+  }
+  const nlOwners = buildAnswerOwnersByText(corpus.map((i) => ({ id: i.id, text: i.translation_nl })))
+  const enOwners = buildAnswerOwnersByText(corpus.map((i) => ({ id: i.id, text: i.translation_en })))
+
   const nlCandidates = deduped.filter((c) => c.language === 'nl')
   const enCandidates = deduped.filter((c) => c.language === 'en')
   const otherCandidates = deduped.filter((c) => c.language !== 'nl' && c.language !== 'en')
-  const nlResult = dropDistractorCollisions(nlCandidates, distractorTextsNl)
-  const enResult = dropDistractorCollisions(enCandidates, distractorTextsEn)
+
+  // Two-stage drop per language: own-distractor collision, then corpus collision.
+  const nlDist = dropDistractorCollisions(nlCandidates, distractorTextsNl)
+  const enDist = dropDistractorCollisions(enCandidates, distractorTextsEn)
+  const nlResult = dropCorpusCollisions(nlDist.kept, nlOwners)
+  const enResult = dropCorpusCollisions(enDist.kept, enOwners)
 
   const kept = [...nlResult.kept, ...enResult.kept, ...otherCandidates]
-  const dropped = [...nlResult.dropped, ...enResult.dropped]
-  console.log(`  ${dropped.length} candidate(s) dropped — collide with a curated MCQ distractor`)
-  if (dropped.length > 0) {
-    for (const d of dropped.slice(0, 10)) console.log(`    dropped: item=${d.learningItemId} "${d.variantText}" (${d.language})`)
-    if (dropped.length > 10) console.log(`    … and ${dropped.length - 10} more`)
-  }
+  const distractorDropped = [...nlDist.dropped, ...enDist.dropped]
+  const corpusDropped = [...nlResult.dropped, ...enResult.dropped]
+  const dropped = [...distractorDropped, ...corpusDropped]
+  console.log(`  ${dropped.length} candidate(s) dropped — ${distractorDropped.length} collide with a curated MCQ distractor, ${corpusDropped.length} collide with another item's meaning`)
+  for (const d of corpusDropped.slice(0, 10)) console.log(`    dropped (corpus): item=${d.learningItemId} "${d.variantText}" (${d.language})`)
+  for (const d of distractorDropped.slice(0, 10)) console.log(`    dropped (distractor): item=${d.learningItemId} "${d.variantText}" (${d.language})`)
+  if (dropped.length > 20) console.log(`    … and ${dropped.length - Math.min(20, corpusDropped.length + distractorDropped.length)} more`)
 
   const insertRows = kept.map(toInsertRow)
 
