@@ -210,3 +210,16 @@ describe('dropCorpusCollisions', () => {
     expect(dropped).toHaveLength(1)
   })
 })
+
+describe('corpus guard uses grader normalization (parenthetical/punctuation)', () => {
+  it("drops a candidate that collides with another item's gloss only after stripping a parenthetical", () => {
+    // keren gloss "good-looking (figure)"; a candidate "good-looking" for a
+    // DIFFERENT item is byte-identical under the grader's normalizeAnswer, so it
+    // must be dropped even though it differs from the raw gloss text.
+    const owners = buildAnswerOwnersByText([{ id: 'keren', text: 'good-looking (figure)' }])
+    const cand: CandidateVariant = { learningItemId: 'bagus', variantText: 'good-looking', language: 'en', variantType: 'alternative_translation' }
+    const { kept, dropped } = dropCorpusCollisions([cand], owners)
+    expect(dropped).toHaveLength(1)
+    expect(kept).toEqual([])
+  })
+})

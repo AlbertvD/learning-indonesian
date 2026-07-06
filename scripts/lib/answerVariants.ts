@@ -14,6 +14,7 @@
 // is never itself a distractor source, so there is no reverse risk.
 import { resolveDistractorMaps } from '@/lib/exercise-content/byKind/item'
 import { splitAlternatives } from '@/lib/capabilities'
+import { normalizeAnswer } from '@/lib/answerNormalization'
 
 /** Matches `resolveDistractorMaps`'s inline itemById parameter shape
  *  (byKind/item.ts:76) — not separately exported there, so mirrored here. */
@@ -184,7 +185,13 @@ export function buildAnswerOwnersByText(
   for (const { id, text } of items) {
     if (!text) continue
     for (const alt of splitAlternatives(text)) {
-      const norm = normalizeVariantText(alt)
+      // Use the GRADER's normalization (strips parentheticals + punctuation),
+      // NOT the lighter storage normalization — a candidate must collide iff the
+      // grader would treat it as equal to another item's gloss. (2026-07-06:
+      // triage found 25 collisions that dodged the lighter normalizeVariantText
+      // but are byte-identical under normalizeAnswer, e.g. keren→"cool" vs
+      // sejuk "cool (of air)".)
+      const norm = normalizeAnswer(alt)
       if (norm.length === 0) continue
       const set = out.get(norm) ?? new Set<string>()
       set.add(id)
@@ -214,7 +221,7 @@ export function dropCorpusCollisions(
   const kept: CandidateVariant[] = []
   const dropped: CandidateVariant[] = []
   for (const c of candidates) {
-    const owners = answerOwnersByText.get(normalizeVariantText(c.variantText))
+    const owners = answerOwnersByText.get(normalizeAnswer(c.variantText))
     let collidesOther = false
     if (owners) {
       for (const id of owners) {
