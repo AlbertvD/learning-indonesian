@@ -23,19 +23,20 @@
 
 **Root diagnosis: the page is a beautiful *document*, but learners need a *guided experience*.** Everything wrong follows from the document assumption: no orientation (where am I?), no segmentation (what's left?), no persistent action (what do I do?), no memory (where was I?).
 
-## 3. Redesign direction — two phases
+## 3. Redesign direction — straight to chapters (single phase; decided with user 2026-07-06)
 
-### Phase 1 — shared chrome, ZERO per-page edits (the big win cheap)
+> An interim "shared chrome" phase (DOM-driven scroll-spy pill-nav + sticky practice bar +
+> position memory as standalone deliverables) was considered and **cut by the omission test**:
+> the chapter header IS the section nav evolved, position memory is part of the chapter build
+> anyway, and the sticky practice bar is redundant once "Oefenen" is the always-one-tap-away
+> final chapter. Interim chrome only pays if the redesign takes months; at this project's
+> build velocity it would be deleted within weeks. **Contingency, not scope:** if the 19-lesson
+> rollout ever stalls mid-way, unconverted lessons can get a temporary DOM-driven scroll-spy
+> nav — a day of work if needed, not built in advance.
 
-All three items are one shared component each, mounted by the router/wrapper around every bespoke page, driven by the rendered DOM — no changes to the 19 page files:
+### The chapter experience (pilot first)
 
-1. **Sticky section nav with scroll-spy.** A slim pill-bar (top, under the app header) generated from the page's H2s at mount (`Verhaal · Grammatica · Schema · Woorden · Cultuur · Oefenen`), current section highlighted, tap = smooth-scroll. Instantly answers "where am I / what's left / take me to X." (Mobile: horizontally scrollable pills — the Voortgang tab strip precedent.)
-2. **Sticky practice bar.** A persistent slim bottom bar: lesson activation state + `Oefenen →` (the existing `PracticeActions`/`ActivationGate` logic lifted into it, single-owner hook already exists — `useLessonActivation`). The conversion moment becomes reachable from every scroll position. The bottom block stays as the full-detail version.
-3. **Position memory.** Persist last scroll-section per lesson (localStorage); returning shows a small "Ga verder bij *Woorden*" chip. Cheap, disproportionate delight.
-
-### Phase 2 — the chapter experience (target state, pilot first)
-
-Convert the section sequence into **navigable chapters**: one section on screen at a time, a segmented progress header (● ● ○ ○ ○ ○), next/prev + swipe, per-chapter completion ticks feeding the position memory. This matches how the material is actually consumed (one section per sitting), makes 20 screens feel like 6 small pages, and gives every section an *ending* — a moment of progress. Vertical scroll remains within a chapter (chapters vary in length); "Oefenen" is the natural final chapter, ending the lesson on the action.
+Convert the section sequence into **navigable chapters**: one section on screen at a time, a segmented progress header (● ● ○ ○ ○ ○) that doubles as the section nav (tap a segment to jump), next/prev + swipe, per-chapter completion ticks feeding **position memory** (per-lesson persisted; "Ga verder bij *Woorden*" on return — built here, in its final form). This matches how the material is actually consumed (one section per sitting), makes 20 screens feel like 6 small pages, and gives every section an *ending* — a moment of progress. Vertical scroll remains within a chapter (chapters vary in length); "Oefenen" is the natural final chapter — the activation gate + practice CTA end every lesson one tap away instead of 20 screens down.
 
 - Requires pages to expose section boundaries → a per-page (mechanical) refactor. **Pilot on ONE lesson** via the `lesson-page-designer` agent, validate the feel, then roll out lesson-by-lesson (the bespoke architecture actually helps here — no big-bang).
 - Fold the **vocabulary redesign** into the same pass: replace the ragged grid with a compact grouped list (word · gloss · ▶) or themed sub-groups with a per-group "oefen deze woorden" link; equal-height rows; no empty-space cards.
@@ -49,6 +50,6 @@ Convert the section sequence into **navigable chapters**: one section on screen 
 
 ## 4. Sequencing & cost
 
-Phase 1 is small (three shared components + wrapper mounting, page-framework primitives, `feedback_ui_default_to_existing_framework`) and transforms navigation for all 19 lessons at once — do it first, ship it alone. Phase 2 is the real redesign: spec → ui-designer/page-lab iteration → one-lesson pilot → rollout. The vocab-grid fix rides Phase 2 (it needs the section refactor anyway).
+One track: spec (chapter chrome as a shared component + the per-page section-boundary contract) → ui-designer/page-lab iteration → **one-lesson pilot** → mechanical rollout via lesson-page-designer, lesson by lesson. The vocab-grid fix rides the same per-page pass. Page-framework primitives throughout (`feedback_ui_default_to_existing_framework`).
 
 Screenshots from the walkthrough: `lesson5-top.png` (hero), `lesson5-mid.png` (grammar cards), `lesson5-vocab.png` (vocab grid), `lesson5-mobile-bottom.png` (buried CTA) — session artifacts, not committed.
