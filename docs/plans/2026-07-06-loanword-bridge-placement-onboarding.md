@@ -7,6 +7,10 @@ reviewed_by:
 ---
 <!-- Citation line numbers in migration.sql drift with unrelated edits (data-architect r2):
      re-pin all migration.sql cites immediately before authoring the actual migration diff. -->
+<!-- AMENDED 2026-07-06 post-approval: §3.2 write path corrected (carrier column
+     lesson_section_item_rows.loan_source_nl + full two-stage threading) after the build
+     session caught writer-carrier drift the gauntlet missed. Targeted data-architect
+     re-verification of the amended §3.2/§5 dispatched same day. -->
 <!-- Slice-2 implementation additionally gated on §7.4 (user ratifies the ADR-0004 carve-out)
      and §7.5 (derive frozen constants + golden round-trip test). Slice 1 is clear to build. -->
 
@@ -47,7 +51,13 @@ Authoring path = the **existing vocab pipeline**, nothing new. Many words alread
 
 One nullable column: `learning_items.loan_source_nl text` — the Dutch source/cognate word (`kantoor` for *kantor*). It is a property of the word, not of collection membership, so it lives on `learning_items`. The UI uses it for the "je kent dit al" reveal (`kantoor → kantor`).
 
-**Writer (data-architect finding 3, corrected):** canonical source = staging `learning-items.ts` (optional field), written by the **capability-stage adapter** — `upsertLearningItemIdempotent` (`scripts/lib/pipeline/capability-stage/adapter.ts:1089-1097`): add `loan_source_nl` to both the insert payload (`:1106-1117`) and the on-conflict **targeted-update list** alongside `translation_nl`/`translation_en`, so staging rewrites it every publish (same regime; etymology has no flag→review correction loop). NOT the lesson-stage adapter — its same-named `translation_nl` is a different column on `lesson_dialogue_lines`.
+**Writer — AMENDED 2026-07-06 (implementation-time finding by the build session; verified against code).** The r1-corrected text named the endpoint writer (`upsertLearningItemIdempotent`) but omitted the **carrier**: per ADR 0012 the capability stage reads item data **only from the DB** — its `LearningItemInput` is built from `TypedItemRow` (`projectors/vocab.ts:113-130`), which is SELECTed from **`lesson_section_item_rows`** (`loadFromDb.ts:112-114`), a lesson-stage-written table with no etymology column. As r2-approved, the writer was wired to a value that never arrives. The **full verified write path** (the exact groove `translation_nl` travels — every touch point below is its one-line sibling):
+
+1. **Staging:** the lesson staging **vocabulary entry** gains optional `loanSourceNl` — the same authoring shape whose `dutch` field `projectSections.ts:179` reads (NOT `learning-items.ts`; that file is a different capability-stage input).
+2. **Lesson stage:** `projectSections.ts` threads it into `ItemRowInput` (`:31` region) → `replaceLessonSectionItemRows` (`lesson-stage/adapter.ts:262-280`) writes it to **`lesson_section_item_rows.loan_source_nl`** (new carrier column — second migration column, see §5).
+3. **Capability stage:** `loadFromDb.ts` SELECT + `TypedItemRow` gain the field → the vocab projector passes it into `LearningItemInput` → `upsertLearningItemIdempotent` (`capability-stage/adapter.ts:1089-1117`) adds it to the insert payload AND the on-conflict targeted-update list beside `translation_nl`/`translation_en`.
+
+Regime unchanged: staging-canonical, rewritten every publish, no flag→review loop for etymology. ~6 mechanical touch points across both stages — the established two-stage carrier, not new mechanism.
 
 **Authoring consequence (architect note 7):** for loanwords already in `learning_items`, `loan_source_nl` is added in **whichever single lesson-staging file owns each item** (ADR 0006 one-declaration-per-item) — scattered across lesson dirs, not centralized.
 
@@ -123,6 +133,7 @@ ADR 0004 (`docs/adr/0004-capability-review-commits-are-atomic-and-idempotent.md:
 
 ### Schema changes (`scripts/migration.sql`)
 - `learning_items` ADD COLUMN `loan_source_nl text` (nullable; pipeline-written per §3.2).
+- `lesson_section_item_rows` ADD COLUMN `loan_source_nl text` (nullable; the lesson-stage-written **carrier** — added by the 2026-07-06 §3.2 amendment; without it the capability-stage writer's value never arrives).
 - `learner_capability_state.activation_source` CHECK gains `'placement'` — via the **drop-then-recreate constraint idiom** (`alter table … drop constraint if exists …; alter table … add constraint … check (…)`, the `learning_capabilities_source_kind_check` precedent at `migration.sql:1205-1207`; NOT `EXCEPTION WHEN duplicate_object`). One-line comment on provenance stickiness (§4.3).
 - New RPC `apply_placement_result` — `SECURITY DEFINER`, `auth.uid()`-scoped. Grants per the codebase idiom (`migration.sql:3581-3582`): **`revoke all … from public;`** then `grant execute … to authenticated, service_role` — revoking from `anon` alone leaves the implicit PUBLIC grant in place (data-architect finding 2).
 - New collection row + authored `collection_items` (content, via the collections runbook — not migration.sql).
