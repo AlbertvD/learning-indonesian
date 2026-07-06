@@ -1,9 +1,17 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #375
+merged_at: 2026-07-06
+implementation_paths:
+  - src/lib/session-builder/compose.ts
+  - src/lib/session-builder/builder.ts
+  - src/lib/session-builder/model.ts
+  - src/lib/session-builder/pedagogy.ts
 reviewed_by: [architect, staff-engineer]
 supersedes: []
 ---
+
+> **Shipped scope = Part A only** (the grammar due-floor). PR #375 merged + deployed 2026-07-06 (container revision `880e47f6`). **Part B (new-grammar introduction reserve) is NOT shipped — DEFERRED** (see §4 / §10): inert under review saturation (`openSlots ≈ 0`). This plan is a changelog for Part A; Part B remains forward work pending the review-saturation thread.
 
 # Grammar exposure: a grammar reserve in the session builder
 
