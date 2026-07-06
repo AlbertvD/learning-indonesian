@@ -127,6 +127,8 @@ export function projectItemsFromTypedRows(
         ? canonicaliseDutchSeparator(row.l1_translation.trim())
         : null,
       translation_en: row.l2_translation != null ? (row.l2_translation.trim() || null) : null,
+      // Bet-1 §3.2: forward the loanword source through to learning_items.loan_source_nl.
+      loan_source_nl: row.loan_source_nl?.trim() ? row.loan_source_nl.trim() : null,
     }
 
     // ----- anchor context (item_contexts row, is_anchor_context=true) -----

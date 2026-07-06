@@ -576,6 +576,8 @@ export interface LearningItemInput {
   /** Decision R (PR 1): inline translation columns replacing item_meanings rows. */
   translation_nl?: string | null
   translation_en?: string | null
+  /** Bet-1 §3.2: Dutch source/cognate of a loanword (kantoor for kantor); the /welkom reveal reads it. */
+  loan_source_nl?: string | null
   /** §11 #15 — when set to 'deferred_dialogue', drives the dialogue defer state. */
   review_status?: 'published' | 'deferred_dialogue'
 }
@@ -1094,6 +1096,7 @@ export async function upsertLearningItemIdempotent(
       .update({
         translation_nl: item.translation_nl ?? null,
         translation_en: item.translation_en ?? null,
+        loan_source_nl: item.loan_source_nl ?? null,
       })
       .eq('normalized_text', normalized_text)
       .select('id, normalized_text')
@@ -1114,6 +1117,7 @@ export async function upsertLearningItemIdempotent(
     is_active: true,
     translation_nl: item.translation_nl ?? null,
     translation_en: item.translation_en ?? null,
+    loan_source_nl: item.loan_source_nl ?? null,
   }
   if (item.review_status) {
     payload.review_status = item.review_status

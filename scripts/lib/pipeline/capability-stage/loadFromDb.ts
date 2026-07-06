@@ -40,6 +40,8 @@ export interface TypedItemRow {
   indonesian_text: string
   l1_translation: string
   l2_translation: string | null
+  /** Bet-1 §3.2 carrier — forwarded to learning_items.loan_source_nl; null when absent. */
+  loan_source_nl: string | null
   section_kind:
     | 'text' | 'grammar' | 'reference_table' | 'vocabulary'
     | 'expressions' | 'numbers' | 'dialogue' | 'pronunciation'
@@ -111,7 +113,7 @@ export async function fetchItemRowsFromDb(
     .schema('indonesian')
     .from('lesson_section_item_rows')
     .select(
-      'id, section_id, lesson_id, display_order, source_item_ref, item_type, indonesian_text, l1_translation, l2_translation, lesson_sections!inner(section_kind)',
+      'id, section_id, lesson_id, display_order, source_item_ref, item_type, indonesian_text, l1_translation, l2_translation, loan_source_nl, lesson_sections!inner(section_kind)',
     )
     .eq('lesson_id', lessonId)
     // Deterministic ordering: display_order is the primary sort key (matches
@@ -141,6 +143,7 @@ export async function fetchItemRowsFromDb(
       indonesian_text: row['indonesian_text'] as string,
       l1_translation: row['l1_translation'] as string,
       l2_translation: (row['l2_translation'] as string | null | undefined) ?? null,
+      loan_source_nl: (row['loan_source_nl'] as string | null | undefined) ?? null,
       section_kind: sectionKind,
     }
   })
