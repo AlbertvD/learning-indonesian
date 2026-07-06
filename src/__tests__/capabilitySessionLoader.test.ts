@@ -888,6 +888,90 @@ describe('capability session loader', () => {
     })
   })
 
+  // Part A — the grammar due-floor wired end-to-end through the builder. The unit
+  // tests (session-builder/__tests__/grammarDueFloor.test.ts) cover the pure
+  // selection; this proves the builder calls it in standard mode with correct
+  // family resolution, and that session size is preserved.
+  // docs/plans/2026-07-05-grammar-exposure-session-quota-design.md §4A.
+  describe('grammar due-floor (Part A)', () => {
+    // 5 vocab words, each MORE overdue (2 days) than a single grammar cap (1h).
+    // Distinct source_refs so sibling-burying doesn't collapse them.
+    const vocab = Array.from({ length: 5 }, (_, i) => ({
+      key: `vocab-key-${i}`,
+      ref: `learning_items/vocab-${i}`,
+      capId: `vocab-cap-${i}`,
+    }))
+    const grammarKey = 'grammar-key'
+    const grammarRef = 'grammar_patterns/l6-pattern'
+
+    const projections = new Map<string, ProjectedCapability>()
+    const readiness = new Map<string, CapabilityReadiness>()
+    for (const v of vocab) {
+      projections.set(v.key, projectedCapability({ canonicalKey: v.key, sourceRef: v.ref, requiredArtifacts: [] }))
+      readiness.set(v.key, { status: 'ready', allowedExercises: ['type_meaning_ex'] })
+    }
+    projections.set(grammarKey, projectedCapability({
+      canonicalKey: grammarKey,
+      sourceKind: 'grammar_pattern_src',
+      sourceRef: grammarRef,
+      capabilityType: 'recognise_grammar_pattern_cap',
+      skillType: 'recognise_mode',
+      requiredArtifacts: [],
+    }))
+    readiness.set(grammarKey, { status: 'ready', allowedExercises: ['choose_missing_word_ex'] })
+    const schedulerRows = [
+      ...vocab.map((v, i) => activeState({
+        id: `vocab-state-${i}`, capabilityId: v.capId, canonicalKeySnapshot: v.key,
+        nextDueAt: '2026-04-23T08:00:00.000Z', // 2 days overdue
+      })),
+      activeState({
+        id: 'grammar-state', capabilityId: 'grammar-cap', canonicalKeySnapshot: grammarKey,
+        nextDueAt: '2026-04-25T09:00:00.000Z', // 1h overdue — sorts BELOW all vocab
+      }),
+    ]
+
+    it('promotes a less-overdue grammar cap into a vocab-dominated standard session, holding session size', async () => {
+      // limit 5, 6 due caps. A plain most-overdue slice keeps the 5 vocab and drops
+      // grammar. The 20% floor (floor(5*0.2)=1) reserves one slot for grammar.
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        limit: 5,
+        plannerInput: {
+          userId: 'user-1', preferredSessionSize: 5, dueCount: 0,
+          readyCapabilities: [], learnerCapabilityStates: [], activatedLessons: new Set<string>(),
+        },
+        schedulerRows,
+        capabilitiesByKey: projections,
+        readinessByKey: readiness,
+      }))
+
+      // Session size preserved exactly at the preset limit.
+      expect(plan.blocks).toHaveLength(5)
+      // Grammar was promoted despite sorting below all 5 vocab.
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === grammarKey)).toBe(true)
+      // Exactly one vocab was displaced to make room (4 of 5 remain).
+      expect(plan.blocks.filter(b => b.canonicalKeySnapshot.startsWith('vocab-key-'))).toHaveLength(4)
+    })
+
+    it('does not run the floor in lesson-scoped modes (legacy behaviour preserved)', async () => {
+      // Same due pool, lesson_practice scoped to the vocab only → grammar (out of
+      // scope) must NOT be pulled in by the floor.
+      const selectedRefs = ['lesson-x', ...vocab.map(v => v.ref)]
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        mode: 'lesson_practice', limit: 5,
+        plannerInput: {
+          userId: 'user-1', preferredSessionSize: 5, dueCount: 0,
+          readyCapabilities: [], learnerCapabilityStates: [], activatedLessons: new Set<string>(),
+          selectedLessonId: 'lesson-x', selectedSourceRefs: selectedRefs,
+        },
+        schedulerRows,
+        capabilitiesByKey: projections,
+        readinessByKey: readiness,
+        selectedLessonId: 'lesson-x', selectedSourceRefs: selectedRefs,
+      }))
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === grammarKey)).toBe(false)
+    })
+  })
+
   describe('sibling burying — one capability per source_ref per build', () => {
     const ref = 'learning_items/item-1' // the shared default sourceRef
     const keyA = 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl'

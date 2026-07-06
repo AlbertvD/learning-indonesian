@@ -9,11 +9,11 @@ import {
 } from './dueFilter'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/session-builder/pedagogy'
-import { compose } from '@/lib/session-builder/compose'
+import { compose, reserveGrammarDueFloor } from '@/lib/session-builder/compose'
 import { buildQueueDryingDiagnostic } from '@/lib/session-builder/drying'
 import { buryThinSiblings } from '@/lib/session-builder/siblingBury'
 import { excludeListeningCapabilities } from '@/lib/session-builder/listeningFilter'
-import { isLessonScopedMode, isScopedMode } from '@/lib/session-builder/model'
+import { isLessonScopedMode, isScopedMode, capabilityFamily } from '@/lib/session-builder/model'
 import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session-builder/model'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 
@@ -225,14 +225,29 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     })
   }
 
-  const dueList = await getDueCapabilities({
+  // Fetch the FULL overdue-ordered due list (limit=MAX makes the projection's own
+  // slice a no-op), then apply the grammar due-floor + size cut here in the builder
+  // so grammar sorting below the size cut is still visible to the floor. The due
+  // projection stays family-agnostic; family is resolved from the loaded capability
+  // snapshot. The floor only reorders which due caps win the `limit` slots — it never
+  // returns fewer than `min(limit, orderedDue.length)`, so the session size is
+  // unchanged. Non-standard (lesson-scoped) modes keep the exact legacy top-N cut.
+  // See docs/plans/2026-07-05-grammar-exposure-session-quota-design.md §4A.
+  const orderedDue = await getDueCapabilities({
     userId: input.plannerInput.userId,
     now: input.now,
     mode: input.mode,
-    limit: input.limit,
+    limit: Number.MAX_SAFE_INTEGER,
   }, {
     listLearnerCapabilityStates: async () => input.schedulerRows,
   })
+  const familyOfKey = (canonicalKey: string) => {
+    const sourceKind = input.capabilitiesByKey.get(canonicalKey)?.sourceKind
+    return sourceKind ? capabilityFamily(sourceKind) : undefined
+  }
+  const dueList = input.mode === 'standard'
+    ? reserveGrammarDueFloor(orderedDue, input.limit, familyOfKey)
+    : orderedDue.slice(0, input.limit)
 
   const stateById = new Map(input.schedulerRows.map(row => [row.id, row]))
   const dueKeys = new Set(dueList.map(due => due.canonicalKeySnapshot))

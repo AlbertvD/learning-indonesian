@@ -1,6 +1,7 @@
 import type { CapabilityActivationRequest } from '@/lib/reviews/capabilityReviewProcessor'
 import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
-import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session-builder/model'
+import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan, CapabilityFamily } from '@/lib/session-builder/model'
+import type { DueCapability } from '@/lib/session-builder/dueFilter'
 
 interface ResolutionFailure {
   reason: string
@@ -146,4 +147,56 @@ function interleaveBySourceRef(blocks: SessionPlan['blocks'], window: number): v
     blocks[i] = blocks[swapWith]!
     blocks[swapWith] = tmp
   }
+}
+
+// ── Grammar due-floor ────────────────────────────────────────────────────────
+// Guarantees grammar a minimum share of the due-review slots so it isn't drowned
+// by the vocabulary majority in the due pool (grammar was ~6% of the owner's
+// reviews; the due pass is otherwise family-blind). Applied to the family-agnostic,
+// overdue-ordered due list BEFORE the session-size cut, in the composition layer:
+// family knowledge stays in session-builder (via the `familyOf` callback the
+// builder supplies), never threaded into the analytics-bound due projection.
+// See docs/plans/2026-07-05-grammar-exposure-session-quota-design.md §4A.
+//
+// ⭐ TUNABLE — the single edit needed to retune the floor. Fraction of the session's
+// due slots guaranteed to grammar-family caps when that much grammar is due. Valid
+// range [0, 1]; 0 reproduces exact legacy behaviour. Change this one number (and
+// redeploy) to optimise — no call-site or schema changes.
+export const GRAMMAR_DUE_FLOOR_FRACTION = 0.2
+
+// Pure and deterministic (given the already-ordered input). SESSION-SIZE INVARIANT:
+// the returned length is exactly `min(limit, ordered.length)` — the floor only
+// REORDERS which due caps win the slots, it never drops one, so it can never
+// shorten the session below the preset size. When more than `limit` caps are due it
+// returns exactly `limit`; when fewer are due it returns them all (the shortfall is
+// filled by new introductions downstream, exactly as today).
+//   - ≤ limit due  → return all (floor moot, nothing to cut);
+//   - fraction 0 or no grammar due → plain most-overdue slice (legacy behaviour);
+//   - else reserve up to floor(limit*fraction) of the MOST-overdue grammar caps,
+//     then fill remaining slots with the most-overdue non-reserved caps; the result
+//     is returned in the original overdue order.
+export function reserveGrammarDueFloor(
+  ordered: readonly DueCapability[],
+  limit: number,
+  familyOf: (canonicalKey: string) => CapabilityFamily | undefined,
+  fraction: number = GRAMMAR_DUE_FLOOR_FRACTION,
+): DueCapability[] {
+  if (ordered.length <= limit) return [...ordered]
+  const floorSlots = Math.floor(limit * fraction)
+  if (floorSlots <= 0) return ordered.slice(0, limit)
+
+  const reserved = ordered
+    .filter(due => familyOf(due.canonicalKeySnapshot) === 'grammar')
+    .slice(0, floorSlots)
+  if (reserved.length === 0) return ordered.slice(0, limit)
+
+  // Chosen = the reserved grammar ∪ the most-overdue non-reserved caps, filled to
+  // exactly `limit`. Seeding `chosen` with the reserved ids guarantees they survive
+  // even when they sort below the size cut; the fill loop then tops up to `limit`.
+  const chosen = new Set(reserved.map(due => due.stateId))
+  for (const due of ordered) {
+    if (chosen.size >= limit) break
+    chosen.add(due.stateId)
+  }
+  return ordered.filter(due => chosen.has(due.stateId))
 }
