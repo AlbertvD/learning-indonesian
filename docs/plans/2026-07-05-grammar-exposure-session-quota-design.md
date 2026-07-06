@@ -1,6 +1,6 @@
 ---
 status: implementing
-implementation: PR pending (branch feat/grammar-due-floor)
+implementation: PR #375
 reviewed_by: [architect, staff-engineer]
 supersedes: []
 ---
