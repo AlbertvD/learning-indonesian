@@ -1,6 +1,13 @@
 ---
-status: implementing
+status: shipped
 implementation: branch feat/answer-variant-coverage
+merged_at: 2026-07-06
+implementation_paths:
+  - scripts/enrich-answer-variants.ts
+  - scripts/lib/answerVariants.ts
+  - scripts/lib/answerCoverage.ts
+  - scripts/data/answer-variants-seed.json
+  - scripts/migration.sql
 reviewed_by:
   - staff-engineer (2026-07-06 — re-scoped v1-v3 pipeline path → direct DB seed; UNSOUND-delivery verdict adopted)
   - data-architect (2026-07-06 — v4 direct-seed shape SIGN-OFF; distractor-table + precedent citations fixed)
