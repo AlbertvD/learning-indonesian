@@ -261,41 +261,62 @@ async function runApply(): Promise<void> {
   const { url, key } = requireEnv()
   const db = createClient(url, key).schema('indonesian')
 
+  // Chunk every .in() lookup — at full-corpus scale (~1500 item ids) a single
+  // .in() overflows Kong's URL length limit ("URI too long"). CHUNK=100 stays
+  // well under it (mirrors src/lib/chunkedQuery.ts, which does the same in-app).
+  const chunkedIn = async <T>(
+    table: string, cols: string, col: string, ids: string[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    extra?: (b: any) => any,
+  ): Promise<T[]> => {
+    const out: T[] = []
+    for (let i = 0; i < ids.length; i += 50) {
+      const chunk = ids.slice(i, i + 50)
+      // Kong/PostgREST gives intermittent upstream errors (memory:
+      // project_homelab_postgrest_flaky_reads) — retry the chunk with backoff.
+      let lastErr: string | null = null
+      for (let attempt = 0; attempt < 4; attempt++) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let b: any = db.from(table).select(cols).in(col, chunk)
+        if (extra) b = extra(b)
+        const { data, error } = await b
+        if (!error) { out.push(...((data ?? []) as T[])); lastErr = null; break }
+        lastErr = error.message
+        await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+      }
+      if (lastErr) throw new Error(`[apply] ${table}.in(${col}) chunk ${i} of ${ids.length}: ${lastErr}`)
+    }
+    return out
+  }
+
   const itemIds = [...new Set(deduped.map((c) => c.learningItemId))]
-  const { data: itemRows, error: itemErr } = itemIds.length
-    ? await db.from('learning_items').select('id, normalized_text, base_text, translation_nl, translation_en').in('id', itemIds)
-    : { data: [] as unknown[], error: null }
-  if (itemErr) throw itemErr
-  const items = (itemRows ?? []) as Array<{ id: string; normalized_text: string; base_text: string; translation_nl: string | null; translation_en: string | null }>
+  const items = await chunkedIn<{ id: string; normalized_text: string; base_text: string; translation_nl: string | null; translation_en: string | null }>(
+    'learning_items', 'id, normalized_text, base_text, translation_nl, translation_en', 'id', itemIds,
+  )
   const itemIdByRef = new Map(items.map((i) => [`learning_items/${i.normalized_text}`, i.id]))
 
   // The items' OWN capabilities (source_kind='vocabulary_src' — item-harvest
   // is word/phrase only per ADR 0014, so every eligible item has exactly this
   // source_kind), resolved back to their target item id.
   const sourceRefs = items.map((i) => `learning_items/${i.normalized_text}`)
-  const { data: capRows, error: capErr } = sourceRefs.length
-    ? await db.from('learning_capabilities').select('id, capability_type, source_ref').eq('source_kind', 'vocabulary_src').in('source_ref', sourceRefs)
-    : { data: [] as unknown[], error: null }
-  if (capErr) throw capErr
-  const capabilityRows = ((capRows ?? []) as Array<{ id: string; capability_type: string; source_ref: string }>)
+  const capRows = await chunkedIn<{ id: string; capability_type: string; source_ref: string }>(
+    'learning_capabilities', 'id, capability_type, source_ref', 'source_ref', sourceRefs,
+    (b) => b.eq('source_kind', 'vocabulary_src'),
+  )
+  const capabilityRows = capRows
     .map((r) => ({ id: r.id, capability_type: r.capability_type, targetItemId: itemIdByRef.get(r.source_ref) ?? '' }))
     .filter((r) => r.targetItemId !== '')
 
   const capIds = capabilityRows.map((r) => r.id)
-  const { data: distractorRows, error: distErr } = capIds.length
-    ? await db.from('distractors').select('capability_id, item_id').in('capability_id', capIds)
-    : { data: [] as unknown[], error: null }
-  if (distErr) throw distErr
-  const distractorPointerRows = (distractorRows ?? []) as Array<{ capability_id: string; item_id: string }>
+  const distractorPointerRows = await chunkedIn<{ capability_id: string; item_id: string }>(
+    'distractors', 'capability_id, item_id', 'capability_id', capIds,
+  )
 
   const distractorItemIds = [...new Set(distractorPointerRows.map((r) => r.item_id))]
-  const { data: distractorItemRows, error: distItemErr } = distractorItemIds.length
-    ? await db.from('learning_items').select('id, base_text, translation_nl, translation_en').in('id', distractorItemIds)
-    : { data: [] as unknown[], error: null }
-  if (distItemErr) throw distItemErr
-  const distractorItemById = new Map(
-    ((distractorItemRows ?? []) as Array<{ id: string } & ItemForDistractorResolution>).map((r) => [r.id, r]),
+  const distractorItemRows = await chunkedIn<{ id: string } & ItemForDistractorResolution>(
+    'learning_items', 'id, base_text, translation_nl, translation_en', 'id', distractorItemIds,
   )
+  const distractorItemById = new Map(distractorItemRows.map((r) => [r.id, r]))
 
   // Collision check is language-specific — an NL candidate must dodge the
   // Dutch-rendered distractor strings, an EN candidate the English-rendered
