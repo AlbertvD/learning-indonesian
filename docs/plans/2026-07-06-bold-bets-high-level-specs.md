@@ -7,6 +7,14 @@ status: draft
 
 # Bold bets — high-level specs (2026-07-06)
 
+> **Program specs (one per bet, all staff-engineer-sanity-checked 2026-07-06):**
+> Bet 1 → `2026-07-06-loanword-bridge-placement-onboarding.md` (APPROVED, full gauntlet) ·
+> Bet 2 → `2026-07-06-weekverhaal-program.md` ·
+> Bet 3 → `2026-07-06-percakapan-program.md` ·
+> Bet 4 → `2026-07-06-growth-layer-program.md` ·
+> Bet 5 → `2026-07-06-en-audience-program.md`.
+> The sections below are the one-page summaries; the program specs are the working documents.
+
 The strategic frame these all build on — two assets no competitor has:
 
 1. **A per-learner capability model at word/pattern granularity** (FSRS state per word, affix, grammar pattern). Duolingo/Babbel/Memrise track nothing this precise.
@@ -96,7 +104,7 @@ Full approved spec: `docs/plans/2026-07-06-loanword-bridge-placement-onboarding.
 **What transfers for free (the leverage).** Bets 2 and 3 are **L1-agnostic by construction** — the capability model, i+1 story generation, and constrained AI chat don't care what the UI language is, and EN translations already exist across the content model (`translation_en`, EN glosses, NL/EN switching). Placement (Bet 1 slice 2) likewise transfers unchanged. Building the bold bets for NL builds them for EN.
 
 **What needs EN-specific work (concept level):**
-- **The onboarding hook.** No Dutch-loanword wall — but a weaker cousin exists: Indonesian's huge international/Latinate layer (*informasi, universitas, televisi, polisi, apotek, komputer*) plus direct English loans in colloquial usage. Same `/welkom` mechanic, different curated list — worth checking whether `loan_source_nl` should generalize to a per-L1 cognate field while Bet 1 is still unbuilt (one design decision now vs. a migration later).
+- **The onboarding hook.** No Dutch-loanword wall — but a weaker cousin exists: Indonesian's huge international/Latinate layer (*informasi, universitas, televisi, polisi, apotek, komputer*) plus direct English loans in colloquial usage. Same `/welkom` mechanic, different curated list. **Cognate-field timing DECIDED 2026-07-06:** Bet 1 builds `loan_source_nl` as approved; per-L1 generalization is a later additive content-table migration when the EN list is authored (see EN program spec).
 - **L1-specific pronunciation.** The shipped pronunciation primer + contrast podcasts are NL-specific (ADR 0025); EN learners need their own contrast set (different interference: vowel reduction, aspiration, no rolled /r/).
 - **EN SEO** (Bet 4's twin). "Learn Indonesian" is competitive, but the long tail is wide open and our morphology engine generates exactly the content that wins it: "meN- prefix explained", "Indonesian affixes cheat sheet", "ber- vs meN-". Plus Bali-practical listicles ("50 words for the warung"). Same static generator, second language.
 - **Theme packs as the wedge product:** "Warung Indonesian", "Nusantara paperwork", "Talking to your kos ibu" — small authored packs (collections exist) aimed squarely at segment 1.
@@ -113,4 +121,4 @@ Full approved spec: `docs/plans/2026-07-06-loanword-bridge-placement-onboarding.
 2. **Bet 2** (weekverhaal) — deepens retention for the users Bet 1 brings in; next spec to write.
 3. **Bet 4** (growth layer) — when there's a free funnel worth pointing traffic at; the SEO generator wants Bet 1's `loan_source_nl` to exist.
 4. **Bet 3** (percakapan) — designed now, shipped as the Phase-2 premium launch feature (it *is* the reason to subscribe).
-5. **Bet 5** (EN audience) — mostly rides along: Bets 2/3 transfer free; the EN-specific work (cognate onboarding list, EN pronunciation set, EN SEO twin) slots in after Bet 1 proves the onboarding mechanic. One decision to take EARLY: whether `loan_source_nl` generalizes to per-L1 cognates *before* Bet 1 builds it (see Bet 5 open questions).
+5. **Bet 5** (EN audience) — mostly rides along: Bets 2/3 transfer free; the EN-specific work (cognate onboarding list, EN pronunciation entries on the already-L1-parameterized catalog, EN SEO twin) slots in after Bet 1 proves the onboarding mechanic. The cognate-field timing question is RESOLVED (Bet 1 unchanged; later additive migration).
