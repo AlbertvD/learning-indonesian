@@ -47,91 +47,91 @@
             "speaker": "Ibu Dewi",
             "translation": "Goedemiddag, meneer. Welk kamernummer heb ik?",
             "translation_en": "Good afternoon, sir. What is my room number?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/selamat-siang-mas-kamar-66803c79.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selamat-siang-mas-kamar-3668a73c.mp3"
           },
           {
             "text": "Nomor 215, Bu. Di lantai 2.",
             "speaker": "Mas Wawan",
             "translation": "Nummer 215, mevrouw. Op de tweede verdieping.",
             "translation_en": "Number 215, madam. On the second floor.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nomor-215-bu-di-00f5ff74.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/nomor-215-bu-di-85fc32ba.mp3"
           },
           {
             "text": "Paspor Ibu di mana? Saya harus isi formulir hotel.",
             "speaker": "Mas Wawan",
             "translation": "Waar is uw paspoort, mevrouw? Ik moet het hotelformulier invullen.",
             "translation_en": "Where is your passport, madam? I need to fill in the hotel form.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/paspor-ibu-di-mana-d7bbd278.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/paspor-ibu-di-mana-f21558d6.mp3"
           },
           {
             "text": "Ini paspor saya. Kunci saya di mana?",
             "speaker": "Ibu Dewi",
             "translation": "Hier is mijn paspoort. Waar is mijn sleutel?",
             "translation_en": "Here is my passport. Where is my key?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ini-paspor-saya-kunci-40cc6f22.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ini-paspor-saya-kunci-69e66d06.mp3"
           },
           {
             "text": "Kunci yang kecil dan kuning ini kunci Ibu, silakan!",
             "speaker": "Mas Wawan",
             "translation": "Deze kleine gele sleutel is uw sleutel, alstublieft!",
             "translation_en": "This small yellow key is your key, please!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kunci-yang-kecil-dan-b9d0f8dc.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kunci-yang-kecil-dan-d79ea484.mp3"
           },
           {
             "text": "Kamar saya bagus. Kamar mandi ada di mana?",
             "speaker": "Ibu Dewi",
             "translation": "Mijn kamer is mooi. Waar is het badkamer?",
             "translation_en": "My room is nice. Where is the bathroom?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kamar-saya-bagus-kamar-05f9c487.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kamar-saya-bagus-kamar-352a3489.mp3"
           },
           {
             "text": "Di sini, Bu. Handuk, sabun dan sikat gigi ada. Di situ bak air.",
             "speaker": "Mas Wawan",
             "translation": "Hier, mevrouw. Handdoeken, zeep en tandenborstel zijn er. Daar is het badkuip.",
             "translation_en": "Here, madam. Towels, soap and toothbrush are here. There is the bathtub.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/di-sini-bu-handuk-859c2d8e.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/di-sini-bu-handuk-f7987db6.mp3"
           },
           {
             "text": "Air di bak untuk mandi.",
             "speaker": "Mas Wawan",
             "translation": "Het water in het kuip is voor het bad.",
             "translation_en": "The water in the tub is for bathing.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/air-di-bak-untuk-6b133260.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/air-di-bak-untuk-ed899f4c.mp3"
           },
           {
             "text": "Oke, terima kasih, ya Mas!",
             "speaker": "Ibu Dewi",
             "translation": "Oké, dank je wel, meneer!",
             "translation_en": "Okay, thank you, sir!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/oke-terima-kasih-ya-97f41190.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/oke-terima-kasih-ya-0e41350d.mp3"
           },
           {
             "text": "Mas, saya ingin makan. Apa makanan yang enak?",
             "speaker": "Ibu Dewi",
             "translation": "Meneer, ik wil graag eten. Wat is lekker eten?",
             "translation_en": "Sir, I want to eat. What is good food?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/mas-saya-ingin-makan-6ae7bef7.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mas-saya-ingin-makan-00ad423d.mp3"
           },
           {
             "text": "Oo, apa Ibu suka ayam pedas, nasi kuning dan lauk?",
             "speaker": "Mas Imran",
             "translation": "Oh, houdt u van pittige kip, gele rijst en bijgerechten?",
             "translation_en": "Oh, do you like spicy chicken, yellow rice and side dishes?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/oo-apa-ibu-suka-eaf8c292.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/oo-apa-ibu-suka-9f952936.mp3"
           },
           {
             "text": "Eeh... suka, tetapi saya ingin makan sate kambing, gado-gado dan nasi putih.",
             "speaker": "Ibu Dewi",
             "translation": "Eh... ja, maar ik wil liever geitenvlees satéspiesjes, gado-gado en witte rijst eten.",
             "translation_en": "Eh... yes, but I would prefer to eat goat satay, gado-gado and white rice.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/eeh-suka-tetapi-saya-6d25c76a.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/eeh-suka-tetapi-saya-256b14a2.mp3"
           },
           {
             "text": "Tambah krupuk juga dan segelas air putih, ya Mas.",
             "speaker": "Ibu Dewi",
             "translation": "Voeg ook nog krupuk toe en een glas water, meneer.",
             "translation_en": "Add crackers too and a glass of water, sir.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tambah-krupuk-juga-dan-6d75705e.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tambah-krupuk-juga-dan-e32277da.mp3"
           }
         ]
       }
@@ -520,6 +520,30 @@
       "content": {
         "type": "vocabulary",
         "items": [
+          {
+            "dutch": "zwarte koffie",
+            "english": "black coffee",
+            "indonesian": "kopi pait",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kopi-pait-97e2e07a.mp3"
+          },
+          {
+            "dutch": "groente",
+            "english": "vegetable",
+            "indonesian": "sayuran",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sayuran-79324773.mp3"
+          },
+          {
+            "dutch": "bijgerechten",
+            "english": "side dishes",
+            "indonesian": "lauk-pauk",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/laukpauk-6d291df6.mp3"
+          },
+          {
+            "dutch": "sambal",
+            "english": "sambal",
+            "indonesian": "sambel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sambel-668ecdef.mp3"
+          },
           {
             "dutch": "de jonge rijstplant",
             "english": "young rice plant",

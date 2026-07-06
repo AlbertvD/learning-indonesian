@@ -492,6 +492,26 @@ export const lesson = {
         "type": "vocabulary",
         "items": [
           {
+            "dutch": "zwarte koffie",
+            "indonesian": "kopi pait",
+            "english": "black coffee"
+          },
+          {
+            "dutch": "groente",
+            "indonesian": "sayuran",
+            "english": "vegetable"
+          },
+          {
+            "dutch": "bijgerechten",
+            "indonesian": "lauk-pauk",
+            "english": "side dishes"
+          },
+          {
+            "dutch": "sambal",
+            "indonesian": "sambel",
+            "english": "sambal"
+          },
+          {
             "dutch": "de jonge rijstplant",
             "indonesian": "bibit padi",
             "english": "young rice plant"

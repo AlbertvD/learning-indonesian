@@ -52,7 +52,7 @@
             "speaker": "Titin",
             "translation": "Wij moeten eerst nog even werken. Daarna gaan we weg.",
             "translation_en": "We have to work first for a bit. Then we'll go.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kita-harus-kerja-dulu-0ff8b5b3.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kita-harus-kerja-dulu-2fd0561c.mp3"
           },
           {
             "text": "Ayo, kerja dulu anak-anak!",
@@ -80,7 +80,7 @@
             "speaker": "Titin",
             "translation": "Oké, maar mag ik een glas melk krijgen?",
             "translation_en": "Okay, but can I have a glass of milk?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/baiklah-tapi-boleh-minta-00aae9a3.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/baiklah-tapi-boleh-minta-ad74967f.mp3"
           }
         ]
       }

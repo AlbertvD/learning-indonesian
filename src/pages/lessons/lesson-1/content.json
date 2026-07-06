@@ -239,7 +239,7 @@
             "speaker": "Penjual",
             "translation": "Dat kan niet mevrouw. Maar als u vijf stuks wilt, kan het voor negen roepiah.",
             "translation_en": "That won't work madam. But if you want five pieces, it can be nine rupiah.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/belum-bisa-bu-tetapi-3d486b00.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/belum-bisa-bu-tetapi-296523e6.mp3"
           }
         ],
         "setup": "Ibu mau ke pasar. Mau beli pisang."
@@ -251,28 +251,28 @@
         "type": "vocabulary",
         "items": [
           {
-            "dutch": "groente",
-            "english": "vegetable",
-            "indonesian": "sayuran",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sayuran-4f254b5e.mp3"
+            "dutch": "winkel",
+            "english": "shop",
+            "indonesian": "toko",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/toko-2e48cfb0.mp3"
           },
           {
-            "dutch": "zwarte koffie",
-            "english": "black coffee",
-            "indonesian": "kopi pait",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kopi-pait-708f4f43.mp3"
+            "dutch": "voor",
+            "english": "for",
+            "indonesian": "untuk",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/untuk-811e875a.mp3"
           },
           {
-            "dutch": "bijgerechten",
-            "english": "side dishes",
-            "indonesian": "lauk-pauk",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/laukpauk-051ffac5.mp3"
+            "dutch": "ja",
+            "english": "yes",
+            "indonesian": "ya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ya-489de2e1.mp3"
           },
           {
-            "dutch": "sambal",
-            "english": "sambal",
-            "indonesian": "sambel",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sambel-2ae392e4.mp3"
+            "dutch": "vruchten",
+            "english": "fruits",
+            "indonesian": "buah-buahan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/buahbuahan-c45d9c10.mp3"
           },
           {
             "dutch": "einde",

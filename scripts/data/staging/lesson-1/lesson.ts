@@ -235,24 +235,24 @@ export const lesson = {
         "type": "vocabulary",
         "items": [
           {
-            "dutch": "groente",
-            "indonesian": "sayuran",
-            "english": "vegetable"
+            "dutch": "winkel",
+            "indonesian": "toko",
+            "english": "shop"
           },
           {
-            "dutch": "zwarte koffie",
-            "indonesian": "kopi pait",
-            "english": "black coffee"
+            "dutch": "voor",
+            "indonesian": "untuk",
+            "english": "for"
           },
           {
-            "dutch": "bijgerechten",
-            "indonesian": "lauk-pauk",
-            "english": "side dishes"
+            "dutch": "ja",
+            "indonesian": "ya",
+            "english": "yes"
           },
           {
-            "dutch": "sambal",
-            "indonesian": "sambel",
-            "english": "sambal"
+            "dutch": "vruchten",
+            "indonesian": "buah-buahan",
+            "english": "fruits"
           },
           {
             "dutch": "einde",
