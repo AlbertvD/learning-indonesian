@@ -1,8 +1,32 @@
 import type { CapabilityActivationRequest, CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
-import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/lib/capabilities'
+import type { CapabilityPublicationStatus, CapabilityReadinessStatus, CapabilitySourceKind } from '@/lib/capabilities'
 
 export type SessionMode = 'standard' | 'lesson_practice' | 'lesson_review' | 'affix_practice'
+
+// ── Capability family axis (shared home) ─────────────────────────────────────
+// Keyed on source_kind ALONE — capability_type is the wrong axis because
+// `produce_form_from_context_cap` attaches to both `item` and `dialogue_line`.
+// Lives here (not in pedagogy.ts) so both the planner's within-lesson round-robin
+// AND the composer's grammar due-floor can read it without a sideways import.
+// Exhaustive over CapabilitySourceKind: a new source kind fails compilation here.
+export type CapabilityFamily = 'vocab' | 'cloze' | 'grammar' | 'morphology' | 'podcast'
+
+export function capabilityFamily(sourceKind: CapabilitySourceKind): CapabilityFamily {
+  switch (sourceKind) {
+    case 'vocabulary_src':
+      return 'vocab'
+    case 'dialogue_line_src':
+      return 'cloze'
+    case 'grammar_pattern_src':
+      return 'grammar'
+    case 'word_form_pair_src':
+      return 'morphology'
+    case 'podcast_segment_src':
+    case 'podcast_phrase_src':
+      return 'podcast'
+  }
+}
 
 // ── Session scoping predicates (single source of truth) ──────────────────────
 // A scoped session restricts the queue to a subset of caps; an unscoped session

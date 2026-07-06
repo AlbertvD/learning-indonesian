@@ -5,8 +5,8 @@ import type {
 import type { SkillType } from '@/types/learning'
 import { decideLoadBudget, type LoadBudgetDecision } from '@/lib/session-builder/loadBudget'
 import { partitionBuried } from '@/lib/session-builder/siblingBury'
-import { isScopedMode, isSourceRefScopedMode } from '@/lib/session-builder/model'
-import type { SessionMode } from '@/lib/session-builder/model'
+import { isScopedMode, isSourceRefScopedMode, capabilityFamily } from '@/lib/session-builder/model'
+import type { SessionMode, CapabilityFamily } from '@/lib/session-builder/model'
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/lib/capabilities'
 
 export interface PlannerCapability {
@@ -33,28 +33,11 @@ export interface PlannerCapability {
   lessonOrder?: number | null
 }
 
-// Family axis for the within-lesson round-robin in `prioritizeCandidates`. Keyed
-// on source_kind ALONE — capability_type is the wrong axis because
-// `produce_form_from_context_cap` attaches to both `item` and `dialogue_line` (different
-// content sources, same type). Exhaustive over CapabilitySourceKind: a new
-// source kind fails compilation here.
-export type CapabilityFamily = 'vocab' | 'cloze' | 'grammar' | 'morphology' | 'podcast'
-
-export function capabilityFamily(sourceKind: CapabilitySourceKind): CapabilityFamily {
-  switch (sourceKind) {
-    case 'vocabulary_src':
-      return 'vocab'
-    case 'dialogue_line_src':
-      return 'cloze'
-    case 'grammar_pattern_src':
-      return 'grammar'
-    case 'word_form_pair_src':
-      return 'morphology'
-    case 'podcast_segment_src':
-    case 'podcast_phrase_src':
-      return 'podcast'
-  }
-}
+// `capabilityFamily` (+ the `CapabilityFamily` type) moved to `./model` so the
+// composer's grammar due-floor can share the axis without a sideways import.
+// Re-exported here for existing importers.
+export { capabilityFamily } from '@/lib/session-builder/model'
+export type { CapabilityFamily } from '@/lib/session-builder/model'
 
 // Stable final tiebreak between families when lessonOrder + within-family rank
 // are equal. Order is cosmetic (determinism only), not pedagogic.
