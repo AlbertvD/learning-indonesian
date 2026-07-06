@@ -42,21 +42,21 @@
             "speaker": "narrator",
             "translation": "Tegenwoordig zijn er overal in Indonesië PUSKESMAS'en. PUSKESMAS is een plek waar dorpsbewoners naar een dokter gaan of medicijnen halen. In kleine dorpen zijn er geen ziekenhuizen zoals in grote steden.",
             "translation_en": "Nowadays there are PUSKESMAS (health clinics) everywhere in Indonesia. A PUSKESMAS is a place where villagers go to see a doctor or get medicine. In small villages there are no hospitals like in big cities.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sekarang-di-indonesia-di-60cde03b.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/sekarang-di-indonesia-di-4880bd75.mp3"
           },
           {
             "text": "Tina kakinya sakit sekali. Dia jatuh dari pohon. Ibunya betul-betul kaget waktu Tina jatuh. Barangkali kakinya patah. Maka ibu dengan Tina ke dokter di PUSKESMAS.",
             "speaker": "narrator",
             "translation": "Tina's been deed haar heel erg pijn. Ze was uit een boom gevallen. Haar moeder schrok zich rot toen Tina viel. Misschien was haar been gebroken. Daarom gingen moeder en Tina naar de dokter op de PUSKESMAS.",
             "translation_en": "Tina's leg hurt her very badly. She had fallen out of a tree. Her mother got a real shock when Tina fell. Maybe her leg was broken. So mother and Tina went to the doctor at the PUSKESMAS.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tina-kakinya-sakit-sekali-11e4872d.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tina-kakinya-sakit-sekali-9f2e024e.mp3"
           },
           {
             "text": "Ada apa?",
             "speaker": "Dokter",
             "translation": "Wat is er aan de hand?",
             "translation_en": "What's the matter?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ada-apa-1eb5fb8e.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ada-apa-4673f0db.mp3"
           },
           {
             "text": "Kaki saya sakit sekali dokter. Saya jatuh dari pohon.",
@@ -70,7 +70,7 @@
             "speaker": "Dokter",
             "translation": "Hoe ben je in hemelsnaam uit een boom gevallen?",
             "translation_en": "How on earth did you fall out of a tree?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bagaimana-bisa-jatuh-dari-63795c9d.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bagaimana-bisa-jatuh-dari-8ef952e6.mp3"
           },
           {
             "text": "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.",
@@ -84,7 +84,7 @@
             "speaker": "Dokter",
             "translation": "Goed, laat mij je been eerst even onderzoeken. Misschien is er niets aan de hand.",
             "translation_en": "Well, let me examine your leg first. Maybe there's nothing wrong.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nah-coba-saya-periksa-52f595df.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/nah-coba-saya-periksa-d019e259.mp3"
           },
           {
             "text": "Awas dokter, jangan sakit, ya.",
@@ -98,7 +98,7 @@
             "speaker": "Dokter",
             "translation": "Doet dit pijn of niet?",
             "translation_en": "Does this hurt or not?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ini-sakit-atau-tidak-3cd18147.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ini-sakit-atau-tidak-04d1ec33.mp3"
           },
           {
             "text": "Tidak begitu sakit dokter, sedikit saja.",
@@ -112,7 +112,7 @@
             "speaker": "Dokter",
             "translation": "In dat geval is er niets gebroken. Je bent vast heel snel beter, Tin.",
             "translation_en": "In that case, nothing is broken. You'll be better very quickly, Tin.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kalau-begitu-tidak-ada-1d3e7f51.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kalau-begitu-tidak-ada-688d978f.mp3"
           },
           {
             "text": "Betul dokter? Tidak ada yang patah? Saya takut sekali!",
@@ -126,7 +126,7 @@
             "speaker": "Dokter",
             "translation": "Ja hoor, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, klim niet meer in bomen zodat je been snel beter wordt.",
             "translation_en": "Yes indeed, madam, there's nothing wrong. But Tina must walk carefully. Tina, don't climb trees anymore so your leg gets better quickly.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/betul-bu-tidak-ada-7f434d6a.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/betul-bu-tidak-ada-3693493e.mp3"
           }
         ]
       }

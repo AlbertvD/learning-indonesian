@@ -48,35 +48,35 @@
             "speaker": "Ibu Yati",
             "translation": "Meneer, op welke verdieping is de batik, meneer?",
             "translation_en": "Sir, which floor is the batik on?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mas-batik-di-lantai-b0a01e0f.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/mas-batik-di-lantai-61d1553f.mp3"
           },
           {
             "text": "Di lantai empat, Bu.",
             "speaker": "Mas Sarto",
             "translation": "Op de vierde verdieping, mevrouw.",
             "translation_en": "On the fourth floor, madam.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/di-lantai-empat-bu-2da48024.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/di-lantai-empat-bu-42337c96.mp3"
           },
           {
             "text": "Aduh, kalau begitu, di mana lift?",
             "speaker": "Ibu Yati",
             "translation": "Och, waar is dan de lift?",
             "translation_en": "Oh, so where is the elevator?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/aduh-kalau-begitu-di-715f867b.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/aduh-kalau-begitu-di-be90a03c.mp3"
           },
           {
             "text": "Lift di situ, Bu, di sebelah kiri tangga.",
             "speaker": "Mas Sarto",
             "translation": "De lift is daar, mevrouw, links naast de trap.",
             "translation_en": "The elevator is there, madam, to the left next to the stairs.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lift-di-situ-bu-126c817b.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lift-di-situ-bu-429e8850.mp3"
           },
           {
             "text": "Terima kasih, Mas.",
             "speaker": "Ibu Yati",
             "translation": "Dank u wel, meneer.",
             "translation_en": "Thank you, sir.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/terima-kasih-mas-5967a45c.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/terima-kasih-mas-f03ffc12.mp3"
           },
           {
             "text": "Di lantai empat ada batik cap 'Batik Keris' dari Solo.",
@@ -90,7 +90,7 @@
             "speaker": "Ibu Yati",
             "translation": "Tin, laten we een mooie sarong zoeken, goed? Die sarong is een verjaardagscadeau voor oma, ze wordt bijna 76 jaar oud!",
             "translation_en": "Tin, let's look for a nice sarong, yes? That sarong is a birthday gift for grandma, she's almost 76 years old!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tin-coba-kita-cari-646d3c22.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tin-coba-kita-cari-519d5b51.mp3"
           },
           {
             "text": "Ibu Yati kepada ibu penjual:",
@@ -104,77 +104,77 @@
             "speaker": "Ibu Yati",
             "translation": "Mevrouw, we zoeken een sarong die niet al te modern is. Als u er een hebt, graag iets wat traditioneler is. Ik bedoel ongeveer Rp 25.000. Batik met veel kleuren zal waarschijnlijk ook niet goed uitkomen.",
             "translation_en": "Madam, we're looking for a sarong that isn't too modern. If you have one, we'd like something a bit more traditional. I mean around Rp 25,000. Batik with many colors probably wouldn't work either.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bu-kami-cari-kain-fc692237.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bu-kami-cari-kain-14432f2b.mp3"
           },
           {
             "text": "Silakan, Bu, di sini banyak kain batik yang halus.",
             "speaker": "Ibu penjual",
             "translation": "Alstublieft, mevrouw, hier zijn veel mooie batikstoften.",
             "translation_en": "Here you are, madam, there are many fine batik fabrics here.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/silakan-bu-di-sini-deb8b4a4.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/silakan-bu-di-sini-bda72fbc.mp3"
           },
           {
             "text": "Ini, Tin, yang ini bagus sekali.",
             "speaker": "Ibu Yati",
             "translation": "Deze, Tin, deze is echt prachtig.",
             "translation_en": "This one, Tin, this one is really beautiful.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ini-tin-yang-ini-777a821c.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/ini-tin-yang-ini-df64588d.mp3"
           },
           {
             "text": "O, iya, bagus sekali, tetapi yang ini lebih bagus dong!",
             "speaker": "Tin",
             "translation": "Ja, die is echt mooi, maar deze is nog mooier!",
             "translation_en": "Yes, that is really beautiful, but this one is even prettier!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/o-iya-bagus-sekali-c8f5d125.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/o-iya-bagus-sekali-fda1ff31.mp3"
           },
           {
             "text": "Betul, tetapi saya rasa warnanya terlalu banyak. Yang ini lebih bagus atau kamu kurang setuju?",
             "speaker": "Ibu Yati",
             "translation": "Ja, dat klopt, maar volgens mij zijn de kleuren te veel. Is deze beter of ben je het niet eens?",
             "translation_en": "Right, but I think the colors are too many. Is this one better or don't you agree?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/betul-tetapi-saya-rasa-a6846da4.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/betul-tetapi-saya-rasa-0f3b71ef.mp3"
           },
           {
             "text": "Bu, bagus betul, tetapi lihat dong! Harganya, kok, Rp 46.500. Jadi, amat mahal.",
             "speaker": "Tin",
             "translation": "Mevrouw, deze is echt prachtig, maar kijk dan! De prijs is Rp 46.500. Dus erg duur.",
             "translation_en": "Madam, this is really beautiful, but look! The price is Rp 46,500. So it's very expensive.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bu-bagus-betul-tetapi-e28a7ef5.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bu-bagus-betul-tetapi-db223de0.mp3"
           },
           {
             "text": "Tin, Tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas Rp 25.000.",
             "speaker": "Ibu Yati",
             "translation": "Tin, Tin, probeer deze geel-bruine. Deze is het mooiste en de prijs is precies Rp 25.000.",
             "translation_en": "Tin, Tin, try this yellow-brown one, this is the most beautiful and the price is exactly Rp 25,000.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tin-tin-coba-yang-3b5fe5b6.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tin-tin-coba-yang-fb017423.mp3"
           },
           {
             "text": "Benar, bu. Kain ini warnanya paling bagus!",
             "speaker": "Tin",
             "translation": "Ja, mevrouw. De kleuren van deze stof zijn het mooiste!",
             "translation_en": "Yes, madam. The colors of this fabric are the most beautiful!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/benar-bu-kain-ini-f4b0bfb3.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/benar-bu-kain-ini-cbdfc995.mp3"
           },
           {
             "text": "Coba kita beli yang ini saja. Bu, kami mau beli kain ini. Di mana bisa membayar?",
             "speaker": "Ibu Yati",
             "translation": "Laten we deze maar kopen. Mevrouw, we willen deze stof kopen. Waar kunnen we betalen?",
             "translation_en": "Let's just buy this one. Madam, we want to buy this fabric. Where can we pay?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/coba-kita-beli-yang-21890df6.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/coba-kita-beli-yang-020cbe92.mp3"
           },
           {
             "text": "Di sana, Bu. Ini bon untuk kasir.",
             "speaker": "Ibu penjual",
             "translation": "Daar, mevrouw. Dit is een bon voor de kassa.",
             "translation_en": "Over there, madam. This is a receipt for the cashier.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/di-sana-bu-ini-d60de6ed.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/di-sana-bu-ini-3040930f.mp3"
           },
           {
             "text": "Terima kasih. Wah, saya senang, kita sudah dapat batik yang bagus sekali!",
             "speaker": "Ibu Yati",
             "translation": "Dank u wel. Wat ben ik blij, we hebben echt een prachtige batik gekregen!",
             "translation_en": "Thank you. What a pleasure, we've gotten a really beautiful batik!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/terima-kasih-wah-saya-dbc1efce.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/terima-kasih-wah-saya-84e7be0f.mp3"
           }
         ]
       }
