@@ -17,10 +17,11 @@ status: draft
 | 3 | **Percakapan** — AI chat constrained to the learner's known words (Phase-2 premium SKU) | `2026-07-06-percakapan-program.md` | draft, staff-engineer-checked. Core question: learner-model compression (against the DB lexicon) |
 | 4 | **Growth layer** — SEO-from-data, free funnel, heritage positioning | `2026-07-06-growth-layer-program.md` | draft, staff-engineer-checked. Core question: separate static site (decided direction) |
 | 5 | **EN audience** — "the serious Indonesian app"; one app, two front doors | `2026-07-06-en-audience-program.md` | draft, staff-engineer-checked. Bilingual brand DIRECTION SET (brand-as-i18n-token + per-domain entry; EN name still to choose) |
+| 6 | **Spreektaal** — the bahasa gaul register track (promoted from idea A7; user-selected 2026-07-06 as next focus) | `2026-07-06-spreektaal-program.md` | draft, staff-engineer-checked. Three content kinds → three existing grooves (morphology template / grammar patterns / vocab+collections); new = register primer + colloquial grader acceptance. Slice 1 (answer-variant acceptance) shippable independently |
 
 ## Round-2 ideas — `2026-07-06-experience-and-growth-ideas.md`
 
-**Learning:** A1 Onderweg-modus ⭐ (hands-free audio sessions) · A2 Dagboek (1 LLM-graded sentence/day) · A3 De stem van je familie ⭐ (family voice recordings replace TTS — promotion candidate to the bets) · A4 getallen & prijzen trainer (deterministic) · A5 "wist je dat" micro-cards · **A7 Spreektaal ⭐⭐ (bahasa gaul register track — the market's loudest documented gap; promotion candidate)**.
+**Learning:** A1 Onderweg-modus ⭐ (hands-free audio sessions) · A2 Dagboek (1 LLM-graded sentence/day) · A3 De stem van je familie ⭐ (family voice recordings replace TTS — promotion candidate to the bets) · A4 getallen & prijzen trainer (deterministic) · A5 "wist je dat" micro-cards · A7 Spreektaal → **PROMOTED to Bet 6** (own program spec, 2026-07-06).
 **Growth:** B1 public loanword quiz ⭐ (no-account viral quiz = growth-layer leg 0) · B2 Tong Tong Fair / Moesson channel · B3 Kata-van-de-week newsletter · B4 public reader demo · B5 cadeau-abonnement · B6 Leiden connection · **B7 "na Duolingo" exit-ramp SEO + public "route to B1" map (market-research addition; now in the growth-layer spec)**.
 **Top three if forced:** B1, A1, A3 — A7 Spreektaal is the strongest *content* differentiator once Bet 1 ships.
 
@@ -35,8 +36,8 @@ Verified 2026-07-06: **every mass-market app caps Indonesian at A2** (Duolingo �
 
 ## Recommended global order (build-readiness × impact)
 
-1. **Bet 1 slice 1** (loanword collection + `/welkom`) — approved, pure acquisition.
-2. **G4 produce-grader fix** — trust; reuses the just-shipped answer-variants machinery.
+1. **Bet 1 slice 1** (loanword collection + `/welkom`) — approved, pure acquisition. **(IN PROGRESS — build session running; §3.2 write path amended + re-verified 2026-07-06.)**
+2. **Bet 6 Spreektaal** — **USER-SELECTED next focus (2026-07-06).** Start slice 1 (colloquial answer variants) together with **G4 produce-grader fix** — same machinery, one variants pass.
 3. **I1 Voortgang hero** (+ I6 sparklines) — the felt-progress unlock, read-model only.
 4. **G1 grammar practice mode** — spends 2,885 existing exercises.
 5. **Bet 2 weekverhaal** execution spec (settle per-learner content regime).
