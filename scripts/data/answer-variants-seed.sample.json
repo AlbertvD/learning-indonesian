@@ -1,0 +1,156 @@
+[
+  {
+    "learningItemId": "a348670c-0bee-4316-94c7-6fdbbd838c7f",
+    "baseText": "besar",
+    "language": "en",
+    "variantText": "large",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "4d67e4b4-0b66-4286-8de7-58181b0f8356",
+    "baseText": "minta",
+    "language": "en",
+    "variantText": "request",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "4d67e4b4-0b66-4286-8de7-58181b0f8356",
+    "baseText": "minta",
+    "language": "nl",
+    "variantText": "verzoeken",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "797e77a8-247d-4458-af77-872359d63fa1",
+    "baseText": "duduk",
+    "language": "en",
+    "variantText": "be seated",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "c40b62f9-0eb8-4410-b356-39a5f71c93e6",
+    "baseText": "di sebelah",
+    "language": "en",
+    "variantText": "next to",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "c40b62f9-0eb8-4410-b356-39a5f71c93e6",
+    "baseText": "di sebelah",
+    "language": "nl",
+    "variantText": "naast",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "a2811ec4-df1f-4b7f-9aad-91cd65044aaf",
+    "baseText": "butir",
+    "language": "en",
+    "variantText": "granule",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "924d559a-6ea3-4756-817b-166c37d99ec7",
+    "baseText": "murah",
+    "language": "en",
+    "variantText": "inexpensive",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "a91b3ac3-d525-4304-873e-ec5f57c98655",
+    "baseText": "kota",
+    "language": "en",
+    "variantText": "town",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "bfe2369b-933d-449c-b55e-047b67a2da6b",
+    "baseText": "makanan",
+    "language": "nl",
+    "variantText": "eten",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "64250431-5f4c-4faa-92a4-bc9f672eef4c",
+    "baseText": "pulang",
+    "language": "en",
+    "variantText": "go home",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "64250431-5f4c-4faa-92a4-bc9f672eef4c",
+    "baseText": "pulang",
+    "language": "nl",
+    "variantText": "naar huis gaan",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "890fe657-0465-422b-b458-07a0af75ea5c",
+    "baseText": "lapangan",
+    "language": "en",
+    "variantText": "square",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "75ebcaa0-33c8-482a-80ac-a56104157841",
+    "baseText": "akhir",
+    "language": "en",
+    "variantText": "finish",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "75ebcaa0-33c8-482a-80ac-a56104157841",
+    "baseText": "akhir",
+    "language": "nl",
+    "variantText": "eind",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "2abd89a6-1b54-4ae8-91c1-67a6dc12195a",
+    "baseText": "gigi",
+    "language": "nl",
+    "variantText": "tanden",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "2abd89a6-1b54-4ae8-91c1-67a6dc12195a",
+    "baseText": "gigi",
+    "language": "en",
+    "variantText": "teeth",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "548b8e4f-6f7e-43f9-a938-66ee42d84ee6",
+    "baseText": "pakaian",
+    "language": "nl",
+    "variantText": "kleren",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "548b8e4f-6f7e-43f9-a938-66ee42d84ee6",
+    "baseText": "pakaian",
+    "language": "en",
+    "variantText": "clothes",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "257fd334-ac57-49a6-b8cb-bd245a6af2fc",
+    "baseText": "rapi",
+    "language": "en",
+    "variantText": "neat",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "257fd334-ac57-49a6-b8cb-bd245a6af2fc",
+    "baseText": "rapi",
+    "language": "en",
+    "variantText": "tidy",
+    "variantType": "alternative_translation"
+  },
+  {
+    "learningItemId": "257fd334-ac57-49a6-b8cb-bd245a6af2fc",
+    "baseText": "rapi",
+    "language": "nl",
+    "variantText": "ordelijk",
+    "variantType": "alternative_translation"
+  }
+]
