@@ -27,6 +27,10 @@ Numbers, times, dates, prices — the classic real-world weak spot. Fully determ
 ### A5. "Wist je dat" cultural micro-cards
 Occasional one-liner between exercises: etymology (the loanword data paying again), culture, usage. Turns drill sessions into discovery; cheap authored content; trivially skippable so it never taxes the session.
 
+### A7 ⭐⭐ Spreektaal — the bahasa gaul track (added from market research 2026-07-06; promotion candidate to the bets)
+The loudest documented complaint about EVERY existing Indonesian tool (incl. Duolingo): they teach formal *bahasa baku*, while real conversation runs on *bahasa gaul* (*nggak, udah, gue, banget, dong, sih, kok*) — "you sound like a news broadcast and can't understand the reply." **Our Leiden coursebook is also formal — we share this gap today.** The fix composes with the capability model exactly like the loanword bridge: **register pairs as linked capabilities** (learner knows *tidak* → *nggak* is a cheap win riding existing knowledge), particle micro-lessons, and **register-aware Percakapan personas** (friend speaks gaul, official speaks baku — teaching register *choice*, which no competitor does). One niche app (KataKita) already monetizes this gap alone. Full evidence: `docs/research/2026-07-06-market-research-competitive-landscape.md` §3.
+*Key design questions:* register as a first-class content dimension (linked-variant capability shape — data-architect); which register the graders accept where; curriculum placement (unlock after N formal words?).
+
 ### A6. Grammar teaching improvements — SEE SEPARATE REVIEW
 `docs/research/2026-07-06-grammar-teaching-review.md` (same date): practice mode, first-encounter rule card, Grammatica reference library, produce-grader fix, interpretation variants, LLM-graded free production. Kept there — the review carries the evidence.
 

@@ -20,9 +20,13 @@ status: draft
 
 ## Round-2 ideas — `2026-07-06-experience-and-growth-ideas.md`
 
-**Learning:** A1 Onderweg-modus ⭐ (hands-free audio sessions) · A2 Dagboek (1 LLM-graded sentence/day) · A3 De stem van je familie ⭐ (family voice recordings replace TTS — promotion candidate to the bets) · A4 getallen & prijzen trainer (deterministic) · A5 "wist je dat" micro-cards.
-**Growth:** B1 public loanword quiz ⭐ (no-account viral quiz = growth-layer leg 0) · B2 Tong Tong Fair / Moesson channel · B3 Kata-van-de-week newsletter · B4 public reader demo · B5 cadeau-abonnement · B6 Leiden connection.
-**Top three if forced:** B1, A1, A3.
+**Learning:** A1 Onderweg-modus ⭐ (hands-free audio sessions) · A2 Dagboek (1 LLM-graded sentence/day) · A3 De stem van je familie ⭐ (family voice recordings replace TTS — promotion candidate to the bets) · A4 getallen & prijzen trainer (deterministic) · A5 "wist je dat" micro-cards · **A7 Spreektaal ⭐⭐ (bahasa gaul register track — the market's loudest documented gap; promotion candidate)**.
+**Growth:** B1 public loanword quiz ⭐ (no-account viral quiz = growth-layer leg 0) · B2 Tong Tong Fair / Moesson channel · B3 Kata-van-de-week newsletter · B4 public reader demo · B5 cadeau-abonnement · B6 Leiden connection · **B7 "na Duolingo" exit-ramp SEO + public "route to B1" map (market-research addition; now in the growth-layer spec)**.
+**Top three if forced:** B1, A1, A3 — A7 Spreektaal is the strongest *content* differentiator once Bet 1 ships.
+
+## Market research — `docs/research/2026-07-06-market-research-competitive-landscape.md`
+
+Verified 2026-07-06: **every mass-market app caps Indonesian at A2** (Duolingo ¼-length/formal-only; Babbel HAS Indonesian but A2 ceiling — correction; Busuu none); **bahasa gaul register gap** = biggest new product insight (→ A7); Kaiwa exists (AI speaking) → Percakapan differentiates on learner-model + FSRS (folded into its spec); NL heritage ~1.7M is the primary segment, vacation stream modest (growth spec corrected); Bali 5-yr nomad visa (2025) strengthens the EN wedge; Australia = supply-vacuum narrative, not a schools channel (EN spec corrected); pricing anchor ~€9.99/mo / €79/yr vs local courses at hundreds of euros. Corrections from its §5 are APPLIED (2026-07-06) to the percakapan / growth-layer / en-audience specs.
 
 ## Reviews with ranked improvement ideas — `docs/research/`
 
