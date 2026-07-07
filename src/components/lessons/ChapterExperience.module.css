@@ -33,6 +33,22 @@
   width: 100%;
 }
 
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--mantine-color-dimmed);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+
+.backLink:hover { color: var(--mantine-color-text); }
+
+.backLink svg { flex-shrink: 0; }
+
 .segments {
   display: flex;
   gap: 6px;
