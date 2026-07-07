@@ -14,6 +14,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -216,6 +218,12 @@ function AllomorphTile({ cat, accent, index }: { cat: GrammarCategory; accent: s
 function GrammarConcept({ cat }: { cat: GrammarCategory }) {
   return (
     <div className={classes.conceptBlock}>
+      {/* cat.title ("Het voorvoegsel PE-: een handelend persoon of ding") was
+          silently dropped by the pre-chapter renderer — nothing rendered it,
+          unlike AllomorphTile/SemanticAside which both show cat.title in a
+          heading. Fixed here (content-drop, not a chapterization artefact):
+          reuse allomorphTitle since no bespoke concept-heading class exists. */}
+      <h3 className={classes.allomorphTitle}>{cat.title}</h3>
       <ul className={classes.conceptRules}>
         {cat.rules.map((r, j) => <li key={j}>{r}</li>)}
       </ul>
@@ -276,33 +284,48 @@ function GrammarSection({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps one or more scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson20Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — full-bleed, spice-market image under a warm gradient */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Biar Lambat Asal Selamat</span>
-              <span className={classes.heroTitleNl}>Liever langzaam dan onveilig</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Een hoofdstuk uit de keuken: het geheim van de Indonesische kruidenmengsels, de woorden
-              voor smaak, en een leesverhaal over een trage veerboot naar Bali. En grammaticaal het
-              voorvoegsel PE- — dat van een werkwoord de persoon maakt die het doet.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero — spice-market heat. Rendered ABOVE the chapter nav via
+       ChapterExperience's hero slot (cover only). */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Biar Lambat Asal Selamat</span>
+            <span className={classes.heroTitleNl}>Liever langzaam dan onveilig</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Een hoofdstuk uit de keuken: het geheim van de Indonesische kruidenmengsels, de woorden
+            voor smaak, en een leesverhaal over een trage veerboot naar Bali. En grammaticaal het
+            voorvoegsel PE- — dat van een werkwoord de persoon maakt die het doet.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -315,60 +338,92 @@ export default function Lesson20Page() {
         </div>
       </section>
 
-      {/* Lesson audio — guarded band; lights up when audio is attached */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — NOT wrapped in Shell: the overview centers itself on
+          --lesson-col; nesting would double the horizontal padding. */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column, aligned to lede width */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <SpiceEssay section={sections[0]} />
-          <VocabGrid
-            section={sections[1]}
-            eyebrow="Kruiden en specerijen"
-            title="Bumbu van A tot Z"
-            tone="spice"
-            id="s-spice"
-          />
-          <VocabGrid
-            section={sections[2]}
-            eyebrow="Smaak"
-            title="Zoet, zuur, zout, scherp"
-            tone="taste"
-            id="s-taste"
-          />
-          <ReadingPassage section={sections[3]} />
-          <VocabGrid
-            section={sections[4]}
-            eyebrow="Woordenschat · Bij het verhaal"
-            title="Woorden uit het leesverhaal"
-            tone="story"
-            id="s-story"
-          />
-          <GrammarSection section={sections[5]} />
-        </main>
-      </section>
-
-      {/* Closing band — outro + activation + CTA grouped as one unit */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de kruiden, smaakwoorden en PE-vormen verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de kruiden, smaakwoorden en PE-vormen verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (spice essay — "Bumbu-bumbu")
+//   1 = vocabulary (41 spices)
+//   2 = vocabulary (15 taste words)
+//   3 = text (Bali ferry reading passage, Indonesian)
+//   4 = vocabulary (glossary for the reading passage)
+//   5 = grammar (9 PE- categories)
+//   6 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (user feedback 2026-07-07).
+    { id: 'inhoud', title: 'Inhoud', node: <InhoudChapter /> },
+    { id: 'bumbu', title: 'Bumbu', description: 'Het geheim van de kok: kruidenmengsels, plus 41 kruiden en 15 smaakwoorden.',
+      node: (
+        <Shell>
+          <SpiceEssay section={sections[0]} />
+          <VocabGrid section={sections[1]} eyebrow="Kruiden en specerijen" title="Bumbu van A tot Z" tone="spice" id="s-spice" />
+          <VocabGrid section={sections[2]} eyebrow="Smaak" title="Zoet, zuur, zout, scherp" tone="taste" id="s-taste" />
+        </Shell>
+      ) },
+    { id: 'feri', title: 'Feri', description: 'Een leesverhaal over de trage veerboot naar Bali, met de bijbehorende woordenschat.',
+      node: (
+        <Shell>
+          <ReadingPassage section={sections[3]} />
+          <VocabGrid section={sections[4]} eyebrow="Woordenschat · Bij het verhaal" title="Woorden uit het leesverhaal" tone="story" id="s-story" />
+        </Shell>
+      ) },
+    { id: 'grammatica', title: 'Grammatica', description: 'Het voorvoegsel PE- — van werkwoord naar wie het doet — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar, not on the
+              cover (established chapter-experience convention). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarSection section={sections[5]} /></Shell>
+        </>
+      ) },
+    { id: 'oefenen', title: 'Oefenen', description: 'Activeer de les en oefen de kruiden, smaakwoorden en PE-vormen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson20Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }
