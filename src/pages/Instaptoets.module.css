@@ -1,0 +1,69 @@
+/* Instaptoets.module.css — the placement probe (Bet-1 slice 2).
+   Summary/empty/error screens mirror Welkom.module.css's hero treatment
+   (--hero-text so it reads on the gradient in both themes); the active-probe
+   skip link sits above <ExerciseFrame>, outside any hero surface, so it uses
+   the plain page text tokens instead. No bespoke colors — only design tokens
+   + Mantine spacing vars. */
+
+.summaryBody {
+  color: var(--hero-text);
+  font-size: var(--fs-md);
+  opacity: 0.9;
+  margin: 0 0 10px;
+  max-width: 48ch;
+}
+
+.summaryHint {
+  color: var(--hero-text);
+  opacity: 0.72;
+  font-size: var(--fs-sm);
+  margin: 0 0 22px;
+  max-width: 48ch;
+}
+
+.ctaBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+@media (min-width: 640px) {
+  .ctaBlock {
+    align-items: flex-start;
+  }
+}
+
+/* Quiet link INSIDE a HeroCard (empty state, save-failed retry screen). */
+.heroSkipLink {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  margin-top: 4px;
+  padding: 6px 0;
+  color: var(--hero-text);
+  opacity: 0.72;
+  font-size: var(--fs-sm);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.heroSkipLink:hover {
+  opacity: 1;
+}
+
+/* Quiet link OUTSIDE any hero surface — sits above the exercise frame during
+   the active probe, so it needs the plain page text tokens instead. */
+.plainSkipLink {
+  display: block;
+  background: none;
+  border: none;
+  padding: 4px 0 12px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.plainSkipLink:hover {
+  color: var(--text-primary);
+}
