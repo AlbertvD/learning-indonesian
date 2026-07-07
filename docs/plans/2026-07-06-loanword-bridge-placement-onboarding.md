@@ -1,6 +1,13 @@
 ---
-status: implementing
-implementation: PR #379 merged to main (0d5698e9); SLICE 1 shipped + deployed 2026-07-07. Slice 2 still gated.
+status: shipped
+merged_at: 2026-07-07
+implementation: PR #379 (slice 1, loanword bridge) + PR #381 (slice 2, placement probe) — BOTH merged + deployed 2026-07-07 (container rev 45a4b3b5). ADR 0026 accepted. Bet-1 program complete.
+implementation_paths:
+  - src/lib/placement/
+  - src/pages/Instaptoets.tsx
+  - src/pages/Welkom.tsx
+  - scripts/migration.sql   # apply_placement_result RPC + activation_source CHECK
+  - docs/adr/0026-placement-seeding-is-a-permitted-second-learner-state-writer.md
 reviewed_by:
   - staff-engineer   # r1 SOUND (2026-07-06)
   - architect        # r1 needs-work → r2 APPROVE (2026-07-06; ADR-0004 carve-out scoping confirmed)
