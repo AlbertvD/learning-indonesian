@@ -176,6 +176,7 @@ export const lesson = {
           },
           {
             "dutch": "dokter, arts",
+            "loanSourceNl": "dokter",
             "indonesian": "dokter",
             "english": "doctor"
           },
@@ -192,6 +193,7 @@ export const lesson = {
           },
           {
             "dutch": "onderwijzer, leraar",
+            "loanSourceNl": "goeroe",
             "indonesian": "guru",
             "english": "teacher, instructor"
           },
@@ -212,11 +214,13 @@ export const lesson = {
           },
           {
             "dutch": "kamer",
+            "loanSourceNl": "kamer",
             "indonesian": "kamar",
             "english": "room"
           },
           {
             "dutch": "kantoor",
+            "loanSourceNl": "kantoor",
             "indonesian": "kantor",
             "english": "office"
           },
@@ -262,6 +266,7 @@ export const lesson = {
           },
           {
             "dutch": "nummer",
+            "loanSourceNl": "nummer",
             "indonesian": "nomor",
             "english": "number"
           },
@@ -337,6 +342,7 @@ export const lesson = {
           },
           {
             "dutch": "tas",
+            "loanSourceNl": "tas",
             "indonesian": "tas",
             "english": "bag"
           },

@@ -236,6 +236,7 @@ export const lesson = {
         "items": [
           {
             "dutch": "winkel",
+            "loanSourceNl": "toko",
             "indonesian": "toko",
             "english": "shop"
           },
@@ -426,6 +427,7 @@ export const lesson = {
           },
           {
             "dutch": "markt",
+            "loanSourceNl": "pasar (malam)",
             "indonesian": "pasar",
             "english": "market"
           },
@@ -436,6 +438,7 @@ export const lesson = {
           },
           {
             "dutch": "banaan",
+            "loanSourceNl": "pisang",
             "indonesian": "pisang",
             "english": "banana"
           },

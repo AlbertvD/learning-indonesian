@@ -238,6 +238,7 @@ export const lesson = {
             "english": "lightning"
           },
           {
+            "loanSourceNl": "kilo",
             "indonesian": "kilo",
             "dutch": "kilo (gewicht) / kilometer",
             "english": "kilo (weight) / kilometer"

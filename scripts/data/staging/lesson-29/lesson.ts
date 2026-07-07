@@ -132,6 +132,7 @@ export const lesson = {
             "english": "communication"
           },
           {
+            "loanSourceNl": "krant",
             "indonesian": "koran",
             "dutch": "krant",
             "english": "newspaper"

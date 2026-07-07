@@ -174,6 +174,7 @@ export const lesson = {
             "english": "sugar"
           },
           {
+            "loanSourceNl": "ham",
             "indonesian": "ham",
             "dutch": "ham",
             "english": "ham"
@@ -264,6 +265,7 @@ export const lesson = {
             "english": "reluctance / unwillingness"
           },
           {
+            "loanSourceNl": "gelei",
             "indonesian": "selai",
             "dutch": "jam",
             "english": "jam"
@@ -279,6 +281,7 @@ export const lesson = {
             "english": "watermelon"
           },
           {
+            "loanSourceNl": "servet",
             "indonesian": "serbet",
             "dutch": "servet",
             "english": "napkin"

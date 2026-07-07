@@ -203,6 +203,7 @@ export const lesson = {
             "english": "consult"
           },
           {
+            "loanSourceNl": "secretaris",
             "indonesian": "sekretaris",
             "dutch": "secretaris / secretaresse",
             "english": "secretary"

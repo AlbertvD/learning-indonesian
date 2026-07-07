@@ -272,6 +272,7 @@ export const lesson = {
             "english": "smile"
           },
           {
+            "loanSourceNl": "strijkijzer",
             "indonesian": "setrika",
             "dutch": "strijkijzer",
             "english": "iron"

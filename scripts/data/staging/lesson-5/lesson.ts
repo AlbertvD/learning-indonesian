@@ -926,6 +926,7 @@ export const lesson = {
           },
           {
             "dutch": "zich prettig voelen, blij, leuk",
+            "loanSourceNl": "senang",
             "indonesian": "senang",
             "english": "feel pleased, happy, nice"
           },

@@ -262,11 +262,13 @@ export const lesson = {
         "type": "vocabulary",
         "items": [
           {
+            "loanSourceNl": "band",
             "indonesian": "ban",
             "dutch": "band",
             "english": "tire"
           },
           {
+            "loanSourceNl": "bougie",
             "indonesian": "busi",
             "dutch": "bougie",
             "english": "spark plug"
@@ -277,6 +279,7 @@ export const lesson = {
             "english": "spoke"
           },
           {
+            "loanSourceNl": "kabel",
             "indonesian": "kabel",
             "dutch": "kabel",
             "english": "cable"
@@ -292,11 +295,13 @@ export const lesson = {
             "english": "cylinder head"
           },
           {
+            "loanSourceNl": "knalpot",
             "indonesian": "knalpot",
             "dutch": "uitlaat",
             "english": "exhaust"
           },
           {
+            "loanSourceNl": "lamp",
             "indonesian": "lampu",
             "dutch": "lamp",
             "english": "lamp"
@@ -312,11 +317,13 @@ export const lesson = {
             "english": "turn signal"
           },
           {
+            "loanSourceNl": "motor",
             "indonesian": "motor",
             "dutch": "motor",
             "english": "motor"
           },
           {
+            "loanSourceNl": "velg",
             "indonesian": "pelek",
             "dutch": "velg",
             "english": "rim"
@@ -357,6 +364,7 @@ export const lesson = {
             "english": "saddle"
           },
           {
+            "loanSourceNl": "stuur",
             "indonesian": "setir",
             "dutch": "stuur",
             "english": "handlebars"
@@ -367,6 +375,7 @@ export const lesson = {
             "english": "cylinder"
           },
           {
+            "loanSourceNl": "spatbord",
             "indonesian": "spatbor",
             "dutch": "spatbord",
             "english": "fender"

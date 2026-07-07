@@ -116,6 +116,7 @@ export const lesson = {
             "english": "have various kinds"
           },
           {
+            "loanSourceNl": "kabel",
             "indonesian": "kabel",
             "dutch": "kabel",
             "english": "cable"
@@ -156,11 +157,13 @@ export const lesson = {
             "english": "complete"
           },
           {
+            "loanSourceNl": "komfoor",
             "indonesian": "kompor",
             "dutch": "fornuis",
             "english": "stove"
           },
           {
+            "loanSourceNl": "contract",
             "indonesian": "kontrak",
             "dutch": "kontrakt",
             "english": "contract"
@@ -206,6 +209,7 @@ export const lesson = {
             "english": "eccentric, odd"
           },
           {
+            "loanSourceNl": "oven",
             "indonesian": "oven",
             "dutch": "oven",
             "english": "oven"

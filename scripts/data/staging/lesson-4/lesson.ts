@@ -543,6 +543,7 @@ export const lesson = {
           },
           {
             "dutch": "gekookte rijst, daarna met kruiden gebakken",
+            "loanSourceNl": "nasi goreng",
             "indonesian": "nasi goreng",
             "english": "cooked rice, then fried with spices"
           },
@@ -618,6 +619,7 @@ export const lesson = {
           },
           {
             "dutch": "formulier",
+            "loanSourceNl": "formulier",
             "indonesian": "formulir",
             "english": "form"
           },
@@ -678,6 +680,7 @@ export const lesson = {
           },
           {
             "dutch": "handdoek",
+            "loanSourceNl": "handdoek",
             "indonesian": "handuk",
             "english": "towel"
           },
@@ -693,11 +696,13 @@ export const lesson = {
           },
           {
             "dutch": "pasta van Spaanse pepers",
+            "loanSourceNl": "sambal",
             "indonesian": "sambal",
             "english": "chili pepper paste"
           },
           {
             "dutch": "sate",
+            "loanSourceNl": "saté",
             "indonesian": "sate",
             "english": "satay"
           },
@@ -783,6 +788,7 @@ export const lesson = {
           },
           {
             "dutch": "sojasaus",
+            "loanSourceNl": "ketjap",
             "indonesian": "kecap",
             "english": "soy sauce"
           },
@@ -803,6 +809,7 @@ export const lesson = {
           },
           {
             "dutch": "koffie",
+            "loanSourceNl": "koffie",
             "indonesian": "kopi",
             "english": "coffee"
           },
