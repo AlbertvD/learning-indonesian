@@ -1,0 +1,166 @@
+/* ChapterExperience — shared chapter chrome for bespoke lesson pages.
+   Visually quiet: a translucent sticky header that sits over ANY lesson's
+   editorial theme (each bespoke page brings its own palette), Mantine tokens
+   only — no per-lesson colors here. */
+
+.experience {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ─── Sticky progress header ─────────────────────────────────────────────── */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 8px var(--page-pad-x, 16px) 6px;
+  background: color-mix(in srgb, var(--mantine-color-body) 82%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.segments {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.segments::-webkit-scrollbar { display: none; }
+
+.segmentItem { flex: 0 0 auto; }
+
+.segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mantine-color-dimmed);
+  font-size: 0.78rem;
+  line-height: 1;
+  padding: 7px 12px 7px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.segment:hover {
+  color: var(--mantine-color-text);
+  border-color: var(--mantine-color-dimmed);
+}
+
+.segment[data-current='true'] {
+  background: var(--mantine-primary-color-light);
+  border-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-color-text);
+  font-weight: 600;
+}
+
+.segment[data-visited='true'] {
+  color: var(--mantine-color-text);
+}
+
+.segmentIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-size: 0.66rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.segment[data-current='true'] .segmentIndex {
+  background: var(--mantine-primary-color-filled);
+  border-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-color-white);
+}
+
+.segmentTitle { display: inline; }
+
+.progressLabel {
+  margin: 4px 2px 0;
+  font-size: 0.68rem;
+  color: var(--mantine-color-dimmed);
+}
+
+/* ─── Resume chip ────────────────────────────────────────────────────────── */
+
+.resumeBand {
+  display: flex;
+  justify-content: center;
+  padding: 10px var(--page-pad-x, 16px) 0;
+}
+
+.resumeChip {
+  border: 1px solid var(--mantine-primary-color-filled);
+  border-radius: 999px;
+  background: var(--mantine-primary-color-light);
+  color: var(--mantine-color-text);
+  font-size: 0.82rem;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+/* ─── Chapter content ────────────────────────────────────────────────────── */
+
+.content {
+  outline: none; /* programmatic focus target; no visible ring on the wrapper */
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Footer next/prev ───────────────────────────────────────────────────── */
+
+.footerNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 20px var(--page-pad-x, 16px) 40px;
+  max-width: 1180px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.navButton,
+.navButtonNext {
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--mantine-color-text);
+  font-size: 0.86rem;
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.navButton:hover,
+.navButtonNext:hover {
+  border-color: var(--mantine-color-dimmed);
+  background: color-mix(in srgb, var(--mantine-color-text) 6%, transparent);
+}
+
+.navButtonNext {
+  border-color: var(--mantine-primary-color-filled);
+  background: var(--mantine-primary-color-light);
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .segment { padding: 6px 10px 6px 7px; font-size: 0.74rem; }
+  .footerNav { padding-bottom: 32px; }
+  .navButton, .navButtonNext { padding: 10px 14px; font-size: 0.8rem; }
+}

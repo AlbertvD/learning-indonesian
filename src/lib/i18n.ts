@@ -296,6 +296,11 @@ export const nl = {
     noExercisesAvailable: 'Geen oefeningen beschikbaar',
     practiceThisLesson: (n: number) => `Oefen deze les · ${n} klaar`,
     reviewThisLesson: 'Herhaal deze les',
+    chapterNavLabel: 'Hoofdstukken',
+    chapterPrev: 'Vorige',
+    chapterNext: 'Volgende',
+    chapterResume: (title: string) => `Ga verder bij ${title}`,
+    chapterProgress: (current: number, total: number) => `Hoofdstuk ${current} van ${total}`,
   },
   collections: {
     title: 'Woordenlijsten',
@@ -922,6 +927,11 @@ export const en: typeof nl = {
     noExercisesAvailable: 'No exercises available',
     practiceThisLesson: (n: number) => `Practice this lesson · ${n} ready`,
     reviewThisLesson: 'Review this lesson',
+    chapterNavLabel: 'Chapters',
+    chapterPrev: 'Previous',
+    chapterNext: 'Next',
+    chapterResume: (title: string) => `Continue at ${title}`,
+    chapterProgress: (current: number, total: number) => `Chapter ${current} of ${total}`,
   },
   collections: {
     title: 'Word lists',
