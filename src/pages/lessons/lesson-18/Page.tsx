@@ -16,6 +16,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -278,32 +280,48 @@ function ItemList({
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE OR MORE scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson18Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — full-bleed, decorated */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Mampir</span>
-              <span className={classes.heroTitleNl}>Even langsgaan</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Joyce en Harry gaan onaangekondigd langs bij hun vriendin Jumilah. Een hoofdstuk over op bezoek gaan, gastvrijheid en goede manieren — en over de lijdende vorm, het hart van de Indonesische zin.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
-      {/* Editorial lede — sets the page's voice */}
+function Hero() {
+  return (
+    /* Hero — warm "home visit" gradient. Rendered ABOVE the chapter nav via
+       ChapterExperience's hero slot (cover only): the nav sits under the
+       hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Mampir</span>
+            <span className={classes.heroTitleNl}>Even langsgaan</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Joyce en Harry gaan onaangekondigd langs bij hun vriendin Jumilah. Een hoofdstuk over op bezoek gaan, gastvrijheid en goede manieren — en over de lijdende vorm, het hart van de Indonesische zin.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
+      {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
@@ -313,22 +331,75 @@ export default function Lesson18Page() {
         </div>
       </section>
 
-      {/* Lesson audio — band between the lede and the main content */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column, aligned to lede width */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <DialogueScene section={sections[0]} />
-          <PassiveSection section={sections[3]} />
-          <TimeMarkersSection section={sections[4]} />
-          <QuantifierSection section={sections[5]} />
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, zinnen en patronen verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
+        </div>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = dialogue (Joyce & Harry visit Jumilah, with a narrator)
+//   1 = vocabulary (37 items)
+//   2 = expressions (single idiom — omong kosong)
+//   3 = grammar — passive (5 categories, the lesson's spine)
+//   4 = grammar — time markers (sudah/telah · sesudah/setelah)
+//   5 = grammar — quantifiers (alle/alles/iedereen)
+//   6 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5).
+    { id: 'inhoud',              title: 'Inhoud',            node: <InhoudChapter /> },
+    { id: 'bezoek',              title: 'Bezoek',            description: 'Joyce en Harry gaan langs bij hun vriendin Jumilah — en maken kennis met haar ouders.',
+      node: <Shell><DialogueScene section={sections[0]} /></Shell> },
+    { id: 'passief',             title: 'Passief',           description: 'Vijf manieren om de lijdende vorm te zeggen — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the lesson's grammatical
+              spine (the passive), matching the lesson-5/lesson-2 pattern. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><PassiveSection section={sections[3]} /></Shell>
+        </>
+      ) },
+    { id: 'tijd-en-hoeveelheid', title: 'Tijd & hoeveelheid', description: 'Sudah/telah, sesudah/setelah, en de woorden voor alle, alles en iedereen.',
+      node: <Shell><TimeMarkersSection section={sections[4]} /><QuantifierSection section={sections[5]} /></Shell> },
+    { id: 'woorden',             title: 'Woorden',           description: 'Woorden uit het bezoekverhaal, met audio, plus één uitdrukking.',
+      node: (
+        <Shell>
           <ItemList
             section={sections[1]}
             eyebrowClass={classes.vocabEyebrow}
@@ -344,24 +415,18 @@ export default function Lesson18Page() {
             title="Eén idioom om te onthouden"
             tone="warm"
           />
-        </main>
-      </section>
+        </Shell>
+      ) },
+    { id: 'oefenen',             title: 'Oefenen',           description: 'Activeer de les en oefen de woorden, zinnen en patronen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
 
-      {/* Closing band — outro + activation + CTA grouped as one unit */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, zinnen en patronen verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
-        </div>
-      </section>
+export default function Lesson18Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }
