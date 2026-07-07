@@ -46,7 +46,9 @@ describe('GrammarPodcasts', () => {
 
     // Row title is "Les N", subtitle is the grammar topics — no chapter title.
     expect(await screen.findByText('Les 1')).toBeInTheDocument()
-    expect(screen.getByText('Werkwoord · Zelfstandig naamwoord')).toBeInTheDocument()
+    // Each grammar topic renders on its own line, not joined into one string.
+    expect(screen.getByText('Werkwoord')).toBeInTheDocument()
+    expect(screen.getByText('Zelfstandig naamwoord')).toBeInTheDocument()
     expect(screen.getByText('Les 2')).toBeInTheDocument()
     expect(screen.getByText('Classificeerwoorden')).toBeInTheDocument()
 
