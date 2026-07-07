@@ -517,6 +517,18 @@ RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian 
       ) ORDER BY tablename, policyname)
       FROM pg_policies
       WHERE schemaname = 'indonesian'
+    ),
+    -- Bet-1 slice 2 placement probe (ADR 0026) — two targeted structural
+    -- probes read by check-supabase-deep.ts. Purely additive keys; existing
+    -- consumers reading only tables/grants/policies are unaffected.
+    'placement_activation_source_check_ok', (
+      SELECT coalesce(pg_get_constraintdef(oid) LIKE '%placement%', false)
+      FROM pg_constraint
+      WHERE conrelid = 'indonesian.learner_capability_state'::regclass
+        AND conname = 'learner_capability_state_activation_source_check'
+    ),
+    'apply_placement_result_anon_execute', has_function_privilege(
+      'anon', 'indonesian.apply_placement_result(text[],text[])', 'execute'
     )
   )
 $$;
@@ -1657,7 +1669,14 @@ begin
 
   if (v_state_after->>'stateVersion')::integer is distinct from coalesce(v_state.state_version, 0) + 1
      or v_state_after->>'activationState' is distinct from 'active'
-     or coalesce(v_state_after->>'activationSource', 'review_processor') not in ('review_processor', 'admin_backfill', 'legacy_migration')
+     -- 'placement' added (ADR 0026): a placement-seeded row's activation_source
+     -- is sticky (never overwritten by the coalesce below), so the edge
+     -- function carries it straight through into stateAfter.activationSource
+     -- on the row's first REAL review. Without this, that first review would
+     -- be rejected as invalid — breaking the exact "engine continuation"
+     -- guarantee the placement design depends on. Additive-only: no behavior
+     -- change for the three pre-existing values.
+     or coalesce(v_state_after->>'activationSource', 'review_processor') not in ('review_processor', 'admin_backfill', 'legacy_migration', 'placement')
      or (v_state_after->>'reviewCount')::integer is distinct from coalesce(v_state.review_count, 0) + 1
      or (v_state_after->>'lapseCount')::integer is distinct from coalesce(v_state.lapse_count, 0) + (case when v_rating = 1 and coalesce(v_state.review_count, 0) > 0 then 1 else 0 end)
      or (v_state_after->>'consecutiveFailureCount')::integer is distinct from (case when v_rating = 1 then coalesce(v_state.consecutive_failure_count, 0) + 1 else 0 end)
@@ -4126,3 +4145,166 @@ revoke all on function indonesian.retention_cron_health() from public;
 -- the sole caller in the repo; an authenticated grant would expose cron-job
 -- telemetry to every browser session for no consumer.
 grant execute on function indonesian.retention_cron_health() to service_role;
+
+-- ============================================================================
+-- Bet-1 slice 2 — placement probe FSRS seeding (ADR 0026)
+-- ============================================================================
+-- docs/plans/2026-07-06-loanword-bridge-placement-onboarding.md §4.2-§4.5.
+-- ADR 0026 (docs/adr/0026-placement-seeding-is-a-permitted-second-learner-
+-- state-writer.md): placement is a permitted SECOND writer of
+-- learner_capability_state, scoped to exactly: CREATE-only (insert-only-if-
+-- absent, NEVER update), NEVER writes capability_review_events, auth.uid()-
+-- scoped. The Review Processor (commit_capability_answer_report above)
+-- remains the sole MUTATOR of any row that already exists — placement can
+-- only bring a (learner, capability) pair from no-row to one clean seeded row.
+
+-- activation_source='placement' is STICKY FOREVER (the commit RPC's
+-- `activation_source = coalesce(activation_source, ...)` above never
+-- overwrites a non-null activation_source) — it must NOT be read as "still
+-- unreviewed"; last_reviewed_at IS NULL is the unreviewed signal (ADR 0026's
+-- load-bearing invariant).
+alter table indonesian.learner_capability_state
+  drop constraint if exists learner_capability_state_activation_source_check;
+alter table indonesian.learner_capability_state
+  add constraint learner_capability_state_activation_source_check
+    check (activation_source in ('review_processor','admin_backfill','legacy_migration','placement'));
+
+-- apply_placement_result: auth.uid()-scoped (no user_id argument), SECURITY
+-- DEFINER, one transaction, two effects.
+--
+-- Effect 1 (activations): resolve band slugs -> collection ids, then call the
+--   EXISTING set_collection_activation RPC (above, ~:3595) once per band —
+--   never a second hand-rolled learner_collection_activation writer. Without
+--   this effect, seeded state is invisible to the session-builder eligibility
+--   gate — seeding alone schedules nothing.
+--
+-- Effect 2 (FSRS seed): judged-known words = p_known_texts (the items the
+--   learner directly answered correctly) UNION every learning_item that is a
+--   member of a fully-cleared band collection. For every ready/published/
+--   live vocabulary_src capability of a judged-known word — UNIFORM across
+--   all of that word's item capabilities, per spec §4.2 — INSERT a
+--   learner_capability_state row ONLY IF ABSENT (ON CONFLICT DO NOTHING on
+--   the (user_id, capability_id) unique key). NEVER an UPDATE: a learner who
+--   already has real review history for a word keeps it completely untouched.
+--
+--   Seed shape is data-architect-specified (spec §4.3):
+--     - review_count=3 lands in 'strengthening' in BOTH mastery readers
+--       (:2167 here, masteryModel.ts:194) — never 'introduced' (needs
+--       review_count=0), never 'mastered' (needs >=4) — mastery is EARNED by
+--       real reviews, never claimed by a probe.
+--     - stability/difficulty are the FROZEN constants derived once from the
+--       real FSRS engine — src/lib/placement/seedConstants.ts is the SINGLE
+--       SOURCE OF TRUTH; scripts/__tests__/placement-seed-parity.test.ts
+--       asserts these literals match it. Never re-implement FSRS math here.
+--     - last_reviewed_at=NULL is the reversibility + honesty key: exactly the
+--       rows `delete from learner_capability_state where
+--       activation_source='placement' and last_reviewed_at is null` would
+--       remove (ADR 0026's reversibility predicate — no placement_runs audit
+--       table needed). It flips exactly once, irreversibly, on the row's
+--       first real commit.
+--     - next_due_at is jittered 1..7 days out so a probe (or a retake) can't
+--       spike the review queue onto a single day.
+--     - fsrs_state_json mirrors the flattened columns (camelCase, the same
+--       shape commit_capability_answer_report writes to this column on a real
+--       commit) carrying every key that RPC's required-keys check enforces —
+--       so the existing generic read-and-resubmit path round-trips with zero
+--       placement-specific client code. (Nothing currently reads this column
+--       back — session-builder/adapter.ts:55 and the edge function both read
+--       the flattened columns directly — but the mirror keeps this row
+--       internally consistent with every other write to this table.)
+--
+-- Idempotent + additive: re-running (e.g. a probe retake) can only ADD rows.
+create or replace function indonesian.apply_placement_result(
+  p_band_slugs text[],
+  p_known_texts text[]
+) returns void
+language plpgsql
+security definer
+set search_path = indonesian, public
+as $$
+declare
+  v_user uuid;
+  v_band record;
+begin
+  v_user := auth.uid();
+  if v_user is null then
+    raise exception 'apply_placement_result requires an authenticated caller';
+  end if;
+
+  -- Effect 1: activations — one call to the existing RPC per resolved band.
+  for v_band in
+    select id from indonesian.collections where slug = any(coalesce(p_band_slugs, '{}'))
+  loop
+    perform indonesian.set_collection_activation(v_user, v_band.id, true);
+  end loop;
+
+  -- Effect 2: FSRS seed.
+  with judged_known_texts as (
+    select unnest(coalesce(p_known_texts, '{}'::text[])) as normalized_text
+    union
+    select li.normalized_text
+    from indonesian.collection_items ci
+    join indonesian.collections col on col.id = ci.collection_id
+    join indonesian.learning_items li on li.id = ci.learning_item_id
+    where col.slug = any(coalesce(p_band_slugs, '{}'))
+  ),
+  judged_known_caps as (
+    select distinct c.id as capability_id, c.canonical_key
+    from indonesian.learning_capabilities c
+    join judged_known_texts jkt
+      on c.source_ref = 'learning_items/' || jkt.normalized_text
+    where c.source_kind = 'vocabulary_src'
+      and c.readiness_status = 'ready'
+      and c.publication_status = 'published'
+      and c.retired_at is null
+  )
+  insert into indonesian.learner_capability_state (
+    user_id,
+    capability_id,
+    canonical_key_snapshot,
+    activation_state,
+    activation_source,
+    review_count,
+    lapse_count,
+    consecutive_failure_count,
+    state_version,
+    stability,
+    difficulty,
+    last_reviewed_at,
+    next_due_at,
+    fsrs_state_json
+  )
+  select
+    v_user,
+    jkc.capability_id,
+    jkc.canonical_key,
+    'active',
+    'placement',
+    3,
+    0,
+    0,
+    0,
+    63.14846207,
+    5.33894278,
+    null,
+    now() + (1 + floor(random() * 7)) * interval '1 day',
+    jsonb_build_object(
+      'stateVersion', 0,
+      'activationState', 'active',
+      'activationSource', 'placement',
+      'reviewCount', 3,
+      'lapseCount', 0,
+      'consecutiveFailureCount', 0,
+      'stability', 63.14846207,
+      'difficulty', 5.33894278,
+      'lastReviewedAt', null,
+      'nextDueAt', null,
+      'fsrsAlgorithmVersion', 'ts-fsrs:language-learning-v1'
+    )
+  from judged_known_caps jkc
+  on conflict (user_id, capability_id) do nothing;
+end;
+$$;
+
+revoke all on function indonesian.apply_placement_result(text[], text[]) from public;
+grant execute on function indonesian.apply_placement_result(text[], text[]) to authenticated, service_role;

@@ -102,6 +102,8 @@ const report = health as {
   tables: { name: string; rls_enabled: boolean; rls_forced: boolean }[]
   grants: { table: string; grantee: string; privilege: string }[]
   policies?: { table: string; policy: string; cmd: string; roles: string[] }[]
+  placement_activation_source_check_ok?: boolean
+  apply_placement_result_anon_execute?: boolean
 }
 
 const existingTables = new Set(report.tables.map((t) => t.name))
@@ -529,6 +531,41 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     }
   } else {
     pass('learning_items.loan_source_nl column exists')
+  }
+}
+
+// ── Check: learner_capability_state.activation_source CHECK includes
+//    'placement' (Bet-1 slice 2, ADR 0026). Structural probe via
+//    schema_health()'s pg_get_constraintdef read — existence of the column
+//    alone is not the guarantee; the CHECK's live definition must literally
+//    allow the value apply_placement_result writes.
+{
+  if (report.placement_activation_source_check_ok === true) {
+    pass("learner_capability_state.activation_source CHECK includes 'placement' (ADR 0026)")
+  } else {
+    fail(
+      "learner_capability_state.activation_source CHECK includes 'placement' (ADR 0026)",
+      "The CHECK constraint on learner_capability_state.activation_source does not allow 'placement' " +
+      '— run: make migrate SUPABASE_SERVICE_KEY=<key>',
+    )
+  }
+}
+
+// ── Check: apply_placement_result RPC has NO anon execute grant (ADR 0026) ──
+//    Existence of the function alone is not the check (data-architect finding
+//    2) — a stray `grant ... to public` or `to anon` would let an
+//    unauthenticated caller invoke a SECURITY DEFINER function that writes
+//    learner_capability_state rows.
+{
+  if (report.apply_placement_result_anon_execute === false) {
+    pass('RPC apply_placement_result has no anon execute grant (ADR 0026)')
+  } else {
+    fail(
+      'RPC apply_placement_result has no anon execute grant (ADR 0026)',
+      'anon can execute indonesian.apply_placement_result(text[],text[]) — run: ' +
+      'make migrate SUPABASE_SERVICE_KEY=<key> (revoke all ... from public; ' +
+      'grant execute ... to authenticated, service_role;)',
+    )
   }
 }
 
