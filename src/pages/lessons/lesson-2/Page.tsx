@@ -13,6 +13,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -245,7 +247,12 @@ function ClassifiersSection({ section }: { section: typeof sections[number] }) {
           // Rules in this section follow "voor X: Y -> Z -- meaning" pattern.
           const [head, ...rest] = rule.split(': ')
           const tail = rest.join(': ')
-          const [pattern, gloss] = tail.split(' -- ')
+          // Keep EVERYTHING after the first " -- " as the gloss: a rule can
+          // itself contain " -- " ("seorang Belanda -- een Nederlander"),
+          // and the old two-way destructure silently dropped that tail — a
+          // content loss the chapter parity test caught (fixed 2026-07-07).
+          const [pattern, ...glossParts] = tail.split(' -- ')
+          const gloss = glossParts.join(' — ')
           return (
             <article key={i} className={classes.classifierCard}>
               <div className={classes.classifierTag}>{head}</div>
@@ -303,12 +310,12 @@ function AdjectivesSection({ section }: { section: typeof sections[number] }) {
               <div key={i} className={classes.oppositePair}>
                 <div className={classes.oppositeNeg}>
                   <span className={classes.oppositeWord}>{p.neg || '—'}</span>
-                  <span className={classes.oppositeGloss}>{p.neg_dutch || ' '}</span>
+                  <span className={classes.oppositeGloss}>{p.neg_dutch || ' '}</span>
                 </div>
                 <span className={classes.oppositeBridge}>↔</span>
                 <div className={classes.oppositePos}>
                   <span className={classes.oppositeWord}>{p.pos || '—'}</span>
-                  <span className={classes.oppositeGloss}>{p.pos_dutch || ' '}</span>
+                  <span className={classes.oppositeGloss}>{p.pos_dutch || ' '}</span>
                 </div>
               </div>
             ))}
@@ -441,37 +448,48 @@ function CultureSpread({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE OR MORE scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson2Page() {
-  const activation = useLessonActivation(meta.id)
-  // Section index map (DB order)
-  // 0: dialogue · 1: vocabulary · 2: expressions · 3: numbers
-  // 4: grammar SE-/classifiers · 5: grammar woordgroepen
-  // 6: grammar ini/itu · 7: grammar tidak · 8: grammar adjectives
-  // 9: exercises (skipped) · 10: culture text
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — Borobudur sunrise over the volcanic plain */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Di Indonesia</span>
-              <span className={classes.heroTitleNl}>In Indonesie</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Een echtpaar uit Nederland landt op Java, maakt kennis met een onbekende reisgenoot en wacht op de taxi naar het hotel. Een eerste gesprek — vol kleine bouwstenen waarmee elke Indonesische zin in elkaar zit.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
-      {/* Editorial lede — the page's voice */}
+function Hero() {
+  return (
+    /* Hero — Borobudur sunset. Rendered ABOVE the chapter nav via
+       ChapterExperience's hero slot (cover only): the nav sits under the
+       hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Di Indonesia</span>
+            <span className={classes.heroTitleNl}>In Indonesie</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Een echtpaar uit Nederland landt op Java, maakt kennis met een onbekende reisgenoot en wacht op de taxi naar het hotel. Een eerste gesprek — vol kleine bouwstenen waarmee elke Indonesische zin in elkaar zit.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
+      {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
@@ -481,46 +499,93 @@ export default function Lesson2Page() {
         </div>
       </section>
 
-      {/* Lesson audio */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column, varied sections */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <DialogueScene        section={sections[0]} />
-          <ExpressionsBand      section={sections[2]} />
-          <WoordgroepenSection  section={sections[5]} />
-          <IniItuSection        section={sections[6]} />
-          <ClassifiersSection   section={sections[4]} />
-          <AdjectivesSection    section={sections[8]} />
-          <NegationSection      section={sections[7]} />
-          <NumbersStrip         section={sections[3]} />
-          <VocabularyReference  section={sections[1]} />
-          <CultureSpread        section={sections[10]} />
-        </main>
-      </section>
-
-      {/* Closing band — outro + activation + CTA */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en deze woordgroepen, getallen en patronen verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en deze woordgroepen, getallen en patronen verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = dialogue (Bapak Mulyono + de Barends)
+//   1 = vocabulary (52 items)
+//   2 = expressions (leave-taking phrases)
+//   3 = numbers (11-20)
+//   4 = grammar — SE- / classifiers
+//   5 = grammar — woordgroepen (the lesson's key insight)
+//   6 = grammar — ini/itu (also functions as a woordgroep marker)
+//   7 = grammar — negation tidak
+//   8 = grammar — adjectives
+//   9 = exercises (skipped — practice surface)
+//  10 = culture text (Borobudur)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5).
+    { id: 'inhoud',      title: 'Inhoud',      node: <InhoudChapter /> },
+    { id: 'ontmoeting',  title: 'Ontmoeting',  description: 'Bapak Mulyono ontmoet de Barends op het vliegveld — en drie zinnetjes om weer afscheid te nemen.',
+      node: <Shell><DialogueScene section={sections[0]} /><ExpressionsBand section={sections[2]} /></Shell> },
+    { id: 'woordgroepen', title: 'Woordgroepen', description: 'Het hart van de zin: hoe Indonesisch in groepjes klinkt, en hoe ini/itu die groepjes markeert — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the lesson's headline
+              grammar insight (word groups), matching the lesson-5 pattern. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell>
+            <WoordgroepenSection section={sections[5]} />
+            <IniItuSection section={sections[6]} />
+          </Shell>
+        </>
+      ) },
+    { id: 'bouwstenen',  title: 'Bouwstenen',  description: 'Drie kleinere bouwstenen erbij: het prefix SE-, bijvoeglijke naamwoorden en ontkenning met tidak.',
+      node: <Shell><ClassifiersSection section={sections[4]} /><AdjectivesSection section={sections[8]} /><NegationSection section={sections[7]} /></Shell> },
+    { id: 'naslag',      title: 'Naslag',      description: 'De getallen 11 tot 20 en 52 woorden uit deze les, als naslagwerk.',
+      node: <Shell><NumbersStrip section={sections[3]} /><VocabularyReference section={sections[1]} /></Shell> },
+    { id: 'cultuur',     title: 'Cultuur',     description: 'Het grote wiel van Java — Borobudur, de tempel uit de hero-foto.',
+      node: <Shell><CultureSpread section={sections[10]} /></Shell> },
+    { id: 'oefenen',     title: 'Oefenen',     description: 'Activeer de les en oefen de woordgroepen, getallen en patronen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson2Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }
