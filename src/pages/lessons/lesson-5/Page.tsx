@@ -362,31 +362,37 @@ function Shell({ children }: { children: React.ReactNode }) {
   )
 }
 
+function Hero() {
+  return (
+    /* Hero — classroom warm tones, evoke "studying at the table". Rendered
+       ABOVE the chapter nav via ChapterExperience's hero slot (cover only):
+       the nav sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Belajar</span>
+            <span className={classes.heroTitleNl}>Studeren — en wie precies "wij" is</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Titin en Nanang moeten thuis studeren terwijl hun ouders naar Taman
+            Mini gaan. Tussen het mopperen door zeggen ze <em>kita</em> en{' '}
+            <em>kami</em> — twee woorden voor "wij", afhankelijk van wie er
+            meeluistert. Deze les opent het volledige Indonesische voornaam­woord­systeem.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
 function VerhaalChapter() {
   return (
     <>
-      {/* Hero — classroom warm tones, evoke "studying at the table" */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Belajar</span>
-              <span className={classes.heroTitleNl}>Studeren — en wie precies "wij" is</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Titin en Nanang moeten thuis studeren terwijl hun ouders naar Taman
-              Mini gaan. Tussen het mopperen door zeggen ze <em>kita</em> en{' '}
-              <em>kami</em> — twee woorden voor "wij", afhankelijk van wie er
-              meeluistert. Deze les opent het volledige Indonesische voornaam­woord­systeem.
-            </p>
-          </div>
-        </div>
-      </header>
-
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -473,7 +479,7 @@ export default function Lesson5Page() {
   const activation = useLessonActivation(meta.id)
   return (
     <article className={classes.page}>
-      <ChapterExperience lessonId={meta.id} chapters={buildChapters(activation)} />
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

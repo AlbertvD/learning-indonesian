@@ -83,7 +83,17 @@ function writePosition(lessonId: string, position: StoredPosition): void {
   }
 }
 
-export function ChapterExperience({ lessonId, chapters }: { lessonId: string; chapters: LessonChapter[] }) {
+export function ChapterExperience({ lessonId, chapters, hero }: {
+  lessonId: string
+  chapters: LessonChapter[]
+  /**
+   * Optional full-bleed lesson hero, shown ABOVE the chapter nav on the
+   * cover (first chapter) only — the nav sits under the hero and pins to
+   * the top on scroll (position: sticky). Content chapters open with the
+   * nav at the top as usual.
+   */
+  hero?: ReactNode
+}) {
   const T = useT()
   const [searchParams, setSearchParams] = useSearchParams()
   const contentRef = useRef<HTMLDivElement | null>(null)
@@ -148,6 +158,7 @@ export function ChapterExperience({ lessonId, chapters }: { lessonId: string; ch
 
   return (
     <div className={classes.experience}>
+      {currentIndex === 0 && hero}
       <nav ref={headerRef} className={classes.header} aria-label={T.lessons.chapterNavLabel}>
         <ol className={classes.segments}>
           {chapters.map((chapter, i) => {

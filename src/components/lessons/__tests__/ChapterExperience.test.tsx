@@ -92,6 +92,19 @@ describe('ChapterExperience', () => {
     expect(content).toHaveFocus()
   })
 
+  it('renders the hero above the nav on the cover only', async () => {
+    render(
+      <MantineProvider>
+        <MemoryRouter initialEntries={['/lesson/x']}>
+          <ChapterExperience lessonId={LESSON_ID} hero={<header>De heroband</header>} chapters={chapters} />
+        </MemoryRouter>
+      </MantineProvider>,
+    )
+    expect(screen.getByText('De heroband')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Woorden' }))
+    expect(screen.queryByText('De heroband')).not.toBeInTheDocument()
+  })
+
   it('opening-chapter overview lists remaining chapters and navigates on click', async () => {
     const withOverview: LessonChapter[] = [
       { id: 'verhaal', title: 'Verhaal', node: <LessonChapterOverview /> },
