@@ -25,7 +25,7 @@ interface AnswerReport {
 interface ScheduleSnapshot {
   stateVersion: number
   activationState: ReviewState
-  activationSource?: 'review_processor' | 'admin_backfill' | 'legacy_migration'
+  activationSource?: 'review_processor' | 'admin_backfill' | 'legacy_migration' | 'placement'
   stability?: number | null
   difficulty?: number | null
   retrievability?: number | null
@@ -46,7 +46,7 @@ interface CapabilityRow {
 interface StateRow {
   id: string
   activation_state: ReviewState
-  activation_source: 'review_processor' | 'admin_backfill' | 'legacy_migration' | null
+  activation_source: 'review_processor' | 'admin_backfill' | 'legacy_migration' | 'placement' | null
   stability: number | null
   difficulty: number | null
   last_reviewed_at: string | null
