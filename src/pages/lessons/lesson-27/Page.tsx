@@ -1,10 +1,20 @@
-// Lesson 27 — Bab 11 · Sewa Rumah (Een huis huren) — bespoke reader page.
+// Lesson 27 — Bab 11 · Sewa Rumah (Een huis huren) — bespoke reader page
+// (chapter-experience conversion).
 //
 // Mood: settling into a tropical home. Ir. Kramer hunts for a furnished house
 // in Palembang — the reading is a house tour, then a real rental letter with a
-// numbered punch-list of repairs. The vocabulary is the inventory of a furnished
-// home (daftar isi rumah); the grammar is the circumfix KE-...-AN, which *wraps*
-// a base word — so its six facets are rendered as bracketed "ke-[…]-an" lenses.
+// numbered punch-list of repairs (and a proverb about sweat before success as
+// its coda). The vocabulary is the inventory of a furnished home (daftar isi
+// rumah); the grammar is the circumfix KE-...-AN, which *wraps* a base word —
+// so its six facets are rendered as bracketed "ke-[…]-an" lenses. The Latihan
+// section is rendered as a study-reference chapter (not skipped), distinct
+// from the closing activation chapter.
+//
+// Chapters: the cover ("Inhoud" — hero + lede + overview), then Huis (house
+// tour) → Brief (the rental letter + the "sweat before success" proverb as its
+// coda — an editorial merge of two short, thematically-linked texts, same
+// move as lesson-5's Tussendoor) → Grammatica (with the les-audio) → Woorden →
+// Latihan (the written exercises as reference) → the closing Oefenen chapter.
 //
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 27 --pretty > src/pages/lessons/lesson-27/content.json
@@ -14,6 +24,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -73,23 +85,35 @@ function HouseTour({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── 2. The formal letter — rendered as a sheet of stationery ────────────────
+// ─── 2. The formal letter + the proverb — one "Brief" chapter ───────────────
+//
+// Paragraph 0 of the letter is the letterhead block (addresses + subject), 1
+// is the salutation, 2 holds the prose plus a numbered punch-list of repairs,
+// 3 is the sign-off. We split paragraph 2 into its lead sentence + the
+// numbered "yaitu:" list so the repair items read as a checklist on the page.
+// The proverb ("no success without sweat and tears") follows as a small coda
+// — an editorial merge of two short, thematically-linked texts (the demanding
+// letter and the wisdom that earning a good house takes effort), the same
+// move lesson-5 uses for its Tussendoor bookend.
 
-// Paragraph 0 is the letterhead block (addresses + subject), 1 is the salutation,
-// 2 holds the prose plus a numbered punch-list of repairs, 3 is the sign-off.
-// We split paragraph 2 into its lead sentence + the numbered "yaitu:" list so the
-// repair items read as a checklist on the page.
+function BriefSpread({
+  letterSection,
+  proverbSection,
+}: {
+  letterSection: typeof sections[number]
+  proverbSection: typeof sections[number]
+}) {
+  const letter = letterSection.content as { paragraphs: string[] }
+  const [head, salutation, body, signoff] = letter.paragraphs
 
-function FormalLetter({ section }: { section: typeof sections[number] }) {
-  const c = section.content as { paragraphs: string[] }
-  const [head, salutation, body, signoff] = c.paragraphs
-
-  // Split the body into its intro sentence and the numbered repair items.
   const lines = body.split('\n')
   const intro = lines.filter((l) => !/^\d+\./.test(l.trim())).join(' ')
   const items = lines
     .filter((l) => /^\d+\./.test(l.trim()))
     .map((l) => l.trim().replace(/^\d+\.\s*/, '').replace(/,$/, ''))
+
+  const proverb = proverbSection.content as { paragraphs: string[] }
+  const [proverbId, proverbNl] = proverb.paragraphs[0].split('\n')
 
   return (
     <section className={classes.section} aria-labelledby="s-letter">
@@ -109,6 +133,12 @@ function FormalLetter({ section }: { section: typeof sections[number] }) {
         </ol>
         <p className={classes.letterSignoff}>{signoff}</p>
       </article>
+
+      <figure className={classes.proverb}>
+        <p className={classes.proverbKicker}>Pepatah</p>
+        <p className={classes.proverbId}>{proverbId}</p>
+        <figcaption className={classes.proverbNl}>{proverbNl}</figcaption>
+      </figure>
     </section>
   )
 }
@@ -135,24 +165,8 @@ function Inventory({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── 4. Proverb pull-quote ───────────────────────────────────────────────────
-
-function ProverbBand({ section }: { section: typeof sections[number] }) {
-  const c = section.content as { paragraphs: string[] }
-  const [id, nl] = c.paragraphs[0].split('\n')
-  return (
-    <section className={classes.section}>
-      <figure className={classes.proverb}>
-        <p className={classes.proverbKicker}>Pepatah</p>
-        <p className={classes.proverbId}>{id}</p>
-        <figcaption className={classes.proverbNl}>{nl}</figcaption>
-      </figure>
-    </section>
-  )
-}
-
-// ─── 5. Grammar — KE-...-AN, one circumfix, six facets ───────────────────────
-
+// ─── 4. Grammar — KE-...-AN, one circumfix, six facets ───────────────────────
+//
 // The DB ships 6 categories: [0] = overview (functions + base types), [1..5] =
 // the individual facets (function A, function B, function C, + reduplication,
 // + ME-/TER- contrast). We render [0] as a framing bracket and [1..5] as
@@ -169,14 +183,34 @@ function GrammarCircumfix({ section }: { section: typeof sections[number] }) {
       <p className={classes.grammarEyebrow}>Grammatica · Eén omhulsel, zes betekenissen</p>
       <h2 id="s-gram" className={classes.sectionTitle}>Het circumfix KE-…-AN</h2>
 
-      {/* Framing overview — the bracket that wraps a base word */}
+      {/* Framing overview — the bracket that wraps a base word. Its title AND
+          its examples (the werkwoord/nomen/bijvoeglijk naamwoord triad) were
+          silently dropped by the pre-chapter scroll page — only the rules
+          rendered. Fixed here (content-parity guard caught it, same class of
+          bug as lesson-5's Nasi-gurih drop). */}
       <div className={classes.bracketIntro}>
         <span className={classes.bracketGlyph}>
           ke-<span className={classes.bracketSlot}>…</span>-an
         </span>
-        <ul className={classes.bracketRules}>
-          {overview.rules.map((r, j) => <li key={j}>{r}</li>)}
-        </ul>
+        <div className={classes.bracketBody}>
+          <p className={classes.bracketTitle}>{overview.title}</p>
+          <ul className={classes.bracketRules}>
+            {overview.rules.map((r, j) => <li key={j}>{r}</li>)}
+          </ul>
+          {overview.examples.length > 0 && (
+            <div className={classes.bracketExamples}>
+              {overview.examples.map((ex, j) => (
+                <div key={j} className={classes.bracketExample}>
+                  <div className={classes.bracketExampleId}>
+                    {ex.indonesian}
+                    <PlayButton src={ex.audioUrl} />
+                  </div>
+                  <div className={classes.bracketExampleNl}>{ex.dutch}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className={classes.facetGrid}>
@@ -209,9 +243,7 @@ function GrammarCircumfix({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ────────────────────────────────────────────────────────
-
-// ─── Exercises — the Latihan, as a study reference ───────────────────────────
+// ─── 5. Exercises — the Latihan, as a study reference ────────────────────────
 
 function Exercises({ section }: { section: typeof sections[number] }) {
   const c = section.content as {
@@ -243,32 +275,51 @@ function Exercises({ section }: { section: typeof sections[number] }) {
   )
 }
 
-export default function Lesson27Page() {
-  const activation = useLessonActivation(meta.id)
-  return (
-    <article className={classes.page}>
-      {/* Hero — full-bleed, a Sumatran house and its garden */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Sewa Rumah</span>
-              <span className={classes.heroTitleNl}>Een huis huren</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Insinyur Kramer werkt pas een week in Palembang en woont nog in een hotel. Volgende maand
-              komt zijn gezin uit Jakarta over — dus zoekt hij een huis: gemeubileerd, met een grote
-              tuin, tegelvloeren en een waaier in elke kamer. Maar eerst moet er nog het een en ander
-              worden opgeknapt.
-            </p>
-          </div>
-        </div>
-      </header>
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
+
+function Hero() {
+  return (
+    /* Hero — full-bleed, a Sumatran house and its garden, warmed by
+       terracotta. Rendered ABOVE the chapter nav via ChapterExperience's hero
+       slot (cover only): the nav sits under the hero and pins to the top on
+       scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Sewa Rumah</span>
+            <span className={classes.heroTitleNl}>Een huis huren</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Insinyur Kramer werkt pas een week in Palembang en woont nog in een hotel. Volgende maand
+            komt zijn gezin uit Jakarta over — dus zoekt hij een huis: gemeubileerd, met een grote
+            tuin, tegelvloeren en een waaier in elke kamer. Maar eerst moet er nog het een en ander
+            worden opgeknapt.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -282,43 +333,86 @@ export default function Lesson27Page() {
         </div>
       </section>
 
-      {/* Lesson audio — guarded band (lights up when audio is attached) */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <HouseTour        section={sections[0]} />
-          <FormalLetter     section={sections[1]} />
-          <ProverbBand      section={sections[3]} />
-          <GrammarCircumfix section={sections[4]} />
-          <Inventory        section={sections[2]} />
-          <Exercises        section={sections[5]} />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woordenschat van het huis en de KE-…-AN-patronen verschijnen
-            automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woordenschat van het huis en de KE-…-AN-patronen verschijnen
+          automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (the house tour — Sewa Rumah reading)
+//   1 = text (the formal rental letter)
+//   2 = vocabulary (daftar isi rumah — 52 items)
+//   3 = text (the "sweat before success" proverb — merged into Brief)
+//   4 = grammar (6 KE-...-AN categories)
+//   5 = exercises (Latihan — rendered as a study-reference chapter, not skipped)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5 / lesson 21).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'huis',       title: 'Huis',       description: 'Insinyur Kramer zoekt een gemeubileerd huis in Palembang — compleet, met tuin en waaiers, maar niet zonder gebreken.',
+      node: <Shell><HouseTour section={sections[0]} /></Shell> },
+    { id: 'brief',      title: 'Brief',      description: 'Een formele huurbrief met een genummerde lijst reparaties — en een pepatah over zweet vóór succes.',
+      node: <Shell><BriefSpread letterSection={sections[1]} proverbSection={sections[3]} /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Eén omhulsel, zes betekenissen: het circumfix KE-…-AN, met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (matches
+              lesson 5 / lesson 21). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarCircumfix section={sections[4]} /></Shell>
+        </>
+      ) },
+    { id: 'woorden',    title: 'Woorden',    description: 'De inventaris van een gemeubileerd huis: van tegel tot lemari es, met audio.',
+      node: <Shell><Inventory section={sections[2]} /></Shell> },
+    { id: 'latihan',    title: 'Latihan',    description: 'De vier oefeningen uit het lesboek als naslag: een compositie, KE-…-AN-vormen en twee vertaaloefeningen.',
+      node: <Shell><Exercises section={sections[5]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden en het KE-…-AN-patroon.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson27Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }
