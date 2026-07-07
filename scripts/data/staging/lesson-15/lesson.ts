@@ -63,6 +63,7 @@ export const lesson = {
             "english": "wayang performer"
           },
           {
+            "loanSourceNl": "gamelan",
             "indonesian": "gamelan",
             "dutch": "Javaans orkest",
             "english": "Javanese orchestra"
@@ -123,6 +124,7 @@ export const lesson = {
             "english": "song"
           },
           {
+            "loanSourceNl": "lamp",
             "indonesian": "lampu",
             "dutch": "lamp",
             "english": "lamp"

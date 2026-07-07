@@ -2790,6 +2790,19 @@ comment on column indonesian.learning_items.translation_en is
 comment on column indonesian.learning_items.usage_note is
   'Optional usage note. Replaces item_meanings.usage_note. Decision R.';
 
+-- §Bet1.1 — loan_source_nl (loanword bridge, docs/plans/2026-07-06-loanword-bridge-*).
+-- The Dutch source/cognate word (kantoor for kantor). A property of the WORD, not
+-- of collection membership, so it lives on learning_items. Read by the /welkom
+-- "je kent dit al" reveal. Pipeline-written, staging-canonical, rewritten every
+-- publish (no flag→review loop for etymology) — the endpoint of the two-stage
+-- carrier path: staging vocab loanSourceNl → lesson_section_item_rows.loan_source_nl
+-- → TypedItemRow → vocab projector → upsertLearningItemIdempotent (§3.2).
+alter table indonesian.learning_items
+  add column if not exists loan_source_nl text;
+
+comment on column indonesian.learning_items.loan_source_nl is
+  'Dutch source/cognate of a loanword (e.g. kantoor for kantor). NULL for non-loanwords. Pipeline-written per Bet-1 §3.2; the /welkom reveal reads it.';
+
 -- §PR1.2 — capability_audio_refs — RETIRED (pre-cloud hardening, 2026-07-02).
 -- Created in PR 1 (Decision Q) as the intended cap-to-audio binding table
 -- (replacing capability_artifacts(artifact_kind=audio_clip)), but the writer
@@ -3171,6 +3184,18 @@ create table if not exists indonesian.lesson_section_item_rows (
   unique (section_id, display_order),
   unique (lesson_id, source_item_ref)
 );
+
+-- §Bet1.1 carrier — loan_source_nl (loanword bridge). Additive nullable column on
+-- an existing table (NOT inside the create-table above, which is a no-op once the
+-- table exists). The lesson stage writes it here from staging; the Capability Stage
+-- reads it via TypedItemRow and forwards it to learning_items.loan_source_nl (§3.2).
+-- Without this carrier the endpoint writer's value never arrives (ADR 0012: the
+-- Capability Stage reads item data only from the DB, never from staging).
+alter table indonesian.lesson_section_item_rows
+  add column if not exists loan_source_nl text;
+
+comment on column indonesian.lesson_section_item_rows.loan_source_nl is
+  'Carrier for learning_items.loan_source_nl across the lesson→capability DB boundary (Bet-1 §3.2). Lesson-stage-written from staging; capability-stage-read.';
 
 create index if not exists lesson_section_item_rows_section_idx
   on indonesian.lesson_section_item_rows(section_id);

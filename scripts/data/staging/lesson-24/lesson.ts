@@ -130,6 +130,7 @@ export const lesson = {
             "english": "condition / situation"
           },
           {
+            "loanSourceNl": "klas",
             "indonesian": "kelas",
             "dutch": "klas",
             "english": "class"
@@ -165,6 +166,7 @@ export const lesson = {
             "english": "map / plan"
           },
           {
+            "loanSourceNl": "pienter",
             "indonesian": "pintar",
             "dutch": "knap / intelligent",
             "english": "smart / intelligent"

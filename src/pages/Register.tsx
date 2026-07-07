@@ -52,7 +52,8 @@ export function Register() {
         title: T.register.registrationSuccess,
         message: T.register.accountCreated,
       })
-      navigate('/')
+      // Day-one loanword-bridge onboarding (Bet-1 §3.4) instead of the dashboard.
+      navigate('/welkom')
     } catch (err) {
       const code = await extractErrorCode(err)
       const message = code === 'invalid_invite_code'

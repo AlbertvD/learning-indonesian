@@ -336,6 +336,7 @@ describe('upsertLearningItemIdempotent', () => {
       pos: 'verb',
       translation_nl: 'eten',
       translation_en: 'to eat',
+      loan_source_nl: 'testbron', // Bet-1 §3.2 etymology carrier — flows into the insert payload
     }
     const result = await upsertLearningItemIdempotent(client, input)
     expect(result.normalized_text).toBe('makan')
@@ -347,10 +348,11 @@ describe('upsertLearningItemIdempotent', () => {
     expect(payload.pos).toBe('verb')
     expect(payload.translation_nl).toBe('eten')
     expect(payload.translation_en).toBe('to eat')
+    expect(payload.loan_source_nl).toBe('testbron')
     expect(payload.is_active).toBe(true)
   })
 
-  it('issues .update with ONLY translation columns on conflict (not full payload)', async () => {
+  it('issues .update with ONLY staging-rewritten columns (translations + loan_source_nl) on conflict', async () => {
     // Simulate existing row
     const existing = { id: 'existing-uuid', normalized_text: 'makan' }
     const { client, updateCalls, insertCalls } = buildItemWriteClient(existing)
@@ -363,15 +365,17 @@ describe('upsertLearningItemIdempotent', () => {
       pos: 'verb', // pipeline emits pos, but this must NOT reach the UPDATE
       translation_nl: 'eten (nieuw)',
       translation_en: 'to eat (new)',
+      loan_source_nl: 'etensbron', // §3.2: rewritten every publish like the translations
     }
     await upsertLearningItemIdempotent(client, input)
-    // UPDATE path: insertCalls must be empty, updateCalls must have exactly the two translation columns
+    // UPDATE path: insertCalls must be empty, updateCalls carries the staging-rewritten columns
     expect(insertCalls).toHaveLength(0)
     expect(updateCalls).toHaveLength(1)
     const updatePayload = updateCalls[0] as Record<string, unknown>
-    // Only translation columns are updated
+    // Staging-rewritten columns are refreshed (translations + etymology carrier)
     expect(updatePayload.translation_nl).toBe('eten (nieuw)')
     expect(updatePayload.translation_en).toBe('to eat (new)')
+    expect(updatePayload.loan_source_nl).toBe('etensbron')
     // pos MUST NOT be in the update payload — DB-corrected pos is preserved
     expect('pos' in updatePayload).toBe(false)
     // Other capability-authored columns must not be in the update payload

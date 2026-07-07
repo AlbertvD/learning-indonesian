@@ -198,6 +198,7 @@ export const lesson = {
             "english": "spices"
           },
           {
+            "loanSourceNl": "sambal",
             "indonesian": "sambal",
             "dutch": "tot dikke pasta fijngewreven Spaanse pepers",
             "english": "chili peppers ground to a thick paste"

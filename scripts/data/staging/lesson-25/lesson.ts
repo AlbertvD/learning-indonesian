@@ -605,6 +605,7 @@ export const lesson = {
             "english": "bird"
           },
           {
+            "loanSourceNl": "karbouw",
             "indonesian": "kerbau",
             "dutch": "waterbuffel",
             "english": "water buffalo"

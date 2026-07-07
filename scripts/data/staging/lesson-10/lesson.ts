@@ -370,6 +370,7 @@ export const lesson = {
             "english": "top / end"
           },
           {
+            "loanSourceNl": "universiteit",
             "indonesian": "universitas",
             "dutch": "universiteit",
             "english": "university"

@@ -92,6 +92,7 @@ export const lesson = {
             "english": "bite"
           },
           {
+            "loanSourceNl": "gouverneur",
             "indonesian": "gubernur",
             "dutch": "gouverneur",
             "english": "governor"

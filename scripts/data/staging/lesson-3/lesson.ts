@@ -243,6 +243,7 @@ export const lesson = {
           },
           {
             "dutch": "bus",
+            "loanSourceNl": "bus",
             "indonesian": "bus",
             "english": "bus"
           },
@@ -324,6 +325,7 @@ export const lesson = {
           },
           {
             "dutch": "koffer",
+            "loanSourceNl": "koffer",
             "indonesian": "koper",
             "english": "suitcase"
           },
@@ -364,6 +366,7 @@ export const lesson = {
           },
           {
             "dutch": "auto",
+            "loanSourceNl": "automobiel",
             "indonesian": "mobil",
             "english": "car"
           },
@@ -417,6 +420,7 @@ export const lesson = {
           {
             "dutch": "fiets",
             "notes": "sepeda",
+            "loanSourceNl": "velocipède",
             "indonesian": "sepeda",
             "english": "bicycle"
           },
@@ -427,6 +431,7 @@ export const lesson = {
           },
           {
             "dutch": "weten",
+            "loanSourceNl": "tahoe",
             "indonesian": "tahu",
             "english": "know"
           },

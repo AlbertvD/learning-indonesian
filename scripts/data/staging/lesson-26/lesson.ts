@@ -192,6 +192,7 @@ export const lesson = {
             "english": "broken, severed"
           },
           {
+            "loanSourceNl": "zalf",
             "indonesian": "salep",
             "dutch": "zalf",
             "english": "ointment"

@@ -20,6 +20,7 @@ const baseTypedRow = (overrides: Partial<TypedItemRow>): TypedItemRow => ({
   indonesian_text: 'Halo',
   l1_translation: 'Hallo',
   l2_translation: 'Hello',
+  loan_source_nl: null,
   section_kind: 'vocabulary',
   ...overrides,
 })
@@ -44,6 +45,19 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
     expect(plan.learningItemInput.level).toBe('A1')
     expect(plan.learningItemInput.language).toBe('id')
     expect(plan.learningItemInput.source_type).toBe('lesson')
+  })
+
+  it('forwards loan_source_nl from the typed row into learningItemInput (Bet-1 §3.2)', () => {
+    const rows: TypedItemRow[] = [
+      baseTypedRow({ indonesian_text: 'kantor', l1_translation: 'kantoor', loan_source_nl: 'kantoor' }),
+      baseTypedRow({ id: 'row-uuid-2', indonesian_text: 'rumah', l1_translation: 'huis', loan_source_nl: null }),
+      // whitespace-only carrier normalises to null (mirrors the translation_nl trim rule)
+      baseTypedRow({ id: 'row-uuid-3', indonesian_text: 'meja', l1_translation: 'tafel', loan_source_nl: '  ' }),
+    ]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    expect(out.perItemPlans[0].learningItemInput.loan_source_nl).toBe('kantoor')
+    expect(out.perItemPlans[1].learningItemInput.loan_source_nl).toBeNull()
+    expect(out.perItemPlans[2].learningItemInput.loan_source_nl).toBeNull()
   })
 
   it('canonicalises a legacy comma/";" l1_translation to the "/" answer convention (#161)', () => {

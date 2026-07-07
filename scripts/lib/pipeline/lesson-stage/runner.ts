@@ -282,6 +282,7 @@ export async function runLessonStage(
       indonesian_text: row.indonesian_text,
       l1_translation: row.l1_translation,
       l2_translation: row.l2_translation,
+      loan_source_nl: row.loan_source_nl,
     })
   }
   const itemRowCount = await replaceLessonSectionItemRows(

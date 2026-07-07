@@ -43,6 +43,7 @@ export const lesson = {
             "english": "large river"
           },
           {
+            "loanSourceNl": "branie",
             "indonesian": "berani",
             "dutch": "dapper / moedig",
             "english": "brave / courageous"

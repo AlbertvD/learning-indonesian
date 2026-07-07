@@ -163,6 +163,7 @@ export const lesson = {
         "type": "vocabulary",
         "items": [
           {
+            "loanSourceNl": "adat",
             "indonesian": "adat",
             "dutch": "zeden en gewoonten",
             "english": "customs and traditions"
@@ -183,6 +184,7 @@ export const lesson = {
             "english": "perhaps"
           },
           {
+            "loanSourceNl": "batik",
             "indonesian": "batik",
             "dutch": "kleurtechniek voor stof / batik",
             "english": "batik (dyeing technique for fabric)"
@@ -253,6 +255,7 @@ export const lesson = {
             "english": "cloth / fabric"
           },
           {
+            "loanSourceNl": "kassier",
             "indonesian": "kasir",
             "dutch": "kassier",
             "english": "cashier"
@@ -263,6 +266,7 @@ export const lesson = {
             "english": "to / against"
           },
           {
+            "loanSourceNl": "kris",
             "indonesian": "keris",
             "dutch": "Javaans steekwapen",
             "english": "Javanese dagger"
@@ -338,6 +342,7 @@ export const lesson = {
             "english": "most (superlative)"
           },
           {
+            "loanSourceNl": "piekeren",
             "indonesian": "pikir",
             "dutch": "denken / vinden",
             "english": "think / find"

@@ -32,7 +32,8 @@ Content-marketing moats usually cost an editorial team. Ours generates from data
 ### Leg 3 — Positioning
 
 - Lead with heritage and connection: **"de taal van je oma"** — the Indo community (~1.5–2M Dutch people with Indonesian roots), mixed NL-ID families. Emotional wedge no generic app can copy; aligns with the Kamoe Bisa identity.
-- Vacation learners are top-of-funnel volume; heritage learners are the retained subscribers. Copy, landing page, and SEO page tone all serve both without confusing them (practical pages for vacation intent; story-led pages for heritage intent).
+- Vacation learners are top-of-funnel volume; heritage learners are the retained subscribers. Copy, landing page, and SEO page tone all serve both without confusing them (practical pages for vacation intent; story-led pages for heritage intent). **Sizing correction (market research 2026-07-06):** the NL→Bali vacation stream is modest (~50–60k/yr in the last solid data; NL not in Bali's current top-10 source markets) — **heritage (~1.7M NL residents with Indische/Molukse roots) is the primary NL segment**, vacation secondary. Weight page inventory and copy accordingly.
+- **Highest-intent SEO page type (added from market research): the "na Duolingo" exit ramp.** People search "after Duolingo Indonesian" — every mass-market app caps at A2 (Duolingo ¼-length course, Babbel A2 ceiling), and reviewers write exit-ramp articles. Pages targeting these queries route straight to the placement test (Bet 1 slice 2), which is literally the product for that moment. Pair with a public **"route to B1" curriculum map** — the only checkable "we go further" claim in the market.
 
 ## Grounding (what exists to reuse)
 

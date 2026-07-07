@@ -14,7 +14,7 @@ Text-first chat with an Indonesian persona whose vocabulary is **constrained to 
 
 ## Why us / why bold
 
-Every competitor's AI chat overwhelms beginners because the model doesn't know what the learner knows. Ours does, per word and per pattern. "Practice talking to your Indonesian family without embarrassment" is the deepest want of both the NL heritage segment and the EN partner segment — and constrained-comprehensible chat is the version only this app can deliver.
+**A named competitor exists** (market research 2026-07-06): **Kaiwa**, an AI speaking-practice app for Indonesian — so "AI chat for Indonesian" alone is not a moat. The differentiation is, and must stay, the two things Kaiwa cannot have: **the learner-model constraint** (vocabulary bounded to this learner's known words) and **the FSRS loop** (chat words harvest into scheduled review). Every competitor's AI chat overwhelms beginners because the model doesn't know what the learner knows. Ours does, per word and per pattern. "Practice talking to your Indonesian family without embarrassment" is the deepest want of both the NL heritage segment and the EN partner segment — and constrained-comprehensible chat is the version only this app can deliver.
 
 ## Learner experience
 

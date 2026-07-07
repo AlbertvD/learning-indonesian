@@ -13,13 +13,13 @@ Serve English-speaking Indonesian learners with the same capability-model depth,
 
 ## Why us / why bold
 
-The NL moat doesn't transfer — but the EN gap is different and real: **Indonesian is an afterthought language on every major platform** (Duolingo's course is shallow and unmaintained). For EN the moat is depth: the affix trainer, real FSRS, graded input, i+1 stories, constrained AI chat. Positioning: *the serious Indonesian app, for people who actually need the language.*
+The NL moat doesn't transfer — but the EN gap is different and real, and now precisely stated (market research 2026-07-06): **every mass-market app caps Indonesian at A2** — Duolingo's course is ¼ flagship-length (~1,200–1,800 words, formal register only, no Stories/Podcast), Babbel offers Indonesian but tops out at A2, Busuu has none. For EN the moat is depth past that ceiling: the affix trainer, real FSRS, graded input, i+1 stories, constrained AI chat. Positioning: *the serious Indonesian app, for people who actually need the language* — operationalized as the public "route to B1" map and the "na Duolingo" placement exit-ramp (growth-layer spec).
 
 ## Wedge segments (by intent-to-pay)
 
 1. **Bali/Jakarta expats & digital nomads** — concentrated, high willingness to pay, socially embarrassed to still be at *terima kasih*. Hook: **"Stop being the bule who only knows terima kasih."**
 2. **Partners/family of Indonesians** — the EN mirror of the heritage segment; converts on Percakapan ("talk to your mertua").
-3. **Australians** — Indonesian is a school curriculum language there; long-tail channel now, possible schools angle later.
+3. **Australians** — REFRAMED (market research 2026-07-06): Indonesian schooling there has **collapsed** (>80% enrolment decline since the early 2000s; <200 Year-12 students nationwide in 2019; programs still closing 2024–25). Not a schools sales channel — a **supply vacuum** for motivated adults plus a live national "Indonesia capability" policy anxiety = press-narrative and grant/institutional angles. Deprioritize school B2C.
 
 ## What transfers for free (the leverage — most of the program)
 
@@ -34,7 +34,7 @@ The NL moat doesn't transfer — but the EN gap is different and real: **Indones
 2. **EN pronunciation contrast set — smaller than it looks (staff-engineer, favorable):** `pitfallCatalog.ts:13-31` is **already L1-parameterized** (`L1 = 'nl' | 'en'`, entries carry `l1: L1[]`) — the mechanism anticipated EN. Build = author/complete the EN entries + EN primer copy; **re-verify which `'en'` rows already exist before scoping this at all.** No new mechanism.
 3. **EN SEO twin** (Bet 4's generator, EN templates): "meN- prefix explained", "ber- vs meN-", "Indonesian for Bali: 50 warung words". The affix long-tail is wide open in EN too.
 4. **Wedge theme packs:** "Warung Indonesian", "Kos life", "Ojek & Grab", "Immigration counter" — small authored collections aimed at segment 1. Existing collections machinery; pure content.
-5. **Brand check:** does "Kamoe Bisa" (charmingly retro in NL) land in EN, or does the EN front door need its own voice? Copy/positioning decision, not code.
+5. **Bilingual brand — DIRECTION SET 2026-07-06 (user): one app, two names.** "Kamoe Bisa" for NL; a distinct EN name (to be chosen). Feasibility verified: the brand literal lives in only ~6 files (`SunMark`, `Sidebar`, `MobileLayout`, `Landing`+copy) → becomes a `brand.*` token in the existing nl/en `i18n.ts` dictionaries, following the UI language. Public entry = domain-driven (NL domain / EN domain, same container; hostname sets default language + brand; Traefik routing config). Two known hard edges, neither blocking: the PWA manifest is one static file per served host (currently generic "Learning Indonesian" anyway — needs a decision regardless; per-hostname manifest is a known pattern), and future app-store/TWA listings carry one name each (two listings, Phase-2+ concern). **Open: choosing the EN name itself.**
 
 ## Grounding (what exists to reuse)
 

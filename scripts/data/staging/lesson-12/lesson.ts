@@ -143,6 +143,7 @@ export const lesson = {
             "english": "special, excellent"
           },
           {
+            "loanSourceNl": "kaartjes",
             "indonesian": "karcis",
             "dutch": "kaartje",
             "english": "ticket"
@@ -253,6 +254,7 @@ export const lesson = {
             "english": "soldier"
           },
           {
+            "loanSourceNl": "station",
             "indonesian": "stasiun",
             "dutch": "station",
             "english": "station"

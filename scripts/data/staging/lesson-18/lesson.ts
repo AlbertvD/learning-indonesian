@@ -255,6 +255,7 @@ export const lesson = {
             "english": "photograph, to-"
           },
           {
+            "loanSourceNl": "recept",
             "indonesian": "resep",
             "dutch": "recept",
             "english": "recipe"

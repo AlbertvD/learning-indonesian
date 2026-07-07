@@ -1,6 +1,9 @@
 ---
-status: draft
+status: superseded
+superseded_by: docs/plans/2026-07-05-grammar-exposure-session-quota-design.md
 ---
+
+> **Superseded 2026-07-06.** The exposure fix shipped as the grammar due-floor (Part A) in PR #375 — see `docs/plans/2026-07-05-grammar-exposure-session-quota-design.md` (`status: shipped`). This file is the original design draft, kept for its problem framing / live-DB audit. Part B (new-grammar introduction reserve) is deferred there pending the review-saturation thread. Do not treat this as open work.
 
 # Grammar exposure — give grammar a guaranteed share of practice
 

@@ -70,7 +70,7 @@ describe('Register', () => {
     vi.clearAllMocks()
   })
 
-  it('signs up successfully, signs the user in, and navigates home', async () => {
+  it('signs up successfully, signs the user in, and navigates to /welkom onboarding', async () => {
     mockInvoke.mockResolvedValue({ data: { ok: true }, error: null })
     mockSignIn.mockResolvedValue(undefined)
     const user = userEvent.setup()
@@ -89,7 +89,8 @@ describe('Register', () => {
     })
     const { notifications } = await import('@mantine/notifications')
     expect(notifications.show).toHaveBeenCalledWith(expect.objectContaining({ color: 'green' }))
-    expect(mockNavigate).toHaveBeenCalledWith('/')
+    // Bet-1 §3.4: post-signup lands on the loanword-bridge onboarding, not the dashboard.
+    expect(mockNavigate).toHaveBeenCalledWith('/welkom')
   })
 
   it('shows a friendly message for an invalid or already-used invite code', async () => {

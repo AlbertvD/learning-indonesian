@@ -176,6 +176,7 @@ export const lesson = {
             "english": "say"
           },
           {
+            "loanSourceNl": "bier",
             "indonesian": "bir",
             "dutch": "bier",
             "english": "beer"
@@ -326,6 +327,7 @@ export const lesson = {
             "english": "National Monument"
           },
           {
+            "loanSourceNl": "onkosten",
             "indonesian": "ongkos",
             "dutch": "(on)kosten",
             "english": "cost(s)"

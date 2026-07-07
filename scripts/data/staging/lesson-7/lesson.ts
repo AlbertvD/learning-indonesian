@@ -255,6 +255,7 @@ export const lesson = {
             "english": "because"
           },
           {
+            "loanSourceNl": "kous",
             "indonesian": "kaus",
             "dutch": "(onder)hemd",
             "english": "shirt, undershirt"
@@ -360,6 +361,7 @@ export const lesson = {
             "english": "swim"
           },
           {
+            "loanSourceNl": "rok",
             "indonesian": "rok",
             "dutch": "rok",
             "english": "skirt"

@@ -509,6 +509,29 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
 }
 
+// ── Check: learning_items.loan_source_nl column exists (Bet-1 loanword bridge) ──
+{
+  // Read-only probe. Missing column ⇒ the /welkom "je kent dit al" reveal has no
+  // source-word to show and the pipeline write path (§3.2) silently no-ops.
+  const { error } = await supabase
+    .schema('indonesian')
+    .from('learning_items')
+    .select('id, loan_source_nl')
+    .limit(1)
+  if (error) {
+    if (error.message.includes('column') && error.message.includes('loan_source_nl')) {
+      fail(
+        'learning_items.loan_source_nl column exists',
+        'Column learning_items.loan_source_nl not found — run: make migrate SUPABASE_SERVICE_KEY=<key>'
+      )
+    } else {
+      fail('learning_items.loan_source_nl column exists', error.message)
+    }
+  } else {
+    pass('learning_items.loan_source_nl column exists')
+  }
+}
+
 // ── HC1 (lesson-stage GT1): zero grammar/reference_table sections with NULL or
 //      empty content.grammar_topics. Failure routes to linguist-structurer +
 //      re-publish (per spec §11.4).
