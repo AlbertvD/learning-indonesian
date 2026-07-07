@@ -1,9 +1,20 @@
-// Lesson 30 — Bab 14 · Musik Pop di Indonesia (Indonesische popmuziek) — bespoke reader page.
+// Lesson 30 — Bab 14 · Musik Pop di Indonesia (Indonesische popmuziek) — bespoke
+// reader page (chapter-experience conversion).
 //
 // Mood: a cassette sleeve under stage light. The reading essay opens like a
 // liner-note; the two keroncong songs are set as lyric stanzas on a "tape side
 // A / side B" spread; the seven neologism word-formation devices read as a
 // type-foundry of borrowed prefixes; the love-words and love-lines glow warm.
+//
+// Chapters: the cover ("Inhoud" — hero + lede + overview), then Lezen (the
+// liner-note essay + the two keroncong songs) → Woorden (music & recording
+// vocabulary) → Grammatica (the neologism foundry, with the les-audio) → Cinta
+// (an editorial merge of the love-vocabulary lexicon and the love-line
+// standaardzinnen — same move as lesson-5's Tussendoor and lesson-27's Brief:
+// two short, thematically-linked sections that already flowed back-to-back
+// and share the same warm/rose visual identity) → Latihan (the seven written
+// exercises as reference, matching lesson-27's precedent) → the closing
+// Oefenen chapter.
 //
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 30 --pretty > src/pages/lessons/lesson-30/content.json
@@ -13,6 +24,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -157,7 +170,10 @@ function Expressions({ section }: { section: typeof sections[number] }) {
 
 // ─── Grammar — the neologism foundry ─────────────────────────────────────────
 //
-// 7 categories. [0] = "how new words emerge" (framing overview, no examples).
+// 7 categories. [0] = "how new words emerge" (framing overview — its title AND
+// its single institutional-name example must render, not just its rules; a
+// sibling lesson's chapter conversion silently dropped an overview category's
+// title/examples, so this is rendered explicitly and content-parity-tested).
 // [1] = Bina/Graha/Loka, [2] PRA-, [3] PRAMU-, [4] TUNA-, [5] -WAN — the five
 // productive word-formation devices, rendered as accent-coded foundry tiles.
 // [6] = register & wordplay (plesetan → swear words), a recognise-only band set
@@ -183,12 +199,29 @@ function GrammarFoundry({ section }: { section: typeof sections[number] }) {
       <p className={classes.grammarEyebrow}>Grammatica · Hoe nieuwe woorden ontstaan</p>
       <h2 id="s-gram" className={classes.sectionTitle}>Geleende voor- en achtervoegsels</h2>
 
-      {/* Framing overview — the standardisation note */}
+      {/* Framing overview — the standardisation note, with its own title and
+          the one institutional-name example rendered alongside the rules. */}
       <div className={classes.foundryIntro}>
         <span className={classes.foundryGlyph}>kata&#8202;baru</span>
-        <ul className={classes.foundryRules}>
-          {overview.rules.map((r, j) => <li key={j}>{r}</li>)}
-        </ul>
+        <div className={classes.foundryIntroBody}>
+          <h3 className={classes.foundryIntroTitle}>{overview.title}</h3>
+          <ul className={classes.foundryRules}>
+            {overview.rules.map((r, j) => <li key={j}>{r}</li>)}
+          </ul>
+          {overview.examples.length > 0 && (
+            <div className={classes.foundryIntroExamples}>
+              {overview.examples.map((ex, j) => (
+                <div key={j} className={classes.foundryIntroExample}>
+                  <span className={classes.foundryIntroExampleId}>
+                    {ex.indonesian}
+                    <PlayButton src={ex.audioUrl} />
+                  </span>
+                  <span className={classes.foundryIntroExampleNl}>{ex.dutch}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className={classes.deviceGrid}>
@@ -263,8 +296,6 @@ function GrammarFoundry({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ────────────────────────────────────────────────────────
-
 // ─── Exercises — the Latihan, as a study reference ───────────────────────────
 
 function Exercises({ section }: { section: typeof sections[number] }) {
@@ -297,32 +328,50 @@ function Exercises({ section }: { section: typeof sections[number] }) {
   )
 }
 
-export default function Lesson30Page() {
-  const activation = useLessonActivation(meta.id)
-  return (
-    <article className={classes.page}>
-      {/* Hero — full-bleed, stage-light over a wall of cassettes */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Musik Pop di Indonesia</span>
-              <span className={classes.heroTitleNl}>Indonesische popmuziek</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Pop in Indonesië klinkt in het Indonesisch, niet in het Engels — en je koopt hem op
-              cassette, niet op cd. Tussen de nieuwe hits door draaien twee keroncong-klassiekers:
-              Bengawan Solo en Terang Bulan. En in de taal zelf worden, woord voor woord, nieuwe
-              begrippen gesmeed.
-            </p>
-          </div>
-        </div>
-      </header>
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
+
+function Hero() {
+  return (
+    /* Hero — full-bleed, stage-light over a wall of cassettes. Rendered ABOVE
+       the chapter nav via ChapterExperience's hero slot (cover only): the nav
+       sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Musik Pop di Indonesia</span>
+            <span className={classes.heroTitleNl}>Indonesische popmuziek</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Pop in Indonesië klinkt in het Indonesisch, niet in het Engels — en je koopt hem op
+            cassette, niet op cd. Tussen de nieuwe hits door draaien twee keroncong-klassiekers:
+            Bengawan Solo en Terang Bulan. En in de taal zelf worden, woord voor woord, nieuwe
+            begrippen gesmeed.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -335,55 +384,91 @@ export default function Lesson30Page() {
         </div>
       </section>
 
-      {/* Lesson audio — guarded band (lights up when audio is attached) */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <ReadingAndSongs section={sections[0]} />
-          <Lexicon
-            section={sections[1]}
-            eyebrow="Woordenschat · Muziek & opname"
-            title="Van kaset tot bengawan"
-            tone="tape"
-            id="s-vocab"
-          />
-          <GrammarFoundry section={sections[2]} />
-          <Lexicon
-            section={sections[3]}
-            eyebrow="Woordenschat · Woorden over liefde"
-            title="Cinta, pacar, kekasih — het lexicon van het hart"
-            tone="love"
-            id="s-love"
-          />
-          <Expressions section={sections[4]} />
-          <Exercises section={sections[5]} />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, standaardzinnen en woordvormings­patronen verschijnen
-            automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, standaardzinnen en woordvormings­patronen verschijnen
+          automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (liner-note essay + two keroncong songs)
+//   1 = vocabulary (40 items — music & recording)
+//   2 = grammar (7 neologism-foundry categories)
+//   3 = vocabulary (26 items — love)
+//   4 = expressions (9 love lines)
+//   5 = exercises (7 Latihan blocks — rendered as reference)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5 / 21 / 27).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'lezen',      title: 'Lezen',      description: 'De popindustrie draait op cassette, niet op cd — met de twee keroncong-klassiekers Bengawan Solo en Terang Bulan als lyrische inzet.',
+      node: <Shell><ReadingAndSongs section={sections[0]} /></Shell> },
+    { id: 'woorden',    title: 'Woorden',    description: '40 woorden over muziek, cassettes en opnames — van kaset tot bengawan.',
+      node: <Shell><Lexicon section={sections[1]} eyebrow="Woordenschat · Muziek & opname" title="Van kaset tot bengawan" tone="tape" id="s-vocab" /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Zeven manieren waarop het Indonesisch nieuwe woorden leent en smeedt, van bina/graha/loka tot -wan — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (matches
+              lesson 5 / 21 / 27 — never orphaned on the cover). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarFoundry section={sections[2]} /></Shell>
+        </>
+      ) },
+    { id: 'cinta',      title: 'Cinta',      description: 'De woorden en standaardzinnen van het hart: van cinta en pacar tot "Aku cinta padamu".',
+      node: (
+        <Shell>
+          <Lexicon section={sections[3]} eyebrow="Woordenschat · Woorden over liefde" title="Cinta, pacar, kekasih — het lexicon van het hart" tone="love" id="s-love" />
+          <Expressions section={sections[4]} />
+        </Shell>
+      ) },
+    { id: 'latihan',    title: 'Latihan',    description: 'De zeven oefeningen uit het lesboek als naslag: van vrij schrijven tot vertalen.',
+      node: <Shell><Exercises section={sections[5]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden, standaardzinnen en woordvormingspatronen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson30Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

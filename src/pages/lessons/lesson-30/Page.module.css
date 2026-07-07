@@ -8,6 +8,10 @@
 ───────────────────────────────────────────────────────────────────────────── */
 
 .page {
+  /* THE lesson column: every band's inner content below the hero (lede,
+     audio, chapter shell) shares this width so the cover and the content
+     chapters read as one page (matches lesson 5 / 21 / 27). */
+  --lesson-col: 1024px;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -108,7 +112,7 @@
 /* ─── Editorial lede ──────────────────────────────────────────────────────── */
 
 .ledeBand { composes: band; padding: 64px 0 32px; }
-.ledeInner { composes: container; max-width: 920px; }
+.ledeInner { composes: container; max-width: var(--lesson-col); }
 
 .ledeQuote {
   font-size: clamp(17px, 1.8vw, 21px);
@@ -146,7 +150,7 @@
 /* ─── Audio band ──────────────────────────────────────────────────────────── */
 
 .audioBand { composes: band; padding: 0 0 8px; }
-.audioInner { composes: container; max-width: 920px; }
+.audioInner { composes: container; max-width: var(--lesson-col); }
 
 /* ─── Main content shell ──────────────────────────────────────────────────── */
 
@@ -154,7 +158,7 @@
 
 .shell {
   composes: container;
-  max-width: 920px;
+  max-width: var(--lesson-col);
   display: flex;
   flex-direction: column;
   gap: 80px;
@@ -424,7 +428,7 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 28px;
-  align-items: center;
+  align-items: start;
   padding: 28px 32px;
   margin-bottom: 28px;
   border-radius: var(--r-xl);
@@ -446,6 +450,22 @@
   line-height: 1;
   letter-spacing: -0.03em;
   white-space: nowrap;
+}
+
+.foundryIntroBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.foundryIntroTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
 }
 
 .foundryRules {
@@ -471,6 +491,36 @@
   left: 0;
   color: var(--mix-recall);
   font-weight: var(--fw-bold);
+}
+
+.foundryIntroExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.foundryIntroExample {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+}
+
+.foundryIntroExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.foundryIntroExampleNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 /* The five productive devices — accent-coded foundry tiles */
