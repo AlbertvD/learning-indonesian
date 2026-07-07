@@ -20,6 +20,7 @@ const Ontdek = lazy(() => import('@/pages/Ontdek').then(m => ({ default: m.Ontde
 const LessonRouter = lazy(() => import('@/pages/LessonRouter').then(m => ({ default: m.LessonRouter })))
 const Session = lazy(() => import('@/pages/Session').then(m => ({ default: m.Session })))
 const Welkom = lazy(() => import('@/pages/Welkom').then(m => ({ default: m.Welkom })))
+const Instaptoets = lazy(() => import('@/pages/Instaptoets').then(m => ({ default: m.Instaptoets })))
 const LocalPreviewIndex = lazy(() => import('@/pages/LocalPreview').then(m => ({ default: m.LocalPreviewIndex })))
 const LocalPreviewLesson = lazy(() => import('@/pages/LocalPreview').then(m => ({ default: m.LocalPreviewLesson })))
 const Podcasts = lazy(() => import('@/pages/Podcasts').then(m => ({ default: m.Podcasts })))
@@ -126,6 +127,14 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><Welkom /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instaptoets"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Instaptoets /></LazyPage>
             </ProtectedRoute>
           }
         />

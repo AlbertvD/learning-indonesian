@@ -12,7 +12,7 @@ export interface AnswerReport {
 export interface CapabilityScheduleSnapshot {
   stateVersion: number
   activationState: 'dormant' | 'active' | 'suspended' | 'retired'
-  activationSource?: 'review_processor' | 'admin_backfill' | 'legacy_migration'
+  activationSource?: 'review_processor' | 'admin_backfill' | 'legacy_migration' | 'placement'
   stability?: number | null
   difficulty?: number | null
   retrievability?: number | null

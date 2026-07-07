@@ -101,6 +101,11 @@ export function Welkom() {
             <button type="button" className={classes.later} onClick={() => navigate('/')}>
               {T.welkom.later}
             </button>
+            {/* Slice-2 branch (Bet-1 §3.4) — quiet, not another CTA competing
+                with the primary one above. */}
+            <button type="button" className={classes.later} onClick={() => navigate('/instaptoets')}>
+              {T.welkom.branchLink}
+            </button>
           </div>
         </HeroCard>
       </PageBody>

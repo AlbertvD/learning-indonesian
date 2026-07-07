@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted. **Superseded-in-part by [ADR 0026](./0026-placement-seeding-is-a-permitted-second-learner-state-writer.md)** (accepted 2026-07-07) — placement seeding is a permitted second *creator* of `learner_capability_state` (insert-only, only-if-absent, no `capability_review_events` writes). The Review Processor remains the **sole mutator**, so this ADR's bug-localization guarantee is preserved; only the "single writer" reading is narrowed to "single mutator, plus a create-only placement path."
 
 ## Context
 
