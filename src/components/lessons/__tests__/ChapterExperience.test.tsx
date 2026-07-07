@@ -4,6 +4,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import { ChapterExperience, type LessonChapter } from '../ChapterExperience'
+import { LessonChapterOverview } from '../LessonChapterOverview'
 
 const LESSON_ID = 'lesson-uuid-1'
 
@@ -89,5 +90,25 @@ describe('ChapterExperience', () => {
     await userEvent.click(screen.getByRole('button', { name: /Volgende · Woorden/ }))
     const content = screen.getByText('Inhoud woorden').parentElement
     expect(content).toHaveFocus()
+  })
+
+  it('opening-chapter overview lists remaining chapters and navigates on click', async () => {
+    const withOverview: LessonChapter[] = [
+      { id: 'verhaal', title: 'Verhaal', node: <LessonChapterOverview /> },
+      { id: 'woorden', title: 'Woorden', description: '53 woorden met audio.', node: <p>Inhoud woorden</p> },
+      { id: 'oefenen', title: 'Oefenen', description: 'Activeer en oefen.', node: <p>Inhoud oefenen</p> },
+    ]
+    render(
+      <MantineProvider>
+        <MemoryRouter initialEntries={['/lesson/x']}>
+          <ChapterExperience lessonId={LESSON_ID} chapters={withOverview} />
+        </MemoryRouter>
+      </MantineProvider>,
+    )
+    expect(screen.getByText('In deze les')).toBeInTheDocument()
+    expect(screen.getByText('53 woorden met audio.')).toBeInTheDocument()
+    // The card is a Link whose navigation (?h=woorden) IS the chapter switch.
+    await userEvent.click(screen.getByRole('link', { name: /Woorden/ }))
+    expect(screen.getByText('Inhoud woorden')).toBeInTheDocument()
   })
 })

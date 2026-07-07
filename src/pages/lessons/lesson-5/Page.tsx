@@ -16,6 +16,7 @@ import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -405,6 +406,10 @@ function VerhaalChapter() {
         bandClassName={classes.audioBand}
         innerClassName={classes.audioInner}
       />
+
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter (user feedback, 2026-07-07). */}
+      <Shell><LessonChapterOverview /></Shell>
     </>
   )
 }
@@ -447,12 +452,18 @@ function OefenenChapter({ activation }: { activation: ReturnType<typeof useLesso
 export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
   return [
     { id: 'verhaal',    title: 'Verhaal',    node: <VerhaalChapter /> },
-    { id: 'dialoog',    title: 'Dialoog',    node: <Shell><DialogueScene section={sections[1]} /></Shell> },
-    { id: 'grammatica', title: 'Grammatica', node: <Shell><GrammarSection section={sections[2]} /></Shell> },
-    { id: 'schema',     title: 'Schema',     node: <Shell><ReferenceTable section={sections[3]} /></Shell> },
-    { id: 'woorden',    title: 'Woorden',    node: <Shell><VocabularyReference section={sections[6]} /></Shell> },
-    { id: 'tussendoor', title: 'Tussendoor', node: <Shell><TussendoorSpread cookerySection={sections[0]} historySection={sections[5]} /></Shell> },
-    { id: 'oefenen',    title: 'Oefenen',    node: <OefenenChapter activation={activation} /> },
+    { id: 'dialoog',    title: 'Dialoog',    description: 'Titin en Nanang mopperen in de keuken — en zeggen twee soorten "wij".',
+      node: <Shell><DialogueScene section={sections[1]} /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Zeven voornaamwoord-families, van saya tot kita versus kami.',
+      node: <Shell><GrammarSection section={sections[2]} /></Shell> },
+    { id: 'schema',     title: 'Schema',     description: 'Het volledige bezittelijk-voornaamwoordschema als naslagtabel.',
+      node: <Shell><ReferenceTable section={sections[3]} /></Shell> },
+    { id: 'woorden',    title: 'Woorden',    description: '53 woorden uit huis en keuken, met audio.',
+      node: <Shell><VocabularyReference section={sections[6]} /></Shell> },
+    { id: 'tussendoor', title: 'Tussendoor', description: 'Twee zijpaden: nasi gurih koken en hoe Sunda Kelapa Jakarta werd.',
+      node: <Shell><TussendoorSpread cookerySection={sections[0]} historySection={sections[5]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden en patronen.',
+      node: <OefenenChapter activation={activation} /> },
   ]
 }
 

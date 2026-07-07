@@ -1,0 +1,25 @@
+/* LessonChapterOverview — layout-only wrapper around ListCard primitives
+   (card chrome itself lives in the page framework). Token-based so it sits
+   inside any lesson theme. */
+
+.overview {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px var(--page-pad-x, 16px) 8px;
+  width: 100%;
+}
+
+.title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mantine-color-dimmed);
+  margin: 0 0 16px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

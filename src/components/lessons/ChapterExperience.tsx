@@ -18,7 +18,7 @@
 // iterates chapter nodes; see lesson-5's parity test. Swipe is deliberately
 // absent in v1 — next/prev + tap-to-jump are the load-bearing navigation.
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useT } from '@/hooks/useT'
@@ -29,7 +29,27 @@ export interface LessonChapter {
   id: string
   /** Short label shown in the progress header. */
   title: string
+  /** One-line teaser shown in the opening chapter's overview (LessonChapterOverview). */
+  description?: string
   node: ReactNode
+}
+
+// Chapter contents can navigate (e.g. the opening chapter's overview cards)
+// without the page threading callbacks — the chrome provides its nav here.
+interface ChapterNav {
+  chapters: LessonChapter[]
+  currentId: string
+  goTo: (id: string) => void
+}
+
+const ChapterNavContext = createContext<ChapterNav | null>(null)
+
+// Nullable by design: chapter nodes are also rendered OUTSIDE the experience
+// (the content-parity tests mount them in isolation) — navigational chrome
+// like LessonChapterOverview renders nothing there instead of throwing.
+// eslint-disable-next-line react-refresh/only-export-components -- context-hook export beside its provider (the SessionAudioContext precedent)
+export function useChapterNav(): ChapterNav | null {
+  return useContext(ChapterNavContext)
 }
 
 interface StoredPosition {
@@ -168,7 +188,9 @@ export function ChapterExperience({ lessonId, chapters }: { lessonId: string; ch
 
       {/* tabIndex -1: programmatic focus target on chapter change (a11y). */}
       <div ref={contentRef} tabIndex={-1} className={classes.content}>
-        {current.node}
+        <ChapterNavContext.Provider value={{ chapters, currentId: current.id, goTo }}>
+          {current.node}
+        </ChapterNavContext.Provider>
       </div>
 
       <div className={classes.footerNav}>
