@@ -495,6 +495,15 @@ export const nl = {
     firstRunBody: 'Dit woord blijft steken, en dat ligt niet aan jou. Nóg een keer herhalen helpt dan weinig — een eigen ezelsbruggetje wél. We laten het vanzelf terugkomen zodra je dit woord weer mist.',
     firstRunDismiss: 'Begrepen',
   },
+  welkom: {
+    headline: 'Je kent al Indonesisch. Serieus.',
+    intro: 'Het Indonesisch nam duizenden Nederlandse woorden over. Deze ken je al — je wist het alleen nog niet:',
+    cta: 'Begin met deze woorden',
+    ctaHint: 'We zetten een woordenlijst voor je klaar en starten meteen een korte oefensessie.',
+    later: 'Later — naar mijn overzicht',
+    activateFailed: 'We konden de woordenlijst niet activeren. Probeer het opnieuw.',
+    arrowLabel: 'wordt',
+  },
   common: {
     loading: 'Laden...',
     error: 'Fout',
@@ -1120,6 +1129,15 @@ export const en: typeof nl = {
     firstRunTitle: 'How a memory hook works',
     firstRunBody: "This word keeps slipping, and that's not on you. Repeating it again barely helps — your own memory hook does. We'll bring it back automatically whenever you miss this word.",
     firstRunDismiss: 'Got it',
+  },
+  welkom: {
+    headline: 'You already know Indonesian. Really.',
+    intro: 'Indonesian borrowed thousands of Dutch words. You already know these — you just did not know it yet:',
+    cta: 'Start with these words',
+    ctaHint: 'We will set up a word list for you and start a short practice session right away.',
+    later: 'Later — go to my overview',
+    activateFailed: 'We could not activate the word list. Please try again.',
+    arrowLabel: 'becomes',
   },
   common: {
     loading: 'Loading...',
