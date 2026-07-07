@@ -160,6 +160,7 @@ export function ChapterExperience({ lessonId, chapters, hero }: {
     <div className={classes.experience}>
       {currentIndex === 0 && hero}
       <nav ref={headerRef} className={classes.header} aria-label={T.lessons.chapterNavLabel}>
+        <div className={classes.headerInner}>
         <ol className={classes.segments}>
           {chapters.map((chapter, i) => {
             const isCurrent = i === currentIndex
@@ -192,6 +193,7 @@ export function ChapterExperience({ lessonId, chapters, hero }: {
             {T.lessons.chapterProgress(currentIndex, chapters.length - 1)}
           </p>
         )}
+        </div>
       </nav>
 
       {resume && (

@@ -24,6 +24,15 @@
   border-bottom: 1px solid var(--mantine-color-default-border);
 }
 
+/* Inner content aligns to the page's lesson column (--lesson-col, set on the
+   bespoke page root) so the pills sit flush with the content below; the band
+   background itself stays full-bleed. */
+.headerInner {
+  max-width: var(--lesson-col, 1024px);
+  margin: 0 auto;
+  width: 100%;
+}
+
 .segments {
   display: flex;
   gap: 6px;
@@ -132,7 +141,7 @@
   align-items: center;
   gap: 12px;
   padding: 20px var(--page-pad-x, 16px) 40px;
-  max-width: 1180px;
+  max-width: var(--lesson-col, 1024px);
   margin: 0 auto;
   width: 100%;
 }
