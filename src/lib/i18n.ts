@@ -58,6 +58,7 @@ export const nl = {
     grammarEyebrow: 'Luisteren',
     grammarCta: 'Naar de grammatica',
     grammarEmpty: 'Nog geen grammatica podcasts beschikbaar.',
+    grammarLesson: 'Les {n}',
   },
   leren: {
     lessenTab: 'Lessen',
@@ -721,6 +722,7 @@ export const en: typeof nl = {
     grammarEyebrow: 'Listen',
     grammarCta: 'Browse the grammar',
     grammarEmpty: 'No grammar podcasts available yet.',
+    grammarLesson: 'Lesson {n}',
   },
   leren: {
     lessenTab: 'Lessons',

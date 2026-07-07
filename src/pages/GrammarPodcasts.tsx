@@ -46,8 +46,8 @@ export function GrammarPodcasts() {
   }, [T.common.error, T.common.somethingWentWrong])
 
   const episodes = rows
-    .map((r) => ({ order: r.order_index, title: r.title, path: lang === 'en' ? r.audio_path_en : r.audio_path }))
-    .filter((e): e is { order: number; title: string; path: string } => !!e.path)
+    .map((r) => ({ order: r.order_index, topics: r.topics, path: lang === 'en' ? r.audio_path_en : r.audio_path }))
+    .filter((e): e is { order: number; topics: string[]; path: string } => !!e.path)
 
   if (loading) {
     return (
@@ -71,9 +71,14 @@ export function GrammarPodcasts() {
           <Stack gap="sm">
             {episodes.map((e) => (
               <Paper key={e.order} withBorder radius="md" p="sm">
-                <Group gap={10} mb={8} wrap="nowrap">
+                <Group gap={12} mb={8} wrap="nowrap" align="flex-start">
                   <Text fw={700} c="dimmed">{String(e.order).padStart(2, '0')}</Text>
-                  <Text fw={600}>{e.title}</Text>
+                  <div>
+                    <Text fw={600}>{T.ontdek.grammarLesson.replace('{n}', String(e.order))}</Text>
+                    {e.topics.length > 0 && (
+                      <Text size="sm" c="dimmed">{e.topics.join(' · ')}</Text>
+                    )}
+                  </div>
                 </Group>
                 <audio
                   controls
