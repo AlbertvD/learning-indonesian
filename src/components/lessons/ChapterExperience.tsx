@@ -20,7 +20,8 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { IconArrowLeft } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
 import classes from './ChapterExperience.module.css'
 
@@ -161,6 +162,14 @@ export function ChapterExperience({ lessonId, chapters, hero }: {
       {currentIndex === 0 && hero}
       <nav ref={headerRef} className={classes.header} aria-label={T.lessons.chapterNavLabel}>
         <div className={classes.headerInner}>
+        {/* Explicit exit from the immersive reader back to the lessons
+            overview. The global tab bar (sidebar / mobile bottom-nav) also
+            reaches /leren, but a mode-switch tab doesn't read as "back" from
+            inside a lesson — so the chrome carries its own up-affordance. */}
+        <Link to="/leren" className={classes.backLink}>
+          <IconArrowLeft size={15} stroke={2.2} aria-hidden="true" />
+          {T.lessons.backToLessons}
+        </Link>
         <ol className={classes.segments}>
           {chapters.map((chapter, i) => {
             const isCurrent = i === currentIndex

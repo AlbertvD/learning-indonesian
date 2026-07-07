@@ -105,6 +105,14 @@ describe('ChapterExperience', () => {
     expect(screen.queryByText('De heroband')).not.toBeInTheDocument()
   })
 
+  it('always offers a back-to-lessons link pointing at the overview', async () => {
+    renderExperience()
+    expect(screen.getByRole('link', { name: /Terug naar lessen/ })).toHaveAttribute('href', '/leren')
+    // Still reachable from inside a content chapter (the exit is in the sticky chrome).
+    await userEvent.click(screen.getByRole('button', { name: /Volgende · Woorden/ }))
+    expect(screen.getByRole('link', { name: /Terug naar lessen/ })).toHaveAttribute('href', '/leren')
+  })
+
   it('opening-chapter overview lists remaining chapters and navigates on click', async () => {
     const withOverview: LessonChapter[] = [
       { id: 'verhaal', title: 'Verhaal', node: <LessonChapterOverview /> },
