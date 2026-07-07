@@ -1,4 +1,4 @@
-// Lesson 8 — Batik — bespoke reader page.
+// Lesson 8 — Batik — bespoke reader page (chapter experience).
 //
 // Two threads run through this lesson and the page composes them as one piece:
 //
@@ -19,7 +19,8 @@
 //      dialogue's actual kain panjang.
 //
 // The interjecties section (dong, kok, wah, …) sits as a small particle-lexicon
-// after the grammar — they're the staccato breath of the bargaining scene.
+// chapter between the grammar and the reference lists — they're the staccato
+// breath of the bargaining scene.
 //
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 8 --pretty > src/pages/lessons/lesson-8/content.json
@@ -29,6 +30,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -137,7 +140,7 @@ function CultureSpread({ section }: { section: typeof sections[number] }) {
         {/* Quality note */}
         <p className={classes.craftAside}>{p[4]}</p>
 
-        {/* Process body — the geheime samenstelling */}
+        {/* Process body — de geheime samenstelling */}
         <p className={classes.craftBody}>{p[5]}</p>
 
         {/* The schema — paragraph 6 rendered as a 9-step process flow */}
@@ -415,43 +418,51 @@ function ExpressionsRow({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE OR MORE scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson8Page() {
-  const activation = useLessonActivation(meta.id)
-  // Section index map (DB order):
-  //   0: text — culture (batik craft, 12 paragraphs)
-  //   1: dialogue (Sarinah Jaya, 20 lines)
-  //   2: vocabulary (49 items)
-  //   3: expressions (4 items)
-  //   4: grammar — interjecties
-  //   5: grammar — trappen van vergelijking (10 categories — the lesson's spine)
-  //   6: exercises (skipped)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — batik tulis artisan with canting (Trusmi, Cirebon) */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Batik</span>
-              <span className={classes.heroTitleNl}>De Javaanse stof, en hoe je zegt welke mooier is</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Sinds de zestiende eeuw schrijft de canting met warme was op
-              katoen — eerst voor de hofkleding van Yogyakarta, vandaag voor
-              de kassa van Sarinah Jaya. Ibu Yati zoekt een <em>kain panjang</em>
-              voor oma&apos;s 76e verjaardag. Onderweg leren we hoe je in het
-              Indonesisch zegt dat <em>deze</em> mooier is dan <em>die</em>.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero — indigo-to-copper gradient, canting-in-hand photograph. Rendered
+       ABOVE the chapter nav via ChapterExperience's hero slot (cover only):
+       the nav sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Batik</span>
+            <span className={classes.heroTitleNl}>De Javaanse stof, en hoe je zegt welke mooier is</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Sinds de zestiende eeuw schrijft de canting met warme was op
+            katoen — eerst voor de hofkleding van Yogyakarta, vandaag voor
+            de kassa van Sarinah Jaya. Ibu Yati zoekt een <em>kain panjang</em>
+            voor oma&apos;s 76e verjaardag. Onderweg leren we hoe je in het
+            Indonesisch zegt dat <em>deze</em> mooier is dan <em>die</em>.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -461,50 +472,100 @@ export default function Lesson8Page() {
             Geen vervoegingen, geen Steigerung — alleen een woordje ervoor, en
             de hele markt staat open.
           </p>
-          <p className={classes.ledeMeta}>Les 8 · A1 · Bahasa Indonesia</p>
+          {/* meta.level, not a hardcoded string — the old copy said A1 while
+              the lesson is A2 (flagged during the chapter conversion). */}
+          <p className={classes.ledeMeta}>Les 8 · {meta.level} · Bahasa Indonesia</p>
         </div>
       </section>
 
-      {/* Lesson-level grammar-explanation audio */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        label="Uitleg bij de grammatica · audio"
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-        labelClassName={classes.audioLabel}
-      />
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter (user feedback, 2026-07-07).
+          NOT wrapped in Shell: the overview centers itself on --lesson-col;
+          nesting would double the horizontal padding. */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — craft first, then the dialogue it produces, then the
-          grammar that the dialogue's haggling actually uses, then particles,
-          then the reference lists. */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <CultureSpread     section={sections[0]} />
-          <DialogueScene     section={sections[1]} />
-          <ComparisonLadder  section={sections[5]} />
-          <ParticleLexicon   section={sections[4]} />
-          <VocabularyGrid    section={sections[2]} />
-          <ExpressionsRow    section={sections[3]} />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de batikwoorden, de trappen van vergelijking
-            en de korte tussenwerpsels komen vanzelf in je oefensessies langs.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de batikwoorden, de trappen van vergelijking
+          en de korte tussenwerpsels komen vanzelf in je oefensessies langs.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (batik craft, 12 paragraphs)
+//   1 = dialogue (Sarinah Jaya, 20 lines)
+//   2 = vocabulary (49 items)
+//   3 = expressions (4 items)
+//   4 = grammar — interjecties (particle lexicon)
+//   5 = grammar — trappen van vergelijking (10 categories — the lesson's spine)
+//   6 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (user feedback 2026-07-07).
+    { id: 'inhoud',         title: 'Inhoud',         node: <InhoudChapter /> },
+    { id: 'ambacht',        title: 'Ambacht',        description: 'Zestiende-eeuws Java, de canting als vulpen, en het motief dat status verraadt.',
+      node: <Shell><CultureSpread section={sections[0]} /></Shell> },
+    { id: 'dialoog',        title: 'Dialoog',        description: 'Ibu Yati en Tin zoeken een kain panjang op de vierde verdieping van Sarinah Jaya.',
+      node: <Shell><DialogueScene section={sections[1]} /></Shell> },
+    { id: 'grammatica',     title: 'Grammatica',     description: 'Tien treden op de vergelijkingsladder — van bagus tot paling bagus — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (user feedback
+              2026-07-07 — it sat orphaned on the cover). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            label="Uitleg bij de grammatica · audio"
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+            labelClassName={classes.audioLabel}
+          />
+          <Shell><ComparisonLadder section={sections[5]} /></Shell>
+        </>
+      ) },
+    { id: 'tussenwerpsels', title: 'Tussenwerpsels', description: 'Negen korte woordjes — dong, kok, wah, sih — die het gesprek kleuren.',
+      node: <Shell><ParticleLexicon section={sections[4]} /></Shell> },
+    { id: 'woorden',        title: 'Woorden',        description: '49 woorden uit de markt en 4 vaste uitdrukkingen uit het gesprek.',
+      node: (
+        <Shell>
+          <VocabularyGrid section={sections[2]} />
+          <ExpressionsRow section={sections[3]} />
+        </Shell>
+      ) },
+    { id: 'oefenen',        title: 'Oefenen',        description: 'Activeer de les en oefen de batikwoorden en de trappen van vergelijking.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson8Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }
