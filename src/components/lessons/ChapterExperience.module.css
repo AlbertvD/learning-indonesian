@@ -15,8 +15,10 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  padding: 8px var(--page-pad-x, 16px) 6px;
-  background: color-mix(in srgb, var(--mantine-color-body) 82%, transparent);
+  padding: 10px var(--page-pad-x, 16px) 8px;
+  /* Near-solid: over the hero's saturated gradient a translucent bar reads
+     as background chrome instead of the lesson's navigation. */
+  background: color-mix(in srgb, var(--mantine-color-body) 96%, transparent);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--mantine-color-default-border);
