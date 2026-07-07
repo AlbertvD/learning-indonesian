@@ -76,7 +76,11 @@ export function GrammarPodcasts() {
                   <div>
                     <Text fw={600}>{T.ontdek.grammarLesson.replace('{n}', String(e.order))}</Text>
                     {e.topics.length > 0 && (
-                      <Text size="sm" c="dimmed">{e.topics.join(' · ')}</Text>
+                      <Stack gap={2} mt={4}>
+                        {e.topics.map((t) => (
+                          <Text key={t} size="sm" c="dimmed">{t}</Text>
+                        ))}
+                      </Stack>
                     )}
                   </div>
                 </Group>
