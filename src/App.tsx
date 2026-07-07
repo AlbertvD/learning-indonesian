@@ -27,6 +27,7 @@ const Podcasts = lazy(() => import('@/pages/Podcasts').then(m => ({ default: m.P
 const Podcast = lazy(() => import('@/pages/Podcast').then(m => ({ default: m.Podcast })))
 const Lezen = lazy(() => import('@/pages/Lezen').then(m => ({ default: m.Lezen })))
 const LezenReader = lazy(() => import('@/pages/LezenReader').then(m => ({ default: m.LezenReader })))
+const GrammarPodcasts = lazy(() => import('@/pages/GrammarPodcasts').then(m => ({ default: m.GrammarPodcasts })))
 const Profile = lazy(() => import('@/pages/Profile').then(m => ({ default: m.Profile })))
 const Progress = lazy(() => import('@/pages/Progress').then(m => ({ default: m.Progress })))
 const AffixTrainer = lazy(() => import('@/pages/AffixTrainer').then(m => ({ default: m.AffixTrainer })))
@@ -399,6 +400,14 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><LezenReader /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/grammatica"
+          element={
+            <ProtectedRoute>
+              <LazyPage><GrammarPodcasts /></LazyPage>
             </ProtectedRoute>
           }
         />

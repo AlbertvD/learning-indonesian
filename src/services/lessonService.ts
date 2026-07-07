@@ -10,11 +10,38 @@
 
 import { supabase } from '@/lib/supabase'
 
+// One lesson's grammar-podcast paths, for the Ontdek "Grammatica podcasts" hub.
+// `audio_path` = the NL "Kamoe Bisa" episode, `audio_path_en` = the EN twin;
+// either may be null (a lesson can have one language before the other). Both are
+// bucket paths — turn them into playable URLs with getAudioUrl().
+export interface GrammarPodcastRow {
+  order_index: number
+  title: string
+  audio_path: string | null
+  audio_path_en: string | null
+}
+
 export const lessonService = {
   getAudioUrl(audioPath: string): string {
     const { data } = supabase.storage
       .from('indonesian-lessons')
       .getPublicUrl(audioPath)
     return data.publicUrl
+  },
+
+  // Every visible lesson that has a grammar podcast in at least one language,
+  // ordered by course position. Hidden system lessons (order_index >= 90, e.g.
+  // the loanword/common-words sections) are excluded. The page picks the NL or
+  // EN path per the learner's app language.
+  async listGrammarPodcasts(): Promise<GrammarPodcastRow[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('lessons')
+      .select('order_index, title, audio_path, audio_path_en')
+      .lt('order_index', 90)
+      .or('audio_path.not.is.null,audio_path_en.not.is.null')
+      .order('order_index')
+    if (error) throw error
+    return data ?? []
   },
 }

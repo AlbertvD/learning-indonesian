@@ -13,7 +13,7 @@
 import { useEffect } from 'react'
 import { useMediaQuery } from '@mantine/hooks'
 import { SimpleGrid } from '@mantine/core'
-import { IconHeadphones, IconBook2 } from '@tabler/icons-react'
+import { IconHeadphones, IconBook2, IconLanguage } from '@tabler/icons-react'
 import { PageContainer, PageBody, PageHeader, ListCard } from '@/components/page/primitives'
 import { ONTDEK_VISITED_KEY, setFirstRunFlag } from '@/lib/firstRun'
 import { useT } from '@/hooks/useT'
@@ -49,6 +49,14 @@ export function Ontdek() {
             icon={<IconBook2 size={25} stroke={1.7} />}
             title={T.ontdek.readerTitle}
             subtitle={T.ontdek.readerDesc}
+          />
+          <ListCard
+            feature
+            tone="teal"
+            to="/grammatica"
+            icon={<IconLanguage size={25} stroke={1.7} />}
+            title={T.ontdek.grammarTitle}
+            subtitle={T.ontdek.grammarDesc}
           />
         </SimpleGrid>
       </PageBody>

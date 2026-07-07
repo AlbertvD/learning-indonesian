@@ -53,6 +53,11 @@ export const nl = {
     readerDesc: 'Lees met tik-voor-vertaling korte teksten.',
     readerEyebrow: 'Lezen',
     readerCta: 'Naar de verhalen',
+    grammarTitle: 'Grammatica podcasts',
+    grammarDesc: 'Grammatica-uitleg per les, om onderweg te luisteren.',
+    grammarEyebrow: 'Luisteren',
+    grammarCta: 'Naar de grammatica',
+    grammarEmpty: 'Nog geen grammatica podcasts beschikbaar.',
   },
   leren: {
     lessenTab: 'Lessen',
@@ -711,6 +716,11 @@ export const en: typeof nl = {
     readerDesc: 'Read short texts with tap-to-translate.',
     readerEyebrow: 'Read',
     readerCta: 'Open the stories',
+    grammarTitle: 'Grammar podcasts',
+    grammarDesc: 'Grammar explained lesson by lesson — listen on the go.',
+    grammarEyebrow: 'Listen',
+    grammarCta: 'Browse the grammar',
+    grammarEmpty: 'No grammar podcasts available yet.',
   },
   leren: {
     lessenTab: 'Lessons',
