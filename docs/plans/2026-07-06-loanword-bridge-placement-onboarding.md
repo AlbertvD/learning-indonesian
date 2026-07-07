@@ -1,6 +1,6 @@
 ---
 status: implementing
-implementation: branch feat/loanword-bridge-slice1-schema (SLICE 1 only; not yet merged/deployed)
+implementation: PR #379 merged to main (0d5698e9); SLICE 1 shipped + deployed 2026-07-07. Slice 2 still gated.
 reviewed_by:
   - staff-engineer   # r1 SOUND (2026-07-06)
   - architect        # r1 needs-work → r2 APPROVE (2026-07-06; ADR-0004 carve-out scoping confirmed)
@@ -12,8 +12,10 @@ reviewed_by:
      theme collection seeded live (176 members; input 05776b7c), /welkom onboarding + Register
      redirect (2f76aa4d). Migration APPLIED live (both loan_source_nl columns). All 176 words
      live: active, loan_source_nl set, ready caps (verified). Collection live. UI builds/lints/
-     typechecks; live in-browser screenshot NOT captured (playwright backend down). PENDING:
-     merge to main + frontend container deploy (Operating-Context-gated).
+     typechecks; live in-browser screenshot NOT captured (playwright backend down — the one
+     residual verification). SHIPPED: PR #379 merged (0d5698e9), pre-deploy gauntlet green,
+     frontend container recreated 2026-07-07 to rev 0d5698e9 (running; cookieless /sw.js=200,
+     /=307 both verified). /welkom + Register redirect now LIVE.
      SLICE 2 (placement probe) still gated on §7.4 (user ratifies ADR-0004 carve-out) + §7.5. -->
 
 <!-- Citation line numbers in migration.sql drift with unrelated edits (data-architect r2):
