@@ -695,6 +695,7 @@ export const lesson = {
       "content": {
         "type": "vocabulary",
         "items": [
+          { "loanSourceNl": "bak", "indonesian": "bak", "dutch": "bak", "english": "tub / basin" },
           { "loanSourceNl": "kans", "indonesian": "kans", "dutch": "kans", "english": "chance / odds" },
           { "loanSourceNl": "balkon", "indonesian": "balkon", "dutch": "balkon", "english": "balcony" },
           { "loanSourceNl": "helm", "indonesian": "helm", "dutch": "helm", "english": "helmet" },
