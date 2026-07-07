@@ -11,6 +11,10 @@
 /* ─── Page root ──────────────────────────────────────────────────────────── */
 
 .page {
+  /* THE lesson column: every band's inner content below the hero (lede,
+     audio, chapter overview, chapter shell) shares this width so the cover
+     and the content chapters read as one page (matches lesson 5). */
+  --lesson-col: 1024px;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -127,7 +131,7 @@
   padding: 64px 0 32px;
 }
 
-.ledeInner { composes: container; max-width: 920px; }
+.ledeInner { composes: container; max-width: var(--lesson-col); }
 
 .ledeQuote {
   font-size: clamp(17px, 1.8vw, 21px);
@@ -172,7 +176,7 @@
 
 .shell {
   composes: container;
-  max-width: 1120px;
+  max-width: var(--lesson-col);
   display: flex;
   flex-direction: column;
   gap: 96px;
@@ -1144,5 +1148,5 @@
 }
 .audioInner {
   composes: container;
-  max-width: 920px;
+  max-width: var(--lesson-col);
 }
