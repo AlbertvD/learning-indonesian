@@ -1,10 +1,21 @@
 ---
-status: approved
+status: implementing
+implementation: branch feat/loanword-bridge-slice1-schema (SLICE 1 only; not yet merged/deployed)
 reviewed_by:
   - staff-engineer   # r1 SOUND (2026-07-06)
   - architect        # r1 needs-work → r2 APPROVE (2026-07-06; ADR-0004 carve-out scoping confirmed)
   - data-architect   # r1 needs-work → r2 APPROVE (2026-07-06; §4.3 seed shape is their specification)
 ---
+<!-- SLICE 1 BUILT 2026-07-07 on branch feat/loanword-bridge-slice1-schema (5 commits):
+     schema+two-stage loan_source_nl carrier (ea9c49d9), 176-word content — 86 backfills
+     + 90 authored gaps in lesson-999 + bak drift-repair (86f29c32/fd3998b1), nl-leenwoorden
+     theme collection seeded live (176 members; input 05776b7c), /welkom onboarding + Register
+     redirect (2f76aa4d). Migration APPLIED live (both loan_source_nl columns). All 176 words
+     live: active, loan_source_nl set, ready caps (verified). Collection live. UI builds/lints/
+     typechecks; live in-browser screenshot NOT captured (playwright backend down). PENDING:
+     merge to main + frontend container deploy (Operating-Context-gated).
+     SLICE 2 (placement probe) still gated on §7.4 (user ratifies ADR-0004 carve-out) + §7.5. -->
+
 <!-- Citation line numbers in migration.sql drift with unrelated edits (data-architect r2):
      re-pin all migration.sql cites immediately before authoring the actual migration diff. -->
 <!-- AMENDED 2026-07-06 post-approval: §3.2 write path corrected (carrier column
