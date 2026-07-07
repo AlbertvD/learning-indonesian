@@ -7,6 +7,11 @@
 ───────────────────────────────────────────────────────────────────────────── */
 
 .page {
+  /* THE lesson column: every band's inner content below the hero (lede,
+     audio, chapter overview, chapter shell) shares this width so the cover
+     and the content chapters read as one page. 1024px = the uniform value
+     all other converted lessons use, so this lesson reads at the same width. */
+  --lesson-col: 1024px;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -107,7 +112,7 @@
 /* ─── Editorial lede ──────────────────────────────────────────────────────── */
 
 .ledeBand { composes: band; padding: 64px 0 32px; }
-.ledeInner { composes: container; max-width: 920px; }
+.ledeInner { composes: container; max-width: var(--lesson-col); }
 
 .ledeQuote {
   font-size: clamp(17px, 1.8vw, 21px);
@@ -145,7 +150,7 @@
 /* ─── Audio band ──────────────────────────────────────────────────────────── */
 
 .audioBand { composes: band; padding: 0 0 8px; }
-.audioInner { composes: container; max-width: 920px; }
+.audioInner { composes: container; max-width: var(--lesson-col); }
 
 /* ─── Main content shell ──────────────────────────────────────────────────── */
 
@@ -153,7 +158,7 @@
 
 .shell {
   composes: container;
-  max-width: 920px;
+  max-width: var(--lesson-col);
   display: flex;
   flex-direction: column;
   gap: 80px;
@@ -386,6 +391,24 @@
   color: var(--mix-recall);
   line-height: 1;
   letter-spacing: -0.04em;
+}
+
+/* Wrapper for the overview's title + rules + examples — the single second
+   grid item alongside .prismGlyph (adding them as separate grid children
+   would break the 2-column glyph|content layout). */
+.prismBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.prismLabel {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-secondary);
+  letter-spacing: -0.005em;
+  margin: 0;
 }
 
 .prismRules {
