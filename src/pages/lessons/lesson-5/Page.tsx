@@ -15,6 +15,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -291,16 +293,18 @@ function TussendoorSpread({
         </header>
         <div className={classes.tussenProse}>
           {cookery.paragraphs.map((p, i) => {
-            // The "Nasi kuning" header paragraph introduces a sub-recipe;
-            // render it as an inline display header inside the prose.
-            if (p.startsWith('Nasi kuning')) {
+            // "Nasi gurih"/"Nasi kuning" paragraphs open a sub-recipe: first
+            // line is a display header, the rest is prose. (The pre-chapter
+            // version dropped everything after the first line — a content
+            // loss the chapter parity test caught, fixed 2026-07-07.)
+            if (p.startsWith('Nasi kuning') || p.startsWith('Nasi gurih')) {
+              const [head, ...rest] = p.split('\n')
+              const prose = rest.join(' ').trim()
               return (
-                <h4 key={i} className={classes.tussenSubhead}>{p.split('\n')[0]}</h4>
-              )
-            }
-            if (p.startsWith('Nasi gurih')) {
-              return (
-                <h4 key={i} className={classes.tussenSubhead}>{p.split('\n')[0]}</h4>
+                <div key={i}>
+                  <h4 className={classes.tussenSubhead}>{head}</h4>
+                  {prose && <p>{prose}</p>}
+                </div>
               )
             }
             // Ingredient lists (start with "Benodigdheden") — render as a
@@ -345,42 +349,50 @@ function TussendoorSpread({
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson5Page() {
-  const activation = useLessonActivation(meta.id)
-  // Section indices in DB order:
-  //   0 = text (rice cookery)
-  //   1 = dialogue (Titin + Nanang + Pembantu)
-  //   2 = grammar (7 pronoun categories)
-  //   3 = reference_table (possessive matrix)
-  //   4 = exercises (skipped — practice surface)
-  //   5 = text (Jakarta etymology)
-  //   6 = vocabulary
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero — classroom warm tones, evoke "studying at the table" */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Belajar</span>
-              <span className={classes.heroTitleNl}>Studeren — en wie precies "wij" is</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Titin en Nanang moeten thuis studeren terwijl hun ouders naar Taman
-              Mini gaan. Tussen het mopperen door zeggen ze <em>kita</em> en{' '}
-              <em>kami</em> — twee woorden voor "wij", afhankelijk van wie er
-              meeluistert. Deze les opent het volledige Indonesische voornaam­woord­systeem.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero — classroom warm tones, evoke "studying at the table". Rendered
+       ABOVE the chapter nav via ChapterExperience's hero slot (cover only):
+       the nav sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Belajar</span>
+            <span className={classes.heroTitleNl}>Studeren — en wie precies "wij" is</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Titin en Nanang moeten thuis studeren terwijl hun ouders naar Taman
+            Mini gaan. Tussen het mopperen door zeggen ze <em>kita</em> en{' '}
+            <em>kami</em> — twee woorden voor "wij", afhankelijk van wie er
+            meeluistert. Deze les opent het volledige Indonesische voornaam­woord­systeem.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function VerhaalChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -393,7 +405,6 @@ export default function Lesson5Page() {
         </div>
       </section>
 
-      {/* Main content */}
       {/* Lesson audio */}
       <LessonGrammarAudioBand
         nl={meta.lesson_audio_url}
@@ -402,35 +413,73 @@ export default function Lesson5Page() {
         innerClassName={classes.audioInner}
       />
 
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <DialogueScene        section={sections[1]} />
-          <GrammarSection       section={sections[2]} />
-          <ReferenceTable       section={sections[3]} />
-          <VocabularyReference  section={sections[6]} />
-          <TussendoorSpread
-            cookerySection={sections[0]}
-            historySection={sections[5]}
-          />
-        </main>
-      </section>
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter (user feedback, 2026-07-07).
+          NOT wrapped in Shell: the overview centers itself on --lesson-col;
+          nesting would double the horizontal padding (992 vs 1024). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les — de pronominale families en het bezittelijke schema
-            verschijnen daarna gedoseerd in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les — de pronominale families en het bezittelijke schema
+          verschijnen daarna gedoseerd in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (rice cookery)
+//   1 = dialogue (Titin + Nanang + Pembantu)
+//   2 = grammar (7 pronoun categories)
+//   3 = reference_table (possessive matrix)
+//   4 = exercises (skipped — practice surface)
+//   5 = text (Jakarta etymology)
+//   6 = vocabulary
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    { id: 'verhaal',    title: 'Verhaal',    node: <VerhaalChapter /> },
+    { id: 'dialoog',    title: 'Dialoog',    description: 'Titin en Nanang mopperen in de keuken — en zeggen twee soorten "wij".',
+      node: <Shell><DialogueScene section={sections[1]} /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Zeven voornaamwoord-families, van saya tot kita versus kami.',
+      node: <Shell><GrammarSection section={sections[2]} /></Shell> },
+    { id: 'schema',     title: 'Schema',     description: 'Het volledige bezittelijk-voornaamwoordschema als naslagtabel.',
+      node: <Shell><ReferenceTable section={sections[3]} /></Shell> },
+    { id: 'woorden',    title: 'Woorden',    description: '53 woorden uit huis en keuken, met audio.',
+      node: <Shell><VocabularyReference section={sections[6]} /></Shell> },
+    { id: 'tussendoor', title: 'Tussendoor', description: 'Twee zijpaden: nasi gurih koken en hoe Sunda Kelapa Jakarta werd.',
+      node: <Shell><TussendoorSpread cookerySection={sections[0]} historySection={sections[5]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden en patronen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson5Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }
