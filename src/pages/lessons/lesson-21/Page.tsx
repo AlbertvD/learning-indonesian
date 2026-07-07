@@ -1,4 +1,4 @@
-// Lesson 21 — Bab 5: Dongeng — bespoke reader page.
+// Lesson 21 — Bab 5: Dongeng — bespoke reader page (chapter-experience conversion).
 //
 // A folktale chapter. Two faces:
 //   1. THE STORY — a Pancatantra animal fable: the foolish monkey Utun and the
@@ -15,7 +15,14 @@
 //
 // Palette: warm lamplit gold for the fable (a dongeng told by lamplight),
 // per-tile purple/teal/amber for the grammar movements, green for the
-// story's 47-word vocabulary.
+// story's 51-word vocabulary.
+//
+// Chapters: the cover ("Inhoud" — hero + lede + overview), then one content
+// chapter per top-level section (Fabel / Grammatica / Woorden — the lesson
+// only has three, so the grouping is one-section-per-chapter rather than an
+// editorial merge), then the closing "Oefenen" chapter. The grammar podcast
+// audio moves from the cover into the Grammatica chapter, matching lesson 5
+// and lesson 2 (docs/current-system/modules/chapter-experience.md).
 //
 // Re-roll by re-running:
 //   NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/fetch-lesson-content.ts 21 --pretty > src/pages/lessons/lesson-21/content.json
@@ -25,6 +32,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -171,7 +180,7 @@ function GrammarSection({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Vocabulary — the 47 words of the fable ──────────────────────────────────
+// ─── Vocabulary — the words of the fable ─────────────────────────────────────
 
 function Vocabulary({ section }: { section: typeof sections[number] }) {
   const c = section.content as { items: Item[] }
@@ -194,34 +203,50 @@ function Vocabulary({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson21Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — full-bleed, lamplit dongeng */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Dongeng</span>
-              <span className={classes.heroTitleNl}>Een sprookje — en de kracht van één achtervoegsel</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              De domme aap Utun gaat alleen vissen, ook al waarschuwt zijn vriend de schildpad Uca voor de regen.
-              Als de rivier plotseling stijgt, is het Uca die hem redt. Lees de fabel — en zie hoe het achtervoegsel
-              <em> -kan</em> woorden laat <em>doen</em>, <em>laten</em> en <em>geven</em>.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
-      {/* Editorial lede — sets the page's voice */}
+function Hero() {
+  return (
+    /* Hero band — full-bleed, lamplit dongeng. Rendered ABOVE the chapter nav
+       via ChapterExperience's hero slot (cover only): the nav sits under the
+       hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Dongeng</span>
+            <span className={classes.heroTitleNl}>Een sprookje — en de kracht van één achtervoegsel</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            De domme aap Utun gaat alleen vissen, ook al waarschuwt zijn vriend de schildpad Uca voor de regen.
+            Als de rivier plotseling stijgt, is het Uca die hem redt. Lees de fabel — en zie hoe het achtervoegsel
+            <em> -kan</em> woorden laat <em>doen</em>, <em>laten</em> en <em>geven</em>.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
+      {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
@@ -233,39 +258,79 @@ export default function Lesson21Page() {
         </div>
       </section>
 
-      {/* Lesson audio — band between the lede and the main content */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column, aligned to lede width */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <FableScene    section={sections[0]} />
-          <GrammarSection section={sections[2]} />
-          <Vocabulary    section={sections[1]} />
-        </main>
-      </section>
-
-      {/* Closing band — outro + activation + CTA grouped as one unit */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden van de fabel en de -KAN-vormen verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden van de fabel en de -KAN-vormen verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (the fable — Si monyet dan si kura-kura)
+//   1 = vocabulary (51 items)
+//   2 = grammar (7 -KAN categories)
+//   3 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5 / lesson 2).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'fabel',      title: 'Fabel',      description: 'De aap Utun gaat vissen ondanks de waarschuwing van de schildpad Uca — en wordt door hem gered als de rivier stijgt.',
+      node: <Shell><FableScene section={sections[0]} /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Eén achtervoegsel, twee betekenissen — en een lijdende tweeling, met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (matches
+              lesson 5 / lesson 2 — it sat orphaned on the cover before). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarSection section={sections[2]} /></Shell>
+        </>
+      ) },
+    { id: 'woorden',    title: 'Woorden',    description: '51 woorden uit de fabel: rivier, regen en redding.',
+      node: <Shell><Vocabulary section={sections[1]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden en het -KAN-patroon.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson21Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

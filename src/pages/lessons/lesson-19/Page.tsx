@@ -1,21 +1,24 @@
-// Lesson 19 — Bab 3: Zinsbouw — bespoke reader page.
+// Lesson 19 — Bab 3: Zinsbouw — bespoke reader page (chapter-experience conversion).
 //
 // Once a grammar-only chapter (its source photos began mid-chapter), lesson 19
-// has regained its front pages and is now a full travelogue. Five movements:
+// has regained its front pages and is now a full travelogue. Five movements,
+// grouped into five content chapters (+ the "Inhoud" cover + the closing
+// "Oefenen" chapter):
 //
-//   1. Dialogue "Dari Lombok" — Linda and Paul meet again on Bali and Paul
+//   1. Dialoog     — "Dari Lombok": Linda and Paul meet again on Bali and Paul
 //      recounts his crossing: ferry versus plane, Gunung Rinjani out of reach,
 //      a borrowed motorbike that runs dry on a road that turns from asphalt to
 //      stones and sand, and the truck that carries them back to Mataram. A
 //      route ribbon traces the itinerary the book prints as a little map.
-//   2. Woordenlijst — the words of the journey, green chips.
-//   3. "Voor de liefhebber · Sepeda motor" — 25 motorcycle parts, set as a
+//   2. Woorden      — the words of the journey, green chips.
+//   3. Sepeda motor — "Voor de liefhebber": 25 motorcycle parts, set as a
 //      workshop parts-inventory with mono index numbers, an enthusiast's extra.
-//   4. Tata Bahasa · Zinsbouw — the intellectual heart (it was the whole lesson
-//      until today): a participant SLOT DIAGRAM (agens — handeling — patiens +
-//      the optional partijen with their marker words), the word-order TRACK, and
+//   4. Zinsbouw     — the intellectual heart (it was the whole lesson until
+//      today): a participant SLOT DIAGRAM (agens — handeling — patiens + the
+//      optional partijen with their marker words), the word-order TRACK, and
 //      the connectives (sebab/karena · supaya tegenover sehingga) as tiles.
-//   5. Latihan — named, not previewed; the prompts live in the session engine.
+//      The lesson audio lives here — it's the grammar-most chapter.
+//   5. Latihan      — named, not previewed; the prompts live in the session engine.
 //
 // Re-roll by re-running:
 //   NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/fetch-lesson-content.ts 19 --pretty > src/pages/lessons/lesson-19/content.json
@@ -23,8 +26,10 @@
 import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
-import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -296,7 +301,14 @@ function ArchitectureSection({ cats }: { cats: GrammarCategory[] }) {
       </ol>
 
       <ul className={classes.archRules}>
-        {wordOrder.rules.slice(2).map((r, i) => <li key={i}>{r}</li>)}
+        {/* wordOrder.rules[1] (the literal "tijdsbepaling — partij 1 — ..."
+            enumeration) is re-expressed above as the ORDER track, so it's
+            skipped here. The old `.slice(2)` also dropped rules[0] — a
+            distinct, general statement ("naast de partijen kan een zin
+            bepalingen van tijd, wijze en plaats bevatten") that appears
+            nowhere else on the page. Content-parity test caught this;
+            fixed by skipping only the redundant index (1), not both. */}
+        {wordOrder.rules.filter((_, i) => i !== 1).map((r, i) => <li key={i}>{r}</li>)}
       </ul>
 
       {wordOrder.examples && wordOrder.examples.length > 0 && (
@@ -376,39 +388,52 @@ function LatihanTeaser({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps scenes in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson19Page() {
-  const activation = useLessonActivation(meta.id)
-  const grammar = sections[3].content as { categories: GrammarCategory[] }
-  const cats = grammar.categories
-
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — full-bleed, warm travelogue mood */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-              <span className={classes.heroBadgeTag}>Bab 3 · Zinsbouw</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Dari Lombok</span>
-              <span className={classes.heroTitleNl}>Terug van Lombok — en de bouw van de zin</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Paul komt terug van Lombok met een verhaal: geen veerboot maar het vliegtuig, de Gunung Rinjani
-              net niet gehaald, en een geleende motor die stilviel toen de weg veranderde <em>dari aspal
-              menjadi batu-batu dan pasir</em>. En onder het reisverhaal ligt de grammatica van dit hoofdstuk:
-              hoe een Indonesische zin in elkaar zit.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
-      {/* Editorial lede — sets the page's voice */}
+function Hero() {
+  return (
+    /* Hero — full-bleed, warm travelogue mood. Rendered ABOVE the chapter nav
+       via ChapterExperience's hero slot (cover only): the nav sits under the
+       hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+            <span className={classes.heroBadgeTag}>Bab 3 · Zinsbouw</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Dari Lombok</span>
+            <span className={classes.heroTitleNl}>Terug van Lombok — en de bouw van de zin</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Paul komt terug van Lombok met een verhaal: geen veerboot maar het vliegtuig, de Gunung Rinjani
+            net niet gehaald, en een geleende motor die stilviel toen de weg veranderde <em>dari aspal
+            menjadi batu-batu dan pasir</em>. En onder het reisverhaal ligt de grammatica van dit hoofdstuk:
+            hoe een Indonesische zin in elkaar zit.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
+      {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
@@ -420,43 +445,96 @@ export default function Lesson19Page() {
         </div>
       </section>
 
-      {/* Lesson audio — band between the lede and the main content.
-          Authored behind a runtime guard: invisible until audio_path is set. */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding. */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column, aligned to lede width */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <DialogueScene section={sections[0]} />
-          <VocabList section={sections[1]} />
-          <SepedaMotorSpread section={sections[2]} />
-          <ArchitectureSection cats={cats} />
-          <ConnectivesSection cats={[cats[2], cats[3]]} />
-          <LatihanTeaser section={sections[4]} />
-        </main>
-      </section>
-
-      {/* Closing band — outro + activation + CTA grouped as one unit */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, zinnen en zinspatronen verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, zinnen en zinspatronen verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = dialogue ("Dari Lombok")
+//   1 = vocabulary (words of the journey)
+//   2 = vocabulary (sepeda motor parts)
+//   3 = grammar (4 categories: participants, word order, reason, purpose)
+//   4 = exercises (named only — Latihan teaser)
+//
+// The grammar section's 4 categories split across two chapter scenes:
+// cats[0..1] (participants + word order) form ArchitectureSection; cats[2..3]
+// (reason/cause + purpose/consequence) form ConnectivesSection. Both live in
+// the "Zinsbouw" chapter, which is also where the lesson audio lives (the
+// grammar-most chapter).
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  const grammar = sections[3].content as { categories: GrammarCategory[] }
+  const cats = grammar.categories
+
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story.
+    { id: 'inhoud', title: 'Inhoud', node: <InhoudChapter /> },
+    { id: 'dialoog', title: 'Dialoog', description: 'Paul vertelt Linda over zijn tocht van Lombok terug naar Bali — met een reisroute-ribbon.',
+      node: <Shell><DialogueScene section={sections[0]} /></Shell> },
+    { id: 'woorden', title: 'Woorden', description: 'De woorden van de oversteek: reiswoorden en de verbindingswoorden uit de dialoog.',
+      node: <Shell><VocabList section={sections[1]} /></Shell> },
+    { id: 'sepeda-motor', title: 'Sepeda motor', description: 'Voor de liefhebber: 25 onderdelen van de motor waarmee Paul strandde.',
+      node: <Shell><SepedaMotorSpread section={sections[2]} /></Shell> },
+    { id: 'zinsbouw', title: 'Zinsbouw', description: 'Wie doet wat, voor wie en waarmee — het volledige zinsbouwschema, met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar — the
+              grammar-most chapter. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell>
+            <ArchitectureSection cats={cats} />
+            <ConnectivesSection cats={[cats[2], cats[3]]} />
+          </Shell>
+        </>
+      ) },
+    { id: 'latihan', title: 'Latihan', description: 'Vier oefeningen op zinsbouw, klaar om te maken.',
+      node: <Shell><LatihanTeaser section={sections[4]} /></Shell> },
+    { id: 'oefenen', title: 'Oefenen', description: 'Activeer de les en oefen de woorden en zinspatronen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson19Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

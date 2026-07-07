@@ -23,6 +23,13 @@
 // hurts), and a symptoms-and-medicine grid (the bridge between dokter and
 // dukun, where pilek meets jamu).
 //
+// Chapter conversion (docs/plans/2026-07-06-lesson-chapter-experience-program.md):
+// the single scroll splits into 5 content chapters — Cultuur, Dialoog,
+// Grammatica (carries the lesson audio), Lichaam & klachten, Woorden — kept
+// in the same order the single-scroll page used them, wrapped via a local
+// Shell (lesson-5 pattern). Section components below are unchanged from the
+// pre-chapter Page.tsx (re-grouping, not rewriting).
+//
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 9 --pretty > src/pages/lessons/lesson-9/content.json
 
@@ -31,6 +38,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -299,7 +308,14 @@ function VerbalOrderGrammar({ section }: { section: typeof sections[number] }) {
       <h2 id="s-abc" className={classes.sectionTitle}>
         Hoe een Indonesisch werkwoord zijn buurman vindt — <em>tidak mau datang</em>
       </h2>
-      <p className={classes.abcIntro}>{opener?.rules?.[0]}</p>
+      {/* Render EVERY opener rule, not just rules[0]: the pre-chapter version
+          destructured only the array's first sentence, silently dropping the
+          four sentences that actually define A/B/C ("A = fase van de
+          handeling...", "B = specifiek aspect...", "C = het hoofdwerkwoord
+          zelf.", "Een woord uit groep B of A is optioneel...") from ALL
+          rendered output — a content loss the chapter parity test caught
+          (fixed 2026-07-07). */}
+      {opener?.rules?.map((r, i) => <p key={i} className={classes.abcIntro}>{r}</p>)}
 
       {/* Three pill tags, each labelling one position of the cluster */}
       <div className={classes.abcLegend}>
@@ -506,6 +522,15 @@ function BodyAtlas({ section }: { section: typeof sections[number] }) {
 // pilek, mual, luka, capèk, lemah, muntah) versus remedies (obat, jamu,
 // plèster, pembalut, suntik, minum obat, obat batuk, racun, diét, nafsu
 // makan). We sort the items into two columns to make that visible.
+//
+// NOTE (found, not fixed — not a text drop, so out of chapter-conversion
+// scope): SYMPTOM_KEYS below expects the raw content.json `indonesian`
+// values, but two entries don't match live data ('sakit perut / mag' vs the
+// actual 'sakit perut'; 'capèk (na inspanning)' vs the actual 'capèk'), so
+// those two items land in the "remedies" column instead of "symptoms". Both
+// items still render in full (indonesian + dutch) — no bytes are lost — so
+// this is a pre-existing misclassification, not a content drop; flagged for
+// a follow-up fix rather than touched here.
 
 const SYMPTOM_KEYS = new Set([
   'sakit perut / mag', 'pusing', 'sakit kepala', 'pilek', 'flu', 'demam', 'mual',
@@ -613,45 +638,51 @@ function ExpressionsRow({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps one or more scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson9Page() {
-  const activation = useLessonActivation(meta.id)
-  // Section index map (DB order):
-  //   0: text — culture (13-paragraph dukun + semangat essay)
-  //   1: dialogue (PUSKESMAS visit, 13 lines incl. 2 narrator setups)
-  //   2: vocabulary — general (36 items)
-  //   3: expressions (4 items)
-  //   4: grammar — werkwoordvolgorde A-B-C (with word-group table)
-  //   5: grammar — intensiveerders
-  //   6: exercises (skipped)
-  //   7: vocabulary — body parts (31 items)
-  //   8: vocabulary — symptoms & remedies (22 items)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero — jamu gendong vendor at Kebumen */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Ke Puskesmas / Dukun en Jamu</span>
-              <span className={classes.heroTitleNl}>Naar de gezondheidspost — en naar de kruidenvrouw</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Tina valt uit een boom; haar moeder gaat naar de PUSKESMAS, het
-              dorpsgezondheidscentrum. Maar de meeste Indonesiërs lopen
-              óók naar de <em>dukun</em>: de traditionele genezer die
-              lichaam én geest behandelt, met kruidenmengsels (<em>jamu</em>)
-              en bezwerende formules. Twee systemen, één patiënt.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero — jamu gendong vendor at Kebumen. Rendered ABOVE the chapter nav
+       via ChapterExperience's hero slot (cover only): the nav sits under the
+       hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Ke Puskesmas / Dukun en Jamu</span>
+            <span className={classes.heroTitleNl}>Naar de gezondheidspost — en naar de kruidenvrouw</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Tina valt uit een boom; haar moeder gaat naar de PUSKESMAS, het
+            dorpsgezondheidscentrum. Maar de meeste Indonesiërs lopen
+            óók naar de <em>dukun</em>: de traditionele genezer die
+            lichaam én geest behandelt, met kruidenmengsels (<em>jamu</em>)
+            en bezwerende formules. Twee systemen, één patiënt.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -665,49 +696,103 @@ export default function Lesson9Page() {
         </div>
       </section>
 
-      {/* Lesson-level grammar-explanation audio */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        label="Uitleg bij de grammatica · audio"
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-        labelClassName={classes.audioLabel}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (lesson-5 pattern). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — culture spread sets the worldview, then the modern
-          encounter (puskesmas), then the lesson's grammatical spine (A·B·C),
-          intensifier sub-grammar, the shared body-atlas, the clinical
-          column-split, and the closing reference lists. */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <CultureSpread        section={sections[0]} />
-          <DialogueScene        section={sections[1]} />
-          <VerbalOrderGrammar   section={sections[4]} />
-          <IntensifierGrammar   section={sections[5]} />
-          <BodyAtlas            section={sections[7]} />
-          <SymptomsRemedies     section={sections[8]} />
-          <GeneralVocab         section={sections[2]} />
-          <ExpressionsRow       section={sections[3]} />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de medische woorden, de A-B-C-volgorde van
-            werkwoorden en de intensiveerders komen vanzelf in je oefensessies langs.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de medische woorden, de A-B-C-volgorde van
+          werkwoorden en de intensiveerders komen vanzelf in je oefensessies langs.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section index map (DB order):
+//   0: text — culture (13-paragraph dukun + semangat essay)
+//   1: dialogue (PUSKESMAS visit, 13 lines incl. 2 narrator setups)
+//   2: vocabulary — general (36 items)
+//   3: expressions (4 items)
+//   4: grammar — werkwoordvolgorde A-B-C (with word-group table)
+//   5: grammar — intensiveerders
+//   6: exercises (skipped — practice surface)
+//   7: vocabulary — body parts (31 items)
+//   8: vocabulary — symptoms & remedies (22 items)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (lesson-5 convention).
+    { id: 'inhoud',              title: 'Inhoud',              node: <InhoudChapter /> },
+    { id: 'cultuur',             title: 'Cultuur',              description: 'De dukun en zijn semangat-gedachtegoed: dertien alinea\'s over de traditionele genezer.',
+      node: <Shell><CultureSpread section={sections[0]} /></Shell> },
+    { id: 'dialoog',             title: 'Dialoog',              description: 'Tina valt uit een boom — haar moeder brengt haar naar de PUSKESMAS.',
+      node: <Shell><DialogueScene section={sections[1]} /></Shell> },
+    { id: 'grammatica',          title: 'Grammatica',           description: 'De vaste A-B-C-volgorde van het werkwoord en de intensiveerders — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (lesson-5/6
+              convention — the grammar-most chapter carries the audio). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            label="Uitleg bij de grammatica · audio"
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+            labelClassName={classes.audioLabel}
+          />
+          <Shell>
+            <VerbalOrderGrammar section={sections[4]} />
+            <IntensifierGrammar section={sections[5]} />
+          </Shell>
+        </>
+      ) },
+    { id: 'lichaam-en-klachten', title: 'Lichaam & klachten',   description: 'Het menselijk lichaam van hoofd tot teen, en de klachten en remedies die dokter en dukun delen.',
+      node: (
+        <Shell>
+          <BodyAtlas section={sections[7]} />
+          <SymptomsRemedies section={sections[8]} />
+        </Shell>
+      ) },
+    { id: 'woorden',             title: 'Woorden',              description: 'Het volledige woordenregister van deze les, plus vier vaste wendingen uit de spreekkamer.',
+      node: (
+        <Shell>
+          <GeneralVocab section={sections[2]} />
+          <ExpressionsRow section={sections[3]} />
+        </Shell>
+      ) },
+    { id: 'oefenen',             title: 'Oefenen',              description: 'Activeer de les en oefen de medische woorden en de werkwoordvolgorde.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson9Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

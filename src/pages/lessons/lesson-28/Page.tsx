@@ -1,10 +1,18 @@
-// Lesson 28 — Bab 12 · Di Kantor (Op kantoor) — bespoke reader page.
+// Lesson 28 — Bab 12 · Di Kantor (Op kantoor) — bespoke reader page
+// (chapter-experience conversion).
 //
 // Mood: a crisp, modern Indonesian boardroom. The reading is a meeting
 // transcript: a narrator sets the scene, then five colleagues debate a stalled
 // money transfer around the table. The grammar is the "economie van de taal" —
 // one principle of economy refracted into three "wetten van behoud" (laws of
 // conservation of subject, tense, and number), rendered as a ledger of laws.
+//
+// Chapters: the cover ("Inhoud" — hero + lede + overview), then Vergadering
+// (the meeting transcript) → Grammatica (the ledger of laws, with the
+// les-audio) → Woorden (the office lexicon plus the single fixed expression —
+// both are short vocabulary-domain lists, merged into one chapter, same move
+// as lesson-13's Woorden) → Latihan (the written exercises as reference) →
+// the closing Oefenen chapter.
 //
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 28 --pretty > src/pages/lessons/lesson-28/content.json
@@ -14,6 +22,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -225,9 +235,7 @@ function ConservationLaws({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ───────────────────────────────────────────────────────
-
-// ─── Exercises — the Latihan, as a study reference ───────────────────────────
+// ─── 5. Exercises — the Latihan, as a study reference ────────────────────────
 
 function Exercises({ section }: { section: typeof sections[number] }) {
   const c = section.content as {
@@ -259,31 +267,49 @@ function Exercises({ section }: { section: typeof sections[number] }) {
   )
 }
 
-export default function Lesson28Page() {
-  const activation = useLessonActivation(meta.id)
-  return (
-    <article className={classes.page}>
-      {/* Hero — full-bleed, boardroom-toned */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Di Kantor</span>
-              <span className={classes.heroTitleNl}>Op kantoor</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Pak Ketut Wija is secretaris, niet kantoorhoofd — maar vandaag zit hij de vergadering voor.
-              Het filiaal in Singaraja zou openen, alleen is het geld uit Jakarta nog niet aangekomen.
-              Rond de tafel wordt overlegd, gewikt en gewogen, en de vergadering uitgesteld.
-            </p>
-          </div>
-        </div>
-      </header>
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
+
+function Hero() {
+  return (
+    /* Hero — full-bleed, boardroom-toned. Rendered ABOVE the chapter nav via
+       ChapterExperience's hero slot (cover only): the nav sits under the hero
+       and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Di Kantor</span>
+            <span className={classes.heroTitleNl}>Op kantoor</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Pak Ketut Wija is secretaris, niet kantoorhoofd — maar vandaag zit hij de vergadering voor.
+            Het filiaal in Singaraja zou openen, alleen is het geld uit Jakarta nog niet aangekomen.
+            Rond de tafel wordt overlegd, gewikt en gewogen, en de vergadering uitgesteld.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -292,46 +318,93 @@ export default function Lesson28Page() {
             daar een deugd van. Het herhaalt <em>niets wat niet herhaald hoeft te worden</em> — onderwerp,
             tijd en getal blijven gelden tot iemand iets nieuws introduceert.
           </p>
-          <p className={classes.ledeMeta}>Les 28 · {meta.level} · Bahasa Indonesia</p>
+          <p className={classes.ledeMeta}>Les {meta.order_index} · {meta.level} · Bahasa Indonesia</p>
         </div>
       </section>
 
-      {/* Lesson audio — guarded band (lights up when audio is attached) */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <MeetingScene     section={sections[0]} />
-          <ConservationLaws section={sections[3]} />
-          <Lexicon          section={sections[1]} />
-          <ExpressionBand   section={sections[2]} />
-          <Exercises        section={sections[4]} />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de kantoorwoorden, de uitdrukking en de wetten van behoud verschijnen
-            automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de kantoorwoorden, de uitdrukking en de wetten van behoud verschijnen
+          automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = dialogue (the meeting transcript — narrator brief + five colleagues)
+//   1 = vocabulary (the office lexicon)
+//   2 = expressions (one fixed phrase — "ada baiknya")
+//   3 = grammar (the economy principle + three wetten van behoud)
+//   4 = exercises (Latihan — rendered as a study-reference chapter, not skipped)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5 / lesson 21).
+    { id: 'inhoud',      title: 'Inhoud',      node: <InhoudChapter /> },
+    { id: 'vergadering', title: 'Vergadering', description: 'Pak Wija zit de vergadering voor over het uitgebleven geld uit Jakarta.',
+      node: <Shell><MeetingScene section={sections[0]} /></Shell> },
+    { id: 'grammatica',  title: 'Grammatica',  description: 'Eén economieprincipe, drie wetten van behoud — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (established
+              pattern, see lesson 5 / lesson 13) — it belongs at the top of
+              the grammar-most chapter, not orphaned on the cover. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><ConservationLaws section={sections[3]} /></Shell>
+        </>
+      ) },
+    { id: 'woorden',     title: 'Woorden',     description: 'De taal van het kantoor, plus één vaste uitdrukking voor de voorzitter.',
+      node: (
+        <Shell>
+          <Lexicon section={sections[1]} />
+          <ExpressionBand section={sections[2]} />
+        </Shell>
+      ) },
+    { id: 'latihan',     title: 'Latihan',     description: 'Vier oefeningen als naslag: vertalen, zinnen bouwen en woordvormen kiezen.',
+      node: <Shell><Exercises section={sections[4]} /></Shell> },
+    { id: 'oefenen',     title: 'Oefenen',     description: 'Activeer de les en oefen de woorden en de wetten van behoud.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson28Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

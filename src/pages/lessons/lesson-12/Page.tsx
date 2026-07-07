@@ -16,6 +16,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -278,33 +280,49 @@ function EconomySpread({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE OR MORE scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson12Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero — the platform at Gambir, indigo at dusk */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Di Stasiun Gambir di Jakarta</span>
-              <span className={classes.heroTitleNl}>Op station Gambir in Jakarta</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Een moeder wacht op het perron. De trein uit Yogya is te laat — alweer — en het is al
-              voorbij drieën. Een les over kloktijden, wachten en te laat komen, met de woorden van
-              het spoor en de acroniemen waarmee Indonesië zijn kaart benoemt.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero — the Gambir platform, amber lamps under indigo dusk. Rendered
+       ABOVE the chapter nav via ChapterExperience's hero slot (cover only):
+       the nav sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Di Stasiun Gambir di Jakarta</span>
+            <span className={classes.heroTitleNl}>Op station Gambir in Jakarta</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Een moeder wacht op het perron. De trein uit Yogya is te laat — alweer — en het is al
+            voorbij drieën. Een les over kloktijden, wachten en te laat komen, met de woorden van
+            het spoor en de acroniemen waarmee Indonesië zijn kaart benoemt.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -314,58 +332,110 @@ export default function Lesson12Page() {
             lezen, de schemering benoemen, en geduld hebben met een land dat groot is en treinen die
             soms te laat komen.
           </p>
-          <p className={classes.ledeMeta}>Les 12 · A1 · Bahasa Indonesia</p>
+          {/* meta.level, not a hardcoded string — the old copy said A1 while
+              the lesson is A2 (flagged during the chapter conversion). */}
+          <p className={classes.ledeMeta}>Les 12 · {meta.level} · Bahasa Indonesia</p>
         </div>
       </section>
 
-      {/* Lesson-level grammar-explanation audio — band wired in; appears once
-          audio is uploaded and meta.lesson_audio_url is set */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        label="Uitleg bij de grammatica · audio"
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-        labelClassName={classes.audioLabel}
-      />
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding. */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <PlatformScene section={sections[0]} />
-          <Expressions section={sections[2]} />
-          <GrammarSection
-            section={sections[3]}
-            eyebrow="Grammatica · Acroniemen & afkortingen"
-            title="Hoe Indonesië zijn kaart benoemt"
-            accent="purple"
-          />
-          <GrammarSection
-            section={sections[4]}
-            eyebrow="Grammatica · BER- + verdubbeling"
-            title="Elkaar, telkens, met z'n tweetjes"
-            accent="cyan"
-          />
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, zinnen en patronen verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
+        </div>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = dialogue (Ibu + Jumilah + narrator + Pak on the platform)
+//   1 = vocabulary (40 items, lexicon of the rails)
+//   2 = expressions (pada waktunya, pokoknya, Senja Utama)
+//   3 = grammar (acronyms / abbreviations / cardinal directions)
+//   4 = grammar (BER- + reduplication)
+//   5 = exercises (skipped — practice surface)
+//   6 = text (the economics spread)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story.
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'perron',     title: 'Perron',     description: 'Ibu wacht op het perron op de trein uit Yogya — en op haar dochter Jumilah.',
+      node: <Shell><PlatformScene section={sections[0]} /></Shell> },
+    { id: 'woorden',    title: 'Woorden',    description: 'Woordenschat van het spoor en de vaste uitdrukkingen die erop volgen, zoals pada waktunya en pokoknya.',
+      node: (
+        <Shell>
           <Lexicon section={sections[1]} />
-          <EconomySpread section={sections[6]} />
-        </main>
-      </section>
+          <Expressions section={sections[2]} />
+        </Shell>
+      ) },
+    { id: 'grammatica', title: 'Grammatica', description: 'Acroniemen, afkortingen en windrichtingen, plus BER-verdubbeling — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar, at the top of
+              the grammar-most chapter. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            label="Uitleg bij de grammatica · audio"
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+            labelClassName={classes.audioLabel}
+          />
+          <Shell>
+            <GrammarSection
+              section={sections[3]}
+              eyebrow="Grammatica · Acroniemen & afkortingen"
+              title="Hoe Indonesië zijn kaart benoemt"
+              accent="purple"
+            />
+            <GrammarSection
+              section={sections[4]}
+              eyebrow="Grammatica · BER- + verdubbeling"
+              title="Elkaar, telkens, met z'n tweetjes"
+              accent="cyan"
+            />
+          </Shell>
+        </>
+      ) },
+    { id: 'economie',   title: 'Economie',   description: 'Een langere lezing over de Indonesische economie, van de oliecrisis tot de deregulering van de jaren negentig.',
+      node: <Shell><EconomySpread section={sections[6]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden, zinnen en patronen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
 
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, zinnen en patronen verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
-        </div>
-      </section>
+export default function Lesson12Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

@@ -1,19 +1,23 @@
-// Lesson 6 — Jakarta — bespoke reader page.
+// Lesson 6 — Jakarta — bespoke reader page (chapter-experience conversion).
 //
 // Lesson 6 is the most grammar-heavy in the curriculum: eight grammar sections
-// stacked together would read as a wall. We group them into THREE MOVEMENTS:
+// stacked together would read as a wall. We group them into THREE MOVEMENTS,
+// each its own chapter:
 //
-//   Movement I  · Vier manieren om nee te zeggen  (belum / bukan / tidak / jangan)
-//   Movement II · Twee kleine achtervoegsels      (-lah / -kah)
-//   Movement III · De Indonesische klok           (dagdelen + kloktijd)
+//   Ontkenning      · Vier manieren om nee te zeggen  (belum / bukan / tidak / jangan)
+//   Achtervoegsels  · Twee kleine achtervoegsels      (-lah / -kah)
+//   Tijd            · De Indonesische klok            (dagdelen + kloktijd)
 //
 // The four negation words are rendered as a unified 2×2 grid — that they ALL
-// exist is the lesson. The two suffixes sit side-by-side as a polite/emphatic
-// pair. The time material gets a day-strip with band colours that shift from
-// dawn to night, then a separate clock-words sub-band.
+// exist is the lesson, so it also carries the lesson audio (the grammar-most
+// chapter, matching the lesson-5/lesson-2 convention). The two suffixes sit
+// side-by-side as a polite/emphatic pair. The time material gets a day-strip
+// with band colours that shift from dawn to night, then a separate
+// clock-words sub-band.
 //
-// The 14-paragraph Batavia history opens the page as an editorial timeline,
-// with marginal year anchors pulling key dates out of the prose.
+// The 14-paragraph Batavia history and the 49-word vocabulary grid each get
+// their own chapter ahead of the three grammar movements — same order as the
+// original single-scroll page.
 //
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 6 --pretty > src/pages/lessons/lesson-6/content.json
@@ -23,6 +27,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -127,7 +133,12 @@ function VocabularyGrid({ section }: { section: typeof sections[number] }) {
     { range: 'T — Z', test: (ch) => ch >= 't' && ch <= 'z' },
   ]
   for (const r of RANGES) {
-    const items = c.items.filter(it => r.test(it.indonesian.charAt(0).toLowerCase()))
+    // Bucket on the first LETTER: an entry like "'full AC'" starts with an
+    // apostrophe and matched no band at all — silently dropped from the page
+    // (content loss the chapter parity test caught, fixed 2026-07-07).
+    const items = c.items.filter(it =>
+      r.test(it.indonesian.replace(/^[^a-zA-Z]+/, '').charAt(0).toLowerCase()),
+    )
     if (items.length > 0) bands.push({ range: r.range, items })
   }
 
@@ -475,33 +486,49 @@ function TimeMovement() {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps one or more scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson6Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — Jakarta panorama under teal/navy/amber gradient */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Jakarta</span>
-              <span className={classes.heroTitleNl}>De hoofdstad in vier eeuwen</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Een stad met vier namen — Sunda Kelapa, Jayakarta, Batavia, Jakarta —
-              en de taal om er rond te navigeren. Vier soorten ontkenning, twee
-              beleefdheidsachtervoegsels, en een klok die anders begint dan de jouwe.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero band — Jakarta panorama under teal/navy/amber gradient. Rendered
+       ABOVE the chapter nav via ChapterExperience's hero slot (cover only):
+       the nav sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Jakarta</span>
+            <span className={classes.heroTitleNl}>De hoofdstad in vier eeuwen</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Een stad met vier namen — Sunda Kelapa, Jayakarta, Batavia, Jakarta —
+            en de taal om er rond te navigeren. Vier soorten ontkenning, twee
+            beleefdheidsachtervoegsels, en een klok die anders begint dan de jouwe.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -514,41 +541,92 @@ export default function Lesson6Page() {
         </div>
       </section>
 
-      {/* Main content shell */}
-      {/* Lesson audio */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter (matches lesson 5/lesson 2).
+          NOT wrapped in Shell: the overview centers itself on --lesson-col;
+          nesting would double the horizontal padding (992 vs 1024). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <HistoryTimeline section={sections[0]} />
-          <VocabularyGrid  section={sections[1]} />
-          <NegationQuartet />
-          <SuffixPair />
-          <TimeMovement />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, patronen en kloktijden verschijnen
-            automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, patronen en kloktijden verschijnen
+          automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (Batavia/Jakarta history, 14 paragraphs)
+//   1 = vocabulary (49 items)
+//   2 = grammar — belum
+//   3 = grammar — bukan (2 categories: negation + tag-question)
+//   4 = grammar — tidak
+//   5 = grammar — jangan
+//   6 = grammar — -lah (2 categories: rules+table, examples)
+//   7 = grammar — -kah
+//   8 = grammar — dagdelen (day parts)
+//   9 = grammar — kloktijd (3 categories: tijdsduur, woorden, voorbeelden)
+//  10 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5/lesson 2).
+    { id: 'inhoud',         title: 'Inhoud',         node: <InhoudChapter /> },
+    { id: 'geschiedenis',   title: 'Geschiedenis',   description: 'Vier eeuwen geschiedenis: van Sunda Kelapa naar Jakarta, in tijdlijnvorm.',
+      node: <Shell><HistoryTimeline section={sections[0]} /></Shell> },
+    { id: 'woorden',        title: 'Woorden',        description: '49 woorden om Jakarta te kunnen navigeren, alfabetisch gebundeld.',
+      node: <Shell><VocabularyGrid section={sections[1]} /></Shell> },
+    { id: 'ontkenning',     title: 'Ontkenning',     description: 'Vier manieren om nee te zeggen — belum, bukan, tidak en jangan — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the lesson's grammar-most
+              chapter (four sections vs. two for the other movements) —
+              matching the lesson-5/lesson-2 pattern. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><NegationQuartet /></Shell>
+        </>
+      ) },
+    { id: 'achtervoegsels', title: 'Achtervoegsels', description: 'Twee kleine achtervoegsels: -lah maakt beleefd, -kah maakt nadrukkelijk.',
+      node: <Shell><SuffixPair /></Shell> },
+    { id: 'tijd',           title: 'Tijd',           description: 'De Indonesische klok: dagdelen en kloktijd, met een dag die bij zonsondergang begint.',
+      node: <Shell><TimeMovement /></Shell> },
+    { id: 'oefenen',        title: 'Oefenen',        description: 'Activeer de les en oefen de ontkenningen, achtervoegsels en kloktijden.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson6Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

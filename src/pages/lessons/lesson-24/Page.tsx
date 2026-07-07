@@ -1,4 +1,5 @@
-// Lesson 24 — Bab 8 · Surat dari Indonesia (Een brief uit Indonesië) — bespoke reader page.
+// Lesson 24 — Bab 8 · Surat dari Indonesia (Een brief uit Indonesië) — bespoke
+// reader page (chapter-experience conversion).
 //
 // This chapter is built around CORRESPONDENCE. The source opens with a real
 // letter: Nurul, a fifth-grader in the village of Maninjau (Kabupaten Agam,
@@ -21,6 +22,12 @@
 // letter, a worked sample, opening/closing phrases as NL↔ID pairs, and an
 // abbreviations reference table.
 //
+// Chapters: the cover ("Inhoud" — hero + lede + overview), then one content
+// chapter per top-level section in the original reading order (Brief /
+// Grammatica / Woorden / Schrijven), then the closing "Oefenen" chapter. The
+// grammar podcast audio moves from the cover into the Grammatica chapter,
+// matching lesson 5 / lesson 21 (docs/current-system/modules/chapter-experience.md).
+//
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 24 --pretty > src/pages/lessons/lesson-24/content.json
 
@@ -29,6 +36,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -72,7 +81,7 @@ function PlayButton({ src }: { src?: string }) {
   )
 }
 
-// ─── Section 1: The letter — rendered as actual correspondence ─────────────
+// ─── Section: The letter — rendered as actual correspondence ───────────────
 //
 // p0  → dateline (Maninjau, 8 Nopember 1996 / Kabupaten Agam, Sumbar)
 // p1  → salutation (Ibu yang tercinta,)
@@ -115,7 +124,7 @@ function LetterSheet({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Section 2: Grammar — the -KAN vs -i contrast ──────────────────────────
+// ─── Section: Grammar — the -KAN vs -i contrast ────────────────────────────
 //
 // Five categories. We give the whole section a "minimal-pairs" treatment:
 // every example list of three (root → -kan → -i) is read as a contrast.
@@ -206,7 +215,7 @@ function GrammarSection({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Section 3: Vocabulary — 40 words from the letter ──────────────────────
+// ─── Section: Vocabulary — 40 words from the letter ────────────────────────
 
 function VocabSection({ section }: { section: typeof sections[number] }) {
   const c = section.content as { items: Item[] }
@@ -229,7 +238,7 @@ function VocabSection({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Section 4: Letter-writing guidance ─────────────────────────────────────
+// ─── Section: Letter-writing guidance ───────────────────────────────────────
 //
 // The second `text` section is a practical guide. Its paragraphs carry
 // distinct structures that we parse and lay out individually:
@@ -378,83 +387,141 @@ function LetterGuide({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson24Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero — Lake Maninjau, West Sumatra, under a warm correspondence wash */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Surat dari Indonesia</span>
-              <span className={classes.heroTitleNl}>Een brief uit Indonesië</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Nurul woont in Maninjau, een dorp tussen de sawah's in West-Sumatra.
-              Het is regenseizoen, de wegen staan blank, en ze schrijft naar haar
-              Nederlandse Ibu — over school, haar fiets en een wens om ooit een
-              ansichtkaart met tulpen te krijgen. Daarna: hoe je zelf een brief
-              schrijft, en het verschil tussen de achtervoegsels ·KAN en ·i.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
-      {/* Editorial lede — the page's voice */}
+function Hero() {
+  return (
+    /* Hero — Lake Maninjau, West Sumatra, under a warm correspondence wash.
+       Rendered ABOVE the chapter nav via ChapterExperience's hero slot (cover
+       only): the nav sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Surat dari Indonesia</span>
+            <span className={classes.heroTitleNl}>Een brief uit Indonesië</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Nurul woont in Maninjau, een dorp tussen de sawah's in West-Sumatra.
+            Het is regenseizoen, de wegen staan blank, en ze schrijft naar haar
+            Nederlandse Ibu — over school, haar fiets en een wens om ooit een
+            ansichtkaart met tulpen te krijgen. Daarna: hoe je zelf een brief
+            schrijft, en het verschil tussen de achtervoegsels ·KAN en ·i.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
+      {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
-            Een brief reist <em>12.000 kilometer</em>. Hij vertelt over banjir en
-            een geleende fiets, maar leert je ook iets fijns: dat ·KAN en ·i
-            hetzelfde basiswoord twee kanten op kunnen sturen — iets in beweging
-            zetten, of een handeling op een vast punt richten.
+            Een brief reist <em>12.000 kilometer</em>. Hij vertelt over banjir
+            en een geleende fiets, maar leert je ook iets fijns: dat ·KAN en ·i
+            hetzelfde basiswoord twee kanten op kunnen sturen — iets in
+            beweging zetten, of een handeling op een vast punt richten.
           </p>
           <p className={classes.ledeMeta}>Les 24 · {meta.level} · Surat dari Indonesia</p>
         </div>
       </section>
 
-      {/* Lesson audio — guarded; lights up when audio_path is set */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column, aligned to lede width */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <LetterSheet section={sections[0]} />
-          <GrammarSection section={sections[2]} />
-          <VocabSection section={sections[1]} />
-          <LetterGuide section={sections[3]} />
-        </main>
-      </section>
-
-      {/* Closing band — outro + activation + CTA */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, de ·KAN/·i-paren en de briefuitdrukkingen
-            verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, de ·KAN/·i-paren en de briefuitdrukkingen
+          verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (the letter — Surat dari Indonesia)
+//   1 = vocabulary (40 items)
+//   2 = grammar (5 -KAN vs -i categories)
+//   3 = text (letter-writing guide)
+//   4 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5 / lesson 21).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'brief',      title: 'Brief',      description: 'Nurul schrijft vanuit Maninjau over school, banjir en een geleende fiets — en een wens voor een ansichtkaart met tulpen.',
+      node: <Shell><LetterSheet section={sections[0]} /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Hetzelfde basiswoord, twee betekenissen: het contrast tussen ·KAN en ·i, met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (matches
+              lesson 5 / lesson 21 — it sat orphaned on the cover before). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarSection section={sections[2]} /></Shell>
+        </>
+      ) },
+    { id: 'woorden',    title: 'Woorden',    description: '40 woorden uit de brief.',
+      node: <Shell><VocabSection section={sections[1]} /></Shell> },
+    { id: 'schrijven',  title: 'Schrijven',  description: 'Praktische gids: de vier onderdelen van een brief, een voorbeeldbrief en veelgebruikte afkortingen.',
+      node: <Shell><LetterGuide section={sections[3]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden, de ·KAN/·i-paren en de briefuitdrukkingen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson24Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

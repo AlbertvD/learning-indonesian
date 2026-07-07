@@ -1,9 +1,20 @@
-// Lesson 25 — Ambon sebagai obyek pariwisata (Ambon als toeristenbestemming).
+// Lesson 25 — Ambon sebagai obyek pariwisata (Ambon als toeristenbestemming) —
+// bespoke reader page (chapter-experience conversion).
 //
 // A reportage-shaped lesson: a marine-garden essay, an interview at the Ambon
 // tourist office, and the PE-...-AN circumfix. The grammar's heart is the
 // uitvoerder / proces / resultaat three-way contrast (penjual · penjualan ·
 // jualan) — so the three derivations get a dedicated triptych spread.
+//
+// Chapters: the cover ("Inhoud" — hero + lede + overview), then "Reportage"
+// (the marine-garden essay merges with the tourist-office interview — the
+// essay's own closing line, "Kami sedang berbicara dengan seorang pegawai
+// dari kantor pariwisata kota Ambon", is the hand-off into the dialogue, so
+// the two read as one journalistic piece, not two), "Grammatica" (PE-...-AN,
+// with the les-audio), "Woorden" (the 37-item tourism/Ambon vocabulary), then
+// "Naslag" (the TELEPON PENTING phone card + the 41-item fauna list — both
+// reference asides appended after the lesson's core content, same editorial
+// bucket as lesson 2's naslag chapter), then the closing "Oefenen" chapter.
 //
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 25 --pretty > src/pages/lessons/lesson-25/content.json
@@ -13,6 +24,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -322,33 +335,51 @@ function PhoneCard({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson25Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Ambon, obyek pariwisata</span>
-              <span className={classes.heroTitleNl}>Ambon als toeristenbestemming</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Rond Ambon ligt de mooiste zeetuin van Indonesië, maar weinig toeristen kennen hem.
-              Een gesprek op het toeristenkantoor — over kole-kole, kruidnagel en ecotoerisme — en
-              het circumfix dat van een werkwoord een naamwoord maakt: penjualan, pendidikan,
-              perkebunan.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero band — deep marine teal over the Banda reef. Rendered ABOVE the
+       chapter nav via ChapterExperience's hero slot (cover only): the nav
+       sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Ambon, obyek pariwisata</span>
+            <span className={classes.heroTitleNl}>Ambon als toeristenbestemming</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Rond Ambon ligt de mooiste zeetuin van Indonesië, maar weinig toeristen kennen hem.
+            Een gesprek op het toeristenkantoor — over kole-kole, kruidnagel en ecotoerisme — en
+            het circumfix dat van een werkwoord een naamwoord maakt: penjualan, pendidikan,
+            perkebunan.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
+      {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
@@ -360,52 +391,85 @@ export default function Lesson25Page() {
         </div>
       </section>
 
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <MarineEssay section={sections[0]} />
-          <DialogueScene section={sections[1]} />
-          <GrammarSection section={sections[3]} />
-          <VocabGrid
-            section={sections[2]}
-            eyebrow="Woordenschat"
-            title="Woorden van Ambon en het toerisme"
-            tone="lush"
-            id="s-vocab"
-          />
-          <VocabGrid
-            section={sections[5]}
-            eyebrow="Dieren · Binatang"
-            title="Van olifant tot huishagedis"
-            tone="fauna"
-            id="s-fauna"
-          />
-          <PhoneCard section={sections[4]} />
-        </main>
-      </section>
-
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, zinnen en patronen verschijnen automatisch in je
-            oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, zinnen en patronen verschijnen automatisch in je
+          oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (marine-garden essay — hands off into the interview)
+//   1 = dialogue (interview at the Ambon tourist office)
+//   2 = vocabulary (37 items — Ambon and tourism)
+//   3 = grammar (5 PE-...-AN categories: overview + 3 sub-patterns + triptych)
+//   4 = text (TELEPON PENTING phone card)
+//   5 = vocabulary (41 items — fauna)
+//   6 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5 / lesson 21).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'reportage',  title: 'Reportage',  description: 'Het mooiste zeetuin van Indonesië, en een interview op het toeristenkantoor van Ambon.',
+      node: <Shell><MarineEssay section={sections[0]} /><DialogueScene section={sections[1]} /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Het circumfix PE-...-AN: van basiswoord naar zelfstandig naamwoord, met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (matches
+              lesson 5 / lesson 21 — it sat orphaned on the cover before). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarSection section={sections[3]} /></Shell>
+        </>
+      ) },
+    { id: 'woorden',    title: 'Woorden',    description: '37 woorden van Ambon en het toerisme.',
+      node: <Shell><VocabGrid section={sections[2]} eyebrow="Woordenschat" title="Woorden van Ambon en het toerisme" tone="lush" id="s-vocab" /></Shell> },
+    { id: 'naslag',     title: 'Naslag',     description: 'Belangrijke telefoonnummers en 41 dierennamen, als naslagwerk.',
+      node: <Shell><PhoneCard section={sections[4]} /><VocabGrid section={sections[5]} eyebrow="Dieren · Binatang" title="Van olifant tot huishagedis" tone="fauna" id="s-fauna" /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden en het PE-...-AN-patroon.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson25Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

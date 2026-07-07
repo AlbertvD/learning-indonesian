@@ -7,6 +7,12 @@
 ───────────────────────────────────────────────────────────────────────────── */
 
 .page {
+  /* THE lesson column: every band's inner content below the hero (lede,
+     audio, chapter shell) shares this width so the cover and the content
+     chapters read as one page (matches lesson 5's --lesson-col contract;
+     1024px = the uniform value all other converted lessons use, so the
+     lesson reads at the same width as the rest of the rollout). */
+  --lesson-col: 1024px;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -104,7 +110,7 @@
 /* ─── Editorial lede ─────────────────────────────────────────────────────── */
 
 .ledeBand { composes: band; padding: 64px 0 32px; }
-.ledeInner { composes: container; max-width: 920px; }
+.ledeInner { composes: container; max-width: var(--lesson-col); }
 
 .ledeQuote {
   font-size: clamp(17px, 1.8vw, 21px);
@@ -138,7 +144,7 @@
 /* ─── Audio band ─────────────────────────────────────────────────────────── */
 
 .audioBand { composes: band; padding: 0 0 8px; }
-.audioInner { composes: container; max-width: 920px; }
+.audioInner { composes: container; max-width: var(--lesson-col); }
 
 /* ─── Main shell ─────────────────────────────────────────────────────────── */
 
@@ -146,7 +152,7 @@
 
 .shell {
   composes: container;
-  max-width: 920px;
+  max-width: var(--lesson-col);
   display: flex;
   flex-direction: column;
   gap: 80px;

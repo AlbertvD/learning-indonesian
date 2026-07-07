@@ -1,4 +1,4 @@
-// Lesson 15 — Wayang di Indonesia — bespoke reader page.
+// Lesson 15 — Wayang di Indonesia — bespoke reader page (chapter experience).
 //
 // Where lesson 13 BUILT a ME-form from a root and lesson 14 spread ME- across
 // word classes, lesson 15 runs the prefix BACKWARDS: given a ME-form, recover
@@ -23,6 +23,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -119,11 +121,14 @@ function DropCard({ rule, accent }: { rule: string; accent: string }) {
   //            of met p (de p is weggevallen): membayar → bayar, maar memikir → pikir."
   const [body, examplesRaw] = rule.split(/:\s*/)
   const prefix = body.match(/Bij (\w+-)/)?.[1] ?? ''
-  // The dropped sound is named either "met p (de p is weggevallen)" or
-  // "de s altijd weggevallen" (the meny- card phrases it differently).
+  // The dropped sound is named "met p (de p is weggevallen)" for mem-/men-/meng-,
+  // or "de s ... weg" / "wegvalt" for meny- (that card phrases it differently —
+  // see the isDropCard comment below for why the card classification depended
+  // on this same phrasing gap).
   const dropMatch =
     body.match(/met ([a-z]) \(de \1 is weggevallen\)/i) ??
-    body.match(/de ([a-z]) (?:altijd )?(?:is )?weggevallen/i)
+    body.match(/de ([a-z]) (?:altijd )?(?:is )?weggevallen/i) ??
+    body.match(/de ([a-z]) weg\b/i)
   const dropLetter = dropMatch ? dropMatch[1].toUpperCase() : '—'
   const examples = (examplesRaw ?? '')
     .split(/,\s*maar\s*/)
@@ -166,8 +171,19 @@ function GrammarSection({ section }: { section: typeof sections[number] }) {
   const loan = cats[3]
   // Four per-letter cards ("Bij mem- … weggevallen") vs the trailing ambiguity
   // caveat (which never names a me- prefix variant).
+  //
+  // CONTENT-DROP FIX (found during the chapter conversion, 2026-07-07): the
+  // meny- rule phrases the drop as "valt … weg" / "wegvalt", not
+  // "weggevallen" like the other three. The old `&& /weggevallen/` guard
+  // therefore misclassified it as the non-card caveat, which made
+  // `.find(r => !isDropCard(r))` return the meny- rule instead of the real
+  // closing ambiguity sentence — silently dropping that sentence from the
+  // page entirely (it appeared nowhere in the DOM). Matching on the
+  // "Bij <prefix>-" shape alone is sufficient: it's exactly the four
+  // per-letter rules, and restores the fourth (S) card that DROP_ACCENTS
+  // was already sized for (4 accents, previously only 3 ever consumed).
   const dropRules = drop?.rules ?? []
-  const isDropCard = (r: string) => /\bme\w*-/.test(r) && /weggevallen/.test(r)
+  const isDropCard = (r: string) => /\bme\w*-/.test(r)
   const dropCards = dropRules.filter(isDropCard)
   const dropCaveat = dropRules.find(r => !isDropCard(r))
 
@@ -299,78 +315,140 @@ function CultureEssay({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson15Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — full-bleed, decorated */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Wayang di Indonesia</span>
-              <span className={classes.heroTitleNl}>Het schimmenspel — en de prefix teruggedraaid</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Achter het verlichte scherm bestuurt de dalang honderden poppen tot diep in de nacht. En in de
-              grammatica draaien we het werkwoord terug: van <em>menyanyi</em> naar <em>nyanyi</em>, van <em>memukul</em> naar
-              <em> pukul</em> — de ME-vorm uit elkaar gehaald tot het basiswoord weer zichtbaar wordt.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
-      {/* Editorial lede — sets the page's voice */}
+function Hero() {
+  return (
+    /* Hero — lamp-lit gold on indigo night. Rendered ABOVE the chapter nav
+       via ChapterExperience's hero slot (cover only): the nav sits under the
+       hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Wayang di Indonesia</span>
+            <span className={classes.heroTitleNl}>Het schimmenspel — en de prefix teruggedraaid</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Achter het verlichte scherm bestuurt de dalang honderden poppen tot diep in de nacht. En in de
+            grammatica draaien we het werkwoord terug: van <em>menyanyi</em> naar <em>nyanyi</em>, van <em>memukul</em> naar
+            <em> pukul</em> — de ME-vorm uit elkaar gehaald tot het basiswoord weer zichtbaar wordt.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
+      {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
             <em>memukul</em> betekent slaan — maar wat is het basiswoord? De <em>p</em> is weggevallen onder het
             voorvoegsel. Wie de ME-vorm wil teruglezen, leest eerst het voorvoegsel: dát verraadt welke klank er ooit stond.
           </p>
-          <p className={classes.ledeMeta}>Les 15 · B1 · Bahasa Indonesia</p>
+          {/* meta.level, not a hardcoded string — defensive against level
+              drift (recurring bug in lessons 8/10/12, flagged during the
+              chapter conversion; currently matches: B1). */}
+          <p className={classes.ledeMeta}>Les 15 · {meta.level} · Bahasa Indonesia</p>
         </div>
       </section>
 
-      {/* Lesson audio — band between the lede and the main content */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter (user feedback, 2026-07-07).
+          NOT wrapped in Shell: the overview centers itself on --lesson-col;
+          nesting would double the horizontal padding (992 vs 1024). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column, aligned to lede width */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <GrammarSection  section={sections[3]} />
-          <NarrativeScene  section={sections[1]} />
-          <Vocabulary      section={sections[2]} />
-          <CultureEssay    section={sections[0]} />
-        </main>
-      </section>
-
-      {/* Closing band — outro + activation + CTA grouped as one unit */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de ME-vormen, de woordenschat van de wayang en de zinnen verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de ME-vormen, de woordenschat van de wayang en de zinnen verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (culture essay — wayang & the dalang, 9 paragraphs)
+//   1 = text (Indonesian narrative — Ki Dalang Sastro's performance, 8 paragraphs)
+//   2 = vocabulary (45 items)
+//   3 = grammar (4 categories: concept, decode table, K·P·S·T drop cards, loanword N.B.)
+//   4 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (user feedback 2026-07-07).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Van de ME-vorm terug naar het basiswoord — het prefix-decodeschema en de K·P·S·T-klanken — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (user feedback
+              2026-07-07 — it sat orphaned on the cover). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarSection section={sections[3]} /></Shell>
+        </>
+      ) },
+    { id: 'verhaal',    title: 'Verhaal',    description: 'Ki Dalang Sastro speelt de hele nacht — het schimmenspel in het Indonesisch verteld.',
+      node: <Shell><NarrativeScene section={sections[1]} /></Shell> },
+    { id: 'woorden',    title: 'Woorden',    description: '45 woorden van het schimmenspel, met audio.',
+      node: <Shell><Vocabulary section={sections[2]} /></Shell> },
+    { id: 'cultuur',    title: 'Cultuur',    description: 'Achtergrond over de wayang en de dalang, de man die het hele verhaal een nacht lang draagt.',
+      node: <Shell><CultureEssay section={sections[0]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de ME-vormen en de woordenschat.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson15Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

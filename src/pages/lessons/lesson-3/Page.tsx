@@ -1,11 +1,17 @@
 // Lesson 3 — Di Bandar Udara (Op het vliegveld) — bespoke reader page.
 //
-// Editorial layout: an arrival sequence. Ibu Yulia lands, finds her bagage,
-// haggles a porter, clears douane, and walks out toward a taxi. The page
-// follows that journey: dialogue scene → the dari/di/ke triptych (the
-// spatial machine that powers the dialogue's "waar?"s) → vraagwoorden
-// reference → small grammar callouts (sekali, ada) → numbers ladder →
-// vocabulary → expressions.
+// Editorial layout: an arrival sequence, now told as chapters. Ibu Yulia
+// lands, finds her bagage, haggles a porter, clears douane, and walks out
+// toward a taxi — that's the "Dialoog" chapter. The dari/di/ke triptych (the
+// spatial machine that powers the dialogue's "waar?"s) plus the vraagwoorden
+// toolkit form the lesson's grammar hinge, so they share the "Grammatica"
+// chapter — and carry the lesson audio (docs/current-system/modules/chapter-
+// experience.md: audio belongs with the grammar-most chapter, not the
+// cover). Two small focused callouts (sekali, ada) get their own chapter.
+// Numbers, vocabulary and expressions close as one reference chapter.
+//
+// Chapter conversion: docs/plans/2026-07-06-lesson-chapter-experience-program.md
+// (lesson 5 is the pilot/reference; this mirrors its patterns exactly).
 //
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 3 --pretty > src/pages/lessons/lesson-3/content.json
@@ -15,6 +21,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -456,38 +464,47 @@ function ExpressionsBand({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE OR MORE scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson3Page() {
-  const activation = useLessonActivation(meta.id)
-  // Section index map (DB order)
-  // 0: dialogue · 1: vocabulary · 2: expressions · 3: numbers
-  // 4: grammar dari/di/ke + body-words
-  // 5: grammar vraagwoorden
-  // 6: grammar sekali
-  // 7: grammar ada
-  // 8: exercises (skipped)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — Soekarno-Hatta apron at twilight */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Di Bandar Udara</span>
-              <span className={classes.heroTitleNl}>Op het vliegveld</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Ibu Yulia stapt uit het vliegtuig en heeft twee koffers, een grote tas en geen idee waar de douane is. Een aankomst in vier korte gesprekken — en daarmee de bouwstenen waarmee je in het Indonesisch leert vragen waar iets is, vanwaar het komt, en waar het naar toe gaat.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero — twilight-airport palette. Rendered ABOVE the chapter nav via
+       ChapterExperience's hero slot (cover only): the nav sits under the
+       hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Di Bandar Udara</span>
+            <span className={classes.heroTitleNl}>Op het vliegveld</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Ibu Yulia stapt uit het vliegtuig en heeft twee koffers, een grote tas en geen idee waar de douane is. Een aankomst in vier korte gesprekken — en daarmee de bouwstenen waarmee je in het Indonesisch leert vragen waar iets is, vanwaar het komt, en waar het naar toe gaat.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -498,43 +515,100 @@ export default function Lesson3Page() {
         </div>
       </section>
 
-      {/* Lesson audio */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (matches lesson 5's convention). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <DialogueScene        section={sections[0]} />
-          <PlaceWordsSection    section={sections[4]} />
-          <QuestionWordsSection section={sections[5]} />
-          <SekaliCallout        section={sections[6]} />
-          <AdaSection           section={sections[7]} />
-          <NumbersLadder        section={sections[3]} />
-          <ExpressionsBand      section={sections[2]} />
-          <VocabularyReference  section={sections[1]} />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les — en de vraagwoorden, plaatsbepalingen en getallen tot honderd komen vanzelf in je oefensessies langs.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les — en de vraagwoorden, plaatsbepalingen en getallen tot honderd komen vanzelf in je oefensessies langs.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = dialogue (Ibu Yulia's arrival)
+//   1 = vocabulary
+//   2 = expressions
+//   3 = numbers
+//   4 = grammar — dari/di/ke + body-word table
+//   5 = grammar — vraagwoorden
+//   6 = grammar — sekali
+//   7 = grammar — ada
+//   8 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5).
+    { id: 'inhoud',              title: 'Inhoud',              node: <InhoudChapter /> },
+    { id: 'dialoog',             title: 'Dialoog',             description: 'Ibu Yulia arriveert op Soekarno-Hatta — bagage, een kruier en de douane in vier korte gesprekken.',
+      node: <Shell><DialogueScene section={sections[0]} /></Shell> },
+    { id: 'grammatica',          title: 'Grammatica',          description: 'dari, di en ke — de plaatswoorden die de hele les dragen — plus de elf vraagwoorden, met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the headline grammar
+              (dari/di/ke is the lesson's centerpiece), not on the cover —
+              matches lesson 5's convention. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell>
+            <PlaceWordsSection section={sections[4]} />
+            <QuestionWordsSection section={sections[5]} />
+          </Shell>
+        </>
+      ) },
+    { id: 'sekali-en-ada',       title: 'Sekali & ada',        description: 'Twee kleine bouwstenen: de versterker sekali en het werkwoord ada dat geen koppelwerkwoord is.',
+      node: (
+        <Shell>
+          <SekaliCallout section={sections[6]} />
+          <AdaSection section={sections[7]} />
+        </Shell>
+      ) },
+    { id: 'cijfers-en-woorden',  title: 'Cijfers & woorden',   description: 'De -puluh ladder naar honderd, de woorden van het vliegveld en zes beleefde uitdrukkingen.',
+      node: (
+        <Shell>
+          <NumbersLadder section={sections[3]} />
+          <ExpressionsBand section={sections[2]} />
+          <VocabularyReference section={sections[1]} />
+        </Shell>
+      ) },
+    { id: 'oefenen',             title: 'Oefenen',             description: 'Activeer de les en oefen de woorden en patronen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson3Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

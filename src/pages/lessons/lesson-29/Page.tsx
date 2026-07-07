@@ -8,6 +8,13 @@
 // nominalisation. Plus an acronym deck (iptek · PT · wartel) — the lexicon of
 // a wired Indonesia.
 //
+// Chapters: the cover ("Inhoud" — hero + lede + overview), then Leestekst (the
+// reading essay), Grammatica (both grammar spreads together, with the lesson
+// audio), Woorden (the main lexicon + the small acronym deck merged — three
+// items don't earn their own chapter, matching lesson 12's Woorden merge),
+// Latihan (the textbook exercises as a study reference), then the closing
+// "Oefenen" chapter.
+//
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 29 --pretty > src/pages/lessons/lesson-29/content.json
 
@@ -16,6 +23,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -177,8 +186,6 @@ function GrammarSpread({
   )
 }
 
-// ─── Page composition ────────────────────────────────────────────────────────
-
 const MEMPER_ACCENTS = ['cyan', 'teal', 'cyan', 'teal', 'cyan', 'teal'] as const
 const PERAN_ACCENTS = ['purple', 'teal', 'purple', 'teal'] as const
 
@@ -214,33 +221,51 @@ function Exercises({ section }: { section: typeof sections[number] }) {
   )
 }
 
-export default function Lesson29Page() {
-  const activation = useLessonActivation(meta.id)
-  return (
-    <article className={classes.page}>
-      {/* Hero — full-bleed, screen-glow over a Bali internet-café photo */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Internet di Indonesia</span>
-              <span className={classes.heroTitleNl}>Het internet in Indonesië</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Augustus 1995. Pos Indonesia kondigt W-Net aan, en in vier grote steden — Jakarta,
-              Bandung, Surabaya, Semarang — gaat het netwerk live. Een computer, een modem, een
-              telefoonlijn, een wachtwoord: en je stapt de "realitas virtual" binnen. Een hoofdstuk
-              over een land dat online gaat — en over twee afleidingen die het mogelijk maken:
-              MEMPER- en PER-…-AN.
-            </p>
-          </div>
-        </div>
-      </header>
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
+
+function Hero() {
+  return (
+    /* Hero — screen-glow gradient over a Bali internet-café photo. Rendered
+       ABOVE the chapter nav via ChapterExperience's hero slot (cover only):
+       the nav sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Internet di Indonesia</span>
+            <span className={classes.heroTitleNl}>Het internet in Indonesië</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Augustus 1995. Pos Indonesia kondigt W-Net aan, en in vier grote steden — Jakarta,
+            Bandung, Surabaya, Semarang — gaat het netwerk live. Een computer, een modem, een
+            telefoonlijn, een wachtwoord: en je stapt de "realitas virtual" binnen. Een hoofdstuk
+            over een land dat online gaat — en over twee afleidingen die het mogelijk maken:
+            MEMPER- en PER-…-AN.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -254,57 +279,106 @@ export default function Lesson29Page() {
         </div>
       </section>
 
-      {/* Lesson audio — guarded band (lights up when audio is attached) */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <ReadingColumn section={sections[0]} />
-          <GrammarSpread
-            section={sections[3]}
-            eyebrow="Grammatica · De actieve motor"
-            title="MEMPER- / DIPER-: de intensieve causatief"
-            glyph="memper-"
-            accents={MEMPER_ACCENTS}
-            id="s-memper"
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, akroniemen en MEMPER- / PER-…-AN-patronen verschijnen
+          automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
+        </div>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (the 1995 internet dispatch)
+//   1 = vocabulary (59 items — the wired lexicon)
+//   2 = vocabulary (3 items — the acronym deck: iptek, PT, wartel)
+//   3 = grammar (6 MEMPER-/DIPER- categories)
+//   4 = grammar (4 PER-...-AN categories)
+//   5 = exercises (Latihan I/II/III — rendered as a study reference)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5 / lesson 21).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'leestekst',  title: 'Leestekst',  description: 'Augustus 1995: Pos Indonesia lanceert Wasantara-Net — een dispatch uit het vroege internettijdperk.',
+      node: <Shell><ReadingColumn section={sections[0]} /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'MEMPER-/DIPER- en PER-…-AN: de intensieve causatief en het nominaliserende omhulsel — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (matches
+              lesson 5 / lesson 21 — it sat orphaned on the cover before). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
           />
-          <GrammarSpread
-            section={sections[4]}
-            eyebrow="Grammatica · Het nominaliserende omhulsel"
-            title="PER-…-AN: van handeling naar instelling"
-            glyph="per-…-an"
-            accents={PERAN_ACCENTS}
-            id="s-peran"
-          />
+          <Shell>
+            <GrammarSpread
+              section={sections[3]}
+              eyebrow="Grammatica · De actieve motor"
+              title="MEMPER- / DIPER-: de intensieve causatief"
+              glyph="memper-"
+              accents={MEMPER_ACCENTS}
+              id="s-memper"
+            />
+            <GrammarSpread
+              section={sections[4]}
+              eyebrow="Grammatica · Het nominaliserende omhulsel"
+              title="PER-…-AN: van handeling naar instelling"
+              glyph="per-…-an"
+              accents={PERAN_ACCENTS}
+              id="s-peran"
+            />
+          </Shell>
+        </>
+      ) },
+    { id: 'woorden',    title: 'Woorden',    description: '59 woorden uit een verbonden land, plus drie letterwoorden: iptek, PT en wartel.',
+      node: (
+        <Shell>
           <Lexicon section={sections[1]} />
           <AcronymDeck section={sections[2]} />
-          <Exercises section={sections[5]} />
-        </main>
-      </section>
+        </Shell>
+      ) },
+    { id: 'latihan',    title: 'Latihan',    description: 'Drie oefeningen op de PER-vormen, klaar om te maken.',
+      node: <Shell><Exercises section={sections[5]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden, akroniemen en MEMPER- / PER-…-AN-patronen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
 
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, akroniemen en MEMPER- / PER-…-AN-patronen verschijnen
-            automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
-        </div>
-      </section>
+export default function Lesson29Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

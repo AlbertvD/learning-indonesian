@@ -15,6 +15,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -359,56 +361,130 @@ function ItemList({
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson13Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — full-bleed, decorated */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Tukar Uang</span>
-              <span className={classes.heroTitleNl}>Geld wisselen</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Met euro's koop je in Indonesië niets — vroeg of laat moet elke vreemdeling naar de money changer. Mevrouw Barends wisselt haar geld bij Pak Rachmat, en ondertussen leer je het werkwoord dat dit alles aandrijft: de ME-vorm.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
-      {/* Editorial lede — sets the page's voice */}
+function Hero() {
+  return (
+    /* Hero band — full-bleed, decorated. Rendered ABOVE the chapter nav via
+       ChapterExperience's hero slot (cover only). */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Tukar Uang</span>
+            <span className={classes.heroTitleNl}>Geld wisselen</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Met euro's koop je in Indonesië niets — vroeg of laat moet elke vreemdeling naar de money changer. Mevrouw Barends wisselt haar geld bij Pak Rachmat, en ondertussen leer je het werkwoord dat dit alles aandrijft: de ME-vorm.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
+      {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
             <em>menukar</em> — wisselen. Eén woord, en je ziet de hele les: een basiswoord (<em>tukar</em>), een voorvoegsel (me-), en een t die spoorloos verdwijnt. Dit is hoe Indonesische werkwoorden gaan leven.
           </p>
-          <p className={classes.ledeMeta}>Les 13 · A1 · Bahasa Indonesia</p>
+          {/* meta.level, not a hardcoded string — the old copy said A1 while
+              content.json's meta.level is B1 (flagged during the chapter
+              conversion — same established fix as lessons 8/10/12). */}
+          <p className={classes.ledeMeta}>Les {meta.order_index} · {meta.level} · Bahasa Indonesia</p>
         </div>
       </section>
 
-      {/* Lesson audio — band between the lede and the main content */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter (user feedback, 2026-07-07).
+          NOT wrapped in Shell: the overview centers itself on --lesson-col;
+          nesting would double the horizontal padding. */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column, aligned to lede width */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <MoneyPrimer    section={sections[1]} />
-          <DialogueScene  section={sections[2]} />
-          <GrammarSection section={sections[5]} />
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, de ME-vormen en de zinnen verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
+        </div>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (economic-history essay, collapsible culture spread)
+//   1 = text (money primer — coin/note types)
+//   2 = dialogue (Ibu Barends + Pak Rachmat at the money changer)
+//   3 = vocabulary
+//   4 = expressions (one fixed phrase)
+//   5 = grammar (the ME- prefix — the lesson's spine)
+//   6 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (user feedback 2026-07-07).
+    { id: 'inhoud',      title: 'Inhoud',      node: <InhoudChapter /> },
+    { id: 'geld',        title: 'Geld',        description: "Een leesstuk over rupiah: munten, biljetten en de money changer.",
+      node: <Shell><MoneyPrimer section={sections[1]} /></Shell> },
+    { id: 'dialoog',     title: 'Dialoog',     description: "Ibu Barends wisselt haar euro's bij Pak Rachmat — en krijgt een waarschuwing mee de straat op.",
+      node: <Shell><DialogueScene section={sections[2]} /></Shell> },
+    { id: 'grammatica',  title: 'Grammatica',  description: 'De ME-vorm en haar neusklank-allomorfie — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (established
+              pattern, see lesson 5) — it belongs at the top of the
+              grammar-most chapter, not orphaned on the cover. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarSection section={sections[5]} /></Shell>
+        </>
+      ) },
+    { id: 'woorden',     title: 'Woorden',     description: 'Woordenschat rond geld en straat, plus één vaste uitdrukking.',
+      node: (
+        <Shell>
           <ItemList
             section={sections[3]}
             eyebrowClass={classes.vocabEyebrow}
@@ -423,25 +499,20 @@ export default function Lesson13Page() {
             title="Eén vaste wending"
             tone="warm"
           />
-          <CultureEssay section={sections[0]} />
-        </main>
-      </section>
+        </Shell>
+      ) },
+    { id: 'achtergrond', title: 'Achtergrond', description: 'Van oliecrisis tot devaluatie: hoe de rupiah zijn waarde kreeg.',
+      node: <Shell><CultureEssay section={sections[0]} /></Shell> },
+    { id: 'oefenen',     title: 'Oefenen',     description: 'Activeer de les en oefen de woorden en de ME-vormen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
 
-      {/* Closing band — outro + activation + CTA grouped as one unit */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, de ME-vormen en de zinnen verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
-        </div>
-      </section>
+export default function Lesson13Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

@@ -1,10 +1,12 @@
-// Lesson 22 — Bab 6: Pesta Pernikahan (Het bruiloftsfeest) — bespoke reader page.
+// Lesson 22 — Bab 6: Pesta Pernikahan (Het bruiloftsfeest) — bespoke reader page
+// (chapter-experience conversion).
 //
 // The chapter is a family chapter: a wedding at the Murjito household, a kinship
 // schema that names every relation in the story, the colours of Indonesian, and
-// a deep reduplication (verdubbeling) grammar set. The page leads with the story,
-// hangs the kinship schema beside it as a who's-who, and gives the colours their
-// own swatch treatment.
+// a deep reduplication (verdubbeling) grammar set. The story leads, the kinship
+// schema follows as a generational tree, the vocabulary (plus the one wedding
+// congratulation) shares a chapter, then the reduplication grammar (with the
+// lesson audio) and finally the colour swatches.
 //
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 22 --pretty > src/pages/lessons/lesson-22/content.json
@@ -14,6 +16,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -47,10 +51,6 @@ function PlayButton({ src }: { src?: string }) {
     </>
   )
 }
-
-// ─── Reduplication-aware Indonesian renderer ───────────────────────────────
-// Many examples are `base² → base-base` or carry an embedded → arrow. We split
-// on the arrow elsewhere; here we just bold the term.
 
 // ─── Section: Story — the chapter's reading text ───────────────────────────
 
@@ -310,33 +310,49 @@ function ColourGrid({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE or TWO scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson22Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — full-bleed, wedding-warm */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Pesta Pernikahan</span>
-              <span className={classes.heroTitleNl}>Het bruiloftsfeest</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Titi, de tweede dochter van de familie Murjito, gaat trouwen. Ooms, tantes, opa en oma,
-              een zwager uit Yogyakarta — het hele huis loopt vol. Een hoofdstuk over familie: wie
-              hoort bij wie, de kleuren van het feest, en de Indonesische verdubbeling.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero band — full-bleed, rose + gold ceremonial warmth. Rendered ABOVE
+       the chapter nav via ChapterExperience's hero slot (cover only): the
+       nav sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Pesta Pernikahan</span>
+            <span className={classes.heroTitleNl}>Het bruiloftsfeest</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Titi, de tweede dochter van de familie Murjito, gaat trouwen. Ooms, tantes, opa en oma,
+            een zwager uit Yogyakarta — het hele huis loopt vol. Een hoofdstuk over familie: wie
+            hoort bij wie, de kleuren van het feest, en de Indonesische verdubbeling.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -349,43 +365,93 @@ export default function Lesson22Page() {
         </div>
       </section>
 
-      {/* Lesson audio — guarded band, lights up when audio is attached */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (see lesson 5). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <StoryText           section={sections[0]} />
-          <KinshipTable        section={sections[3]} />
-          <VocabGrid           section={sections[1]} />
-          <Expressions         section={sections[2]} />
-          <GrammarReduplication section={sections[4]} />
-          <ColourGrid          section={sections[5]} />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, de familierelaties en de verdubbelingen verschijnen
-            automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, de familierelaties en de verdubbelingen verschijnen
+          automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (the story — Pesta pernikahan bij de familie Murjito)
+//   1 = vocabulary (43 items — wedding + family)
+//   2 = expressions (Selamat menempuh hidup baru — the one congratulation)
+//   3 = reference_table (kinship schema)
+//   4 = grammar (9 reduplication categories)
+//   5 = vocabulary (colours)
+//   6 = exercises (skipped — practice surface)
+//
+// Editorial merge: Woorden (vocab, section 1) and Uitdrukking (section 2) —
+// the single congratulation phrase — share one chapter. Section 2 is a
+// single-item card; it reads as an appendix to the wedding vocabulary rather
+// than earning its own chapter (same editorial-merge logic as lesson 5's
+// TussendoorSpread).
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (matches lesson 5 / lesson 21).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'verhaal',    title: 'Verhaal',    description: 'Titi trouwt bij de familie Murjito — het verhaal van de bruiloft.',
+      node: <Shell><StoryText section={sections[0]} /></Shell> },
+    { id: 'familie',    title: 'Familie',    description: 'De familierelaties op een rij: van nenek moyang tot cucu.',
+      node: <Shell><KinshipTable section={sections[3]} /></Shell> },
+    { id: 'woorden',    title: 'Woorden',    description: '43 woorden van bruiloft en familie, en de felicitatie die je op zo’n feest zegt.',
+      node: <Shell><VocabGrid section={sections[1]} /><Expressions section={sections[2]} /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Negen verdubbelingspatronen — van het werkwoord tot de kleuren, met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (matches
+              lesson 5 / lesson 21 — it sat orphaned on the cover before). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarReduplication section={sections[4]} /></Shell>
+        </>
+      ) },
+    { id: 'kleuren',    title: 'Kleuren',    description: 'De Indonesische kleuren, tinten en het ‘-achtige’ achtervoegsel.',
+      node: <Shell><ColourGrid section={sections[5]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de woorden, familietermen en verdubbelingen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson22Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

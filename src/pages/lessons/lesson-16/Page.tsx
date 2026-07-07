@@ -1,4 +1,5 @@
-// Lesson 16 — Di Kantor Pos (Op het postkantoor) — bespoke reader page.
+// Lesson 16 — Di Kantor Pos (Op het postkantoor) — bespoke reader page,
+// CHAPTER-EXPERIENCE conversion (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 //
 // Two engines drive this lesson. At the counter, Ibu Rusli buys stamps for the
 // Netherlands and sends a sea-mail parcel — a forms-and-weighing errand thick
@@ -13,6 +14,15 @@
 // Republic up to 1965 (Pancasila → Soekarno → 1965) — opens collapsed, drop-cap,
 // long measure. A cool ink-blue + stamp-red palette (postmark on airmail paper).
 //
+// Chapter grouping is editorial, one content chapter per top-level section —
+// the grammar-first narrative order the lesson was already written in:
+// grammatica (audio moved here from the old top-of-page band) → dialoog →
+// woorden → cultuur. No content drop found during conversion: every grammar
+// category's rules and examples are fully mapped (FlipBoard pairs the opener's
+// 4 examples exhaustively; the 4 remaining categories map 1:1 onto RuleTile
+// via TILE_ACCENTS), and all 18 dialogue lines / 36 vocabulary items / 15
+// culture paragraphs render unconditionally.
+//
 // Re-roll by re-running:
 //   NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/fetch-lesson-content.ts 16 --pretty > src/pages/lessons/lesson-16/content.json
 
@@ -21,6 +31,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -253,79 +265,142 @@ function CultureEssay({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ─────────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson16Page() {
-  const activation = useLessonActivation(meta.id)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — full-bleed, decorated */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Di Kantor Pos</span>
-              <span className={classes.heroTitleNl}>Op het postkantoor — en de lijdende vorm</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Ibu Rusli koopt postzegels voor Nederland en verstuurt een zeepostpakket. Aan het loket hoort ze
-              de passieve vorm overal: <em>dit formulier moet eerst ingevuld worden</em>, <em>hij moet gewogen worden</em>.
-              Precies die vorm krijgt hier een naam — de DI-vorm.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
-      {/* Editorial lede — sets the page's voice */}
+function Hero() {
+  return (
+    /* Hero — airmail postmark tones, ink-blue → stamp-red. Rendered ABOVE the
+       chapter nav via ChapterExperience's hero slot (cover only): the nav sits
+       under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Di Kantor Pos</span>
+            <span className={classes.heroTitleNl}>Op het postkantoor — en de lijdende vorm</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Ibu Rusli koopt postzegels voor Nederland en verstuurt een zeepostpakket. Aan het loket hoort ze
+            de passieve vorm overal: <em>dit formulier moet eerst ingevuld worden</em>, <em>hij moet gewogen worden</em>.
+            Precies die vorm krijgt hier een naam — de DI-vorm.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
+      {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
             <em>Dia mengirim paket pos</em> — zij stuurt een pakket. Draai het om en het pakket neemt de hoofdrol over:
             <em> paket pos dikirimnya</em>. Niet de doener, maar de zaak die de handeling ondergaat, staat nu vooraan.
           </p>
-          <p className={classes.ledeMeta}>Les 16 · B1 · Bahasa Indonesia</p>
+          {/* ESTABLISHED FIX (lessons 8/10/12/13/14): render {meta.level} instead
+              of a hardcoded CEFR literal — content.json's level can drift from
+              what was typed here by hand. */}
+          <p className={classes.ledeMeta}>Les 16 · {meta.level} · Bahasa Indonesia</p>
         </div>
       </section>
 
-      {/* Lesson audio — band between the lede and the main content */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        voice={meta.primary_voice ?? undefined}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter (user feedback, 2026-07-07).
+          NOT wrapped in Shell: the overview centers itself on --lesson-col;
+          nesting would double the horizontal padding. */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column, aligned to lede width */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <GrammarSection  section={sections[3]} />
-          <DialogueScene   section={sections[1]} />
-          <Vocabulary      section={sections[2]} />
-          <CultureEssay    section={sections[0]} />
-        </main>
-      </section>
-
-      {/* Closing band — outro + activation + CTA grouped as one unit */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de DI-vormen, de woordenschat van het postkantoor en de zinnen verschijnen
-            automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de DI-vormen, de woordenschat van het postkantoor en de zinnen verschijnen
+          automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (culture essay — founding of the Republic)
+//   1 = dialogue (Ibu Rusli, Pak Bakri, Dik Wiwi at the post office)
+//   2 = vocabulary
+//   3 = grammar (DI-passive: opener flip + 4 rule categories)
+//   4 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (user feedback 2026-07-07).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
+    { id: 'grammatica', title: 'Grammatica', description: 'De actief-naar-passief flip als schakelbord, met vier regeltegels — en de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (same placement
+              rule as lesson 5 — it sat orphaned between the lede and the shell
+              before this conversion). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            voice={meta.primary_voice ?? undefined}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarSection section={sections[3]} /></Shell>
+        </>
+      ) },
+    { id: 'dialoog',    title: 'Dialoog',    description: 'Ibu Rusli koopt postzegels en verstuurt een zeepostpakket — de DI-vorm in het wild.',
+      node: <Shell><DialogueScene section={sections[1]} /></Shell> },
+    { id: 'woorden',    title: 'Woorden',    description: 'Woordenschat van het postkantoor: postzegels, pakketten en het loket.',
+      node: <Shell><Vocabulary section={sections[2]} /></Shell> },
+    { id: 'cultuur',    title: 'Cultuur',    description: 'Een lang cultuurstuk over de jonge Republiek, van Pancasila tot 1965.',
+      node: <Shell><CultureEssay section={sections[0]} /></Shell> },
+    { id: 'oefenen',    title: 'Oefenen',    description: 'Activeer de les en oefen de DI-vorm en de woordenschat van het postkantoor.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson16Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }

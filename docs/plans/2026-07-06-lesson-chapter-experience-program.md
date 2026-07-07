@@ -1,5 +1,13 @@
 ---
-status: draft
+status: shipped
+implementation: PR #382
+merged_at: 2026-07-07
+implementation_paths:
+  - src/components/lessons/ChapterExperience.tsx
+  - src/components/lessons/LessonChapterOverview.tsx
+  - src/pages/lessons/lesson-*/Page.tsx
+  - docs/current-system/modules/chapter-experience.md
+supersedes: []
 ---
 <!-- HIGH-LEVEL PROGRAM SPEC — the lesson-page redesign decided 2026-07-06.
      Evidence base: docs/research/2026-07-06-lesson-page-ux-review.md (measured: 11.2

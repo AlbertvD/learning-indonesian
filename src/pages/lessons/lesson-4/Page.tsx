@@ -16,6 +16,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -354,7 +356,7 @@ function NumbersExponential({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Section: Vocabulary reference (83 items) ──────────────────────────────
+// ─── Section: Vocabulary reference (87 items) ──────────────────────────────
 
 function VocabularyReference({ section }: { section: typeof sections[number] }) {
   const c = section.content as { items: Array<{ indonesian: string; dutch: string; audioUrl?: string }> }
@@ -381,43 +383,52 @@ function VocabularyReference({ section }: { section: typeof sections[number] }) 
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE (or, for the rice/numbers pair, two
+// thematically-linked) scene(s) in the shell band the old single scroll page
+// shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson4Page() {
-  const activation = useLessonActivation(meta.id)
-  // Section index map (DB order):
-  //   0: text — culture (Bali nights / penginapan)
-  //   1: text — culture (rice / nasi variants)
-  //   2: dialogue (hotel reception)
-  //   3: grammar (yang — 5 categories)
-  //   4: exercises (skipped)
-  //   5: vocabulary (83 items)
-  //   6: numbers (100..trillion)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — sunset over Pandawa Beach, Uluwatu Bali */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Di Hotel</span>
-              <span className={classes.heroTitleNl}>In het hotel</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              De nacht op Bali kan veel kanten op — een witte tropenhemel boven
-              het strand, een matras in een penginapan, een schone losmen of
-              een echte hotelkamer. Ibu Dewi kiest het laatste, krijgt een
-              gele sleutel, en bestelt sate kambing. Onderweg ontmoeten we
-              <em> yang</em> — het woord dat de hele les bij elkaar houdt.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero band — sunset over Pandawa Beach, Uluwatu Bali. Rendered ABOVE the
+       chapter nav via ChapterExperience's hero slot (cover only): the nav
+       sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Di Hotel</span>
+            <span className={classes.heroTitleNl}>In het hotel</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            De nacht op Bali kan veel kanten op — een witte tropenhemel boven
+            het strand, een matras in een penginapan, een schone losmen of
+            een echte hotelkamer. Ibu Dewi kiest het laatste, krijgt een
+            gele sleutel, en bestelt sate kambing. Onderweg ontmoeten we
+            <em> yang</em> — het woord dat de hele les bij elkaar houdt.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede — sets the page's contemplative tone */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -431,42 +442,91 @@ export default function Lesson4Page() {
         </div>
       </section>
 
-      {/* Lesson audio */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding. */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — culture-first, then encounter, grammar, food, scale, reference */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <DialogueScene        section={sections[2]} />
-          <YangGrammar          section={sections[3]} />
-          <RiceCulture          section={sections[1]} />
-          <NumbersExponential   section={sections[6]} />
-          <VocabularyReference  section={sections[5]} />
-          <CultureOpener        section={sections[0]} />
-        </main>
-      </section>
-
-      {/* Closing band — outro + activation + CTA */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les — en de yang-constructies, de hotelwoorden en de
-            tellingen tot in de miljoenen komen vanzelf in je oefensessies langs.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les — en de yang-constructies, de hotelwoorden en de
+          tellingen tot in de miljoenen komen vanzelf in je oefensessies langs.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (culture — Bali nights / penginapan)
+//   1 = text (culture — rice / nasi variants)
+//   2 = dialogue (hotel reception)
+//   3 = grammar (yang — 5 categories)
+//   4 = exercises (skipped — practice surface)
+//   5 = vocabulary (87 items)
+//   6 = numbers (100..trillion)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story.
+    { id: 'inhoud',            title: 'Inhoud',            node: <InhoudChapter /> },
+    { id: 'dialoog',           title: 'Dialoog',           description: 'Ibu Dewi checkt in bij de hotelreceptie — een gesprek waar "yang" steeds opduikt.',
+      node: <Shell><DialogueScene section={sections[2]} /></Shell> },
+    { id: 'grammatica',        title: 'Grammatica',        description: 'Eén klein woord, vijf rollen: yang als betrekkelijk voornaamwoord, nadruk en nominalisering — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar, not the cover. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><YangGrammar section={sections[3]} /></Shell>
+        </>
+      ) },
+    { id: 'rijst-en-getallen', title: 'Rijst & Getallen',  description: 'Drie soorten nasi als menukaart, en de telladder van honderd tot triljoen — dezelfde Rupiah-bedragen als in de cultuurtekst.',
+      node: (
+        <Shell>
+          <RiceCulture section={sections[1]} />
+          <NumbersExponential section={sections[6]} />
+        </Shell>
+      ) },
+    { id: 'woorden',           title: 'Woorden',           description: '87 woorden uit hotel, rijst en tafel, met audio.',
+      node: <Shell><VocabularyReference section={sections[5]} /></Shell> },
+    { id: 'overnachten',       title: 'Overnachten',       description: 'Een nacht op Bali: van open strand tot penginapan, losmen en guesthouse — drie prijsklassen om te overnachten.',
+      node: <Shell><CultureOpener section={sections[0]} /></Shell> },
+    { id: 'oefenen',           title: 'Oefenen',           description: 'Activeer de les en oefen de yang-constructies, de hotelwoorden en de getallen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson4Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }
