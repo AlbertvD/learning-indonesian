@@ -153,6 +153,10 @@ export function ChapterExperience({ lessonId, chapters }: { lessonId: string; ch
           {chapters.map((chapter, i) => {
             const isCurrent = i === currentIndex
             const isVisited = visited.has(chapter.id)
+            // Convention: the FIRST chapter is the lesson's cover — unnumbered
+            // (a learner thinks of it as "the start", not "chapter 1"); the
+            // content chapters number 1..n-1, matching the overview cards.
+            const index = i === 0 ? '◆' : i
             return (
               <li key={chapter.id} className={classes.segmentItem}>
                 <button
@@ -164,7 +168,7 @@ export function ChapterExperience({ lessonId, chapters }: { lessonId: string; ch
                   onClick={() => goTo(chapter.id)}
                 >
                   <span className={classes.segmentIndex} aria-hidden="true">
-                    {isVisited && !isCurrent ? '✓' : i + 1}
+                    {isVisited && !isCurrent ? '✓' : index}
                   </span>
                   <span className={classes.segmentTitle}>{chapter.title}</span>
                 </button>
@@ -172,9 +176,11 @@ export function ChapterExperience({ lessonId, chapters }: { lessonId: string; ch
             )
           })}
         </ol>
-        <p className={classes.progressLabel}>
-          {T.lessons.chapterProgress(currentIndex + 1, chapters.length)}
-        </p>
+        {currentIndex > 0 && (
+          <p className={classes.progressLabel}>
+            {T.lessons.chapterProgress(currentIndex, chapters.length - 1)}
+          </p>
+        )}
       </nav>
 
       {resume && (

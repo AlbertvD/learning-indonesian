@@ -24,7 +24,9 @@ export function LessonChapterOverview() {
       <h2 className={classes.title}>{T.lessons.chapterOverviewTitle}</h2>
       <div className={classes.stack}>
         {upcoming.map(chapter => {
-          const number = chapters.findIndex(c => c.id === chapter.id) + 1
+          // Cover convention (see ChapterExperience header): the first chapter
+          // is unnumbered, so content chapters count from 1 = their index.
+          const number = chapters.findIndex(c => c.id === chapter.id)
           return (
             <ListCard
               key={chapter.id}
