@@ -15,20 +15,19 @@
 // De mythe is daarmee niet een culturele bijlage — het is de *vleugel onder
 // het vliegtuig* dat de hele les vervoert.
 //
-// Compositie:
-//   1. Hero (Kuta-zonsondergang) — de bestemming.
-//   2. Lede (de bestemming + de mythe naast elkaar).
-//   3. Dialoog — Ninik & Ibu pakken in.
-//   4. Grammar I: -nya in drie gedaantes (bezit / topicalisatie / nominalisatie)
-//      — gerenderd als één centrale "drie-zinnen-machine" met de zin
-//      "Mobil itu warnanya putih" als levend voorbeeld.
-//   5. Grammar II: Tijd — kalender-layout (eenheden, dan maanden als grid,
-//      dan dagen als week-strip, dan een kemarin↔besok tijdlijn).
-//   6. Vocabulaire (60) — als inpaklijst gepresenteerd, omdat de dialoog
-//      letterlijk over inpakken gaat.
-//   7. Uitdrukkingen — twee zinnen, intiem getoond.
-//   8. Garuda — de mythe als slot-essay, met dropcap en marginale glossen.
-//   9. CTA-band.
+// Chapters (cover convention: "Inhoud" first, "Oefenen" last):
+//   1. Dialoog        — Ninik & Ibu pakken in.
+//   2. Suffix -nya     — -nya in drie gedaantes (bezit / topicalisatie /
+//      nominalisatie), gerenderd als één centrale "drie-zinnen-machine" met
+//      de zin "Mobil itu warnanya putih" als levend voorbeeld. Draagt de
+//      les-audio (het grammaticale hart van de les).
+//   3. Tijd           — kalender-layout (eenheden, dan maanden als grid, dan
+//      dagen als week-strip, dan een kemarin↔besok tijdlijn).
+//   4. Woorden        — de inpaklijst (83), omdat de dialoog letterlijk over
+//      inpakken gaat.
+//   5. Uitdrukkingen  — twee zinnen, intiem getoond.
+//   6. Garuda         — de mythe als slot-essay, met dropcap en marginale
+//      glossen.
 //
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 7 --pretty > src/pages/lessons/lesson-7/content.json
@@ -38,6 +37,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -201,6 +202,26 @@ function NyaGrammar({ section }: { section: typeof sections[number] }) {
         </ol>
         {headlineLine && (
           <p className={classes.topicalisatieFoot}>{headlineLine}</p>
+        )}
+        {/* FIX (chapter-conversion parity test, 2026-07-07): the topicalisatie
+            category's 6 illustrative example pairs ("Nama anak ini Ali" / "Anak
+            ini namanya Ali" / ...; "Berapa harga rok itu?" / ...) existed in
+            content.json but were never rendered by the original monolithic
+            page — only the `rules`-derived constructies (the abstract A/B/C
+            pattern) were shown, never the concrete second demonstration
+            sentence. Render them the same way the two flanking cards do. */}
+        {(topicalisatie?.examples ?? []).length > 0 && (
+          <div className={classes.nyaFlankExamples}>
+            {(topicalisatie?.examples ?? []).map((ex, i) => (
+              <div key={i} className={classes.nyaFlankExample}>
+                <div className={classes.nyaFlankId}>
+                  {highlightNya(ex.indonesian)}
+                  <PlayButton src={ex.audioUrl} />
+                </div>
+                <div className={classes.nyaFlankNl}>{ex.dutch}</div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
@@ -578,43 +599,51 @@ function GarudaMyth({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── Page composition ──────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps ONE scene in the shell band the old single
+// scroll page shared. Same components, same CSS — re-grouped, not rewritten
+// (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson7Page() {
-  const activation = useLessonActivation(meta.id)
-  // Section index map (DB order):
-  //   0: text — Garuda myth (15 paragraphs)
-  //   1: dialogue — Ninik & Ibu packing for Denpasar (14 lines)
-  //   2: vocabulary (60 items)
-  //   3: expressions (2 items)
-  //   4: grammar — -nya constructions (3 categories)
-  //   5: grammar — time expressions (5 categories)
-  //   6: exercises (skipped)
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero band — Kuta sunset, blended under a violet→amber gradient */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Libur Sekolah</span>
-              <span className={classes.heroTitleNl}>Schoolvakantie</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Ninik heeft schoolvakantie, en moeder pakt een koffer voor een
-              week Denpasar. Eronder een veel oudere reis: Garuda, de
-              vogel-van-de-zon, vliegt door donder en vlammen om de drank der
-              goden te halen. Allebei keren ze terug — de een met sandalen
-              gekocht in Kuta, de ander met een kruikje amerta.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero — Kuta sunset blended under a violet→amber gradient. Rendered
+       ABOVE the chapter nav via ChapterExperience's hero slot (cover only):
+       the nav sits under the hero and pins to the top on scroll. */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Libur Sekolah</span>
+            <span className={classes.heroTitleNl}>Schoolvakantie</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Ninik heeft schoolvakantie, en moeder pakt een koffer voor een
+            week Denpasar. Eronder een veel oudere reis: Garuda, de
+            vogel-van-de-zon, vliegt door donder en vlammen om de drank der
+            goden te halen. Allebei keren ze terug — de een met sandalen
+            gekocht in Kuta, de ander met een kruikje amerta.
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede — sets the dual voice */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -628,43 +657,90 @@ export default function Lesson7Page() {
         </div>
       </section>
 
-      {/* Main content — single column */}
-      {/* Lesson audio */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding. */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <DialogueScene          section={sections[1]} />
-          <NyaGrammar             section={sections[4]} />
-          <TimeGrammar            section={sections[5]} />
-          <ExpressionsDuet        section={sections[3]} />
-          <VocabularyPackingList  section={sections[2]} />
-          <GarudaMyth             section={sections[0]} />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les — en de <em>-nya</em>-constructies, de dagen,
-            de maanden en het reisvocabulaire komen vanzelf in je
-            oefensessies langs.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les — en de <em>-nya</em>-constructies, de dagen,
+          de maanden en het reisvocabulaire komen vanzelf in je
+          oefensessies langs.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (Garuda myth, 15 paragraphs)
+//   1 = dialogue (Ninik & Ibu packing for Denpasar, 14 lines)
+//   2 = vocabulary (83 items)
+//   3 = expressions (2 items)
+//   4 = grammar (-nya constructions, 3 categories)
+//   5 = grammar (time expressions, 5 categories)
+//   6 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story.
+    { id: 'inhoud',         title: 'Inhoud',        node: <InhoudChapter /> },
+    { id: 'dialoog',        title: 'Dialoog',        description: 'Ninik en haar moeder pakken de koffer voor Denpasar — en het werkwoord bawa duikt overal op.',
+      node: <Shell><DialogueScene section={sections[1]} /></Shell> },
+    { id: 'suffix-nya',     title: 'Suffix -nya',    description: 'Eén suffix, drie gedaantes: bezit, topicalisatie en nominalisatie — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the lesson's grammatical
+              hinge — the -nya suffix chapter, not the cover. */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><NyaGrammar section={sections[4]} /></Shell>
+        </>
+      ) },
+    { id: 'tijd',           title: 'Tijd',           description: 'Tijdseenheden, maanden, dagen en de kemarin-besok-tijdlijn, in kalendervorm.',
+      node: <Shell><TimeGrammar section={sections[5]} /></Shell> },
+    { id: 'woorden',        title: 'Woorden',        description: '83 woorden uit de inpaklijst — kleding, sieraden en reisvocabulaire, met audio.',
+      node: <Shell><VocabularyPackingList section={sections[2]} /></Shell> },
+    { id: 'uitdrukkingen',  title: 'Uitdrukkingen',  description: 'Twee zinnen voor onderweg, apart uitgelicht.',
+      node: <Shell><ExpressionsDuet section={sections[3]} /></Shell> },
+    { id: 'garuda',         title: 'Garuda',         description: 'De mythe van Garuda, vogel-van-de-zon — het culturele sluitstuk van de les.',
+      node: <Shell><GarudaMyth section={sections[0]} /></Shell> },
+    { id: 'oefenen',        title: 'Oefenen',        description: 'Activeer de les en oefen de -nya-constructies, de tijd en het reisvocabulaire.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson7Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }
