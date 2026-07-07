@@ -1,4 +1,5 @@
-// Lesson 17 — Bab 1: Telur Mata Sapi (Spiegelei) — bespoke reader page.
+// Lesson 17 — Bab 1: Telur Mata Sapi (Spiegelei) — bespoke reader page,
+// CHAPTER-EXPERIENCE conversion (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 //
 // A restaurant/breakfast chapter from "Selamat Datang deel 2". The page reads
 // as a short story: Laura wakes craving a European breakfast, walks to a
@@ -8,6 +9,16 @@
 // "question machine" treatment: stacked accent blocks, rules first, aligned
 // example pairs below.
 //
+// Chapter conversion: the single scroll splits into 4 content chapters —
+// Verhaal, Dialoog, Woorden (vocab + mealtimes + proverb), Grammatica
+// (carries the lesson audio) — kept in the same order the single-scroll page
+// used them, wrapped via a local Shell (lesson-5 pattern). Section components
+// below are unchanged from the pre-chapter Page.tsx (re-grouping, not
+// rewriting), EXCEPT Vocabulary, which now also renders content.json section
+// 2 — the "how to read the word list" note (basiswoord / ~ notation) that the
+// pre-chapter page never rendered at all (a content drop, fixed here; see the
+// FIX comment at the Vocabulary component).
+//
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 17 --pretty > src/pages/lessons/lesson-17/content.json
 
@@ -16,6 +27,8 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
+import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -105,12 +118,23 @@ function DialogueScene({ section }: { section: typeof sections[number] }) {
 
 // ─── Section: vocabulary ─────────────────────────────────────────────────────
 
-function Vocabulary({ section }: { section: typeof sections[number] }) {
+function Vocabulary({ section, noteSection }: { section: typeof sections[number]; noteSection: typeof sections[number] }) {
   const c = section.content as { items: Array<{ dutch: string; indonesian: string; audioUrl?: string }> }
+  const note = noteSection.content as { paragraphs: string[] }
   return (
     <section className={classes.section} aria-labelledby="s-vocab">
       <p className={classes.vocabEyebrow}>Woordenschat</p>
       <h2 id="s-vocab" className={classes.sectionTitle}>Woorden van het ontbijt</h2>
+      {/* FIX (2026-07-07, chapter conversion): content.json section 2 — the
+          "how to read the word list" note (recognising the basiswoord, the ~
+          notation, the shared-glossary convention with Selamat Datang deel 1)
+          — was never rendered on the pre-chapter page at all; only the
+          hand-written callout below (which covers just the ~ example) stood
+          in for it. Render the real paragraphs first; keep the callout since
+          it highlights the masak/masakan example visually. */}
+      <div className={classes.readingProse}>
+        {note.paragraphs.map((p, i) => <p key={i} className={classes.vocabNote}>{p}</p>)}
+      </div>
       <p className={classes.vocabNote}>
         Een tilde (<span className={classes.tilde}>~</span>) markeert het basiswoord — <em>masak, ~an</em> = <em>masakan</em>. Sla het basiswoord op; daarop zoek je in het woordenboek.
       </p>
@@ -233,38 +257,46 @@ function GrammarBlocks({
   )
 }
 
-// ─── Page composition ────────────────────────────────────────────────────────
+// ─── Chapter wrappers ───────────────────────────────────────────────────────
+// Each content chapter re-wraps one or more scenes in the shell band the old
+// single scroll page shared. Same components, same CSS — re-grouped, not
+// rewritten (docs/plans/2026-07-06-lesson-chapter-experience-program.md).
 
-export default function Lesson17Page() {
-  const activation = useLessonActivation(meta.id)
-
-  // Grammar is split across three DB sections (6: ME-order + clitics,
-  // 7: berapa, 8: siapa/apa/mana + key-word repetition). Number the tiles
-  // continuously across all three so the accent rotation reads as one suite.
-  const gram6 = (sections[6].content as { categories: GrammarCategory[] }).categories.length
-  const gram7 = (sections[7].content as { categories: GrammarCategory[] }).categories.length
-
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <article className={classes.page}>
-      {/* Hero — golden fried eggs blended under a warm dawn gradient */}
-      <header className={classes.heroBand}>
-        <div className={classes.heroInner}>
-          <div className={classes.heroLeft}>
-            <div className={classes.heroBadgeRow}>
-              <span className={classes.heroBadge}>{meta.level}</span>
-              <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
-            </div>
-            <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Telur Mata Sapi</span>
-              <span className={classes.heroTitleNl}>Spiegelei — een ontbijt in een restaurant</span>
-            </h1>
-            <p className={classes.heroDescription}>
-              Drie weken nasi, en deze ochtend wil Laura iets Europees. Ze loopt naar een restaurant en bestelt — maar wat zij precies krijgt, hangt af van één vraag: wat ís een telur mata sapi eigenlijk?
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className={classes.shellBand}>
+      <main className={classes.shell}>{children}</main>
+    </section>
+  )
+}
 
+function Hero() {
+  return (
+    /* Hero — golden fried eggs blended under a warm dawn gradient. Rendered
+       ABOVE the chapter nav via ChapterExperience's hero slot (cover only). */
+    <header className={classes.heroBand}>
+      <div className={classes.heroInner}>
+        <div className={classes.heroLeft}>
+          <div className={classes.heroBadgeRow}>
+            <span className={classes.heroBadge}>{meta.level}</span>
+            <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
+          </div>
+          <h1 className={classes.heroTitle}>
+            <span className={classes.heroTitleId}>Telur Mata Sapi</span>
+            <span className={classes.heroTitleNl}>Spiegelei — een ontbijt in een restaurant</span>
+          </h1>
+          <p className={classes.heroDescription}>
+            Drie weken nasi, en deze ochtend wil Laura iets Europees. Ze loopt naar een restaurant en bestelt — maar wat zij precies krijgt, hangt af van één vraag: wat ís een telur mata sapi eigenlijk?
+          </p>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function InhoudChapter() {
+  return (
+    <>
       {/* Editorial lede */}
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
@@ -275,58 +307,119 @@ export default function Lesson17Page() {
         </div>
       </section>
 
-      {/* Lesson audio — guarded; lights up the moment audio is attached */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
+      {/* "In deze les" — the chapter overview that makes the opening a real
+          lesson start instead of head-matter. NOT wrapped in Shell: the
+          overview centers itself on --lesson-col; nesting would double the
+          horizontal padding (lesson-5 pattern). */}
+      <LessonChapterOverview />
+    </>
+  )
+}
 
-      {/* Main content — single column */}
-      <section className={classes.shellBand}>
-        <main className={classes.shell}>
-          <ReadingNarrative section={sections[0]} />
-          <DialogueScene    section={sections[1]} />
-          <Vocabulary       section={sections[3]} />
-          <Mealtimes        section={sections[4]} />
-          <Proverb          section={sections[5]} />
-          <GrammarBlocks
-            section={sections[6]}
-            eyebrow="Grammatica · De actieve zin"
-            title="Agens — ME-vorm — patiens, en de clitica -ku / -mu / -nya"
-            startIndex={0}
-          />
-          <GrammarBlocks
-            section={sections[7]}
-            eyebrow="Grammatica · Vragen om een getal"
-            title="Berapa? — wanneer je een aantal verwacht"
-            startIndex={gram6}
-          />
-          <GrammarBlocks
-            section={sections[8]}
-            eyebrow="Grammatica · De vraagwoorden"
-            title="Siapa, apa, mana — en het antwoord zonder 'ja'"
-            startIndex={gram6 + gram7}
-          />
-        </main>
-      </section>
-
-      {/* Closing band */}
-      <section className={classes.closingBand}>
-        <div className={classes.closingInner}>
-          <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
-          <p className={classes.closingLede}>
-            Activeer de les en de woorden, zinnen en patronen verschijnen automatisch in je oefensessies.
-          </p>
-          <div className={classes.closingActivation}>
-            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
-          </div>
-          <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} activated={activation.activated} />
-          </div>
+function OefenenChapter({ activation }: { activation: ReturnType<typeof useLessonActivation> }) {
+  return (
+    <section className={classes.closingBand}>
+      <div className={classes.closingInner}>
+        <h2 className={classes.closingTitle}>Klaar om te oefenen?</h2>
+        <p className={classes.closingLede}>
+          Activeer de les en de woorden, zinnen en patronen verschijnen automatisch in je oefensessies.
+        </p>
+        <div className={classes.closingActivation}>
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
         </div>
-      </section>
+        <div className={classes.closingActions}>
+          <PracticeActions lessonId={meta.id} activated={activation.activated} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Page composition ──────────────────────────────────────────────────────
+// Section indices in DB order:
+//   0 = text (Laura's morning — the reading)
+//   1 = dialogue (restaurant scene, Laura + Mas Piro)
+//   2 = text (word-list reading note: basiswoord, ~ notation — was
+//       previously never rendered; now folded into the Woorden chapter)
+//   3 = vocabulary (40 items)
+//   4 = expressions (mealtimes, 3 items)
+//   5 = expressions (a single pepatah)
+//   6 = grammar (2 categories — ME-order + the -ku/-mu/-nya clitics)
+//   7 = grammar (1 category — berapa?)
+//   8 = grammar (4 categories — siapa/apa/mana + key-word repetition)
+//   9, 10 = exercises (skipped — practice surface)
+//
+// Exported for the content-parity test: with the one-chapter-at-a-time mount
+// strategy the live DOM only holds the current chapter, so the test renders
+// every chapter node from this list and checks content.json coverage.
+
+// eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
+export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
+  // Grammar is split across three DB sections (6: ME-order + clitics,
+  // 7: berapa, 8: siapa/apa/mana + key-word repetition). Number the tiles
+  // continuously across all three so the accent rotation reads as one suite.
+  const gram6 = (sections[6].content as { categories: GrammarCategory[] }).categories.length
+  const gram7 = (sections[7].content as { categories: GrammarCategory[] }).categories.length
+
+  return [
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (lesson-5 convention).
+    { id: 'inhoud',      title: 'Inhoud',      node: <InhoudChapter /> },
+    { id: 'verhaal',     title: 'Verhaal',     description: 'Laura\'s ochtend: tegenzin tegenover nasi, en de wandeling naar een Europees restaurant.',
+      node: <Shell><ReadingNarrative section={sections[0]} /></Shell> },
+    { id: 'dialoog',     title: 'Dialoog',     description: 'Aan tafel bij Mas Piro: het hele menu, en de vraag wat een telur mata sapi eigenlijk is.',
+      node: <Shell><DialogueScene section={sections[1]} /></Shell> },
+    { id: 'woorden',     title: 'Woorden',     description: 'Veertig woorden van het ontbijt, de drie maaltijden, en een pepatah over eieren.',
+      node: (
+        <Shell>
+          <Vocabulary section={sections[3]} noteSection={sections[2]} />
+          <Mealtimes section={sections[4]} />
+          <Proverb section={sections[5]} />
+        </Shell>
+      ) },
+    { id: 'grammatica',  title: 'Grammatica',  description: 'De actieve zin met ME-vorm en clitica, berapa, en de vraagwoorden siapa/apa/mana — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (it's the
+              grammar-most chapter — lesson-5/9/14 convention). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell>
+            <GrammarBlocks
+              section={sections[6]}
+              eyebrow="Grammatica · De actieve zin"
+              title="Agens — ME-vorm — patiens, en de clitica -ku / -mu / -nya"
+              startIndex={0}
+            />
+            <GrammarBlocks
+              section={sections[7]}
+              eyebrow="Grammatica · Vragen om een getal"
+              title="Berapa? — wanneer je een aantal verwacht"
+              startIndex={gram6}
+            />
+            <GrammarBlocks
+              section={sections[8]}
+              eyebrow="Grammatica · De vraagwoorden"
+              title="Siapa, apa, mana — en het antwoord zonder 'ja'"
+              startIndex={gram6 + gram7}
+            />
+          </Shell>
+        </>
+      ) },
+    { id: 'oefenen',     title: 'Oefenen',     description: 'Activeer de les en oefen de woorden, zinnen en patronen.',
+      node: <OefenenChapter activation={activation} /> },
+  ]
+}
+
+export default function Lesson17Page() {
+  const activation = useLessonActivation(meta.id)
+  return (
+    <article className={classes.page}>
+      <ChapterExperience lessonId={meta.id} hero={<Hero />} chapters={buildChapters(activation)} />
     </article>
   )
 }
