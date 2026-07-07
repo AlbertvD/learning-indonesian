@@ -3,9 +3,9 @@
    inside any lesson theme. */
 
 .overview {
-  /* Matches the lesson pages' lede/audio inner width (920px) so the cover
-     reads as ONE column instead of three slightly-different ones. */
-  max-width: 920px;
+  /* Inherits the page's single lesson column so the cover and the content
+     chapters share one width (falls back sensibly outside a lesson page). */
+  max-width: var(--lesson-col, 920px);
   margin: 0 auto;
   padding: 40px var(--page-pad-x, 16px) 8px;
   width: 100%;

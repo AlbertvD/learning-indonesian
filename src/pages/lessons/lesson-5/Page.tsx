@@ -408,8 +408,10 @@ function VerhaalChapter() {
       />
 
       {/* "In deze les" — the chapter overview that makes the opening a real
-          lesson start instead of head-matter (user feedback, 2026-07-07). */}
-      <Shell><LessonChapterOverview /></Shell>
+          lesson start instead of head-matter (user feedback, 2026-07-07).
+          NOT wrapped in Shell: the overview centers itself on --lesson-col;
+          nesting would double the horizontal padding (992 vs 1024). */}
+      <LessonChapterOverview />
     </>
   )
 }
