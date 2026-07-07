@@ -328,6 +328,13 @@
   max-width: 80ch;
 }
 
+/* Mobile collapses the row to a single column (grid-template-columns: 1fr);
+   without this reset the paragraph keeps grid-column: 2 and is forced into an
+   implicit, content-sized second column — so every row indented differently. */
+@media (max-width: 720px) {
+  .historyParagraph { grid-column: 1; }
+}
+
 .historyParagraph[data-lede='true']::first-letter {
   font-size: 2.4em;
   font-weight: var(--fw-black);
