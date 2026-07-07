@@ -390,7 +390,7 @@ function Hero() {
   )
 }
 
-function VerhaalChapter() {
+function InhoudChapter() {
   return (
     <>
       {/* Editorial lede */}
@@ -404,14 +404,6 @@ function VerhaalChapter() {
           <p className={classes.ledeMeta}>Les 5 · A1 · Bahasa Indonesia</p>
         </div>
       </section>
-
-      {/* Lesson audio */}
-      <LessonGrammarAudioBand
-        nl={meta.lesson_audio_url}
-        en={meta.lesson_audio_url_en}
-        bandClassName={classes.audioBand}
-        innerClassName={classes.audioInner}
-      />
 
       {/* "In deze les" — the chapter overview that makes the opening a real
           lesson start instead of head-matter (user feedback, 2026-07-07).
@@ -459,11 +451,25 @@ function OefenenChapter({ activation }: { activation: ReturnType<typeof useLesso
 // eslint-disable-next-line react-refresh/only-export-components -- test-only export (content-parity guard renders each chapter node)
 export function buildChapters(activation: ReturnType<typeof useLessonActivation>): LessonChapter[] {
   return [
-    { id: 'verhaal',    title: 'Verhaal',    node: <VerhaalChapter /> },
+    // Cover convention: titled "Inhoud" — it IS the contents page (hero +
+    // lede + the chapter overview), not a story (user feedback 2026-07-07).
+    { id: 'inhoud',     title: 'Inhoud',     node: <InhoudChapter /> },
     { id: 'dialoog',    title: 'Dialoog',    description: 'Titin en Nanang mopperen in de keuken — en zeggen twee soorten "wij".',
       node: <Shell><DialogueScene section={sections[1]} /></Shell> },
-    { id: 'grammatica', title: 'Grammatica', description: 'Zeven voornaamwoord-families, van saya tot kita versus kami.',
-      node: <Shell><GrammarSection section={sections[2]} /></Shell> },
+    { id: 'grammatica', title: 'Grammatica', description: 'Zeven voornaamwoord-families, van saya tot kita versus kami — met de les-audio.',
+      node: (
+        <>
+          {/* The grammar podcast audio lives WITH the grammar (user feedback
+              2026-07-07 — it sat orphaned on the cover). */}
+          <LessonGrammarAudioBand
+            nl={meta.lesson_audio_url}
+            en={meta.lesson_audio_url_en}
+            bandClassName={classes.audioBand}
+            innerClassName={classes.audioInner}
+          />
+          <Shell><GrammarSection section={sections[2]} /></Shell>
+        </>
+      ) },
     { id: 'schema',     title: 'Schema',     description: 'Het volledige bezittelijk-voornaamwoordschema als naslagtabel.',
       node: <Shell><ReferenceTable section={sections[3]} /></Shell> },
     { id: 'woorden',    title: 'Woorden',    description: '53 woorden uit huis en keuken, met audio.',

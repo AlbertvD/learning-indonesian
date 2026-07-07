@@ -24,7 +24,7 @@ useChapterNav(): { chapters, currentId, goTo } | null   // context; null outside
 ## 3. Behavior (all owned here, verified 2026-07-07)
 
 - **URL sync:** current chapter ⇄ `?h=<id>` (`ChapterExperience.tsx:CHAPTER_PARAM`); back button + deep links work; unknown/missing param → first chapter.
-- **Cover convention:** the FIRST chapter is the lesson's cover — hero (optional `hero` prop) renders above the nav on the cover only; the cover pill is unnumbered (◆); content chapters number 1..n-1; the "Hoofdstuk i van n-1" label hides on the cover.
+- **Cover convention:** the FIRST chapter is the lesson's cover — titled **"Inhoud"** (it is the contents page: hero + lede + `LessonChapterOverview`, NOT a story; user decision 2026-07-07); hero (optional `hero` prop) renders above the nav on the cover only; the cover pill is unnumbered (◆); content chapters number 1..n-1; the "Hoofdstuk i van n-1" label hides on the cover. Per-lesson audio (the grammar podcast band) belongs with the **Grammatica chapter**, not the cover.
 - **Mount strategy:** only the current chapter is mounted (spec Q2 decision). Consequence: per-lesson content-parity tests must render every chapter node (`lesson-5/__tests__/chapters-content-parity.test.tsx` is the template — it caught a pre-existing content drop on its first run).
 - **A11y:** on chapter change, scroll-to-top + focus moves to the chapter content container; the current pill auto-scrolls into view (feature-guarded `scrollIntoView` — jsdom lacks it).
 - **Position memory:** localStorage `lesson-chapter:<lessonId>` `{current, visited}`; a "Ga verder bij …" resume chip is OFFERED on fresh landings (never auto-jumps); visited chapters show ✓ ticks.
