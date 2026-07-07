@@ -30,8 +30,8 @@ vi.mock('@/services/lessonService', () => ({
   lessonService: {
     getAudioUrl: (path: string) => `https://cdn.test/indonesian-lessons/${path}`,
     listGrammarPodcasts: vi.fn(async () => [
-      { order_index: 1, title: 'Les 1 - Di Pasar', audio_path: 'grammar/l1-nl.mp3', audio_path_en: 'grammar/l1-en.mp3' },
-      { order_index: 2, title: 'Les 2 - Di Indonesia', audio_path: 'grammar/l2-nl.mp3', audio_path_en: null },
+      { order_index: 1, topics: ['Werkwoord', 'Zelfstandig naamwoord'], audio_path: 'grammar/l1-nl.mp3', audio_path_en: 'grammar/l1-en.mp3' },
+      { order_index: 2, topics: ['Classificeerwoorden'], audio_path: 'grammar/l2-nl.mp3', audio_path_en: null },
     ]),
   },
 }))
@@ -41,11 +41,14 @@ beforeEach(() => {
 })
 
 describe('GrammarPodcasts', () => {
-  it('lists each lesson and plays the NL episode for a Dutch learner', async () => {
+  it('labels each row by lesson number + grammar topics (not the story title) and plays NL', async () => {
     render(<GrammarPodcasts />)
 
-    expect(await screen.findByText('Les 1 - Di Pasar')).toBeInTheDocument()
-    expect(screen.getByText('Les 2 - Di Indonesia')).toBeInTheDocument()
+    // Row title is "Les N", subtitle is the grammar topics — no chapter title.
+    expect(await screen.findByText('Les 1')).toBeInTheDocument()
+    expect(screen.getByText('Werkwoord · Zelfstandig naamwoord')).toBeInTheDocument()
+    expect(screen.getByText('Les 2')).toBeInTheDocument()
+    expect(screen.getByText('Classificeerwoorden')).toBeInTheDocument()
 
     const players = screen.getAllByTestId('grammar-podcast-player')
     expect(players).toHaveLength(2)
@@ -58,8 +61,8 @@ describe('GrammarPodcasts', () => {
     render(<GrammarPodcasts />)
 
     // Lesson 1 has an EN episode; lesson 2 does not → only lesson 1 is listenable.
-    expect(await screen.findByText('Les 1 - Di Pasar')).toBeInTheDocument()
-    expect(screen.queryByText('Les 2 - Di Indonesia')).toBeNull()
+    expect(await screen.findByText('Lesson 1')).toBeInTheDocument()
+    expect(screen.queryByText('Lesson 2')).toBeNull()
 
     const players = screen.getAllByTestId('grammar-podcast-player')
     expect(players).toHaveLength(1)
