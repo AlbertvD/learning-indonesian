@@ -46,11 +46,16 @@
 
 .segments::-webkit-scrollbar { display: none; }
 
-.segmentItem { flex: 0 0 auto; }
+/* Desktop: pills share the row equally (segmented-control look) so the strip
+   fills the lesson column symmetrically; mobile reverts to natural widths in
+   a scrollable strip (media query below). */
+.segmentItem { flex: 1 1 0; min-width: 0; }
 
 .segment {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
   gap: 6px;
   border: 1px solid var(--mantine-color-default-border);
   border-radius: 999px;
@@ -171,7 +176,8 @@
 }
 
 @media (max-width: 720px) {
-  .segment { padding: 6px 10px 6px 7px; font-size: 0.74rem; }
+  .segmentItem { flex: 0 0 auto; }
+  .segment { width: auto; padding: 6px 10px 6px 7px; font-size: 0.74rem; }
   .footerNav { padding-bottom: 32px; }
   .navButton, .navButtonNext { padding: 10px 14px; font-size: 0.8rem; }
 }
