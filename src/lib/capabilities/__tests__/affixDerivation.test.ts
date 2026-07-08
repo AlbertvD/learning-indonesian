@@ -163,6 +163,10 @@ describe('blankDerivedInCarrier — whole-word blank (option B)', () => {
   it('preserves surrounding punctuation on the blanked token', () => {
     expect(blankDerivedInCarrier('Dia membersihkan mobil, lalu pergi', 'membersihkan')).toBe('Dia ___ mobil, lalu pergi')
   })
+  it('matches case-insensitively but replaces the token\'s ACTUAL case (§5-findings bug fix)', () => {
+    // Sentence-initial capitalised token (Ikuti) still matches lowercase derived (ikuti).
+    expect(blankDerivedInCarrier('Ikuti contoh itu!', 'ikuti')).toBe('___ contoh itu!')
+  })
   it('does NOT match a clitic-attached surface (the dinaikkannya case)', () => {
     expect(blankDerivedInCarrier('Bendera dinaikkannya', 'dinaikkan')).toBeNull()
     expect(blankDerivedInCarrier('Koper diturunkannya', 'diturunkan')).toBeNull()

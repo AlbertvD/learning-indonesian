@@ -247,6 +247,56 @@ describe('carrierTiersFromLesson — Task 3 tiers', () => {
   })
 })
 
+// ── Curated carriers (§5b, docs/plans/2026-07-08-affix-trainer-quick-wins.md) ──
+
+describe('generateMorphologyPatterns — curated carriers (§5b)', () => {
+  const baseInput = {
+    lessonNumber: 10,
+    roots: [{ root: 'masak', affix: '-an', illustratesCategory: A1 }],
+    categories: [{ title: A1, examples: [] }],
+    knownItemSlugs: KNOWN,
+  }
+
+  it('a curated entry WINS over a harvestable tier sentence', () => {
+    const { pairs, errors } = generateMorphologyPatterns({
+      ...baseInput,
+      carrierTiers: [['Ibu memasak masakan yang enak sekali']], // would harvest fine on its own
+      curatedCarriers: new Map([['masakan', 'Masakan ini sangat lezat sekali.']]),
+    })
+    expect(errors).toEqual([])
+    expect(pairs).toHaveLength(1)
+    expect(pairs[0].carrierText).toBe('Masakan ini sangat lezat sekali.')
+  })
+
+  it('a curated entry failing the whole-word/3-word gate produces an error and writes no pair', () => {
+    const { pairs, errors } = generateMorphologyPatterns({
+      ...baseInput,
+      curatedCarriers: new Map([['masakan', 'enak']]), // too short AND doesn't contain "masakan"
+    })
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0]).toMatch(/carrier gate/)
+    expect(pairs).toHaveLength(0)
+  })
+
+  it('a stale curated key (matches no generated pair\'s derived form) produces an error', () => {
+    const { errors } = generateMorphologyPatterns({
+      ...baseInput,
+      curatedCarriers: new Map([['tidakcocok', 'Ini kalimat yang tidakcocok sama sekali.']]),
+    })
+    expect(errors.some((e) => e.includes('tidakcocok') && e.includes('did not match'))).toBe(true)
+  })
+
+  it('a pair with no curated entry falls back to harvest unchanged', () => {
+    const { pairs, errors } = generateMorphologyPatterns({
+      ...baseInput,
+      carrierTiers: [['Ibu memasak masakan yang enak sekali']],
+      curatedCarriers: new Map(), // present but empty — no stale-key check fires
+    })
+    expect(errors).toEqual([])
+    expect(pairs[0].carrierText).toBe('Ibu memasak masakan yang enak sekali')
+  })
+})
+
 // ── Derived-form gloss authoring (Fix 3) ─────────────────────────────────────
 
 function genPair(over: Partial<GeneratedPair> & { sourceRef: string; affix: string; root: string; derived: string }): GeneratedPair {

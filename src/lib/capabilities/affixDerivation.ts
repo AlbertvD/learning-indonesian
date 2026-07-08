@@ -295,8 +295,12 @@ export function deriveAffixedForm(root: string, affix: string): DerivedAffixedFo
  * Returns the carrier with the first whole-word occurrence of `derived` replaced by
  * `placeholder`, or null if `derived` does not occur as a standalone token — so a
  * clitic-attached surface like `dinaikkannya` does NOT match `dinaikkan` (it would
- * mis-blank to `___nya` with a naive substring replace). Internal hyphens are kept
- * (reduplication forms like `anak-anak` are one token). The harvest gate and the
+ * mis-blank to `___nya` with a naive substring replace). The comparison is
+ * CASE-INSENSITIVE (a sentence-initial capitalised token like `Ikuti` still matches
+ * lowercase `derived` `ikuti`), but the token's ACTUAL case (and any surrounding
+ * punctuation) is what gets replaced, so `tok.replace(core, placeholder)` — not the
+ * (possibly differently-cased) `derived` — substitutes cleanly. Internal hyphens are
+ * kept (reduplication forms like `anak-anak` are one token). The harvest gate and the
  * runtime render share this ONE definition so they can never drift.
  */
 export function blankDerivedInCarrier(carrier: string, derived: string, placeholder = '___'): string | null {
@@ -305,9 +309,9 @@ export function blankDerivedInCarrier(carrier: string, derived: string, placehol
   const out = parts.map((tok) => {
     if (done) return tok
     const core = tok.replace(/^[^\p{L}-]+/u, '').replace(/[^\p{L}-]+$/u, '')
-    if (core === derived) {
+    if (core.toLowerCase() === derived.toLowerCase()) {
       done = true
-      return tok.replace(derived, placeholder)
+      return tok.replace(core, placeholder)
     }
     return tok
   })

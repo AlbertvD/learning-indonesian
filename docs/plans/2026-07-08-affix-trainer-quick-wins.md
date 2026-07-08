@@ -1,6 +1,6 @@
 ---
 status: implementing
-implementation: PR #392 (Batch A shipped+deployed 2026-07-08); Batch B (B1 audio seeded live, B2 findings §5-findings) same day
+implementation: PR #392 (Batch A shipped+deployed 2026-07-08); Batch B (B1 audio seeded live, B2 findings §5-findings) same day; PR #395 (P3b carriers + case fix, §5b) same day — C1 spec approved separately (2026-07-08-affix-production-fastpath.md)
 reviewed_by: [staff-engineer, architect]
 ---
 <!-- Review round 2026-07-08: staff-engineer NEEDS-WORK → fixed (LessonCard per-bar
@@ -159,3 +159,18 @@ Bonus finding, verified by direct call: **`blankDerivedInCarrier` is case-sensit
 3. **Fix the case-sensitivity bug in `blankDerivedInCarrier`** (`src/lib/capabilities/affixDerivation.ts:302`) — lowercase `core`/`derived` for the comparison only, keep the original-case token in the replaced output. Cheap, deterministic, benefits every future harvest run and the runtime render identically (same function). Add the `Ikuti contoh itu!` case as a regression test in `affixDerivation.test.ts`.
 4. **For `-an` specifically**, a real fix requires widening `carrierTiersFromLesson`'s input to include the affix's pedagogically-introducing lesson when it differs from the affix's "home" lesson (L10 for L25's bare `-an`) — this changes the "one lesson directory in, one tier set out" contract the CLI wrapper currently has and is a genuine scope decision, not a quick fix. Flag for `architect` if pursued; do not build without that round.
 5. The two `extractSentences` quality artifacts found on `-an` (slash-list fragment, stray trailing paren) are low-value polish — not worth a dedicated fix unless a future authoring pass touches `-an` anyway.
+
+## §5b — P3b build spec (carrier authoring, 2026-07-08)
+
+Executes §5-findings recommendations 2 + 3 (recommendation 4, the cross-lesson harvest widening, stays OUT — architect-gated; the curated carriers below cover the `-an` gap without it, and they also override the two junk `-an` artifacts from recommendation 5, making that polish moot for the curated forms).
+
+**Curated-carrier mechanism (mirrors the presence-cache seam, not a new harvest tier):**
+
+- New OPTIONAL per-lesson staging file `scripts/data/staging/lesson-N/curated-carriers.ts` exporting `curatedCarriers: Record<string, string>` — key = derived form, value = hand-authored carrier sentence containing the key as a whole word. Authored files for L21 (22 forms), L23 (18), L25 (21 — all bare `-an` except `kemudian`, whose harvested carrier is genuine; `pilihan`/`ujian` included to override their junk fragments) land in this same PR.
+- `GenerateInput` gains `curatedCarriers?: ReadonlyMap<string, string>`. In `generateMorphologyPatterns`, a curated entry WINS over harvest: `carrierText = curated.get(derived.derived) ?? harvestCarrier(...)`.
+- **Loud validation (pre-write validator, no silent fallback):** a curated entry used by a generated pair pushes an error (file NOT written) when `blankDerivedInCarrier(sentence, derived) === null` or the sentence has < 3 whitespace tokens. After the pair loop, any curated key that matched NO generated pair is also an error (stale/typo key). Curated sentences do NOT pass through `extractSentences` — they are authored as exactly one sentence; this validator is their gate.
+- CLI wrapper: `readExport(dir/curated-carriers.ts)` (missing file → null → feature absent), pass through.
+
+**Case-sensitivity fix (§5-findings recommendation 3):** in `blankDerivedInCarrier` (`src/lib/capabilities/affixDerivation.ts:302`) compare `core.toLowerCase() === derived.toLowerCase()` and replace the ACTUAL-case `core` in the token (`tok.replace(core, placeholder)`) so the token's punctuation survives. Regression tests: `blankDerivedInCarrier('Ikuti contoh itu!', 'ikuti')` → `'___ contoh itu!'`; the clitic non-match (`dinaikkannya` vs `dinaikkan`) stays null.
+
+**Regen + publish (operator steps after the code lands):** `bun scripts/generate-morphology-patterns.ts 21 23 25` (presence-cached glosses carry over — expect "0 new", no LLM cost), commit the three regenerated `morphology-patterns.ts` in the same PR, then after merge publish lessons 21, 23, 25 (both stages, one lesson per invocation) so `affixed_form_pairs.carrier_text` and the carrier-gated usage capabilities materialize.
