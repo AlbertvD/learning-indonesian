@@ -39,6 +39,9 @@ export type {
 } from './capabilityTypes'
 export type { CapabilityRenderContext, ResolutionDiagnostic } from './renderContext'
 
+// ─── Vocabulary mode-set contract (ADR 0027) ────────────────────────────────
+export { KEPT_VOCAB_CAP_TYPES, DROPPED_VOCAB_CAP_TYPES } from './vocabModeSet'
+
 // ─── Projection ────────────────────────────────────────────────────────────
 export { projectCapabilities } from './capabilityCatalog'
 

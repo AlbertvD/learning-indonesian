@@ -173,28 +173,50 @@ export interface RetireOrphanedCapabilitiesResult {
  * and scheduling resumes from preserved state.
  *
  * Both reasons-to-retire share this write: `retireOrphanedCapabilities`
- * (key-not-emitted) and `reconcileArtifactPresence` (satellite-absent).
+ * (key-not-emitted) and `reconcileArtifactPresence` (satellite-absent). Exported
+ * (2026-07-08, ADR 0027 Slice 1) for the one-off `retire-dropped-vocab-modes.ts`
+ * script, which retires ~7,077 ids — the previous callers only ever ran at
+ * per-lesson (tens-of-ids) scale.
+ *
+ * CHUNKED internally in batches of `SOFT_RETIRE_CHUNK_SIZE`: an un-chunked
+ * `.in()` over thousands of UUIDs overflows Kong's request-URL length limit
+ * (the same failure class as `src/lib/morphology/adapter.ts:215-217` /
+ * `src/lib/chunkedQuery.ts:26` — a URL around ~200 UUIDs already overflows it).
+ * Each of the two `.in()` writes below is chunked independently; a mid-run
+ * failure can strand a chunk retired-with-`next_due_at`-not-yet-cleared, which
+ * is acceptable because the write is idempotent (re-running only touches rows
+ * not yet retired/cleared) and the one-off caller reports counts via dry-run
+ * before any `--apply` run.
  */
-async function softRetireCapabilities(
+const SOFT_RETIRE_CHUNK_SIZE = 100
+
+export async function softRetireCapabilities(
   supabase: CapabilitySupabaseClient,
   capIds: string[],
 ): Promise<void> {
   if (capIds.length === 0) return
   const nowIso = new Date().toISOString()
-  const { error: updateError } = await supabase
-    .schema('indonesian')
-    .from('learning_capabilities')
-    .update({ retired_at: nowIso, updated_at: nowIso })
-    .in('id', capIds)
-  if (updateError) throw updateError
+
+  for (let i = 0; i < capIds.length; i += SOFT_RETIRE_CHUNK_SIZE) {
+    const chunk = capIds.slice(i, i + SOFT_RETIRE_CHUNK_SIZE)
+    const { error: updateError } = await supabase
+      .schema('indonesian')
+      .from('learning_capabilities')
+      .update({ retired_at: nowIso, updated_at: nowIso })
+      .in('id', chunk)
+    if (updateError) throw updateError
+  }
 
   // M1: a retired cap must not leave a past-due scheduler row behind (HC14).
-  const { error: stateError } = await supabase
-    .schema('indonesian')
-    .from('learner_capability_state')
-    .update({ next_due_at: null })
-    .in('capability_id', capIds)
-  if (stateError) throw stateError
+  for (let i = 0; i < capIds.length; i += SOFT_RETIRE_CHUNK_SIZE) {
+    const chunk = capIds.slice(i, i + SOFT_RETIRE_CHUNK_SIZE)
+    const { error: stateError } = await supabase
+      .schema('indonesian')
+      .from('learner_capability_state')
+      .update({ next_due_at: null })
+      .in('capability_id', chunk)
+    if (stateError) throw stateError
+  }
 }
 
 /**

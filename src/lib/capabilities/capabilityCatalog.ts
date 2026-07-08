@@ -12,6 +12,7 @@ import {
 } from './capabilityTypes'
 import type { SkillType } from '../../types/learning'
 import { buildCanonicalKey, normalizeLessonSourceRef } from './canonicalKey'
+import { KEPT_VOCAB_CAP_TYPES } from './vocabModeSet'
 
 interface CapabilityDraft {
   sourceKind: CapabilitySourceKind
@@ -40,10 +41,19 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
   for (const item of input.learningItems) {
     const sourceRef = `learning_items/${item.id}`
     const recognitionArtifacts: ArtifactKind[] = ['base_text', 'meaning:l1']
-    const meaningArtifacts: ArtifactKind[] = ['meaning:l1', 'accepted_answers:l1']
-    const choiceArtifacts: ArtifactKind[] = ['meaning:l1', 'base_text']
     const formArtifacts: ArtifactKind[] = ['meaning:l1', 'base_text', 'accepted_answers:id']
 
+    // ADR 0027 (vocabulary-mode-set-bounded): this loop emits exactly the 3
+    // capabilities in KEPT_VOCAB_CAP_TYPES per item (2 unconditional + the
+    // audio one gated on item.hasAudio) — modes #2
+    // (recognise_form_from_meaning_cap), #4 (recall_meaning_from_text_cap) and
+    // #5 (produce_form_from_audio_cap) are dropped from the model entirely.
+    // This is the second, uncoordinated definition of the vocab capability
+    // shape (the live projector is projectors/vocab.ts) — kept in lock-step so
+    // the diagnostic tools that consume it (materialize-capabilities.ts,
+    // check-capability-health.ts) cannot disagree with the live projector.
+    // The guard below turns "cannot disagree" into an enforced invariant
+    // rather than a comment that can silently drift.
     const textRecognitionCapability = createCapability({
       sourceKind: 'vocabulary_src',
       sourceRef,
@@ -54,35 +64,11 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: recognitionArtifacts,
     })
-    capabilities.push(textRecognitionCapability)
-    const choiceCapability = createCapability({
-      sourceKind: 'vocabulary_src',
-      sourceRef,
-      capabilityType: 'recognise_form_from_meaning_cap',
-      // cap-v2 Slice 1 mis-level fix: recognise_form_from_meaning_cap ("pick the Indonesian
-      // word from the L1 meaning") is a receptive recognition, not a recall.
-      // Kept in lock-step with deriveSkillTypeFromCapabilityType (the read-time
-      // authority at session-builder/adapter.ts) so both surfaces agree.
-      skillType: 'recognise_mode',
-      direction: 'l1_to_id',
-      modality: 'text',
-      learnerLanguage: item.meanings[0]?.language ?? 'none',
-      requiredArtifacts: choiceArtifacts,
-      prerequisiteKeys: [textRecognitionCapability.canonicalKey],
-    })
-    capabilities.push(choiceCapability)
-    capabilities.push(createCapability({
-      sourceKind: 'vocabulary_src',
-      sourceRef,
-      capabilityType: 'recall_meaning_from_text_cap',
-      skillType: 'recall_mode',
-      direction: 'id_to_l1',
-      modality: 'text',
-      learnerLanguage: item.meanings[0]?.language ?? 'none',
-      requiredArtifacts: meaningArtifacts,
-      prerequisiteKeys: [textRecognitionCapability.canonicalKey],
-    }))
-    capabilities.push(createCapability({
+    // #6 — produce_form_from_meaning_cap: productive frontier, never retired.
+    // prerequisiteKeys points at #1 (ADR 0027 — was #2's key before the trim;
+    // #2 no longer exists so every not-yet-introduced #6 would otherwise be
+    // permanently unintroducible).
+    const produceFormCapability = createCapability({
       sourceKind: 'vocabulary_src',
       sourceRef,
       capabilityType: 'produce_form_from_meaning_cap',
@@ -91,11 +77,17 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       modality: 'text',
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: formArtifacts,
-      prerequisiteKeys: [choiceCapability.canonicalKey],
-    }))
+      prerequisiteKeys: [textRecognitionCapability.canonicalKey],
+    })
+
+    const itemCapabilities: ProjectedCapability[] = [textRecognitionCapability, produceFormCapability]
 
     if (item.hasAudio) {
-      capabilities.push(createCapability({
+      // #3 — recognise_meaning_from_audio_cap: aural, a distinct construct,
+      // never retired. ADR 0027 drops the dictation mode
+      // (produce_form_from_audio_cap, #5) — aural recognition + orthographic
+      // production overlap it (brief §3 guardrails).
+      itemCapabilities.push(createCapability({
         sourceKind: 'vocabulary_src',
         sourceRef,
         capabilityType: 'recognise_meaning_from_audio_cap',
@@ -106,18 +98,20 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
         requiredArtifacts: ['audio_clip', 'meaning:l1'],
         prerequisiteKeys: [textRecognitionCapability.canonicalKey],
       }))
-      capabilities.push(createCapability({
-        sourceKind: 'vocabulary_src',
-        sourceRef,
-        capabilityType: 'produce_form_from_audio_cap',
-        skillType: 'produce_mode',
-        direction: 'audio_to_id',
-        modality: 'audio',
-        learnerLanguage: 'none',
-        requiredArtifacts: ['audio_clip', 'base_text', 'accepted_answers:id'],
-        prerequisiteKeys: [textRecognitionCapability.canonicalKey],
-      }))
     }
+
+    const droppedTypesPresent = itemCapabilities.filter(
+      (c) => !(KEPT_VOCAB_CAP_TYPES as readonly string[]).includes(c.capabilityType),
+    )
+    if (droppedTypesPresent.length > 0) {
+      throw new Error(
+        `projectCapabilities: emitted a dropped vocab cap type `
+        + `[${droppedTypesPresent.map((c) => c.capabilityType).join(', ')}] for ${sourceRef} `
+        + `(ADR 0027 — must be a subset of KEPT_VOCAB_CAP_TYPES)`,
+      )
+    }
+
+    capabilities.push(...itemCapabilities)
   }
 
   for (const pattern of input.grammarPatterns) {
