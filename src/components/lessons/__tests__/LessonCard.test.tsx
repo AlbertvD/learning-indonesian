@@ -67,4 +67,19 @@ describe('LessonCard', () => {
     expect(screen.queryByRole('link')).not.toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Kantor Pos' })).toBeInTheDocument()
   })
+
+  it('renders a mixed pair as an em dash for the null bar, keeping the other real (content-fixed tier that does not exist yet)', () => {
+    renderCard({
+      practiced: { label: 'recognition', percent: 60 },
+      mastered: { label: 'production', percent: null },
+    })
+    const link = screen.getByRole('link')
+    // The real bar still shows its label + percent.
+    expect(within(link).getByText('recognition')).toBeInTheDocument()
+    expect(within(link).getByText('60%')).toBeInTheDocument()
+    // The null bar shows its label + an em dash, never a false "0%".
+    expect(within(link).getByText('production')).toBeInTheDocument()
+    expect(within(link).getByText('—')).toBeInTheDocument()
+    expect(within(link).queryByText('0%')).not.toBeInTheDocument()
+  })
 })

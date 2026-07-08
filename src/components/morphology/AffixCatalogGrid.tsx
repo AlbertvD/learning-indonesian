@@ -2,6 +2,15 @@
 // (two nested bars: % beheerst over % geoefend + level badge + status pill) —
 // nothing morphology-specific is invented (capstone §2). Tiles are pre-sorted by
 // teaching rank by buildAffixCatalog; the rank shows as the tile number.
+//
+// The two bars are split by capability-type class (review P1), not by the
+// generic practised/mastered pair: recognition (recognise_meaning_from_text_cap
+// + recognise_word_form_link_cap) over production (produce_derived_form_cap +
+// produce_form_from_context_cap). The LessonCard prop slots stay `practiced`/
+// `mastered` (the generic bar-pair contract); only the data they carry differs
+// here. Production's denominator is content-fixed and often zero (the
+// production tier doesn't exist yet for many affixes) — that renders as the
+// LessonCard Bar's null path ("—"), never a false "0%".
 
 import { SimpleGrid } from '@mantine/core'
 import { LessonCard } from '@/components/lessons/LessonCard'
@@ -32,14 +41,19 @@ function tileStatus(
   return { tone: 'neutral', label: T.morphology.available }
 }
 
+/** A class tally's % mastered, or null when its denominator is zero (nothing
+ *  to divide — the LessonCard Bar renders this as "—", not a false "0%"). */
+function classPercent(tally: { masteredCount: number; totalCount: number }): number | null {
+  return tally.totalCount > 0 ? Math.round((tally.masteredCount / tally.totalCount) * 100) : null
+}
+
 export function AffixCatalogGrid({ tiles }: { tiles: AffixCatalogTile[] }) {
   const T = useT()
   return (
     <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} spacing="md">
       {tiles.map((tile) => {
-        const total = tile.progress.totalCount
-        const masteredPct = total > 0 ? Math.round((tile.progress.masteredCount / total) * 100) : null
-        const practisedPct = total > 0 ? Math.round((tile.progress.practisedCount / total) * 100) : null
+        const recognitionPct = classPercent(tile.progress.recognition)
+        const productionPct = classPercent(tile.progress.production)
         return (
           <LessonCard
             key={tile.affix}
@@ -53,8 +67,8 @@ export function AffixCatalogGrid({ tiles }: { tiles: AffixCatalogTile[] }) {
             title={tile.affix}
             level={tile.cefrLevel}
             grammarTopics={tile.gloss}
-            practiced={{ label: T.morphology.practisedLabel, percent: tile.available ? practisedPct : null }}
-            mastered={{ label: T.morphology.masteredLabel, percent: tile.available ? masteredPct : null }}
+            practiced={{ label: T.morphology.recognitionLabel, percent: tile.available ? recognitionPct : null }}
+            mastered={{ label: T.morphology.productionLabel, percent: tile.available ? productionPct : null }}
             status={tileStatus(tile, T)}
             to={`/morphology?affix=${encodeURIComponent(tile.affix)}`}
           />

@@ -4,7 +4,7 @@
 // cap roll-up (weakest-wins per derivation), NOT funnelBucket, so it does not
 // depend on the item-C analytics re-partition (grill decision 3).
 
-import { AFFIX_CATALOG } from '@/lib/capabilities'
+import { AFFIX_CATALOG, type CapabilityType } from '@/lib/capabilities'
 import {
   labelForCapability,
   weakestLabel,
@@ -18,7 +18,7 @@ import {
   type MorphologySnapshot,
   type MorphologyStateRow,
 } from './adapter'
-import type { AffixCatalogTile, AffixProgress } from './model'
+import type { AffixCatalogTile, AffixProgress, AffixProgressClassTally } from './model'
 
 type Language = 'nl' | 'en'
 
@@ -30,6 +30,18 @@ const EMPTY_FUNNEL = (): Record<MasteryLabel, number> => ({
   mastered: 0,
   at_risk: 0,
 })
+
+// The two capability-type classes review P1 splits the mastery display into —
+// exhaustive for source_kind word_form_pair_src (ADR 0021 routing emits only
+// these four types onto affixed pairs).
+const RECOGNITION_CAP_TYPES: ReadonlySet<CapabilityType> = new Set([
+  'recognise_meaning_from_text_cap',
+  'recognise_word_form_link_cap',
+])
+const PRODUCTION_CAP_TYPES: ReadonlySet<CapabilityType> = new Set([
+  'produce_derived_form_cap',
+  'produce_form_from_context_cap',
+])
 
 /** Build a CapabilityMasteryEvidence row from a cap + its (optional) learner
  *  state, reusing the same fields toEvidence builds in masteryModel. Exported so
@@ -62,6 +74,20 @@ export function buildEvidence(
   }
 }
 
+/** Tally one capability-type class: how many of the affix's caps of that class
+ *  (content-fixed denominator) reached the `mastered` rung. Per-CAP, not
+ *  per-derivation — a confix derivation's two caps (meaning + formation) land
+ *  in different classes, so they are never weakest-wins-collapsed here. */
+function classTally(
+  caps: CapabilityMasteryEvidence[],
+  types: ReadonlySet<CapabilityType>,
+  now: Date,
+): AffixProgressClassTally {
+  const classCaps = caps.filter((cap) => types.has(cap.capabilityType))
+  const masteredCount = classCaps.filter((cap) => labelForCapability(cap, now) === 'mastered').length
+  return { masteredCount, totalCount: classCaps.length }
+}
+
 /** Roll up a set of caps to one AffixProgress: group by source_ref (one
  *  derivation), weakest-wins per derivation, then tally the rungs. */
 export function rollUpProgress(
@@ -89,6 +115,8 @@ export function rollUpProgress(
     masteredCount,
     practisedCount,
     totalCount: byDerivation.size,
+    recognition: classTally(caps, RECOGNITION_CAP_TYPES, now),
+    production: classTally(caps, PRODUCTION_CAP_TYPES, now),
   }
 }
 

@@ -28,7 +28,9 @@ import classes from './LessonCard.module.css'
 
 export interface LessonCardBar {
   label: string
-  // null → bar hidden (lesson not activated / nothing to show).
+  // null → this bar's own track/percent render as an em dash "—" (nothing to
+  // show yet — e.g. a content-fixed tier with zero caps). The PAIR is only
+  // hidden entirely (metaOnly layout) when BOTH bars are null — see showBars.
   percent: number | null
 }
 
@@ -44,7 +46,10 @@ export interface LessonCardProps {
   level: string | null
   /** Grammar topics, shown in full (no truncation); null hides the row. */
   grammarTopics: string | null
-  /** The two nested progress bars. Both hidden when their percent is null. */
+  /** The two nested progress bars. The pair hides entirely (metaOnly layout)
+   *  only when BOTH percents are null; either one alone renders as "—" (see
+   *  Bar below) so a mixed pair (one real %, one not-yet-existing tier) still
+   *  shows both rows. */
   practiced: LessonCardBar
   mastered: LessonCardBar
   status: { tone: 'success' | 'warning' | 'danger' | 'accent' | 'neutral'; label: string }
@@ -53,7 +58,16 @@ export interface LessonCardProps {
 }
 
 function Bar({ label, percent }: LessonCardBar) {
-  const value = Math.max(0, Math.min(100, percent ?? 0))
+  if (percent === null) {
+    return (
+      <div className={classes.bar}>
+        <span className={classes.barLabel}>{label}</span>
+        <span className={cx(classes.barTrack, classes.barTrackEmpty)} aria-hidden="true" />
+        <span className={classes.barPercent}>—</span>
+      </div>
+    )
+  }
+  const value = Math.max(0, Math.min(100, percent))
   return (
     <div className={classes.bar}>
       <span className={classes.barLabel}>{label}</span>
