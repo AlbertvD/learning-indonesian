@@ -1,6 +1,7 @@
 ---
-status: approved
+status: implementing
 reviewed_by: [staff-engineer, architect]
+implementation: PR #(pending — affix production fast-path PR)
 ---
 <!-- staff-engineer 2026-07-08: SOUND/approved with three amendments, all folded in
      below (usedRefs narrative includes the practice pass; load-budget suppressor
