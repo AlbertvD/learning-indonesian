@@ -22,6 +22,7 @@ import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { AffixTrainerLink } from '@/components/lessons/AffixTrainerLink'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
 import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
@@ -358,6 +359,7 @@ export function buildChapters(activation: ReturnType<typeof useLessonActivation>
               id="s-peran"
             />
           </Shell>
+          <AffixTrainerLink affixes={['memper-', 'per-…-an', 'memper-…-kan']} />
         </>
       ) },
     { id: 'woorden',    title: 'Woorden',    description: '59 woorden uit een verbonden land, plus drie letterwoorden: iptek, PT en wartel.',
