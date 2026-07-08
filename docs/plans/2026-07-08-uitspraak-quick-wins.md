@@ -1,5 +1,6 @@
 ---
-status: approved
+status: implementing
+implementation: PR #394 (U-A/U-B/U-C/U-D; U-D's live seeding already run 2026-07-08 — 6 clips, all 64 catalog words resolve)
 reviewed_by: [staff-engineer]
 ---
 <!-- UP1/UP4 are content + guard fixes the owner pre-approved via the review doc's
