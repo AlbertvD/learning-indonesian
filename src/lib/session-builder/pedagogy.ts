@@ -536,6 +536,25 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
   const { gatePassing, suppressed: gateSuppressed } = gateCandidates(input.readyCapabilities, ctx)
   const prioritized = prioritizeCandidates(gatePassing)
 
+  // C1 production fast-path (docs/plans/2026-07-08-affix-production-fastpath.md):
+  // in affix_practice mode, produce_derived_form_cap candidates are exempt from
+  // the new-introduction sibling-bury rule below. WHY: drill semantics — the
+  // learner explicitly chose this affix, so reaching the produce form in the
+  // SAME round its recognise sibling was reviewed is the point (recognise→
+  // produce same day), not a bug. The prereq ladder is untouched and still
+  // enforces order (the produce cap's prerequisiteKeys require its recognise
+  // sibling to be active + have >=1 successful review — satisfiedKeys above,
+  // sourced from PERSISTED state from the prior round's atomic commit, ADR
+  // 0004). recognise_word_form_link_cap (the sibling type) is deliberately NOT
+  // exempt, so it stays subject to the bury rule like everything else. Type-
+  // narrowed (not sourceKind-wide) per architect sign-off — tighter blast
+  // radius, self-documenting; the recognise type never needs unburying.
+  const isFastPathExempt = (candidate: PlannerCapability): boolean => (
+    ctx.mode === 'affix_practice' && candidate.capabilityType === 'produce_derived_form_cap'
+  )
+  const exemptCandidates = prioritized.filter(isFastPathExempt)
+  const buryableCandidates = prioritized.filter(candidate => !isFastPathExempt(candidate))
+
   // Sibling-bury BEFORE budget allocation (not after): at most one cap per
   // source_ref per day. Walking the prioritized order keeps the highest-priority
   // sibling of a not-today word; siblings of words already spoken-for today
@@ -543,8 +562,17 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
   // post-budget eligible list — lets allocateBudget fill the freed slots from the
   // next-ranked NEW words, so the session reaches preferredSessionSize instead of
   // collapsing. See docs/plans/2026-06-09-sibling-bury-before-allocate-fix.md.
+  // Only the non-exempt candidates are subject to burying (fast-path carve-out
+  // above); siblingBury.ts itself is untouched — it stays the shared surface for
+  // the due/practice passes (`buryThinSiblings` in builder.ts), which must keep
+  // full bury semantics.
   const usedRefs = new Set(input.usedSourceRefs ?? [])
-  const { kept: nonBuried, buried } = partitionBuried(prioritized, cap => cap.sourceRef, usedRefs)
+  const { kept: nonBuriedCandidates, buried } = partitionBuried(buryableCandidates, cap => cap.sourceRef, usedRefs)
+  // Recombine exempt + kept candidates, then re-derive from `prioritized` by
+  // membership so the concatenated result preserves the original prioritized
+  // order (rather than appending exempt items out of place).
+  const keptKeys = new Set([...exemptCandidates, ...nonBuriedCandidates].map(cap => cap.canonicalKey))
+  const nonBuried = prioritized.filter(cap => keptKeys.has(cap.canonicalKey))
   const buriedSuppressed: SuppressedCapability[] = buried.map(cap => ({
     canonicalKey: cap.canonicalKey, reason: 'sibling_buried',
   }))

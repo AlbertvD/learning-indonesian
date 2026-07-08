@@ -820,3 +820,130 @@ describe('sibling-burying before budget allocation (fill-to-size)', () => {
     expect(plan.suppressedCapabilities.filter(s => s.reason === 'sibling_buried')).toHaveLength(2)
   })
 })
+
+
+// C1 production fast-path (docs/plans/2026-07-08-affix-production-fastpath.md):
+// in affix_practice mode, a produce_derived_form_cap whose recognise sibling is
+// satisfied is exempt from the new-introduction sibling-bury rule so it can be
+// introduced the SAME round the recognise sibling was reviewed. The four cases
+// mirror the spec's §Tests: (a) eligible + not buried, (b) still buried outside
+// affix_practice, (c) prereq ladder intact, (d) other types stay buried.
+describe('C1 affix production fast-path (docs/plans/2026-07-08-affix-production-fastpath.md)', () => {
+  const now = new Date('2026-07-08T00:00:00.000Z')
+  const sourceRef = 'lesson-11/morphology/ber-jalan-berjalan'
+  const recogniseKey = 'cap:v1:word_form_pair_src:lesson-11/morphology/ber-jalan-berjalan:recognise_word_form_link_cap:derived_to_root:text:none'
+
+  const recogniseCap = (overrides: Partial<PlannerCapability> = {}): PlannerCapability => capability({
+    id: 'ber-jalan-recognise',
+    canonicalKey: recogniseKey,
+    sourceKind: 'word_form_pair_src',
+    sourceRef,
+    capabilityType: 'recognise_word_form_link_cap',
+    prerequisiteKeys: [],
+    lessonId: 'lesson-11',
+    ...overrides,
+  })
+
+  const produceCap = (overrides: Partial<PlannerCapability> = {}): PlannerCapability => capability({
+    id: 'ber-jalan-produce',
+    canonicalKey: 'cap:v1:word_form_pair_src:lesson-11/morphology/ber-jalan-berjalan:produce_derived_form_cap:root_to_derived:text:none',
+    sourceKind: 'word_form_pair_src',
+    sourceRef,
+    capabilityType: 'produce_derived_form_cap',
+    prerequisiteKeys: [recogniseKey],
+    lessonId: 'lesson-11',
+    ...overrides,
+  })
+
+  // The recognise sibling was answered correctly earlier in this session: active,
+  // >=1 successful review — the PERSISTED-state shape satisfiedKeys reads (the
+  // prior round's atomic commit, ADR 0004).
+  const recogniseSatisfied = [{
+    canonicalKey: recogniseKey,
+    activationState: 'active' as const,
+    reviewCount: 1,
+    successfulReviewCount: 1,
+    stability: 0.3,
+  }]
+
+  it('(a) admits the produce cap in the same round: recognise key satisfied + sourceRef already used today, in affix_practice', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'affix_practice',
+      now,
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [produceCap()],
+      learnerCapabilityStates: recogniseSatisfied,
+      activatedLessons: new Set(['lesson-11']),
+      selectedSourceRefs: [sourceRef],
+      usedSourceRefs: new Set([sourceRef]),
+    })
+    expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toContain(produceCap().canonicalKey)
+    expect(plan.suppressedCapabilities).not.toContainEqual(
+      expect.objectContaining({ canonicalKey: produceCap().canonicalKey, reason: 'sibling_buried' }),
+    )
+  })
+
+  it('(b) the SAME input is still sibling_buried outside affix_practice (lesson_practice mode)', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'lesson_practice',
+      now,
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [produceCap()],
+      learnerCapabilityStates: recogniseSatisfied,
+      activatedLessons: new Set(['lesson-11']),
+      selectedLessonId: 'lesson-11',
+      selectedSourceRefs: [sourceRef],
+      usedSourceRefs: new Set([sourceRef]),
+    })
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: produceCap().canonicalKey, reason: 'sibling_buried' })
+  })
+
+  it('(c) affix_practice still suppresses missing_prerequisite when the recognise key is NOT satisfied (prereq ladder intact)', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'affix_practice',
+      now,
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [produceCap()],
+      learnerCapabilityStates: [],
+      activatedLessons: new Set(['lesson-11']),
+      selectedSourceRefs: [sourceRef],
+      usedSourceRefs: new Set([sourceRef]),
+    })
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: produceCap().canonicalKey, reason: 'missing_prerequisite' })
+  })
+
+  it('(d) other capability types stay buried in affix_practice: recognise_word_form_link_cap sibling + a non-pair source kind', () => {
+    const otherVocabRef = 'learning_items/other-word'
+    const otherVocab = capability({
+      id: 'other-vocab',
+      canonicalKey: 'cap:other-vocab',
+      sourceKind: 'vocabulary_src',
+      sourceRef: otherVocabRef,
+      capabilityType: 'recognise_meaning_from_text_cap',
+      lessonId: 'lesson-11',
+    })
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'affix_practice',
+      now,
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [recogniseCap(), otherVocab],
+      learnerCapabilityStates: [],
+      activatedLessons: new Set(['lesson-11']),
+      selectedSourceRefs: [sourceRef, otherVocabRef],
+      usedSourceRefs: new Set([sourceRef, otherVocabRef]),
+    })
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: recogniseCap().canonicalKey, reason: 'sibling_buried' })
+    expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: otherVocab.canonicalKey, reason: 'sibling_buried' })
+  })
+})
