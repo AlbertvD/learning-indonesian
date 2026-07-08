@@ -9,6 +9,8 @@ import { IconAlertTriangle, IconAbc } from '@tabler/icons-react'
 import { EmptyState } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import type { MasteryLabel, WordFamily } from '@/lib/morphology'
+import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
+import { PlayButton } from '@/components/PlayButton'
 
 const LABEL_COLOR: Record<MasteryLabel, string> = {
   not_assessed: 'gray',
@@ -21,7 +23,15 @@ const LABEL_COLOR: Record<MasteryLabel, string> = {
 
 const SOLID = new Set<MasteryLabel>(['mastered', 'strengthening'])
 
-export function WordFamilyExplorer({ families, affix }: { families: WordFamily[]; affix: string }) {
+export function WordFamilyExplorer({
+  families,
+  affix,
+  audioMap,
+}: {
+  families: WordFamily[]
+  affix: string
+  audioMap: SessionAudioMap
+}) {
   const T = useT()
 
   if (families.length === 0) {
@@ -56,6 +66,7 @@ export function WordFamilyExplorer({ families, affix }: { families: WordFamily[]
                   // Anchor the learner to "the affix you're on": the current affix's
                   // form is emphasised; the rest read as its cross-affix family.
                   const isCurrent = form.affix === affix
+                  const audioUrl = resolveSessionAudioUrl(audioMap, form.derivedText, null)
                   return (
                     <Group key={`${form.affix}:${form.derivedText}`} gap={8} wrap="nowrap" align="center">
                       <Tooltip label={form.label.replace('_', ' ')} withArrow>
@@ -69,6 +80,7 @@ export function WordFamilyExplorer({ families, affix }: { families: WordFamily[]
                       {!form.productive && (
                         <Text size="xs" c="dimmed" fs="italic">({T.morphology.frozen})</Text>
                       )}
+                      {audioUrl && <PlayButton audioUrl={audioUrl} size="xs" />}
                     </Group>
                   )
                 })}
