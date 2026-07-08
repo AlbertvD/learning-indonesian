@@ -22,9 +22,22 @@ const masterySrc = readFileSync(
 const overviewSrc = readFileSync(path.resolve('src/lib/lessons/overview.ts'), 'utf8')
 const migrationSql = readFileSync(path.resolve('scripts/migration.sql'), 'utf8')
 
-// The TS canonical predicate (isCapabilityMastered + isRecent).
-const tsMastered = /reviewCount >= (\d+) && \(input\.stability \?\? 0\) >= (\d+) && isRecent/.exec(masterySrc)
+// The TS canonical predicate. Slice 2 (2026-07-08, vocab-mode-set-reduction §4.1)
+// extracted the recency-free strength core into `hasMasteryStrength` so
+// graduation's due-suppression can reuse it without inheriting the 30-day
+// recency term (a mature card's FSRS interval regularly exceeds 30 days,
+// which would flicker the extraction in and out of "mastered"). The
+// thresholds now live in `hasMasteryStrength`'s body, not inline in
+// `isCapabilityMastered` — anchor the regex there so it survives the move.
+const tsMastered = /input\.reviewCount >= (\d+) && \(input\.stability \?\? 0\) >= (\d+)/.exec(masterySrc)
 const tsRecency = /ageMs <= (\d+) \* 24 \* 60 \* 60 \* 1000/.exec(masterySrc)
+// `isCapabilityMastered` must still COMPOSE the strength core with the
+// recency window (byte-identical truth table to the pre-extraction inline
+// version — see mastered.ts's header comment on the recomposition). A
+// maintainer who inlines the thresholds back into `isCapabilityMastered`
+// instead of calling `hasMasteryStrength` would silently reintroduce the
+// second-definition drift risk this extraction removed.
+const tsComposition = /hasMasteryStrength\(input\)\s*&&\s*isRecent\(input\.lastReviewedAt, now\)/.exec(masterySrc)
 
 // The SQL `mastered_count` filter block (between `count(*) filter (` and `as mastered_count`).
 function masteredSqlFilter(): string {
@@ -49,6 +62,10 @@ describe('get_lessons_overview mastered predicate ↔ masteryModel parity (ADR 0
   it('extracts the canonical thresholds from masteryModel.ts', () => {
     expect(tsMastered).not.toBeNull()
     expect(tsRecency).not.toBeNull()
+  })
+
+  it('isCapabilityMastered composes hasMasteryStrength with the recency window (Slice 2 extraction)', () => {
+    expect(tsComposition).not.toBeNull()
   })
 
   it('SQL mastered filter uses the SAME thresholds as the TS predicate', () => {

@@ -25,7 +25,13 @@ const sqlLabel = /create or replace function indonesian\._mastery_label[\s\S]*?\
 
 describe('weekly movement: SQL _mastery_label ⟷ TS labelForCapability parity', () => {
   it('TS canonical predicate (mastered.ts) uses reviewCount≥4, stability≥14, 30-day recency', () => {
-    expect(/reviewCount >= 4 && \(input\.stability \?\? 0\) >= 14 && isRecent/.test(masteredSrc)).toBe(true)
+    // Slice 2 (2026-07-08, vocab-mode-set-reduction §4.1) extracted the
+    // thresholds into `hasMasteryStrength`; `isCapabilityMastered` now COMPOSES
+    // it with `isRecent` rather than inlining the literal — anchor on the
+    // extracted function's body, and assert the composition separately, so
+    // this stays a meaningful lockstep guard rather than a stale string match.
+    expect(/input\.reviewCount >= 4 && \(input\.stability \?\? 0\) >= 14/.test(masteredSrc)).toBe(true)
+    expect(/hasMasteryStrength\(input\)\s*&&\s*isRecent/.test(masteredSrc)).toBe(true)
     expect(/30 \* 24 \* 60 \* 60 \* 1000/.test(masteredSrc)).toBe(true)
   })
 
