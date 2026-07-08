@@ -21,6 +21,7 @@ import {
 } from '@/components/page/primitives'
 import { OntdekNav } from '@/components/nav/OntdekNav'
 import { lessonService, type GrammarPodcastRow } from '@/services/lessonService'
+import { GRAMMAR_TOPIC_SUMMARIES } from '@/lib/lessons/grammarTopicSummaries'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
@@ -46,8 +47,12 @@ export function GrammarPodcasts() {
   }, [T.common.error, T.common.somethingWentWrong])
 
   const episodes = rows
-    .map((r) => ({ order: r.order_index, topics: r.topics, path: lang === 'en' ? r.audio_path_en : r.audio_path }))
-    .filter((e): e is { order: number; topics: string[]; path: string } => !!e.path)
+    .map((r) => ({
+      order: r.order_index,
+      summary: GRAMMAR_TOPIC_SUMMARIES[r.order_index]?.[lang],
+      path: lang === 'en' ? r.audio_path_en : r.audio_path,
+    }))
+    .filter((e): e is { order: number; summary: string; path: string } => !!e.path)
 
   if (loading) {
     return (
@@ -75,13 +80,7 @@ export function GrammarPodcasts() {
                   <Text fw={700} c="dimmed">{String(e.order).padStart(2, '0')}</Text>
                   <div>
                     <Text fw={600}>{T.ontdek.grammarLesson.replace('{n}', String(e.order))}</Text>
-                    {e.topics.length > 0 && (
-                      <Stack gap={2} mt={4}>
-                        {e.topics.map((t) => (
-                          <Text key={t} size="sm" c="dimmed">{t}</Text>
-                        ))}
-                      </Stack>
-                    )}
+                    {e.summary && <Text size="sm" c="dimmed">{e.summary}</Text>}
                   </div>
                 </Group>
                 <audio

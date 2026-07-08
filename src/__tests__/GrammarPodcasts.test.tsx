@@ -13,6 +13,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { GrammarPodcasts } from '@/pages/GrammarPodcasts'
+import { GRAMMAR_TOPIC_SUMMARIES } from '@/lib/lessons/grammarTopicSummaries'
 
 const render = (ui: ReactElement) =>
   rtlRender(<MantineProvider><MemoryRouter>{ui}</MemoryRouter></MantineProvider>)
@@ -30,8 +31,8 @@ vi.mock('@/services/lessonService', () => ({
   lessonService: {
     getAudioUrl: (path: string) => `https://cdn.test/indonesian-lessons/${path}`,
     listGrammarPodcasts: vi.fn(async () => [
-      { order_index: 1, topics: ['Werkwoord', 'Zelfstandig naamwoord'], audio_path: 'grammar/l1-nl.mp3', audio_path_en: 'grammar/l1-en.mp3' },
-      { order_index: 2, topics: ['Classificeerwoorden'], audio_path: 'grammar/l2-nl.mp3', audio_path_en: null },
+      { order_index: 1, audio_path: 'grammar/l1-nl.mp3', audio_path_en: 'grammar/l1-en.mp3' },
+      { order_index: 2, audio_path: 'grammar/l2-nl.mp3', audio_path_en: null },
     ]),
   },
 }))
@@ -41,16 +42,14 @@ beforeEach(() => {
 })
 
 describe('GrammarPodcasts', () => {
-  it('labels each row by lesson number + grammar topics (not the story title) and plays NL', async () => {
+  it('labels each row by lesson number + a friendly grammar summary (not the story title) and plays NL', async () => {
     render(<GrammarPodcasts />)
 
-    // Row title is "Les N", subtitle is the grammar topics — no chapter title.
+    // Row title is "Les N", subtitle is the authored grammar summary — no chapter title.
     expect(await screen.findByText('Les 1')).toBeInTheDocument()
-    // Each grammar topic renders on its own line, not joined into one string.
-    expect(screen.getByText('Werkwoord')).toBeInTheDocument()
-    expect(screen.getByText('Zelfstandig naamwoord')).toBeInTheDocument()
+    expect(screen.getByText(GRAMMAR_TOPIC_SUMMARIES[1].nl)).toBeInTheDocument()
     expect(screen.getByText('Les 2')).toBeInTheDocument()
-    expect(screen.getByText('Classificeerwoorden')).toBeInTheDocument()
+    expect(screen.getByText(GRAMMAR_TOPIC_SUMMARIES[2].nl)).toBeInTheDocument()
 
     const players = screen.getAllByTestId('grammar-podcast-player')
     expect(players).toHaveLength(2)
@@ -64,6 +63,7 @@ describe('GrammarPodcasts', () => {
 
     // Lesson 1 has an EN episode; lesson 2 does not → only lesson 1 is listenable.
     expect(await screen.findByText('Lesson 1')).toBeInTheDocument()
+    expect(screen.getByText(GRAMMAR_TOPIC_SUMMARIES[1].en)).toBeInTheDocument()
     expect(screen.queryByText('Lesson 2')).toBeNull()
 
     const players = screen.getAllByTestId('grammar-podcast-player')
