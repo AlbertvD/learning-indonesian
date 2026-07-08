@@ -1,7 +1,7 @@
 ---
 module: morphology
 surface: src/lib/morphology/
-last_verified_against_code: 2026-06-21
+last_verified_against_code: 2026-07-08
 status: stable
 ---
 
@@ -46,7 +46,8 @@ Session player filtered to the affix. Design: `docs/plans/2026-06-15-affix-train
 | `loadMorphologySnapshot(userId, client?)` | `adapter.ts` | The raw multi-table fan-out the pure folders fold. |
 
 View-model types (`model.ts`): `AffixCatalogTile`, `AffixDetail`, `AffixProgress`,
-`AffixRuleSource`, `AffixExample`, `WordFamily`, `DerivedForm`, `AffixScope`.
+`AffixProgressClassTally`, `AffixRuleSource`, `AffixExample`, `WordFamily`,
+`DerivedForm`, `AffixScope`.
 
 - **`AffixExample.derivedMeaning` / `DerivedForm.derivedMeaning`** (Fix 3) — the
   derived form's meaning in the learner's language, language-resolved in `family.ts`
@@ -54,6 +55,21 @@ View-model types (`model.ts`): `AffixCatalogTile`, `AffixDetail`, `AffixProgress
   (Dutch UI shows Dutch or nothing). Null = un-glossed (valid during rollout).
   `gloss` itself is language-resolved too (catalog/family resolve `glossNl`/`glossEn`,
   not the terse English catalog passthrough).
+- **`AffixProgress.recognition` / `.production`** (review P1, task A1) — the
+  mastery-display split: two `AffixProgressClassTally` (`{masteredCount, totalCount}`)
+  sitting alongside the existing weakest-wins-per-derivation fields (`label`,
+  `funnel`, `masteredCount`, `practisedCount`, `totalCount` — unchanged, still
+  drive the status pill and detail page). Classes are exhaustive for
+  `word_form_pair_src`: **recognition** = `recognise_meaning_from_text_cap` +
+  `recognise_word_form_link_cap`; **production** = `produce_derived_form_cap` +
+  `produce_form_from_context_cap`. Tallied **per cap**, not per derivation — a
+  confix derivation's meaning + formation caps land in different classes, so
+  they are never weakest-wins-collapsed here the way the headline `label` is.
+  Denominators are **content-fixed** (every cap of that class for the affix,
+  regardless of learner unlock state); `production.totalCount === 0` means the
+  production tier doesn't exist yet for that affix — the tile renders that as
+  an em dash "—" (`LessonCard.tsx` `Bar`'s null path), never a false "0%".
+  `catalog.ts:classTally` / `catalog.ts:rollUpProgress`.
 
 ## 3. Internal flow
 
@@ -63,7 +79,10 @@ adapter.loadMorphologySnapshot      affixed_form_pairs + their caps + states +
         │                           root learning_items + root caps
         ▼
 catalog.buildEvidence (cap + state → CapabilityMasteryEvidence — mirrors masteryModel.toEvidence)
-catalog.rollUpProgress (group by source_ref/derivation, weakest-wins, tally rungs)
+catalog.rollUpProgress (group by source_ref/derivation, weakest-wins, tally rungs;
+                         ALSO tallies the two capability-type classes per cap —
+                         recognition/production, review P1 — a separate,
+                         content-fixed-denominator pass over the same cap list)
         │
         ├─► catalog.buildAffixCatalog   per catalog affix (sorted by rank): caps → progress + availability
         └─► family.buildAffixDetail     rule card (catalog allomorphClasses + allomorph_rule prose + intro
