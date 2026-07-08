@@ -1,14 +1,14 @@
 ---
 module: capability-stage-vocabulary
 surface: scripts/lib/pipeline/capability-stage/vocabulary/
-last_verified_against_code: 2026-06-25
+last_verified_against_code: 2026-07-08
 status: in-flight   # cutover (Task 8) not yet landed — the runner still co-writes item caps until then
 ---
 
 # Capability Stage — Vocabulary module
 
 The clean, DB-native sub-pipeline that owns the **item slice** of the Capability Stage
-(`source_kind='item'`): vocabulary capabilities, their learning_items + POS + anchor contexts, item
+(`source_kind='vocabulary_src'`): vocabulary capabilities, their learning_items + POS + anchor contexts, item
 content_units + junction, item `contextual_cloze` capabilities, and curated distractors. Built as the
 cap-v2 strangler (`docs/plans/2026-06-06-capability-stage-v2-slice-1-vocabulary.md` + the HOW plan
 `docs/plans/2026-06-07-cap-v2-vocabulary-module-rebuild.md`): it replaces the runner's scattered item
@@ -29,8 +29,15 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
 `publishVocabulary` is thin composition (CLAUDE.md "thin composition of pure functions > runner"):
 
 1. **Load** (DB-only): `loadLesson` (audio map, level) + `loadFromDb` (typed item rows + existing item state).
-2. **Project** (pure): `projectItemsFromTypedRows` (`projectors/vocab.ts`) → 4 text caps + 2 audio caps
-   per word/phrase item + `learningItemInput` + `anchorContext`.
+2. **Project** (pure): `projectItemsFromTypedRows` (`projectors/vocab.ts`) → exactly the 3
+   `KEPT_VOCAB_CAP_TYPES` caps per word/phrase item (ADR 0027, 2026-07-08 — Slice 1 of the vocab
+   mode-set-reduction spec): `recognise_meaning_from_text_cap` (#1, root/scaffold),
+   `recognise_meaning_from_audio_cap` (#3, aural, never retired), `produce_form_from_meaning_cap`
+   (#6, productive frontier, never retired) + `learningItemInput` + `anchorContext`. The 3 dropped
+   modes (`recognise_form_from_meaning_cap` #2, `recall_meaning_from_text_cap` #4,
+   `produce_form_from_audio_cap` #5, `DROPPED_VOCAB_CAP_TYPES`) are no longer emitted for new
+   words; already-seeded rows for existing words are retired by the one-off
+   `scripts/retire-dropped-vocab-modes.ts` (owner-gated `--apply`).
 3. **Gate pre-write** (pure, `gate.ts:runVocabGatePreWrite`): CS4/CS4b/CS19/CS20. An `error` →
    `validation_failed`, no writes. (CS5 POS is NOT run here — the projection's pos is null by
    construction; POS is validated post-backfill by CS14.)
@@ -43,11 +50,11 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
    retire trap where a routine republish could never revive a still-authored item's caps,
    2026-06-25; only `retired_at`/`updated_at` are touched, FSRS/readiness preserved) →
    `buildItemContentUnits` (`contentUnits.ts`) + `upsertContentUnits` → junction
-   (`upsertCapabilityContentUnits`) → `retireOrphanedCapabilities({ sourceKinds: ['item'] })`.
+   (`upsertCapabilityContentUnits`) → `retireOrphanedCapabilities({ sourceKinds: ['vocabulary_src'] })`.
    - **Item `contextual_cloze` is NOT emitted** — won't-build (see §4); cloze stays dialogue-only.
 6. **Seed distractors** (absorbs the old Stage C): `seedDistractors` over `createDistractorStore` +
    `createLocalEmbedder` (the done distractor slice — `selectDistractors`/`planDistractors`/`seedDistractors`).
-6b. **Reconcile artifact presence** (`reconcileArtifactPresence({ sourceKinds: ['item'] })`, after the
+6b. **Reconcile artifact presence** (`reconcileArtifactPresence({ sourceKinds: ['vocabulary_src'] })`, after the
    seed, before promotion — 2026-06-14 spec): the item-scoped mirror of the runner's reconciliation.
    Effectively a no-op (item MCQ caps have no per-cap satellite row — `findCapsMissingSatellite` returns
    none for them); kept for ownership symmetry (the runner owns the non-item kinds).
@@ -66,7 +73,7 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
 - **content_units split.** Item units carry a disjoint `content_unit_key` set + `display_order` range
   (1000+) from the runner's section/grammar/affixed units, so both write `content_units` idempotently.
 - **Orphan-sweep scoping.** `retireOrphanedCapabilities` AND `reconcileArtifactPresence` are both scoped
-  to `sourceKinds:['item']` so neither sweep retires the runner's non-item caps for the same lesson (and
+  to `sourceKinds:['vocabulary_src']` so neither sweep retires the runner's non-vocab caps for the same lesson (and
   vice-versa). The two share one soft-retire write seam (`softRetireCapabilities`) that also clears the
   retired caps' `learner_capability_state.next_due_at` (HC14 invariant — 2026-06-14 spec §2d).
 - **Audio (§0.8 / #165).** Audio caps are emitted for word/phrase items; a missing `audio_clip` is a
