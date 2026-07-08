@@ -4,6 +4,7 @@ import {
   reconcileArtifactPresence,
   replaceAffixedFormPairs,
   retireOrphanedCapabilities,
+  softRetireCapabilities,
   upsertCapabilities,
   upsertLearningItem,
   type AffixedFormPairRowInput,
@@ -486,5 +487,85 @@ describe('capability-stage adapter — reconcileArtifactPresence', () => {
     const result = await reconcileArtifactPresence(client, { lessonId: 'L1', sourceKinds: [] })
     expect(result.retiredCount).toBe(0)
     expect(retireUpdate).toHaveLength(0)
+  })
+})
+
+
+// ── softRetireCapabilities — exported + chunked (ADR 0027 Slice 1, §3.2) ───
+//
+// Exported directly (2026-07-08) for the one-off retire-dropped-vocab-modes.ts
+// script, which retires ~7,077 ids at once — far beyond the tens-of-ids scale
+// every existing caller (retireOrphanedCapabilities, reconcileArtifactPresence)
+// runs at. Chunked in batches of 100 to stay under Kong's request-URL limit.
+function buildChunkCapturingClient() {
+  const capUpdateCalls: string[][] = []
+  const stateUpdateCalls: string[][] = []
+  const client = {
+    schema: () => ({
+      from: (table: string) => {
+        if (table === 'learning_capabilities') {
+          return {
+            update: () => ({
+              in: async (_col: string, ids: string[]) => {
+                capUpdateCalls.push(ids)
+                return { error: null }
+              },
+            }),
+          }
+        }
+        if (table === 'learner_capability_state') {
+          return {
+            update: () => ({
+              in: async (_col: string, ids: string[]) => {
+                stateUpdateCalls.push(ids)
+                return { error: null }
+              },
+            }),
+          }
+        }
+        throw new Error(`unexpected table: ${table}`)
+      },
+    }),
+  } as never
+  return { client, capUpdateCalls, stateUpdateCalls }
+}
+
+describe('softRetireCapabilities — exported + chunked (ADR 0027 Slice 1)', () => {
+  it('is a no-op for an empty id list (no calls at all)', async () => {
+    const { client, capUpdateCalls, stateUpdateCalls } = buildChunkCapturingClient()
+    await softRetireCapabilities(client, [])
+    expect(capUpdateCalls).toHaveLength(0)
+    expect(stateUpdateCalls).toHaveLength(0)
+  })
+
+  it('issues a single .in() call per table when under the chunk size', async () => {
+    const { client, capUpdateCalls, stateUpdateCalls } = buildChunkCapturingClient()
+    const ids = Array.from({ length: 42 }, (_, i) => `cap-${i}`)
+    await softRetireCapabilities(client, ids)
+    expect(capUpdateCalls).toHaveLength(1)
+    expect(capUpdateCalls[0]).toEqual(ids)
+    expect(stateUpdateCalls).toHaveLength(1)
+    expect(stateUpdateCalls[0]).toEqual(ids)
+  })
+
+  it('chunks into batches of 100 when the id list exceeds the chunk size', async () => {
+    const { client, capUpdateCalls, stateUpdateCalls } = buildChunkCapturingClient()
+    const ids = Array.from({ length: 250 }, (_, i) => `cap-${i}`)
+    await softRetireCapabilities(client, ids)
+    // 250 ids / 100 per chunk = 3 chunks (100, 100, 50) for EACH of the two tables.
+    expect(capUpdateCalls).toHaveLength(3)
+    expect(capUpdateCalls.map((c) => c.length)).toEqual([100, 100, 50])
+    expect(capUpdateCalls.flat()).toEqual(ids)
+    expect(stateUpdateCalls).toHaveLength(3)
+    expect(stateUpdateCalls.map((c) => c.length)).toEqual([100, 100, 50])
+    expect(stateUpdateCalls.flat()).toEqual(ids)
+  })
+
+  it('produces exactly one chunk at exactly the chunk-size boundary (100)', async () => {
+    const { client, capUpdateCalls } = buildChunkCapturingClient()
+    const ids = Array.from({ length: 100 }, (_, i) => `cap-${i}`)
+    await softRetireCapabilities(client, ids)
+    expect(capUpdateCalls).toHaveLength(1)
+    expect(capUpdateCalls[0]).toHaveLength(100)
   })
 })
