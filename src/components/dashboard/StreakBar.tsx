@@ -2,10 +2,11 @@
 //
 // The home "streak" hero: a top bar that turns the daily streak into a real
 // visual presence. Left = the flame + streak count (side by side, centred);
-// right = the last 5 days as session bars (bar height ∝ sessions that day, the
-// running streak glowing in warm flame tones behind the consecutive active
-// days), the per-day session count along the bottom x-axis under each bar. The
-// whole bar links to the Tijd sub-page on voortgang.
+// right = the last 7 days (the full week, one bar per day on a single row) as
+// session bars (bar height ∝ sessions that day, the running streak glowing in
+// warm flame tones behind the consecutive active days), the per-day session
+// count along the bottom x-axis under each bar. The whole bar links to the Tijd
+// sub-page on voortgang.
 import { Link } from 'react-router-dom'
 import { IconFlame } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'

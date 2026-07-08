@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconTrendingUp, IconTrendingDown, IconArrowUpRight, IconBook, IconBulb } from '@tabler/icons-react'
+import { IconTrendingUp, IconTrendingDown, IconArrowUpRight, IconBook, IconBulb, IconSeeding } from '@tabler/icons-react'
 import { PageContainer, PageBody, ListCard, LoadingState } from '@/components/page/primitives'
 import { StreakBar } from '@/components/dashboard/StreakBar'
 import { TodayPanel } from '@/components/dashboard/TodayPanel'
@@ -75,6 +75,7 @@ export function Dashboard() {
   const [checklist, setChecklist] = useState<ChecklistSteps | null>(null)
   const [continueTarget, setContinueTarget] = useState<ContinueTarget | null>(null)
   const [preview, setPreview] = useState<SessionPreviewCounts | null>(null)
+  const [backlog, setBacklog] = useState(0)
   const [previewFailed, setPreviewFailed] = useState(false)
   // Render-stable clock for the greeting / date line / tip-of-day (the purity
   // rule bans new Date() in render; a mid-visit hour change is not worth
@@ -159,7 +160,10 @@ export function Dashboard() {
         if (import.meta.env.DEV) {
           console.debug(`[home] session preview built in ${Math.round(performance.now() - t0)}ms`)
         }
-        if (!cancelled) setPreview(summarizeSessionPlan(plan.blocks))
+        if (!cancelled) {
+          setPreview(summarizeSessionPlan(plan.blocks))
+          setBacklog(plan.backlogDueCount)
+        }
       } catch (err) {
         logError({ page: 'dashboard', action: 'sessionPreview', error: err })
         if (!cancelled) setPreviewFailed(true)
@@ -196,6 +200,13 @@ export function Dashboard() {
   )
   const studyTip = T.dashboard.studyTips[dayOfYear % T.dashboard.studyTips.length]
 
+  // Review-backlog insight: when the session is 100% overdue reviews (no new
+  // material got in) AND the backlog is larger than a whole session, new
+  // introductions are budget-starved (openSlots = max(0, size − dueCount) = 0).
+  // Surface a consistency nudge rather than leaving the frozen frontier unexplained.
+  const sessionSize = profile?.preferredSessionSize ?? 15
+  const showBacklogInsight = preview !== null && preview.newItems === 0 && backlog > sessionSize
+
   return (
     <PageContainer size="lg">
       <PageBody>
@@ -228,6 +239,16 @@ export function Dashboard() {
                   {T.dashboard.startTodaysSessionMinimal}
                 </Button>
               </div>
+            )}
+
+            {showBacklogInsight && (
+              <ListCard
+                tone="sage"
+                icon={<IconSeeding size={18} />}
+                title={T.dashboard.backlogInsightTitle}
+                subtitle={T.dashboard.backlogInsightBody.replace('{n}', String(backlog))}
+                trailing={<></>}
+              />
             )}
 
             {continueTarget && (

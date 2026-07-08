@@ -105,7 +105,7 @@ beforeEach(() => {
   vi.mocked(readFirstRunFlag).mockReturnValue(false)
   vi.mocked(hasCompletedSession).mockResolvedValue(false)
   vi.mocked(buildSession).mockResolvedValue({
-    id: 'plan-1', mode: 'standard', title: '', recapPolicy: 'standard', diagnostics: [],
+    id: 'plan-1', mode: 'standard', title: '', recapPolicy: 'standard', diagnostics: [], backlogDueCount: 3,
     blocks: [
       { kind: 'due_review', renderPlan: { capabilityType: 'recognise_meaning_cap' } },
       { kind: 'due_review', renderPlan: { capabilityType: 'recognise_grammar_pattern_cap' } },
@@ -231,5 +231,34 @@ describe('Dashboard — launchpad chrome', () => {
     expect(screen.queryByText(/planning van vandaag|today.?s plan/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/wekelijkse doelen|weekly goals/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/zwakke woorden|weak words/i)).not.toBeInTheDocument()
+  })
+})
+
+describe('Dashboard — review-backlog insight', () => {
+  it('surfaces the consistency nudge when the session is all reviews and the backlog exceeds a session', async () => {
+    establishedAccount()
+    // Saturated: no new_introduction block (newItems === 0) and a backlog well
+    // above the 15-card session size → new material is budget-starved.
+    vi.mocked(buildSession).mockResolvedValue({
+      id: 'plan-1', mode: 'standard', title: '', recapPolicy: 'standard', diagnostics: [], backlogDueCount: 200,
+      blocks: [
+        { kind: 'due_review', renderPlan: { capabilityType: 'recognise_meaning_cap' } },
+        { kind: 'due_review', renderPlan: { capabilityType: 'recognise_grammar_pattern_cap' } },
+      ],
+    } as any)
+    renderDashboard()
+
+    expect(await screen.findByText('Nieuw materiaal komt eraan')).toBeInTheDocument()
+    // The backlog count is woven into the body (secondary), not a scary headline.
+    expect(screen.getByText(/200 herhalingen/)).toBeInTheDocument()
+  })
+
+  it('stays hidden when new material is already flowing (open slots)', async () => {
+    establishedAccount()
+    // Default mock has a new_introduction block → newItems > 0 → not saturated.
+    renderDashboard()
+
+    await screen.findByText('Vandaag')
+    expect(screen.queryByText('Nieuw materiaal komt eraan')).not.toBeInTheDocument()
   })
 })

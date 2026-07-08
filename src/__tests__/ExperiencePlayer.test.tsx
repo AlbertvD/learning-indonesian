@@ -155,6 +155,7 @@ function makePlan(blocks: SessionBlock[], diagnostics: SessionPlan['diagnostics'
     recapPolicy: 'standard',
     diagnostics,
     blocks,
+    backlogDueCount: 0,
   }
 }
 

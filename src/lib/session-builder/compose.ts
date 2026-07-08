@@ -36,6 +36,12 @@ export interface ComposeSessionInput {
   practiceReviewCapabilities?: DueSessionCapabilityInput[]
   diagnostics?: SessionDiagnostic[]
   limit: number
+  /**
+   * Full overdue-queue size (pre-cut), surfaced on the plan as backlogDueCount.
+   * Optional: the empty/error and single-capability rebuild paths omit it (0),
+   * only the main standard build supplies the real figure.
+   */
+  backlogDueCount?: number
 }
 
 function diagnosticFor(failure: ResolutionFailure): SessionDiagnostic {
@@ -122,6 +128,7 @@ export async function compose(input: ComposeSessionInput): Promise<SessionPlan> 
     blocks: blocks.slice(0, input.limit),
     recapPolicy: 'standard',
     diagnostics,
+    backlogDueCount: input.backlogDueCount ?? 0,
   }
 }
 
