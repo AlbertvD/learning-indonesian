@@ -1,6 +1,6 @@
 ---
 status: implementing
-implementation: PR #392 (Batch A shipped+deployed 2026-07-08); Batch B (B1 audio seeded live, B2 findings §5-findings) same day
+implementation: PR #392 (Batch A shipped+deployed 2026-07-08); Batch B (B1 audio seeded live, B2 findings §5-findings) same day; PR #395 (P3b carriers + case fix, §5b) same day — C1 spec approved separately (2026-07-08-affix-production-fastpath.md)
 reviewed_by: [staff-engineer, architect]
 ---
 <!-- Review round 2026-07-08: staff-engineer NEEDS-WORK → fixed (LessonCard per-bar
