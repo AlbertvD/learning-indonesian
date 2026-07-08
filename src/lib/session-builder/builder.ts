@@ -412,6 +412,9 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     practiceReviewCapabilities: activePracticeReviewCapabilities,
     diagnostics: extraDiagnostics,
     limit: input.limit,
+    // The full overdue queue (orderedDue was fetched at limit=MAX above), before
+    // the session-size cut — the true review backlog the Home insight surfaces.
+    backlogDueCount: orderedDue.length,
   })
 }
 

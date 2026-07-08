@@ -89,4 +89,12 @@ export interface SessionPlan {
   blocks: SessionBlock[]
   recapPolicy: 'standard'
   diagnostics: SessionDiagnostic[]
+  /**
+   * Total due-review capabilities the learner has right now (the whole overdue
+   * queue, BEFORE the session-size cut), so a caller can surface the review
+   * backlog. This is why new material stops being introduced when it exceeds the
+   * session size (openSlots = max(0, sessionSize − dueCount) hits 0). The Home
+   * "review backlog" insight reads this instead of re-querying the due predicate.
+   */
+  backlogDueCount: number
 }

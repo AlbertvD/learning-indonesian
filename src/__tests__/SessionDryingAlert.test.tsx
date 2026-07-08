@@ -47,6 +47,7 @@ function planWith(diagnostics: SessionPlan['diagnostics']): SessionPlan {
     blocks: [],
     recapPolicy: 'standard',
     diagnostics,
+    backlogDueCount: 0,
   }
 }
 

@@ -140,6 +140,8 @@ export const nl = {
     todayEmpty: 'Niets te oefenen op dit moment. Lees een les bij Leren, of luister een podcast bij Ontdek.',
     continueLessonSub: 'Lees verder waar je gebleven was',
     greetSessionReady: 'je sessie staat klaar',
+    backlogInsightTitle: 'Nieuw materiaal komt eraan',
+    backlogInsightBody: 'Je hebt nog {n} herhalingen in je wachtrij. Oefen elke dag een beetje — zodra die slinkt, komen er vanzelf nieuwe woorden en grammatica bij.',
     studyTipTitle: 'Studietip',
     studyTips: [
       'Doe je sessie elke dag op hetzelfde moment \u2014 een vast ritme werkt beter dan lange inhaalsessies.',
@@ -804,6 +806,8 @@ export const en: typeof nl = {
     todayEmpty: 'Nothing to practise right now. Read a lesson under Learn, or listen to a podcast under Discover.',
     continueLessonSub: 'Pick up where you left off',
     greetSessionReady: 'your session is ready',
+    backlogInsightTitle: 'New material is on the way',
+    backlogInsightBody: 'You have {n} reviews in your queue. Practise a little every day — as it shrinks, new words and grammar unlock automatically.',
     studyTipTitle: 'Study tip',
     studyTips: [
       'Do your session at the same time every day \u2014 a steady rhythm beats long catch-up sessions.',
