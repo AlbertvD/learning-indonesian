@@ -48,7 +48,7 @@ export function PitfallCard({ pitfall, language, audioMap }: PitfallCardProps) {
                 <Group key={word} gap={2} wrap="nowrap">
                   <Text size="sm">{word}</Text>
                   <PlayButton audioUrl={url} size="xs" />
-                  <ShadowControl word={word} modelUrl={url} />
+                  {url && <ShadowControl word={word} modelUrl={url} />}
                 </Group>
               )
             })}
