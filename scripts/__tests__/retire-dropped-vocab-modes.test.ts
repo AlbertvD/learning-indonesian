@@ -3,6 +3,7 @@ import {
   isRetireCandidate,
   expectedTextRecognitionKey,
   planPrereqRewrites,
+  findDanglingRewriteTargets,
   chunkArray,
   typesMissingFromLiveDb,
   buildReport,
@@ -150,6 +151,49 @@ describe('planPrereqRewrites', () => {
   })
 })
 
+// ─── findDanglingRewriteTargets — pure safety-net predicate (hardening, 2026-07-08) ─
+//
+// planPrereqRewrites derives `toKey` PURELY (no DB lookup) — this guard
+// cross-checks the derived key against the live #1 canonical_key set so a
+// deviating #1 (e.g. a legacy learnerLanguage mismatch) never silently
+// produces a dangling #6 prereq. HC43 does NOT catch this class (it only
+// checks for DROPPED-type references, not for a target that simply doesn't exist).
+
+describe('findDanglingRewriteTargets', () => {
+  it('flags a rewrite whose toKey has no matching live #1 canonical_key', () => {
+    const rewrites = [
+      {
+        id: 'cap-6', sourceRef: 'learning_items/ghost', fromKeys: ['old'],
+        toKey: expectedTextRecognitionKey('learning_items/ghost'),
+      },
+    ]
+    const live = new Set<string>() // no #1 row for 'ghost' at all
+    expect(findDanglingRewriteTargets(rewrites, live)).toEqual(rewrites)
+  })
+
+  it('does not flag a rewrite whose toKey IS a live canonical_key', () => {
+    const toKey = expectedTextRecognitionKey('learning_items/halo')
+    const rewrites = [{ id: 'cap-6', sourceRef: 'learning_items/halo', fromKeys: ['old'], toKey }]
+    const live = new Set([toKey])
+    expect(findDanglingRewriteTargets(rewrites, live)).toEqual([])
+  })
+
+  it('handles a mixed batch — only the dangling ones are returned', () => {
+    const safeKey = expectedTextRecognitionKey('learning_items/halo')
+    const danglingKey = expectedTextRecognitionKey('learning_items/ghost')
+    const rewrites = [
+      { id: 'cap-safe', sourceRef: 'learning_items/halo', fromKeys: ['old'], toKey: safeKey },
+      { id: 'cap-dangling', sourceRef: 'learning_items/ghost', fromKeys: ['old'], toKey: danglingKey },
+    ]
+    const live = new Set([safeKey])
+    expect(findDanglingRewriteTargets(rewrites, live)).toEqual([rewrites[1]])
+  })
+
+  it('returns empty for an empty rewrite list', () => {
+    expect(findDanglingRewriteTargets([], new Set())).toEqual([])
+  })
+})
+
 // ─── chunkArray — pure batching ──────────────────────────────────────────────
 
 describe('chunkArray', () => {
@@ -238,6 +282,37 @@ describe('buildReport', () => {
     const report = buildReport(rows)
     expect(report.retireCandidates).toEqual([])
     expect(report.rewrites).toEqual([])
+  })
+
+  it('flags a #6 rewrite whose source_ref has no #1 row at all as dangling (hardening, 2026-07-08)', () => {
+    const rows: VocabCapRow[] = [
+      // No recognise_meaning_from_text_cap row for 'ghost' anywhere in the
+      // scanned set — e.g. a legacy learnerLanguage mismatch or an
+      // un-migrated word. planPrereqRewrites still derives a toKey for it
+      // (pure derivation), but buildReport must flag it as dangling.
+      row({
+        id: 'r6', capability_type: 'produce_form_from_meaning_cap', source_ref: 'learning_items/ghost',
+        prerequisite_keys: ['stale-key'],
+      }),
+    ]
+    const report = buildReport(rows)
+    expect(report.rewrites).toHaveLength(1)
+    expect(report.danglingRewriteTargets).toHaveLength(1)
+    expect(report.danglingRewriteTargets[0].id).toBe('r6')
+    expect(report.danglingRewriteTargets[0].toKey).toBe(expectedTextRecognitionKey('learning_items/ghost'))
+  })
+
+  it('does NOT flag a #6 rewrite whose #1 row exists in the same scanned set', () => {
+    const rows: VocabCapRow[] = [
+      row({ id: 'r1', capability_type: 'recognise_meaning_from_text_cap', source_ref: 'learning_items/halo' }),
+      row({
+        id: 'r6', capability_type: 'produce_form_from_meaning_cap', source_ref: 'learning_items/halo',
+        prerequisite_keys: ['stale-key'],
+      }),
+    ]
+    const report = buildReport(rows)
+    expect(report.rewrites).toHaveLength(1)
+    expect(report.danglingRewriteTargets).toEqual([])
   })
 })
 
@@ -329,6 +404,45 @@ describe('applyPrereqRewrites', () => {
     const written = await applyPrereqRewrites(client, [])
     expect(written).toBe(0)
     expect(updates).toHaveLength(0)
+  })
+})
+
+// ─── Dangling rewrite targets are excluded from --apply (hardening, 2026-07-08) ───
+//
+// Mirrors run()'s apply-time filter (run() itself is not unit-tested — it
+// wires up the real createClient/env-vars — so this exercises the same
+// buildReport → filter-by-danglingRewriteTargets → applyPrereqRewrites
+// sequence run() performs, using only the exported pure/IO functions.
+
+describe('dangling rewrite targets are excluded from --apply (hardening, 2026-07-08)', () => {
+  it('a #6 row whose source_ref has no #1 row is reported as dangling and excluded from the write', async () => {
+    const rows: VocabCapRow[] = [
+      row({ id: 'r1', capability_type: 'recognise_meaning_from_text_cap', source_ref: 'learning_items/halo' }),
+      row({
+        id: 'r6-safe', capability_type: 'produce_form_from_meaning_cap', source_ref: 'learning_items/halo',
+        prerequisite_keys: ['stale'],
+      }),
+      // 'ghost' has NO recognise_meaning_from_text_cap row anywhere in the scanned set.
+      row({
+        id: 'r6-dangling', capability_type: 'produce_form_from_meaning_cap', source_ref: 'learning_items/ghost',
+        prerequisite_keys: ['stale'],
+      }),
+    ]
+    const report = buildReport(rows)
+    expect(report.rewrites).toHaveLength(2)
+    expect(report.danglingRewriteTargets).toHaveLength(1)
+    expect(report.danglingRewriteTargets[0].id).toBe('r6-dangling')
+
+    // The same filter run() applies before calling applyPrereqRewrites in --apply mode.
+    const danglingIds = new Set(report.danglingRewriteTargets.map((r) => r.id))
+    const safeRewrites = report.rewrites.filter((r) => !danglingIds.has(r.id))
+    expect(safeRewrites.map((r) => r.id)).toEqual(['r6-safe'])
+
+    const { client, updates } = buildUpdateCapturingClient()
+    const written = await applyPrereqRewrites(client, safeRewrites)
+    expect(written).toBe(1)
+    expect(updates).toHaveLength(1)
+    expect(updates[0].id).toBe('r6-safe')
   })
 })
 

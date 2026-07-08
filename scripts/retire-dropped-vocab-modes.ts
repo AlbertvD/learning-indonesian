@@ -120,6 +120,26 @@ export function planPrereqRewrites(produceFormRows: VocabCapRow[]): PrereqRewrit
   return out
 }
 
+/**
+ * Step 2 safety net (main-thread review hardening, 2026-07-08): a planned
+ * rewrite's `toKey` is a PURE derivation (`expectedTextRecognitionKey` — no DB
+ * lookup), so it never verifies the key actually exists as a live capability
+ * row. If any word's real #1 key deviates from the expected shape (e.g. a
+ * legacy `learnerLanguage` mismatch), the rewrite would point #6 at a
+ * dangling key and permanently gate it (`missing_prerequisite`,
+ * `src/lib/session-builder/pedagogy.ts`) — a class HC43 does NOT catch (HC43
+ * only checks for DROPPED-type references, never for a target that simply
+ * doesn't exist). Cross-checks every rewrite's `toKey` against the full set
+ * of live `recognise_meaning_from_text_cap` canonical_keys — cheap, since
+ * `fetchAllVocabCapRows` already has every vocab row in memory (no extra query).
+ */
+export function findDanglingRewriteTargets(
+  rewrites: PrereqRewrite[],
+  liveTextRecognitionKeys: ReadonlySet<string>,
+): PrereqRewrite[] {
+  return rewrites.filter((r) => !liveTextRecognitionKeys.has(r.toKey))
+}
+
 /** Split an array into fixed-size chunks — shared by retire batching and the rewrite concurrency cap. */
 export function chunkArray<T>(items: T[], size: number): T[][] {
   const out: T[][] = []
@@ -228,6 +248,8 @@ export interface RunReport {
   retireCandidates: VocabCapRow[]
   retireCountsByType: Record<string, number>
   rewrites: PrereqRewrite[]
+  /** Subset of `rewrites` whose `toKey` has no backing live #1 row — --apply refuses to write these. */
+  danglingRewriteTargets: PrereqRewrite[]
   missingTypesWarning: string[]
 }
 
@@ -240,10 +262,22 @@ export function buildReport(rows: VocabCapRow[]): RunReport {
   const produceFormRows = rows.filter((r) => r.capability_type === 'produce_form_from_meaning_cap')
   const rewrites = planPrereqRewrites(produceFormRows)
 
+  const liveTextRecognitionKeys = new Set(
+    rows.filter((r) => r.capability_type === 'recognise_meaning_from_text_cap').map((r) => r.canonical_key),
+  )
+  const danglingRewriteTargets = findDanglingRewriteTargets(rewrites, liveTextRecognitionKeys)
+
   const distinctTypesInDb = new Set(rows.map((r) => r.capability_type))
   const missingTypesWarning = typesMissingFromLiveDb(distinctTypesInDb)
 
-  return { totalVocabRows: rows.length, retireCandidates, retireCountsByType, rewrites, missingTypesWarning }
+  return {
+    totalVocabRows: rows.length,
+    retireCandidates,
+    retireCountsByType,
+    rewrites,
+    danglingRewriteTargets,
+    missingTypesWarning,
+  }
 }
 
 function printReport(report: RunReport): void {
@@ -273,6 +307,17 @@ function printReport(report: RunReport): void {
   console.log('  Sample rewrites (sourceRef: fromKeys → toKey):')
   for (const r of report.rewrites.slice(0, 5)) {
     console.log(`    ${r.sourceRef}: [${r.fromKeys.join(', ')}] → ${r.toKey}`)
+  }
+
+  if (report.danglingRewriteTargets.length > 0) {
+    console.warn(
+      `\n⚠ BLOCKER: ${report.danglingRewriteTargets.length} #6 rewrite(s) target a #1 key that does NOT `
+      + 'exist as a live capability row — --apply will REFUSE to rewrite these until investigated ' +
+      '(a legacy learnerLanguage mismatch or an un-migrated word is the likely cause):',
+    )
+    for (const r of report.danglingRewriteTargets.slice(0, 10)) {
+      console.warn(`    ${r.sourceRef}: expected #1 key not found → ${r.toKey}`)
+    }
   }
 }
 
@@ -307,8 +352,22 @@ export async function run(opts: { apply: boolean }): Promise<RunReport> {
   console.log('\n→ --apply: executing writes...')
   await softRetireCapabilities(supabase, report.retireCandidates.map((r) => r.id))
   console.log(`  ✓ Retired ${report.retireCandidates.length} dropped-mode capabilities.`)
-  const rewritten = await applyPrereqRewrites(supabase, report.rewrites, { concurrency: 10 })
+
+  // Refuse to write a rewrite whose target has no backing live #1 row (see
+  // findDanglingRewriteTargets) — apply only the verified-safe subset, then
+  // hard-error listing the dangling ones so a partial success is never silent.
+  const danglingIds = new Set(report.danglingRewriteTargets.map((r) => r.id))
+  const safeRewrites = report.rewrites.filter((r) => !danglingIds.has(r.id))
+  const rewritten = await applyPrereqRewrites(supabase, safeRewrites, { concurrency: 10 })
   console.log(`  ✓ Rewrote ${rewritten} #6 prerequisite_keys.`)
+
+  if (report.danglingRewriteTargets.length > 0) {
+    throw new Error(
+      `retire-dropped-vocab-modes: REFUSING to rewrite ${report.danglingRewriteTargets.length} #6 row(s) ` +
+      'whose expected #1 key does not exist as a live capability (investigate before re-running): ' +
+      report.danglingRewriteTargets.map((r) => `${r.sourceRef} → ${r.toKey}`).join('; '),
+    )
+  }
 
   await assertZeroRemaining(supabase)
   console.log('  ✓ Zero-remaining assertion passed: no live dropped-type caps, no stale #6 prereqs.')
