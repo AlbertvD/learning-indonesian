@@ -7,6 +7,7 @@ import { Card, Badge, Group, Stack, Text } from '@mantine/core'
 import { PlayButton } from '@/components/PlayButton'
 import { MinimalPairPlayer } from './MinimalPairPlayer'
 import { ShadowControl } from './ShadowControl'
+import { EarQuiz } from './EarQuiz'
 import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
 import { useT } from '@/hooks/useT'
 import type { Pitfall, L1 } from '@/lib/pronunciation/pitfallCatalog'
@@ -21,6 +22,13 @@ export function PitfallCard({ pitfall, language, audioMap }: PitfallCardProps) {
   const T = useT()
   const rule = language === 'nl' ? pitfall.ruleNl : pitfall.ruleEn
   const mistake = language === 'nl' ? pitfall.pitfallNl : pitfall.pitfallEn
+  // "Test je oor" (Task U-C / review UP2) only ever sees pairs where BOTH
+  // members already resolve — the quiz never sees a dead pair.
+  const playablePairs = (pitfall.minimalPairs ?? []).filter(
+    (mp) =>
+      Boolean(resolveSessionAudioUrl(audioMap, mp.a, null)) &&
+      Boolean(resolveSessionAudioUrl(audioMap, mp.b, null)),
+  )
 
   return (
     <Card withBorder radius="md" padding="md">
@@ -48,7 +56,7 @@ export function PitfallCard({ pitfall, language, audioMap }: PitfallCardProps) {
                 <Group key={word} gap={2} wrap="nowrap">
                   <Text size="sm">{word}</Text>
                   <PlayButton audioUrl={url} size="xs" />
-                  <ShadowControl word={word} modelUrl={url} />
+                  {url && <ShadowControl word={word} modelUrl={url} />}
                 </Group>
               )
             })}
@@ -65,6 +73,9 @@ export function PitfallCard({ pitfall, language, audioMap }: PitfallCardProps) {
                 <MinimalPairPlayer key={`${mp.a}-${mp.b}`} pair={mp} language={language} audioMap={audioMap} />
               ))}
             </Stack>
+            {playablePairs.length > 0 && (
+              <EarQuiz playablePairs={playablePairs} audioMap={audioMap} language={language} />
+            )}
           </div>
         )}
       </Stack>
