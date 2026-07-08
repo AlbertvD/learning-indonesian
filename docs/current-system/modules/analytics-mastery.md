@@ -1,7 +1,7 @@
 ---
 module: analytics-mastery
 surface: src/lib/analytics/mastery/
-last_verified_against_code: 2026-06-13
+last_verified_against_code: 2026-07-09
 status: partial
 ---
 
@@ -104,7 +104,7 @@ consecutiveFailureCount > 0:
     lapseCount > 0   → at_risk        (a genuine lapse: learned, now forgetting)
     lapseCount === 0 → introduced (activated) | not_assessed   (never learned — still acquiring)
 reviewCount === 0                    → introduced (activated) | not_assessed
-reviewCount ≥ 4 ∧ stability ≥ 14 ∧ isRecent(30d) → mastered
+reviewCount ≥ 4 ∧ stability ≥ 14 ∧ isRecent(max(30d, 2×stability)) → mastered
 reviewCount ≥ 3 ∨ stability ≥ 5      → strengthening
 otherwise                            → learning
 ```
@@ -113,7 +113,18 @@ otherwise                            → learning
 and now means *learned-then-forgetting*; `lapseCount` is the only counter that
 survives a failure (the boundary "have you ever learned this word?"). `isRecent`
 is `false` for a null `lastReviewedAt`; the `?? 0` stability fallbacks are
-load-bearing (nullable column). **Moeilijk** (stubborn) is a *separate* TS signal
+load-bearing (nullable column). The recency window is **stability-scaled**
+(`mastered.ts:12-28`, Slice 3 of `docs/plans/2026-07-08-vocab-mode-set-reduction-
+and-graduation.md`, ADR 0027 Analytics note): `max(30 days, 2 × stability)`, not a
+flat 30 — a mature card's FSRS interval routinely exceeds 30 days between its own
+reviews, and a flat window would misreport it as stale. `stability` is an OPTIONAL
+third arg to `isRecent`; a caller that omits it (e.g. `recentReviewCount` in
+`deriveMasteryDimensions`, a confidence-score tally, not a mastery gate) gets the
+unscaled 30-day window unchanged. The extracted, recency-FREE core
+(`hasMasteryStrength`, `mastered.ts:31-37`) is what vocab-graduation's
+due-suppression reuses (`src/lib/session-builder/graduation.ts`) — it never reads
+`lastReviewedAt` at all, so it cannot flicker the way the full predicate would at
+a fixed window. **Moeilijk** (stubborn) is a *separate* TS signal
 (`isStubborn` / `deriveStubbornWords`, `masteryModel.ts`), **not** a `MasteryLabel`
 and not a funnel rung — `lapseCount === 0 ∧ consecutiveFailureCount ≥ 4` (a
 never-learned word repeatedly failed); surfaced as its own callout, no SQL mirror.
@@ -126,6 +137,21 @@ implementations are kept in lockstep by a TS↔SQL parity test
 deep-check (`check-supabase-deep.ts`). Per **ADR 0015**, this mirror is a
 deliberate, guarded duplication — not a single-source violation. **If you change
 the predicate here, change both and the parity test will fail until you do.**
+`get_lessons_overview` ALSO carries a mastered-numerator **subsumption** clause
+(Slice 3, ADR 0027 Analytics note) with no TS-side twin: a `vocabulary_src`
+`recognise_meaning_from_text_cap` (#1) row counts as mastered when its
+same-`source_ref`, same-lesson, non-retired `produce_form_from_meaning_cap` (#6)
+sibling meets the recency-free `hasMasteryStrength` bar — otherwise a graduated
+scaffold (retired from due scheduling by vocab-graduation) would silently drag
+lesson `% mastered` down over time. This is deliberately scoped to
+`get_lessons_overview` only, NOT `_mastery_label` (`get_weekly_movement` /
+`get_collections_overview`) — Minimum Mechanism, see the plan's §5 "Open
+question" and ADR 0027's Analytics note. A silent RLS-deny on the sibling's
+`learner_capability_state` read would make subsumption never fire without either
+guard noticing (both are static source-string checks), so this clause is ALSO
+guarded by a live authenticated-role execution test
+(`scripts/verify-lessons-overview-rls.ts`, run from `make
+verify-lessons-overview-rls`).
 
 ## 3. Internal flow (functional)
 
