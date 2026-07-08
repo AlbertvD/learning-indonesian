@@ -1,8 +1,8 @@
 .bar {
   display: flex;
   align-items: stretch;
-  gap: 1rem;
-  padding: 0.85rem 1rem;
+  gap: 0.7rem;
+  padding: 0.85rem 0.9rem;
   border-radius: 16px;
   text-decoration: none;
   color: inherit;
@@ -25,15 +25,15 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-width: 84px;
-  padding-right: 1rem;
+  min-width: 60px;
+  padding-right: 0.7rem;
   border-right: 1px solid color-mix(in srgb, var(--text-secondary, #868e96) 20%, transparent);
 }
 
 .flameRow {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
 }
 
 .flameIcon {
@@ -42,7 +42,7 @@
 }
 
 .streakNum {
-  font-size: 1.8rem;
+  font-size: 1.45rem;
   font-weight: 800;
   line-height: 1;
   background: linear-gradient(135deg, #ffa94d, #ff6b00);
@@ -59,9 +59,10 @@
 
 .days {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.4rem;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
   flex: 1;
+  min-width: 0;
 }
 
 .day {
