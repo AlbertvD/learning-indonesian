@@ -56,6 +56,16 @@ export interface GenerateInput {
    *  Each tier is extracted into sentences + matched verbatim against derived_text;
    *  shortest match in the first tier that has one wins. Optional (default []). */
   carrierTiers?: string[][]
+  /** Hand-authored carrier sentences (§5b, docs/plans/2026-07-08-affix-trainer-quick-wins.md
+   *  — the presence-cache-shaped fix for lessons whose own staged text never uses a
+   *  frequency-selected derived form). Key = derived form, value = one carrier sentence
+   *  containing it as a whole word. WINS over `harvestCarrier` when a key matches a
+   *  generated pair's derived form. Curated sentences do NOT pass through
+   *  `extractSentences` — they are authored as exactly one sentence already; validated
+   *  loud in `generateMorphologyPatterns` instead (whole-word gate + a 3-word floor),
+   *  never silently discarded or silently falling back to harvest. Optional (default none).
+   *  See scripts/data/staging/lesson-N/curated-carriers.ts. */
+  curatedCarriers?: ReadonlyMap<string, string>
 }
 
 /** The emitted shape — structurally `AffixedPairInput` (projectSections.ts:73-93). */
@@ -165,11 +175,15 @@ export function harvestCarrier(derived: string, tiers: string[][]): string | nul
 }
 
 export function generateMorphologyPatterns(input: GenerateInput): GenerateResult {
-  const { lessonNumber, roots, categories, knownItemSlugs, carrierTiers = [] } = input
+  const { lessonNumber, roots, categories, knownItemSlugs, carrierTiers = [], curatedCarriers } = input
   const errors: string[] = []
   const pairs: GeneratedPair[] = []
   const resolvable = resolvableBaseSlugs(lessonNumber, categories.map((c) => c.title))
   const categoryByTitle = new Map(categories.map((c) => [c.title, c]))
+  // Curated keys matched to a generated pair's derived form (regardless of whether
+  // that curated carrier passed its own validation below) — feeds the stale-key
+  // check after the loop (typo/stale protection).
+  const matchedCuratedKeys = new Set<string>()
 
   for (const { root, affix, illustratesCategory } of roots) {
     const where = `root "${root}" (affix ${affix}, category "${illustratesCategory}")`
@@ -216,6 +230,27 @@ export function generateMorphologyPatterns(input: GenerateInput): GenerateResult
       }
     }
 
+    // Carrier: a curated sentence WINS over the harvest when authored for this
+    // derived form (§5b). Curated sentences are validated loud here — no silent
+    // fallback to harvest on a bad curated entry, and no silent write of a carrier
+    // that fails its own gate.
+    let carrierText: string | null
+    const curated = curatedCarriers?.get(derived.derived)
+    if (curated !== undefined) {
+      matchedCuratedKeys.add(derived.derived)
+      const wordCount = curated.split(/\s+/u).filter(Boolean).length
+      if (blankDerivedInCarrier(curated, derived.derived) === null || wordCount < 3) {
+        errors.push(
+          `${where}: curated carrier for derived form "${derived.derived}" fails the carrier gate ` +
+          `("${curated}" must contain "${derived.derived}" as a whole word and have at least 3 words)`,
+        )
+        continue
+      }
+      carrierText = curated
+    } else {
+      carrierText = harvestCarrier(derived.derived, carrierTiers)
+    }
+
     pairs.push({
       // affix already carries its trailing hyphen (e.g. 'meN-'), so it is the
       // separator before the root — matches the L13 pilot's sourceRef exactly.
@@ -232,12 +267,22 @@ export function generateMorphologyPatterns(input: GenerateInput): GenerateResult
       productive: derived.productive,
       circumfixLeft: derived.circumfixLeft,
       circumfixRight: derived.circumfixRight,
-      carrierText: harvestCarrier(derived.derived, carrierTiers),
+      carrierText,
       // The deterministic core leaves the bilingual derived-form meaning empty; the
       // injectable gloss pass (enrichDerivedGlosses, below) fills it presence-cached.
       derivedGlossNl: null,
       derivedGlossEn: null,
     })
+  }
+
+  // Stale/typo protection: a curated key that never matched any generated pair's
+  // derived form is either a typo or leftover from a since-changed root pool.
+  if (curatedCarriers) {
+    for (const key of curatedCarriers.keys()) {
+      if (!matchedCuratedKeys.has(key)) {
+        errors.push(`curated-carriers.ts: key "${key}" did not match any generated pair's derived form (stale entry or typo)`)
+      }
+    }
   }
 
   return { pairs, errors }
@@ -617,8 +662,10 @@ async function main() {
     const lesson = await readExport(path.join(dir, 'lesson.ts'))
     const categories = categoriesFromLesson(lesson)
     const carrierTiers = carrierTiersFromLesson(lesson, categories)
+    const curatedCarriersRecord = (await readExport(path.join(dir, 'curated-carriers.ts'))) as Record<string, string> | null
+    const curatedCarriers = curatedCarriersRecord ? new Map(Object.entries(curatedCarriersRecord)) : undefined
 
-    const { pairs, errors } = generateMorphologyPatterns({ lessonNumber, roots, categories, knownItemSlugs, carrierTiers })
+    const { pairs, errors } = generateMorphologyPatterns({ lessonNumber, roots, categories, knownItemSlugs, carrierTiers, curatedCarriers })
     if (errors.length > 0) {
       anyError = true
       console.error(`\nlesson-${lessonNumber}: ${errors.length} author-time error(s) — NOT writing morphology-patterns.ts:`)
