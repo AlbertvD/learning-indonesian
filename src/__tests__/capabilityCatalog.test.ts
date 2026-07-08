@@ -43,43 +43,41 @@ const snapshot: CurrentContentSnapshot = {
 }
 
 describe('capability catalog projection', () => {
-  it('projects vocabulary text, meaning, form, and audio capability candidates', () => {
+  it('ADR 0027: projects exactly the 3 kept vocab capability types (text, form, audio)', () => {
     const projection = projectCapabilities(snapshot)
+    const vocabCapTypes = projection.capabilities
+      .filter((c) => c.sourceKind === 'vocabulary_src')
+      .map((c) => c.capabilityType)
+      .sort()
 
-    expect(projection.capabilities.map(capability => capability.capabilityType)).toEqual(
-      expect.arrayContaining(['recognise_meaning_from_text_cap', 'recall_meaning_from_text_cap', 'recognise_form_from_meaning_cap', 'produce_form_from_meaning_cap', 'recognise_meaning_from_audio_cap', 'produce_form_from_audio_cap']),
-    )
+    expect(vocabCapTypes).toEqual([
+      'produce_form_from_meaning_cap',
+      'recognise_meaning_from_audio_cap',
+      'recognise_meaning_from_text_cap',
+    ])
+    // The 3 dropped modes must never appear.
+    expect(vocabCapTypes).not.toContain('recognise_form_from_meaning_cap')
+    expect(vocabCapTypes).not.toContain('recall_meaning_from_text_cap')
+    expect(vocabCapTypes).not.toContain('produce_form_from_audio_cap')
     expect(projection.capabilities.every(capability => capability.projectionVersion === 'capability-v3')).toBe(true)
   })
 
-  it('requires learner-language meaning for text recognition and accepted answers for dictation', () => {
+  it('requires learner-language meaning for text recognition', () => {
     const projection = projectCapabilities(snapshot)
     const textRecognition = projection.capabilities.find(capability => capability.capabilityType === 'recognise_meaning_from_text_cap')
-    const dictation = projection.capabilities.find(capability => capability.capabilityType === 'produce_form_from_audio_cap')
 
     expect(textRecognition?.learnerLanguage).toBe('nl')
     expect(textRecognition?.requiredArtifacts).toEqual(expect.arrayContaining(['base_text', 'meaning:l1']))
-    expect(dictation?.direction).toBe('audio_to_id')
-    expect(dictation?.requiredArtifacts).toEqual(expect.arrayContaining(['accepted_answers:id']))
   })
 
-  it('chains prerequisites for vocabulary and audio capabilities', () => {
+  it('ADR 0027: #6 (produce_form_from_meaning_cap) and #3 (audio) both prereq directly on #1, not a dropped #2', () => {
     const projection = projectCapabilities(snapshot)
     const textRecognition = projection.capabilities.find(capability => capability.capabilityType === 'recognise_meaning_from_text_cap')
-    const choiceBridge = projection.capabilities.find(capability => capability.capabilityType === 'recognise_form_from_meaning_cap')
-    const formRecall = projection.capabilities.find(capability => capability.capabilityType === 'produce_form_from_meaning_cap')
+    const formProduce = projection.capabilities.find(capability => capability.capabilityType === 'produce_form_from_meaning_cap')
     const audioCapability = projection.capabilities.find(capability => capability.sourceKind === 'vocabulary_src' && capability.capabilityType === 'recognise_meaning_from_audio_cap')
 
     expect(textRecognition?.sourceRef).toBe('learning_items/item-1')
-    expect(choiceBridge).toEqual(expect.objectContaining({
-      direction: 'l1_to_id',
-      modality: 'text',
-      // cap-v2 Slice 1 mis-level fix: recognise_form_from_meaning_cap is recognition, not recall.
-      skillType: 'recognise_mode',
-      requiredArtifacts: expect.arrayContaining(['meaning:l1', 'base_text']),
-      prerequisiteKeys: [textRecognition?.canonicalKey],
-    }))
-    expect(formRecall?.prerequisiteKeys).toEqual([choiceBridge?.canonicalKey])
+    expect(formProduce?.prerequisiteKeys).toEqual([textRecognition?.canonicalKey])
     expect(audioCapability?.prerequisiteKeys).toEqual([textRecognition?.canonicalKey])
   })
 
