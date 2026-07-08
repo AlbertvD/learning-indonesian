@@ -1,5 +1,6 @@
 ---
-status: approved
+status: implementing
+implementation: PR #392 (Batch A shipped+deployed 2026-07-08); Batch B (B1 audio seeded live, B2 findings §5-findings) same day
 reviewed_by: [staff-engineer, architect]
 ---
 <!-- Review round 2026-07-08: staff-engineer NEEDS-WORK → fixed (LessonCard per-bar
@@ -106,3 +107,55 @@ Reopen only when production review events on `word_form_pair_src` exceed ~200 (i
 
 - Schema changes: **none** (Batch A/B/C all ride existing tables; B1 inserts `audio_clips` rows + bucket objects via existing write path).
 - homelab-configs: N/A. Health checks: N/A (no new invariants; B1 is idempotent additive content).
+
+## §5-findings (B2, 2026-07-08)
+
+**Investigation only — no staging, DB, or code changes made.** Method: read the harvest
+implementation + git history, then directly grepped every affected derived form
+(case-insensitive, whole-word) against the full staged `lesson.ts` for its home lesson,
+so the verdicts below are proven by absence/presence in the actual staged text, not
+inferred from the DB counts alone (the DB counts matched the committed staging exactly,
+confirming the DB is not stale relative to these files).
+
+### Harvest implementation recap (file:line)
+
+- **Tiers + priority order** — `carrierTiersFromLesson` (`scripts/generate-morphology-patterns.ts:533-566`) returns `[grammar, story, exercise, dialogue]`: grammar examples (`:534`), story paragraphs (`:541-543`), dialogue/conversation lines (`:547-549`), and exercise `answer`+`prompt` strings via a recursive collector (`:554-563`). `harvestCarrier` (`:159-165`) takes the **first tier with any match** (not a union across tiers) and the shortest sentence within it. Note: the `GenerateInput.carrierTiers` jsdoc (`:54-57`) still describes the pre-Task-3 3-tier list and doesn't mention dialogue — stale comment, not a functional bug (the array literal is authoritative and dialogue genuinely is last-priority).
+- **Sentence extraction** — `extractSentences` (`:140-148`) splits on `. ! ? … — → -> ; \n`, strips list markers (`a.`/`1.`), and **requires ≥3 whitespace-separated tokens** — a real floor that rejects one/two-word imperative fragments.
+- **Match predicate** — `blankDerivedInCarrier` (`src/lib/capabilities/affixDerivation.ts:302`) is a **whole-word, CASE-SENSITIVE** compare (`core === derived`, no lowercasing on either side), shared verbatim by the harvest gate and the runtime blank-render.
+
+### Generation history rules out "harvest ran before the tier existed"
+
+`git log --follow` on each lesson's `morphology-patterns.ts` vs. the harvest-widening commit:
+
+| Lesson | Harvest-widening commit `7614463c` (2026-06-23) | Most recent regen of this file |
+|---|---|---|
+| L21 (-kan) | precedes | `e1a1fe24` (2026-06-24) |
+| L23 (-i) | precedes | `b07a059a` (2026-06-24, "--regenerate opt-out + freqGate the bare -i pool") |
+| L25 (-an) | precedes | `dcb790c9` (2026-07-04, "top up thin affix pools") |
+
+All three files were generated/regenerated **after** the dialogue+prompt+arrow-RHS widening landed. Option (c) — "tier not read for these lessons" / "generated before the tier existed" — is **ruled out** for all three affixes. (Separately: none of L21/L23/L25 have a `dialogue`/`conversation`-type section at all — they're narrative/"dongeng"/grammar lessons — so the dialogue tier was never going to contribute here regardless.)
+
+### Per-affix verdict
+
+**`-kan` bare, L21, 0/22 — genuinely absent (root cause a).**
+Grepped all 22 derived forms (`lakukan, katakan, berikan, hentikan, inginkan, dengarkan, dapatkan, lepaskan, pikirkan, bicarakan, tinggalkan, lupakan, ceritakan, keluarkan, letakkan, selamatkan, selesaikan, matikan, kerjakan, bersihkan, ucapkan, mainkan` — `morphology-roots.ts:56-77`) case-insensitively against the **entire** `lesson-21/lesson.ts` (story, vocab, grammar, exercises) → **zero hits for all 22**. The lesson does teach a bare-`-kan` imperative category ("Gebiedende wijs met -KAN") with examples `belikan!`, `turunkan!`, `Jangan turunkan!` — but (a) those roots (`beli`, `turun`) are not among the 22 selected for the bare pool (drawn from the ADR-0020 kaikki+frequency proposer, which is lesson-content-agnostic), and (b) even if they were, `belikan!` (1 token after stripping `!`) and `Jangan turunkan!` (2 tokens) both fail the extractSentences ≥3-word floor. **Not a harvest bug** — root *selection* (frequency-driven) and carrier *harvest* (lesson-content-scoped) are structurally decoupled for this highly-productive bare suffix, and the book's own worked imperative examples are too short and use different roots than the selected pool.
+
+**`-i` bare, L23, 0/18 — genuinely absent (root cause a), plus one real secondary bug found.**
+Grepped all 18 forms (`mulai, alami, tangani, cintai, hargai, pahami, percayai, jalani, datangi, tutupi, penuhi, punyai, tiduri, kenai, namai, pandangi, racuni, basahi` — `morphology-roots.ts:11-28`) case-insensitively against the entire `lesson-23/lesson.ts` → **zero hits for all 18**. The lesson has "Gebiedende wijs met -i" with two **usable-length** examples: `Ikuti contoh itu!` (3 tokens) and `Jangan kunjungi disko itu!` (4 tokens) — but roots `ikut`/`kunjung` were routed to the `meN-…-i` pool instead (`morphology-roots.ts:48,58` → `mengikuti`/`mengunjungi`, both of which DO have harvested carriers from the lesson's own story), not the bare `-i` pool. Same selection/harvest mismatch as `-kan`.
+Bonus finding, verified by direct call: **`blankDerivedInCarrier` is case-sensitive** — `blankDerivedInCarrier('Ikuti contoh itu', 'ikuti')` → `null` (sentence-initial capital `Ikuti` doesn't match lowercase `derived`), while `blankDerivedInCarrier('Jangan kunjungi disko itu', 'kunjungi')` → matches (mid-sentence, already lowercase). This doesn't explain today's 0/18 (`ikut`/`kunjung` aren't in the bare-`-i` pool), but it is a real, reproducible bug in the shared harvest/render primitive that would silently suppress exactly this example if the pool were ever widened to include those roots — worth fixing regardless (affixDerivation.ts:302: lowercase both sides for the comparison, keep the original-case token in the output).
+
+**`-an` bare, L25, 3/22 (low, not zero) — mixed: mostly absent, partly a cross-lesson gap.**
+3 of 22 pairs carry a `carrierText`: `kemudian` (a genuine sentence), `pilihan` (`carrierText: "pemilih / pemilihan / pilihan"` — a slash-separated word list, not a sentence: `extractSentences` doesn't split on `/`, so a 3-token list fragment passes the length floor and gets harvested as if it were prose), `ujian` (`carrierText: "Pengawasan ujian sangat ketat.)"` — a stray trailing `)` from a list-item, not stripped). Of the other 19: L25's own grammar section ("Tata Bahasa - PE-AN vormen") teaches `pe-…-an`, not bare `-an` — the bare-`-an` pedagogical home is **lesson 10** ("Grammatica - Achtervoeging met -AN", with its own worked examples + "Oefening II — Voeg -AN toe"). Checked 3 of the 19 empty L25 forms against L10's own staged text: `makanan` (5 hits), `pikiran` (3 hits), `minuman` (3 hits) all occur naturally in L10's prose/exercises — but `carrierTiersFromLesson` is called with only the single lesson passed on the CLI (`main()`, `:617-619`: `lesson = readExport(dir/lesson.ts)` for the one `lessonNumber` in scope) — it never reads a second lesson's content. Because the `-an` `morphology-roots.ts` is homed at L25 (ADR 0020: one proposer run per lesson, one "home" lesson per affix), the harvester structurally cannot see L10's carrier-rich text for this affix. (Checked `latihan` too — 4 case-insensitive hits in L25's own file, but all 4 are the *section title* "Latihan"/"Latihan I/II/III", which `carrierTiersFromLesson` never reads — correctly absent, not a bug.)
+`pe-…-an` (also minted at L25) is 0/22, consistent with the review's numbers; not separately re-verified beyond the count (out of the three affixes this task scoped).
+
+### Does re-running the generator help?
+
+**No — confirmed no-op for the empty pairs.** The generation-history table above shows all three files were already produced by a generator build that includes the dialogue/prompt/arrow-RHS widening; the function is deterministic and the staged `lesson.ts` inputs are unchanged since — same code + same input ⇒ identical output. This was reasoned from code + git history per the task's "do not modify staging/DB" constraint; not run destructively to prove it empirically.
+
+### Smallest-fix recommendation
+
+1. **Do not re-run `bun scripts/generate-morphology-patterns.ts 21 23 25`** expecting new carriers — it is a no-op for the currently-empty pairs (see above).
+2. **Author curated carriers for the genuinely-absent pairs** (review's own step (b) — the correct fix for the majority, root cause (a)): one short natural sentence per pair, ≈22 (`-kan`, L21) + 18 (`-i`, L23) + 19 (`-an`, L25, minus the 3 already covered) ≈ **59 pairs** across the three lessons. `morphology-patterns.ts` is itself the committed, hand-regenerable staging input (not one of the three runner-derived files CLAUDE.md warns against hand-editing), so a curated carrier can be added directly to it, or fed back through `generate-morphology-patterns.ts` via a small curated-sentence side list consumed as an extra, highest-priority tier (mirrors the existing presence-cache pattern used for glosses, `mergeCachedGlosses`) so a re-run doesn't need to re-derive them.
+3. **Fix the case-sensitivity bug in `blankDerivedInCarrier`** (`src/lib/capabilities/affixDerivation.ts:302`) — lowercase `core`/`derived` for the comparison only, keep the original-case token in the replaced output. Cheap, deterministic, benefits every future harvest run and the runtime render identically (same function). Add the `Ikuti contoh itu!` case as a regression test in `affixDerivation.test.ts`.
+4. **For `-an` specifically**, a real fix requires widening `carrierTiersFromLesson`'s input to include the affix's pedagogically-introducing lesson when it differs from the affix's "home" lesson (L10 for L25's bare `-an`) — this changes the "one lesson directory in, one tier set out" contract the CLI wrapper currently has and is a genuine scope decision, not a quick fix. Flag for `architect` if pursued; do not build without that round.
+5. The two `extractSentences` quality artifacts found on `-an` (slash-list fragment, stray trailing paren) are low-value polish — not worth a dedicated fix unless a future authoring pass touches `-an` anyway.
