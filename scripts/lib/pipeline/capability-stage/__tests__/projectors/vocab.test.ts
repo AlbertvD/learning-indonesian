@@ -106,17 +106,24 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
     expect(plan.learningItemInput.translation_en).toBeNull()
   })
 
-  it('produces correct canonical keys for item capabilities', () => {
+  it('produces correct canonical keys for the 3 kept vocab capabilities (ADR 0027)', () => {
     const rows: TypedItemRow[] = [baseTypedRow({})]
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
     const { capabilities } = out.perItemPlans[0]
-    // Each item emits recognise_meaning_from_text_cap, recognise_form_from_meaning_cap, meaning_recall, form_recall
-    expect(capabilities.length).toBeGreaterThanOrEqual(4)
+    // ADR 0027: exactly 3 caps — recognise_meaning_from_text_cap (#1),
+    // recognise_meaning_from_audio_cap (#3), produce_form_from_meaning_cap (#6).
+    // #2 (recognise_form_from_meaning_cap), #4 (recall_meaning_from_text_cap) and
+    // #5 (produce_form_from_audio_cap) are dropped from the model entirely.
+    expect(capabilities).toHaveLength(3)
     const capTypes = capabilities.map((c) => c.capabilityType).sort()
-    expect(capTypes).toContain('recognise_meaning_from_text_cap')
-    expect(capTypes).toContain('recognise_form_from_meaning_cap')
-    expect(capTypes).toContain('recall_meaning_from_text_cap')
-    expect(capTypes).toContain('produce_form_from_meaning_cap')
+    expect(capTypes).toEqual([
+      'produce_form_from_meaning_cap',
+      'recognise_meaning_from_audio_cap',
+      'recognise_meaning_from_text_cap',
+    ])
+    expect(capTypes).not.toContain('recognise_form_from_meaning_cap')
+    expect(capTypes).not.toContain('recall_meaning_from_text_cap')
+    expect(capTypes).not.toContain('produce_form_from_audio_cap')
     // sourceRef = 'learning_items/<normalized_text>'
     for (const cap of capabilities) {
       expect(cap.sourceRef).toBe('learning_items/halo')
@@ -153,12 +160,6 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
     expect(byType['recognise_meaning_from_text_cap']).toBe(
       'cap:v1:vocabulary_src:learning_items/halo:recognise_meaning_from_text_cap:id_to_l1:text:nl',
     )
-    expect(byType['recognise_form_from_meaning_cap']).toBe(
-      'cap:v1:vocabulary_src:learning_items/halo:recognise_form_from_meaning_cap:l1_to_id:text:nl',
-    )
-    expect(byType['recall_meaning_from_text_cap']).toBe(
-      'cap:v1:vocabulary_src:learning_items/halo:recall_meaning_from_text_cap:id_to_l1:text:nl',
-    )
     expect(byType['produce_form_from_meaning_cap']).toBe(
       'cap:v1:vocabulary_src:learning_items/halo:produce_form_from_meaning_cap:l1_to_id:text:nl',
     )
@@ -183,6 +184,19 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
     const textRecog = out.perItemPlans[0].capabilities.find((c) => c.capabilityType === 'recognise_meaning_from_text_cap')
     expect(textRecog?.canonicalKey).toBe(expectedTextRecognition)
+  })
+
+  it("#6 produce_form_from_meaning_cap's prerequisiteKeys point at #1's key, not a dropped #2 (ADR 0027)", () => {
+    // Pre-Slice-1: prerequisiteKeys was [l1ToIdChoiceKey] (#2's key). #2 no
+    // longer exists, so #6 must now prereq directly on #1 — otherwise every
+    // not-yet-introduced #6 would be permanently unintroducible
+    // (missing_prerequisite, pedagogy.ts intro gate).
+    const rows: TypedItemRow[] = [baseTypedRow({})]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    const { capabilities } = out.perItemPlans[0]
+    const textRecog = capabilities.find((c) => c.capabilityType === 'recognise_meaning_from_text_cap')!
+    const produceForm = capabilities.find((c) => c.capabilityType === 'produce_form_from_meaning_cap')!
+    expect(produceForm.prerequisiteKeys).toEqual([textRecog.canonicalKey])
   })
 
   it('produces the anchor context from the item row', () => {
@@ -277,36 +291,38 @@ describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
 
   // cap-v2 #161 (§0.8): audio caps emit UNCONDITIONALLY — audio is assumed to
   // exist; a missing clip is flagged by the vocab gate (CS23), not skipped here.
-  it('emits 6 caps even when item is NOT in audioClipsByNormalizedText (audio assumed)', () => {
+  // ADR 0027: 3 caps total (was 6) — recognise_meaning_from_audio_cap is the
+  // only audio-modality cap; produce_form_from_audio_cap (dictation) is dropped.
+  it('emits 3 caps even when item is NOT in audioClipsByNormalizedText (audio assumed)', () => {
     const rows: TypedItemRow[] = [baseTypedRow({})]
     const noAudioMap = new Map<string, AudioClipMeta>() // empty — no audio clip
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: noAudioMap })
-    expect(out.perItemPlans[0].capabilities).toHaveLength(6)
+    expect(out.perItemPlans[0].capabilities).toHaveLength(3)
     const capTypes = out.perItemPlans[0].capabilities.map((c) => c.capabilityType).sort()
-    expect(capTypes).toEqual(['produce_form_from_audio_cap', 'produce_form_from_meaning_cap', 'recall_meaning_from_text_cap', 'recognise_form_from_meaning_cap', 'recognise_meaning_from_audio_cap', 'recognise_meaning_from_text_cap'])
+    expect(capTypes).toEqual(['produce_form_from_meaning_cap', 'recognise_meaning_from_audio_cap', 'recognise_meaning_from_text_cap'])
   })
 
-  it('emits 6 caps when audioClipsByNormalizedText is not provided (audio assumed)', () => {
+  it('emits 3 caps when audioClipsByNormalizedText is not provided (audio assumed)', () => {
     const rows: TypedItemRow[] = [baseTypedRow({})]
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
-    expect(out.perItemPlans[0].capabilities).toHaveLength(6)
+    expect(out.perItemPlans[0].capabilities).toHaveLength(3)
   })
 
-  it('emits 6 caps (4 base + recognise_meaning_from_audio_cap + dictation) when item IS in audio map', () => {
+  it('emits 3 caps (2 base + recognise_meaning_from_audio_cap) when item IS in audio map', () => {
     const rows: TypedItemRow[] = [baseTypedRow({})] // indonesian_text: 'Halo' → normalizeTtsText → 'halo'
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
-    expect(out.perItemPlans[0].capabilities).toHaveLength(6)
+    expect(out.perItemPlans[0].capabilities).toHaveLength(3)
     const capTypes = out.perItemPlans[0].capabilities.map((c) => c.capabilityType).sort()
     expect(capTypes).toContain('recognise_meaning_from_audio_cap')
-    expect(capTypes).toContain('produce_form_from_audio_cap')
+    expect(capTypes).not.toContain('produce_form_from_audio_cap')
   })
 
-  it('audio caps have correct sourceKind, sourceRef, and lessonId', () => {
+  it('audio cap has correct sourceKind, sourceRef, and lessonId', () => {
     const rows: TypedItemRow[] = [baseTypedRow({})] // 'Halo' → normalized 'halo'
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
     const caps = out.perItemPlans[0].capabilities
-    const audioCaps = caps.filter((c) => c.capabilityType === 'recognise_meaning_from_audio_cap' || c.capabilityType === 'produce_form_from_audio_cap')
-    expect(audioCaps).toHaveLength(2)
+    const audioCaps = caps.filter((c) => c.capabilityType === 'recognise_meaning_from_audio_cap')
+    expect(audioCaps).toHaveLength(1)
     for (const cap of audioCaps) {
       expect(cap.sourceKind).toBe('vocabulary_src')
       expect(cap.sourceRef).toBe('learning_items/halo')
@@ -326,18 +342,8 @@ describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
     expect(audioCap.learnerLanguage).toBe('nl')
   })
 
-  it('dictation has direction=audio_to_id and learnerLanguage=none', () => {
-    // Staging path (capabilityCatalog.ts:106): learnerLanguage hardcoded 'none' for dictation
-    const rows: TypedItemRow[] = [baseTypedRow({})]
-    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
-    const dictCap = out.perItemPlans[0].capabilities.find((c) => c.capabilityType === 'produce_form_from_audio_cap')!
-    expect(dictCap.direction).toBe('audio_to_id')
-    expect(dictCap.modality).toBe('audio')
-    expect(dictCap.learnerLanguage).toBe('none')
-  })
-
-  it('pinned exact canonical_key literals for audio caps — parity gate with staging path', () => {
-    // CRITICAL: These keys must be byte-identical to what capabilityCatalog.ts
+  it('pinned exact canonical_key literal for the audio cap — parity gate with staging path', () => {
+    // CRITICAL: This key must be byte-identical to what capabilityCatalog.ts
     // emits for the same item. retireOrphanedCapabilities keys on canonical_key;
     // any drift here would double-write/orphan caps at the 5b cutover.
     // capabilityCatalog.ts:96 — recognise_meaning_from_audio_cap sourceRef = learning_items/<itemSlug(base_text)>
@@ -347,7 +353,7 @@ describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
     const caps = out.perItemPlans[0].capabilities
     const byType = Object.fromEntries(caps.map((c) => [c.capabilityType, c.canonicalKey]))
 
-    // Build expected keys via buildCanonicalKey (same function staging path uses)
+    // Build expected key via buildCanonicalKey (same function staging path uses)
     const sourceRef = 'learning_items/halo'
     const expectedAudioRecognition = buildCanonicalKey({
       sourceKind: 'vocabulary_src',
@@ -357,23 +363,13 @@ describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
       modality: 'audio',
       learnerLanguage: 'nl',
     })
-    const expectedDictation = buildCanonicalKey({
-      sourceKind: 'vocabulary_src',
-      sourceRef,
-      capabilityType: 'produce_form_from_audio_cap',
-      direction: 'audio_to_id',
-      modality: 'audio',
-      learnerLanguage: 'none',
-    })
 
     expect(byType['recognise_meaning_from_audio_cap']).toBe(expectedAudioRecognition)
-    expect(byType['produce_form_from_audio_cap']).toBe(expectedDictation)
     // Literal pin (belt + suspenders)
     expect(byType['recognise_meaning_from_audio_cap']).toBe('cap:v1:vocabulary_src:learning_items/halo:recognise_meaning_from_audio_cap:audio_to_l1:audio:nl')
-    expect(byType['produce_form_from_audio_cap']).toBe('cap:v1:vocabulary_src:learning_items/halo:produce_form_from_audio_cap:audio_to_id:audio:none')
   })
 
-  it('every word/phrase item gets 6 caps regardless of audio-map membership (audio assumed, §0.8)', () => {
+  it('every word/phrase item gets 3 caps regardless of audio-map membership (audio assumed, §0.8)', () => {
     const rows: TypedItemRow[] = [
       baseTypedRow({ id: 'r1', indonesian_text: 'Halo', l1_translation: 'Hallo' }), // in map
       baseTypedRow({ id: 'r2', source_item_ref: 'lesson-4/section-1/item-1', indonesian_text: 'Makan', l1_translation: 'Eten' }), // NOT in map
@@ -381,8 +377,8 @@ describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
     const halo = out.perItemPlans.find((p) => p.normalizedText === 'halo')!
     const makan = out.perItemPlans.find((p) => p.normalizedText === 'makan')!
-    expect(halo.capabilities).toHaveLength(6)
-    expect(makan.capabilities).toHaveLength(6)
+    expect(halo.capabilities).toHaveLength(3)
+    expect(makan.capabilities).toHaveLength(3)
   })
 
 })
