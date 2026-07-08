@@ -4,7 +4,7 @@
 // Requires: SUPABASE_SERVICE_KEY env var; VITE_SUPABASE_URL from .env.local
 import { readFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
-import { classifyDutchSeparator, classifyIndonesianSeparator, deriveSkillTypeFromCapabilityType } from '@/lib/capabilities'
+import { classifyDutchSeparator, classifyIndonesianSeparator, deriveSkillTypeFromCapabilityType, DROPPED_VOCAB_CAP_TYPES } from '@/lib/capabilities'
 import { findIneffectiveProduceReason } from '@/lib/answerNormalization'
 import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
@@ -2316,6 +2316,131 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         pass(`HC41 gdpr-retention-purge cron job healthy (last succeeded ${ageHours.toFixed(0)}h ago)`)
       }
     }
+  }
+}
+
+// ── HC42 (2026-07-08, ADR 0027 / Slice 1 §3.3, HC-A): zero live
+//        (retired_at IS NULL) vocabulary_src caps of the 3 DROPPED_VOCAB_CAP_TYPES
+//        modes (#2 recognise_form_from_meaning_cap, #4 recall_meaning_from_text_cap,
+//        #5 produce_form_from_audio_cap). The projector trim
+//        (projectors/vocab.ts) stops MINTING these for new words; this check
+//        catches the ~7,077 already-live rows for existing words, which are
+//        retired by the one-off scripts/retire-dropped-vocab-modes.ts --apply
+//        (owner-gated — see that script's header).
+//
+//        EXPECTED RED until the owner runs --apply. This is BY DESIGN — the
+//        script ships in the same PR as this check so the DB and the
+//        generator can never disagree for longer than one deploy, per the
+//        spec's "ships in the same PR" note (§3.2).
+{
+  const HC42 = 'HC42 zero live vocabulary_src caps of the 3 dropped modes (ADR 0027)'
+  type DroppedCap = { canonical_key: string; capability_type: string }
+
+  async function fetchAllDroppedModeCaps(): Promise<DroppedCap[]> {
+    const pageSize = 1000
+    const all: DroppedCap[] = []
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learning_capabilities')
+        .select('canonical_key, capability_type')
+        .eq('source_kind', 'vocabulary_src')
+        .in('capability_type', [...DROPPED_VOCAB_CAP_TYPES])
+        .is('retired_at', null)
+        .range(offset, offset + pageSize - 1)
+      if (error) throw error
+      const rows = (data ?? []) as DroppedCap[]
+      all.push(...rows)
+      if (rows.length < pageSize) break
+    }
+    return all
+  }
+
+  try {
+    const offenders = await fetchAllDroppedModeCaps()
+    if (offenders.length === 0) {
+      pass(HC42)
+    } else {
+      const byType: Record<string, number> = {}
+      for (const o of offenders) byType[o.capability_type] = (byType[o.capability_type] ?? 0) + 1
+      fail(
+        `${HC42} — EXPECTED RED until the owner runs the --apply step (Slice 1)`,
+        `${offenders.length} live dropped-mode cap(s) found: ` +
+        `${Object.entries(byType).map(([t, n]) => `${t}=${n}`).join(', ')}. ` +
+        `Sample: ${offenders.slice(0, 5).map((o) => o.canonical_key).join(', ')}${offenders.length > 5 ? ' …' : ''}\n` +
+        '   → Owner-gated: confirm the nightly backup checkpoint exists (docs/process/restore-runbook.md), ' +
+        'then run bun scripts/retire-dropped-vocab-modes.ts --apply, then re-run make check-supabase-deep.',
+      )
+    }
+  } catch (err) {
+    fail(HC42, err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC43 (2026-07-08, ADR 0027 / Slice 1 §3.3, HC-B): zero live
+//        vocabulary_src produce_form_from_meaning_cap (#6) rows whose
+//        prerequisite_keys reference a dropped-type key. Before the one-off
+//        script rewrites them, #6 prereqs the now-dropped #2
+//        (recognise_form_from_meaning_cap), which would leave every
+//        not-yet-introduced #6 permanently unintroducible
+//        (missing_prerequisite, src/lib/session-builder/pedagogy.ts).
+//
+//        EXPECTED RED until the owner runs --apply — same gate as HC42.
+{
+  const HC43 = 'HC43 no live vocabulary_src produce_form_from_meaning_cap row prereqs a dropped-type key (ADR 0027)'
+  type ProduceFormCap = { canonical_key: string; source_ref: string; prerequisite_keys: string[] }
+
+  // Canonical key shape: cap:v1:<source_kind>:<source_ref>:<capability_type>:<direction>:<modality>:<learner_language>
+  // (src/lib/capabilities/canonicalKey.ts:42). The source_ref segment has ':'
+  // escaped by encodeSegment, so a plain split(':') safely yields 8 parts —
+  // index 4 is the capability_type of the REFERENCED key.
+  function capabilityTypeFromCanonicalKey(key: string): string | null {
+    const parts = key.split(':')
+    return parts.length === 8 ? parts[4] : null
+  }
+
+  async function fetchAllProduceFormCaps(): Promise<ProduceFormCap[]> {
+    const pageSize = 1000
+    const all: ProduceFormCap[] = []
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learning_capabilities')
+        .select('canonical_key, source_ref, prerequisite_keys')
+        .eq('source_kind', 'vocabulary_src')
+        .eq('capability_type', 'produce_form_from_meaning_cap')
+        .is('retired_at', null)
+        .range(offset, offset + pageSize - 1)
+      if (error) throw error
+      const rows = (data ?? []) as ProduceFormCap[]
+      all.push(...rows)
+      if (rows.length < pageSize) break
+    }
+    return all
+  }
+
+  try {
+    const caps = await fetchAllProduceFormCaps()
+    const droppedTypes = new Set<string>(DROPPED_VOCAB_CAP_TYPES)
+    const offenders = caps.filter((c) =>
+      (c.prerequisite_keys ?? []).some((k) => {
+        const t = capabilityTypeFromCanonicalKey(k)
+        return t !== null && droppedTypes.has(t)
+      }),
+    )
+    if (offenders.length === 0) {
+      pass(`${HC43} (${caps.length} row(s) checked)`)
+    } else {
+      fail(
+        `${HC43} — EXPECTED RED until the owner runs the --apply step (Slice 1)`,
+        `${offenders.length} produce_form_from_meaning_cap row(s) still prereq a dropped-type key. ` +
+        `Sample: ${offenders.slice(0, 5).map((o) => o.source_ref).join(', ')}${offenders.length > 5 ? ' …' : ''}\n` +
+        '   → Owner-gated: confirm the nightly backup checkpoint exists (docs/process/restore-runbook.md), ' +
+        'then run bun scripts/retire-dropped-vocab-modes.ts --apply, then re-run make check-supabase-deep.',
+      )
+    }
+  } catch (err) {
+    fail(HC43, err instanceof Error ? err.message : String(err))
   }
 }
 
