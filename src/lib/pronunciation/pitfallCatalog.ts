@@ -44,6 +44,18 @@ export interface Pitfall {
 }
 
 const CATALOG: readonly Pitfall[] = [
+  // ── Dutch-speaker priority pitfall (the #1 letter-to-sound trap) ────────────
+  {
+    id: 'u-oe',
+    sound: 'u',
+    l1: ['nl'],
+    ruleNl: "De u klinkt altijd als 'oe' (zoals in 'boek'): susu = 'soesoe'.",
+    ruleEn: "u always sounds like 'oo' in 'boot'.",
+    pitfallNl: "Lees de u nooit als de Nederlandse u van 'muur'. In de oude spelling schreef men zelfs oe: soesoe, Soekarno.",
+    pitfallEn: 'Never the Dutch ü-like u.',
+    examples: ['susu', 'buku', 'untuk', 'minum'],
+    rank: 1,
+  },
   // ── Shared pitfalls (both Dutch and English speakers) ──────────────────────
   {
     id: 'e-two-sounds',
@@ -54,7 +66,7 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: 'De spelling laat het verschil niet zien — onthoud per woord welke e het is.',
     pitfallEn: "The spelling doesn't mark the difference — learn per word which e it is.",
     examples: ['besar', 'beli', 'sore', 'enam'],
-    rank: 1,
+    rank: 2,
   },
   {
     id: 'c-ch',
@@ -73,7 +85,7 @@ const CATALOG: readonly Pitfall[] = [
         contrastEn: "'cari' (to look for) starts with the 'ch' sound; 'kari' (curry) with a k.",
       },
     ],
-    rank: 2,
+    rank: 3,
   },
   {
     id: 'ng-digraph',
@@ -84,7 +96,18 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: 'Laat geen aparte g horen.',
     pitfallEn: "Don't pronounce a separate g.",
     examples: ['dengan', 'bangun', 'uang', 'orang'],
-    rank: 3,
+    rank: 4,
+  },
+  {
+    id: 'ny-digraph',
+    sound: 'ny',
+    l1: ['nl', 'en'],
+    ruleNl: "ny is één klank, zoals de 'nj' in 'oranje' of de Spaanse ñ.",
+    ruleEn: "ny is a single sound, like the ñ in 'señor' or 'ny' in 'canyon'.",
+    pitfallNl: 'Spreek het niet uit als losse n + j.',
+    pitfallEn: "Don't split it into n + y.",
+    examples: ['nyonya', 'banyak', 'hanya', 'nyaman'],
+    rank: 5,
   },
   {
     id: 'final-consonants',
@@ -103,7 +126,7 @@ const CATALOG: readonly Pitfall[] = [
         contrastEn: "'makan' (to eat) ends in -n; 'makam' (grave) ends in -m.",
       },
     ],
-    rank: 4,
+    rank: 6,
   },
   // ── Dutch-speaker pitfalls ─────────────────────────────────────────────────
   {
@@ -123,7 +146,7 @@ const CATALOG: readonly Pitfall[] = [
         contrastEn: "'gali' (to dig) has the hard g; 'kali' (times/river) a k.",
       },
     ],
-    rank: 5,
+    rank: 7,
   },
   {
     id: 'w-sound',
@@ -134,7 +157,7 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: 'Niet de Nederlandse v-achtige w gebruiken.',
     pitfallEn: 'Not the Dutch v-like w.',
     examples: ['waktu', 'warna', 'bawa', 'siswa'],
-    rank: 6,
+    rank: 8,
   },
   {
     id: 'j-sound',
@@ -145,7 +168,7 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: "Geen 'j' zoals in 'jas' — gebruik de 'dzj'-klank.",
     pitfallEn: 'For Dutch speakers: use the English j, not the y-sound.',
     examples: ['jam', 'jalan', 'saja', 'belajar'],
-    rank: 7,
+    rank: 9,
   },
   // ── English-speaker pitfalls ───────────────────────────────────────────────
   {
@@ -165,7 +188,7 @@ const CATALOG: readonly Pitfall[] = [
         contrastEn: "'rusa' (deer) starts with the tapped r; 'lusa' (the day after tomorrow) with an l.",
       },
     ],
-    rank: 8,
+    rank: 10,
   },
   {
     id: 'pure-vowels',
@@ -176,7 +199,18 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: 'Engelstaligen voegen een na-klank toe; houd ze zuiver.',
     pitfallEn: "English speakers add a glide (o → 'ow', e → 'ey'); keep them pure.",
     examples: ['kota', 'baju', 'satu', 'minggu'],
-    rank: 9,
+    rank: 11,
+  },
+  {
+    id: 'diphthongs-au-ai',
+    sound: 'au / ai',
+    l1: ['en'],
+    ruleNl: "au klinkt als 'auw' (pulau), ai als 'ai' in 'haai' (pantai) — kort en strak.",
+    ruleEn: "au sounds like 'ow' in 'now' (pulau); ai like 'eye' (pantai) — quick and tight.",
+    pitfallNl: 'Rek de tweeklank niet uit.',
+    pitfallEn: "Don't smooth or drawl them into long vowels ('pull-oh', 'pant-ay').",
+    examples: ['pulau', 'pantai', 'kalau', 'sampai'],
+    rank: 12,
   },
   {
     id: 'unaspirated-stops',
@@ -187,7 +221,7 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: 'Engelstaligen blazen p/t/k; houd de lucht binnen.',
     pitfallEn: 'English speakers aspirate initial p/t/k; hold the air back.',
     examples: ['pagi', 'tiga', 'kaki', 'pintu'],
-    rank: 10,
+    rank: 13,
   },
   {
     id: 'initial-ng',
@@ -198,7 +232,19 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: 'Engels begint nooit met ng; oefen deze klank.',
     pitfallEn: 'English never starts a word with ng — practise it.',
     examples: ['ngeri', 'ngantuk', 'nganga'],
-    rank: 11,
+    rank: 14,
+  },
+  // ── Cross-language pitfall (prosody, ranked last — segmentals before stress) ─
+  {
+    id: 'penultimate-stress',
+    sound: 'bi-CA-ra',
+    l1: ['nl', 'en'],
+    ruleNl: 'De klemtoon ligt bijna altijd op de voorlaatste lettergreep: biCAra, seLAmat, keluARga.',
+    ruleEn: 'Stress almost always falls on the next-to-last syllable: biCAra, seLAmat, keluARga.',
+    pitfallNl: 'Houd de klemtoon licht — Indonesisch kent geen zware klemtoon zoals het Nederlands.',
+    pitfallEn: 'Keep the stress light — Indonesian stress is much weaker than in English.',
+    examples: ['bicara', 'selamat', 'keluarga', 'bagaimana'],
+    rank: 15,
   },
 ]
 
