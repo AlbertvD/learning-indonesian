@@ -19,6 +19,7 @@ import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { AffixTrainerLink } from '@/components/lessons/AffixTrainerLink'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
 import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
@@ -319,6 +320,7 @@ export function buildChapters(activation: ReturnType<typeof useLessonActivation>
             labelClassName={classes.audioLabel}
           />
           <Shell><GrammarSection section={sections[3]} /></Shell>
+          <AffixTrainerLink affixes={['ber-']} />
         </>
       ) },
     { id: 'woorden',     title: 'Woorden',     description: '46 woorden uit de tempel: steen, galerijen, reliëfs en ritueel.',
