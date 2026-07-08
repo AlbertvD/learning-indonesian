@@ -10,6 +10,7 @@ import {
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/session-builder/pedagogy'
 import { compose, reserveGrammarDueFloor } from '@/lib/session-builder/compose'
+import { suppressGraduatedVocabDue } from '@/lib/session-builder/graduation'
 import { buildQueueDryingDiagnostic } from '@/lib/session-builder/drying'
 import { buryThinSiblings } from '@/lib/session-builder/siblingBury'
 import { excludeListeningCapabilities } from '@/lib/session-builder/listeningFilter'
@@ -233,14 +234,25 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
   // returns fewer than `min(limit, orderedDue.length)`, so the session size is
   // unchanged. Non-standard (lesson-scoped) modes keep the exact legacy top-N cut.
   // See docs/plans/2026-07-05-grammar-exposure-session-quota-design.md §4A.
-  const orderedDue = await getDueCapabilities({
-    userId: input.plannerInput.userId,
-    now: input.now,
-    mode: input.mode,
-    limit: Number.MAX_SAFE_INTEGER,
-  }, {
-    listLearnerCapabilityStates: async () => input.schedulerRows,
-  })
+  //
+  // Vocab graduation (docs/plans/2026-07-08-vocab-mode-set-reduction-and-graduation.md
+  // §4.2, ADR 0027) is applied HERE, immediately after the fetch and before
+  // EVERYTHING downstream — the grammar floor, the size cut, and
+  // `backlogDueCount` (below) all need to see the shed #1 entries so a
+  // graduated word's due-load drop feeds `dueCount` (→ `openSlots`,
+  // loadBudget.ts:24) and the Home backlog insight equally. See graduation.ts.
+  const orderedDue = suppressGraduatedVocabDue(
+    await getDueCapabilities({
+      userId: input.plannerInput.userId,
+      now: input.now,
+      mode: input.mode,
+      limit: Number.MAX_SAFE_INTEGER,
+    }, {
+      listLearnerCapabilityStates: async () => input.schedulerRows,
+    }),
+    input.capabilitiesByKey,
+    input.schedulerRows,
+  )
   const familyOfKey = (canonicalKey: string) => {
     const sourceKind = input.capabilitiesByKey.get(canonicalKey)?.sourceKind
     return sourceKind ? capabilityFamily(sourceKind) : undefined
@@ -412,8 +424,10 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     practiceReviewCapabilities: activePracticeReviewCapabilities,
     diagnostics: extraDiagnostics,
     limit: input.limit,
-    // The full overdue queue (orderedDue was fetched at limit=MAX above), before
-    // the session-size cut — the true review backlog the Home insight surfaces.
+    // The full overdue queue (orderedDue was fetched at limit=MAX above, and
+    // already has vocab-graduation suppression applied — see the fetch site
+    // above), before the session-size cut — the true review backlog the Home
+    // insight surfaces.
     backlogDueCount: orderedDue.length,
   })
 }
