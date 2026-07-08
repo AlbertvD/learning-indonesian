@@ -1,0 +1,40 @@
+/* AffixTrainerLink — layout-only wrapper (chrome is inline, token-based so it
+   sits inside any lesson theme). Inherits the page's single lesson column so
+   it lines up with the rest of the chapter's content. */
+
+.band {
+  width: 100%;
+  padding: 24px 0 8px;
+}
+
+.inner {
+  max-width: var(--lesson-col, 1024px);
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x, 16px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary-border);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.link:hover {
+  background: var(--accent-primary-border);
+}
+
+.icon {
+  flex-shrink: 0;
+}

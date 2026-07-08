@@ -144,6 +144,12 @@ a.root:hover {
   overflow: hidden;
 }
 
+/* the null-percent path (Bar's "—" branch) — a static, muted track with no
+ * fill: a content-fixed tier that doesn't exist yet, not "0% progress". */
+.barTrackEmpty {
+  background: var(--card-border);
+}
+
 .barFill {
   display: block;
   height: 100%;

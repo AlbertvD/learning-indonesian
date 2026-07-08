@@ -8,10 +8,11 @@ import { Link } from 'react-router-dom'
 import { SectionHeading } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import { affixPracticePath, type AffixDetail } from '@/lib/morphology'
+import type { SessionAudioMap } from '@/services/audioService'
 import { RuleCard } from './RuleCard'
 import { WordFamilyExplorer } from './WordFamilyExplorer'
 
-export function AffixDetailView({ detail }: { detail: AffixDetail }) {
+export function AffixDetailView({ detail, audioMap }: { detail: AffixDetail; audioMap: SessionAudioMap }) {
   const T = useT()
   const canPractise = detail.practiceSourceRefs.length > 0
 
@@ -49,13 +50,13 @@ export function AffixDetailView({ detail }: { detail: AffixDetail }) {
         )}
       </Group>
 
-      <RuleCard detail={detail} />
+      <RuleCard detail={detail} audioMap={audioMap} />
 
       <div>
         <SectionHeading>{T.morphology.familiesTitle}</SectionHeading>
         <Text size="sm" c="dimmed" mt={4}>{T.morphology.familiesSubtitle}</Text>
       </div>
-      <WordFamilyExplorer families={detail.families} affix={detail.affix} />
+      <WordFamilyExplorer families={detail.families} affix={detail.affix} audioMap={audioMap} />
     </Stack>
   )
 }

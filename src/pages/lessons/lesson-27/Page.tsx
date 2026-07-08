@@ -23,6 +23,7 @@ import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { AffixTrainerLink } from '@/components/lessons/AffixTrainerLink'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
 import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
@@ -397,6 +398,7 @@ export function buildChapters(activation: ReturnType<typeof useLessonActivation>
             innerClassName={classes.audioInner}
           />
           <Shell><GrammarCircumfix section={sections[4]} /></Shell>
+          <AffixTrainerLink affixes={['ke-…-an']} />
         </>
       ) },
     { id: 'woorden',    title: 'Woorden',    description: 'De inventaris van een gemeubileerd huis: van tegel tot lemari es, met audio.',

@@ -7,8 +7,10 @@ import { Card, Stack, Group, Title, Text, Badge, Anchor } from '@mantine/core'
 import { Link } from 'react-router-dom'
 import { useT } from '@/hooks/useT'
 import type { AffixDetail } from '@/lib/morphology'
+import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
+import { PlayButton } from '@/components/PlayButton'
 
-export function RuleCard({ detail }: { detail: AffixDetail }) {
+export function RuleCard({ detail, audioMap }: { detail: AffixDetail; audioMap: SessionAudioMap }) {
   const T = useT()
   return (
     <Card withBorder radius="md" padding="lg">
@@ -43,17 +45,23 @@ export function RuleCard({ detail }: { detail: AffixDetail }) {
           <div>
             <Text size="sm" fw={600} c="dimmed" mb={4}>{T.morphology.examplesTitle}</Text>
             <Stack gap={4}>
-              {detail.examples.map((ex) => (
-                <div key={ex.derivedText}>
-                  <Text size="sm">
-                    <Text span c="dimmed">{ex.rootText}</Text>
-                    {' → '}
-                    <Text span fw={600}>{ex.derivedText}</Text>
-                    {ex.derivedMeaning && <Text span c="dimmed"> — {ex.derivedMeaning}</Text>}
-                  </Text>
-                  {ex.carrierText && <Text size="xs" c="dimmed" fs="italic">{ex.carrierText}</Text>}
-                </div>
-              ))}
+              {detail.examples.map((ex) => {
+                const audioUrl = resolveSessionAudioUrl(audioMap, ex.derivedText, null)
+                return (
+                  <div key={ex.derivedText}>
+                    <Group gap={4} wrap="nowrap" align="center">
+                      <Text size="sm">
+                        <Text span c="dimmed">{ex.rootText}</Text>
+                        {' → '}
+                        <Text span fw={600}>{ex.derivedText}</Text>
+                        {ex.derivedMeaning && <Text span c="dimmed"> — {ex.derivedMeaning}</Text>}
+                      </Text>
+                      {audioUrl && <PlayButton audioUrl={audioUrl} size="xs" />}
+                    </Group>
+                    {ex.carrierText && <Text size="xs" c="dimmed" fs="italic">{ex.carrierText}</Text>}
+                  </div>
+                )
+              })}
             </Stack>
           </div>
         )}

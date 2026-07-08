@@ -31,6 +31,7 @@ import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { AffixTrainerLink } from '@/components/lessons/AffixTrainerLink'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
 import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
@@ -317,6 +318,7 @@ export function buildChapters(activation: ReturnType<typeof useLessonActivation>
             innerClassName={classes.audioInner}
           />
           <Shell><GrammarSection section={sections[2]} /></Shell>
+          <AffixTrainerLink affixes={['-kan', 'meN-…-kan', 'di-…-kan']} />
         </>
       ) },
     { id: 'woorden',    title: 'Woorden',    description: '51 woorden uit de fabel: rivier, regen en redding.',

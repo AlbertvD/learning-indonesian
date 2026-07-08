@@ -13,6 +13,16 @@ import type { MasteryLabel } from '@/lib/analytics/mastery/masteryModel'
 export type { AffixType, CefrLevel } from '@/lib/capabilities'
 export type { MasteryLabel } from '@/lib/analytics/mastery/masteryModel'
 
+/** A per-capability-class tally: `masteredCount` of `totalCount` caps of that
+ *  class reached the `mastered` rung. `totalCount` is content-fixed (every cap
+ *  of that class for the affix, independent of learner unlock state) — only
+ *  decay (at_risk) or new content can lower the resulting percentage.
+ *  `totalCount: 0` means the tier doesn't exist yet for this affix. */
+export interface AffixProgressClassTally {
+  masteredCount: number
+  totalCount: number
+}
+
 /** The mini-funnel distribution + headline counts for one affix's derivations.
  *  A "derivation" is one source_ref (one affixed pair, weakest-wins across its
  *  caps). Reuses the canonical mastery rungs — nothing morphology-specific is
@@ -29,6 +39,12 @@ export interface AffixProgress {
   practisedCount: number
   /** Total derivations (affixed pairs) for the affix. */
   totalCount: number
+  /** Recognition-class tally — recognise_meaning_from_text_cap +
+   *  recognise_word_form_link_cap, tallied per CAP (not per derivation). */
+  recognition: AffixProgressClassTally
+  /** Production-class tally — produce_derived_form_cap +
+   *  produce_form_from_context_cap, tallied per CAP. */
+  production: AffixProgressClassTally
 }
 
 /** One tile in the sequenced affix catalog grid. */

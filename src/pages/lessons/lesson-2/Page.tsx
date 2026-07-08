@@ -12,6 +12,7 @@ import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { AffixTrainerLink } from '@/components/lessons/AffixTrainerLink'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
 import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
@@ -571,7 +572,16 @@ export function buildChapters(activation: ReturnType<typeof useLessonActivation>
         </>
       ) },
     { id: 'bouwstenen',  title: 'Bouwstenen',  description: 'Drie kleinere bouwstenen erbij: het prefix SE-, bijvoeglijke naamwoorden en ontkenning met tidak.',
-      node: <Shell><ClassifiersSection section={sections[4]} /><AdjectivesSection section={sections[8]} /><NegationSection section={sections[7]} /></Shell> },
+      node: (
+        <>
+          <Shell><ClassifiersSection section={sections[4]} /><AdjectivesSection section={sections[8]} /><NegationSection section={sections[7]} /></Shell>
+          {/* Task A2: lesson 2 has no dedicated Grammatica chapter — the
+              SE- prefix is taught here in Bouwstenen, so the trainer link
+              lands at the end of THIS chapter instead (docs/plans/
+              2026-07-08-affix-trainer-quick-wins.md §2). */}
+          <AffixTrainerLink affixes={['se-']} />
+        </>
+      ) },
     { id: 'naslag',      title: 'Naslag',      description: 'De getallen 11 tot 20 en 52 woorden uit deze les, als naslagwerk.',
       node: <Shell><NumbersStrip section={sections[3]} /><VocabularyReference section={sections[1]} /></Shell> },
     { id: 'cultuur',     title: 'Cultuur',     description: 'Het grote wiel van Java — Borobudur, de tempel uit de hero-foto.',

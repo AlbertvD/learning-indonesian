@@ -15,6 +15,7 @@ import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { AffixTrainerLink } from '@/components/lessons/AffixTrainerLink'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
 import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
@@ -393,6 +394,7 @@ export function buildChapters(activation: ReturnType<typeof useLessonActivation>
             innerClassName={classes.audioInner}
           />
           <Shell><PassiveSection section={sections[3]} /></Shell>
+          <AffixTrainerLink affixes={['di-']} />
         </>
       ) },
     { id: 'tijd-en-hoeveelheid', title: 'Tijd & hoeveelheid', description: 'Sudah/telah, sesudah/setelah, en de woorden voor alle, alles en iedereen.',

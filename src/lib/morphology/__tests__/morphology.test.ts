@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildAffixCatalog } from '../catalog'
+import { buildAffixCatalog, rollUpProgress } from '../catalog'
 import { buildAffixDetail } from '../family'
 import { affixPracticePath, affixScopeFromSnapshot, AFFIX_SESSION_MODE } from '../practice'
 import type {
@@ -8,6 +8,8 @@ import type {
   MorphologySnapshot,
   MorphologyStateRow,
 } from '../adapter'
+import type { CapabilityMasteryEvidence } from '@/lib/analytics/mastery/masteryModel'
+import type { CapabilityType } from '@/lib/capabilities'
 
 const now = new Date('2026-06-19T10:00:00.000Z')
 const recent = '2026-06-18T10:00:00.000Z'
@@ -48,6 +50,33 @@ function pair(overrides: Partial<MorphologyPairRow> & { capabilityId: string; ro
 
 function masteredState(capabilityId: string): MorphologyStateRow {
   return { capabilityId, reviewCount: 5, lapseCount: 0, consecutiveFailureCount: 0, stability: 20, lastReviewedAt: recent }
+}
+
+// Minimal CapabilityMasteryEvidence factory for direct rollUpProgress unit
+// tests (the recognition/production split doesn't need the full snapshot/
+// adapter fan-out — it's a pure per-cap tally).
+function evidence(
+  overrides: Partial<CapabilityMasteryEvidence> & {
+    capabilityId: string
+    sourceRef: string
+    capabilityType: CapabilityType
+  },
+): CapabilityMasteryEvidence {
+  return {
+    canonicalKey: `key:${overrides.capabilityId}`,
+    sourceKind: 'word_form_pair_src',
+    modality: 'text',
+    readinessStatus: 'ready',
+    publicationStatus: 'published',
+    lessonActivated: true,
+    lessonNumber: 9,
+    reviewCount: 0,
+    lapseCount: 0,
+    consecutiveFailureCount: 0,
+    stability: null,
+    lastReviewedAt: null,
+    ...overrides,
+  }
 }
 
 // meN- (ajar→mengajar mastered L9, tulis→menulis introduced L13),
@@ -129,6 +158,69 @@ describe('buildAffixCatalog', () => {
     expect(nl.gloss).toMatch(/lijdende|passieve/i)
     expect(en.gloss).toMatch(/passive/i)
     expect(nl.gloss).not.toBe(en.gloss)
+  })
+
+  it('splits per-affix progress into recognition/production class tallies (review P1) — affix with only recognition caps has production.totalCount 0', () => {
+    const tiles = buildAffixCatalog(fixture(), 'nl', now)
+    const meN = tiles.find(t => t.affix === 'meN-')!
+    // Both meN- fixture caps are recognise_word_form_link_cap (recognition class);
+    // no produce_* cap exists yet for this affix — the production tier doesn't
+    // exist, so its denominator is 0 (renders as the LessonCard Bar's "—" path,
+    // never a false "0%").
+    expect(meN.progress.recognition.totalCount).toBe(2)
+    expect(meN.progress.recognition.masteredCount).toBe(1) // mengajar mastered, menulis not
+    expect(meN.progress.production.totalCount).toBe(0)
+    expect(meN.progress.production.masteredCount).toBe(0)
+  })
+})
+
+describe('rollUpProgress — recognition/production class split (review P1)', () => {
+  it('tallies mastered recognition + untouched production as 100%/0% honestly (the tier exists, nothing mastered)', () => {
+    const progress = rollUpProgress([
+      evidence({
+        capabilityId: 'r1', sourceRef: 'affixed_form_pairs/x',
+        capabilityType: 'recognise_meaning_from_text_cap',
+        reviewCount: 5, stability: 20, lastReviewedAt: recent,
+      }),
+      evidence({
+        capabilityId: 'p1', sourceRef: 'affixed_form_pairs/x',
+        capabilityType: 'produce_derived_form_cap',
+        reviewCount: 0,
+      }),
+    ], now)
+    expect(progress.recognition.totalCount).toBe(1)
+    expect(progress.recognition.masteredCount).toBe(1)
+    expect(progress.production.totalCount).toBe(1)
+    expect(progress.production.masteredCount).toBe(0) // honest 0%, tier exists
+  })
+
+  it('leaves production.totalCount at 0 when no production cap exists for the affix yet', () => {
+    const progress = rollUpProgress([
+      evidence({ capabilityId: 'r1', sourceRef: 'affixed_form_pairs/x', capabilityType: 'recognise_word_form_link_cap' }),
+    ], now)
+    expect(progress.production.totalCount).toBe(0)
+    expect(progress.production.masteredCount).toBe(0)
+  })
+
+  it('keeps the overall label weakest-wins across BOTH classes, unaffected by the per-class split', () => {
+    const progress = rollUpProgress([
+      evidence({
+        capabilityId: 'r1', sourceRef: 'affixed_form_pairs/x',
+        capabilityType: 'recognise_meaning_from_text_cap',
+        reviewCount: 5, stability: 20, lastReviewedAt: recent,
+      }),
+      evidence({
+        capabilityId: 'p1', sourceRef: 'affixed_form_pairs/x',
+        capabilityType: 'produce_derived_form_cap',
+        reviewCount: 0,
+      }),
+    ], now)
+    // Same derivation (one source_ref), weakest-wins across both caps: mastered
+    // recognition + introduced production → the derivation's headline rung is
+    // 'introduced' — the new class split is purely additive, it does not change
+    // the existing weakest-wins invariant.
+    expect(progress.label).toBe('introduced')
+    expect(progress.totalCount).toBe(1)
   })
 })
 

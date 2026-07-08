@@ -11,6 +11,7 @@ import { PageContainer, PageBody, PageHeader, LoadingState, EmptyState } from '@
 import { LerenNav } from '@/components/lessons/LerenNav'
 import { AffixCatalogGrid, AffixDetailView } from '@/components/morphology'
 import { getAffixCatalog, getAffixDetail, type AffixCatalogTile, type AffixDetail } from '@/lib/morphology'
+import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
@@ -27,6 +28,7 @@ export function AffixTrainer() {
   const [tiles, setTiles] = useState<AffixCatalogTile[] | null>(null)
   const [detail, setDetail] = useState<AffixDetail | null>(null)
   const [notFound, setNotFound] = useState(false)
+  const [audioMap, setAudioMap] = useState<SessionAudioMap>(new Map())
 
   useEffect(() => {
     if (!user) return
@@ -39,7 +41,23 @@ export function AffixTrainer() {
         if (affix) {
           const result = await getAffixDetail(user.id, affix, language)
           if (cancelled) return
-          if (!result) setNotFound(true)
+          if (!result) {
+            setNotFound(true)
+          } else {
+            // Audio is enrichment, not core data: fetch it AFTER the detail
+            // resolves (the word list depends on detail's families/examples),
+            // and never let a failure here fail the detail view itself.
+            const words = [
+              ...result.families.flatMap((family) => family.forms.map((form) => form.derivedText)),
+              ...result.examples.map((example) => example.derivedText),
+            ]
+            try {
+              const map = await fetchSessionAudioMap(words.map((text) => ({ text, voiceId: null })))
+              if (!cancelled) setAudioMap(map)
+            } catch (audioErr) {
+              logError({ page: 'affix-trainer', action: 'fetchAffixAudio', error: audioErr })
+            }
+          }
           setDetail(result)
         } else {
           const result = await getAffixCatalog(user.id, language)
@@ -76,7 +94,7 @@ export function AffixTrainer() {
           <EmptyState icon={<IconSearchOff size={40} />} message={T.morphology.notFound} />
         )}
 
-        {!loading && !error && affix && detail && <AffixDetailView detail={detail} />}
+        {!loading && !error && affix && detail && <AffixDetailView detail={detail} audioMap={audioMap} />}
 
         {!loading && !error && !affix && tiles && (
           tiles.length === 0

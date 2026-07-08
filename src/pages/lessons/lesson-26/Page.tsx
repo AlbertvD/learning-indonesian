@@ -23,6 +23,7 @@ import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { AffixTrainerLink } from '@/components/lessons/AffixTrainerLink'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
 import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
@@ -353,6 +354,7 @@ export function buildChapters(activation: ReturnType<typeof useLessonActivation>
                 that uses it rather than sitting orphaned on the cover. */}
             <ProverbBand section={sections[4]} />
           </Shell>
+          <AffixTrainerLink affixes={['ter-']} />
         </>
       ) },
     { id: 'woorden',       title: 'Woorden',       description: 'Woordenschat over natuur, klimaat en seizoenen — van alam tot salju.',
