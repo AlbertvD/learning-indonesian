@@ -197,6 +197,11 @@ check-supabase-deep: ## Deep structural check: tables, RLS, grants (requires SUP
 check-supabase-rls: ## RLS deny-path check: signs in as test user + admin, verifies RLS policies (uses .env.local)
 	NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/check-supabase-rls.ts
 
+.PHONY: verify-lessons-overview-rls
+verify-lessons-overview-rls: ## Slice 3 gate: live-execution proof that get_lessons_overview's mastered-numerator subsumption survives real authenticated-role RLS (requires POSTGRES_PASSWORD; run AFTER `make migrate` applies this slice, BEFORE merge)
+	@test -n "$(POSTGRES_PASSWORD)" || { echo "Error: POSTGRES_PASSWORD is required (add to .env.local)"; exit 1; }
+	bun scripts/verify-lessons-overview-rls.ts
+
 .PHONY: pre-deploy
 pre-deploy: ## Run the full pre-deploy gauntlet: lint + tests + build + Supabase health checks
 	@echo "→ Lint..."

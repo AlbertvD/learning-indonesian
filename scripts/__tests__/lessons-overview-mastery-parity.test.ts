@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { hasMasteryStrength, isRecent } from '@/lib/analytics/mastery/mastered'
 
 // ADR 0015 parity guard, layer (a): the `mastered` predicate is mirrored in two
 // places — TS `labelForCapability` (the canonical definition) and the SQL
@@ -30,14 +31,20 @@ const migrationSql = readFileSync(path.resolve('scripts/migration.sql'), 'utf8')
 // thresholds now live in `hasMasteryStrength`'s body, not inline in
 // `isCapabilityMastered` — anchor the regex there so it survives the move.
 const tsMastered = /input\.reviewCount >= (\d+) && \(input\.stability \?\? 0\) >= (\d+)/.exec(masterySrc)
-const tsRecency = /ageMs <= (\d+) \* 24 \* 60 \* 60 \* 1000/.exec(masterySrc)
+// Slice 3 (2026-07-08/09, vocab-mode-set-reduction §5, ADR 0027 Analytics note)
+// made the recency window stability-scaled: `Math.max(30, 2 * stability)` days,
+// instead of a flat 30. Anchor on the `Math.max(floor, multiplier * ...)` call
+// so both the floor (still 30 — the young-card / no-stability-data case) and the
+// multiplier (2) are pinned to the SAME literals the SQL `greatest(...)` mirrors.
+const tsRecency = /Math\.max\((\d+), (\d+) \* \(stability \?\? 0\)\)/.exec(masterySrc)
 // `isCapabilityMastered` must still COMPOSE the strength core with the
 // recency window (byte-identical truth table to the pre-extraction inline
-// version — see mastered.ts's header comment on the recomposition). A
-// maintainer who inlines the thresholds back into `isCapabilityMastered`
+// version — see mastered.ts's header comment on the recomposition), now ALSO
+// passing `input.stability` through so the window scales for THIS input (Slice 3).
+// A maintainer who inlines the thresholds back into `isCapabilityMastered`
 // instead of calling `hasMasteryStrength` would silently reintroduce the
 // second-definition drift risk this extraction removed.
-const tsComposition = /hasMasteryStrength\(input\)\s*&&\s*isRecent\(input\.lastReviewedAt, now\)/.exec(masterySrc)
+const tsComposition = /hasMasteryStrength\(input\)\s*&&\s*isRecent\(input\.lastReviewedAt, now, input\.stability\)/.exec(masterySrc)
 
 // The SQL `mastered_count` filter block (between `count(*) filter (` and `as mastered_count`).
 function masteredSqlFilter(): string {
@@ -64,20 +71,21 @@ describe('get_lessons_overview mastered predicate ↔ masteryModel parity (ADR 0
     expect(tsRecency).not.toBeNull()
   })
 
-  it('isCapabilityMastered composes hasMasteryStrength with the recency window (Slice 2 extraction)', () => {
+  it('isCapabilityMastered composes hasMasteryStrength with the recency window (Slice 2 extraction, Slice 3 stability passthrough)', () => {
     expect(tsComposition).not.toBeNull()
   })
 
   it('SQL mastered filter uses the SAME thresholds as the TS predicate', () => {
     const sql = masteredSqlFilter()
     const [, reviewMin, stabilityMin] = tsMastered!
-    const [, recencyDays] = tsRecency!
+    const [, recencyFloorDays, recencyMultiplier] = tsRecency!
     expect(reviewMin).toBe('4')
     expect(stabilityMin).toBe('14')
-    expect(recencyDays).toBe('30') // isRecent's `30 * 24 * 60 * 60 * 1000` → 30 days
+    expect(recencyFloorDays).toBe('30') // isRecent's `Math.max(30, ...)` floor
+    expect(recencyMultiplier).toBe('2') // isRecent's `2 * stability` scaling factor
     expect(sql).toContain(`review_count >= ${reviewMin}`)
     expect(sql).toContain(`coalesce(stability, 0) >= ${stabilityMin}`)
-    expect(sql).toContain(`interval '${recencyDays} days'`)
+    expect(sql).toContain(`interval '${recencyFloorDays} days'`)
   })
 
   it('SQL mirrors the TS `?? 0` fallbacks as coalesce (NOT bare columns)', () => {
@@ -96,11 +104,17 @@ describe('get_lessons_overview mastered predicate ↔ masteryModel parity (ADR 0
     expect(sql).not.toContain('coalesce(lapse_count, 0) = 0')
   })
 
-  it('SQL applies the recency clause (mirror of isRecent on last_reviewed_at)', () => {
+  it('SQL applies the stability-scaled recency clause (mirror of isRecent on last_reviewed_at, Slice 3)', () => {
     const sql = masteredSqlFilter()
     // a NULL last_reviewed_at yields a NULL predicate → row not counted,
-    // matching isRecent's `if (!iso) return false`.
-    expect(sql).toContain(`last_reviewed_at >= now() - interval '30 days'`)
+    // matching isRecent's `if (!iso) return false`. The window itself is now
+    // `greatest(30 days, 2 * stability)` — a flat `interval '30 days'` subtraction
+    // would silently undo the Slice 3 fix.
+    expect(sql).toContain(`last_reviewed_at >= now() - greatest(`)
+    expect(sql).toContain(`interval '30 days'`)
+    expect(sql).toContain(`make_interval(days => (coalesce(stability, 0) * 2)::int)`)
+    // the OLD flat-window subtraction must be gone (would bypass the fix entirely)
+    expect(sql).not.toContain(`last_reviewed_at >= now() - interval '30 days'`)
   })
 
   // Three-way parity (data-architect M1, 2026-06-13): get_collections_overview
@@ -109,15 +123,25 @@ describe('get_lessons_overview mastered predicate ↔ masteryModel parity (ADR 0
   // helper's mastered branch keeps the SAME thresholds, so the two readers can't
   // silently diverge if someone edits one. Chain: inline filter ↔ _mastery_label
   // ↔ masteryModel.ts.
-  it('_mastery_label mastered branch uses the SAME thresholds as the inline filter', () => {
+  //
+  // Slice 3 note (2026-07-08/09): the recency window comparison here is
+  // deliberately the FLOOR only (30 days), not the full stability-scaled
+  // expression — `_mastery_label` (get_weekly_movement / get_collections_overview)
+  // is OUT OF SCOPE for Slice 3 (Minimum Mechanism, spec §5 "Open question": those
+  // two surfaces are a fast weekly pulse and a "known words" reading list, neither
+  // regressing the way get_lessons_overview's persistent lesson-tile % would), so
+  // it intentionally keeps the flat `interval '30 days'` window post-Slice-3. This
+  // assertion still holds because `greatest('30 days', ...)` LITERALLY embeds the
+  // same 30-day floor text — it is not proof the two windows behave identically.
+  it('_mastery_label mastered branch uses the SAME thresholds as the inline filter (floor only — see note)', () => {
     const end = migrationSql.indexOf("then 'mastered'")
     expect(end).toBeGreaterThan(-1)
     const branch = migrationSql.slice(migrationSql.lastIndexOf('when', end), end)
     const [, reviewMin, stabilityMin] = tsMastered!
-    const [, recencyDays] = tsRecency!
+    const [, recencyFloorDays] = tsRecency!
     expect(branch).toContain(`p_review_count >= ${reviewMin}`)
     expect(branch).toContain(`coalesce(p_stability, 0) >= ${stabilityMin}`)
-    expect(branch).toContain(`interval '${recencyDays} days'`)
+    expect(branch).toContain(`interval '${recencyFloorDays} days'`)
   })
 })
 
@@ -140,6 +164,159 @@ describe('get_lessons_overview practiced predicate ↔ overview.ts parity', () =
     const sql = practicedSqlFilter()
     expect(sql).toContain("readiness_status = 'ready'")
     expect(sql).toContain("publication_status = 'published'")
+  })
+})
+
+// Slice 3 (2026-07-08/09, vocab-mode-set-reduction-and-graduation.md §5, ADR
+// 0027 Analytics note): the mastered-numerator SUBSUMPTION rule. A #1
+// (recognise_meaning_from_text_cap) row also counts as mastered once graduation
+// (Slice 2) has retired it from due scheduling, as long as its #6
+// (produce_form_from_meaning_cap) sibling — same source_ref, same lesson — has
+// reached mastery strength. This is a JOIN-shaped rule (not a single filter
+// literal), so on top of the structural SQL assertions below, this section
+// builds a small in-memory TS mirror of "counts-as-mastered" (reusing the SAME
+// `hasMasteryStrength`/`isRecent` the SQL is a lockstep mirror of) and exercises
+// it over a graduated #1 + strength-#6 pair — the exact scenario the live RLS
+// test (scripts/verify-lessons-overview-rls.ts) re-proves against the real DB.
+describe('get_lessons_overview mastered-numerator subsumption (Slice 3, ADR 0027 Analytics note)', () => {
+  it('SQL mastered filter contains the subsumption OR-branch (vocabulary_src #1 ↔ #6 sibling, scoped within the CTE)', () => {
+    const sql = masteredSqlFilter()
+    expect(sql).toContain("source_kind = 'vocabulary_src'")
+    expect(sql).toContain("capability_type = 'recognise_meaning_from_text_cap'")
+    expect(sql).toContain('exists (')
+    expect(sql).toContain('select 1 from lesson_capabilities sib')
+    expect(sql).toContain("sib.capability_type = 'produce_form_from_meaning_cap'")
+    // scoped within the lesson (correlated on BOTH lesson_id and source_ref) —
+    // never a global self-join across lessons.
+    expect(sql).toContain('sib.lesson_id = lesson_capabilities.lesson_id')
+    expect(sql).toContain('sib.source_ref = lesson_capabilities.source_ref')
+  })
+
+  it('the #6 sibling side of the subsumption clause is RECENCY-FREE (mirrors hasMasteryStrength, not isCapabilityMastered)', () => {
+    const sql = masteredSqlFilter()
+    // the exists() block's own review/stability/consec checks, with no
+    // `last_reviewed_at` term inside it — a recency term on the SIBLING would
+    // reintroduce the flicker graduation exists to prevent.
+    const existsStart = sql.indexOf('exists (')
+    expect(existsStart).toBeGreaterThan(-1)
+    const existsBlock = sql.slice(existsStart)
+    expect(existsBlock).toContain('coalesce(sib.review_count, 0) >= 4')
+    expect(existsBlock).toContain('coalesce(sib.stability, 0) >= 14')
+    expect(existsBlock).toContain('coalesce(sib.consecutive_failure_count, 0) = 0')
+    expect(existsBlock).not.toContain('sib.last_reviewed_at')
+  })
+
+  // TS mirror of "counts-as-mastered", built from the SAME canonical predicates
+  // (hasMasteryStrength / isRecent) the SQL mastered_count filter mirrors —
+  // exercised over a small in-memory model rather than another regex extraction,
+  // since subsumption is a join shape (a single literal can't express it).
+  interface MirrorCapRow {
+    sourceRef: string
+    sourceKind: string
+    capabilityType: string
+    readinessStatus: string
+    publicationStatus: string
+    reviewCount: number
+    stability: number | null
+    lastReviewedAt: string | null
+    consecutiveFailureCount: number
+  }
+
+  function countsAsMastered(row: MirrorCapRow, lessonSiblings: MirrorCapRow[], now: Date): boolean {
+    if (row.readinessStatus !== 'ready' || row.publicationStatus !== 'published') return false
+    const ownMastered = hasMasteryStrength(row) && isRecent(row.lastReviewedAt, now, row.stability)
+    if (ownMastered) return true
+    if (row.sourceKind !== 'vocabulary_src' || row.capabilityType !== 'recognise_meaning_from_text_cap') return false
+    return lessonSiblings.some(sib =>
+      sib.sourceRef === row.sourceRef
+      && sib.sourceKind === 'vocabulary_src'
+      && sib.capabilityType === 'produce_form_from_meaning_cap'
+      && hasMasteryStrength(sib),
+    )
+  }
+
+  const now = new Date('2026-07-09T00:00:00Z')
+  const baseCap: MirrorCapRow = {
+    sourceRef: 'lesson-11/item-42',
+    sourceKind: 'vocabulary_src',
+    capabilityType: 'recognise_meaning_from_text_cap',
+    readinessStatus: 'ready',
+    publicationStatus: 'published',
+    reviewCount: 0,
+    stability: null,
+    lastReviewedAt: null,
+    consecutiveFailureCount: 0,
+  }
+
+  it('a graduated #1 (below its own strength) counts as mastered via a strength-level #6 sibling', () => {
+    // #1 itself: suppressed from due scheduling by graduation — review_count
+    // never reaches 4 on its own. #6: reviewCount>=4, stability>=14, no failures
+    // — meets hasMasteryStrength regardless of lastReviewedAt (recency-free).
+    const cap1 = { ...baseCap, reviewCount: 1, stability: 2, lastReviewedAt: '2026-05-01T00:00:00Z' }
+    const cap6 = {
+      ...baseCap,
+      capabilityType: 'produce_form_from_meaning_cap',
+      reviewCount: 5,
+      stability: 20,
+      consecutiveFailureCount: 0,
+      lastReviewedAt: '2026-01-01T00:00:00Z', // months old — recency-free, so irrelevant
+    }
+    expect(countsAsMastered(cap1, [cap6], now)).toBe(true)
+    // sanity: #1 does NOT meet its own strength (the whole point of the test)
+    expect(hasMasteryStrength(cap1)).toBe(false)
+  })
+
+  it('a #1 with no strength-level #6 sibling does NOT count as mastered', () => {
+    const cap1 = { ...baseCap, reviewCount: 1, stability: 2, lastReviewedAt: '2026-05-01T00:00:00Z' }
+    const weakCap6 = {
+      ...baseCap,
+      capabilityType: 'produce_form_from_meaning_cap',
+      reviewCount: 2, // below the review_count >= 4 bar
+      stability: 20,
+      consecutiveFailureCount: 0,
+      lastReviewedAt: '2026-07-08T00:00:00Z',
+    }
+    expect(countsAsMastered(cap1, [weakCap6], now)).toBe(false)
+  })
+
+  it('subsumption still requires the #1 row itself to satisfy ready/published (unchanged today-filter)', () => {
+    const cap1 = { ...baseCap, readinessStatus: 'pending', reviewCount: 1, stability: 2 }
+    const cap6 = {
+      ...baseCap,
+      capabilityType: 'produce_form_from_meaning_cap',
+      reviewCount: 5,
+      stability: 20,
+      consecutiveFailureCount: 0,
+    }
+    expect(countsAsMastered(cap1, [cap6], now)).toBe(false)
+  })
+
+  it('a lapsed #6 (consecutiveFailureCount > 0) does NOT subsume its #1 (lapse reversal is free — spec §2)', () => {
+    const cap1 = { ...baseCap, reviewCount: 1, stability: 2 }
+    const lapsedCap6 = {
+      ...baseCap,
+      capabilityType: 'produce_form_from_meaning_cap',
+      reviewCount: 5,
+      stability: 20,
+      consecutiveFailureCount: 1,
+    }
+    expect(countsAsMastered(cap1, [lapsedCap6], now)).toBe(false)
+  })
+
+  it('stability-scaled recency window (Slice 3): a mature own-strength card reviewed 60 days ago still counts when stability is high enough', () => {
+    // 2 * stability(40) = 80 days ≥ 60 days ago → recent under the NEW window;
+    // would have been EXCLUDED under the old flat 30-day window.
+    const matureCap = {
+      ...baseCap,
+      reviewCount: 6,
+      stability: 40,
+      consecutiveFailureCount: 0,
+      lastReviewedAt: new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+    }
+    expect(countsAsMastered(matureCap, [], now)).toBe(true)
+    // and the OLD fixed-30-day semantics would have failed this same input:
+    expect(isRecent(matureCap.lastReviewedAt, now)).toBe(false) // no stability passed → 30-day default
+    expect(isRecent(matureCap.lastReviewedAt, now, matureCap.stability)).toBe(true)
   })
 })
 
