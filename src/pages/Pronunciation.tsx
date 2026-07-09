@@ -10,12 +10,13 @@ import { IconAlertCircle, IconVolume, IconHeadphones } from '@tabler/icons-react
 import { PageContainer, PageBody, PageHeader, LoadingState, EmptyState } from '@/components/page/primitives'
 import { LerenNav } from '@/components/lessons/LerenNav'
 import { PitfallCard } from '@/components/pronunciation'
-import { getPitfallsForL1 } from '@/lib/pronunciation/pitfallCatalog'
+import { getPitfallsForL1, PAIR_DRILL_VOICES } from '@/lib/pronunciation/pitfallCatalog'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { textService, type Podcast } from '@/services/textService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
+import { PRONUNCIATION_VISITED_KEY, setFirstRunFlag } from '@/lib/firstRun'
 
 export function Pronunciation() {
   const { profile } = useAuthStore()
@@ -28,18 +29,32 @@ export function Pronunciation() {
   const [audioMap, setAudioMap] = useState<SessionAudioMap>(new Map())
   const [podcast, setPodcast] = useState<Podcast | null>(null)
 
+  // First-run checklist step (day-one hook, review UP6): done on first visit —
+  // the exact Ontdek.tsx:26 pattern.
+  useEffect(() => { setFirstRunFlag(PRONUNCIATION_VISITED_KEY) }, [])
+
   useEffect(() => {
     let cancelled = false
     const load = async () => {
       setLoading(true)
       setError(null)
       try {
-        const words = getPitfallsForL1(language).flatMap((p) => [
+        const pitfallsForL1 = getPitfallsForL1(language)
+        const words = pitfallsForL1.flatMap((p) => [
           ...p.examples,
           ...(p.minimalPairs ?? []).flatMap((mp) => [mp.a, mp.b]),
         ])
+        // Voice-paired requests (HVPT talker variability, review UP3): one per
+        // pair word × PAIR_DRILL_VOICES entry, for the current L1's pairs only.
+        // Combined into the SAME fetchSessionAudioMap call as the existing
+        // voice-agnostic requests below.
+        const pairWords = pitfallsForL1.flatMap((p) => (p.minimalPairs ?? []).flatMap((mp) => [mp.a, mp.b]))
+        const requests = [
+          ...words.map((text) => ({ text, voiceId: null as string | null })),
+          ...pairWords.flatMap((text) => PAIR_DRILL_VOICES.map((voiceId) => ({ text, voiceId }))),
+        ]
         const [map, pronunciationPodcast] = await Promise.all([
-          fetchSessionAudioMap(words.map((text) => ({ text, voiceId: null }))),
+          fetchSessionAudioMap(requests),
           textService.getPronunciationPodcast(),
         ])
         if (!cancelled) {

@@ -1,6 +1,11 @@
 // Task U-C of docs/plans/2026-07-08-uitspraak-quick-wins.md — the "Test je
 // oor" identification quiz (review UP2). Rendered via PitfallCard so the
 // playable-pairs filter (both member urls resolving) is exercised end to end.
+//
+// Round 2 (review UP3, docs/plans/2026-07-09-uitspraak-round2.md §1): each
+// round now also picks a random voice among PAIR_DRILL_VOICES that resolves
+// for the played word, falling back to the default (null) voice when none of
+// the paired clips are seeded yet — an unseeded pair must not break the quiz.
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
@@ -150,5 +155,26 @@ describe('EarQuiz — "Test je oor" (Task U-C)', () => {
     expect(screen.getByText('Het was cari')).toBeInTheDocument()
     expect(screen.getByText('Reeks: 0')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Volgende' })).toBeInTheDocument()
+  })
+
+  it('still plays a round when only the default-voice entry resolves — no PAIR_DRILL_VOICES clip seeded yet (UP3 fallback path)', async () => {
+    const user = userEvent.setup()
+    // Only the voice-agnostic ('__default__') keys exist — none of the
+    // PAIR_DRILL_VOICES-keyed entries (e.g. 'cari|id-ID-Chirp3-HD-Achird')
+    // are present, simulating a pair whose voice-paired clips haven't been
+    // seeded yet. pickVoiceForWord must fall back to null and the quiz must
+    // still start and be answerable.
+    const audioMap: SessionAudioMap = new Map([
+      ['cari|__default__', 'tts/achird/cari-abcd1234.mp3'],
+      ['kari|__default__', 'tts/achird/kari-abcd1234.mp3'],
+    ])
+    renderCard(PITFALL_PLAYABLE_PAIR, audioMap)
+
+    await user.click(screen.getByRole('button', { name: 'Start' }))
+    expect(mockAudio.play).toHaveBeenCalled()
+
+    const correctButton = screen.getByRole('button', { name: 'cari' })
+    await user.click(correctButton)
+    expect(screen.getByText('Goed!')).toBeInTheDocument()
   })
 })
