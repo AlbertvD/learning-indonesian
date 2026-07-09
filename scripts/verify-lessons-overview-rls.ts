@@ -76,12 +76,19 @@ join indonesian.learning_capabilities c6
  and c6.source_kind = 'vocabulary_src'
  and c6.capability_type = 'produce_form_from_meaning_cap'
  and c6.retired_at is null
+-- get_lessons_overview excludes hidden lessons (where not l.is_hidden) — a cap
+-- homed on the hidden "Common Words" gap-word lesson would make the baseline
+-- read return zero rows and fail the \\gset (observed on the first live run).
+join indonesian.lessons l
+  on l.id = c1.lesson_id
+ and not l.is_hidden
 where c1.source_kind = 'vocabulary_src'
   and c1.capability_type = 'recognise_meaning_from_text_cap'
   and c1.retired_at is null
   and c1.readiness_status = 'ready'
   and c1.publication_status = 'published'
   and c1.lesson_id is not null
+order by c1.canonical_key
 limit 1
 \\gset
 
