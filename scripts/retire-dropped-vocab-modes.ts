@@ -170,6 +170,13 @@ const PAGE = 1000
  * page walk never hits the Kong request-URL length limit, unlike an `.in()`
  * over thousands of ids). One fetch feeds: the retire-candidate filter, the
  * #6 rewrite plan, AND the type-reconciliation guard.
+ *
+ * `.order('id')` is LOAD-BEARING: `.range()` pagination without a stable sort
+ * is non-deterministic in Postgres — pages can skip/duplicate rows between
+ * requests. Observed live 2026-07-09 on the first --apply run: 85 #1 keys
+ * fell into pagination gaps, so the dangling-target guard flagged them as
+ * missing (false positives) and ~35 dropped-mode rows escaped the retire
+ * pass; the dry-run minutes earlier had seen a different row set entirely.
  */
 export async function fetchAllVocabCapRows(supabase: CapabilitySupabaseClient): Promise<VocabCapRow[]> {
   const rows: VocabCapRow[] = []
@@ -179,6 +186,7 @@ export async function fetchAllVocabCapRows(supabase: CapabilitySupabaseClient): 
       .from('learning_capabilities')
       .select('id, canonical_key, source_kind, capability_type, source_ref, prerequisite_keys, retired_at')
       .eq('source_kind', 'vocabulary_src')
+      .order('id', { ascending: true })
       .range(offset, offset + PAGE - 1)
     if (error) throw error
     const page = (data ?? []) as VocabCapRow[]

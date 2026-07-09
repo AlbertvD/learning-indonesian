@@ -326,9 +326,13 @@ function buildPagedSelectClient(allRows: VocabCapRow[]) {
         return {
           select: () => ({
             eq: () => ({
-              range: async (from: number, to: number) => ({
-                data: allRows.slice(from, to + 1),
-                error: null,
+              // .order('id') is load-bearing in the fetch (stable pagination);
+              // the mock accepts and ignores it — slices are inherently ordered.
+              order: () => ({
+                range: async (from: number, to: number) => ({
+                  data: allRows.slice(from, to + 1),
+                  error: null,
+                }),
               }),
             }),
           }),
