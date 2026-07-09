@@ -438,6 +438,30 @@ describe('buildListeningMCQ', () => {
   })
 })
 
+describe('buildMeaningRecallFromAudio (four-card ladder PR-B split)', () => {
+  it('happy path', () => {
+    const r = buildForExerciseType('type_meaning_from_audio_ex', baseInput())
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      expect(r.exerciseItem.exerciseType).toBe('type_meaning_from_audio_ex')
+      expect(r.exerciseItem.skillType).toBe('recall_mode')
+      expect(r.audibleTexts).toContain(normalizeTtsText('akhir'))
+    }
+  })
+
+  it('fails when no learningItem', () => {
+    const r = buildForExerciseType('type_meaning_from_audio_ex', baseInput({ learningItem: null }))
+    expect(r.kind).toBe('fail')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
+  })
+
+  it('fails when no user-lang meaning', () => {
+    const r = buildForExerciseType('type_meaning_from_audio_ex', baseInput({ meanings: [makeMeaning('end', 'en')] }))
+    expect(r.kind).toBe('fail')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('no_meaning_in_lang')
+  })
+})
+
 // ─── choose_missing_word_ex (pattern-only since cap-v2 #161; item cloze is typed-only) ───
 
 describe('buildClozeMcq', () => {

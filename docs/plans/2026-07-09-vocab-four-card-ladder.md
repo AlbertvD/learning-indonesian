@@ -1,6 +1,6 @@
 ---
 status: implementing
-implementation: PR-A #401
+implementation: PR-A #401, PR-B #403
 reviewed_by:
   - staff-engineer (2026-07-09 — PASS after corrections; confirmed the #3′∨#6 OR trigger, PR sequencing, gist split, MeaningRecall-grading replication; carried the §2.5 OR-parity requirement)
   - architect (2026-07-09 — PASS after corrections; new-ExerciseType gate enumeration incl. the NOT-tsc-caught needsPrimaryMeaning set, resolver pin test, ADR 0027 body edits, three module specs)

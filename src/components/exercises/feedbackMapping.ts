@@ -148,6 +148,24 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
       }
     }
 
+    case 'type_meaning_from_audio_ex': {
+      // audio -> L1, typed (four-card ladder PR-B: ear-only typed meaning
+      // recall, replacing the MCQ). Mirrors choose_meaning_from_audio_ex
+      // exactly except userAnswer.role is 'typed', not 'picked'.
+      const base = item.learningItem?.base_text ?? ''
+      return {
+        outcome,
+        layout: 'vocab-pair',
+        direction: 'audio→ID',
+        promptShown: { text: base, lang: 'ID', role: 'heard' },
+        correctAnswer: { text: L1Text, lang: L1, role: 'target' },
+        userAnswer: response ? { text: response, lang: L1, role: 'typed' } : undefined,
+        acceptedVariants,
+        audio: promptAudioUrl ? { url: promptAudioUrl } : undefined,
+        commitFailed,
+      }
+    }
+
     case 'type_form_from_audio_ex': {
       // audio → ID typed
       const base = item.learningItem?.base_text ?? ''

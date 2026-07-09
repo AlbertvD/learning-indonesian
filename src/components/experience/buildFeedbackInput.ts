@@ -23,13 +23,16 @@ export function buildFeedbackInput(args: {
   const isGrammar = GRAMMAR_CAPABILITY_TYPES.has(block.renderPlan.capabilityType)
   const exerciseType = block.renderPlan.exerciseType
   // Variants shown as "Ook goed" must match the ANSWER's language: only
-  // type_meaning_ex answers in L1; every other variant-consuming type answers
-  // in Indonesian. The unfiltered list mixed "here"/"hier" into dictation.
-  const answerLanguage = exerciseType === 'type_meaning_ex' ? userLanguage : 'id'
+  // type_meaning_ex / type_meaning_from_audio_ex answer in L1; every other
+  // variant-consuming type answers in Indonesian. The unfiltered list mixed
+  // "here"/"hier" into dictation. type_meaning_from_audio_ex (four-card ladder
+  // PR-B) is added alongside type_meaning_ex — its typed answer is also an L1
+  // meaning, not an Indonesian form.
+  const answerLanguage = (exerciseType === 'type_meaning_ex' || exerciseType === 'type_meaning_from_audio_ex') ? userLanguage : 'id'
   const acceptedVariants = acceptedVariantTexts(item.answerVariants, answerLanguage)
 
   let promptAudioUrl: string | undefined
-  if (exerciseType === 'choose_meaning_from_audio_ex' || exerciseType === 'type_form_from_audio_ex') {
+  if (exerciseType === 'choose_meaning_from_audio_ex' || exerciseType === 'type_form_from_audio_ex' || exerciseType === 'type_meaning_from_audio_ex') {
     const baseText = item.learningItem?.base_text
     if (baseText) {
       promptAudioUrl = resolveSessionAudioUrl(audioMap, baseText, null)

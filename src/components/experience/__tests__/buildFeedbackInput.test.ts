@@ -76,6 +76,7 @@ const ALL_TYPES: ExerciseType[] = [
   'choose_meaning_ex', 'choose_form_ex', 'type_form_ex', 'type_meaning_ex',
   'type_missing_word_ex', 'choose_missing_word_ex', 'choose_correct_form_ex', 'transform_sentence_ex',
   'translate_sentence_ex', 'speaking', 'choose_meaning_from_audio_ex', 'type_form_from_audio_ex',
+  'type_meaning_from_audio_ex',
 ]
 
 describe('16. buildFeedbackInput adapter', () => {
@@ -134,6 +135,32 @@ describe('16. buildFeedbackInput adapter', () => {
       commitFailed: false,
     })
     expect(result.promptAudioUrl).toContain('makan')
+  })
+
+  it('promptAudioUrl set for type_meaning_from_audio_ex using audioMap lookup (four-card ladder PR-B split)', () => {
+    const result = buildFeedbackInput({
+      block: makeBlock('type_meaning_from_audio_ex'),
+      context: makeContext('type_meaning_from_audio_ex'),
+      response: 'eten',
+      outcome: 'wrong',
+      userLanguage: 'nl',
+      audioMap,
+      commitFailed: false,
+    })
+    expect(result.promptAudioUrl).toContain('makan')
+  })
+
+  it('acceptedVariants for type_meaning_from_audio_ex are user-language, not id (mirrors type_meaning_ex, not dictation)', () => {
+    const result = buildFeedbackInput({
+      block: makeBlock('type_meaning_from_audio_ex'),
+      context: makeContext('type_meaning_from_audio_ex'),
+      response: 'eten',
+      outcome: 'wrong',
+      userLanguage: 'nl',
+      audioMap,
+      commitFailed: false,
+    })
+    expect(result.acceptedVariants).toEqual(['eetje'])
   })
 
   it('acceptedVariants for dictation are Indonesian-only (no NL/EN translation leak)', () => {

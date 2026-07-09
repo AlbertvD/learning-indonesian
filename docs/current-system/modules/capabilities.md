@@ -8,6 +8,18 @@ status: stable
 
 # Capabilities deep module
 
+> **2026-07-09 — four-card ladder PR-B split (`renderContracts.ts`).** `choose_meaning_from_audio_ex`
+> used to serve both `recognise_meaning_from_audio_cap` (vocab #3′) and
+> `recognise_gist_from_audio_cap` (podcast gist). The row is split: gist keeps the MCQ;
+> `recognise_meaning_from_audio_cap` moved to a NEW `ExerciseType`,
+> `type_meaning_from_audio_ex` (ear-only typed L1 meaning recall — no MCQ). Every
+> compile-forced gate this required (`ExerciseType` union, `RENDER_CONTRACTS`,
+> `ContractInputShapes`, `projectBuilderInput`'s `needsPrimaryMeaning` set + switch
+> narrowing) landed in one commit; see `docs/plans/2026-07-09-vocab-four-card-ladder.md`
+> §2.3. Line-number citations below predate this change and are not re-verified in this
+> pass (renderContracts.ts is now 720+ LOC, not 333 — see `exercise-content.md` and
+> `exercises.md` for the up-to-date byType/registry counts).
+
 **Surface:** `src/lib/capabilities/`. Inbound port: `index.ts` — all `src/` production callers import from `@/lib/capabilities`. Internal files remain importable from their paths for tests and for sibling files inside the module.
 
 **Files (9):**
@@ -68,7 +80,7 @@ Three responsibilities:
 
 2. **Decide readiness.** `validateCapability` consults `RENDER_CONTRACTS` (which exercise types serve this cap_type AND support its source kind) and returns a `CapabilityReadiness` — `ready` | `blocked` | `exposure_only` | `deprecated` | `unknown`. Slice 4b (#102): `blocked` now means only "no compatible exercise for this cap_type × source_kind"; the artifact-bag check is gone.
 
-3. **Govern rendering.** `RENDER_CONTRACTS` declares per-exercise: which cap_types it serves, which source kinds it accepts, what artifacts it needs. `projectBuilderInput<T>()` narrows a `RawProjectorInput` into the per-builder typed input, performing every runtime guard the 12 builders used to re-implement. After projection, each builder is statically guaranteed every field its contract requires is non-null.
+3. **Govern rendering.** `RENDER_CONTRACTS` declares per-exercise: which cap_types it serves, which source kinds it accepts, what artifacts it needs. `projectBuilderInput<T>()` narrows a `RawProjectorInput` into the per-builder typed input, performing every runtime guard the 14 builders used to re-implement. After projection, each builder is statically guaranteed every field its contract requires is non-null.
 
 ---
 

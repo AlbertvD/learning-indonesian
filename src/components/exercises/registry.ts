@@ -1,5 +1,5 @@
 // src/components/exercises/registry.ts
-// Exercise-type → component registry with React.lazy. All 12 exercise types
+// Exercise-type → component registry with React.lazy. All 13 exercise types
 // are mapped. The dispatcher (CapabilityExerciseFrame) renders `null` for
 // any unmapped type, silent-skipping the block per spec §9.1.
 //
@@ -52,7 +52,7 @@ export type LazyExercise = LazyExoticComponent<ComponentType<ExerciseComponentPr
 // ─── Registry ────────────────────────────────────────────────────────────────
 
 /**
- * Exercise-type → lazy component. All 12 types are mapped today; an unmapped
+ * Exercise-type → lazy component. All 13 types are mapped today; an unmapped
  * type causes the dispatcher to render nothing and silent-skip the block.
  */
 export const exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>> = {
@@ -73,6 +73,8 @@ export const exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>> = {
   type_form_from_audio_ex:               lazy(() => import('./implementations/Dictation')),
   // ADR 0019 — morphology segmentation drill.
   decompose_word_ex:       lazy(() => import('./implementations/DecomposeWordExercise')),
+  // Four-card ladder PR-B — ear-only typed meaning recall (#3′ conversion).
+  type_meaning_from_audio_ex: lazy(() => import('./implementations/MeaningRecallFromAudio')),
 }
 
 /**
@@ -93,6 +95,7 @@ export const exerciseSkeletonVariant: Record<ExerciseType, 'word' | 'sentence' |
   type_form_from_audio_ex:               'audio',
   speaking:                'word',
   decompose_word_ex:       'word',
+  type_meaning_from_audio_ex: 'audio',
 }
 
 /**
