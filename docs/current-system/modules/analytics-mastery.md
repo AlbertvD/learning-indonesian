@@ -69,8 +69,11 @@ All in `masteryModel.ts`:
   Rule #7) + IO wrapper `getTroublesomeWords(userId)`. Set = at-risk
   (`labelForCapability(e,now) === 'at_risk'`) ∪ stubborn (`isStubborn(e)`) —
   reuses both canonical predicates verbatim (mutually exclusive at the cap
-  level, so no double-count), scoped to words only via `funnelBucket(sourceKind)`
-  (excludes `null` and `'grammar'`), deduped by `source_ref` (mirrors
+  level, so no double-count), scoped to vocabulary words only via
+  `funnelBucket(sourceKind) === 'vocab'` (excludes `null`, `'grammar'`, AND
+  `'morphology'`/`word_form_pair_src` — the latter narrowed 2026-07-09: its
+  `lesson-N/morphology/<slug>` source_ref has no clean string label and belongs
+  to the Affix Trainer), deduped by `source_ref` (mirrors
   `StubbornWordsCard`'s C1 fix), sorted descending by each word's max
   `consecutiveFailureCount` ("most currently-stuck first"). Returns the FULL
   troublesome set — un-hooked filtering (Home shows only words without a saved

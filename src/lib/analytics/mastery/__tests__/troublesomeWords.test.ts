@@ -81,11 +81,11 @@ describe('deriveTroublesomeWords', () => {
     expect(words).toEqual([])
   })
 
-  it('includes affixed word forms (word_form_pair_src is in scope, morphology bucket)', () => {
+  it('excludes affixed word forms (word_form_pair_src / morphology bucket) — no clean string label; Affix Trainer owns these', () => {
     const words = deriveTroublesomeWords({
-      evidence: [ev({ sourceRef: 'wf', sourceKind: 'word_form_pair_src', lapseCount: 0, reviewCount: 5, consecutiveFailureCount: 5 })],
+      evidence: [ev({ sourceRef: 'lesson-2/morphology/se-orang-seorang', sourceKind: 'word_form_pair_src', lapseCount: 0, reviewCount: 5, consecutiveFailureCount: 5 })],
     })
-    expect(words).toEqual([{ sourceRef: 'wf', sourceKind: 'word_form_pair_src' }])
+    expect(words).toEqual([])
   })
 
   it('sorts words descending by each word\'s max consecutiveFailureCount, most-stuck first', () => {

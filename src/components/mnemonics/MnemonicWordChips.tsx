@@ -68,20 +68,21 @@ export function MnemonicWordChips({ userId, entries }: MnemonicWordChipsProps) {
 
   return (
     <>
-      <div className={classes.chips}>
-        {resolved.map((entry) => (
-          <button
-            key={entry.sourceRef}
-            type="button"
-            className={classes.chip}
-            onClick={() => setWorkshopEntry(entry)}
-          >
-            {entry.label}
-            {notesBySourceRef.has(entry.sourceRef) && (
-              <span className={classes.hasNoteDot} aria-hidden="true" />
-            )}
-          </button>
-        ))}
+      <div className={classes.grid}>
+        {resolved.map((entry) => {
+          const hooked = notesBySourceRef.has(entry.sourceRef)
+          return (
+            <button
+              key={entry.sourceRef}
+              type="button"
+              className={`${classes.cell} ${hooked ? classes.hooked : ''}`}
+              onClick={() => setWorkshopEntry(entry)}
+            >
+              <span className={classes.label}>{entry.label}</span>
+              {hooked && <span className={classes.hasNoteDot} aria-hidden="true" />}
+            </button>
+          )
+        })}
       </div>
       {workshopEntry && (
         <MnemonicWorkshop
