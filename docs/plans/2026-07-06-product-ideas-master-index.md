@@ -17,7 +17,7 @@ status: draft
 | 3 | **Percakapan** — AI chat constrained to the learner's known words (Phase-2 premium SKU) | `2026-07-06-percakapan-program.md` | draft, staff-engineer-checked. Core question: learner-model compression (against the DB lexicon) |
 | 4 | **Growth layer** — SEO-from-data, free funnel, heritage positioning | `2026-07-06-growth-layer-program.md` | draft, staff-engineer-checked. Core question: separate static site (decided direction) |
 | 5 | **EN audience** — "the serious Indonesian app"; one app, two front doors | `2026-07-06-en-audience-program.md` | draft, staff-engineer-checked. Bilingual brand DIRECTION SET (brand-as-i18n-token + per-domain entry; EN name still to choose) |
-| 6 | **Spreektaal** — the bahasa gaul register track (promoted from idea A7; user-selected 2026-07-06 as next focus) | `2026-07-06-spreektaal-program.md` | draft, staff-engineer-checked. Three content kinds → three existing grooves (morphology template / grammar patterns / vocab+collections); new = register primer + colloquial grader acceptance. Slice 1 (answer-variant acceptance) shippable independently |
+| 6 | **Spreektaal** — the bahasa gaul register track (promoted from idea A7; user-selected 2026-07-06 as next focus) | `2026-07-06-spreektaal-program.md` | slices 1+2 RESTRUCTURED by owner (2026-07-09) into the lesson-woven core: `2026-07-09-spreektaal-lesson-woven-core.md` — ✅ **APPROVED** (full gauntlet), clear to build. Companion `2026-07-09-g4-produce-grader-fix.md` also ✅ APPROVED (shares the register-pairs artifact). Slices 3-5 unchanged |
 
 ## Round-2 ideas — `2026-07-06-experience-and-growth-ideas.md`
 
