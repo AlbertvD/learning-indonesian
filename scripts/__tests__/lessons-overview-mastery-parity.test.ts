@@ -170,33 +170,51 @@ describe('get_lessons_overview practiced predicate ↔ overview.ts parity', () =
 // Slice 3 (2026-07-08/09, vocab-mode-set-reduction-and-graduation.md §5, ADR
 // 0027 Analytics note): the mastered-numerator SUBSUMPTION rule. A #1
 // (recognise_meaning_from_text_cap) row also counts as mastered once graduation
-// (Slice 2) has retired it from due scheduling, as long as its #6
-// (produce_form_from_meaning_cap) sibling — same source_ref, same lesson — has
-// reached mastery strength. This is a JOIN-shaped rule (not a single filter
-// literal), so on top of the structural SQL assertions below, this section
-// builds a small in-memory TS mirror of "counts-as-mastered" (reusing the SAME
-// `hasMasteryStrength`/`isRecent` the SQL is a lockstep mirror of) and exercises
-// it over a graduated #1 + strength-#6 pair — the exact scenario the live RLS
-// test (scripts/verify-lessons-overview-rls.ts) re-proves against the real DB.
-describe('get_lessons_overview mastered-numerator subsumption (Slice 3, ADR 0027 Analytics note)', () => {
-  it('SQL mastered filter contains the subsumption OR-branch (vocabulary_src #1 ↔ #6 sibling, scoped within the CTE)', () => {
+// (Slice 2) has retired it from due scheduling, as long as a qualifying
+// successor sibling — same source_ref, same lesson — has reached mastery
+// strength. PR-C (2026-07-09, four-card-ladder spec §2.5) generalized this to
+// BOTH scaffold→successor pairs, mirroring `GRADUATION_RULES`
+// (src/lib/session-builder/graduation.ts): `#1 ← (#3′ ∨ #6)` and `#2 ← #6`.
+// This is a JOIN-shaped rule (not a single filter literal), so on top of the
+// structural SQL assertions below, this section builds a small in-memory TS
+// mirror of "counts-as-mastered" (reusing the SAME `hasMasteryStrength`/
+// `isRecent` the SQL is a lockstep mirror of) and exercises it over both pairs
+// — the exact scenarios the live RLS test (scripts/verify-lessons-overview-
+// rls.ts) re-proves against the real DB.
+describe('get_lessons_overview mastered-numerator subsumption (PR-C, both pairs, ADR 0027 Analytics note)', () => {
+  it('SQL mastered filter contains the #1 subsumption OR-branch with BOTH successor types (#3′ ∨ #6, scoped within the CTE)', () => {
     const sql = masteredSqlFilter()
     expect(sql).toContain("source_kind = 'vocabulary_src'")
     expect(sql).toContain("capability_type = 'recognise_meaning_from_text_cap'")
     expect(sql).toContain('exists (')
     expect(sql).toContain('select 1 from lesson_capabilities sib')
-    expect(sql).toContain("sib.capability_type = 'produce_form_from_meaning_cap'")
+    // the OR: sibling capability_type IN the two-element successor set
+    expect(sql).toContain("sib.capability_type in (")
+    expect(sql).toContain("'recognise_meaning_from_audio_cap', 'produce_form_from_meaning_cap'")
     // scoped within the lesson (correlated on BOTH lesson_id and source_ref) —
     // never a global self-join across lessons.
     expect(sql).toContain('sib.lesson_id = lesson_capabilities.lesson_id')
     expect(sql).toContain('sib.source_ref = lesson_capabilities.source_ref')
   })
 
-  it('the #6 sibling side of the subsumption clause is RECENCY-FREE (mirrors hasMasteryStrength, not isCapabilityMastered)', () => {
+  it('SQL mastered filter contains the #2 subsumption OR-branch (#2 ← #6 only, scoped within the CTE)', () => {
     const sql = masteredSqlFilter()
-    // the exists() block's own review/stability/consec checks, with no
-    // `last_reviewed_at` term inside it — a recency term on the SIBLING would
-    // reintroduce the flicker graduation exists to prevent.
+    expect(sql).toContain("capability_type = 'recognise_form_from_meaning_cap'")
+    // the #2 branch's exists() sibling predicate must be a single #6 equality,
+    // not an IN-list — #2 has only one successor (unlike #1's OR).
+    const branchStart = sql.indexOf("capability_type = 'recognise_form_from_meaning_cap'")
+    expect(branchStart).toBeGreaterThan(-1)
+    const branch = sql.slice(branchStart)
+    expect(branch).toContain("sib.capability_type = 'produce_form_from_meaning_cap'")
+    expect(branch).toContain('sib.lesson_id = lesson_capabilities.lesson_id')
+    expect(branch).toContain('sib.source_ref = lesson_capabilities.source_ref')
+  })
+
+  it('both subsumption OR-branches (#1 and #2) are RECENCY-FREE on the sibling side (mirrors hasMasteryStrength, not isCapabilityMastered)', () => {
+    const sql = masteredSqlFilter()
+    // the exists() blocks' own review/stability/consec checks, with no
+    // `last_reviewed_at` term inside them — a recency term on either SIBLING
+    // would reintroduce the flicker graduation exists to prevent.
     const existsStart = sql.indexOf('exists (')
     expect(existsStart).toBeGreaterThan(-1)
     const existsBlock = sql.slice(existsStart)
@@ -210,6 +228,8 @@ describe('get_lessons_overview mastered-numerator subsumption (Slice 3, ADR 0027
   // (hasMasteryStrength / isRecent) the SQL mastered_count filter mirrors —
   // exercised over a small in-memory model rather than another regex extraction,
   // since subsumption is a join shape (a single literal can't express it).
+  // `SUBSUMPTION_RULES` mirrors `GRADUATION_RULES` (graduation.ts) exactly: a
+  // scaffold type maps to its array of qualifying successor types.
   interface MirrorCapRow {
     sourceRef: string
     sourceKind: string
@@ -222,15 +242,22 @@ describe('get_lessons_overview mastered-numerator subsumption (Slice 3, ADR 0027
     consecutiveFailureCount: number
   }
 
+  const SUBSUMPTION_RULES: Record<string, readonly string[]> = {
+    recognise_meaning_from_text_cap: ['recognise_meaning_from_audio_cap', 'produce_form_from_meaning_cap'], // #1 ← (#3′ ∨ #6)
+    recognise_form_from_meaning_cap: ['produce_form_from_meaning_cap'], // #2 ← #6
+  }
+
   function countsAsMastered(row: MirrorCapRow, lessonSiblings: MirrorCapRow[], now: Date): boolean {
     if (row.readinessStatus !== 'ready' || row.publicationStatus !== 'published') return false
     const ownMastered = hasMasteryStrength(row) && isRecent(row.lastReviewedAt, now, row.stability)
     if (ownMastered) return true
-    if (row.sourceKind !== 'vocabulary_src' || row.capabilityType !== 'recognise_meaning_from_text_cap') return false
+    if (row.sourceKind !== 'vocabulary_src') return false
+    const successorTypes = SUBSUMPTION_RULES[row.capabilityType]
+    if (!successorTypes) return false
     return lessonSiblings.some(sib =>
       sib.sourceRef === row.sourceRef
       && sib.sourceKind === 'vocabulary_src'
-      && sib.capabilityType === 'produce_form_from_meaning_cap'
+      && successorTypes.includes(sib.capabilityType)
       && hasMasteryStrength(sib),
     )
   }
@@ -301,6 +328,79 @@ describe('get_lessons_overview mastered-numerator subsumption (Slice 3, ADR 0027
       consecutiveFailureCount: 1,
     }
     expect(countsAsMastered(cap1, [lapsedCap6], now)).toBe(false)
+  })
+
+  // PR-C (2026-07-09, four-card-ladder spec §2.5): the NEW #1 ← #3′ disjunct.
+  // #3′ (recognise_meaning_from_audio_cap) is now itself a typed recall card
+  // (PR-B §2.3), so a strength-level #3′ sibling alone — with NO #6 sibling at
+  // all — must subsume #1. This is the exact scenario listening-disabled users
+  // hit (§2.6: their acquisition set is {#1, #2, #6}, so #3′ never appears for
+  // them) inverted: a listening-ENABLED user whose #6 hasn't yet reached
+  // strength but whose #3′ has, graduates #1 via the OR's OTHER leg.
+  it('a graduated #1 (below its own strength) counts as mastered via a strength-level #3′ (recognise_meaning_from_audio_cap) sibling — the NEW disjunct (PR-C)', () => {
+    const cap1 = { ...baseCap, reviewCount: 1, stability: 2, lastReviewedAt: '2026-05-01T00:00:00Z' }
+    const cap3prime = {
+      ...baseCap,
+      capabilityType: 'recognise_meaning_from_audio_cap',
+      reviewCount: 5,
+      stability: 20,
+      consecutiveFailureCount: 0,
+      lastReviewedAt: '2026-01-01T00:00:00Z', // months old — recency-free, so irrelevant
+    }
+    expect(countsAsMastered(cap1, [cap3prime], now)).toBe(true)
+  })
+
+  it('a #1 with a #3′ sibling below strength and NO #6 sibling does NOT count as mastered', () => {
+    const cap1 = { ...baseCap, reviewCount: 1, stability: 2, lastReviewedAt: '2026-05-01T00:00:00Z' }
+    const weakCap3prime = {
+      ...baseCap,
+      capabilityType: 'recognise_meaning_from_audio_cap',
+      reviewCount: 2, // below the review_count >= 4 bar
+      stability: 20,
+      consecutiveFailureCount: 0,
+    }
+    expect(countsAsMastered(cap1, [weakCap3prime], now)).toBe(false)
+  })
+
+  // PR-C: the #2 ← #6 pair (recognise_form_from_meaning_cap, un-retired PR-A).
+  // #2's only successor is #6 — no OR, unlike #1's pair.
+  it('a graduated #2 (below its own strength) counts as mastered via a strength-level #6 sibling (PR-C — #2 ← #6)', () => {
+    const cap2 = { ...baseCap, capabilityType: 'recognise_form_from_meaning_cap', reviewCount: 1, stability: 2, lastReviewedAt: '2026-05-01T00:00:00Z' }
+    const cap6 = {
+      ...baseCap,
+      capabilityType: 'produce_form_from_meaning_cap',
+      reviewCount: 5,
+      stability: 20,
+      consecutiveFailureCount: 0,
+      lastReviewedAt: '2026-01-01T00:00:00Z',
+    }
+    expect(countsAsMastered(cap2, [cap6], now)).toBe(true)
+    expect(hasMasteryStrength(cap2)).toBe(false)
+  })
+
+  it('a #2 with no strength-level #6 sibling does NOT count as mastered (#2 has no OR — #3′ does not subsume it)', () => {
+    const cap2 = { ...baseCap, capabilityType: 'recognise_form_from_meaning_cap', reviewCount: 1, stability: 2, lastReviewedAt: '2026-05-01T00:00:00Z' }
+    const strengthCap3prime = {
+      ...baseCap,
+      capabilityType: 'recognise_meaning_from_audio_cap',
+      reviewCount: 5,
+      stability: 20,
+      consecutiveFailureCount: 0,
+    }
+    // #3′ is only a successor of #1, not #2 — must NOT subsume #2.
+    expect(countsAsMastered(cap2, [strengthCap3prime], now)).toBe(false)
+  })
+
+  it('a lapsed #6 (consecutiveFailureCount > 0) does NOT subsume its #2 (lapse reversal is free — spec §2)', () => {
+    const cap2 = { ...baseCap, capabilityType: 'recognise_form_from_meaning_cap', reviewCount: 1, stability: 2 }
+    const lapsedCap6 = {
+      ...baseCap,
+      capabilityType: 'produce_form_from_meaning_cap',
+      reviewCount: 5,
+      stability: 20,
+      consecutiveFailureCount: 1,
+    }
+    expect(countsAsMastered(cap2, [lapsedCap6], now)).toBe(false)
   })
 
   it('stability-scaled recency window (Slice 3): a mature own-strength card reviewed 60 days ago still counts when stability is high enough', () => {

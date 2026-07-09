@@ -1953,6 +1953,21 @@ on conflict (user_id, lesson_id) do nothing;
 --       are a fast weekly pulse and a "known words" reading list, neither of
 --       which regresses the way a persistent % on the lesson tile would.
 --
+-- 2026-07-09 (PR-C, docs/plans/2026-07-09-vocab-four-card-ladder.md §2.5): the
+-- four-card ladder generalized graduation.ts's single rule to BOTH
+-- scaffold→successor pairs — `#1 ← (#3′ ∨ #6)` and `#2 ← #6` (mirrors
+-- `GRADUATION_RULES` in src/lib/session-builder/graduation.ts). The numerator
+-- subsumption clause below now has one OR-branch per scaffold:
+--   - #1 (`recognise_meaning_from_text_cap`) subsumes via a sibling whose
+--     `capability_type` is #3′ (`recognise_meaning_from_audio_cap`, now itself
+--     a typed recall card per PR-B §2.3) OR #6 (`produce_form_from_meaning_cap`)
+--     — the OR is load-bearing for listening-disabled users (§2.6: their #3′ is
+--     stripped from the snapshot, so only the #6 leg ever fires for them).
+--   - #2 (`recognise_form_from_meaning_cap`) subsumes via a #6 sibling only.
+-- Both sibling predicates stay RECENCY-FREE (same `hasMasteryStrength` mirror);
+-- the stability-scaled recency window on the direct (own-strength) clause is
+-- unchanged. `RETURNS TABLE` shape unchanged — numerator logic only.
+--
 -- Idempotent. DROP FUNCTION first because CREATE OR REPLACE cannot change
 -- a function's RETURNS TABLE shape (even when it doesn't, drop+create is
 -- a strictly safer idiom).
@@ -1986,7 +2001,9 @@ language sql stable security invoker as $$
     -- `retired_at is null` so the introducible denominator excludes retired caps.
     -- 2026-07-08/09 (Slice 3): adds source_ref/source_kind/capability_type so
     -- the mastered-numerator subsumption clause below can find a capability's
-    -- #6 sibling WITHIN this same CTE (no global self-join).
+    -- successor sibling(s) WITHIN this same CTE (no global self-join). PR-C
+    -- (2026-07-09, four-card-ladder spec §2.5) extended the successor set to
+    -- #3′/#6 for #1 and #6 for #2 (same CTE, same shape).
     select c.lesson_id, c.id as capability_id,
            c.readiness_status, c.publication_status,
            c.source_ref, c.source_kind, c.capability_type,
@@ -2016,14 +2033,18 @@ language sql stable security invoker as $$
            -- is now stability-scaled (mirrors isRecent's `Math.max(30, 2 *
            -- stability)` window) — `greatest('30 days', 2x stability)` — so a
            -- mature card's long FSRS interval no longer ages it out of
-           -- "recently reviewed". The OR branch is numerator subsumption: a #1
+           -- "recently reviewed". PR-C (2026-07-09, four-card-ladder spec §2.5)
+           -- generalized the OR branches to BOTH scaffold→successor pairs
+           -- (mirrors GRADUATION_RULES, graduation.ts): a #1
            -- (recognise_meaning_from_text_cap) row also counts when its
-           -- same-source_ref, same-lesson #6 (produce_form_from_meaning_cap)
-           -- sibling meets the RECENCY-FREE strength predicate (mirrors
-           -- hasMasteryStrength in mastered.ts — recency here would
-           -- reintroduce the flicker graduation exists to prevent). The #1
-           -- row itself still needs the ready/published filter; the #6
-           -- sibling does not (it can be due-suppressed and still count).
+           -- same-source_ref, same-lesson #3′ (recognise_meaning_from_audio_cap)
+           -- OR #6 (produce_form_from_meaning_cap) sibling meets the
+           -- RECENCY-FREE strength predicate; a #2
+           -- (recognise_form_from_meaning_cap) row also counts via a #6 sibling
+           -- (mirrors hasMasteryStrength in mastered.ts — recency here would
+           -- reintroduce the flicker graduation exists to prevent). The
+           -- scaffold row itself still needs the ready/published filter; the
+           -- successor sibling does not (it can be due-suppressed and still count).
            count(*) filter (
              where readiness_status = 'ready' and publication_status = 'published'
                and (
@@ -2036,9 +2057,28 @@ language sql stable security invoker as $$
                    )
                    and coalesce(consecutive_failure_count, 0) = 0
                  )
+                 -- #1 ← (#3′ ∨ #6): sibling capability_type IN the successor set
+                 -- mirrors GRADUATION_RULES's array value for #1 (graduation.ts).
                  or (
                    source_kind = 'vocabulary_src'
                    and capability_type = 'recognise_meaning_from_text_cap'
+                   and exists (
+                     select 1 from lesson_capabilities sib
+                     where sib.lesson_id = lesson_capabilities.lesson_id
+                       and sib.source_ref = lesson_capabilities.source_ref
+                       and sib.source_kind = 'vocabulary_src'
+                       and sib.capability_type in (
+                         'recognise_meaning_from_audio_cap', 'produce_form_from_meaning_cap'
+                       )
+                       and coalesce(sib.review_count, 0) >= 4
+                       and coalesce(sib.stability, 0) >= 14
+                       and coalesce(sib.consecutive_failure_count, 0) = 0
+                   )
+                 )
+                 -- #2 ← #6: mirrors GRADUATION_RULES's single-successor value for #2.
+                 or (
+                   source_kind = 'vocabulary_src'
+                   and capability_type = 'recognise_form_from_meaning_cap'
                    and exists (
                      select 1 from lesson_capabilities sib
                      where sib.lesson_id = lesson_capabilities.lesson_id
