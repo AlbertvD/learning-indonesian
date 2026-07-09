@@ -29,14 +29,18 @@ const row = (overrides: Partial<VocabCapRow>): VocabCapRow => ({
 
 describe('isRetireCandidate', () => {
   it('selects a live vocabulary_src cap of a dropped type', () => {
+    // #2 (recognise_form_from_meaning_cap) was the dropped-type fixture here
+    // pre-2026-07-09; the four-card-ladder amendment reinstated it as KEPT
+    // (docs/plans/2026-07-09-vocab-four-card-ladder.md), so this fixture now
+    // uses a type still in DROPPED_VOCAB_CAP_TYPES.
     expect(isRetireCandidate({
       source_kind: 'vocabulary_src',
-      capability_type: 'recognise_form_from_meaning_cap',
+      capability_type: 'recall_meaning_from_text_cap',
       retired_at: null,
     })).toBe(true)
   })
 
-  it('selects each of the 3 dropped types', () => {
+  it('selects each of the currently-dropped types', () => {
     for (const type of DROPPED_VOCAB_CAP_TYPES) {
       expect(isRetireCandidate({ source_kind: 'vocabulary_src', capability_type: type, retired_at: null })).toBe(true)
     }
@@ -238,10 +242,14 @@ describe('typesMissingFromLiveDb', () => {
 describe('buildReport', () => {
   it('aggregates retire counts by type and the rewrite plan from one row set', () => {
     const rows: VocabCapRow[] = [
-      row({ id: 'r1', capability_type: 'recognise_form_from_meaning_cap', source_ref: 'learning_items/halo' }),
+      // r1 used to be recognise_form_from_meaning_cap (#2) pre-2026-07-09; #2
+      // is now KEPT (four-card-ladder amendment), so this fixture uses #1
+      // (also kept) to keep the row count/shape but drop it from the
+      // dropped-type candidates.
+      row({ id: 'r1', capability_type: 'recognise_meaning_from_text_cap', source_ref: 'learning_items/halo' }),
       row({ id: 'r2', capability_type: 'recall_meaning_from_text_cap', source_ref: 'learning_items/halo' }),
       row({ id: 'r3', capability_type: 'produce_form_from_audio_cap', source_ref: 'learning_items/halo' }),
-      row({ id: 'r4', capability_type: 'recognise_meaning_from_text_cap', source_ref: 'learning_items/halo' }),
+      row({ id: 'r4', capability_type: 'recognise_form_from_meaning_cap', source_ref: 'learning_items/halo' }),
       row({ id: 'r5', capability_type: 'recognise_meaning_from_audio_cap', source_ref: 'learning_items/halo' }),
       row({
         id: 'r6', capability_type: 'produce_form_from_meaning_cap', source_ref: 'learning_items/halo',
@@ -250,9 +258,8 @@ describe('buildReport', () => {
     ]
     const report = buildReport(rows)
     expect(report.totalVocabRows).toBe(6)
-    expect(report.retireCandidates.map((r) => r.id).sort()).toEqual(['r1', 'r2', 'r3'])
+    expect(report.retireCandidates.map((r) => r.id).sort()).toEqual(['r2', 'r3'])
     expect(report.retireCountsByType).toEqual({
-      recognise_form_from_meaning_cap: 1,
       recall_meaning_from_text_cap: 1,
       produce_form_from_audio_cap: 1,
     })
@@ -465,7 +472,7 @@ describe('assertZeroRemaining', () => {
 
   it('throws when a dropped-type row is still live', async () => {
     const rows: VocabCapRow[] = [
-      row({ id: 'r1', capability_type: 'recognise_form_from_meaning_cap', retired_at: null }),
+      row({ id: 'r1', capability_type: 'recall_meaning_from_text_cap', retired_at: null }),
     ]
     const client = buildPagedSelectClient(rows)
     await expect(assertZeroRemaining(client)).rejects.toThrow(/dropped-type vocabulary_src/)
