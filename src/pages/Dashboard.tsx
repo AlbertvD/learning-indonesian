@@ -14,9 +14,9 @@
 // docs/target-architecture.md:344 blesses.
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button } from '@mantine/core'
+import { Button, UnstyledButton } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconTrendingUp, IconTrendingDown, IconArrowUpRight, IconBook, IconBulb, IconSeeding } from '@tabler/icons-react'
+import { IconTrendingUp, IconTrendingDown, IconArrowUpRight, IconBook, IconBulb, IconSeeding, IconPuzzle } from '@tabler/icons-react'
 import { PageContainer, PageBody, ListCard, LoadingState } from '@/components/page/primitives'
 import { StreakBar } from '@/components/dashboard/StreakBar'
 import { TodayPanel } from '@/components/dashboard/TodayPanel'
@@ -24,7 +24,9 @@ import { FirstRunChecklist, type ChecklistSteps } from '@/components/dashboard/F
 import { summarizeSessionPlan, type SessionPreviewCounts } from '@/components/dashboard/sessionPreview'
 import { engagement } from '@/lib/analytics/engagement'
 import type { DailyActivity } from '@/lib/analytics/engagement'
-import { getWeeklyMovement, type WeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
+import { getWeeklyMovement, getTroublesomeWords, type WeeklyMovement, type TroublesomeWord } from '@/lib/analytics/mastery/masteryModel'
+import { fetchMnemonicsForRefs } from '@/lib/mnemonics'
+import { TroublesomeWordsSheet } from '@/components/mnemonics/TroublesomeWordsSheet'
 import { listActivatedLessons } from '@/lib/lessons/activation'
 import { getLessonsBasic } from '@/lib/lessons/adapter'
 import {
@@ -55,6 +57,23 @@ interface ContinueTarget {
   title: string
 }
 
+// The troublesome-words nudge's denominator: words the learner keeps missing
+// AND hasn't hooked yet (one fetch of the full set, then filtered by the
+// existing note map — mirrors MnemonicWordChips' own has-hook read). Fails
+// silently to an empty list — a convenience nudge failing to load must not
+// block the rest of Home (mirrors the fail-closed/fail-open reads below).
+async function loadTroublesomeUnhooked(userId: string): Promise<TroublesomeWord[]> {
+  try {
+    const troublesome = await getTroublesomeWords(userId)
+    if (troublesome.length === 0) return []
+    const hooks = await fetchMnemonicsForRefs(userId, troublesome.map((w) => w.sourceRef))
+    return troublesome.filter((w) => !hooks.has(w.sourceRef))
+  } catch (err) {
+    logError({ page: 'dashboard', action: 'troublesomeWords', error: err })
+    return []
+  }
+}
+
 export function Dashboard() {
   const T = useT()
   const navigate = useNavigate()
@@ -77,6 +96,8 @@ export function Dashboard() {
   const [preview, setPreview] = useState<SessionPreviewCounts | null>(null)
   const [backlog, setBacklog] = useState(0)
   const [previewFailed, setPreviewFailed] = useState(false)
+  const [troublesomeUnhooked, setTroublesomeUnhooked] = useState<TroublesomeWord[]>([])
+  const [troublesomeSheetOpened, setTroublesomeSheetOpened] = useState(false)
   // Render-stable clock for the greeting / date line / tip-of-day (the purity
   // rule bans new Date() in render; a mid-visit hour change is not worth
   // re-rendering for).
@@ -87,19 +108,21 @@ export function Dashboard() {
       if (!userId) return
       try {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const [pt, daily, weeklyMovement, sessionDone, activated, lessons] = await Promise.all([
+        const [pt, daily, weeklyMovement, sessionDone, activated, lessons, troublesomeUnhookedResult] = await Promise.all([
           engagement.practiceTime(userId, tz),
           engagement.dailyActivity(userId, tz, 7),
           getWeeklyMovement(userId, tz),
           hasCompletedSession(userId).catch(() => true), // fail closed: don't nag established users
           listActivatedLessons(userId).catch(() => new Set<string>()),
           getLessonsBasic().catch(() => []),
+          loadTroublesomeUnhooked(userId),
         ])
         setCurrentStreak(pt.streakDays)
         setDailyActivity(daily)
         setMinutesThisWeek(pt.minutesThisWeek)
         setMinutesLastWeek(pt.minutesLastWeek)
         setMovement(weeklyMovement)
+        setTroublesomeUnhooked(troublesomeUnhookedResult)
         setChecklist({
           lessonOpened: readFirstRunFlag(FIRST_LESSON_OPENED_KEY),
           sessionDone,
@@ -260,6 +283,16 @@ export function Dashboard() {
               />
             )}
 
+            {troublesomeUnhooked.length > 0 && (
+              <UnstyledButton onClick={() => setTroublesomeSheetOpened(true)} display="block" w="100%">
+                <ListCard
+                  icon={<IconPuzzle size={18} />}
+                  title={T.dashboard.troublesomeWordsTitle.replace('{n}', String(troublesomeUnhooked.length))}
+                  subtitle={T.dashboard.troublesomeWordsSubtitle}
+                />
+              </UnstyledButton>
+            )}
+
             <ListCard
               icon={<IconBulb size={18} />}
               title={T.dashboard.studyTipTitle}
@@ -298,6 +331,14 @@ export function Dashboard() {
             </div>
           </div>
         </div>
+
+        {troublesomeSheetOpened && (
+          <TroublesomeWordsSheet
+            userId={userId!}
+            entries={troublesomeUnhooked}
+            onClose={() => setTroublesomeSheetOpened(false)}
+          />
+        )}
       </PageBody>
     </PageContainer>
   )

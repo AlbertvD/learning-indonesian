@@ -30,10 +30,11 @@ All in `masteryModel.ts`:
   `deriveMasteryOverview({userId, evidence, now?})`.
 - **IO model**: `createMasteryModel(client)` → `{ getContentUnitMastery,
   getPatternMastery, getMasteryOverview, getMasteryFunnel, getMasteryFunnels,
-  getSkillModeGaps, getGrammarTopics, getStubbornWords }` (+ the standalone
-  `getWeeklyMovement` RPC wrapper); every method has a default-client wrapper of
-  the same name. All readers except content-unit/pattern share one
-  `allLearnerEvidence(userId)` fetch (states → caps → activation → lesson-number).
+  getSkillModeGaps, getGrammarTopics, getStubbornWords, getTroublesomeWords }`
+  (+ the standalone `getWeeklyMovement` RPC wrapper); every method has a
+  default-client wrapper of the same name. All readers except content-unit/pattern
+  share one `allLearnerEvidence(userId)` fetch (states → caps → activation →
+  lesson-number).
 - **Types**: `MasteryLabel`, `MasteryConfidence`, `MasteryDimension`,
   `CapabilityMasteryEvidence` (carries the introducing `lessonNumber` — cap
   `lesson_id` → `lessons.order_index` — for per-lesson funnels),
@@ -58,6 +59,23 @@ All in `masteryModel.ts`:
   `getStubbornWords(userId)`. `lapseCount === 0 ∧ reviewCount > 0 ∧
   consecutiveFailureCount ≥ 4`. Not a `MasteryLabel`/rung; TS-only (no SQL mirror,
   no RPC), like the funnel/skill/grammar derivers.
+- **Troublesome ("keep getting wrong") words** (Home surface, a convenience
+  aggregation over an existing action — not a new intervention, 2026-07-09,
+  `docs/plans/2026-07-09-home-mnemonic-weak-words-surface.md`): pure deriver
+  `deriveTroublesomeWords({evidence, now?})` → `TroublesomeWord[]`
+  (`{sourceRef, sourceKind}` — raw, no label; a label would require importing
+  `lib/mnemonics`, and since `mnemonics/affordance.ts` already imports
+  `isStubborn` FROM this module, that would close a back-edge cycle — target-arch
+  Rule #7) + IO wrapper `getTroublesomeWords(userId)`. Set = at-risk
+  (`labelForCapability(e,now) === 'at_risk'`) ∪ stubborn (`isStubborn(e)`) —
+  reuses both canonical predicates verbatim (mutually exclusive at the cap
+  level, so no double-count), scoped to words only via `funnelBucket(sourceKind)`
+  (excludes `null` and `'grammar'`), deduped by `source_ref` (mirrors
+  `StubbornWordsCard`'s C1 fix), sorted descending by each word's max
+  `consecutiveFailureCount` ("most currently-stuck first"). Returns the FULL
+  troublesome set — un-hooked filtering (Home shows only words without a saved
+  memory hook) is the caller's concern, so the reader stays a reusable
+  projection. TS-only (no SQL mirror, no RPC).
 - **Vocabulary skill profile** (receptive→productive→aural gap, #211; redesigned
   2026-06-12 from capability-% to **word counts**): pure deriver
   `deriveSkillModeGaps({evidence, now?})` → `SkillModeGap[]` + IO wrapper
@@ -186,7 +204,10 @@ lesson-status spec / `lessons-overview` module.
   funnels, the latter from `deriveMasteryFunnelByLesson`); Grammatica's per-lesson
   drill-down `GrammarPatternList` ← `getGrammarTopics`/`deriveGrammarTopics`;
   `SkillModeGapsCard` ← `deriveSkillModeGaps`; the moeilijke-woorden callout ←
-  `deriveStubbornWords`; the home movement card ← `deriveWeeklyMovement`.
+  `deriveStubbornWords`; the home movement card ← `deriveWeeklyMovement`. Home's
+  troublesome-words nudge (`pages/Dashboard.tsx` → conditional `ListCard` →
+  `components/mnemonics/TroublesomeWordsSheet` → `MnemonicWordChips`) ←
+  `deriveTroublesomeWords`/`getTroublesomeWords`.
   `get_lessons_overview` mirrors the `mastered` predicate in SQL for the lesson
   tile's `% mastered` (parity-tested, ADR 0015). Per-lesson funnels work because
   `CapabilityMasteryEvidence` now carries the introducing `lessonNumber` (the

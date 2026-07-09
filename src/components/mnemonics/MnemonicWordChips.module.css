@@ -1,0 +1,43 @@
+/* Chip list shared by StubbornWordsCard (Voortgang) and TroublesomeWordsSheet
+   (Home) — moved out of StubbornWordsCard.module.css during the
+   MnemonicWordChips extraction (2026-07-09, home-mnemonic-weak-words-surface
+   slice 1) so the two consumers don't each carry their own copy. Uses the
+   "warning" token, consistent with the moeilijk/troublesome framing on both
+   surfaces. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: none;
+  background: var(--warning-subtle);
+  color: var(--text-primary, #f1f3f5);
+  cursor: pointer;
+}
+
+.chip:hover {
+  box-shadow: inset 0 0 0 1px var(--warning-border);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--warning);
+  outline-offset: 2px;
+}
+
+.hasNoteDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  display: inline-block;
+}
