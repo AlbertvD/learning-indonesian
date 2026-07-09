@@ -2319,21 +2319,27 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
 }
 
-// ── HC42 (2026-07-08, ADR 0027 / Slice 1 §3.3, HC-A): zero live
-//        (retired_at IS NULL) vocabulary_src caps of the 3 DROPPED_VOCAB_CAP_TYPES
-//        modes (#2 recognise_form_from_meaning_cap, #4 recall_meaning_from_text_cap,
-//        #5 produce_form_from_audio_cap). The projector trim
-//        (projectors/vocab.ts) stops MINTING these for new words; this check
-//        catches the ~7,077 already-live rows for existing words, which are
-//        retired by the one-off scripts/retire-dropped-vocab-modes.ts --apply
-//        (owner-gated — see that script's header).
+// ── HC42 (2026-07-08, ADR 0027 / Slice 1 §3.3, HC-A; DROPPED_VOCAB_CAP_TYPES
+//        narrowed 2026-07-09 by the four-card-ladder amendment — #2
+//        recognise_form_from_meaning_cap moved back to KEPT, docs/plans/
+//        2026-07-09-vocab-four-card-ladder.md): zero live (retired_at IS NULL)
+//        vocabulary_src caps of the CURRENT DROPPED_VOCAB_CAP_TYPES modes (#4
+//        recall_meaning_from_text_cap, #5 produce_form_from_audio_cap). Reads
+//        the shared constant dynamically, so this check needs no code change
+//        when the constant's membership shifts (this comment describes the
+//        current 2-type set; see vocabModeSet.ts for the source of truth).
+//        The projector trim (projectors/vocab.ts) stops MINTING dropped types
+//        for new words; this check catches already-live rows for existing
+//        words, which are retired by the one-off
+//        scripts/retire-dropped-vocab-modes.ts --apply (owner-gated — see
+//        that script's header).
 //
 //        EXPECTED RED until the owner runs --apply. This is BY DESIGN — the
 //        script ships in the same PR as this check so the DB and the
 //        generator can never disagree for longer than one deploy, per the
 //        spec's "ships in the same PR" note (§3.2).
 {
-  const HC42 = 'HC42 zero live vocabulary_src caps of the 3 dropped modes (ADR 0027)'
+  const HC42 = 'HC42 zero live vocabulary_src caps of the dropped modes (ADR 0027)'
   type DroppedCap = { canonical_key: string; capability_type: string }
 
   async function fetchAllDroppedModeCaps(): Promise<DroppedCap[]> {
@@ -2378,13 +2384,15 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
 }
 
-// ── HC43 (2026-07-08, ADR 0027 / Slice 1 §3.3, HC-B): zero live
-//        vocabulary_src produce_form_from_meaning_cap (#6) rows whose
-//        prerequisite_keys reference a dropped-type key. Before the one-off
-//        script rewrites them, #6 prereqs the now-dropped #2
-//        (recognise_form_from_meaning_cap), which would leave every
-//        not-yet-introduced #6 permanently unintroducible
-//        (missing_prerequisite, src/lib/session-builder/pedagogy.ts).
+// ── HC43 (2026-07-08, ADR 0027 / Slice 1 §3.3, HC-B; DROPPED_VOCAB_CAP_TYPES
+//        narrowed 2026-07-09 — see HC42 above): zero live vocabulary_src
+//        produce_form_from_meaning_cap (#6) rows whose prerequisite_keys
+//        reference a CURRENT dropped-type key. Historically (before Slice 1)
+//        #6 prereq'd #2 (recognise_form_from_meaning_cap); the Slice 1
+//        rewrite moved every #6 prereq to #1, and the 2026-07-09 amendment's
+//        re-emitted #2 does NOT move it back (§2.1 of the four-card-ladder
+//        spec) — so this check reads the shared constant dynamically and
+//        needs no code change when its membership shifts.
 //
 //        EXPECTED RED until the owner runs --apply — same gate as HC42.
 {
