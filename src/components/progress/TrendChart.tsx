@@ -24,6 +24,10 @@ export interface TrendChartProps {
   series: TrendSeries[]
   /** Optional formatter for the single max-value label drawn top-left. */
   formatMax?: (value: number) => string
+  /** Draw the single top-left max/ceiling label. On (default) for single-series
+   *  charts where it reads as the line's peak; off for multi-line charts where a
+   *  lone number can't tell the selected lines apart (they carry their own values). */
+  showMaxLabel?: boolean
   height?: number
 }
 
@@ -31,7 +35,7 @@ const W = 300
 const PAD_X = 4
 const PAD_Y = 8
 
-export function TrendChart({ xLabels, series, formatMax, height = 120 }: TrendChartProps) {
+export function TrendChart({ xLabels, series, formatMax, showMaxLabel = true, height = 120 }: TrendChartProps) {
   const clipId = useId()
   const visible = series.filter((s) => !s.hidden)
   const n = xLabels.length
@@ -89,7 +93,7 @@ export function TrendChart({ xLabels, series, formatMax, height = 120 }: TrendCh
           return null
         })}
       </g>
-      {allValues.length > 0 && (
+      {showMaxLabel && allValues.length > 0 && (
         <text x={PAD_X} y={PAD_Y + 2} className={classes.maxLabel}>
           {formatMax ? formatMax(max) : String(max)}
         </text>

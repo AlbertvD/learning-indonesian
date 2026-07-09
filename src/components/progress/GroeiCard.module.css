@@ -99,3 +99,10 @@
   border-radius: 3px;
   flex-shrink: 0;
 }
+
+/* The line's current (endpoint) value, shown on its own legend chip so every
+   selected line reports its number — not just one shared max. */
+.chipValue {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
