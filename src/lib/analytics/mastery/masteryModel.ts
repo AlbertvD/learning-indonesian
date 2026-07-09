@@ -689,11 +689,15 @@ export function deriveTroublesomeWords(input: {
   const now = input.now ?? new Date()
   const qualifying = input.evidence
     .filter((e) => {
-      // Scope: vocabulary + affixed word forms only (funnelBucket already owns
-      // the word/grammar/neither split) — a memory hook for a grammar rule is a
-      // different affordance; the in-session entry still covers any item.
-      const bucket = funnelBucket(e.sourceKind)
-      if (bucket === null || bucket === 'grammar') return false
+      // Scope: genuine vocabulary WORDS only (funnelBucket already owns the
+      // word/grammar/morphology/neither split). Morphology (word_form_pair_src)
+      // is excluded: its source_ref (`lesson-N/morphology/<slug>`) has no clean
+      // display form in the string — the derived word lives in affixed_form_pairs
+      // — so labelForSourceRef renders the raw slug, and a memory hook for an
+      // affix derivation is the Affix Trainer's job, not this "moeilijke woorden"
+      // surface. Grammar + dialogue/podcast (bucket null) were already out. The
+      // in-session entry still covers any item.
+      if (funnelBucket(e.sourceKind) !== 'vocab') return false
       // Reuse the canonical predicates verbatim — do not restate their boolean
       // conditions inline (they can drift from labelForCapability/isStubborn).
       return labelForCapability(e, now) === 'at_risk' || isStubborn(e)

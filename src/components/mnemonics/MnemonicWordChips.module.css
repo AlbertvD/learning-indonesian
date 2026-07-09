@@ -1,43 +1,63 @@
-/* Chip list shared by StubbornWordsCard (Voortgang) and TroublesomeWordsSheet
+/* Word grid shared by StubbornWordsCard (Voortgang) and TroublesomeWordsSheet
    (Home) — moved out of StubbornWordsCard.module.css during the
    MnemonicWordChips extraction (2026-07-09, home-mnemonic-weak-words-surface
-   slice 1) so the two consumers don't each carry their own copy. Uses the
-   "warning" token, consistent with the moeilijk/troublesome framing on both
-   surfaces. */
-.chips {
-  display: flex;
-  flex-wrap: wrap;
+   slice 1). Restyled 2026-07-09 from a ragged pill-wrap into an aligned grid so
+   a long list reads as a tidy table instead of a cloud of varying-width chips.
+   Cells are neutral surface tiles (not loud warm pills — too much when there are
+   ~40); the warm "moeilijk" tone is kept as the hover/hooked accent only. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 0.4rem;
 }
 
-.chip {
-  display: inline-flex;
+.cell {
+  display: flex;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: space-between;
+  gap: 0.4rem;
+  min-height: 2.4rem;
   font-family: inherit;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  border: none;
-  background: var(--warning-subtle);
+  text-align: left;
+  padding: 0.45rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.16));
+  background: var(--surface-2, rgba(128, 128, 128, 0.06));
   color: var(--text-primary, #f1f3f5);
   cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.chip:hover {
-  box-shadow: inset 0 0 0 1px var(--warning-border);
+.cell:hover {
+  background: var(--warning-subtle);
+  border-color: var(--warning-border);
 }
 
-.chip:focus-visible {
+.cell:focus-visible {
   outline: 2px solid var(--warning);
   outline-offset: 2px;
 }
 
+/* Word text — wraps rather than truncates so nothing is hidden; the grid row
+   sizes to its tallest cell so columns stay aligned. */
+.label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* A word that already has a memory hook — a filled dot; the cell also carries the
+   warm accent so hooked words read as "done" at a glance. */
 .hasNoteDot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--accent-primary);
-  display: inline-block;
+  flex-shrink: 0;
+}
+
+.cell.hooked {
+  background: var(--warning-subtle);
+  border-color: var(--warning-border);
 }
