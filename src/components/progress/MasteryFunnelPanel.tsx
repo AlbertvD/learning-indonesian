@@ -35,9 +35,12 @@ export interface MasteryFunnelPanelProps {
   unitLabel: string
   /** Scope-aware content rendered below the funnel. */
   footer?: (scope: FunnelScope) => ReactNode
+  /** Slice 2 (Woordenschat only) — passed straight to MasteryJourney; makes
+   *  the at-risk box a button. Grammar/Morfologie callers omit this. */
+  onAtRiskClick?: () => void
 }
 
-export function MasteryFunnelPanel({ userId, kind, unitLabel, footer }: MasteryFunnelPanelProps) {
+export function MasteryFunnelPanel({ userId, kind, unitLabel, footer, onAtRiskClick }: MasteryFunnelPanelProps) {
   const T = useT()
   const [data, setData] = useState<{ all: MasteryFunnels; byLesson: Map<number, MasteryFunnels> } | null>(null)
   const [scope, setScope] = useState<string>(ALL)
@@ -79,7 +82,7 @@ export function MasteryFunnelPanel({ userId, kind, unitLabel, footer }: MasteryF
         />
       )}
       {/* key re-mounts so the journey re-animates when the lesson filter changes */}
-      <MasteryJourney key={scope} funnel={funnels[kind]} unitLabel={unitLabel} />
+      <MasteryJourney key={scope} funnel={funnels[kind]} unitLabel={unitLabel} onAtRiskClick={onAtRiskClick} />
       {footer?.(funnelScope)}
     </div>
   )

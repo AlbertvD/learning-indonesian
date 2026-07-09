@@ -121,6 +121,28 @@
   border-left: 3px solid var(--warning, #e8590c);
 }
 
+/* Slice 2: when rendered as a <button> (onAtRiskClick supplied), reset the
+   UA button chrome the extra three border sides + background/font would
+   otherwise add, and add a tap affordance so "aandacht nodig" reads as
+   actionable. Combined with .atRisk (not a standalone replacement) so the
+   border-left/background/radius/padding above still apply unchanged. */
+.atRiskButton {
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.atRiskButton:hover,
+.atRiskButton:focus-visible {
+  filter: brightness(0.96);
+}
+
 .atRiskIcon {
   font-size: 1.1rem;
   line-height: 1.3;

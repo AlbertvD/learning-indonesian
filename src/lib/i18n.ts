@@ -452,6 +452,12 @@ export const nl = {
     // Page header
     pageTitle: 'Jouw leervoortgang',
     pageSubtitle: 'Jouw leervoortgang',
+    // "Jouw Indonesisch" hero strip (I1) — three honest numbers above the
+    // tab strip; docs/plans/2026-07-09-voortgang-jouw-indonesisch-hero.md Part A.
+    heroTitle: 'Jouw Indonesisch',
+    heroWordsKnownLabel: 'woorden die je kent',
+    heroCoverageLabel: 'meest voorkomende woorden',
+    heroStreakLabel: 'dagen op rij',
     // Mastery funnel
     funnelTitle: 'Leerpijplijn',
     funnelEmpty: 'Nog geen woorden geleerd.',
@@ -1134,6 +1140,12 @@ export const en: typeof nl = {
     // Page header
     pageTitle: 'Your progress',
     pageSubtitle: 'Your learning progress and memory health',
+    // "Jouw Indonesisch" hero strip (I1) — three honest numbers above the
+    // tab strip; docs/plans/2026-07-09-voortgang-jouw-indonesisch-hero.md Part A.
+    heroTitle: 'Your Indonesian',
+    heroWordsKnownLabel: 'words you know',
+    heroCoverageLabel: 'most common words',
+    heroStreakLabel: 'days in a row',
     // Mastery funnel
     funnelTitle: 'Learning pipeline',
     funnelEmpty: 'No words learned yet.',

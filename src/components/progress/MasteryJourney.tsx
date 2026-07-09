@@ -4,6 +4,14 @@
 // (Introduced → Learning → Strengthening → Mastered), as animated gradient
 // segments left→right, with the at-risk count flagged. One component for both
 // the Vocabulary and Grammar funnels (#voortgang redesign).
+//
+// The at-risk box is behavior-only wired for slice 2
+// (docs/plans/2026-07-09-voortgang-jouw-indonesisch-hero.md Part B): when a
+// caller supplies `onAtRiskClick` it becomes a keyboard-accessible <button>
+// (Woordenschat, via MasteryFunnelPanel → VocabMasteryPanel, which owns the
+// TroublesomeWordsSheet); grammar/morfologie pass no callback so the box stays
+// the pre-existing inert count. This component never sees the sheet's entries —
+// it only triggers.
 import { useT } from '@/hooks/useT'
 import type { MasteryFunnel } from '@/lib/analytics/mastery/masteryModel'
 import { InsightTips } from './InsightTips'
@@ -13,11 +21,13 @@ export interface MasteryJourneyProps {
   funnel: MasteryFunnel
   /** Noun for the headline, e.g. "woorden" / "onderwerpen". */
   unitLabel: string
+  /** Optional trigger (slice 2) — when supplied, the at-risk box becomes a button. */
+  onAtRiskClick?: () => void
 }
 
 const RUNGS = ['introduced', 'learning', 'strengthening', 'mastered'] as const
 
-export function MasteryJourney({ funnel, unitLabel }: MasteryJourneyProps) {
+export function MasteryJourney({ funnel, unitLabel, onAtRiskClick }: MasteryJourneyProps) {
   const T = useT()
   const rungLabel: Record<(typeof RUNGS)[number], string> = {
     introduced: T.progress.rungIntroduced,
@@ -27,6 +37,18 @@ export function MasteryJourney({ funnel, unitLabel }: MasteryJourneyProps) {
   }
   const total = RUNGS.reduce((s, r) => s + funnel[r], 0) + funnel.at_risk
   const max = Math.max(1, ...RUNGS.map((r) => funnel[r]))
+
+  const atRiskContent = (
+    <>
+      <span className={classes.atRiskIcon}>⚠</span>
+      <div className={classes.atRiskBody}>
+        <span className={classes.atRiskTitle}>
+          {funnel.at_risk} {unitLabel} {T.progress.rungAtRisk.toLowerCase()}
+        </span>
+        <span className={classes.atRiskExplain}>{T.progress.atRiskExplain}</span>
+      </div>
+    </>
+  )
 
   return (
     <div className={classes.wrap}>
@@ -58,15 +80,17 @@ export function MasteryJourney({ funnel, unitLabel }: MasteryJourneyProps) {
 
       {funnel.at_risk > 0 && (
         <>
-          <div className={classes.atRisk}>
-            <span className={classes.atRiskIcon}>⚠</span>
-            <div className={classes.atRiskBody}>
-              <span className={classes.atRiskTitle}>
-                {funnel.at_risk} {unitLabel} {T.progress.rungAtRisk.toLowerCase()}
-              </span>
-              <span className={classes.atRiskExplain}>{T.progress.atRiskExplain}</span>
-            </div>
-          </div>
+          {onAtRiskClick ? (
+            <button
+              type="button"
+              className={`${classes.atRisk} ${classes.atRiskButton}`}
+              onClick={onAtRiskClick}
+            >
+              {atRiskContent}
+            </button>
+          ) : (
+            <div className={classes.atRisk}>{atRiskContent}</div>
+          )}
           <InsightTips area="at_risk" defaultOpen={false} />
         </>
       )}

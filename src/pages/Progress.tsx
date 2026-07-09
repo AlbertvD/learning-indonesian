@@ -6,13 +6,18 @@
 // pages, no longer a toggle inside one funnel; Grammatica adds per-pattern detail
 // when a lesson is picked. Vaardigheden (skill-mode gaps) and Tijd (week/month)
 // stay as their own tabs. Each view animates in on switch.
+//
+// The "Jouw Indonesisch" hero strip (I1) sits above the tab strip — always
+// visible, independent of which tab is active — three honest numbers composed
+// from existing readers (see JouwIndonesischHero for the non-blocking fetch).
 import { useSearchParams } from 'react-router-dom'
 import { PageContainer, PageBody, PageHeader } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
 import { PillSegmented } from '@/components/progress/PillSegmented'
+import { JouwIndonesischHero } from '@/components/progress/JouwIndonesischHero'
 import { MasteryFunnelPanel } from '@/components/progress/MasteryFunnelPanel'
-import { StubbornWordsCard } from '@/components/progress/StubbornWordsCard'
+import { VocabMasteryPanel } from '@/components/progress/VocabMasteryPanel'
 import { GrammarPatternList } from '@/components/progress/GrammarPatternList'
 import { SkillModeGapsCard } from '@/components/progress/SkillModeGapsCard'
 import { TimeComparisonCard } from '@/components/progress/TimeComparisonCard'
@@ -41,6 +46,8 @@ export function Progress() {
 
         {user && (
           <>
+            <JouwIndonesischHero userId={user.id} />
+
             {/* Scrollable so the strip never clips a tab when labels/count grow
                 (the six-tab strip previously hid Groei + Tijd past the pill edge). */}
             <div className={classes.tabs}>
@@ -64,12 +71,7 @@ export function Progress() {
                   removed; growth now lives where the funnel does). */}
               {tab === 'woorden' && (
                 <div className={classes.sections}>
-                  <MasteryFunnelPanel
-                    userId={user.id}
-                    kind="vocabulary"
-                    unitLabel={T.progress.unitWords}
-                    footer={() => <StubbornWordsCard userId={user.id} />}
-                  />
+                  <VocabMasteryPanel userId={user.id} />
                   <GrowthCurveCard userId={user.id} bucket="vocabulary" />
                 </div>
               )}
