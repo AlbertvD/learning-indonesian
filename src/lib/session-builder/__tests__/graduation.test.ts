@@ -7,11 +7,14 @@ import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 
 // docs/plans/2026-07-08-vocab-mode-set-reduction-and-graduation.md §4.5 — the 5
 // scenarios, plus the recomposition truth-table test (§4.1). Extended by
-// docs/plans/2026-07-09-vocab-four-card-ladder.md §2.4 (PR-A) for the `#2 ← #6`
-// rule. Word "kucing" (cat) carries vocab modes #1 (recognise_meaning_from_text_cap,
-// comprehension MCQ scaffold), #2 (recognise_form_from_meaning_cap, production MCQ
-// scaffold — PR-A), #3 (recognise_meaning_from_audio_cap, aural — never retired) and
-// #6 (produce_form_from_meaning_cap, productive frontier — never retired).
+// docs/plans/2026-07-09-vocab-four-card-ladder.md §2.4: PR-A added the `#2 ← #6`
+// rule; PR-B repoints `#1 ← #6` to `#1 ← (#3′ ∨ #6)` now that #3′ is itself a
+// typed recall card (tests 8-11 below). Word "kucing" (cat) carries vocab modes
+// #1 (recognise_meaning_from_text_cap, comprehension MCQ scaffold), #2
+// (recognise_form_from_meaning_cap, production MCQ scaffold — PR-A), #3′
+// (recognise_meaning_from_audio_cap, ear-only typed recall since PR-B — one of
+// #1's two OR-successors) and #6 (produce_form_from_meaning_cap, productive
+// frontier — never retired, #2's sole successor).
 
 const now = new Date('2026-07-08T10:00:00.000Z')
 const sourceRef = 'learning_items/kucing'
@@ -217,6 +220,55 @@ describe('suppressGraduatedVocabDue', () => {
     const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)
 
     expect(result.map(d => d.canonicalKeySnapshot)).toEqual([audioKey, produceKey])
+  })
+
+  // ── PR-B (four-card ladder, docs/plans/2026-07-09-vocab-four-card-ladder.md
+  // §2.4 OR-repoint) — #1's successor set is now `[#3′, #6]` (was `[#6]` only).
+
+  it('8 — #1 OR-lane: #3′ (recognise_meaning_from_audio_cap) alone has mastery strength -> #1 suppressed even with no #6 state', () => {
+    const orderedDue = [due(recogniseKey)]
+    const schedulerRows = [
+      stateRow(audioKey, { reviewCount: 5, stability: 16, consecutiveFailureCount: 0 }),
+    ]
+
+    const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)
+
+    expect(result).toEqual([])
+  })
+
+  it('9 — listening-disabled snapshot (no #3′ scheduler row at all, mirrors listeningFilter stripping it) still graduates #1 via #6 alone', () => {
+    const orderedDue = [due(recogniseKey), due(produceKey)]
+    const schedulerRows = [
+      stateRow(produceKey, { reviewCount: 4, stability: 14, consecutiveFailureCount: 0 }),
+    ]
+
+    const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)
+
+    expect(result.map(d => d.canonicalKeySnapshot)).toEqual([produceKey])
+  })
+
+  it('10 — #1 OR-lane lapse: #3′ consecutiveFailureCount>0 and #6 not yet strong -> #1 reappears', () => {
+    const orderedDue = [due(recogniseKey)]
+    const schedulerRows = [
+      stateRow(audioKey, { reviewCount: 6, stability: 20, consecutiveFailureCount: 1 }),
+      stateRow(produceKey, { reviewCount: 1, stability: 1, consecutiveFailureCount: 0 }),
+    ]
+
+    const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)
+
+    expect(result.map(d => d.canonicalKeySnapshot)).toEqual([recogniseKey])
+  })
+
+  it('11 — #1 OR-lane: #3′ lapses but #6 is still strong -> #1 stays suppressed (OR, not AND)', () => {
+    const orderedDue = [due(recogniseKey)]
+    const schedulerRows = [
+      stateRow(audioKey, { reviewCount: 6, stability: 20, consecutiveFailureCount: 1 }), // lapsed
+      stateRow(produceKey, { reviewCount: 4, stability: 14, consecutiveFailureCount: 0 }), // still strong
+    ]
+
+    const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)
+
+    expect(result).toEqual([])
   })
 
   it('is pure — does not mutate the input due list', () => {
