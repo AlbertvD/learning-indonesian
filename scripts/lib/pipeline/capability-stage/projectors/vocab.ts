@@ -3,8 +3,9 @@
  *
  * `projectItemsFromTypedRows` maps typed `lesson_section_item_rows` (loaded from
  * the DB) into per-item write plans (learning_items upsert + anchor context + the
- * 3 vocabulary caps: recognise_meaning_from_text_cap, recognise_meaning_from_audio_cap,
- * produce_form_from_meaning_cap — ADR 0027 bounds the per-word mode set to these three).
+ * 4 vocabulary caps: recognise_meaning_from_text_cap, recognise_form_from_meaning_cap,
+ * recognise_meaning_from_audio_cap, produce_form_from_meaning_cap — ADR 0027
+ * (amended 2026-07-09, four-card ladder) bounds the per-word mode set to these four).
  *
  * The legacy staging projector (`projectVocab` / `selectPublishableItems` + the
  * `produce_form_from_context_cap` dialogue emission) was retired in Slice 5b (#147): the runner
@@ -39,7 +40,7 @@ import type { TypedItemRow } from '../loadFromDb'
  *
  * Extends the staging-path `PerItemPlan` with:
  *   - `normalizedText` — the stable identity key (itemSlug(indonesian_text))
- *   - `capabilities`   — the CapabilityInput rows for this item (3 vocab caps, ADR 0027)
+ *   - `capabilities`   — the CapabilityInput rows for this item (4 vocab caps, ADR 0027)
  *   - `sourceRef`      — `learning_items/<normalized_text>` (matches adapter.ts:upsertLearningItem)
  *
  * NOTE: `capabilities` are emitted for ALL items regardless of whether they
@@ -91,14 +92,20 @@ export interface TypedItemProjectionOutput {
  *   - `context_type` on the anchor context = `'lesson_snippet'` (a valid
  *     item_contexts CHECK value; the anchor is the introducing lesson snippet).
  *
- * ADR 0027 (vocabulary-mode-set-bounded): each item emits exactly the 3
- * capabilities in `KEPT_VOCAB_CAP_TYPES` (`@/lib/capabilities/vocabModeSet.ts`)
- * instead of the earlier 6 — modes #2 (recognise_form_from_meaning_cap),
- * #4 (recall_meaning_from_text_cap) and #5 (produce_form_from_audio_cap,
- * `DROPPED_VOCAB_CAP_TYPES`) are dropped from the model entirely:
+ * ADR 0027 (vocabulary-mode-set-bounded, amended 2026-07-09 — four-card ladder,
+ * docs/plans/2026-07-09-vocab-four-card-ladder.md PR-A): each item emits exactly
+ * the 4 capabilities in `KEPT_VOCAB_CAP_TYPES` (`@/lib/capabilities/vocabModeSet.ts`)
+ * instead of the earlier 3 — modes #4 (recall_meaning_from_text_cap) and #5
+ * (produce_form_from_audio_cap, `DROPPED_VOCAB_CAP_TYPES`) stay dropped from the
+ * model entirely:
  *   1. recognise_meaning_from_text_cap  (id_to_l1) — #1, root/scaffold, prerequisiteKeys: []
- *   2. recognise_meaning_from_audio_cap (audio_to_l1) — #3, aural, prereq #1
- *   3. produce_form_from_meaning_cap    (l1_to_id) — #6, productive frontier, prereq #1
+ *   2. recognise_form_from_meaning_cap  (l1_to_id) — #2, production MCQ scaffold, prereq #1
+ *   3. recognise_meaning_from_audio_cap (audio_to_l1) — #3, aural, prereq #1
+ *   4. produce_form_from_meaning_cap    (l1_to_id) — #6, productive frontier, prereq #1
+ *      (#6's prereq stays #1 — NOT rewritten to #2 — the within-word phase order
+ *      #1→#3→#2→#6 plus the Phase-≥3 staging gate already sequences #2-before-#6;
+ *      rewriting #6's prereq back to #2 would be a second 2,359-row content UPDATE
+ *      for no behavioural gain. See docs/plans/2026-07-09-vocab-four-card-ladder.md §2.1.)
  *
  * Idempotency: the projector EMITS all items and their capabilities.
  * The writer (Task 6) checks `normalized_text` / `canonical_key` against
@@ -178,10 +185,36 @@ export function projectItemsFromTypedRows(
         requiredArtifacts: [],
         prerequisiteKeys: [],
       },
+      // #2 — recognise_form_from_meaning_cap: production-direction MCQ scaffold
+      // (four-card ladder, ADR 0027 2026-07-09 amendment). Re-emitted after the
+      // 2026-07-08 drop; graduates at #6 mastery strength (`graduation.ts`,
+      // `#2 ← #6`). prereq #1 — same root every other mode prereqs on.
+      {
+        canonicalKey: buildCanonicalKey({
+          sourceKind: 'vocabulary_src',
+          sourceRef,
+          capabilityType: 'recognise_form_from_meaning_cap',
+          direction: 'l1_to_id',
+          modality: 'text',
+          learnerLanguage,
+        }),
+        sourceKind: 'vocabulary_src',
+        sourceRef,
+        capabilityType: 'recognise_form_from_meaning_cap',
+        direction: 'l1_to_id',
+        modality: 'text',
+        learnerLanguage,
+        projectionVersion: CAPABILITY_PROJECTION_VERSION,
+        lessonId: input.lessonId,
+        requiredArtifacts: [],
+        prerequisiteKeys: [textRecognitionKey],
+      },
       // #6 — produce_form_from_meaning_cap: productive frontier, never retired.
-      // prerequisiteKeys points at #1 (ADR 0027 — was #2's key before the trim;
-      // #2 no longer exists so every not-yet-introduced #6 would otherwise be
-      // permanently unintroducible).
+      // prerequisiteKeys points at #1 (ADR 0027 — was #2's key before the 2026-07-08
+      // trim; #2's re-emission here does NOT move #6's prereq back — the within-word
+      // phase order (#1 P1 → #3 P2 → #2 P3 → #6 P4) plus the staging gate already
+      // sequences #2-before-#6, avoiding a second 2,359-row content UPDATE. See
+      // docs/plans/2026-07-09-vocab-four-card-ladder.md §2.1.
       {
         canonicalKey: buildCanonicalKey({
           sourceKind: 'vocabulary_src',
@@ -237,8 +270,8 @@ export function projectItemsFromTypedRows(
 
     // Invariant guard (ADR 0027): the emitted set must be EXACTLY
     // KEPT_VOCAB_CAP_TYPES — the shared constant both this projector and the
-    // one-off retirement script / health checks import, so drift is caught
-    // here rather than silently reappearing in a future edit.
+    // one-off retirement/un-retirement scripts / health checks import, so drift
+    // is caught here rather than silently reappearing in a future edit.
     const emittedTypes = new Set(capabilities.map((c) => c.capabilityType))
     if (
       emittedTypes.size !== KEPT_VOCAB_CAP_TYPES.length ||

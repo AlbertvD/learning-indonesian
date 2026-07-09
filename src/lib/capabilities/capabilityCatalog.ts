@@ -43,11 +43,11 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
     const recognitionArtifacts: ArtifactKind[] = ['base_text', 'meaning:l1']
     const formArtifacts: ArtifactKind[] = ['meaning:l1', 'base_text', 'accepted_answers:id']
 
-    // ADR 0027 (vocabulary-mode-set-bounded): this loop emits exactly the 3
-    // capabilities in KEPT_VOCAB_CAP_TYPES per item (2 unconditional + the
-    // audio one gated on item.hasAudio) — modes #2
-    // (recognise_form_from_meaning_cap), #4 (recall_meaning_from_text_cap) and
-    // #5 (produce_form_from_audio_cap) are dropped from the model entirely.
+    // ADR 0027 (vocabulary-mode-set-bounded, amended 2026-07-09 four-card
+    // ladder): this loop emits exactly the 4 capabilities in
+    // KEPT_VOCAB_CAP_TYPES per item (3 unconditional + the audio one gated on
+    // item.hasAudio) — modes #4 (recall_meaning_from_text_cap) and #5
+    // (produce_form_from_audio_cap) are dropped from the model entirely.
     // This is the second, uncoordinated definition of the vocab capability
     // shape (the live projector is projectors/vocab.ts) — kept in lock-step so
     // the diagnostic tools that consume it (materialize-capabilities.ts,
@@ -64,10 +64,26 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: recognitionArtifacts,
     })
+    // #2 — recognise_form_from_meaning_cap: production-direction MCQ scaffold
+    // (four-card ladder, ADR 0027 2026-07-09 amendment; docs/plans/2026-07-09-vocab-four-card-ladder.md
+    // §2.1). Graduates at #6 mastery strength (`graduation.ts`, `#2 ← #6`).
+    // prereq #1 — mirrors projectors/vocab.ts.
+    const recogniseFormCapability = createCapability({
+      sourceKind: 'vocabulary_src',
+      sourceRef,
+      capabilityType: 'recognise_form_from_meaning_cap',
+      skillType: 'recognise_mode',
+      direction: 'l1_to_id',
+      modality: 'text',
+      learnerLanguage: item.meanings[0]?.language ?? 'none',
+      requiredArtifacts: formArtifacts,
+      prerequisiteKeys: [textRecognitionCapability.canonicalKey],
+    })
     // #6 — produce_form_from_meaning_cap: productive frontier, never retired.
-    // prerequisiteKeys points at #1 (ADR 0027 — was #2's key before the trim;
-    // #2 no longer exists so every not-yet-introduced #6 would otherwise be
-    // permanently unintroducible).
+    // prerequisiteKeys points at #1, NOT #2 (ADR 0027 §2.1 — #2's 2026-07-09
+    // re-emission does not move #6's prereq back; the within-word phase order
+    // plus the staging gate already sequences #2-before-#6, avoiding a second
+    // full-corpus content UPDATE).
     const produceFormCapability = createCapability({
       sourceKind: 'vocabulary_src',
       sourceRef,
@@ -80,7 +96,11 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       prerequisiteKeys: [textRecognitionCapability.canonicalKey],
     })
 
-    const itemCapabilities: ProjectedCapability[] = [textRecognitionCapability, produceFormCapability]
+    const itemCapabilities: ProjectedCapability[] = [
+      textRecognitionCapability,
+      recogniseFormCapability,
+      produceFormCapability,
+    ]
 
     if (item.hasAudio) {
       // #3 — recognise_meaning_from_audio_cap: aural, a distinct construct,
@@ -100,14 +120,33 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       }))
     }
 
-    const droppedTypesPresent = itemCapabilities.filter(
-      (c) => !(KEPT_VOCAB_CAP_TYPES as readonly string[]).includes(c.capabilityType),
+    // Invariant guard (ADR 0027, strengthened data-architect 2026-07-09):
+    // the emitted set must be EXACTLY KEPT_VOCAB_CAP_TYPES, scoped to whether
+    // this item has audio (unlike the live projector, projectors/vocab.ts,
+    // which emits audio unconditionally — cap-v2 #161 — this second
+    // definition's audio cap stays genuinely conditional on item.hasAudio, so
+    // a byte-for-byte copy of vocab.ts's unconditional exact-match guard would
+    // wrongly throw for every audio-less item; both currently-passing
+    // consumers — materialize-capabilities.test.ts and
+    // check-capability-health.test.ts's lesson-13 fixture — feed hasAudio:false
+    // items through this path). The scoped exact-match still gives the
+    // load-bearing property the subset-only guard lacked: a future KEPT type
+    // added to vocabModeSet.ts and forgotten here fails loudly instead of
+    // silently drifting from the live projector.
+    const expectedTypesForItem = new Set(
+      item.hasAudio
+        ? KEPT_VOCAB_CAP_TYPES
+        : KEPT_VOCAB_CAP_TYPES.filter((t) => t !== 'recognise_meaning_from_audio_cap'),
     )
-    if (droppedTypesPresent.length > 0) {
+    const emittedTypes = new Set(itemCapabilities.map((c) => c.capabilityType))
+    if (
+      emittedTypes.size !== expectedTypesForItem.size
+      || ![...expectedTypesForItem].every((t) => emittedTypes.has(t))
+    ) {
       throw new Error(
-        `projectCapabilities: emitted a dropped vocab cap type `
-        + `[${droppedTypesPresent.map((c) => c.capabilityType).join(', ')}] for ${sourceRef} `
-        + `(ADR 0027 — must be a subset of KEPT_VOCAB_CAP_TYPES)`,
+        `projectCapabilities: emitted capability types [${[...emittedTypes].join(', ')}] `
+        + `do not match the expected KEPT_VOCAB_CAP_TYPES set [${[...expectedTypesForItem].join(', ')}] `
+        + `for ${sourceRef} (ADR 0027)`,
       )
     }
 

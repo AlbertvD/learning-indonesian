@@ -189,13 +189,21 @@ function isAllowedInSessionMode(capability: PlannerCapability): boolean {
 // types that *can* render as Phase 4 are classified at Phase 4 even when an
 // MCQ resolution is possible. The switch is exhaustive over CapabilityType so
 // any new type added to capabilityTypes.ts will fail compilation here.
+//
+// Four-card-ladder note (docs/plans/2026-07-09-vocab-four-card-ladder.md §2.1,
+// PR-A): `recognise_meaning_from_audio_cap` (#3) moves 1 → 2. It becomes the
+// receptive-RECALL rung in PR-B (typed meaning-from-audio, not MCQ) — the same
+// Phase-2 slot `recall_meaning_from_text_cap` already occupies — which yields
+// the intended within-word intro order #1 (P1) → #3 (P2) → #2 (P3) → #6 (P4).
+// Phase 1/2 both pass the `>= 3` staging gate below unconditionally, so this is
+// inert for the unlock check; it only changes `prioritizeCandidates`' sort.
 export function capabilityPhase(type: CapabilityType): 1 | 2 | 3 | 4 {
   switch (type) {
     case 'recognise_meaning_from_text_cap':
-    case 'recognise_meaning_from_audio_cap':
     case 'recognise_gist_from_audio_cap':
       return 1
     case 'recall_meaning_from_text_cap':
+    case 'recognise_meaning_from_audio_cap':
       return 2
     case 'recognise_form_from_meaning_cap':
     case 'contrast_grammar_pattern_cap':

@@ -6,16 +6,19 @@ import type { PlannerCapability } from '../pedagogy'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 
 // docs/plans/2026-07-08-vocab-mode-set-reduction-and-graduation.md §4.5 — the 5
-// scenarios, plus the recomposition truth-table test (§4.1). Word "kucing" (cat)
-// carries vocab modes #1 (recognise_meaning_from_text_cap, receptive scaffold),
-// #3 (recognise_meaning_from_audio_cap, aural — never retired) and #6
-// (produce_form_from_meaning_cap, productive frontier — never retired).
+// scenarios, plus the recomposition truth-table test (§4.1). Extended by
+// docs/plans/2026-07-09-vocab-four-card-ladder.md §2.4 (PR-A) for the `#2 ← #6`
+// rule. Word "kucing" (cat) carries vocab modes #1 (recognise_meaning_from_text_cap,
+// comprehension MCQ scaffold), #2 (recognise_form_from_meaning_cap, production MCQ
+// scaffold — PR-A), #3 (recognise_meaning_from_audio_cap, aural — never retired) and
+// #6 (produce_form_from_meaning_cap, productive frontier — never retired).
 
 const now = new Date('2026-07-08T10:00:00.000Z')
 const sourceRef = 'learning_items/kucing'
 const recogniseKey = 'cap:v1:vocabulary_src:learning_items/kucing:recognise_meaning_from_text_cap:id_to_l1:text:nl'
 const audioKey = 'cap:v1:vocabulary_src:learning_items/kucing:recognise_meaning_from_audio_cap:audio_to_l1:audio:nl'
 const produceKey = 'cap:v1:vocabulary_src:learning_items/kucing:produce_form_from_meaning_cap:l1_to_id:text:nl'
+const recogniseFormKey = 'cap:v1:vocabulary_src:learning_items/kucing:recognise_form_from_meaning_cap:l1_to_id:text:nl'
 
 function vocabCap(overrides: Partial<ProjectedCapability> & { canonicalKey: string; capabilityType: ProjectedCapability['capabilityType'] }): ProjectedCapability {
   return {
@@ -35,11 +38,13 @@ function vocabCap(overrides: Partial<ProjectedCapability> & { canonicalKey: stri
 const recognise = vocabCap({ canonicalKey: recogniseKey, capabilityType: 'recognise_meaning_from_text_cap' })
 const audio = vocabCap({ canonicalKey: audioKey, capabilityType: 'recognise_meaning_from_audio_cap', direction: 'audio_to_l1', modality: 'audio' })
 const produce = vocabCap({ canonicalKey: produceKey, capabilityType: 'produce_form_from_meaning_cap', direction: 'l1_to_id' })
+const recogniseForm = vocabCap({ canonicalKey: recogniseFormKey, capabilityType: 'recognise_form_from_meaning_cap', direction: 'l1_to_id' })
 
 const capabilitiesByKey = new Map<string, ProjectedCapability>([
   [recogniseKey, recognise],
   [audioKey, audio],
   [produceKey, produce],
+  [recogniseFormKey, recogniseForm],
 ])
 
 function due(canonicalKeySnapshot: string, overrides: Partial<DueCapability> = {}): DueCapability {
@@ -152,6 +157,61 @@ describe('suppressGraduatedVocabDue', () => {
 
   it('4c — other vocab types (#3 aural, #6 itself) are never suppressed even when #6 is strong', () => {
     const orderedDue = [due(audioKey), due(produceKey)]
+    const schedulerRows = [stateRow(produceKey, { reviewCount: 6, stability: 20, consecutiveFailureCount: 0 })]
+
+    const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)
+
+    expect(result.map(d => d.canonicalKeySnapshot)).toEqual([audioKey, produceKey])
+  })
+
+  // ── PR-A (four-card ladder, docs/plans/2026-07-09-vocab-four-card-ladder.md §2.4) ──
+  // the `#2 ← #6` lane, added alongside the shipped `#1 ← #6` rule above.
+
+  it('5 — #2 lane: excludes #2 due entry when #6 has mastery strength (mirrors scenario 1 for the production scaffold)', () => {
+    const orderedDue = [due(recogniseFormKey), due(audioKey), due(produceKey)]
+    const schedulerRows = [
+      stateRow(produceKey, {
+        reviewCount: 4,
+        stability: 14,
+        consecutiveFailureCount: 0,
+        lastReviewedAt: '2026-05-09T00:00:00.000Z', // 60 days before 2026-07-08 — recency-free pin
+      }),
+    ]
+
+    const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)
+
+    // #2 (recogniseForm) is gone; #3 (audio) and #6 (produce) — never suppressed — remain.
+    expect(result.map(d => d.canonicalKeySnapshot)).toEqual([audioKey, produceKey])
+  })
+
+  it('6 — #2 lapse reversal: #6 consecutiveFailureCount > 0 breaks the strength bar → #2 reappears', () => {
+    const orderedDue = [due(recogniseFormKey)]
+    const schedulerRows = [stateRow(produceKey, { reviewCount: 6, stability: 20, consecutiveFailureCount: 1 })]
+
+    const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)
+
+    expect(result.map(d => d.canonicalKeySnapshot)).toEqual([recogniseFormKey])
+  })
+
+  it('7 — reanimated #2 with #6-strong is due-suppressed (unretire-vocab-mode.ts step-2 scenario)', () => {
+    // Simulates the post-`--apply` shape from scripts/unretire-vocab-mode.ts:
+    // a previously-practiced #2 row whose next_due_at was just reanimated to
+    // "now" (so it is due again) — but its #6 sibling already crossed the
+    // mastery-strength bar while #2 sat retired. Graduation must suppress it
+    // immediately on the very next build rather than surfacing a stale scaffold.
+    const orderedDue = [due(recogniseFormKey, { nextDueAt: now.toISOString() })]
+    const schedulerRows = [
+      stateRow(recogniseFormKey, { reviewCount: 3, nextDueAt: now.toISOString() }),
+      stateRow(produceKey, { reviewCount: 5, stability: 18, consecutiveFailureCount: 0 }),
+    ]
+
+    const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)
+
+    expect(result).toEqual([])
+  })
+
+  it('#1 and #2 both graduate independently — a strong #6 suppresses both scaffolds in one build', () => {
+    const orderedDue = [due(recogniseKey), due(recogniseFormKey), due(audioKey), due(produceKey)]
     const schedulerRows = [stateRow(produceKey, { reviewCount: 6, stability: 20, consecutiveFailureCount: 0 })]
 
     const result = suppressGraduatedVocabDue(orderedDue, capabilitiesByKey, schedulerRows)

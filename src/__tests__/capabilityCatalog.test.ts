@@ -43,7 +43,7 @@ const snapshot: CurrentContentSnapshot = {
 }
 
 describe('capability catalog projection', () => {
-  it('ADR 0027: projects exactly the 3 kept vocab capability types (text, form, audio)', () => {
+  it('ADR 0027 (four-card ladder, 2026-07-09): projects exactly the 4 kept vocab capability types', () => {
     const projection = projectCapabilities(snapshot)
     const vocabCapTypes = projection.capabilities
       .filter((c) => c.sourceKind === 'vocabulary_src')
@@ -52,11 +52,11 @@ describe('capability catalog projection', () => {
 
     expect(vocabCapTypes).toEqual([
       'produce_form_from_meaning_cap',
+      'recognise_form_from_meaning_cap',
       'recognise_meaning_from_audio_cap',
       'recognise_meaning_from_text_cap',
     ])
-    // The 3 dropped modes must never appear.
-    expect(vocabCapTypes).not.toContain('recognise_form_from_meaning_cap')
+    // The 2 dropped modes must never appear.
     expect(vocabCapTypes).not.toContain('recall_meaning_from_text_cap')
     expect(vocabCapTypes).not.toContain('produce_form_from_audio_cap')
     expect(projection.capabilities.every(capability => capability.projectionVersion === 'capability-v3')).toBe(true)
@@ -70,15 +70,36 @@ describe('capability catalog projection', () => {
     expect(textRecognition?.requiredArtifacts).toEqual(expect.arrayContaining(['base_text', 'meaning:l1']))
   })
 
-  it('ADR 0027: #6 (produce_form_from_meaning_cap) and #3 (audio) both prereq directly on #1, not a dropped #2', () => {
+  it('ADR 0027 §2.1: #2 (form MCQ), #3 (audio) and #6 (produce) all prereq directly on #1', () => {
     const projection = projectCapabilities(snapshot)
     const textRecognition = projection.capabilities.find(capability => capability.capabilityType === 'recognise_meaning_from_text_cap')
+    const formRecognise = projection.capabilities.find(capability => capability.sourceKind === 'vocabulary_src' && capability.capabilityType === 'recognise_form_from_meaning_cap')
     const formProduce = projection.capabilities.find(capability => capability.capabilityType === 'produce_form_from_meaning_cap')
     const audioCapability = projection.capabilities.find(capability => capability.sourceKind === 'vocabulary_src' && capability.capabilityType === 'recognise_meaning_from_audio_cap')
 
     expect(textRecognition?.sourceRef).toBe('learning_items/item-1')
+    expect(formRecognise?.prerequisiteKeys).toEqual([textRecognition?.canonicalKey])
     expect(formProduce?.prerequisiteKeys).toEqual([textRecognition?.canonicalKey])
     expect(audioCapability?.prerequisiteKeys).toEqual([textRecognition?.canonicalKey])
+  })
+
+  it('four-card ladder: an item with hasAudio=false emits exactly 3 caps (audio conditionally omitted, scoped exact-match guard)', () => {
+    const noAudioSnapshot: CurrentContentSnapshot = {
+      ...snapshot,
+      learningItems: [{ ...snapshot.learningItems[0]!, hasAudio: false }],
+    }
+    const projection = projectCapabilities(noAudioSnapshot)
+    const vocabCapTypes = projection.capabilities
+      .filter((c) => c.sourceKind === 'vocabulary_src')
+      .map((c) => c.capabilityType)
+      .sort()
+
+    expect(vocabCapTypes).toEqual([
+      'produce_form_from_meaning_cap',
+      'recognise_form_from_meaning_cap',
+      'recognise_meaning_from_text_cap',
+    ])
+    expect(vocabCapTypes).not.toContain('recognise_meaning_from_audio_cap')
   })
 
   it('normalizes staged lesson source refs for grammar patterns', () => {

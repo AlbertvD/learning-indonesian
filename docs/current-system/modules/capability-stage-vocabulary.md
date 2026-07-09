@@ -1,7 +1,7 @@
 ---
 module: capability-stage-vocabulary
 surface: scripts/lib/pipeline/capability-stage/vocabulary/
-last_verified_against_code: 2026-07-08
+last_verified_against_code: 2026-07-09
 status: in-flight   # cutover (Task 8) not yet landed — the runner still co-writes item caps until then
 ---
 
@@ -29,15 +29,18 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
 `publishVocabulary` is thin composition (CLAUDE.md "thin composition of pure functions > runner"):
 
 1. **Load** (DB-only): `loadLesson` (audio map, level) + `loadFromDb` (typed item rows + existing item state).
-2. **Project** (pure): `projectItemsFromTypedRows` (`projectors/vocab.ts`) → exactly the 3
-   `KEPT_VOCAB_CAP_TYPES` caps per word/phrase item (ADR 0027, 2026-07-08 — Slice 1 of the vocab
-   mode-set-reduction spec): `recognise_meaning_from_text_cap` (#1, root/scaffold),
-   `recognise_meaning_from_audio_cap` (#3, aural, never retired), `produce_form_from_meaning_cap`
-   (#6, productive frontier, never retired) + `learningItemInput` + `anchorContext`. The 3 dropped
-   modes (`recognise_form_from_meaning_cap` #2, `recall_meaning_from_text_cap` #4,
-   `produce_form_from_audio_cap` #5, `DROPPED_VOCAB_CAP_TYPES`) are no longer emitted for new
-   words; already-seeded rows for existing words are retired by the one-off
-   `scripts/retire-dropped-vocab-modes.ts` (owner-gated `--apply`).
+2. **Project** (pure): `projectItemsFromTypedRows` (`projectors/vocab.ts`) → exactly the 4
+   `KEPT_VOCAB_CAP_TYPES` caps per word/phrase item (ADR 0027, amended 2026-07-09 — the four-card-ladder
+   PR-A, `docs/plans/2026-07-09-vocab-four-card-ladder.md`; originally 3 caps at the 2026-07-08 Slice 1
+   mode-set-reduction): `recognise_meaning_from_text_cap` (#1, root/scaffold, comprehension MCQ),
+   `recognise_form_from_meaning_cap` (#2, production MCQ scaffold, reinstated 2026-07-09 — graduates at
+   #6 mastery strength), `recognise_meaning_from_audio_cap` (#3, aural, never retired),
+   `produce_form_from_meaning_cap` (#6, productive frontier, never retired; prereq stays #1 — #2's
+   reinstatement does NOT move it back) + `learningItemInput` + `anchorContext`. The 2 dropped modes
+   (`recall_meaning_from_text_cap` #4, `produce_form_from_audio_cap` #5, `DROPPED_VOCAB_CAP_TYPES`) are no
+   longer emitted for new words; already-seeded rows for existing words are retired by the one-off
+   `scripts/retire-dropped-vocab-modes.ts` (owner-gated `--apply`); #2's own 2026-07-08 retirement is
+   reversed by the one-off `scripts/unretire-vocab-mode.ts` (also owner-gated `--apply`).
 3. **Gate pre-write** (pure, `gate.ts:runVocabGatePreWrite`): CS4/CS4b/CS19/CS20. An `error` →
    `validation_failed`, no writes. (CS5 POS is NOT run here — the projection's pos is null by
    construction; POS is validated post-backfill by CS14.)
