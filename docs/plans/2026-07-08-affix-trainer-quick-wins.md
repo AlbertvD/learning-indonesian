@@ -1,6 +1,14 @@
 ---
-status: implementing
-implementation: PR #392 (Batch A shipped+deployed 2026-07-08); Batch B (B1 audio seeded live, B2 findings §5-findings) same day; PR #395 (P3b carriers + case fix, §5b) same day — C1 spec approved separately (2026-07-08-affix-production-fastpath.md)
+status: shipped
+implementation: PRs #392 (Batch A) + #393 (Batch B) + #395 (P3b carriers, §5b) — all 2026-07-08; C1 shipped separately via 2026-07-08-affix-production-fastpath.md (PR #396). P6 stays parked (§7).
+merged_at: 2026-07-08
+implementation_paths:
+  - src/lib/morphology/
+  - src/components/morphology/
+  - src/components/lessons/AffixTrainerLink.tsx
+  - scripts/oneoff/seed-affix-derived-audio.ts
+  - scripts/generate-morphology-patterns.ts
+  - scripts/data/staging/lesson-21/curated-carriers.ts
 reviewed_by: [staff-engineer, architect]
 ---
 <!-- Review round 2026-07-08: staff-engineer NEEDS-WORK → fixed (LessonCard per-bar
