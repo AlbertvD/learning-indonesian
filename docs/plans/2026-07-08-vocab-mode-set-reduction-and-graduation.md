@@ -1,6 +1,16 @@
 ---
-status: implementing
-implementation: PR #398 (Slice 1), PR #397 (Slice 2), PR #399 (Slice 3)
+status: shipped
+implementation: PR #398 (Slice 1), PR #397 (Slice 2), PR #399 (Slice 3), PR #400 (stable-pagination fix)
+merged_at: 2026-07-09
+implementation_paths:
+  - scripts/lib/pipeline/capability-stage/projectors/vocab.ts
+  - src/lib/capabilities/vocabModeSet.ts
+  - scripts/retire-dropped-vocab-modes.ts
+  - src/lib/session-builder/graduation.ts
+  - src/lib/analytics/mastery/mastered.ts
+  - scripts/migration.sql
+  - scripts/verify-lessons-overview-rls.ts
+  - docs/adr/0027-vocabulary-mode-set-bounded.md
 reviewed_by:
   - staff-engineer (2026-07-08 — PASS after corrections: §3.2 live-run gate, §4.3 removed, recency-window fix folded into Slice 3)
   - architect (2026-07-08 — PASS after corrections: Slice-3 authenticated-role RLS test, ADR 0027, vocab module-spec update, shared mode-set constant, §4.1 parity-regex fix)
