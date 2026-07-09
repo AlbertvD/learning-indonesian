@@ -207,7 +207,12 @@ function printReport(report: RunReport, reanimationCandidateCount: number): void
 // ─── IO layer ───────────────────────────────────────────────────────────────
 
 const PAGE = 1000
-const STATE_CHUNK_SIZE = 100
+// 50, not 100: learner_capability_state's .in() queries carry LONGER querystrings
+// than softRetireCapabilities' (longer table name + the review_count/next_due_at
+// predicates), and 100 UUIDs pushed past Kong's request-URL limit — observed live
+// 2026-07-09 as an empty-message PostgrestError on the dry-run's head-count read
+// (plain reads got "invalid response from upstream"). 50 verified working live.
+const STATE_CHUNK_SIZE = 50
 
 /**
  * Fetch every `vocabulary_src` row of the two types this script needs — #2
