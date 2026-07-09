@@ -7,6 +7,11 @@
   margin: 0.25rem 0 1.25rem;
   overflow-x: auto;
   scrollbar-width: none;
+  /* Five tabs don't fit a phone's width, so the strip scrolls. Fade the right
+     edge (the conventional scrollable-tabs affordance) so the last tabs read as
+     "scroll for more" instead of a tab clipped mid-word. */
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
+          mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
 }
 
 .tabs::-webkit-scrollbar {

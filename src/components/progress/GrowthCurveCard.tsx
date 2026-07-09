@@ -115,7 +115,9 @@ export function GrowthCurveCard({ userId, bucket }: GrowthCurveCardProps) {
               <span className={classes.nudge}>{T.progress.growthNudge}</span>
             </div>
           )}
-          <TrendChart xLabels={series.map((w) => w.weekStart)} series={lines} />
+          {/* Multi-line chart: no single ceiling label (it read as "one number for
+              everything"); each selected line carries its current value on its chip. */}
+          <TrendChart xLabels={series.map((w) => w.weekStart)} series={lines} showMaxLabel={false} />
           <div className={classes.legend}>
             {RUNGS.map((rung) => (
               <button
@@ -126,7 +128,8 @@ export function GrowthCurveCard({ userId, bucket }: GrowthCurveCardProps) {
                 aria-pressed={!hidden.has(rung)}
               >
                 <span className={classes.swatch} style={{ background: RUNG_COLOR[rung] }} />
-                {rungLabel[rung]}
+                <span>{rungLabel[rung]}</span>
+                <span className={classes.chipValue}>{series[series.length - 1][bucket][rung]}</span>
               </button>
             ))}
           </div>
