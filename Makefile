@@ -198,7 +198,7 @@ check-supabase-rls: ## RLS deny-path check: signs in as test user + admin, verif
 	NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/check-supabase-rls.ts
 
 .PHONY: verify-lessons-overview-rls
-verify-lessons-overview-rls: ## Slice 3 gate: live-execution proof that get_lessons_overview's mastered-numerator subsumption survives real authenticated-role RLS (requires POSTGRES_PASSWORD; run AFTER `make migrate` applies this slice, BEFORE merge)
+verify-lessons-overview-rls: ## Slice 3 gate (PR-C extended to both pairs, four-card-ladder.md §2.5): live-execution proof that get_lessons_overview's mastered-numerator subsumption (#1←#6, #1←#3′, #2←#6) survives real authenticated-role RLS (requires POSTGRES_PASSWORD; run AFTER `make migrate` applies this slice, BEFORE merge)
 	@test -n "$(POSTGRES_PASSWORD)" || { echo "Error: POSTGRES_PASSWORD is required (add to .env.local)"; exit 1; }
 	bun scripts/verify-lessons-overview-rls.ts
 
