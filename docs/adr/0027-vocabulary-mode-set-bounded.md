@@ -116,6 +116,37 @@ graduation ≈ 10–13 reviews/day — comfortably inside a single session. The 
 (months, as #6 cards individually cross the strength bar) so the ceiling is reached progressively, not as
 a step function.
 
+### Slice 3 — Analytics: subsumption + stability-scaled recency (`get_lessons_overview`)
+
+Graduation (previous section) creates two analytics problems the mode-set reduction itself did not, both
+fixed together in Slice 3 of the reduction plan (§5) because the staff-engineer review established the
+second is load-bearing, not "eventual" — at full convergence every word rests as 2 long-interval cards, and
+without the fix below BOTH would age out of the mastered numerator, reading as ~0% mastered on the exact
+lessons where graduation succeeded:
+
+- **Numerator subsumption.** Once #1 is retired from due scheduling, its OWN `learner_capability_state`
+  stops accumulating recent reviews — a fixed "count only #1 rows that are themselves mastered" numerator
+  would make lesson `% mastered` *regress* as words graduate. Fix: a `vocabulary_src`
+  `recognise_meaning_from_text_cap` row also counts as mastered when its same-`source_ref`, same-lesson,
+  non-retired `produce_form_from_meaning_cap` sibling meets the RECENCY-FREE strength predicate (the same
+  bar graduation itself uses — `hasMasteryStrength`, no `lastReviewedAt` term, for the same flicker-avoidance
+  reason). Scoped to `get_lessons_overview` only (Minimum Mechanism): `_mastery_label` (used by
+  `get_weekly_movement` / `get_collections_overview`) is deliberately left unchanged — a fast weekly pulse and
+  a "known words" reading list don't carry the same persistent, always-visible % that a lesson tile does, so
+  the same regression there is lower-stakes and out of scope until it visibly matters.
+- **Stability-scaled recency window.** Independent of graduation, ANY mature card's FSRS interval can exceed
+  30 days between reviews — a fixed 30-day "recently reviewed" window would misreport it as unmastered on
+  every session where it isn't due. Fix: `ageDays ≤ max(30, 2 × stability)` — a card mid-interval reads as
+  "maintained"; only a card overdue by more than a full extra interval reads as "abandoned". This propagates
+  automatically to every consumer of `isCapabilityMastered`/`isRecent` (TS side); on the SQL side it is
+  likewise scoped to `get_lessons_overview` only, for the same reason as above.
+
+Both are guarded by `scripts/__tests__/lessons-overview-mastery-parity.test.ts` (ADR 0015 TS↔SQL lockstep)
+plus a live authenticated-role execution test (`scripts/verify-lessons-overview-rls.ts`) — the subsumption
+clause is a correlated read of a sibling's RLS-protected row inside a SECURITY INVOKER function, and a
+static source-string parity test cannot distinguish "wired correctly" from "silently RLS-denied, always
+false".
+
 ## Considered options
 
 - **Suppress the dropped modes' *scheduling* only, leave them seeded** — rejected. It leaves the 12k
@@ -143,12 +174,11 @@ a step function.
 - **Content retirement, not a schema change.** `learning_capabilities.retired_at` + `prerequisite_keys`
   are existing columns; Slice 1 is a one-off UPDATE script (DB-authoritative-after-seeding, ADR 0011), not
   a migration.
-- **Analytics denominator shrinks with the numerator together.** `get_lessons_overview`'s `% mastered`
-  computation (`scripts/migration.sql`) filters `retired_at IS NULL` for both mastered-count and
-  ready-count, so retiring #2/#4/#5 removes them from both sides — no separate analytics fix needed for
-  Slice 1. Slice 2's graduation (numerator shrinks, denominator doesn't) is a distinct, later problem
-  handled by Slice 3's subsumption rule — out of this ADR's Slice-1 scope but documented here because it
-  is the natural continuation of the same mode-set-bounding idea.
+- **Analytics denominator shrinks with the numerator together (Slice 1).** `get_lessons_overview`'s
+  `% mastered` computation (`scripts/migration.sql`) filters `retired_at IS NULL` for both mastered-count
+  and ready-count, so retiring #2/#4/#5 removes them from both sides — no separate analytics fix needed for
+  Slice 1. Slice 2's graduation (numerator shrinks, denominator doesn't) is a distinct, later problem —
+  see "Slice 3 — Analytics" above for the subsumption + stability-scaled-recency fix.
 - **Every future new lesson mints 3 caps/word, not 6**, from the moment the projector trim lands — the
   defect cannot regrow via ordinary re-publish.
 - **Distractor/junction child rows** of retired caps are preserved-but-unread (soft-retire only UPDATEs;

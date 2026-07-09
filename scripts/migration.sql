@@ -1931,6 +1931,28 @@ on conflict (user_id, lesson_id) do nothing;
 -- `has_started_lesson` lesson_progress union. The `mastered` filter mirrors
 -- masteryModel.ts (ADR 0015), guarded by a TS<->SQL parity test.
 --
+-- 2026-07-08/09 (Slice 3, docs/plans/2026-07-08-vocab-mode-set-reduction-and-
+-- graduation.md §5, ADR 0027 Analytics note): graduation (Slice 2) retires the
+-- #1 scaffold from due scheduling once its #6 sibling reaches mastery strength.
+-- Two coupled fixes keep this numerator honest as words graduate:
+--   (a) stability-scaled recency window — `greatest(30 days, 2x stability)`
+--       instead of a fixed 30 days, so a mature card (long FSRS interval) does
+--       not age out of "recently reviewed" between its own reviews. Mirrors the
+--       same fix in isRecent (src/lib/analytics/mastery/mastered.ts).
+--   (b) numerator subsumption — a #1 (`recognise_meaning_from_text_cap`) row
+--       ALSO counts as mastered when its same-`source_ref`, same-lesson,
+--       non-retired #6 (`produce_form_from_meaning_cap`) sibling meets the
+--       RECENCY-FREE strength predicate (mirrors `hasMasteryStrength` in
+--       mastered.ts — a recency term here would reintroduce the flicker
+--       graduation is designed to avoid). #1 and #6 always share a lesson_id
+--       (stamped in the same projector iteration, vocab.ts), so the sibling
+--       lookup is scoped within the per-lesson CTE below — no global self-join;
+--       `learning_capabilities_source_idx` covers it. Deliberately scoped to
+--       THIS rpc (Minimum Mechanism, spec §5 "Open question"): `_mastery_label`
+--       (get_weekly_movement / get_collections_overview) is untouched — those
+--       are a fast weekly pulse and a "known words" reading list, neither of
+--       which regresses the way a persistent % on the lesson tile would.
+--
 -- Idempotent. DROP FUNCTION first because CREATE OR REPLACE cannot change
 -- a function's RETURNS TABLE shape (even when it doesn't, drop+create is
 -- a strictly safer idiom).
@@ -1962,8 +1984,12 @@ language sql stable security invoker as $$
     -- 2026-06-09 (lesson-status two-sources): projects the 5 columns the
     -- `mastered` predicate needs (was activation_state, review_count); adds
     -- `retired_at is null` so the introducible denominator excludes retired caps.
+    -- 2026-07-08/09 (Slice 3): adds source_ref/source_kind/capability_type so
+    -- the mastered-numerator subsumption clause below can find a capability's
+    -- #6 sibling WITHIN this same CTE (no global self-join).
     select c.lesson_id, c.id as capability_id,
            c.readiness_status, c.publication_status,
+           c.source_ref, c.source_kind, c.capability_type,
            s.review_count, s.stability, s.last_reviewed_at,
            s.consecutive_failure_count
     from indonesian.learning_capabilities c
@@ -1986,12 +2012,45 @@ language sql stable security invoker as $$
            -- `if (!iso) return false`; lapse=0 ∧ consec=0 mirrors the at_risk
            -- override. Kept in lockstep by the TS<->SQL parity test
            -- (scripts/__tests__/lessons-overview-mastery-parity.test.ts).
+           -- Slice 3 (2026-07-08/09, ADR 0027 Analytics note): the recency term
+           -- is now stability-scaled (mirrors isRecent's `Math.max(30, 2 *
+           -- stability)` window) — `greatest('30 days', 2x stability)` — so a
+           -- mature card's long FSRS interval no longer ages it out of
+           -- "recently reviewed". The OR branch is numerator subsumption: a #1
+           -- (recognise_meaning_from_text_cap) row also counts when its
+           -- same-source_ref, same-lesson #6 (produce_form_from_meaning_cap)
+           -- sibling meets the RECENCY-FREE strength predicate (mirrors
+           -- hasMasteryStrength in mastered.ts — recency here would
+           -- reintroduce the flicker graduation exists to prevent). The #1
+           -- row itself still needs the ready/published filter; the #6
+           -- sibling does not (it can be due-suppressed and still count).
            count(*) filter (
              where readiness_status = 'ready' and publication_status = 'published'
-               and review_count >= 4
-               and coalesce(stability, 0) >= 14
-               and last_reviewed_at >= now() - interval '30 days'
-               and coalesce(consecutive_failure_count, 0) = 0
+               and (
+                 (
+                   review_count >= 4
+                   and coalesce(stability, 0) >= 14
+                   and last_reviewed_at >= now() - greatest(
+                     interval '30 days',
+                     make_interval(days => (coalesce(stability, 0) * 2)::int)
+                   )
+                   and coalesce(consecutive_failure_count, 0) = 0
+                 )
+                 or (
+                   source_kind = 'vocabulary_src'
+                   and capability_type = 'recognise_meaning_from_text_cap'
+                   and exists (
+                     select 1 from lesson_capabilities sib
+                     where sib.lesson_id = lesson_capabilities.lesson_id
+                       and sib.source_ref = lesson_capabilities.source_ref
+                       and sib.source_kind = 'vocabulary_src'
+                       and sib.capability_type = 'produce_form_from_meaning_cap'
+                       and coalesce(sib.review_count, 0) >= 4
+                       and coalesce(sib.stability, 0) >= 14
+                       and coalesce(sib.consecutive_failure_count, 0) = 0
+                   )
+                 )
+               )
            )::int as mastered_count,
            -- practiced numerator: any review at all (review_count >= 1), over the
            -- SAME introducible filter as the denominator and the mastered numerator.

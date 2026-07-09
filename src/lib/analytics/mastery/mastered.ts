@@ -9,10 +9,22 @@
 // guarded by scripts/__tests__/lessons-overview-mastery-parity.test.ts. Change
 // it here and the parity test fails until the SQL mirror matches.
 
-export function isRecent(iso: string | null | undefined, now: Date): boolean {
+// Stability-scaled recency window (Slice 3, docs/plans/2026-07-08-vocab-mode-set
+// -reduction-and-graduation.md §5, ADR 0027 Analytics note): a fixed 30-day window
+// misreports a mature card as "not recently reviewed" once its FSRS interval grows
+// past 30 days — exactly the horizon graduation converges toward (every word ends
+// up as 2 long-interval cards). The window now tracks maturity: a card mid-interval
+// is "maintained" (window = 2× its stability, so it stays inside the window for
+// roughly a full extra review cycle past its own due date), floored at the original
+// 30 days for young/never-scaled cards. `stability` is OPTIONAL — a caller that
+// cannot supply it (e.g. masteryModel.ts's `recentReviewCount` tally, which only
+// asks "reviewed lately" for a confidence score, not for mastery) gets the
+// unscaled 30-day window unchanged, so this extension is backward compatible.
+export function isRecent(iso: string | null | undefined, now: Date, stability?: number | null): boolean {
   if (!iso) return false
   const ageMs = now.getTime() - new Date(iso).getTime()
-  return ageMs >= 0 && ageMs <= 30 * 24 * 60 * 60 * 1000
+  const windowDays = Math.max(30, 2 * (stability ?? 0))
+  return ageMs >= 0 && ageMs <= windowDays * 24 * 60 * 60 * 1000
 }
 
 // The recency-FREE strength core, extracted from `isCapabilityMastered`
@@ -21,12 +33,12 @@ export function isRecent(iso: string | null | undefined, now: Date): boolean {
 // mastery bar" signal — e.g. vocab-graduation's due-suppression
 // (src/lib/session-builder/graduation.ts) — must use THIS, not
 // `isCapabilityMastered`: that predicate additionally requires
-// `lastReviewedAt` within `isRecent`'s 30-day window, so a mature card whose
-// FSRS interval has grown past 30 days (exactly the horizon where graduation
-// matters) would flicker in and out of "mastered" between its own reviews —
-// un-graduating and re-graduating the scaffold every build instead of
-// converging once. The strength core never reads `lastReviewedAt`, so it is
-// monotonic: once true for a lapse-free card, only a NEW failure
+// `lastReviewedAt` within `isRecent`'s window, so a mature card whose FSRS
+// interval has grown past the (scaled) window (exactly the horizon where
+// graduation matters) would flicker in and out of "mastered" between its own
+// reviews — un-graduating and re-graduating the scaffold every build instead
+// of converging once. The strength core never reads `lastReviewedAt`, so it
+// is monotonic: once true for a lapse-free card, only a NEW failure
 // (`consecutiveFailureCount > 0`) can turn it false again.
 export function hasMasteryStrength(input: {
   reviewCount: number
@@ -47,7 +59,11 @@ export function hasMasteryStrength(input: {
 // table as before the §4.1 extraction. The pre-extraction body's early
 // `if (consecutiveFailureCount > 0) return false` was a short-circuit, not a
 // distinct branch: `hasMasteryStrength(...) && isRecent(...)` re-checks the same
-// condition inside `&&`, so every input yields byte-identical output.
+// condition inside `&&`, so every input yields byte-identical output. Slice 3
+// passes `input.stability` through to `isRecent` so the recency window scales
+// with the SAME stability value the strength core already reads — a mature,
+// graduated-frontier card (#6) is judged against its own maturity, not a fixed
+// 30-day clock that would misreport it as stale.
 export function isCapabilityMastered(input: {
   reviewCount: number
   stability?: number | null
@@ -55,5 +71,5 @@ export function isCapabilityMastered(input: {
   lapseCount: number
   consecutiveFailureCount: number
 }, now: Date = new Date()): boolean {
-  return hasMasteryStrength(input) && isRecent(input.lastReviewedAt, now)
+  return hasMasteryStrength(input) && isRecent(input.lastReviewedAt, now, input.stability)
 }

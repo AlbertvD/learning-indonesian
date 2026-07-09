@@ -1,6 +1,6 @@
 ---
 status: implementing
-implementation: PR #398
+implementation: PR #398 (Slice 1), PR #397 (Slice 2), PR #399 (Slice 3)
 reviewed_by:
   - staff-engineer (2026-07-08 — PASS after corrections: §3.2 live-run gate, §4.3 removed, recency-window fix folded into Slice 3)
   - architect (2026-07-08 — PASS after corrections: Slice-3 authenticated-role RLS test, ADR 0027, vocab module-spec update, shared mode-set constant, §4.1 parity-regex fix)
