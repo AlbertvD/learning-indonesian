@@ -2347,6 +2347,7 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         .eq('source_kind', 'vocabulary_src')
         .in('capability_type', [...DROPPED_VOCAB_CAP_TYPES])
         .is('retired_at', null)
+        .order('id', { ascending: true })
         .range(offset, offset + pageSize - 1)
       if (error) throw error
       const rows = (data ?? []) as DroppedCap[]
@@ -2410,6 +2411,7 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         .eq('source_kind', 'vocabulary_src')
         .eq('capability_type', 'produce_form_from_meaning_cap')
         .is('retired_at', null)
+        .order('id', { ascending: true })
         .range(offset, offset + pageSize - 1)
       if (error) throw error
       const rows = (data ?? []) as ProduceFormCap[]
