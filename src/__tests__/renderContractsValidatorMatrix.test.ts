@@ -71,10 +71,13 @@ const matrix: MatrixRow[] = [
     expected: { status: 'ready', allowedExercises: ['choose_form_ex', 'type_form_ex'] },
   },
   {
+    // Four-card ladder PR-B: recognise_meaning_from_audio_cap (#3′) routes to
+    // the typed recall exercise now, not the retired MCQ (which recognise_gist
+    // now serves alone).
     capabilityType: 'recognise_meaning_from_audio_cap',
     sourceKind: 'vocabulary_src',
     requiredArtifacts: ['audio_clip', 'meaning:l1'],
-    expected: { status: 'ready', allowedExercises: ['choose_meaning_from_audio_ex'] },
+    expected: { status: 'ready', allowedExercises: ['type_meaning_from_audio_ex'] },
   },
   {
     capabilityType: 'produce_form_from_audio_cap',

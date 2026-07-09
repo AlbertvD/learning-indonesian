@@ -1,7 +1,7 @@
 ---
 module: exercises
 surface: src/components/exercises/
-last_verified_against_code: 2026-06-16
+last_verified_against_code: 2026-07-09
 status: stable
 ---
 
@@ -18,20 +18,28 @@ status: stable
 > References to the former names below are period-accurate. See
 > `capability-and-exercise-model.md` §8 + `docs/plans/2026-06-15-capability-naming-rename-plan.md`.
 
-**Surface:** `src/components/exercises/`. The UI half of capability rendering — the registry that maps `ExerciseType` → React component, the 12 per-type implementations consumed at runtime, the framework primitives those implementations are built on, and the feedback-shape adapter that bridges between the player chrome and the Doorgaan card primitive.
+> **2026-07-09 — four-card ladder PR-B split.** `choose_meaning_from_audio_ex` used to
+> serve BOTH `recognise_meaning_from_audio_cap` (vocab #3′) and `recognise_gist_from_audio_cap`
+> (podcast). The RENDER_CONTRACTS row is split: gist keeps the MCQ; the vocab type moved to
+> a NEW `ExerciseType`, `type_meaning_from_audio_ex` (`MeaningRecallFromAudio.tsx`) — an
+> ear-only typed L1 meaning recall (Dictation-shaped audio prompt + MeaningRecall-shaped
+> grading). 14 implementations now, not 12/13. See
+> `docs/plans/2026-07-09-vocab-four-card-ladder.md` §2.3.
+
+**Surface:** `src/components/exercises/`. The UI half of capability rendering — the registry that maps `ExerciseType` → React component, the 14 per-type implementations consumed at runtime, the framework primitives those implementations are built on, and the feedback-shape adapter that bridges between the player chrome and the Doorgaan card primitive.
 
 **Files (30):**
 
 | File | LOC | Role |
 |---|---|---|
-| `registry.ts` | 105 | Sole runtime dispatch — `exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>>` mapping each of the 12 types to `lazy(() => import('./implementations/...'))`. Defines `ExerciseComponentProps` (the contract every implementation conforms to) and the `AnswerOutcome` discriminated union (`{skipped: true}` vs `ExerciseAnswerReport`). `resolveExerciseComponent(type)` returns `null` for unmapped types, which `CapabilityExerciseFrame` silent-skips. |
-| `feedbackMapping.ts` | 241 | `feedbackPropsFor(input: FeedbackMapInput): FeedbackProps` — pure adapter that takes an `ExerciseItem` + outcome + commit state and returns the typed props for the `ExerciseFeedback` Doorgaan card primitive. 12-way switch on `exerciseType` at `:47-240` covers every supported variant including the grammar/vocab split for `cloze_mcq` (via `isGrammar` input flag). |
+| `registry.ts` | 105 | Sole runtime dispatch — `exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>>` mapping each of the 14 types to `lazy(() => import('./implementations/...'))`. Defines `ExerciseComponentProps` (the contract every implementation conforms to) and the `AnswerOutcome` discriminated union (`{skipped: true}` vs `ExerciseAnswerReport`). `resolveExerciseComponent(type)` returns `null` for unmapped types, which `CapabilityExerciseFrame` silent-skips. |
+| `feedbackMapping.ts` | 258 | `feedbackPropsFor(input: FeedbackMapInput): FeedbackProps` — pure adapter that takes an `ExerciseItem` + outcome + commit state and returns the typed props for the `ExerciseFeedback` Doorgaan card primitive. 14-way switch on `exerciseType` covers every supported variant including the grammar/vocab split for `cloze_mcq` (via `isGrammar` input flag). |
 | `ExerciseErrorBoundary.tsx` | 110 | Class-component error boundary that wraps each exercise. Catches render-phase exceptions, logs to `error_logs`, surfaces a friendly NL/EN copy + "Doorgaan" button that fires `onAnswer({ skipped: true, reviewRecorded: false })` so the player can advance past a broken card without committing an answer. |
 | `ExerciseSkeleton.tsx` | 62 | Layout-preserving skeleton shown by `<Suspense>` while a `lazy()`-imported implementation chunk loads. Variant prop (`'word' \| 'sentence' \| 'audio'`) matches `exerciseSkeletonVariant` in `registry.ts:81-94` to prevent layout shift when the real component mounts. |
 | `primitives/` | — | 13 framework components + 3 helpers + barrel. See §3.1. |
-| `implementations/` | — | 12 per-type renderers. See §3.2. |
+| `implementations/` | — | 14 per-type renderers. See §3.2. |
 
-**Implementations (12, `implementations/*.tsx`):**
+**Implementations (14, `implementations/*.tsx`):**
 
 | File | LOC | Exercise type | Direction | Input shape |
 |---|---|---|---|---|
@@ -40,6 +48,7 @@ status: stable
 | `TypedRecall.tsx` | 71 | `typed_recall` | L1 → ID | Type the Indonesian word |
 | `MeaningRecall.tsx` | 87 | `meaning_recall` | ID → L1 | Type the L1 meaning |
 | `ListeningMCQ.tsx` | 99 | `listening_mcq` | audio → L1 | Tap one of 4 options after audio |
+| `MeaningRecallFromAudio.tsx` | ~120 | `type_meaning_from_audio_ex` (PR-B split, 2026-07-09) | audio → L1 | Type the L1 meaning after audio (Dictation shell + MeaningRecall grading; no ID text before answering) |
 | `Dictation.tsx` | 106 | `dictation` | audio → ID | Type what you hear |
 | `Cloze.tsx` | 92 | `cloze` | ID → ID typed | Fill the blank in a sentence |
 | `ClozeMcq.tsx` | 85 | `cloze_mcq` | ID → ID tap | Pick the option that fills the blank |
@@ -165,7 +174,7 @@ No implementation owns its own scoring logic, retry counter, or feedback UI. The
 
 ### 3.4 Feedback flow
 
-After fuzzy/wrong, the player calls `feedbackPropsFor(input)` (via `buildFeedbackInput` in the experience module) to get typed `FeedbackProps` for `ExerciseFeedback`. The 12-way switch in `feedbackMapping.ts:47-240` covers every exercise type, picking:
+After fuzzy/wrong, the player calls `feedbackPropsFor(input)` (via `buildFeedbackInput` in the experience module) to get typed `FeedbackProps` for `ExerciseFeedback`. The 14-way switch in `feedbackMapping.ts` covers every exercise type, picking:
 
 - `layout`: `'vocab-pair'` (most types) vs `'grammar-reveal'` (grammar-tagged `cloze_mcq`, `contrast_pair`, `sentence_transformation`, `constrained_translation`).
 - `direction`: ID→L1 / L1→ID / audio→ID / ID→ID, drives the language-pill arrangement.
@@ -178,7 +187,7 @@ The player owns `onContinue` / `continueLabel` / `copy`; the adapter owns everyt
 
 ## 4. Invariants
 
-1. **Every `ExerciseType` in `@/types/learning` is mapped in `exerciseRegistry`.** Verified by the `Partial<Record<ExerciseType, LazyExercise>>` type at `registry.ts:59` — if a type is added without a registry entry, TypeScript permits it (the Partial bears the omission) but `resolveExerciseComponent` returns `null` and the dispatcher silent-skips. The 12 types currently mapped are exhaustive against the `ExerciseType` union as of 2026-05-20.
+1. **Every `ExerciseType` in `@/types/learning` is mapped in `exerciseRegistry`.** Verified by the `Partial<Record<ExerciseType, LazyExercise>>` type at `registry.ts:59` — if a type is added without a registry entry, TypeScript permits it (the Partial bears the omission) but `resolveExerciseComponent` returns `null` and the dispatcher silent-skips. The 14 types currently mapped are exhaustive against the `ExerciseType` union as of 2026-07-09.
 2. **`exerciseSkeletonVariant` is exhaustive.** `registry.ts:81` types as `Record<ExerciseType, ...>` (non-Partial) — missing entries are a compile error.
 3. **Implementations consume primitives only.** No `@mantine/core` imports in `implementations/*.tsx`. (The earlier legacy renderers violated this; retired 2026-05-20.)
 4. **Implementations never make service calls.** Pure UI + grading. Data flow is `props → render → onAnswer`.

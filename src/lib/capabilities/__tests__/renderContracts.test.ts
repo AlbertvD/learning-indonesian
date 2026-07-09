@@ -105,7 +105,7 @@ function makeRawInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorI
 
 describe('RENDER_CONTRACTS table', () => {
   it('has an entry for every ExerciseType (exhaustiveness enforced via satisfies)', () => {
-    expect(Object.keys(RENDER_CONTRACTS)).toHaveLength(13)
+    expect(Object.keys(RENDER_CONTRACTS)).toHaveLength(14)
   })
 
   it('every entry declares supportedSourceKinds non-empty', () => {
@@ -158,8 +158,8 @@ describe('exerciseTypesForCapability', () => {
     expect(exerciseTypesForCapability('produce_form_from_context_cap')).toEqual(['type_missing_word_ex'])
   })
 
-  it('returns choose_meaning_from_audio_ex for recognise_meaning_from_audio_cap AND recognise_gist_from_audio_cap', () => {
-    expect(exerciseTypesForCapability('recognise_meaning_from_audio_cap')).toEqual(['choose_meaning_from_audio_ex'])
+  it('four-card ladder PR-B split: recognise_meaning_from_audio_cap routes to the NEW typed type; recognise_gist_from_audio_cap keeps the MCQ', () => {
+    expect(exerciseTypesForCapability('recognise_meaning_from_audio_cap')).toEqual(['type_meaning_from_audio_ex'])
     expect(exerciseTypesForCapability('recognise_gist_from_audio_cap')).toEqual(['choose_meaning_from_audio_ex'])
   })
 })
@@ -237,6 +237,10 @@ describe('requiredArtifactsFor', () => {
     expect(requiredArtifactsFor('type_meaning_ex', 'word_form_pair_src')).toEqual([])
     // choose_meaning_from_audio_ex does not support word_form_pair_src.
     expect(requiredArtifactsFor('choose_meaning_from_audio_ex', 'word_form_pair_src')).toEqual([])
+  })
+
+  it('type_meaning_from_audio_ex item-source requires [] (four-card ladder PR-B split: audio resolved upstream, same as its sibling)', () => {
+    expect(requiredArtifactsFor('type_meaning_from_audio_ex', 'vocabulary_src')).toEqual([])
   })
 })
 
@@ -342,7 +346,7 @@ describe('projectBuilderInput — word_form_pair_src (type_form_ex path)', () =>
 })
 
 describe('projectBuilderInput — primaryMeaning', () => {
-  for (const et of ['choose_meaning_ex', 'choose_form_ex', 'type_form_ex', 'type_meaning_ex', 'choose_meaning_from_audio_ex'] as const) {
+  for (const et of ['choose_meaning_ex', 'choose_form_ex', 'type_form_ex', 'type_meaning_ex', 'choose_meaning_from_audio_ex', 'type_meaning_from_audio_ex'] as const) {
     it(`fails with no_meaning_in_lang for ${et} when no user-lang meaning present`, () => {
       const raw = makeRawInput({
         learningItem: makeLearningItem(),
@@ -474,5 +478,18 @@ describe('projectBuilderInput — speaking', () => {
     const raw = makeRawInput({ learningItem: makeLearningItem() })
     const result = projectBuilderInput('speaking', raw)
     expect(result.ok).toBe(true)
+  })
+})
+
+describe('projectBuilderInput — type_meaning_from_audio_ex (four-card ladder PR-B split)', () => {
+  it('succeeds with learningItem + user-lang meaning present (audio resolved upstream, like its sibling)', () => {
+    const raw = makeRawInput({ learningItem: makeLearningItem(), meanings: [makeMeaning()] })
+    const result = projectBuilderInput('type_meaning_from_audio_ex', raw)
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      const input = result.input as { learningItem: unknown; primaryMeaning: { translation_text: string } }
+      expect(input.learningItem).not.toBeNull()
+      expect(input.primaryMeaning.translation_text).toBe('eten')
+    }
   })
 })

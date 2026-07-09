@@ -45,8 +45,8 @@ export const CAPABILITY_DISPLAY = {
   },
   recognise_meaning_from_audio_cap: {
     label: 'Luisterherkenning',
-    description: 'Luister naar een Indonesisch woord of zin en kies de juiste Nederlandse betekenis.',
-    example: "hoor 'makan' → eten",
+    description: 'Luister naar een Indonesisch woord of zin en typ de juiste Nederlandse betekenis.',
+    example: "hoor 'makan' → typ 'eten'",
   },
   produce_form_from_audio_cap: {
     label: 'Dictee',
@@ -97,6 +97,7 @@ const exerciseLabels: Partial<Record<ExerciseType, string>> = {
   type_form_from_audio_ex: 'Dictee',
   speaking: 'Spreken',
   decompose_word_ex: 'Woord ontleden',
+  type_meaning_from_audio_ex: 'Luisteren en betekenis typen',
 }
 
 const skillLabels: Partial<Record<SkillType, string>> = {

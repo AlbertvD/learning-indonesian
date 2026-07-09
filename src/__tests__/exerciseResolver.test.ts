@@ -128,4 +128,36 @@ describe('exercise resolver', () => {
       plan: expect.objectContaining({ exerciseType: 'type_form_ex' }),
     }))
   })
+
+  it('four-card ladder PR-B split pin: recognise_meaning_from_audio_cap resolves ONLY the new typed type; gist keeps the MCQ (exerciseTypesForCapability, first-compatible)', () => {
+    const audioMeaning = capability({
+      canonicalKey: 'cap:v1:vocabulary_src:learning_items/kucing:recognise_meaning_from_audio_cap:audio_to_l1:audio:nl',
+      sourceKind: 'vocabulary_src',
+      sourceRef: 'learning_items/kucing',
+      capabilityType: 'recognise_meaning_from_audio_cap',
+      skillType: 'recognise_mode',
+      direction: 'audio_to_l1',
+      modality: 'audio',
+      learnerLanguage: 'nl',
+    })
+
+    expect(resolveExercise({
+      capability: audioMeaning,
+      readiness: { status: 'ready', allowedExercises: ['type_meaning_from_audio_ex'] },
+    })).toEqual(expect.objectContaining({
+      status: 'resolved',
+      plan: expect.objectContaining({ exerciseType: 'type_meaning_from_audio_ex' }),
+    }))
+
+    // The old MCQ type is no longer in recognise_meaning_from_audio_cap's
+    // compatible set post-split — even if it were (mistakenly) still offered
+    // by readiness, the resolver must NOT resolve it for this capability.
+    expect(resolveExercise({
+      capability: audioMeaning,
+      readiness: { status: 'ready', allowedExercises: ['choose_meaning_from_audio_ex'] },
+    })).toEqual(expect.objectContaining({
+      status: 'failed',
+      reason: 'no_supported_exercise_family',
+    }))
+  })
 })

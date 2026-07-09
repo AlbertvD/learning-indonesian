@@ -20,12 +20,12 @@ status: stable
 | `resolver.ts` | 140 | `resolveBlocks(blocks, options)` orchestrator + `createCapabilityContentService(client)` factory + `resolveCapabilityBlocks` lazy convenience. Decode + bucket → `adapter.loadBlockData` → per-block dispatch via `buildForExerciseType`. **No SQL.** |
 | `adapter.ts` | 588 | Source-kind bucketing (`bucketByDecodedSourceKind`), per-source-kind fetchers (`fetchForItemBlocks` + `fetchForDialogueLineBlocks`), canonical-key decode (`decodeCanonicalKey` + `extractItemKey`, absorbed from former `internal.ts`), diagnostic helpers (`makeFailContext`, `trimPayloadSnapshot`). Public surface: one `Adapter` interface with `loadBlockData` + `logResolutionFailure`; factory `createAdapter(client)`. **Sole SQL touchpoint of the module.** |
 | `byType/index.ts` | 73 | Barrel + `buildForExerciseType(exerciseType, raw)` dispatch + `BUILDERS` registry. |
-| `byType/<exerciseType>.ts` | 543 across 12 files | Per-exercise-type packagers. Source-kind-agnostic. Receive `BuilderInputFor<T>` (narrowed by the projector), return `BuilderResult`. The 12 files: `recognitionMcq.ts` (56), `cuedRecall.ts` (61), `typedRecall.ts` (19), `meaningRecall.ts` (17), `listeningMcq.ts` (56), `dictation.ts` (20), `cloze.ts` (31), `clozeMcq.ts` (112), `contrastPair.ts` (48), `sentenceTransformation.ts` (39), `constrainedTranslation.ts` (42), `speaking.ts` (44). |
+| `byType/<exerciseType>.ts` | 14 files | Per-exercise-type packagers. Source-kind-agnostic. Receive `BuilderInputFor<T>` (narrowed by the projector), return `BuilderResult`. The 14 files: `recognitionMcq.ts`, `cuedRecall.ts`, `typedRecall.ts`, `meaningRecall.ts`, `listeningMcq.ts`, `meaningRecallFromAudio.ts` (four-card ladder PR-B, 2026-07-09 — ear-only typed meaning recall, split off `listeningMcq.ts`'s contract), `dictation.ts`, `cloze.ts`, `clozeMcq.ts`, `contrastPair.ts`, `sentenceTransformation.ts`, `constrainedTranslation.ts`, `speaking.ts`, `decomposeWord.ts` (ADR 0019 morphology segmentation). |
 | `byType/helpers.ts` | 28 | Shared helpers — `pickUserLangMeaning`, `shuffle`. |
 | `byType/types.ts` | 28 | `BuilderResult` type + re-export of `BuilderInputFor<T>`, `RawProjectorInput` from `@/lib/capabilities`. |
 | `__tests__/resolver.test.ts` | 503 | Mocked-Supabase service tests including the URL-budget guard for Kong's 8 KB request-line buffer, plus end-to-end dialogue_line resolution scenarios (PR-B). |
 | `__tests__/adapter.test.ts` | 174 | Unit tests for `decodeCanonicalKey` + `extractItemKey` (absorbed from former `capabilityContentService.internal.test.ts`) + `bucketByDecodedSourceKind` (item, dialogue_line, unsupported kinds, malformed refs). |
-| `__tests__/byType.test.ts` | 516 | Builder unit tests covering all 12 exercise types via `buildForExerciseType` (exercises projector + dispatch + builder), plus cloze packager dialogue_line branch (PR-B). |
+| `__tests__/byType.test.ts` | 516 | Builder unit tests covering all 14 exercise types via `buildForExerciseType` (exercises projector + dispatch + builder), plus cloze packager dialogue_line branch (PR-B). |
 
 **Note on `adapter.ts` size (450 LOC, over the ~300 LOC trigger named in fold plan D5):** the file is single-source-kind today — one polymorphic fetcher (`fetchForItemBlocks`) plus bucketing + diagnostic helpers + factory. D5's split trigger is "when a second per-kind fetcher is added" (i.e. PR-B's `fetchForDialogueLineBlocks`), which is what actually shallows the file. Splitting today produces a one-file `adapter/byKind/item.ts` directory — target-arch smell on its own. The current shape is intentional; split happens with PR-B.
 
@@ -80,7 +80,7 @@ Concretely, that means hiding:
 **Builder registry (`byType/index.ts`):**
 
 - `buildForExerciseType<K extends ExerciseType>(exerciseType: K, raw: RawProjectorInput): BuilderResult` — calls `projectBuilderInput` (from `@/lib/capabilities`), then dispatches to the per-type builder from `BUILDERS`.
-- `BUILDERS: Record<ExerciseType, (input: BuilderInputFor<T>) => BuilderResult>` — the 12-entry registry.
+- `BUILDERS: Record<ExerciseType, (input: BuilderInputFor<T>) => BuilderResult>` — the 14-entry registry.
 
 **Pattern fetcher (`byKind/pattern.ts`):**
 

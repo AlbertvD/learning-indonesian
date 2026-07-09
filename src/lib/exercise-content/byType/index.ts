@@ -17,6 +17,7 @@ import { buildCuedRecall } from './cuedRecall'
 import { buildTypedRecall } from './typedRecall'
 import { buildMeaningRecall } from './meaningRecall'
 import { buildListeningMCQ } from './listeningMcq'
+import { buildMeaningRecallFromAudio } from './meaningRecallFromAudio'
 import { buildDictation } from './dictation'
 import { buildCloze } from './cloze'
 import { buildClozeMcq } from './clozeMcq'
@@ -38,6 +39,7 @@ const BUILDERS: BuilderRegistry = {
   type_form_ex:            buildTypedRecall,
   type_meaning_ex:          buildMeaningRecall,
   choose_meaning_from_audio_ex:           buildListeningMCQ,
+  type_meaning_from_audio_ex:             buildMeaningRecallFromAudio,
   type_form_from_audio_ex:               buildDictation,
   type_missing_word_ex:                   buildCloze,
   choose_missing_word_ex:               buildClozeMcq,

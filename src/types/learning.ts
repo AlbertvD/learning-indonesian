@@ -128,6 +128,11 @@ export type ExerciseType =
   // ADR 0019 — morphology segmentation drill (recognise_word_form_link_cap on
   // word_form_pair_src): show the derived word, pick its correct morpheme breakdown.
   | 'decompose_word_ex'
+  // Four-card ladder PR-B (docs/plans/2026-07-09-vocab-four-card-ladder.md §2.3):
+  // ear-only typed meaning recall for recognise_meaning_from_audio_cap (#3′).
+  // Split out of choose_meaning_from_audio_ex's contract row, which now serves
+  // recognise_gist_from_audio_cap (podcast) only.
+  | 'type_meaning_from_audio_ex'
 
 export type FlagType = 'wrong_translation' | 'bad_sentence' | 'confusing' | 'sunset' | 'other'
 export type FlagStatus = 'open' | 'resolved'

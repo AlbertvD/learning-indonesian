@@ -48,7 +48,7 @@ describe('capability contract validation (post-4b: readiness off the typed contr
   // readiness decision no longer depends on capability_artifacts. This is the
   // unit-level half of the inert-change proof (the other two layers are the
   // Capability Gate assertion + the check-supabase-deep ready-count parity).
-  it('readies an audio cap that historically required [audio_clip, meaning:l1] with no artifacts present', () => {
+  it('readies an audio cap that historically required [audio_clip, meaning:l1] with no artifacts present (four-card ladder PR-B: routes to the typed recall exercise, not the retired MCQ)', () => {
     expect(validateCapability({
       capability: {
         ...baseCapability,
@@ -60,7 +60,7 @@ describe('capability contract validation (post-4b: readiness off the typed contr
       },
     })).toEqual({
       status: 'ready',
-      allowedExercises: ['choose_meaning_from_audio_ex'],
+      allowedExercises: ['type_meaning_from_audio_ex'],
     })
   })
 

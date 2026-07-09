@@ -308,8 +308,8 @@ describe('capability session loader', () => {
           ]),
           readinessByKey: new Map([
             [canonicalKey, { status: 'ready', allowedExercises: ['type_meaning_ex'] }],
-            [audioKey, { status: 'ready', allowedExercises: ['choose_meaning_from_audio_ex'] }],
-            [newIntroKey, { status: 'ready', allowedExercises: ['choose_meaning_from_audio_ex'] }],
+            [audioKey, { status: 'ready', allowedExercises: ['type_meaning_from_audio_ex'] }],
+            [newIntroKey, { status: 'ready', allowedExercises: ['type_meaning_from_audio_ex'] }],
           ]),
           currentLessonId: null,
           nextLessonNeedsExposure: false,

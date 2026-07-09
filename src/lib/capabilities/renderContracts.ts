@@ -115,7 +115,21 @@ export const RENDER_CONTRACTS = {
     // reference for item caps. Audio resolves via audioService.fetchSessionAudioMap
     // -> get_audio_clips RPC by (text, voice_id) -- the capability_audio_refs
     // table was retired unwired (pre-cloud hardening, 2026-07-02).
-    capabilityTypes: ['recognise_meaning_from_audio_cap', 'recognise_gist_from_audio_cap'],
+    // Four-card ladder PR-B (2026-07-09): recognise_meaning_from_audio_cap (#3′)
+    // moved OFF this MCQ contract onto type_meaning_from_audio_ex (typed recall) --
+    // gist (podcast) keeps the MCQ, the vocab type does not share this row anymore.
+    capabilityTypes: ['recognise_gist_from_audio_cap'],
+    supportedSourceKinds: ['vocabulary_src'],
+    requiredArtifacts: { vocabulary_src: [] },
+  },
+  type_meaning_from_audio_ex: {
+    // Four-card ladder PR-B (docs/plans/2026-07-09-vocab-four-card-ladder.md §2.3):
+    // ear-only typed meaning recall. Split out of choose_meaning_from_audio_ex's
+    // contract row -- recognise_meaning_from_audio_cap (#3′) is now a receptive
+    // RECALL card (Dictation-shaped audio prompt + MeaningRecall-shaped typed L1
+    // grading), never an MCQ. Audio resolves the same way as its sibling: via
+    // audioService.fetchSessionAudioMap, no capability_artifacts bag.
+    capabilityTypes: ['recognise_meaning_from_audio_cap'],
     supportedSourceKinds: ['vocabulary_src'],
     requiredArtifacts: { vocabulary_src: [] },
   },
@@ -470,6 +484,7 @@ export interface ContractInputShapes {
   decompose_word_ex: BuilderBase & { affixedFormPair: AffixedFormPairInput }
   type_meaning_ex:  BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   choose_meaning_from_audio_ex:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
+  type_meaning_from_audio_ex:     BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   type_form_from_audio_ex:       BuilderBase & { learningItem: LearningItem }
   type_missing_word_ex:           BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; dialogueLine: DialogueLineInput | null; affixedFormPair: AffixedFormPairInput | null }
   choose_missing_word_ex:       BuilderBase & { exercise: ClozeMcqExercisesRow }
@@ -569,9 +584,11 @@ export function projectBuilderInput<T extends ExerciseType>(
   // word_form_pair_src path skips this lookup — the prompt comes from the
   // pair's root/derived, not from a translation. Item path for type_form_ex
   // still needs a meaning. choose_meaning_ex / choose_form_ex / meaning_recall /
-  // choose_meaning_from_audio_ex all stay item-only and always need primaryMeaning.
+  // choose_meaning_from_audio_ex / type_meaning_from_audio_ex all stay item-only
+  // and always need primaryMeaning.
   const needsPrimaryMeaning: ReadonlySet<ExerciseType> = new Set([
     'choose_meaning_ex', 'choose_form_ex', 'type_form_ex', 'type_meaning_ex', 'choose_meaning_from_audio_ex',
+    'type_meaning_from_audio_ex',
   ])
   let primaryMeaning: ItemMeaning | undefined
   if (needsPrimaryMeaning.has(exerciseType)) {
@@ -696,6 +713,7 @@ export function projectBuilderInput<T extends ExerciseType>(
       return { ok: true, input: { ...base, affixedFormPair: raw.affixedFormPair } as BuilderInputFor<T> }
     case 'type_meaning_ex':
     case 'choose_meaning_from_audio_ex':
+    case 'type_meaning_from_audio_ex':
       return { ok: true, input: { ...base, learningItem: learningItem!, primaryMeaning: primaryMeaning! } as BuilderInputFor<T> }
     case 'type_form_from_audio_ex':
       return { ok: true, input: { ...base, learningItem: learningItem! } as BuilderInputFor<T> }
