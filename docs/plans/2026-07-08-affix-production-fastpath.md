@@ -1,7 +1,10 @@
 ---
-status: implementing
-reviewed_by: [staff-engineer, architect]
+status: shipped
 implementation: PR #396
+merged_at: 2026-07-08
+implementation_paths:
+  - src/lib/session-builder/pedagogy.ts
+reviewed_by: [staff-engineer, architect]
 ---
 <!-- staff-engineer 2026-07-08: SOUND/approved with three amendments, all folded in
      below (usedRefs narrative includes the practice pass; load-budget suppressor
