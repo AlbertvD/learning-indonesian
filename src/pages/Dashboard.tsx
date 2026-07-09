@@ -32,6 +32,7 @@ import { getLessonsBasic } from '@/lib/lessons/adapter'
 import {
   FIRST_LESSON_OPENED_KEY,
   ONTDEK_VISITED_KEY,
+  PRONUNCIATION_VISITED_KEY,
   readFirstRunFlag,
   setFirstRunFlag,
   hasCompletedSession,
@@ -126,6 +127,7 @@ export function Dashboard() {
         setChecklist({
           lessonOpened: readFirstRunFlag(FIRST_LESSON_OPENED_KEY),
           sessionDone,
+          uitspraakVisited: readFirstRunFlag(PRONUNCIATION_VISITED_KEY),
           ontdekVisited: readFirstRunFlag(ONTDEK_VISITED_KEY),
         })
         const activatedLessons = lessons
@@ -246,6 +248,10 @@ export function Dashboard() {
             {showChecklist ? (
               <FirstRunChecklist
                 steps={checklist!}
+                onSkipUitspraak={() => {
+                  setFirstRunFlag(PRONUNCIATION_VISITED_KEY)
+                  setChecklist(c => (c ? { ...c, uitspraakVisited: true } : c))
+                }}
                 onSkipOntdek={() => {
                   setFirstRunFlag(ONTDEK_VISITED_KEY)
                   setChecklist(c => (c ? { ...c, ontdekVisited: true } : c))

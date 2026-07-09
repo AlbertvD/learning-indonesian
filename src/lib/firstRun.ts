@@ -12,6 +12,9 @@ import { supabase } from '@/lib/supabase'
 
 export const FIRST_LESSON_OPENED_KEY = 'first_lesson_opened'
 export const ONTDEK_VISITED_KEY = 'ontdek_visited'
+// Uitspraak day-one hook (review UP6): a fourth per-device flag, same
+// mechanism as ONTDEK_VISITED_KEY — set on first visit to /pronunciation.
+export const PRONUNCIATION_VISITED_KEY = 'pronunciation_visited'
 
 export function readFirstRunFlag(key: string): boolean {
   try {

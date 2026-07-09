@@ -1,6 +1,6 @@
 // src/components/dashboard/FirstRunChecklist.tsx — the "Aan de slag" first-run
 // stepper (desktop program slice 3). Replaces the Vandaag panel in the hero
-// position for accounts that haven't finished the three first-run steps, on
+// position for accounts that haven't finished the first-run steps, on
 // desktop AND mobile. Step state derivation lives in Dashboard.tsx +
 // lib/firstRun.ts; this component is presentational.
 import { Link, useNavigate } from 'react-router-dom'
@@ -11,16 +11,19 @@ import classes from './FirstRunChecklist.module.css'
 export interface ChecklistSteps {
   lessonOpened: boolean
   sessionDone: boolean
+  uitspraakVisited: boolean
   ontdekVisited: boolean
 }
 
 interface FirstRunChecklistProps {
   steps: ChecklistSteps
-  /** Step ③ is dismissable — marks it done without visiting Ontdek. */
+  /** Step (uitspraak) is dismissable — marks it done without visiting the primer. */
+  onSkipUitspraak: () => void
+  /** Step ④ is dismissable — marks it done without visiting Ontdek. */
   onSkipOntdek: () => void
 }
 
-export function FirstRunChecklist({ steps, onSkipOntdek }: FirstRunChecklistProps) {
+export function FirstRunChecklist({ steps, onSkipUitspraak, onSkipOntdek }: FirstRunChecklistProps) {
   const T = useT()
   const navigate = useNavigate()
 
@@ -41,6 +44,18 @@ export function FirstRunChecklist({ steps, onSkipOntdek }: FirstRunChecklistProp
         <button className={classes.action} onClick={() => navigate('/session')}>
           {T.checklist.start}
         </button>
+      ),
+    },
+    {
+      key: 'uitspraak',
+      done: steps.uitspraakVisited,
+      title: T.checklist.stepUitspraakTitle,
+      sub: T.checklist.stepUitspraakSub,
+      action: (
+        <span className={classes.actionRow}>
+          <Link className={classes.action} to="/pronunciation">{T.checklist.read}</Link>
+          <button className={classes.skip} onClick={onSkipUitspraak}>{T.checklist.skip}</button>
+        </span>
       ),
     },
     {
