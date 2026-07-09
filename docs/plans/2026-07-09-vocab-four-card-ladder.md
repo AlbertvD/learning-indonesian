@@ -1,5 +1,15 @@
 ---
-status: implementing
+status: shipped
+merged_at: 2026-07-09
+implementation_paths:
+  - src/lib/capabilities/vocabModeSet.ts
+  - scripts/lib/pipeline/capability-stage/projectors/vocab.ts
+  - scripts/unretire-vocab-mode.ts
+  - src/lib/session-builder/graduation.ts
+  - src/components/exercises/implementations/MeaningRecallFromAudio.tsx
+  - src/lib/capabilities/renderContracts.ts
+  - scripts/migration.sql
+  - scripts/verify-lessons-overview-rls.ts
 implementation: PR-A #401, PR-B #403, PR-C #404
 reviewed_by:
   - staff-engineer (2026-07-09 — PASS after corrections; confirmed the #3′∨#6 OR trigger, PR sequencing, gist split, MeaningRecall-grading replication; carried the §2.5 OR-parity requirement)
