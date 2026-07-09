@@ -1,0 +1,18 @@
+/* JouwIndonesischHero.module.css — grid layout only. Card chrome + tokens
+   come from StatCard.module.css (Part A explicitly skips the ring flourish
+   and reuses the primitive verbatim — see the spec's "Design" section).
+
+   `auto-fit`/`minmax` (mirrors PageLab.module.css:93-97's .statGrid) gives
+   the "stack/2-col on mobile, 3-up on wide" responsiveness the spec asks for
+   without a breakpoint: three ~150px tiles fit one row once the container
+   clears ~470px, and wrap to 2/1 columns below that — no @media needed. */
+
+.root {
+  margin-bottom: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
