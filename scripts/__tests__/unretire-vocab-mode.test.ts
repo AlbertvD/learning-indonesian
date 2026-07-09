@@ -285,7 +285,7 @@ describe('countReanimationCandidates', () => {
     expect(total).toBe(3)
   })
 
-  it('chunks ids into batches of 100', async () => {
+  it('chunks ids into batches of STATE_CHUNK_SIZE', async () => {
     const ids = Array.from({ length: 250 }, (_, i) => `cap-${i}`)
     const matching = new Map(ids.map((id) => [id, 1]))
     const { client } = buildStateUpdateClient(matching)
@@ -310,15 +310,15 @@ describe('reanimateDueDates', () => {
     expect(updateCalls[0]).toEqual(['cap-1', 'cap-2'])
   })
 
-  it('chunks the write into batches of 100', async () => {
-    const ids = Array.from({ length: 150 }, (_, i) => `cap-${i}`)
+  it('chunks the write into batches of STATE_CHUNK_SIZE (50 — Kong URL-length limit, observed live 2026-07-09)', async () => {
+    const ids = Array.from({ length: 120 }, (_, i) => `cap-${i}`)
     const matching = new Map(ids.map((id) => [id, 1]))
     const { client, updateCalls } = buildStateUpdateClient(matching)
     const written = await reanimateDueDates(client, ids)
-    expect(written).toBe(150)
-    expect(updateCalls).toHaveLength(2)
-    expect(updateCalls[0]).toHaveLength(100)
-    expect(updateCalls[1]).toHaveLength(50)
+    expect(written).toBe(120)
+    expect(updateCalls).toHaveLength(3)
+    expect(updateCalls[0]).toHaveLength(50)
+    expect(updateCalls[2]).toHaveLength(20)
   })
 
   it('is a no-op for an empty id list', async () => {
