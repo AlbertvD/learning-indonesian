@@ -667,6 +667,50 @@ export function deriveStubbornWords(input: { evidence: CapabilityMasteryEvidence
     .sort((a, b) => b.consecutiveFailures - a.consecutiveFailures)
 }
 
+// ── Troublesome ("keep getting wrong") words — Home surface (convenience
+// aggregation, NOT a new intervention): the union of at-risk (a RETENTION
+// loss) and stubborn (an ACQUISITION difficulty), scoped to words only. Raw
+// {sourceRef, sourceKind} — no label, no isAffixed: computing a label here
+// would import lib/mnemonics and, since mnemonics/affordance.ts already
+// imports isStubborn FROM this module, close a back-edge cycle (target-arch
+// Rule #7). Label/isAffixed are computed in the UI layer instead
+// (MnemonicWordChips). The two signals are mutually exclusive at the cap
+// level (lapseCount 0 vs >0), so no double-count; a multi-cap word dedupes to
+// one entry. (2026-07-09, docs/plans/2026-07-09-home-mnemonic-weak-words-surface.md.)
+export interface TroublesomeWord {
+  sourceRef: string
+  sourceKind: CapabilitySourceKind
+}
+
+export function deriveTroublesomeWords(input: {
+  evidence: CapabilityMasteryEvidence[]
+  now?: Date
+}): TroublesomeWord[] {
+  const now = input.now ?? new Date()
+  const qualifying = input.evidence
+    .filter((e) => {
+      // Scope: vocabulary + affixed word forms only (funnelBucket already owns
+      // the word/grammar/neither split) — a memory hook for a grammar rule is a
+      // different affordance; the in-session entry still covers any item.
+      const bucket = funnelBucket(e.sourceKind)
+      if (bucket === null || bucket === 'grammar') return false
+      // Reuse the canonical predicates verbatim — do not restate their boolean
+      // conditions inline (they can drift from labelForCapability/isStubborn).
+      return labelForCapability(e, now) === 'at_risk' || isStubborn(e)
+    })
+    .sort((a, b) => b.consecutiveFailureCount - a.consecutiveFailureCount)
+  // Dedupe by the raw source_ref (mirrors StubbornWordsCard's C1 fix). `Map`
+  // keeps each key's ITERATION position at its first insertion — since the
+  // list above is sorted descending, a word's first occurrence is always the
+  // one with its own max consecutiveFailureCount, so the returned order IS
+  // "sort by max(consecutiveFailureCount) across the word's qualifying caps,"
+  // without a second pass. (Which cap's *value* object survives the `Map` is
+  // irrelevant here — only `sourceRef`/`sourceKind` are read, and those are
+  // invariant across one word's caps.)
+  return [...new Map(qualifying.map((e) => [e.sourceRef, e] as const)).values()]
+    .map((e) => ({ sourceRef: e.sourceRef, sourceKind: e.sourceKind }))
+}
+
 // One of a grammar pattern's two skill dimensions (recognise the rule / apply it):
 // its rolled-up rung plus how many times the learner has practised it.
 export interface GrammarDimensionProgress {
@@ -1177,6 +1221,11 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       const evidence = await allLearnerEvidence(userId)
       return deriveStubbornWords({ evidence })
     },
+
+    async getTroublesomeWords(userId: string): Promise<TroublesomeWord[]> {
+      const evidence = await allLearnerEvidence(userId)
+      return deriveTroublesomeWords({ evidence })
+    },
   }
 }
 
@@ -1215,6 +1264,10 @@ export async function getSkillModeGaps(userId: string): Promise<SkillModeGap[]> 
 
 export async function getStubbornWords(userId: string): Promise<StubbornWord[]> {
   return (await defaultModel()).getStubbornWords(userId)
+}
+
+export async function getTroublesomeWords(userId: string): Promise<TroublesomeWord[]> {
+  return (await defaultModel()).getTroublesomeWords(userId)
 }
 
 // Server-side aggregation (ADR 0015 — small result, bounded window): the SQL

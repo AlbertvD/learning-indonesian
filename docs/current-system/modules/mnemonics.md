@@ -1,10 +1,14 @@
 ---
 module: mnemonics
 surface: src/lib/mnemonics/
-last_verified_against_code: 2026-07-05
+last_verified_against_code: 2026-07-09
 status: in-flight   # lib/mnemonics + MnemonicWorkshop shipped in this PR; host wiring
                      # (Session.tsx / ExperiencePlayer.tsx / StubbornWordsCard.tsx) applied
                      # by the orchestrating agent — see PR for the exact commit.
+                     # 2026-07-09 (home-mnemonic-weak-words-surface slice 1):
+                     # MnemonicWordChips extracted as the shared chip/dot/workshop
+                     # body; StubbornWordsCard refactored to consume it;
+                     # TroublesomeWordsSheet (Home) added as a second consumer.
 ---
 
 # `lib/mnemonics` — the stubborn-word mnemonic workshop
@@ -118,9 +122,27 @@ player) can update it without a re-fetch.
 - **Upstream (UI):** `components/mnemonics/MnemonicWorkshop.tsx` — the shared editor,
   in a neutral folder (not `components/progress/`) so `components/experience/` and
   `components/progress/` both import *down* into it rather than into each other.
+  `components/mnemonics/MnemonicWordChips.tsx` — extracted 2026-07-09
+  (home-mnemonic-weak-words-surface slice 1) out of the pre-existing
+  `StubbornWordsCard.tsx:52-115`: the chip-list + has-hook-dot state (its own
+  `fetchMnemonicsForRefs` + `onSaved`) + `MnemonicWorkshop` open/close wiring,
+  given raw `{sourceRef, sourceKind}` entries. **The sole holder of the
+  `labelForSourceRef` call** — computing `label`/`isAffixed` here (not in
+  `lib/analytics/mastery`) is what lets that module's `deriveTroublesomeWords`
+  stay label-free and avoid an analytics→mnemonics back-edge (mnemonics already
+  imports `isStubborn` FROM analytics). `components/progress/StubbornWordsCard.tsx`
+  (Voortgang, refactored in the same slice to consume it) and
+  `components/mnemonics/TroublesomeWordsSheet.tsx` (Home, new) both render it —
+  one implementation of the pattern, no drift.
 - **Host (fetch owner):** `pages/Session.tsx` — prefetches the session's
   `Map<sourceRef, note>` via `fetchMnemonicsForRefs`, mirroring the existing `audioMap`
   fetch exactly.
+- **Host (Home nudge):** `pages/Dashboard.tsx` — computes the un-hooked
+  troublesome-words subset (`getTroublesomeWords` from
+  `lib/analytics/mastery/masteryModel`, then `fetchMnemonicsForRefs` to filter
+  out already-hooked words) for a conditional `ListCard` nudge, and mounts
+  `TroublesomeWordsSheet` (a Modal wrapping `MnemonicWordChips`) on tap. Same
+  `fetchMnemonicsForRefs` port, a second host.
 - **Sibling regime note:** this is **learner data** (Operating Context, CLAUDE.md) —
   owner-only RLS, `on delete cascade` from `auth.users`, covered by the nightly dump.
   Schema changes here go through the full gate chain (`migrate-idempotent-check` →

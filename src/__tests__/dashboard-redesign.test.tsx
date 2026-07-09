@@ -25,6 +25,7 @@ vi.mock('@/lib/analytics/engagement')
 vi.mock('@/lib/analytics/mastery/masteryModel')
 vi.mock('@/lib/lessons/adapter')
 vi.mock('@/lib/lessons/activation')
+vi.mock('@/lib/mnemonics')
 vi.mock('@/lib/supabase')
 vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
 vi.mock('@/lib/firstRun', () => ({
@@ -43,7 +44,8 @@ vi.mock('@/contexts/ListeningContext', () => ({
 }))
 
 import { engagement } from '@/lib/analytics/engagement'
-import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
+import { getWeeklyMovement, getTroublesomeWords } from '@/lib/analytics/mastery/masteryModel'
+import { fetchMnemonicsForRefs } from '@/lib/mnemonics'
 import * as lessonsAdapter from '@/lib/lessons/adapter'
 import { listActivatedLessons } from '@/lib/lessons/activation'
 import { readFirstRunFlag, hasCompletedSession } from '@/lib/firstRun'
@@ -100,6 +102,8 @@ beforeEach(() => {
   vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(0))
   vi.mocked(engagement.dailyActivity).mockResolvedValue([])
   vi.mocked(getWeeklyMovement).mockResolvedValue({ advancedVocab: 0, advancedGrammar: 0, advancedMorphology: 0, reachedMastered: 0, slipped: 0 })
+  vi.mocked(getTroublesomeWords).mockResolvedValue([])
+  vi.mocked(fetchMnemonicsForRefs).mockResolvedValue(new Map())
   vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([])
   vi.mocked(listActivatedLessons).mockResolvedValue(new Set<string>())
   vi.mocked(readFirstRunFlag).mockReturnValue(false)
@@ -260,5 +264,54 @@ describe('Dashboard — review-backlog insight', () => {
 
     await screen.findByText('Vandaag')
     expect(screen.queryByText('Nieuw materiaal komt eraan')).not.toBeInTheDocument()
+  })
+})
+
+describe('Dashboard — troublesome words nudge', () => {
+  it('shows the nudge card sized to the un-hooked subset (one denominator for count and sheet)', async () => {
+    establishedAccount()
+    vi.mocked(getTroublesomeWords).mockResolvedValue([
+      { sourceRef: 'learning_items/pintar', sourceKind: 'vocabulary_src' },
+      { sourceRef: 'learning_items/becak', sourceKind: 'vocabulary_src' },
+      { sourceRef: 'learning_items/rumah', sourceKind: 'vocabulary_src' },
+    ])
+    // 'rumah' already has a hook — it must not count towards the card's number.
+    vi.mocked(fetchMnemonicsForRefs).mockResolvedValue(new Map([['learning_items/rumah', 'my mnemonic']]))
+    renderDashboard()
+
+    expect(await screen.findByText('2 moeilijke woorden')).toBeInTheDocument()
+  })
+
+  it('stays hidden when every troublesome word already has a hook', async () => {
+    establishedAccount()
+    vi.mocked(getTroublesomeWords).mockResolvedValue([
+      { sourceRef: 'learning_items/pintar', sourceKind: 'vocabulary_src' },
+    ])
+    vi.mocked(fetchMnemonicsForRefs).mockResolvedValue(new Map([['learning_items/pintar', 'my mnemonic']]))
+    renderDashboard()
+
+    await screen.findByText('Vandaag')
+    expect(screen.queryByText(/moeilijke woorden/)).not.toBeInTheDocument()
+  })
+
+  it('stays hidden when there are no troublesome words at all', async () => {
+    establishedAccount()
+    renderDashboard()
+
+    await screen.findByText('Vandaag')
+    expect(screen.queryByText(/moeilijke woorden/)).not.toBeInTheDocument()
+  })
+
+  it('opens the picker sheet on tap, scoped to the same un-hooked words', async () => {
+    establishedAccount()
+    vi.mocked(getTroublesomeWords).mockResolvedValue([
+      { sourceRef: 'learning_items/pintar', sourceKind: 'vocabulary_src' },
+    ])
+    const user = userEvent.setup()
+    renderDashboard()
+
+    const card = await screen.findByText('1 moeilijke woorden')
+    await user.click(card)
+    expect(await screen.findByText('Moeilijke woorden')).toBeInTheDocument()
   })
 })

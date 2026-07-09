@@ -173,6 +173,11 @@ export const nl = {
       message: 'Je laatste sessie was {days} dagen geleden. Welkom terug.',
       messageSingular: 'Je laatste sessie was {days} dag geleden. Welkom terug.',
     },
+    // Troublesome ("moeilijke") words nudge — home-mnemonic-weak-words-surface
+    // slice 1. Invitational, not urgency framing.
+    troublesomeWordsTitle: '{n} moeilijke woorden',
+    troublesomeWordsSubtitle: 'Woorden die je vaak mist — voeg een ezelsbruggetje toe als je wilt.',
+    troublesomeWordsSheetTitle: 'Moeilijke woorden',
   },
   profile: {
     title: 'Profiel',
@@ -850,6 +855,11 @@ export const en: typeof nl = {
       message: 'Your last session was {days} days ago. Welcome back.',
       messageSingular: 'Your last session was {days} day ago. Welcome back.',
     },
+    // Troublesome words nudge — home-mnemonic-weak-words-surface slice 1.
+    // Invitational, not urgency framing.
+    troublesomeWordsTitle: '{n} tricky words',
+    troublesomeWordsSubtitle: 'Words you often miss — add a memory hook if you like.',
+    troublesomeWordsSheetTitle: 'Tricky words',
   },
   profile: {
     title: 'Profile',
