@@ -137,10 +137,6 @@ export const registerPairs: RegisterPair[] = [
     source: 'Sneddon 2006 — monophthongization class (canonical example)' },
   { formal: 'kalau', informal: 'kalo', gloss_nl: 'als, wanneer', klasse: 'monophthong',
     source: 'Sneddon 2006 — monophthongization class (canonical example)' },
-  { formal: 'atau', informal: 'ato', gloss_nl: 'of', klasse: 'monophthong',
-    source: 'Sneddon 2006 — monophthongization class' },
-  { formal: 'mau', informal: 'mo', gloss_nl: 'willen', klasse: 'monophthong',
-    source: 'Sneddon 2006 — monophthongization class; very high frequency modal' },
   { formal: 'hijau', informal: 'ijo', gloss_nl: 'groen', klasse: 'monophthong',
     source: 'Sneddon 2006 — au→o + h-drop; dominant colloquial form' },
 
@@ -230,8 +226,6 @@ export const registerPairs: RegisterPair[] = [
     source: 'Sneddon 2006 — dominant lexical replacement; already attested live (both taught, L999, kenapa already prose-marked "(informeel)")' },
   { formal: 'tidak', informal: 'nggak', gloss_nl: 'niet, nee', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement (spec §3.1 worked example); already attested live (both taught — tidak L1, nggak L12, unmarked)' },
-  { formal: 'maaf', informal: 'maap', gloss_nl: 'sorry, pardon', klasse: 'lexical',
-    source: 'Sneddon 2006 — f→p consonant shift, dominant in casual writing/speech' },
   { formal: 'selesai', informal: 'kelar', gloss_nl: 'klaar, af', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement (different root)' },
   { formal: 'dengan', informal: 'sama', gloss_nl: 'met', klasse: 'lexical',
@@ -342,6 +336,12 @@ export const registerPairs: RegisterPair[] = [
  *   review 2026-07-10): colloquial 'kejer' means "(crying) hard/intensely"
  *   ("nangis kejer"), NOT "chase". Including it would have taught a wrong
  *   meaning.
+ * - atau → ato — owner veto 2026-07-10 — weakest dominance-in-speech cases;
+ *   revisit on demand.
+ * - mau → mo — owner veto 2026-07-10 — weakest dominance-in-speech cases;
+ *   revisit on demand.
+ * - maaf → maap — owner veto 2026-07-10 — weakest dominance-in-speech
+ *   cases; revisit on demand.
  * - The productive meN-prefix-drop verb pattern (nulis/menulis,
  *   nyuci/mencuci, nanya/bertanya, ngerasa/merasa, ngambil/mengambil, ...)
  *   — regular morphological alternation, not frozen/suppletive lexical
