@@ -1,21 +1,26 @@
 // src/pages/Progress.tsx
 //
-// Voortgang — the learner's "reflect" surface. Four tabs (minimal scroll on
-// mobile): Woordenschat and Grammatica each show the mastery-progression funnel
-// (landing = all lessons, filter = per lesson) — vocab and grammar as parallel
-// pages, no longer a toggle inside one funnel; Grammatica adds per-pattern detail
-// when a lesson is picked. Vaardigheden (skill-mode gaps) and Tijd (week/month)
-// stay as their own tabs. Each view animates in on switch.
-//
-// The "Jouw Indonesisch" hero strip (I1) sits above the tab strip — always
-// visible, independent of which tab is active — three honest numbers composed
-// from existing readers (see JouwIndonesischHero for the non-blocking fetch).
+// Voortgang — the learner's "reflect" surface, on the Leren/Ontdek hub shape
+// (voortgang-hub-redesign, docs/plans/2026-07-09-voortgang-hub-redesign.md): a
+// single /progress route, hub-vs-detail switched by `?tab=`. Mobile with no
+// (or an unknown) tab shows the hub — five ListCard launchers, each with a
+// live-summary subtitle derived from the same readers the detail panels
+// already use. A known `?tab=` shows that detail with the shared ProgressNav
+// switcher. Desktop always lands on a detail (Woordenschat by default) with
+// the persistent switcher — no separate hub screen, exactly like desktop
+// /leren lands on Lessen (Lessons.tsx:384-457).
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { PageContainer, PageBody, PageHeader } from '@/components/page/primitives'
+import { useMediaQuery } from '@mantine/hooks'
+import { SimpleGrid } from '@mantine/core'
+import { IconBook, IconLanguage, IconPuzzle, IconTarget, IconFlame } from '@tabler/icons-react'
+import { PageContainer, PageBody, PageHeader, ListCard } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
-import { PillSegmented } from '@/components/progress/PillSegmented'
-import { JouwIndonesischHero } from '@/components/progress/JouwIndonesischHero'
+import { getMasteryFunnel, type MasteryFunnels } from '@/lib/analytics/mastery/masteryModel'
+import { engagement, type PracticeTime } from '@/lib/analytics/engagement'
+import { logError } from '@/lib/logger'
+import { ProgressNav } from '@/components/nav/ProgressNav'
 import { MasteryFunnelPanel } from '@/components/progress/MasteryFunnelPanel'
 import { VocabMasteryPanel } from '@/components/progress/VocabMasteryPanel'
 import { GrammarPatternList } from '@/components/progress/GrammarPatternList'
@@ -28,88 +33,178 @@ import classes from './Progress.module.css'
 type Tab = 'woorden' | 'grammar' | 'morfologie' | 'skills' | 'time'
 const TABS: Tab[] = ['woorden', 'grammar', 'morfologie', 'skills', 'time']
 
+interface HubSummaries {
+  vocabUsable: number | null
+  grammarUsable: number | null
+  morfologieUsable: number | null
+  streakDays: number | null
+  minutesThisWeek: number | null
+}
+
+// One guarded fetch for the hub's five live-summary subtitles: two readers
+// (the all-lessons funnel, practice time), each individually caught so one
+// failing degrades only its own card's subtitle to "no subtitle" rather than
+// losing the hub or surfacing a blocking notification (mirrors the retired
+// JouwIndonesischHero's per-reader guard, PR #408).
+async function loadHubSummaries(userId: string): Promise<HubSummaries> {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const [funnel, practiceTime] = await Promise.all([
+    getMasteryFunnel(userId).catch((err) => {
+      logError({ page: 'progress', action: 'hubMasteryFunnel', error: err })
+      return null as MasteryFunnels | null
+    }),
+    engagement.practiceTime(userId, tz).catch((err) => {
+      logError({ page: 'progress', action: 'hubPracticeTime', error: err })
+      return null as PracticeTime | null
+    }),
+  ])
+  return {
+    vocabUsable: funnel ? funnel.vocabulary.strengthening + funnel.vocabulary.mastered : null,
+    grammarUsable: funnel ? funnel.grammar.strengthening + funnel.grammar.mastered : null,
+    morfologieUsable: funnel ? funnel.morphology.strengthening + funnel.morphology.mastered : null,
+    streakDays: practiceTime ? practiceTime.streakDays : null,
+    minutesThisWeek: practiceTime ? practiceTime.minutesThisWeek : null,
+  }
+}
+
 export function Progress() {
   const T = useT()
   const user = useAuthStore((state) => state.user)
-  // Tab is URL-addressable (`/progress?tab=time`) so the home cells can deep-link
-  // straight to the matching sub-page (e.g. the "min deze week" cell → Tijd).
-  const [searchParams, setSearchParams] = useSearchParams()
+  const isMobile = useMediaQuery('(max-width: 768px)') ?? false
+  const [searchParams] = useSearchParams()
   const param = searchParams.get('tab') as Tab | null
-  const tab: Tab = param && TABS.includes(param) ? param : 'woorden'
-  const setTab = (value: Tab) => setSearchParams({ tab: value }, { replace: true })
+  const tab: Tab | null = param && TABS.includes(param) ? param : null
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+  // Mobile with no (or unknown) tab is the hub; everything else (desktop
+  // always, mobile with a known tab) is a detail.
+  const showHub = isMobile && tab === null
+  const activeTab: Tab = tab ?? 'woorden'
+
+  const [hub, setHub] = useState<HubSummaries | null>(null)
+  useEffect(() => {
+    if (!user || !showHub) return
+    let active = true
+    loadHubSummaries(user.id).then((v) => {
+      if (active) setHub(v)
+    })
+    return () => {
+      active = false
+    }
+  }, [user, showHub])
+
+  if (!user) {
+    return (
+      <PageContainer size="lg">
+        <PageBody>
+          <PageHeader title={T.progress.pageTitle} />
+        </PageBody>
+      </PageContainer>
+    )
+  }
+
+  if (showHub) {
+    return (
+      <PageContainer size="lg">
+        <PageBody>
+          <PageHeader title={T.progress.pageTitle} subtitle={T.progress.hubSubtitle} />
+          <SimpleGrid cols={{ base: 1 }} spacing="sm" mt="md">
+            <ListCard
+              feature
+              tone="accent"
+              to="/progress?tab=woorden"
+              icon={<IconBook size={25} stroke={1.7} />}
+              title={T.progress.tabWoordenschat}
+              subtitle={hub?.vocabUsable != null ? T.progress.hubWoordenschatSummary(hub.vocabUsable) : undefined}
+            />
+            <ListCard
+              feature
+              tone="teal"
+              to="/progress?tab=grammar"
+              icon={<IconLanguage size={25} stroke={1.7} />}
+              title={T.progress.tabGrammar}
+              subtitle={hub?.grammarUsable != null ? T.progress.hubGrammarSummary(hub.grammarUsable) : undefined}
+            />
+            <ListCard
+              feature
+              tone="sage"
+              to="/progress?tab=morfologie"
+              icon={<IconPuzzle size={25} stroke={1.7} />}
+              title={T.progress.tabMorphology}
+              subtitle={hub?.morfologieUsable != null ? T.progress.hubMorfologieSummary(hub.morfologieUsable) : undefined}
+            />
+            <ListCard
+              feature
+              tone="rail"
+              to="/progress?tab=skills"
+              icon={<IconTarget size={25} stroke={1.7} />}
+              title={T.progress.tabSkills}
+              subtitle={T.progress.hubVaardighedenSummary}
+            />
+            <ListCard
+              feature
+              tone="gold"
+              to="/progress?tab=time"
+              icon={<IconFlame size={25} stroke={1.7} />}
+              title={T.progress.tabTime}
+              subtitle={
+                hub?.streakDays != null && hub.minutesThisWeek != null
+                  ? T.progress.hubTijdSummary(hub.streakDays, hub.minutesThisWeek)
+                  : undefined
+              }
+            />
+          </SimpleGrid>
+        </PageBody>
+      </PageContainer>
+    )
+  }
 
   return (
     <PageContainer size="lg">
       <PageBody>
         <PageHeader title={T.progress.pageTitle} />
-
-        {user && (
-          <>
-            <JouwIndonesischHero userId={user.id} />
-
-            {/* Scrollable so the strip never clips a tab when labels/count grow
-                (the six-tab strip previously hid Groei + Tijd past the pill edge). */}
-            <div className={classes.tabs}>
-              <PillSegmented
-                value={tab}
-                onChange={(v) => setTab(v as Tab)}
-                data={[
-                  { value: 'woorden', label: T.progress.tabWoordenschat },
-                  { value: 'grammar', label: T.progress.tabGrammar },
-                  { value: 'morfologie', label: T.progress.tabMorphology },
-                  { value: 'skills', label: T.progress.tabSkills },
-                  { value: 'time', label: T.progress.tabTime },
-                ]}
+        <ProgressNav />
+        {/* key re-mounts the active detail so it animates in on every switch */}
+        <div key={activeTab} className={classes.view}>
+          {activeTab === 'woorden' && (
+            <div className={classes.sections}>
+              <VocabMasteryPanel userId={user.id} />
+              <GrowthCurveCard userId={user.id} bucket="vocabulary" unitLabel={T.progress.unitWords} />
+            </div>
+          )}
+          {activeTab === 'grammar' && (
+            <div className={classes.sections}>
+              <MasteryFunnelPanel
+                userId={user.id}
+                kind="grammar"
+                unitLabel={T.progress.grammarUnitPatterns}
+                footer={(scope) =>
+                  scope.lessonNumber != null
+                    ? <GrammarPatternList userId={user.id} lessonNumber={scope.lessonNumber} />
+                    : null
+                }
               />
+              <GrowthCurveCard userId={user.id} bucket="grammar" unitLabel={T.progress.grammarUnitPatterns} />
             </div>
-
-            {/* key re-mounts the active view so it animates in on every switch */}
-            <div key={tab} className={classes.view}>
-              {/* Each content tab pairs its current-state funnel with its
-                  growth-over-time curve for the same bucket (the Groei tab was
-                  removed; growth now lives where the funnel does). */}
-              {tab === 'woorden' && (
-                <div className={classes.sections}>
-                  <VocabMasteryPanel userId={user.id} />
-                  <GrowthCurveCard userId={user.id} bucket="vocabulary" />
-                </div>
-              )}
-              {tab === 'grammar' && (
-                <div className={classes.sections}>
-                  <MasteryFunnelPanel
-                    userId={user.id}
-                    kind="grammar"
-                    unitLabel={T.progress.grammarUnitPatterns}
-                    footer={(scope) =>
-                      scope.lessonNumber != null
-                        ? <GrammarPatternList userId={user.id} lessonNumber={scope.lessonNumber} />
-                        : null
-                    }
-                  />
-                  <GrowthCurveCard userId={user.id} bucket="grammar" />
-                </div>
-              )}
-              {tab === 'morfologie' && (
-                <div className={classes.sections}>
-                  <MasteryFunnelPanel
-                    userId={user.id}
-                    kind="morphology"
-                    unitLabel={T.progress.morphologyUnitAffixes}
-                  />
-                  <GrowthCurveCard userId={user.id} bucket="morphology" />
-                </div>
-              )}
-              {tab === 'skills' && <SkillModeGapsCard userId={user.id} />}
-              {tab === 'time' && (
-                <div className={classes.sections}>
-                  <TimeComparisonCard userId={user.id} timezone={timezone} />
-                  <DurabilityCard userId={user.id} timezone={timezone} />
-                </div>
-              )}
+          )}
+          {activeTab === 'morfologie' && (
+            <div className={classes.sections}>
+              <MasteryFunnelPanel
+                userId={user.id}
+                kind="morphology"
+                unitLabel={T.progress.morphologyUnitAffixes}
+              />
+              <GrowthCurveCard userId={user.id} bucket="morphology" unitLabel={T.progress.morphologyUnitAffixes} />
             </div>
-          </>
-        )}
+          )}
+          {activeTab === 'skills' && <SkillModeGapsCard userId={user.id} />}
+          {activeTab === 'time' && (
+            <div className={classes.sections}>
+              <TimeComparisonCard userId={user.id} timezone={timezone} />
+              <DurabilityCard userId={user.id} timezone={timezone} />
+            </div>
+          )}
+        </div>
       </PageBody>
     </PageContainer>
   )

@@ -144,14 +144,16 @@ player) can update it without a re-fetch.
   `TroublesomeWordsSheet` (a Modal wrapping `MnemonicWordChips`) on tap. Same
   `fetchMnemonicsForRefs` port, a second host.
 - **Host (Voortgang at-risk box):** `components/progress/VocabMasteryPanel.tsx`
-  (slice 2, docs/plans/2026-07-09-voortgang-jouw-indonesisch-hero.md Part B) — the
-  Woordenschat tab's wrapper around `MasteryFunnelPanel`. Fetches
-  `getTroublesomeWords` (the FULL set, unlike Home's un-hooked filter — this host
-  does not call `fetchMnemonicsForRefs` itself; has-hook dots and edit come for
-  free from `MnemonicWordChips` inside the sheet) and holds the sheet's
-  open-state, wired to `MasteryJourney`'s "aandacht nodig" box via an optional
-  `onAtRiskClick` passed through `MasteryFunnelPanel`. `TroublesomeWordsSheet`'s
-  third host.
+  (slice 2, docs/plans/2026-07-09-voortgang-jouw-indonesisch-hero.md Part B;
+  re-homed 2026-07-09 by the hub redesign, docs/plans/2026-07-09-voortgang-hub-
+  redesign.md) — the Woordenschat detail's wrapper around `MasteryFunnelPanel`.
+  Fetches `getTroublesomeWords` (the FULL set, unlike Home's un-hooked filter —
+  this host does not call `fetchMnemonicsForRefs` itself; has-hook dots and edit
+  come for free from `MnemonicWordChips` inside the sheet) and holds the sheet's
+  open-state, wired to the at-risk `ListCard` `MasteryFunnelPanel` itself renders
+  (below `MasteryLadder`, which replaced `MasteryJourney` and carries no at-risk
+  affordance of its own) via an optional `onAtRiskClick` prop.
+  `TroublesomeWordsSheet`'s third host.
 - **Sibling regime note:** this is **learner data** (Operating Context, CLAUDE.md) —
   owner-only RLS, `on delete cascade` from `auth.users`, covered by the nightly dump.
   Schema changes here go through the full gate chain (`migrate-idempotent-check` →
