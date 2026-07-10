@@ -1,6 +1,16 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #427
+merged_at: 2026-07-10
+implementation_paths:
+  - src/components/page/primitives/ListCard.tsx
+  - src/components/page/primitives/ListCard.module.css
+  - src/pages/Podcasts.tsx
+  - src/pages/Lezen.tsx
+  - src/pages/GrammarPodcasts.tsx
+  - src/pages/GrammarPodcasts.module.css
+  - src/pages/Podcast.tsx
+  - src/pages/LezenReader.tsx
 supersedes: []
 ---
 
