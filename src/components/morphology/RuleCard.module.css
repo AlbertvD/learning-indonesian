@@ -26,3 +26,17 @@
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
 }
+
+/* The inline grammar-podcast player, under the "introLesson N" link. Renders
+   nothing when LessonGrammarAudioBand has no src for the current app language
+   (its own null-guard) — this wrapper only supplies spacing + the label style. */
+.podcastBand {
+  margin-top: 4px;
+}
+
+.podcastLabel {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  margin: 0 0 6px;
+}

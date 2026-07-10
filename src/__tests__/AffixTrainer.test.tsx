@@ -34,6 +34,14 @@ vi.mock('@/services/audioService', async (importOriginal) => {
   return { ...actual, fetchSessionAudioMap: vi.fn().mockResolvedValue(new Map()) }
 })
 
+// Grammar-podcast bucket-path → URL resolution (RuleCard's edge, Change 2) —
+// same fixture pattern as GrammarPodcasts.test.tsx.
+vi.mock('@/services/lessonService', () => ({
+  lessonService: {
+    getAudioUrl: (path: string) => `https://cdn.test/indonesian-lessons/${path}`,
+  },
+}))
+
 function emptyFunnel() {
   return { not_assessed: 0, introduced: 0, learning: 0, strengthening: 0, mastered: 0, at_risk: 0 }
 }
@@ -82,6 +90,8 @@ describe('AffixTrainer page', () => {
     expect(link).toHaveAttribute('href', '/morphology?affix=meN-')
     // catalog grid view never fetches audio — it's per-detail only.
     expect(audioService.fetchSessionAudioMap).not.toHaveBeenCalled()
+    // Change 1: the intro lead paragraph explaining what affixes are.
+    expect(screen.getByText(/word-building blocks/i)).toBeInTheDocument()
   })
 
   it('shows the empty state when no affixes exist yet', async () => {
@@ -100,16 +110,20 @@ describe('AffixTrainer page', () => {
       available: true,
       allomorphClasses: ['me', 'mem', 'men'],
       ruleNote: 'ajar → mengajar',
-      rule: { lessonNumber: 9, lessonId: 'lesson-9', patternSlug: 'l9-men', patternName: 'meN- prefix', patternExplanation: 'Forms active verbs.' },
+      rule: { lessonNumber: 9, lessonId: 'lesson-9', patternSlug: 'l9-men', patternName: 'meN- prefix', patternExplanation: 'Forms active verbs.', podcastNl: null, podcastEn: 'lessons/9/grammar-en.mp3' },
       examples: [{ rootText: 'ajar', derivedText: 'mengajar', carrierText: 'Saya mengajar.', derivedMeaning: 'to teach' }],
       families: [
         {
           rootText: 'ajar',
           rootMeaning: 'to teach',
           rootKnown: true,
+          rootIntroLessonNumber: 9,
           forms: [
-            { derivedText: 'mengajar', affix: 'meN-', productive: true, label: 'mastered', carrierText: null, derivedMeaning: 'to teach' },
-            { derivedText: 'pengajar', affix: 'peN-', productive: false, label: 'not_assessed', carrierText: null, derivedMeaning: null },
+            { derivedText: 'mengajar', affix: 'meN-', affixLinkable: true, productive: true, label: 'mastered', carrierText: null, derivedMeaning: 'to teach' },
+            { derivedText: 'pengajar', affix: 'peN-', affixLinkable: true, productive: false, label: 'not_assessed', carrierText: null, derivedMeaning: null },
+            // A cross-affix form whose OWN affix has no catalog detail page
+            // (affixLinkable: false) — the graceful-degradation contract.
+            { derivedText: 'zzzajar', affix: 'zzz-', affixLinkable: false, productive: true, label: 'not_assessed', carrierText: null, derivedMeaning: null },
           ],
         },
       ],
@@ -145,6 +159,24 @@ describe('AffixTrainer page', () => {
         { text: 'pengajar', voiceId: null },
       ]),
     )
+    // Change 2: the rule card resolves the raw podcast path to a URL at the
+    // UI edge and renders the inline player (app language mocked to 'en' →
+    // podcastEn resolves; podcastNl is null so no NL src is used).
+    expect(screen.getByTestId('lesson-audio-player')).toHaveAttribute(
+      'src',
+      'https://cdn.test/indonesian-lessons/lessons/9/grammar-en.mp3',
+    )
+    // Change 4: a non-current, catalog-linkable affix pill (peN-) becomes a
+    // cross-affix link to that affix's own detail page.
+    const peNLink = screen.getByRole('link', { name: 'peN-' })
+    expect(peNLink).toHaveAttribute('href', '/morphology?affix=peN-')
+    // The CURRENT affix's own pill (meN-) never links, even though it's a
+    // catalog member.
+    expect(screen.queryByRole('link', { name: 'meN-' })).not.toBeInTheDocument()
+    // A non-catalog affix (affixLinkable: false) never links either, even
+    // when it isn't the current affix — graceful degradation.
+    expect(screen.getByText('zzz-')).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'zzz-' })).not.toBeInTheDocument()
   })
 
   it('shows a not-found state for an unknown affix', async () => {
@@ -165,7 +197,7 @@ describe('AffixTrainer page', () => {
       available: true,
       allomorphClasses: [],
       ruleNote: null,
-      rule: { lessonNumber: null, lessonId: null, patternSlug: null, patternName: null, patternExplanation: null },
+      rule: { lessonNumber: null, lessonId: null, patternSlug: null, patternName: null, patternExplanation: null, podcastNl: null, podcastEn: null },
       examples: [{ rootText: 'ajar', derivedText: 'mengajar', carrierText: null, derivedMeaning: 'to teach' }],
       families: [],
       progress: { label: 'introduced', funnel: emptyFunnel(), masteredCount: 0, practisedCount: 0, totalCount: 1, recognition: { masteredCount: 0, totalCount: 1 }, production: { masteredCount: 0, totalCount: 0 } },
@@ -179,5 +211,9 @@ describe('AffixTrainer page', () => {
     expect(screen.getByText('mengajar')).toBeInTheDocument()
     // no PlayButton mounted for the example — audio never resolved.
     expect(screen.queryByLabelText('Play audio')).not.toBeInTheDocument()
+    // Change 2: no podcast in either language on the introducing lesson → the
+    // inline grammar-podcast band renders nothing (LessonGrammarAudioBand's
+    // own null-guard), not an empty player.
+    expect(screen.queryByTestId('lesson-audio-player')).not.toBeInTheDocument()
   })
 })

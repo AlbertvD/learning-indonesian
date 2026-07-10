@@ -1,7 +1,7 @@
 ---
 module: morphology
 surface: src/lib/morphology/
-last_verified_against_code: 2026-07-08
+last_verified_against_code: 2026-07-10
 status: stable
 ---
 
@@ -49,6 +49,28 @@ View-model types (`model.ts`): `AffixCatalogTile`, `AffixDetail`, `AffixProgress
 `AffixProgressClassTally`, `AffixRuleSource`, `AffixExample`, `WordFamily`,
 `DerivedForm`, `AffixScope`.
 
+- **`AffixRuleSource.podcastNl` / `.podcastEn`** — the introducing lesson's raw
+  grammar-podcast bucket paths (storage keys, NOT playable URLs; null when the
+  lesson or that language's episode is absent). `family.ts:buildAffixDetail`
+  resolves them off `lessonPodcastById` via the representative cap's
+  `lessonId`; `RuleCard.tsx` resolves the paths to playable URLs with
+  `lessonService.getAudioUrl()` at the UI edge (the pure layer has no storage
+  client) before handing them to `<LessonGrammarAudioBand/>`.
+- **`WordFamily.rootIntroLessonNumber`** — the lowest `lessonOrderById` value
+  across the root's vocab caps (`family.ts:rootIntroLessonNumber`), mirroring
+  how the rule card picks an affix's introducing lesson. Null covers both a
+  genuinely out-of-course root (no vocab cap) and a root whose only cap sits on
+  a hidden system lesson — `lessonOrderById` excludes hidden rows (§3), so
+  such a cap contributes no order rather than that lesson's `order_index`.
+  `WordFamilyExplorer.tsx` appends "· geïntroduceerd in Les N" to the
+  `!rootKnown` warning when non-null.
+- **`DerivedForm.affixLinkable`** — true when `form.affix` is an actual
+  `AFFIX_CATALOG` member with a detail page (`affixCatalogEntry(form.affix) !=
+  null`, set in `family.ts:formsForRoot`). `form.affix` itself is NOT always a
+  catalog member — a cross-affix family form can carry an affix with no detail
+  page of its own — so `affixLinkable` is what `WordFamilyExplorer.tsx` checks
+  before rendering the form's affix pill as a `<Link to="/morphology?affix=…">`
+  instead of a plain `<span>` (only when also not the page's current affix).
 - **`AffixExample.derivedMeaning` / `DerivedForm.derivedMeaning`** (Fix 3) — the
   derived form's meaning in the learner's language, language-resolved in `family.ts`
   from `affixed_form_pairs.derived_gloss_nl/_en` with **no cross-language fallback**
@@ -75,8 +97,8 @@ View-model types (`model.ts`): `AffixCatalogTile`, `AffixDetail`, `AffixProgress
 
 ```
 adapter.loadMorphologySnapshot      affixed_form_pairs + their caps + states +
-  (the only impure read)            lesson order + activation + grammar rule +
-        │                           root learning_items + root caps
+  (the only impure read)            lesson order + podcast paths + activation +
+        │                           grammar rule + root learning_items + root caps
         ▼
 catalog.buildEvidence (cap + state → CapabilityMasteryEvidence — mirrors masteryModel.toEvidence)
 catalog.rollUpProgress (group by source_ref/derivation, weakest-wins, tally rungs;
@@ -90,6 +112,15 @@ catalog.rollUpProgress (group by source_ref/derivation, weakest-wins, tally rung
                                         rootKnown via the root-vocab join) + progress + practiceSourceRefs
 ```
 
+- **`fetchLessons`** (`adapter.ts`) loads `id, order_index, is_hidden,
+  audio_path, audio_path_en` in one query and builds two maps:
+  `lessonOrderById` from **non-hidden rows only** (`is_hidden !== true`) — a
+  root/affix whose only caps sit on the hidden "Common Words" lesson
+  (`order_index=999`) must resolve to no entry, never that lesson's
+  `order_index` (the Les-999 trap) — and `lessonPodcastById` from ALL rows
+  (hidden included; podcast lookup needs no such exclusion since an affix's
+  introducing lesson is, in practice, always a real chapter — verified live
+  2026-07-10).
 - **`available`** = any of the affix's caps' introducing lessons is activated
   (reflects ADR 0006; no new unlock engine). `catalog.ts:affixAvailable`.
 - **`rootKnown`** = the root is a `learning_items` row (joined via `itemSlug`,

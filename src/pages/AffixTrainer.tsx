@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Alert } from '@mantine/core'
+import { Alert, Text } from '@mantine/core'
 import { IconAlertCircle, IconAbc, IconSearchOff } from '@tabler/icons-react'
 import { PageContainer, PageBody, PageHeader, LoadingState, EmptyState } from '@/components/page/primitives'
 import { LerenNav } from '@/components/lessons/LerenNav'
@@ -84,6 +84,7 @@ export function AffixTrainer() {
             be a redundant second back affordance there. */}
         {!affix && <LerenNav />}
         {!affix && <PageHeader title={T.morphology.title} subtitle={T.morphology.subtitle} />}
+        {!affix && <Text size="sm" c="dimmed" mt="xs">{T.morphology.intro}</Text>}
 
         {loading && <LoadingState caption={T.morphology.title} />}
 

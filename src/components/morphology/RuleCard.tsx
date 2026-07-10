@@ -15,12 +15,19 @@ import { useT } from '@/hooks/useT'
 import type { AffixDetail } from '@/lib/morphology'
 import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
 import { PlayButton } from '@/components/PlayButton'
+import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { lessonService } from '@/services/lessonService'
 import { AFFIX_TYPE_HUE } from './affixVisuals'
 import classes from './RuleCard.module.css'
 
 export function RuleCard({ detail, audioMap }: { detail: AffixDetail; audioMap: SessionAudioMap }) {
   const T = useT()
   const hue = AFFIX_TYPE_HUE[detail.affixType].solid
+  // Bucket paths are storage keys, not playable URLs — resolve at this edge
+  // (mirrors GrammarPodcasts.tsx / Podcast.tsx). LessonGrammarAudioBand picks
+  // nl/en by app language and renders nothing when that language's src is null.
+  const podcastNlUrl = detail.rule.podcastNl ? lessonService.getAudioUrl(detail.rule.podcastNl) : null
+  const podcastEnUrl = detail.rule.podcastEn ? lessonService.getAudioUrl(detail.rule.podcastEn) : null
 
   return (
     <SettingsCard
@@ -87,6 +94,14 @@ export function RuleCard({ detail, audioMap }: { detail: AffixDetail; audioMap: 
             {T.morphology.introLesson} {detail.rule.lessonNumber}
           </Anchor>
         )}
+
+        <LessonGrammarAudioBand
+          nl={podcastNlUrl}
+          en={podcastEnUrl}
+          label={T.morphology.podcastLabel}
+          bandClassName={classes.podcastBand}
+          labelClassName={classes.podcastLabel}
+        />
       </Stack>
     </SettingsCard>
   )

@@ -78,6 +78,14 @@ export interface PatternInfo {
   shortExplanation: string
 }
 
+/** A lesson's two grammar-podcast bucket paths (storage keys, NOT playable
+ *  URLs — resolve with lessonService.getAudioUrl() at the UI edge). Either may
+ *  be null (a lesson can have one language before the other). */
+export interface LessonPodcastPaths {
+  nl: string | null
+  en: string | null
+}
+
 export interface MorphologySnapshot {
   pairs: MorphologyPairRow[]
   /** Caps that back the affixed pairs, keyed by capability_id. */
@@ -85,7 +93,13 @@ export interface MorphologySnapshot {
   /** vocabulary_src caps for the roots (for the root-known signal). */
   rootCaps: MorphologyCapRow[]
   statesByCapId: Map<string, MorphologyStateRow>
+  /** Non-hidden lessons only (order_index) — see fetchLessons. A root/affix
+   *  whose only caps sit on a hidden system lesson (e.g. the "Common Words"
+   *  bucket, order_index=999) resolves to no entry here, not that lesson's
+   *  order_index. */
   lessonOrderById: Map<string, number>
+  /** ALL lessons (hidden included) keyed by id → its grammar-podcast paths. */
+  lessonPodcastById: Map<string, LessonPodcastPaths>
   activatedLessonIds: ReadonlySet<string>
   patternsById: Map<string, PatternInfo>
   /** Root vocabulary rows keyed by itemSlug(root_text). */
@@ -178,7 +192,7 @@ export async function loadMorphologySnapshot(
   const [
     pairCaps,
     pairStates,
-    lessonOrderById,
+    { lessonOrderById, lessonPodcastById },
     activatedLessonIds,
     patternsById,
     rootItemsBySlug,
@@ -186,7 +200,7 @@ export async function loadMorphologySnapshot(
   ] = await Promise.all([
     fetchCapsById(client, pairCapIds),
     fetchStates(client, userId, pairCapIds),
-    fetchLessonOrder(db),
+    fetchLessons(db),
     listActivatedLessons(userId, client),
     fetchPatterns(client, patternIds),
     fetchRootItems(client, rootSlugs),
@@ -205,6 +219,7 @@ export async function loadMorphologySnapshot(
     rootCaps: rootCapResult,
     statesByCapId,
     lessonOrderById,
+    lessonPodcastById,
     activatedLessonIds,
     patternsById,
     rootItemsBySlug,
@@ -269,12 +284,36 @@ async function fetchStates(
   }))
 }
 
-async function fetchLessonOrder(
+/**
+ * Non-hidden lessons feed lessonOrderById (an affix/root's introducing-lesson
+ * number must never resolve to a hidden system lesson's order_index — the
+ * "Les 999" trap, see MorphologySnapshot doc). ALL lessons (hidden included)
+ * feed lessonPodcastById: the affix rule card resolves its podcast via the
+ * representative cap's own lesson, which is always a real chapter in
+ * practice (verified live 2026-07-10 — no affix's introducing lesson is the
+ * hidden row), so podcast lookup needs no such exclusion.
+ */
+async function fetchLessons(
   db: () => { from(table: string): any },
-): Promise<Map<string, number>> {
-  const { data, error } = await db().from('lessons').select('id, order_index')
+): Promise<{ lessonOrderById: Map<string, number>; lessonPodcastById: Map<string, LessonPodcastPaths> }> {
+  const { data, error } = await db()
+    .from('lessons')
+    .select('id, order_index, is_hidden, audio_path, audio_path_en')
   if (error) throw error
-  return new Map(((data ?? []) as Array<{ id: string; order_index: number }>).map((l) => [l.id, l.order_index]))
+  const rows = (data ?? []) as Array<{
+    id: string
+    order_index: number
+    is_hidden: boolean | null
+    audio_path: string | null
+    audio_path_en: string | null
+  }>
+  const lessonOrderById = new Map<string, number>()
+  const lessonPodcastById = new Map<string, LessonPodcastPaths>()
+  for (const row of rows) {
+    if (row.is_hidden !== true) lessonOrderById.set(row.id, row.order_index)
+    lessonPodcastById.set(row.id, { nl: row.audio_path ?? null, en: row.audio_path_en ?? null })
+  }
+  return { lessonOrderById, lessonPodcastById }
 }
 
 async function fetchPatterns(

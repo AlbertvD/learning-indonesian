@@ -67,8 +67,15 @@ export interface AffixCatalogTile {
 /** One derived form in a word family, status-marked. */
 export interface DerivedForm {
   derivedText: string
-  /** The affix that built it (catalog label). */
+  /** The affix that built it (catalog label). NOT always a catalog member —
+   *  a cross-affix family form can carry an affix with no detail page of its
+   *  own. `affixLinkable` is what distinguishes the two; check it before
+   *  linking anywhere off this value. */
   affix: string
+  /** True when `affix` is an actual AFFIX_CATALOG member with a detail page
+   *  (`affixCatalogEntry(affix) != null`) — gates whether the word-family
+   *  explorer renders this form's affix pill as a cross-affix link. */
+  affixLinkable: boolean
   /** Rule-formed (productive) vs lexicalised "vocab, not rule-formed" (frozen).
    *  Driven by affixed_form_pairs.productive — research open-Q3. */
   productive: boolean
@@ -91,6 +98,13 @@ export interface WordFamily {
    *  Unknown roots are shown but flagged — they gate the produce drills (the hard
    *  block, ADR 0018), which the session engine enforces; the trainer reflects it. */
   rootKnown: boolean
+  /** Lowest introducing-lesson number across the root's vocab caps (mirrors how
+   *  the rule card picks an affix's introducing lesson). Excludes hidden system
+   *  lessons (the adapter's lessonOrderById already does), so a root taught only
+   *  on the hidden "Common Words" bucket resolves to null here, never that
+   *  lesson's order_index. Also null for a genuinely out-of-course root (no
+   *  vocab cap at all). */
+  rootIntroLessonNumber: number | null
   /** Every derived form of the root, across affixes (the "one root → many words"
    *  multiplier), each status-marked. */
   forms: DerivedForm[]
@@ -113,6 +127,12 @@ export interface AffixRuleSource {
   patternSlug: string | null
   patternName: string | null
   patternExplanation: string | null
+  /** The introducing lesson's raw grammar-podcast bucket paths (storage keys,
+   *  NOT playable URLs) — null when the lesson or that language's episode is
+   *  absent. Resolve to a URL via lessonService.getAudioUrl() at the UI edge
+   *  (RuleCard.tsx); the pure layer has no storage client. */
+  podcastNl: string | null
+  podcastEn: string | null
 }
 
 /** The full affix-detail view: rule card + word-family explorer + practice launch. */

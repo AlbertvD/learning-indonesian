@@ -64,12 +64,28 @@ function formsForRoot(snapshot: MorphologySnapshot, rootText: string, language: 
     .map(([derivedText, e]) => ({
       derivedText,
       affix: e.affix,
+      affixLinkable: affixCatalogEntry(e.affix) != null,
       productive: e.productive,
       label: weakestLabel(e.caps.map((cap) => labelForCapability(buildEvidence(cap, snapshot), now))),
       carrierText: e.carrierText,
       derivedMeaning: e.derivedMeaning,
     }))
     .sort((a, b) => a.derivedText.localeCompare(b.derivedText))
+}
+
+/** Lowest introducing-lesson number across the root's vocab caps — mirrors how
+ *  buildAffixDetail picks an affix's introducing lesson (lowest lessonOrderById
+ *  across candidate caps). A cap whose lesson isn't in lessonOrderById (hidden,
+ *  per the adapter's exclusion) contributes no order; null when none resolve —
+ *  covers both a genuinely out-of-course root (no cap at all) and a root taught
+ *  only on the hidden "Common Words" lesson (the Les-999 trap). */
+function rootIntroLessonNumber(snapshot: MorphologySnapshot, rootText: string): number | null {
+  const sourceRef = `learning_items/${itemSlug(rootText)}`
+  const orders = snapshot.rootCaps
+    .filter((cap) => cap.sourceRef === sourceRef)
+    .map((cap) => (cap.lessonId ? snapshot.lessonOrderById.get(cap.lessonId) : undefined))
+    .filter((order): order is number => order != null)
+  return orders.length > 0 ? Math.min(...orders) : null
 }
 
 /** Word families for an affix's detail page: every root that has a pair under
@@ -87,6 +103,7 @@ export function buildWordFamiliesForAffix(
       rootText,
       rootMeaning: rootMeaning(snapshot, rootText, language),
       rootKnown: isRootKnown(snapshot, rootText, now),
+      rootIntroLessonNumber: rootIntroLessonNumber(snapshot, rootText),
       forms: formsForRoot(snapshot, rootText, language, now),
     }))
 }
@@ -160,6 +177,8 @@ export function buildAffixDetail(
       patternSlug: pattern?.slug ?? null,
       patternName: pattern?.name ?? null,
       patternExplanation: pattern?.shortExplanation ?? null,
+      podcastNl: repCap?.lessonId ? snapshot.lessonPodcastById.get(repCap.lessonId)?.nl ?? null : null,
+      podcastEn: repCap?.lessonId ? snapshot.lessonPodcastById.get(repCap.lessonId)?.en ?? null : null,
     },
     examples,
     families: buildWordFamiliesForAffix(snapshot, affix, language, now),
