@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { buildAffixCatalog, rollUpProgress } from '../catalog'
-import { buildAffixDetail } from '../family'
+import { buildAffixDetail, buildWordFamiliesForAffix } from '../family'
 import { affixPracticePath, affixScopeFromSnapshot, AFFIX_SESSION_MODE } from '../practice'
 import type {
   MorphologyCapRow,
@@ -19,6 +19,11 @@ const L7 = 'lesson-7-id'
 const L9 = 'lesson-9-id'
 const L13 = 'lesson-13-id'
 const L20 = 'lesson-20-id'
+// The hidden "Common Words" lesson (order_index=999) — deliberately absent
+// from lessonOrderById below (the adapter excludes hidden rows), so a root
+// whose only vocab cap sits here must resolve rootIntroLessonNumber to null,
+// not 999 (the Les-999 trap).
+const L_HIDDEN = 'lesson-hidden-id'
 
 function cap(overrides: Partial<MorphologyCapRow> & { id: string; sourceRef: string }): MorphologyCapRow {
   return {
@@ -80,12 +85,17 @@ function evidence(
 }
 
 // meN- (ajar→mengajar mastered L9, tulis→menulis introduced L13),
-// ber- (ajar→belajar L7), peN- (ajar→pengajar L20, unavailable).
+// ber- (ajar→belajar L7, aman→beraman out-of-course, makan→bermakan on the
+// hidden lesson only), peN- (ajar→pengajar L20, unavailable).
+// aman/makan are ber- roots (not meN-) so the new rootIntroLessonNumber
+// fixtures don't shift meN-'s existing derivation-count assertions below.
 function fixture(): MorphologySnapshot {
   const pairs: MorphologyPairRow[] = [
     pair({ capabilityId: 'cap-men-ajar', rootText: 'ajar', derivedText: 'mengajar', affix: 'meN-', allomorphRule: 'ajar → mengajar (ng-)', carrierText: 'Saya mengajar di sekolah.', derivedGlossNl: 'lesgeven', derivedGlossEn: 'to teach', grammarPatternId: 'pat-men' }),
     pair({ capabilityId: 'cap-men-tulis', rootText: 'tulis', derivedText: 'menulis', affix: 'meN-', allomorphRule: 'tulis → menulis (n-)', grammarPatternId: 'pat-men' }),
     pair({ capabilityId: 'cap-ber-ajar', rootText: 'ajar', derivedText: 'belajar', affix: 'ber-', productive: true }),
+    pair({ capabilityId: 'cap-ber-aman', rootText: 'aman', derivedText: 'beraman', affix: 'ber-' }),
+    pair({ capabilityId: 'cap-ber-makan', rootText: 'makan', derivedText: 'bermakan', affix: 'ber-' }),
     pair({ capabilityId: 'cap-pen-ajar', rootText: 'ajar', derivedText: 'pengajar', affix: 'peN-', productive: false }),
     // a null-affix projection row — must be excluded defensively everywhere.
     pair({ capabilityId: 'cap-null', rootText: 'ajar', derivedText: 'mengajarkan', affix: null as unknown as string }),
@@ -94,10 +104,18 @@ function fixture(): MorphologySnapshot {
     cap({ id: 'cap-men-ajar', sourceRef: 'affixed_form_pairs/men-ajar', lessonId: L9 }),
     cap({ id: 'cap-men-tulis', sourceRef: 'affixed_form_pairs/men-tulis', lessonId: L13 }),
     cap({ id: 'cap-ber-ajar', sourceRef: 'affixed_form_pairs/ber-ajar', lessonId: L7 }),
+    cap({ id: 'cap-ber-aman', sourceRef: 'affixed_form_pairs/ber-aman', lessonId: L7 }),
+    cap({ id: 'cap-ber-makan', sourceRef: 'affixed_form_pairs/ber-makan', lessonId: L7 }),
     cap({ id: 'cap-pen-ajar', sourceRef: 'affixed_form_pairs/pen-ajar', lessonId: L20 }),
     cap({ id: 'cap-null', sourceRef: 'affixed_form_pairs/null', lessonId: L9 }),
-    // root vocab cap for ajar — mastered → ajar is a known root.
+    // root vocab cap for ajar — mastered → ajar is a known root, introducing lesson L9.
     cap({ id: 'cap-root-ajar', sourceRef: 'learning_items/ajar', sourceKind: 'vocabulary_src', capabilityType: 'recognise_meaning_from_text_cap', lessonId: L9 }),
+    // root vocab cap for tulis — NOT mastered (no state below) → known-but-unlearned, introducing lesson L13.
+    cap({ id: 'cap-root-tulis', sourceRef: 'learning_items/tulis', sourceKind: 'vocabulary_src', capabilityType: 'recognise_meaning_from_text_cap', lessonId: L13 }),
+    // root vocab cap for makan — ONLY on the hidden lesson. L_HIDDEN is deliberately
+    // absent from lessonOrderById (mirrors the adapter's hidden-row exclusion).
+    cap({ id: 'cap-root-makan', sourceRef: 'learning_items/makan', sourceKind: 'vocabulary_src', capabilityType: 'recognise_meaning_from_text_cap', lessonId: L_HIDDEN }),
+    // 'aman' has NO vocab cap at all — genuinely out-of-course.
   ]
   return {
     pairs,
@@ -108,11 +126,16 @@ function fixture(): MorphologySnapshot {
       ['cap-root-ajar', masteredState('cap-root-ajar')],
     ]),
     lessonOrderById: new Map([[L7, 7], [L9, 9], [L13, 13], [L20, 20]]),
+    lessonPodcastById: new Map([
+      [L9, { nl: 'lessons/9/grammar-nl.mp3', en: 'lessons/9/grammar-en.mp3' }],
+      [L13, { nl: null, en: null }],
+    ]),
     activatedLessonIds: new Set([L7, L9, L13]),
     patternsById: new Map([['pat-men', { slug: 'l9-men', name: 'Het voorvoegsel meN-', shortExplanation: 'Vormt actieve werkwoorden.' }]]),
     rootItemsBySlug: new Map([
       ['ajar', { normalizedText: 'ajar', baseText: 'ajar', meaningNl: 'onderwijzen', meaningEn: 'to teach' }],
       ['tulis', { normalizedText: 'tulis', baseText: 'tulis', meaningNl: 'schrijven', meaningEn: 'to write' }],
+      ['makan', { normalizedText: 'makan', baseText: 'makan', meaningNl: 'eten', meaningEn: 'to eat' }],
     ]),
   }
 }
@@ -239,6 +262,20 @@ describe('buildAffixDetail', () => {
     expect(detail.cefrLevel).toBe('A2')
   })
 
+  it('resolves the introducing lesson\'s raw grammar-podcast paths onto rule.podcastNl/En (Change 2)', () => {
+    // meN-'s representative cap is on L9, which carries both paths in the fixture.
+    const detail = buildAffixDetail(fixture(), 'meN-', 'nl', now)!
+    expect(detail.rule.podcastNl).toBe('lessons/9/grammar-nl.mp3')
+    expect(detail.rule.podcastEn).toBe('lessons/9/grammar-en.mp3')
+  })
+
+  it('resolves podcastNl/En to null when the introducing lesson has no podcast', () => {
+    // peN-'s only cap is on L20, absent from lessonPodcastById entirely.
+    const detail = buildAffixDetail(fixture(), 'peN-', 'nl', now)!
+    expect(detail.rule.podcastNl).toBeNull()
+    expect(detail.rule.podcastEn).toBeNull()
+  })
+
   it('explores full cross-affix families, status-marked, with productive flags', () => {
     const detail = buildAffixDetail(fixture(), 'meN-', 'nl', now)!
     const ajar = detail.families.find(f => f.rootText === 'ajar')!
@@ -320,6 +357,31 @@ describe('buildAffixDetail', () => {
     const derived = buildAffixDetail(snap, 'meN-', 'nl', now)!.examples.map(e => e.derivedText)
     expect(derived.filter(d => d === 'mengajar')).toHaveLength(1)
     expect(new Set(derived).size).toBe(derived.length)
+  })
+})
+
+describe('buildWordFamiliesForAffix — rootIntroLessonNumber (Change 3)', () => {
+  it('sets the lowest introducing-lesson number for a known-but-unlearned root', () => {
+    // tulis has a vocab cap on L13 (order 13) but no mastered state.
+    const families = buildWordFamiliesForAffix(fixture(), 'meN-', 'nl', now)
+    const tulis = families.find(f => f.rootText === 'tulis')!
+    expect(tulis.rootKnown).toBe(false)
+    expect(tulis.rootIntroLessonNumber).toBe(13)
+  })
+
+  it('is null for a genuinely out-of-course root with no vocab cap at all', () => {
+    const families = buildWordFamiliesForAffix(fixture(), 'ber-', 'nl', now)
+    const aman = families.find(f => f.rootText === 'aman')!
+    expect(aman.rootIntroLessonNumber).toBeNull()
+  })
+
+  it('is null (never the hidden lesson\'s order_index) for a root whose only vocab cap sits on a hidden lesson — the Les-999 trap', () => {
+    // makan's only rootCaps entry is on L_HIDDEN, which lessonOrderById never
+    // carries (mirrors the adapter excluding is_hidden rows) — must not fall
+    // back to that lesson's order_index.
+    const families = buildWordFamiliesForAffix(fixture(), 'ber-', 'nl', now)
+    const makan = families.find(f => f.rootText === 'makan')!
+    expect(makan.rootIntroLessonNumber).toBeNull()
   })
 })
 

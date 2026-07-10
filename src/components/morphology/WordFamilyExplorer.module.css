@@ -140,3 +140,17 @@
   border-color: var(--accent-primary);
   color: var(--text-on-accent);
 }
+
+/* Cross-affix link pill (Change 4) — a non-current, catalog-linkable affix's
+   form hops to that affix's own detail page. Token-driven hover affordance
+   only; shape/nowrap/no-shrink stay inherited from .affixPill. */
+.affixPillLink {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.affixPillLink:hover {
+  background: color-mix(in srgb, var(--accent-primary) 14%, transparent);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}

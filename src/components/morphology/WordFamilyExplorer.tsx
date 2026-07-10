@@ -9,6 +9,7 @@
 // pattern of a token-only co-located CSS module instead of Mantine's <Card>.
 
 import { Stack, Group, Text, Tooltip } from '@mantine/core'
+import { Link } from 'react-router-dom'
 import { IconAlertTriangle, IconAbc } from '@tabler/icons-react'
 import { EmptyState, StatusPill } from '@/components/page/primitives'
 import { cx } from '@/components/page/primitives/cx'
@@ -52,7 +53,11 @@ export function WordFamilyExplorer({
                   {!family.rootKnown && (
                     <Group gap={4} mt={2}>
                       <IconAlertTriangle size={13} color="var(--warning)" />
-                      <Text size="xs" className={classes.rootUnknown}>{T.morphology.rootUnknown}</Text>
+                      <Text size="xs" className={classes.rootUnknown}>
+                        {T.morphology.rootUnknown}
+                        {family.rootIntroLessonNumber != null &&
+                          ` \u00b7 ${T.morphology.rootIntroLesson} ${family.rootIntroLessonNumber}`}
+                      </Text>
                     </Group>
                   )}
                 </div>
@@ -73,7 +78,16 @@ export function WordFamilyExplorer({
                       <div className={classes.formContent}>
                         <div className={classes.formHead}>
                           <span className={cx(classes.formWord, isCurrent && classes.formWordCurrent)}>{form.derivedText}</span>
-                          <span className={cx(classes.affixPill, isCurrent && classes.affixPillCurrent)}>{form.affix}</span>
+                          {form.affixLinkable && !isCurrent ? (
+                            <Link
+                              to={`/morphology?affix=${encodeURIComponent(form.affix)}`}
+                              className={cx(classes.affixPill, classes.affixPillLink)}
+                            >
+                              {form.affix}
+                            </Link>
+                          ) : (
+                            <span className={cx(classes.affixPill, isCurrent && classes.affixPillCurrent)}>{form.affix}</span>
+                          )}
                         </div>
                         {(form.derivedMeaning || !form.productive) && (
                           <div className={classes.formSub}>
