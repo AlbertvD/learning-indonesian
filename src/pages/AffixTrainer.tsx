@@ -5,11 +5,11 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Alert, Text } from '@mantine/core'
+import { Alert } from '@mantine/core'
 import { IconAlertCircle, IconAbc, IconSearchOff } from '@tabler/icons-react'
 import { PageContainer, PageBody, PageHeader, LoadingState, EmptyState } from '@/components/page/primitives'
 import { LerenNav } from '@/components/lessons/LerenNav'
-import { AffixCatalogGrid, AffixDetailView } from '@/components/morphology'
+import { AffixCatalogGrid, AffixDetailView, AffixIntro } from '@/components/morphology'
 import { getAffixCatalog, getAffixDetail, type AffixCatalogTile, type AffixDetail } from '@/lib/morphology'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { useAuthStore } from '@/stores/authStore'
@@ -83,8 +83,10 @@ export function AffixTrainer() {
             so LerenNav (whose mobile form shows a "terug naar leren" link) would
             be a redundant second back affordance there. */}
         {!affix && <LerenNav />}
-        {!affix && <PageHeader title={T.morphology.title} subtitle={T.morphology.subtitle} />}
-        {!affix && <Text size="sm" c="dimmed" mt="xs">{T.morphology.intro}</Text>}
+        {/* Title only: the richer AffixIntro below now carries the framing, so the
+            PageHeader subtitle would say the same thing twice. */}
+        {!affix && <PageHeader title={T.morphology.title} />}
+        {!affix && <AffixIntro />}
 
         {loading && <LoadingState caption={T.morphology.title} />}
 

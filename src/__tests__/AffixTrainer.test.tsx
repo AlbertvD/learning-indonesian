@@ -90,8 +90,10 @@ describe('AffixTrainer page', () => {
     expect(link).toHaveAttribute('href', '/morphology?affix=meN-')
     // catalog grid view never fetches audio — it's per-detail only.
     expect(audioService.fetchSessionAudioMap).not.toHaveBeenCalled()
-    // Change 1: the intro lead paragraph explaining what affixes are.
-    expect(screen.getByText(/word-building blocks/i)).toBeInTheDocument()
+    // Change 1: the AffixIntro hero — the live root+affix→derived composition
+    // (aria-hidden art) plus the display-serif heading framing the mechanic.
+    expect(screen.getByText('berjalan')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /how indonesian words are built/i })).toBeInTheDocument()
   })
 
   it('shows the empty state when no affixes exist yet', async () => {

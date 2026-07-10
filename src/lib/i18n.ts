@@ -77,7 +77,10 @@ export const nl = {
   morphology: {
     title: 'Affix-trainer',
     subtitle: 'Leer Indonesische voor- en achtervoegsels — één affix tegelijk, op volgorde.',
-    intro: 'Affixen zijn de bouwstenen van het Indonesisch: voorvoegsels, achtervoegsels, confixen (voor- én achtervoegsel samen) en verdubbeling. Stam + affix vormt een nieuw woord met een voorspelbare betekenisverschuiving — leer je ber-, dan snap je meteen wat berlari, berjalan en bermain betekenen. Deze trainer groepeert per affix de hele woordfamilie, zodat je hem echt onder de knie krijgt: eerst herkennen, dan zelf produceren, met spreiding over tijd.',
+    introRootGloss: 'weg',
+    introDerivedGloss: 'lopen',
+    introHeading: 'Zo bouw je Indonesische woorden',
+    introBody: 'Een stam plus een affix maakt een nieuw woord — met een voorspelbare betekenisverschuiving. De trainer oefent per affix de hele woordfamilie: eerst herkennen, dan zelf vormen, verspreid over tijd.',
     back: 'Terug naar alle affixen',
     locked: 'Vergrendeld',
     available: 'Beschikbaar',
@@ -788,7 +791,10 @@ export const en: typeof nl = {
   morphology: {
     title: 'Affix Trainer',
     subtitle: 'Learn Indonesian prefixes and suffixes — one affix at a time, in order.',
-    intro: "Affixes are Indonesian's word-building blocks: prefixes, suffixes, confixes (a prefix and suffix together), and reduplication. Root + affix makes a new word with a predictable shift in meaning — learn ber-, and you instantly understand berlari, berjalan and bermain. This trainer groups each affix's whole word family together, so you master it properly: recognise it first, then produce it yourself, spaced out over time.",
+    introRootGloss: 'road',
+    introDerivedGloss: 'to walk',
+    introHeading: 'How Indonesian words are built',
+    introBody: "A root plus an affix makes a new word — with a predictable shift in meaning. The trainer drills each affix's whole word family: recognise it first, then form it yourself, spaced out over time.",
     back: 'Back to all affixes',
     locked: 'Locked',
     available: 'Available',
