@@ -2578,20 +2578,23 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         )
         const seededFormalIds = new Set(variants.map((v) => v.learning_item_id))
         const missingCount = [...liveFormalIds].filter((id) => !seededFormalIds.has(id)).length
+        // Rollout-started signal: any register='informal' learning_items row.
+        // Pre-rollout, missing variants are the app's long-standing status quo
+        // (§7's promise only bites once informal items are schedulable) — and
+        // "no seeded variants at all" is NOT a usable signal here, because a
+        // handful of formal twins carry PRE-EXISTING variant_type='informal'
+        // rows from before this program (1 of 67 at first live run). From the
+        // first woven item onward, full coverage is enforced — the seed (§9
+        // step 5) must land before or with the weave (§9 step 4).
+        const rolloutStarted = (await fetchInformalItems()).length > 0
         if (missingCount === 0) {
           pass(`${HC45} (${liveFormalIds.size} live formal twin(s) checked)`)
-        } else if (seededFormalIds.size === 0) {
-          // Zero-state tolerance: the variant seed (§9 step 5) has not run AT
-          // ALL — a legitimate interim state between the artifact landing and
-          // the rollout wave. Only a PARTIAL seed (some twins seeded, others
-          // not) is a defect. Without this branch, make migrate / make
-          // pre-deploy stay red for the whole artifact→rollout window,
-          // blocking every unrelated merge.
-          pass(`${HC45} — NOT-YET-SEEDED (§9 step 5 pending; ${liveFormalIds.size} twin(s) enforced once the first informal variant lands)`)
+        } else if (!rolloutStarted) {
+          pass(`${HC45} — SEED PENDING (§9 step 5; ${missingCount}/${liveFormalIds.size} twin(s) unseeded, enforced once the first register='informal' item lands)`)
         } else {
           fail(
             HC45,
-            `${missingCount} of ${liveFormalIds.size} live formal twin(s) have no informal item_answer_variants row (PARTIAL seed). ` +
+            `${missingCount} of ${liveFormalIds.size} live formal twin(s) have no informal item_answer_variants row. ` +
             'Run: bun scripts/enrich-answer-variants.ts --apply (spec §7).',
           )
         }
