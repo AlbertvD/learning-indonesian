@@ -1,6 +1,11 @@
 ---
-status: approved
+status: shipped
 reviewed_by: [staff-engineer, architect]
+implementation: PR #430
+merged_at: 2026-07-10
+implementation_paths:
+  - src/components/morphology/
+  - src/components/page/primitives/SettingsCard.tsx
 supersedes: []
 ---
 
