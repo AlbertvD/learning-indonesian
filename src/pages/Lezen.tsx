@@ -1,6 +1,6 @@
 // src/pages/Lezen.tsx
 import { useEffect, useState } from 'react'
-import { Badge } from '@mantine/core'
+import { Badge, SimpleGrid } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import {
   PageContainer,
@@ -64,21 +64,23 @@ export function Lezen() {
     <PageContainer size="lg">
       <PageBody>
         <OntdekNav />
-        <PageHeader title={T.reading.title} />
+        <PageHeader title={T.reading.title} subtitle={T.ontdek.readerDesc} />
         {stories.length === 0 ? (
           <EmptyState icon={<IconBook2 size={48} />} message={T.reading.noStories} />
         ) : (
-          stories.map((story) => (
-            <ListCard
-              key={story.id}
-              tone="rail"
-              to={`/lezen/${story.id}`}
-              icon={<IconBook2 size={20} />}
-              title={story.title}
-              subtitle={story.description ?? undefined}
-              trailing={story.level ? <Badge variant="light">{story.level}</Badge> : undefined}
-            />
-          ))
+          <SimpleGrid cols={{ base: 1 }} spacing="sm" mt="md">
+            {stories.map((story) => (
+              <ListCard
+                key={story.id}
+                tone="rail"
+                to={`/lezen/${story.id}`}
+                icon={<IconBook2 size={20} />}
+                title={story.title}
+                subtitle={story.description ?? undefined}
+                meta={story.level ? <Badge variant="light">{story.level}</Badge> : undefined}
+              />
+            ))}
+          </SimpleGrid>
         )}
       </PageBody>
     </PageContainer>

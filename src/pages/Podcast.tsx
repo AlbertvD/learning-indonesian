@@ -1,8 +1,8 @@
 // src/pages/Podcast.tsx
 import { useEffect, useRef, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { Text, Button, Paper, Group, Stack, Tabs, Anchor } from '@mantine/core'
-import { IconChevronLeft, IconMicrophone } from '@tabler/icons-react'
+import { useParams } from 'react-router-dom'
+import { Text, Paper, Group, Stack, Tabs, Anchor } from '@mantine/core'
+import { IconMicrophone } from '@tabler/icons-react'
 import {
   PageContainer,
   PageBody,
@@ -10,6 +10,7 @@ import {
   LoadingState,
   EmptyState,
 } from '@/components/page/primitives'
+import { BackLink } from '@/components/nav/BackLink'
 import { textService, type Podcast, type TranscriptSegment } from '@/services/textService'
 import { findActiveWord, type ActiveWord } from '@/lib/followAlong'
 import { useAuthStore } from '@/stores/authStore'
@@ -90,7 +91,6 @@ export function FollowAlongTranscript({
 
 export function Podcast() {
   const { podcastId } = useParams<{ podcastId: string }>()
-  const navigate = useNavigate()
   const T = useT()
   const user = useAuthStore((state) => state.user)
   const lang = useAuthStore((state) => state.profile?.language ?? 'nl')
@@ -163,19 +163,10 @@ export function Podcast() {
   return (
     <PageContainer size="md">
       <PageBody>
+        <BackLink to="/podcasts" label={T.podcast.backToList} />
         <PageHeader
           title={podcast.title}
           subtitle={podcast.description ?? undefined}
-          action={(
-            <Button
-              variant="subtle"
-              color="gray"
-              leftSection={<IconChevronLeft size={16} />}
-              onClick={() => navigate('/podcasts')}
-            >
-              {T.podcast.backToList}
-            </Button>
-          )}
         />
 
         <Paper withBorder p="xl" radius="md">
