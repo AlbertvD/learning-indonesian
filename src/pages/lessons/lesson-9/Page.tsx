@@ -458,7 +458,7 @@ function IntensifierGrammar({ section }: { section: typeof sections[number] }) {
 // to keep the grid readable, mapping the items by content rather than data
 // order. Items that don't match a zone slip into "andere".
 
-type Item = { indonesian: string; dutch: string; audioUrl?: string }
+type Item = { indonesian: string; dutch: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 
 const HEAD_NL = new Set([
   'lichaam', 'hoofd', 'hoofdhaar', 'lichaamshaar', 'oog', 'mond', 'kin', 'keel',
@@ -505,6 +505,7 @@ function BodyAtlas({ section }: { section: typeof sections[number] }) {
                 <div key={i} className={classes.bodyEntry}>
                   <PlayButton src={item.audioUrl} />
                   <span className={classes.bodyId}>{item.indonesian}</span>
+                  {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
                   <span className={classes.bodyNl}>{item.dutch}</span>
                 </div>
               ))}
@@ -557,6 +558,7 @@ function SymptomsRemedies({ section }: { section: typeof sections[number] }) {
               <div key={i} className={classes.clinicEntry} data-side="symptom">
                 <div className={classes.clinicIdRow}>
                   <span className={classes.clinicId}>{item.indonesian}</span>
+                  {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
                   <PlayButton src={item.audioUrl} />
                 </div>
                 <span className={classes.clinicNl}>{item.dutch}</span>
@@ -574,6 +576,7 @@ function SymptomsRemedies({ section }: { section: typeof sections[number] }) {
               <div key={i} className={classes.clinicEntry} data-side="remedy">
                 <div className={classes.clinicIdRow}>
                   <span className={classes.clinicId}>{item.indonesian}</span>
+                  {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
                   <PlayButton src={item.audioUrl} />
                 </div>
                 <span className={classes.clinicNl}>{item.dutch}</span>
@@ -606,6 +609,7 @@ function GeneralVocab({ section }: { section: typeof sections[number] }) {
           <div key={i} className={classes.vocabEntry}>
             <PlayButton src={item.audioUrl} />
             <div className={classes.vocabId}>{item.indonesian}</div>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <div className={classes.vocabNl}>{item.dutch}</div>
           </div>
         ))}
@@ -628,6 +632,7 @@ function ExpressionsRow({ section }: { section: typeof sections[number] }) {
           <article key={i} className={classes.expressionCard}>
             <div className={classes.expressionIdRow}>
               <span className={classes.expressionId}>{item.indonesian}</span>
+              {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
               <PlayButton src={item.audioUrl} />
             </div>
             <span className={classes.expressionNl}>{item.dutch}</span>

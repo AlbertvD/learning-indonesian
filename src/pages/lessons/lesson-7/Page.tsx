@@ -479,7 +479,7 @@ function TimeGrammar({ section }: { section: typeof sections[number] }) {
 
 // ─── Section: Vocabulary — packing-list framed ─────────────────────────────
 
-type Item = { dutch: string; indonesian: string; audioUrl?: string }
+type Item = { dutch: string; indonesian: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 
 function VocabularyPackingList({ section }: { section: typeof sections[number] }) {
   const c = section.content as { items: Item[] }
@@ -498,6 +498,7 @@ function VocabularyPackingList({ section }: { section: typeof sections[number] }
           <div key={i} className={classes.vocabEntry}>
             <PlayButton src={item.audioUrl} />
             <div className={classes.vocabId}>{item.indonesian}</div>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <div className={classes.vocabNl}>{item.dutch}</div>
           </div>
         ))}

@@ -366,7 +366,7 @@ function ParticleLexicon({ section }: { section: typeof sections[number] }) {
 
 // ─── Section: Vocabulary — dense reference grid ───────────────────────────
 
-type Item = { indonesian: string; dutch: string; audioUrl?: string }
+type Item = { indonesian: string; dutch: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 
 function VocabularyGrid({ section }: { section: typeof sections[number] }) {
   const c = section.content as { items: Item[] }
@@ -386,6 +386,7 @@ function VocabularyGrid({ section }: { section: typeof sections[number] }) {
           <div key={i} className={classes.vocabEntry}>
             <PlayButton src={item.audioUrl} />
             <div className={classes.vocabId}>{item.indonesian}</div>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <div className={classes.vocabNl}>{item.dutch}</div>
           </div>
         ))}
@@ -408,6 +409,7 @@ function ExpressionsRow({ section }: { section: typeof sections[number] }) {
           <article key={i} className={classes.expressionCard}>
             <div className={classes.expressionIdRow}>
               <span className={classes.expressionId}>{item.indonesian}</span>
+              {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
               <PlayButton src={item.audioUrl} />
             </div>
             <span className={classes.expressionNl}>{item.dutch}</span>
