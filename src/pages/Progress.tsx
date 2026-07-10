@@ -3,7 +3,7 @@
 // Voortgang — the learner's "reflect" surface, on the Leren/Ontdek hub shape
 // (voortgang-hub-redesign, docs/plans/2026-07-09-voortgang-hub-redesign.md): a
 // single /progress route, hub-vs-detail switched by `?tab=`. Mobile with no
-// (or an unknown) tab shows the hub — five ListCard launchers, each with a
+// (or an unknown) tab shows the hub — four ListCard launchers, each with a
 // live-summary subtitle derived from the same readers the detail panels
 // already use. A known `?tab=` shows that detail with the shared ProgressNav
 // switcher. Desktop always lands on a detail (Woordenschat by default) with
@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useMediaQuery } from '@mantine/hooks'
 import { SimpleGrid } from '@mantine/core'
-import { IconBook, IconLanguage, IconPuzzle, IconTarget, IconFlame } from '@tabler/icons-react'
+import { IconBook, IconLanguage, IconPuzzle, IconFlame } from '@tabler/icons-react'
 import { PageContainer, PageBody, PageHeader, ListCard } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
@@ -30,8 +30,8 @@ import { GrowthCurveCard } from '@/components/progress/GrowthCurveCard'
 import { DurabilityCard } from '@/components/progress/DurabilityCard'
 import classes from './Progress.module.css'
 
-type Tab = 'woorden' | 'grammar' | 'morfologie' | 'skills' | 'time'
-const TABS: Tab[] = ['woorden', 'grammar', 'morfologie', 'skills', 'time']
+type Tab = 'woorden' | 'grammar' | 'morfologie' | 'time'
+const TABS: Tab[] = ['woorden', 'grammar', 'morfologie', 'time']
 
 interface HubSummaries {
   vocabUsable: number | null
@@ -41,7 +41,7 @@ interface HubSummaries {
   minutesThisWeek: number | null
 }
 
-// One guarded fetch for the hub's five live-summary subtitles: two readers
+// One guarded fetch for the hub's four live-summary subtitles: two readers
 // (the all-lessons funnel, practice time), each individually caught so one
 // failing degrades only its own card's subtitle to "no subtitle" rather than
 // losing the hub or surfacing a blocking notification (mirrors the retired
@@ -84,7 +84,6 @@ export function Progress() {
     woorden: T.progress.tabWoordenschat,
     grammar: T.progress.tabGrammar,
     morfologie: T.progress.tabMorphology,
-    skills: T.progress.tabSkills,
     time: T.progress.tabTime,
   }
 
@@ -142,14 +141,6 @@ export function Progress() {
             />
             <ListCard
               feature
-              tone="rail"
-              to="/progress?tab=skills"
-              icon={<IconTarget size={25} stroke={1.7} />}
-              title={T.progress.tabSkills}
-              subtitle={T.progress.hubVaardighedenSummary}
-            />
-            <ListCard
-              feature
               tone="gold"
               to="/progress?tab=time"
               icon={<IconFlame size={25} stroke={1.7} />}
@@ -178,6 +169,7 @@ export function Progress() {
           {activeTab === 'woorden' && (
             <div className={classes.sections}>
               <VocabMasteryPanel userId={user.id} />
+              <SkillModeGapsCard userId={user.id} />
               <GrowthCurveCard userId={user.id} bucket="vocabulary" unitLabel={T.progress.unitWords} />
             </div>
           )}
@@ -206,7 +198,6 @@ export function Progress() {
               <GrowthCurveCard userId={user.id} bucket="morphology" unitLabel={T.progress.morphologyUnitAffixes} />
             </div>
           )}
-          {activeTab === 'skills' && <SkillModeGapsCard userId={user.id} />}
           {activeTab === 'time' && (
             <div className={classes.sections}>
               <TimeComparisonCard userId={user.id} timezone={timezone} />
