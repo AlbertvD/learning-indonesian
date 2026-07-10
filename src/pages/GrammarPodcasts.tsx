@@ -9,7 +9,7 @@
 // learner never hears the English twin, and vice versa. Players use
 // preload="none", so only the episode a learner actually presses is fetched.
 import { useEffect, useState } from 'react'
-import { Text, SimpleGrid } from '@mantine/core'
+import { SimpleGrid } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconLanguage } from '@tabler/icons-react'
 import {
@@ -18,6 +18,7 @@ import {
   PageHeader,
   LoadingState,
   EmptyState,
+  MediaPlayerCard,
 } from '@/components/page/primitives'
 import { OntdekNav } from '@/components/nav/OntdekNav'
 import { lessonService, type GrammarPodcastRow } from '@/services/lessonService'
@@ -25,7 +26,6 @@ import { GRAMMAR_TOPIC_SUMMARIES } from '@/lib/lessons/grammarTopicSummaries'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
-import classes from './GrammarPodcasts.module.css'
 
 export function GrammarPodcasts() {
   const T = useT()
@@ -76,22 +76,19 @@ export function GrammarPodcasts() {
         ) : (
           <SimpleGrid cols={{ base: 1 }} spacing="sm" mt="md">
             {episodes.map((e) => (
-              <div key={e.order} className={classes.card}>
-                <div className={classes.head}>
-                  <div className={classes.medallion}>{String(e.order).padStart(2, '0')}</div>
-                  <div>
-                    <Text fw={600}>{T.ontdek.grammarLesson.replace('{n}', String(e.order))}</Text>
-                    {e.summary && <Text size="sm" c="dimmed">{e.summary}</Text>}
-                  </div>
-                </div>
+              <MediaPlayerCard
+                key={e.order}
+                medallion={String(e.order).padStart(2, '0')}
+                title={T.ontdek.grammarLesson.replace('{n}', String(e.order))}
+                subtitle={e.summary || undefined}
+              >
                 <audio
                   controls
                   preload="none"
                   src={lessonService.getAudioUrl(e.path)}
-                  className={classes.player}
                   data-testid="grammar-podcast-player"
                 />
-              </div>
+              </MediaPlayerCard>
             ))}
           </SimpleGrid>
         )}

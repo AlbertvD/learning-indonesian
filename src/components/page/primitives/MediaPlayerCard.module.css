@@ -1,0 +1,52 @@
+/* MediaPlayerCard — inline-media row card chrome. Lifted verbatim from the
+   grammar-podcast row's bespoke module at extraction time; every value is a
+   framework token. No @container / @media / @layer / !important. */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.medallion {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--teal-subtle);
+  color: var(--teal);
+  font-weight: var(--fw-semibold);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.playerSlot {
+  width: 100%;
+}
+
+.playerSlot audio {
+  width: 100%;
+  display: block;
+}
