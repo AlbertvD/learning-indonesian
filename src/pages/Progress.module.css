@@ -1,24 +1,6 @@
-/* Progress.module.css — voortgang: a tabbed analytics surface (minimal scroll). */
+/* Progress.module.css — voortgang: hub-vs-detail on one route (?tab=). */
 
-/* Horizontally scrollable so the tab strip never clips a tab, regardless of how
-   many there are or how long the labels get (the fullWidth pill used to cram all
-   tabs into the container and hide the overflowing ones past its rounded edge). */
-.tabs {
-  margin: 0.25rem 0 1.25rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-  /* Five tabs don't fit a phone's width, so the strip scrolls. Fade the right
-     edge (the conventional scrollable-tabs affordance) so the last tabs read as
-     "scroll for more" instead of a tab clipped mid-word. */
-  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
-          mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
-}
-
-.tabs::-webkit-scrollbar {
-  display: none;
-}
-
-/* the active view fades+slides in; keyed by tab so it replays on switch */
+/* the active detail fades+slides in; keyed by tab so it replays on switch */
 .view {
   animation: viewIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -32,8 +14,8 @@
   .view { animation: none; }
 }
 
-/* A content tab's sections stacked vertically: the current-state funnel, then
-   the growth-over-time curve for the same bucket (Tijd pairs time comparison +
+/* A detail's sections stacked vertically: the current-state funnel, then the
+   growth-over-time curve for the same bucket (Tijd pairs time comparison +
    durability). Vertical because each section is full-width. */
 .sections {
   display: flex;

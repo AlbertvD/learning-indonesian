@@ -38,7 +38,7 @@ Located at `src/components/page/primitives/`. 14 primitives, each with its own C
 | Leaderboard | ✅ on framework | 2026-05-01 (`2bfdc61`) |
 | Podcasts | ✅ on framework | 2026-05-01 (`6619dc6`) |
 | Podcast detail | ✅ on framework | 2026-05-01 (`6619dc6`) |
-| Progress | ✅ on framework | 2026-05-01 (`6619dc6`) |
+| Progress | ✅ on framework | 2026-07-09 (voortgang-hub-redesign) — mobile hub adopts `ListCard` `feature` (the Leren/Ontdek hub shape); `MasteryLadder`/`ProgressNav` are `components/progress/` and `components/nav/` domain components, not new page-framework primitives |
 | Login | ✅ on framework | 2026-05-01 (`6619dc6`) — `PageFormLayout` |
 | Register | ✅ on framework | 2026-05-01 (`6619dc6`) — `PageFormLayout` |
 | LocalPreview (admin preview tool) | ✅ on framework | 2026-05-01 (`8f79451`) |

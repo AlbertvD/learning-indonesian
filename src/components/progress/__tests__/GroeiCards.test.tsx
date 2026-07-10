@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { MantineProvider } from '@mantine/core'
 import { GrowthCurveCard } from '../GrowthCurveCard'
@@ -27,32 +26,27 @@ function week(weekStart: string, vocab: Partial<ReturnType<typeof emptyFunnel>>)
 describe('GrowthCurveCard', () => {
   beforeEach(() => vi.clearAllMocks())
 
-  it('renders a toggleable line per rung and the net-mastered headline', async () => {
+  it('renders the single climbing usable-words area (strengthening + mastered) and its delta', async () => {
     vi.mocked(getFunnelSeries).mockResolvedValue([
+      // usable = strengthening + mastered = 0 + 3 = 3
       week('2026-06-01', { introduced: 5, learning: 3, mastered: 3 }),
+      // usable = 2 + 8 = 10
       week('2026-06-08', { introduced: 4, learning: 6, strengthening: 2, mastered: 8 }),
     ])
 
-    wrap(<GrowthCurveCard userId="user-1" bucket="vocabulary" />)
+    wrap(<GrowthCurveCard userId="user-1" bucket="vocabulary" unitLabel="woorden" />)
 
-    // One legend chip per rung (the 4 selectable lines).
-    const introduced = await screen.findByRole('button', { name: /Geïntroduceerd/ })
-    expect(screen.getByRole('button', { name: /Aan het leren/ })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Versterken/ })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Beheerst/ })).toBeInTheDocument()
-
-    // Net-mastered delta headline (8 now − 3 prior = +5), a snapshot diff.
-    expect(screen.getByText('+5')).toBeInTheDocument()
-
-    // Clicking a legend chip toggles that line off (aria-pressed flips).
-    expect(introduced).toHaveAttribute('aria-pressed', 'true')
-    await userEvent.click(introduced)
-    expect(introduced).toHaveAttribute('aria-pressed', 'false')
+    // Hero is the latest usable count; delta is the snapshot diff vs ~4 weeks
+    // back (here, the only prior point: 10 − 3 = +7).
+    expect(await screen.findByText('10')).toBeInTheDocument()
+    expect(screen.getByText('▲ +7')).toBeInTheDocument()
+    // The caption names what "usable" means for this bucket's unit.
+    expect(screen.getByText('Woorden die je kunt gebruiken')).toBeInTheDocument()
   })
 
-  it('shows the empty state when no rung has data', async () => {
+  it('shows the empty state when no week has any usable words', async () => {
     vi.mocked(getFunnelSeries).mockResolvedValue([week('2026-06-01', {}), week('2026-06-08', {})])
-    wrap(<GrowthCurveCard userId="user-1" bucket="vocabulary" />)
+    wrap(<GrowthCurveCard userId="user-1" bucket="vocabulary" unitLabel="woorden" />)
     expect(await screen.findByText(/Nog niet genoeg geschiedenis/)).toBeInTheDocument()
   })
 })
