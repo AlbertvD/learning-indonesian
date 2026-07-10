@@ -13,6 +13,7 @@ import { funnelBucket } from '@/lib/analytics/mastery/masteryModel'
 import { findCapsMissingSatellite, type CapForSatelliteCheck } from './lib/pipeline/capability-stage/satellitePresence'
 import { isCatalogAffix, routesToMeaningUsage } from '@/lib/capabilities/affixCatalog'
 import { itemSlug } from '@/lib/capabilities/itemSlug'
+import { registerPairSlugVariants } from './lib/registerPairVariants'
 import { projectionViolations, type RankedItem } from './collections/projection'
 import { transcriptDrift } from './podcasts/assemble'
 import { planLearningPath, type PlannerCapability, type PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
@@ -2569,8 +2570,15 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         const formalIdByNormalizedText = new Map(formalItems.map((r) => [r.normalized_text, r.id]))
         const liveFormalIds = new Set<string>()
         for (const pair of artifact) {
-          const id = formalIdByNormalizedText.get(itemSlug(pair.formal))
-          if (id) liveFormalIds.add(id)
+          // registerPairSlugVariants — not a bare itemSlug() lookup — because
+          // question-word headwords carry punctuation in normalized_text
+          // (e.g. 'bagaimana?'); using the same resolution the seed script
+          // (scripts/enrich-answer-variants.ts) and the intersection report
+          // use keeps this check from silently under-counting a live twin.
+          for (const variant of registerPairSlugVariants(pair.formal)) {
+            const id = formalIdByNormalizedText.get(variant)
+            if (id) { liveFormalIds.add(id); break }
+          }
         }
         const variants = liveFormalIds.size === 0 ? [] : await pageAllRP<{ learning_item_id: string; variant_text: string; variant_type: string }>(
           'item_answer_variants', 'learning_item_id, variant_text, variant_type',
