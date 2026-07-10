@@ -280,7 +280,8 @@ export const lesson = {
             "dutch": "tellen",
             "indonesian": "itung",
             "register": "informal",
-            "registerCounterpart": "hitung"
+            "registerCounterpart": "hitung",
+            "english": "count"
           }
         ]
       }

@@ -148,55 +148,64 @@ export const lesson = {
             "dutch": "regen",
             "indonesian": "ujan",
             "register": "informal",
-            "registerCounterpart": "hujan"
+            "registerCounterpart": "hujan",
+            "english": "rain"
           },
           {
             "dutch": "warm",
             "indonesian": "anget",
             "register": "informal",
-            "registerCounterpart": "hangat"
+            "registerCounterpart": "hangat",
+            "english": "warm"
           },
           {
             "dutch": "leven",
             "indonesian": "idup",
             "register": "informal",
-            "registerCounterpart": "hidup"
+            "registerCounterpart": "hidup",
+            "english": "life"
           },
           {
             "dutch": "soort, type",
             "indonesian": "macem",
             "register": "informal",
-            "registerCounterpart": "macam"
+            "registerCounterpart": "macam",
+            "english": "kind, type"
           },
           {
             "dutch": "inderdaad, toegegeven",
             "indonesian": "emang",
             "register": "informal",
-            "registerCounterpart": "memang"
+            "registerCounterpart": "memang",
+            "english": "indeed, admittedly"
           },
           {
             "dutch": "toen, wanneer, precies op het moment dat",
             "indonesian": "pas",
             "register": "informal",
-            "registerCounterpart": "ketika"
+            "registerCounterpart": "ketika",
+            "english": "when, right at the moment that"
           },
           {
             "dutch": "echt, werkelijk",
             "indonesian": "beneran",
             "register": "informal",
-            "registerCounterpart": "sungguh"
+            "registerCounterpart": "sungguh",
+            "english": "really, truly"
           },
           {
             "dutch": "een beetje, weinig",
             "indonesian": "dikit",
             "register": "informal",
-            "registerCounterpart": "sedikit"
+            "registerCounterpart": "sedikit",
+            "english": "a bit, little"
           },
           {
             "dutch": "mooi, knap",
             "indonesian": "cakep",
             "register": "informal",
-            "registerCounterpart": "cantik"
+            "registerCounterpart": "cantik",
+            "english": "beautiful, handsome"
           }
         ]
       }

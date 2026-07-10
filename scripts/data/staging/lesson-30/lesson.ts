@@ -232,7 +232,8 @@ export const lesson = {
             "dutch": "begrijpen",
             "indonesian": "ngerti",
             "register": "informal",
-            "registerCounterpart": "mengerti"
+            "registerCounterpart": "mengerti",
+            "english": "understand"
           }
         ]
       }

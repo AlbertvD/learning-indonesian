@@ -317,7 +317,8 @@ export const lesson = {
             "dutch": "zo (als dit)",
             "indonesian": "gini",
             "register": "informal",
-            "registerCounterpart": "begini"
+            "registerCounterpart": "begini",
+            "english": "like this"
           }
         ]
       }

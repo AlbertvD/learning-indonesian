@@ -235,13 +235,15 @@ export const lesson = {
             "dutch": "zichtbaar, blijkbaar",
             "indonesian": "keliatan",
             "register": "informal",
-            "registerCounterpart": "kelihatan"
+            "registerCounterpart": "kelihatan",
+            "english": "visible, apparent"
           },
           {
             "dutch": "slim",
             "indonesian": "pinter",
             "register": "informal",
-            "registerCounterpart": "pintar"
+            "registerCounterpart": "pintar",
+            "english": "clever"
           }
         ]
       }

@@ -278,7 +278,8 @@ export const lesson = {
             "dutch": "wisselen",
             "indonesian": "tuker",
             "register": "informal",
-            "registerCounterpart": "tukar"
+            "registerCounterpart": "tukar",
+            "english": "exchange"
           }
         ]
       }

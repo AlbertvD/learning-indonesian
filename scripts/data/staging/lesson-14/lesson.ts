@@ -338,7 +338,8 @@ export const lesson = {
             "dutch": "horen",
             "indonesian": "denger",
             "register": "informal",
-            "registerCounterpart": "dengar"
+            "registerCounterpart": "dengar",
+            "english": "hear"
           }
         ]
       }

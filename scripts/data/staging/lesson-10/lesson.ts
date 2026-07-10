@@ -439,19 +439,22 @@ export const lesson = {
             "dutch": "druk, levendig",
             "indonesian": "rame",
             "register": "informal",
-            "registerCounterpart": "ramai"
+            "registerCounterpart": "ramai",
+            "english": "busy, lively"
           },
           {
             "dutch": "dichtbij",
             "indonesian": "deket",
             "register": "informal",
-            "registerCounterpart": "dekat"
+            "registerCounterpart": "dekat",
+            "english": "nearby"
           },
           {
             "dutch": "onthouden",
             "indonesian": "inget",
             "register": "informal",
-            "registerCounterpart": "ingat"
+            "registerCounterpart": "ingat",
+            "english": "remember"
           }
         ]
       }
