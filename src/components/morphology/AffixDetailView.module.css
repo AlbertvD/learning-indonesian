@@ -1,0 +1,14 @@
+/* src/components/morphology/AffixDetailView.module.css
+   Caller-side wrapper threading the catalog tile's affix-type hue into the
+   detail page — a thin left-edge accent border. Purely decorative chrome
+   around PageHeader (page/primitives/PageHeader.tsx), which is not touched a
+   second time; the colour itself is data-driven (AFFIX_TYPE_HUE, per-affix),
+   so it's applied via inline `borderLeftColor` rather than a static rule
+   here (the shape/width stay in this file, the colour rides the cascade's
+   inline-style layer — same pattern GrowthCurveCard.tsx uses for per-rung
+   colour). See docs/plans/2026-07-10-affix-trainer-harmonization.md Change 3. */
+
+.headerAccent {
+  border-left: 3px solid;
+  padding-left: 16px;
+}

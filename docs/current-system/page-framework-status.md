@@ -19,7 +19,7 @@ Located at `src/components/page/primitives/`. 14 primitives, each with its own C
 | `ListCard` | Horizontal row card: icon/title/subtitle/trailing. Switches between `<Link>` and `<div>` based on `to`. |
 | `ActionCard` | Tone-driven (`accent`/`warning`/`danger`) prominent CTA card with left border + larger icon. |
 | `MediaShowcaseCard` | Visual-forward card: banner slot + body (eyebrow/title/subtitle/tags/status/CTA). Added 2026-05-01 to drive the Lessons travel-journal redesign. Supports `featured` and `disabled` variants. |
-| `SettingsCard` | Titled card for settings/forms. Absorbs 8× inline `<Paper p="xl"><Stack><Title order={4}>` pattern. |
+| `SettingsCard` | Titled card for settings/forms. Absorbs 8× inline `<Paper p="xl"><Stack><Title order={4}>` pattern. Gained an additive, optional `aside` slot 2026-07-10 (affix-trainer-harmonization) — a trailing element beside the title (badges, a small control); omitted → byte-identical markup to every pre-existing caller. See Deviations below. |
 | `StatusPill` | Tone-driven pill: `success`/`warning`/`danger`/`accent`/`neutral`. |
 | `EmptyState` | Centered icon + message + optional CTA. |
 | `LoadingState` | Centered Mantine `<Loader>` + optional caption. |
@@ -46,6 +46,7 @@ Located at `src/components/page/primitives/`. 14 primitives, each with its own C
 | ExerciseCoverage (admin coverage tool) | ✅ on framework | 2026-05-01 (`8f79451`) |
 | SectionCoverage (admin coverage tool) | ✅ on framework | 2026-05-01 (`8f79451`) |
 | Session (practice page chrome) | ✅ on framework | 2026-05-01 (`22d1a88`) |
+| Affix Trainer detail (`AffixDetailView`/`RuleCard`/`WordFamilyExplorer`, under `/morphology`) | ✅ on framework | 2026-07-10 (affix-trainer-harmonization) — page chrome (`PageContainer`/`PageBody`/`PageHeader`) was already on the framework; this pass moved the detail sub-view off a bespoke `<Anchor>+IconArrowLeft` header and raw Mantine `<Card>`s onto `BackLink` + `PageHeader` + `SettingsCard` (via its new `aside` slot). `WordFamilyExplorer` stays a domain component (LessonCard-pattern token-only CSS, not a new primitive — a dense repeating root list doesn't fit `SettingsCard`'s 32px padding). |
 | `/admin/page-lab` | ✅ — framework's own demo route | n/a |
 | `/admin/design-lab` | ⚪ exercise-framework demo (not page-framework target) | n/a |
 | `AdminGuard` | ⚪ wrapper component with no chrome to migrate | n/a |
@@ -75,6 +76,8 @@ The 2026-04-24 implementation plan listed Phases 1–9 as "milestones only — r
 2. **The lesson reader was migrated.** Plan Phase 8 called for "outer chrome only" on `Lesson.tsx`. We went further: the inner `LessonReader.tsx` + `LessonBlockRenderer.tsx` had bespoke cream-gradient + serif CSS from a prior Codex first-pass that didn't respect the design tokens. Rewrote the reader to use `PageContainer` + `PageBody` + `HeroCard` + `StatusPill`, plus token-driven styling for the 3-column shell (kept page-local — no second user yet justifies a `ReaderShell` primitive). Native HTML buttons used instead of Mantine `<Button>` so the existing isolated component tests don't need MantineProvider wrapping.
 
 3. **No 4-screenshot matrix per phase.** The plan called for 4 screenshots per migrated page (mobile-light, mobile-dark, desktop-light, desktop-dark) into `docs/plans/page-framework-screenshots/phase-N/`. Today's work used inline browser smoke checks via Playwright instead — same eyes-on-it validation, but not stored as a regression baseline. If a future regression is suspected, baselines should be captured before any further visual changes.
+
+4. **`SettingsCard` gained an additive `aside` slot (2026-07-10, affix-trainer-harmonization).** `RuleCard`'s only gap versus the primitive was a trailing element beside the heading (affix-type + CEFR badges) — the same shape `PageHeader.action`/`ListCard.trailing` already use for a trailing slot. Purely additive: `aside` is optional, and when omitted the title renders as the bare `<h3>` exactly as before (byte-identical markup for Profile's 8 existing `SettingsCard` callers, none of which pass it). No other primitive was touched.
 
 ## Residuals
 

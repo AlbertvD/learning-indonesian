@@ -125,6 +125,12 @@ describe('AffixTrainer page', () => {
     expect(screen.getAllByText('mengajar').length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText('pengajar')).toBeInTheDocument()
     expect(screen.getByText(/vocabulary, not rule-formed/i)).toBeInTheDocument() // frozen marking
+    // the gloss renders exactly once — the header's PageHeader subtitle. RuleCard
+    // used to repeat it; the harmonization plan deduped it (Change 3).
+    expect(screen.getAllByText('active verb-former')).toHaveLength(1)
+    // BackLink (shared nav component) replaces the old hand-rolled Anchor.
+    const back = screen.getByRole('link', { name: /back to all affixes/i })
+    expect(back).toHaveAttribute('href', '/morphology')
     // practice launches a scoped session with the affix in the URL.
     const practice = screen.getByRole('link', { name: /practise this affix/i })
     expect(practice).toHaveAttribute('href', '/session?mode=affix_practice&affix=meN-')
