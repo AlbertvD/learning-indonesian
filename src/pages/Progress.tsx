@@ -169,8 +169,8 @@ export function Progress() {
           {activeTab === 'woorden' && (
             <div className={classes.sections}>
               <VocabMasteryPanel userId={user.id} />
-              <SkillModeGapsCard userId={user.id} />
               <GrowthCurveCard userId={user.id} bucket="vocabulary" unitLabel={T.progress.unitWords} />
+              <SkillModeGapsCard userId={user.id} />
             </div>
           )}
           {activeTab === 'grammar' && (
