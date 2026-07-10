@@ -18,6 +18,7 @@ import {
   canonicaliseDutchSeparator,
   itemSlug,
   KEPT_VOCAB_CAP_TYPES,
+  INFORMAL_VOCAB_CAP_TYPES,
 } from '@/lib/capabilities'
 
 import type { AudioClipMeta } from '../adapter'
@@ -115,9 +116,18 @@ export interface TypedItemProjectionOutput {
 export function projectItemsFromTypedRows(
   input: TypedItemProjectionInput,
 ): TypedItemProjectionOutput {
+  // Spreektaal §4: the set of normalized_text values present in this publish's
+  // item batch. An informal item's formal twin is co-anchored to the SAME
+  // lesson (spec §3.3 — the informal entry is appended to the formal twin's
+  // introducing lesson), so a resolving register_counterpart is guaranteed to
+  // appear here; phrase-anchored rows (spec §3.1) never exist as a standalone
+  // item anywhere and are correctly absent — the prerequisite is then omitted.
+  const normalizedTextsInBatch = new Set(input.rows.map((r) => itemSlug(r.indonesian_text)))
+
   const perItemPlans: TypedItemPlan[] = input.rows.map((row) => {
     const normalizedText = itemSlug(row.indonesian_text)
     const sourceRef = sourceRefForLearningItem(row.indonesian_text)
+    const isInformal = row.register === 'informal'
 
     // ----- learning_items upsert input -----
     const learningItemInput: LearningItemInput = {
@@ -139,6 +149,10 @@ export function projectItemsFromTypedRows(
       translation_en: row.l2_translation != null ? (row.l2_translation.trim() || null) : null,
       // Bet-1 §3.2: forward the loanword source through to learning_items.loan_source_nl.
       loan_source_nl: row.loan_source_nl?.trim() ? row.loan_source_nl.trim() : null,
+      // Spreektaal §3.2: forward the register mark + formal-twin base_text through
+      // to learning_items.register / register_counterpart.
+      register: row.register,
+      register_counterpart: row.register_counterpart,
     }
 
     // ----- anchor context (item_contexts row, is_anchor_context=true) -----
@@ -170,7 +184,29 @@ export function projectItemsFromTypedRows(
     }
     const textRecognitionKey = buildCanonicalKey(textRecognitionDraft)
 
-    // #1 — recognise_meaning_from_text_cap: root/scaffold, no prerequisites.
+    // Spreektaal §4: the formal twin's #1 canonical key, resolved from
+    // register_counterpart via the canonical itemSlug() mint (vocab.ts:119/here
+    // — NEVER a bespoke lowercase/trim, data-architect r2+r3 addendum). Built
+    // deterministically, mirroring the morphology root-vocab prerequisite
+    // (affixedCapabilities.ts:49-58) — no DB query. undefined for formal items
+    // and for phrase-anchored informal rows (register_counterpart doesn't
+    // resolve to a known item in this batch).
+    const formalTwinPrereqKey =
+      isInformal && row.register_counterpart && normalizedTextsInBatch.has(itemSlug(row.register_counterpart))
+        ? buildCanonicalKey({
+            sourceKind: 'vocabulary_src',
+            sourceRef: sourceRefForLearningItem(row.register_counterpart),
+            capabilityType: 'recognise_meaning_from_text_cap',
+            direction: 'id_to_l1',
+            modality: 'text',
+            learnerLanguage,
+          })
+        : undefined
+
+    // #1 — recognise_meaning_from_text_cap: root/scaffold. No prerequisites for
+    // a formal item; for an informal item, gated behind the formal twin's #1
+    // (spec §4 — "nggak becomes introducible only after tidak has ≥1 successful
+    // review").
     const capabilities: CapabilityInput[] = [
       {
         canonicalKey: textRecognitionKey,
@@ -183,59 +219,69 @@ export function projectItemsFromTypedRows(
         projectionVersion: CAPABILITY_PROJECTION_VERSION,
         lessonId: input.lessonId,
         requiredArtifacts: [],
-        prerequisiteKeys: [],
+        prerequisiteKeys: formalTwinPrereqKey ? [formalTwinPrereqKey] : [],
       },
-      // #2 — recognise_form_from_meaning_cap: production-direction MCQ scaffold
-      // (four-card ladder, ADR 0027 2026-07-09 amendment). Re-emitted after the
-      // 2026-07-08 drop; graduates at #6 mastery strength (`graduation.ts`,
-      // `#2 ← #6`). prereq #1 — same root every other mode prereqs on.
-      {
-        canonicalKey: buildCanonicalKey({
+    ]
+
+    // #2 / #6 — the two production-direction modes. Spreektaal §4: informal
+    // items are RECEPTIVE-ONLY and never emit these (INFORMAL_VOCAB_CAP_TYPES);
+    // under §7's bidirectional grader acceptance an informal #6 would be a
+    // near-duplicate of the formal twin's #6 (same NL prompt, same accepted
+    // set) — review load with no new teaching.
+    if (!isInformal) {
+      capabilities.push(
+        // #2 — recognise_form_from_meaning_cap: production-direction MCQ scaffold
+        // (four-card ladder, ADR 0027 2026-07-09 amendment). Re-emitted after the
+        // 2026-07-08 drop; graduates at #6 mastery strength (`graduation.ts`,
+        // `#2 ← #6`). prereq #1 — same root every other mode prereqs on.
+        {
+          canonicalKey: buildCanonicalKey({
+            sourceKind: 'vocabulary_src',
+            sourceRef,
+            capabilityType: 'recognise_form_from_meaning_cap',
+            direction: 'l1_to_id',
+            modality: 'text',
+            learnerLanguage,
+          }),
           sourceKind: 'vocabulary_src',
           sourceRef,
           capabilityType: 'recognise_form_from_meaning_cap',
           direction: 'l1_to_id',
           modality: 'text',
           learnerLanguage,
-        }),
-        sourceKind: 'vocabulary_src',
-        sourceRef,
-        capabilityType: 'recognise_form_from_meaning_cap',
-        direction: 'l1_to_id',
-        modality: 'text',
-        learnerLanguage,
-        projectionVersion: CAPABILITY_PROJECTION_VERSION,
-        lessonId: input.lessonId,
-        requiredArtifacts: [],
-        prerequisiteKeys: [textRecognitionKey],
-      },
-      // #6 — produce_form_from_meaning_cap: productive frontier, never retired.
-      // prerequisiteKeys points at #1 (ADR 0027 — was #2's key before the 2026-07-08
-      // trim; #2's re-emission here does NOT move #6's prereq back — the within-word
-      // phase order (#1 P1 → #3 P2 → #2 P3 → #6 P4) plus the staging gate already
-      // sequences #2-before-#6, avoiding a second 2,359-row content UPDATE. See
-      // docs/plans/2026-07-09-vocab-four-card-ladder.md §2.1.
-      {
-        canonicalKey: buildCanonicalKey({
+          projectionVersion: CAPABILITY_PROJECTION_VERSION,
+          lessonId: input.lessonId,
+          requiredArtifacts: [],
+          prerequisiteKeys: [textRecognitionKey],
+        },
+        // #6 — produce_form_from_meaning_cap: productive frontier, never retired.
+        // prerequisiteKeys points at #1 (ADR 0027 — was #2's key before the 2026-07-08
+        // trim; #2's re-emission here does NOT move #6's prereq back — the within-word
+        // phase order (#1 P1 → #3 P2 → #2 P3 → #6 P4) plus the staging gate already
+        // sequences #2-before-#6, avoiding a second 2,359-row content UPDATE. See
+        // docs/plans/2026-07-09-vocab-four-card-ladder.md §2.1.
+        {
+          canonicalKey: buildCanonicalKey({
+            sourceKind: 'vocabulary_src',
+            sourceRef,
+            capabilityType: 'produce_form_from_meaning_cap',
+            direction: 'l1_to_id',
+            modality: 'text',
+            learnerLanguage,
+          }),
           sourceKind: 'vocabulary_src',
           sourceRef,
           capabilityType: 'produce_form_from_meaning_cap',
           direction: 'l1_to_id',
           modality: 'text',
           learnerLanguage,
-        }),
-        sourceKind: 'vocabulary_src',
-        sourceRef,
-        capabilityType: 'produce_form_from_meaning_cap',
-        direction: 'l1_to_id',
-        modality: 'text',
-        learnerLanguage,
-        projectionVersion: CAPABILITY_PROJECTION_VERSION,
-        lessonId: input.lessonId,
-        requiredArtifacts: [],
-        prerequisiteKeys: [textRecognitionKey],
-      },
-    ]
+          projectionVersion: CAPABILITY_PROJECTION_VERSION,
+          lessonId: input.lessonId,
+          requiredArtifacts: [],
+          prerequisiteKeys: [textRecognitionKey],
+        },
+      )
+    }
 
     // ----- audio capability row -----
     // cap-v2 #161 (§0.8): the audio cap is emitted for EVERY word/phrase item —
@@ -265,21 +311,29 @@ export function projectItemsFromTypedRows(
       projectionVersion: CAPABILITY_PROJECTION_VERSION,
       lessonId: input.lessonId,
       requiredArtifacts: [],
-      prerequisiteKeys: [textRecognitionKey],
+      // Own-item recognition-before-recall prereq, PLUS — for informal items —
+      // the formal twin's #1 (spec §4: "each informal cap's prerequisiteKeys").
+      prerequisiteKeys: formalTwinPrereqKey
+        ? [textRecognitionKey, formalTwinPrereqKey]
+        : [textRecognitionKey],
     })
 
-    // Invariant guard (ADR 0027): the emitted set must be EXACTLY
-    // KEPT_VOCAB_CAP_TYPES — the shared constant both this projector and the
-    // one-off retirement/un-retirement scripts / health checks import, so drift
-    // is caught here rather than silently reappearing in a future edit.
+    // Invariant guard (ADR 0027 / spreektaal §4): the emitted set must be
+    // EXACTLY KEPT_VOCAB_CAP_TYPES for a formal item, or EXACTLY
+    // INFORMAL_VOCAB_CAP_TYPES for an informal item — the shared constants this
+    // projector and the one-off retirement/un-retirement scripts / health
+    // checks import, so drift is caught here rather than silently reappearing
+    // in a future edit.
+    const expectedTypes = isInformal ? INFORMAL_VOCAB_CAP_TYPES : KEPT_VOCAB_CAP_TYPES
     const emittedTypes = new Set(capabilities.map((c) => c.capabilityType))
     if (
-      emittedTypes.size !== KEPT_VOCAB_CAP_TYPES.length ||
-      !KEPT_VOCAB_CAP_TYPES.every((t) => emittedTypes.has(t))
+      emittedTypes.size !== expectedTypes.length ||
+      !expectedTypes.every((t) => emittedTypes.has(t))
     ) {
       throw new Error(
         `projectItemsFromTypedRows: emitted capability types [${[...emittedTypes].join(', ')}] `
-        + `do not match KEPT_VOCAB_CAP_TYPES [${KEPT_VOCAB_CAP_TYPES.join(', ')}] (ADR 0027)`,
+        + `do not match ${isInformal ? 'INFORMAL_VOCAB_CAP_TYPES' : 'KEPT_VOCAB_CAP_TYPES'} `
+        + `[${expectedTypes.join(', ')}] (ADR 0027 / spreektaal §4)`,
       )
     }
 

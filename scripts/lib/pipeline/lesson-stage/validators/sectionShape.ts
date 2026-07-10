@@ -16,8 +16,14 @@
  *
  * Dialogue NL/EN is enforced by validateDialogueLines (GT8) on the section
  * content; this validator covers the new typed projections only.
+ *
+ * Spreektaal (docs/plans/2026-07-09-spreektaal-lesson-woven-core.md §3.2, §8):
+ * item row register='informal' requires a non-null register_counterpart that
+ * either resolves (itemSlug()) to a known item in THIS lesson's own projected
+ * rows, or is whitelisted as phrase-anchored (see SectionShapeOptions).
  */
 
+import { itemSlug } from '@/lib/capabilities'
 import type { ValidationFinding } from '../model'
 import type { ProjectSectionsOutput } from '../projectSections'
 
@@ -33,6 +39,14 @@ export interface SectionShapeOptions {
    * (structural) findings stay `error` regardless. ADR 0013 §3.
    */
   enSeverity?: 'error' | 'warning'
+  /**
+   * Spreektaal §3.2/§8: itemSlug()'d formal-counterpart texts explicitly
+   * whitelisted as phrase-anchored (register-pairs.ts anchor_lesson-override
+   * rows, ~6 rows per §3.1) — these don't need to resolve to a standalone
+   * item in this lesson. Defaults to empty (register-pairs.ts not authored
+   * yet, or this lesson has no phrase-anchored rows).
+   */
+  phraseAnchoredWhitelist?: ReadonlySet<string>
 }
 
 export function validateSectionShape(
@@ -41,6 +55,13 @@ export function validateSectionShape(
 ): ValidationFinding[] {
   const findings: ValidationFinding[] = []
   const en = options.enSeverity ?? 'error'
+  const phraseAnchoredWhitelist = options.phraseAnchoredWhitelist ?? new Set<string>()
+  // Spreektaal §3.3: an informal item's formal twin is co-anchored to the SAME
+  // lesson (the informal entry is appended to the formal twin's introducing
+  // lesson), so a resolving register_counterpart is guaranteed to appear
+  // among this lesson's OWN projected item rows — self-contained to the
+  // lesson (ADR 0013 §4), no cross-lesson pool needed.
+  const normalizedTextsInLesson = new Set(projected.itemRows.map((r) => itemSlug(r.indonesian_text)))
 
   for (const row of projected.itemRows) {
     const ctx = { sectionOrderIndex: row.sourceSectionOrderIndex, sourceRef: row.source_item_ref }
@@ -49,6 +70,32 @@ export function validateSectionShape(
     if (empty(row.indonesian_text)) findings.push({ gate: 'GT9', severity: 'error', message: `item row "${row.source_item_ref}" missing indonesian_text`, context: ctx })
     if (empty(row.l1_translation)) findings.push({ gate: 'GT9', severity: 'error', message: `item row "${row.source_item_ref}" missing l1_translation (NL)`, context: ctx })
     if (empty(row.l2_translation)) findings.push({ gate: 'GT9', severity: en, message: `item row "${row.source_item_ref}" missing l2_translation (EN) — the lesson-stage EN enricher did not fill it`, context: ctx })
+
+    // Spreektaal §3.2: register='informal' ⇒ register_counterpart non-null AND
+    // it must resolve (via the canonical itemSlug() mint) to a known item in
+    // this lesson, OR be explicitly whitelisted as phrase-anchored.
+    if (row.register === 'informal') {
+      if (empty(row.register_counterpart)) {
+        findings.push({
+          gate: 'GT9',
+          severity: 'error',
+          message: `item row "${row.source_item_ref}" has register='informal' but is missing register_counterpart`,
+          context: ctx,
+        })
+      } else {
+        const counterpartSlug = itemSlug(row.register_counterpart as string)
+        const resolvesInLesson = normalizedTextsInLesson.has(counterpartSlug)
+        const isWhitelisted = phraseAnchoredWhitelist.has(counterpartSlug)
+        if (!resolvesInLesson && !isWhitelisted) {
+          findings.push({
+            gate: 'GT9',
+            severity: 'error',
+            message: `item row "${row.source_item_ref}" register_counterpart "${row.register_counterpart}" does not resolve to a known item in this lesson and is not whitelisted as phrase-anchored (register-pairs.ts)`,
+            context: ctx,
+          })
+        }
+      }
+    }
   }
 
   for (const cat of projected.grammarCategories) {

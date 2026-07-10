@@ -38,3 +38,25 @@ export const DROPPED_VOCAB_CAP_TYPES = [
   'recall_meaning_from_text_cap', // #4
   'produce_form_from_audio_cap', // #5
 ] as const satisfies readonly CapabilityType[]
+
+// Spreektaal register-pair core (docs/plans/2026-07-09-spreektaal-lesson-woven
+// -core.md §4). Informal (register='informal') items are RECEPTIVE-ONLY — they
+// generate only the recognise caps, never the two production-direction modes
+// (#2 recognise_form_from_meaning_cap, #6 produce_form_from_meaning_cap). Under
+// §7's bidirectional grader acceptance, an informal #6 would be a near-duplicate
+// of the formal twin's #6 (same NL prompt, same accepted set) — review load with
+// no new teaching, the exact redundancy the four-card-ladder work just removed.
+
+/** The 2 modes an informal vocabulary item is introduced with — a strict subset
+ *  of KEPT_VOCAB_CAP_TYPES (spec §4). */
+export const INFORMAL_VOCAB_CAP_TYPES = [
+  'recognise_meaning_from_text_cap', // #1 — root/scaffold
+  'recognise_meaning_from_audio_cap', // #3′ — aural
+] as const satisfies readonly CapabilityType[]
+
+/** The 2 production-direction modes an informal item must NEVER emit (spec §4,
+ *  §8 health check 5). */
+export const INFORMAL_FORBIDDEN_VOCAB_CAP_TYPES = [
+  'recognise_form_from_meaning_cap', // #2
+  'produce_form_from_meaning_cap', // #6
+] as const satisfies readonly CapabilityType[]

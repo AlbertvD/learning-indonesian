@@ -45,10 +45,12 @@ export interface LessonGateInput {
   sections: Array<{ id?: string; title?: string; order_index?: number; content: Record<string, unknown> }>
   projected: ProjectSectionsOutput
   mode: LessonGateMode
+  /** Spreektaal §3.2/§8 — see SectionShapeOptions.phraseAnchoredWhitelist. */
+  phraseAnchoredWhitelist?: ReadonlySet<string>
 }
 
 export function runLessonGate(input: LessonGateInput): ValidationFinding[] {
-  const { lesson, sections, projected, mode } = input
+  const { lesson, sections, projected, mode, phraseAnchoredWhitelist } = input
   // Severity for async-LLM-enriched translation completeness (EN + dialogue NL).
   // Relaxed pre-enrichment; CRITICAL once the enrichers have run.
   const enrichedSeverity = mode === 'pre-flight' ? 'warning' : 'error'
@@ -75,6 +77,6 @@ export function runLessonGate(input: LessonGateInput): ValidationFinding[] {
     ...validateDialogueLines(sections, { nlSeverity: enrichedSeverity }),
     // GT9 — typed capability-contract row shape. Structural fields CRITICAL in
     // both modes; EN-completeness flexes with the mode.
-    ...validateSectionShape(projected, { enSeverity: enrichedSeverity }),
+    ...validateSectionShape(projected, { enSeverity: enrichedSeverity, phraseAnchoredWhitelist }),
   ]
 }

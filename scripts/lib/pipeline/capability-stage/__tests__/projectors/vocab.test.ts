@@ -21,6 +21,8 @@ const baseTypedRow = (overrides: Partial<TypedItemRow>): TypedItemRow => ({
   l1_translation: 'Hallo',
   l2_translation: 'Hello',
   loan_source_nl: null,
+  register: null,
+  register_counterpart: null,
   section_kind: 'vocabulary',
   ...overrides,
 })
@@ -400,4 +402,107 @@ describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
     expect(makan.capabilities).toHaveLength(4)
   })
 
+})
+
+// ---------------------------------------------------------------------------
+// Spreektaal §4 — informal (register='informal') items are receptive-only
+// (docs/plans/2026-07-09-spreektaal-lesson-woven-core.md)
+// ---------------------------------------------------------------------------
+
+describe('projectItemsFromTypedRows — spreektaal register carve-out (spec §4)', () => {
+  it('an informal item emits exactly #1 + #3′ — never #2 or #6', () => {
+    const rows: TypedItemRow[] = [
+      baseTypedRow({ id: 'formal', indonesian_text: 'tidak', l1_translation: 'niet' }),
+      baseTypedRow({
+        id: 'informal',
+        source_item_ref: 'lesson-4/section-1/item-1',
+        indonesian_text: 'nggak',
+        l1_translation: 'niet',
+        register: 'informal',
+        register_counterpart: 'tidak',
+      }),
+    ]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    const nggak = out.perItemPlans.find((p) => p.normalizedText === 'nggak')!
+    const capTypes = nggak.capabilities.map((c) => c.capabilityType).sort()
+    expect(capTypes).toEqual(['recognise_meaning_from_audio_cap', 'recognise_meaning_from_text_cap'])
+    expect(capTypes).not.toContain('recognise_form_from_meaning_cap')
+    expect(capTypes).not.toContain('produce_form_from_meaning_cap')
+  })
+
+  it('a formal item (register=null) is completely unchanged: 4 caps, #1 has no prerequisites', () => {
+    const rows: TypedItemRow[] = [baseTypedRow({ indonesian_text: 'tidak', l1_translation: 'niet' })]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    const plan = out.perItemPlans[0]
+    expect(plan.capabilities).toHaveLength(4)
+    const textRecog = plan.capabilities.find((c) => c.capabilityType === 'recognise_meaning_from_text_cap')!
+    expect(textRecog.prerequisiteKeys).toEqual([])
+    expect(plan.learningItemInput.register).toBeNull()
+    expect(plan.learningItemInput.register_counterpart).toBeNull()
+  })
+
+  it("an informal item's #1 prerequisiteKeys byte-matches the formal twin's #1 canonical key (buildCanonicalKey)", () => {
+    const rows: TypedItemRow[] = [
+      baseTypedRow({ id: 'formal', indonesian_text: 'tidak', l1_translation: 'niet' }),
+      baseTypedRow({
+        id: 'informal',
+        source_item_ref: 'lesson-4/section-1/item-1',
+        indonesian_text: 'nggak',
+        l1_translation: 'niet',
+        register: 'informal',
+        register_counterpart: 'tidak',
+      }),
+    ]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    const formal = out.perItemPlans.find((p) => p.normalizedText === 'tidak')!
+    const informal = out.perItemPlans.find((p) => p.normalizedText === 'nggak')!
+    const formalTextRecog = formal.capabilities.find((c) => c.capabilityType === 'recognise_meaning_from_text_cap')!
+    const expectedPrereqKey = buildCanonicalKey({
+      sourceKind: 'vocabulary_src',
+      sourceRef: 'learning_items/tidak',
+      capabilityType: 'recognise_meaning_from_text_cap',
+      direction: 'id_to_l1',
+      modality: 'text',
+      learnerLanguage: 'nl',
+    })
+    expect(formalTextRecog.canonicalKey).toBe(expectedPrereqKey)
+
+    const informalTextRecog = informal.capabilities.find((c) => c.capabilityType === 'recognise_meaning_from_text_cap')!
+    expect(informalTextRecog.prerequisiteKeys).toEqual([expectedPrereqKey])
+
+    const informalAudio = informal.capabilities.find((c) => c.capabilityType === 'recognise_meaning_from_audio_cap')!
+    expect(informalAudio.prerequisiteKeys).toEqual([informalTextRecog.canonicalKey, expectedPrereqKey])
+  })
+
+  it('a phrase-anchored informal row (counterpart not present as an item in this batch) gets NO extra prerequisite', () => {
+    const rows: TypedItemRow[] = [
+      baseTypedRow({
+        id: 'gimana',
+        indonesian_text: 'gimana',
+        l1_translation: 'hoe',
+        register: 'informal',
+        register_counterpart: 'bagaimana', // never taught as a standalone item — phrase-internal only
+      }),
+    ]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    const plan = out.perItemPlans[0]
+    const textRecog = plan.capabilities.find((c) => c.capabilityType === 'recognise_meaning_from_text_cap')!
+    const audio = plan.capabilities.find((c) => c.capabilityType === 'recognise_meaning_from_audio_cap')!
+    expect(textRecog.prerequisiteKeys).toEqual([])
+    expect(audio.prerequisiteKeys).toEqual([textRecog.canonicalKey])
+  })
+
+  it('forwards register + register_counterpart into learningItemInput', () => {
+    const rows: TypedItemRow[] = [
+      baseTypedRow({
+        indonesian_text: 'nggak',
+        l1_translation: 'niet',
+        register: 'informal',
+        register_counterpart: 'tidak',
+      }),
+    ]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    expect(out.perItemPlans[0].learningItemInput.register).toBe('informal')
+    expect(out.perItemPlans[0].learningItemInput.register_counterpart).toBe('tidak')
+  })
 })
