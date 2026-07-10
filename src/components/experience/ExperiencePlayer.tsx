@@ -166,6 +166,11 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
   const [skippedBlocks, setSkippedBlocks] = useState<Set<string>>(() => new Set())
   const [skippedCapabilityIds, setSkippedCapabilityIds] = useState<Set<string>>(() => new Set())
   const [correctCapabilityIds, setCorrectCapabilityIds] = useState<Set<string>>(() => new Set())
+  // First-attempt outcome per block, recorded once on the non-drill answer.
+  // Drives the recap's accuracy + per-onderdeel breakdown — a redrill later
+  // getting it right does NOT rewrite the first-try verdict (that's the whole
+  // point of "in één keer goed").
+  const [firstAttemptOutcomes, setFirstAttemptOutcomes] = useState<Map<string, 'correct' | 'fuzzy' | 'wrong'>>(() => new Map())
   const [commitFailedBlocks, setCommitFailedBlocks] = useState<Set<string>>(() => new Set())
   const [feedback, setFeedback] = useState<FeedbackState | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -197,6 +202,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
     setSkippedBlocks(new Set())
     setSkippedCapabilityIds(new Set())
     setCorrectCapabilityIds(new Set())
+    setFirstAttemptOutcomes(new Map())
     setCommitFailedBlocks(new Set())
     setFeedback(null)
     setMnemonicOverride(new Map())
@@ -267,6 +273,9 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
       }
       setSubmitting(false)
       setAnsweredBlocks(s => { const n = new Set(s); n.add(currentBlock.id); return n })
+      // Record the first-attempt verdict exactly once (this is the non-drill path).
+      const firstOutcome: 'correct' | 'fuzzy' | 'wrong' = wasCorrect ? 'correct' : report.isFuzzy ? 'fuzzy' : 'wrong'
+      setFirstAttemptOutcomes(m => { const n = new Map(m); n.set(currentBlock.id, firstOutcome); return n })
       if (commitFailed) {
         setCommitFailedBlocks(s => { const n = new Set(s); n.add(currentBlock.id); return n })
       }
@@ -336,6 +345,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
               answeredBlocks={answeredBlocks}
               skippedBlocks={skippedBlocks}
               commitFailedBlocks={commitFailedBlocks}
+              firstAttemptOutcomes={firstAttemptOutcomes}
               onExit={onExit}
               userLanguage={userLanguage}
               emptyReason={emptyReason}

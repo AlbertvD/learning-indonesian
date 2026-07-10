@@ -581,6 +581,8 @@ export const nl = {
     notFoundTitle: 'Pagina niet gevonden',
     notFoundMessage: 'De pagina die je zoekt bestaat niet.',
     goToDashboard: 'Ga naar dashboard',
+    levelPrefix: 'Niveau',
+    levelOther: 'Overig niveau',
   },
   podcast: {
     backToList: 'Terug naar overzicht',
@@ -697,10 +699,18 @@ export const nl = {
     reviewed: 'herhaald',
     introduced: 'geïntroduceerd',
     notTouched: 'niet aangeraakt',
-    kickerNotSaved: 'Niet opgeslagen',
-    kickerSkipped: 'Overgeslagen',
-    kickerReviewSaved: 'Herhaling opgeslagen',
-    kickerIntroStarted: 'Introductie gestart',
+    accuracy: 'Nauwkeurigheid',
+    firstTryCorrect: 'In één keer goed',
+    mistakes: 'Foutjes',
+    tallyCaption: (reviewed: number, introduced: number, untouched: number) =>
+      `${reviewed} herhaald · ${introduced} geïntroduceerd · ${untouched} niet aangeraakt`,
+    perSkill: 'Per onderdeel',
+    cardsCount: (n: number) => (n === 1 ? '1 kaart' : `${n} kaarten`),
+    breakdownSummary: (correct: number, total: number) => `${correct}/${total} in één keer goed`,
+    legendCorrect: 'goed',
+    legendClose: 'bijna',
+    legendWrong: 'fout',
+    legendRemaining: 'niet gedaan',
   },
 }
 
@@ -1284,6 +1294,8 @@ export const en: typeof nl = {
     notFoundTitle: 'Page not found',
     notFoundMessage: 'The page you are looking for does not exist.',
     goToDashboard: 'Go to dashboard',
+    levelPrefix: 'Level',
+    levelOther: 'Other level',
   },
   podcast: {
     backToList: 'Back to list',
@@ -1400,10 +1412,18 @@ export const en: typeof nl = {
     reviewed: 'reviewed',
     introduced: 'introduced',
     notTouched: 'not touched',
-    kickerNotSaved: 'Not saved',
-    kickerSkipped: 'Skipped',
-    kickerReviewSaved: 'Review saved',
-    kickerIntroStarted: 'Introduction started',
+    accuracy: 'Accuracy',
+    firstTryCorrect: 'First try',
+    mistakes: 'Slips',
+    tallyCaption: (reviewed: number, introduced: number, untouched: number) =>
+      `${reviewed} reviewed · ${introduced} introduced · ${untouched} not touched`,
+    perSkill: 'By skill',
+    cardsCount: (n: number) => (n === 1 ? '1 card' : `${n} cards`),
+    breakdownSummary: (correct: number, total: number) => `${correct}/${total} on the first try`,
+    legendCorrect: 'correct',
+    legendClose: 'close',
+    legendWrong: 'wrong',
+    legendRemaining: 'not done',
   },
 }
 

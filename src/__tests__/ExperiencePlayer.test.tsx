@@ -410,7 +410,6 @@ describe('ExperiencePlayer — stepwise shell', () => {
 
     expect(await screen.findByText(/2 van 3 vaardigheidskaarten zijn veilig opgeslagen/)).toBeInTheDocument()
     expect(screen.getByText('1 antwoord kon niet worden opgeslagen en telt niet mee voor je voortgang.')).toBeInTheDocument()
-    expect(screen.getByText('Niet opgeslagen')).toBeInTheDocument()
   })
 
   it('9a-plural. Two commit failures renders plural copy', async () => {
@@ -514,7 +513,7 @@ describe('ExperiencePlayer — stepwise shell', () => {
     expect(screen.getByText('Oefening 1 van 2')).toBeInTheDocument()
   })
 
-  it('13. Skip path advances without counting toward correct; shows Overgeslagen in recap', async () => {
+  it('13. Skip path advances without counting toward saved; skipped card is not counted as saved in recap', async () => {
     const user = userEvent.setup()
     const blocks = [makeBlock('b1', 'due_review'), makeBlock('b2', 'new_introduction')]
     const p = makePlan(blocks)
@@ -525,7 +524,9 @@ describe('ExperiencePlayer — stepwise shell', () => {
     expect(screen.getByText('Oefening 2 van 2')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Mark correct' }))
-    expect(await screen.findByText('Overgeslagen')).toBeInTheDocument()
+    // Only the answered card is saved (the skipped one is excluded), so the
+    // recap summary reads 1 of 2 — the skip does not count as saved.
+    expect(await screen.findByText(/1 van 2 vaardigheidskaarten zijn veilig opgeslagen/)).toBeInTheDocument()
   })
 
   it('14. Idempotency guard: rapid double-click calls onAnswer exactly once', async () => {
@@ -681,8 +682,9 @@ describe('ExperiencePlayer — in-session re-drill until correct', () => {
 
     // Session ends — skipped + correct caps cover all unique caps
     expect(await screen.findByRole('button', { name: 'Terug naar dashboard' })).toBeInTheDocument()
-    // Recap surfaces the skipped block as "Overgeslagen"
-    expect(screen.getByText('Overgeslagen')).toBeInTheDocument()
+    // Recap summary counts only the answered card as saved (1 of 2); the
+    // skipped card is not saved.
+    expect(screen.getByText(/1 van 2 vaardigheidskaarten zijn veilig opgeslagen/)).toBeInTheDocument()
   })
 
   it('R8. Header counter shows unique caps correct, not block answers', async () => {

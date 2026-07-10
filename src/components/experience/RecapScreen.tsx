@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
-import { Stack, Button, Text, Group, SimpleGrid } from '@mantine/core'
-import { HeroCard } from '@/components/page/primitives'
+import { Stack, Button, Text, SimpleGrid } from '@mantine/core'
+import { HeroCard, StatCard, SectionHeading } from '@/components/page/primitives'
 import { capabilityDisplay } from '@/lib/session-builder'
 import type { SessionBlock } from '@/lib/session-builder'
 import { translations } from '@/lib/i18n'
+import classes from './RecapScreen.module.css'
 
 // Why an empty session came up empty (ux audit MAJ-3, desktop program slice 3):
 // "no lesson active" needs a diagnosis + CTA to Leren; "caught up" is a
@@ -11,11 +12,18 @@ import { translations } from '@/lib/i18n'
 // copy (scoped modes and older callers).
 export type EmptySessionReason = 'no_active_lesson' | 'caught_up'
 
+/** First-attempt verdict per block id — the datum the recap accuracy + breakdown
+ *  are built from. A block with no entry was never answered (skipped / not reached). */
+export type FirstAttemptOutcome = 'correct' | 'fuzzy' | 'wrong'
+
 interface RecapScreenProps {
   renderableBlocks: SessionBlock[]
   answeredBlocks: Set<string>
   skippedBlocks: Set<string>
   commitFailedBlocks: Set<string>
+  /** First-attempt outcome per block id (ExperiencePlayer records it once, on the
+   *  non-drill answer). Optional so the empty-session callers need not pass it. */
+  firstAttemptOutcomes?: Map<string, FirstAttemptOutcome>
   // Leave the recap (navigate home). Completion is recorded by the player when
   // the cards run out, not here — so this is navigation only.
   onExit: () => void
@@ -23,11 +31,20 @@ interface RecapScreenProps {
   emptyReason?: EmptySessionReason
 }
 
+interface CapabilityTally {
+  label: string
+  total: number
+  correct: number
+  close: number
+  wrong: number
+}
+
 export function RecapScreen({
   renderableBlocks,
   answeredBlocks,
   skippedBlocks,
   commitFailedBlocks,
+  firstAttemptOutcomes = new Map(),
   onExit,
   userLanguage,
   emptyReason,
@@ -60,8 +77,6 @@ export function RecapScreen({
   }
 
   const effectiveTotal = renderableBlocks.length
-  const effectiveDueCount = renderableBlocks.filter(b => b.kind === 'due_review').length
-  const effectiveNewCount = renderableBlocks.filter(b => b.kind === 'new_introduction').length
 
   const savedBlocks = renderableBlocks.filter(
     b => answeredBlocks.has(b.id) && !skippedBlocks.has(b.id) && !commitFailedBlocks.has(b.id),
@@ -70,61 +85,119 @@ export function RecapScreen({
   const savedDue = savedBlocks.filter(b => b.kind === 'due_review').length
   const savedNew = savedBlocks.filter(b => b.kind === 'new_introduction').length
   const notTouched = Math.max(effectiveTotal - answeredBlocks.size, 0)
-
   const failedCount = commitFailedBlocks.size
+
+  // Accuracy is measured on FIRST attempts only (a redrill getting it right
+  // later doesn't rewrite the first-try verdict). `attempts` is the number of
+  // cards the learner actually answered (skips have no outcome).
+  const outcomeOf = (id: string) => firstAttemptOutcomes.get(id)
+  const attempts = firstAttemptOutcomes.size
+  const firstTryCorrect = renderableBlocks.filter(b => outcomeOf(b.id) === 'correct').length
+  const mistakes = attempts - firstTryCorrect
+  const accuracy = attempts > 0 ? Math.round((firstTryCorrect / attempts) * 100) : null
+
+  // Breakdown per capability, largest group first. Each block is counted once
+  // (renderableBlocks holds each capability's session block a single time).
+  const tallyMap = new Map<string, CapabilityTally>()
+  for (const b of renderableBlocks) {
+    const label = capabilityDisplay(b.renderPlan.capabilityType).label
+    const tally = tallyMap.get(label) ?? { label, total: 0, correct: 0, close: 0, wrong: 0 }
+    tally.total += 1
+    const outcome = outcomeOf(b.id)
+    if (outcome === 'correct') tally.correct += 1
+    else if (outcome === 'fuzzy') tally.close += 1
+    else if (outcome === 'wrong') tally.wrong += 1
+    tallyMap.set(label, tally)
+  }
+  const breakdown = [...tallyMap.values()].sort((a, b) => b.total - a.total)
+  const anyClose = breakdown.some(t => t.close > 0)
 
   return (
     <Stack gap="md" data-testid="session-recap">
       <HeroCard title={T.recap.completedTitle}>
         <Stack gap="xs">
-          <Text>
-            {T.recap.savedSummary(savedCount, effectiveTotal)}
-          </Text>
+          <Text>{T.recap.savedSummary(savedCount, effectiveTotal)}</Text>
           {failedCount === 1 && (
-            <Text c="dimmed" size="sm">
-              {T.recap.failedSingular}
-            </Text>
+            <Text c="dimmed" size="sm">{T.recap.failedSingular}</Text>
           )}
           {failedCount >= 2 && (
-            <Text c="dimmed" size="sm">
-              {T.recap.failedPlural(failedCount)}
-            </Text>
+            <Text c="dimmed" size="sm">{T.recap.failedPlural(failedCount)}</Text>
           )}
         </Stack>
       </HeroCard>
 
-      <SimpleGrid cols={3}>
-        <Group gap="xs" justify="center">
-          <Text fw={700}>{savedDue}/{effectiveDueCount}</Text>
-          <Text size="sm" c="dimmed">{T.recap.reviewed}</Text>
-        </Group>
-        <Group gap="xs" justify="center">
-          <Text fw={700}>{savedNew}/{effectiveNewCount}</Text>
-          <Text size="sm" c="dimmed">{T.recap.introduced}</Text>
-        </Group>
-        <Group gap="xs" justify="center">
-          <Text fw={700}>{notTouched}</Text>
-          <Text size="sm" c="dimmed">{T.recap.notTouched}</Text>
-        </Group>
+      <SimpleGrid cols={3} spacing="sm">
+        <StatCard
+          label={T.recap.accuracy}
+          value={
+            <span className={`${classes.metric} ${accuracy !== null && accuracy >= 80 ? classes.metricGood : ''}`}>
+              {accuracy !== null ? `${accuracy}%` : '—'}
+            </span>
+          }
+        />
+        <StatCard
+          label={T.recap.firstTryCorrect}
+          value={<span className={classes.metric}>{firstTryCorrect}<span className={classes.metricSub}>/ {attempts}</span></span>}
+        />
+        <StatCard
+          label={T.recap.mistakes}
+          value={<span className={`${classes.metric} ${mistakes > 0 ? classes.metricWarn : ''}`}>{mistakes}</span>}
+        />
       </SimpleGrid>
 
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-        {renderableBlocks.map(b => {
-          const kicker = commitFailedBlocks.has(b.id)
-            ? T.recap.kickerNotSaved
-            : skippedBlocks.has(b.id)
-              ? T.recap.kickerSkipped
-              : b.kind === 'due_review'
-                ? T.recap.kickerReviewSaved
-                : T.recap.kickerIntroStarted
+      <Text className={classes.tally}>
+        {T.recap.tallyCaption(savedDue, savedNew, notTouched)}
+      </Text>
+
+      <SectionHeading>{T.recap.perSkill}</SectionHeading>
+      <div className={classes.breakdown}>
+        {breakdown.map(tally => {
+          const pct = (n: number) => (tally.total > 0 ? (n / tally.total) * 100 : 0)
           return (
-            <li key={b.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
-              <Text size="sm" c="dimmed">{kicker}</Text>
-              <Text size="sm" fw={500}>{capabilityDisplay(b.renderPlan.capabilityType).label}</Text>
-            </li>
+            <div className={classes.row} key={tally.label}>
+              <div className={classes.rowHead}>
+                <span className={classes.rowLabel}>{tally.label}</span>
+                <span className={classes.rowCount}>{T.recap.cardsCount(tally.total)}</span>
+              </div>
+              <div
+                className={classes.bar}
+                role="img"
+                aria-label={`${tally.label}: ${T.recap.breakdownSummary(tally.correct, tally.total)}`}
+              >
+                {tally.correct > 0 && (
+                  <span className={`${classes.seg} ${classes.segCorrect}`} style={{ width: `${pct(tally.correct)}%` }} />
+                )}
+                {tally.close > 0 && (
+                  <span className={`${classes.seg} ${classes.segClose}`} style={{ width: `${pct(tally.close)}%` }} />
+                )}
+                {tally.wrong > 0 && (
+                  <span className={`${classes.seg} ${classes.segWrong}`} style={{ width: `${pct(tally.wrong)}%` }} />
+                )}
+              </div>
+              <span className={classes.rowSummary}>
+                {T.recap.breakdownSummary(tally.correct, tally.total)}
+              </span>
+            </div>
           )
         })}
-      </ul>
+      </div>
+
+      <div className={classes.legend}>
+        <span className={classes.legendItem}>
+          <span className={`${classes.swatch} ${classes.swatchCorrect}`} />{T.recap.legendCorrect}
+        </span>
+        {anyClose && (
+          <span className={classes.legendItem}>
+            <span className={`${classes.swatch} ${classes.swatchClose}`} />{T.recap.legendClose}
+          </span>
+        )}
+        <span className={classes.legendItem}>
+          <span className={`${classes.swatch} ${classes.swatchWrong}`} />{T.recap.legendWrong}
+        </span>
+        <span className={classes.legendItem}>
+          <span className={`${classes.swatch} ${classes.swatchRemaining}`} />{T.recap.legendRemaining}
+        </span>
+      </div>
 
       <Button onClick={onExit} fullWidth>
         {T.recap.backToDashboard}
