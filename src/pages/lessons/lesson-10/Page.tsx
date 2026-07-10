@@ -107,7 +107,7 @@ function RouteScene({ section }: { section: typeof sections[number] }) {
 
 // ─── 2. Vocabulary — lexicon of the road ───────────────────────────────────
 
-type Item = { dutch: string; indonesian: string; audioUrl?: string }
+type Item = { dutch: string; indonesian: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 
 function Lexicon({ section }: { section: typeof sections[number] }) {
   const c = section.content as { items: Item[] }
@@ -125,6 +125,7 @@ function Lexicon({ section }: { section: typeof sections[number] }) {
           <div key={i} className={classes.vocabChip}>
             <PlayButton src={item.audioUrl} />
             <span className={classes.vocabId}>{item.indonesian}</span>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <span className={classes.vocabSep} />
             <span className={classes.vocabNl}>{item.dutch}</span>
           </div>
@@ -148,6 +149,7 @@ function PartingFormula({ section }: { section: typeof sections[number] }) {
       <div className={classes.partingCard}>
         <div className={classes.partingExchange}>
           <span className={classes.partingId}>{item.indonesian}</span>
+          {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
           <PlayButton src={item.audioUrl} />
         </div>
         <p className={classes.partingNote}>{item.dutch}</p>

@@ -153,7 +153,7 @@ function GrammarSection({ section }: { section: typeof sections[number] }) {
 
 // ─── 3. Vocabulary — the lexicon of the temple ─────────────────────────────
 
-type Item = { dutch: string; indonesian: string; audioUrl?: string }
+type Item = { dutch: string; indonesian: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 
 function Lexicon({ section }: { section: typeof sections[number] }) {
   const c = section.content as { items: Item[] }
@@ -171,6 +171,7 @@ function Lexicon({ section }: { section: typeof sections[number] }) {
           <div key={i} className={classes.vocabChip}>
             <PlayButton src={item.audioUrl} />
             <span className={classes.vocabId}>{item.indonesian}</span>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <span className={classes.vocabSep} />
             <span className={classes.vocabNl}>{item.dutch}</span>
           </div>
