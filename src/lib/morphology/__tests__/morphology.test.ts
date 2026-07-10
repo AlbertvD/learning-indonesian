@@ -306,6 +306,21 @@ describe('buildAffixDetail', () => {
       'affixed_form_pairs/men-tulis',
     ])
   })
+
+  it('dedupes rule-card examples by derived form (the live table holds exact-duplicate pairs)', () => {
+    const snap = fixture()
+    // A second, exact-duplicate meN- pair for mengajar — as affixed_form_pairs
+    // currently does for many forms (e.g. berdua under ber-). The rule examples
+    // must still list mengajar ONCE, mirroring the word-family dedup.
+    snap.pairs = [
+      ...snap.pairs,
+      pair({ capabilityId: 'cap-men-ajar-dup', rootText: 'ajar', derivedText: 'mengajar', affix: 'meN-' }),
+    ]
+    snap.pairCapsById.set('cap-men-ajar-dup', cap({ id: 'cap-men-ajar-dup', sourceRef: 'affixed_form_pairs/men-ajar-dup', lessonId: L9 }))
+    const derived = buildAffixDetail(snap, 'meN-', 'nl', now)!.examples.map(e => e.derivedText)
+    expect(derived.filter(d => d === 'mengajar')).toHaveLength(1)
+    expect(new Set(derived).size).toBe(derived.length)
+  })
 })
 
 describe('practice launch', () => {
