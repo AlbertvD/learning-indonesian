@@ -57,6 +57,22 @@ describe('ListCard', () => {
     expect(chevron).toBeNull()
   })
 
+  it('renders both the meta node and the chevron when `meta` and `to` are passed', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <ListCard
+          icon={<span />}
+          title="Les 1"
+          to="/lesson/1"
+          meta={<span data-testid="custom-meta">B1</span>}
+        />
+      </MemoryRouter>,
+    )
+    expect(screen.getByTestId('custom-meta')).toBeInTheDocument()
+    const chevron = container.querySelector('svg.tabler-icon-chevron-right')
+    expect(chevron).not.toBeNull()
+  })
+
   it('renders an <a> root with href when `to` is provided', () => {
     render(
       <MemoryRouter>

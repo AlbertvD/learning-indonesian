@@ -51,6 +51,13 @@ export interface ListCardProps {
    */
   trailing?: ReactNode
   /**
+   * Metadata (level badge, duration, count) rendered in the trailing zone
+   * BEFORE the go-deeper chevron. Unlike `trailing` (which replaces the
+   * chevron), `meta` coexists with it — use on navigational rows that also
+   * carry a badge.
+   */
+  meta?: ReactNode
+  /**
    * If provided, the root renders as a React Router <Link> with this `to`
    * value — making the entire card a single clickable navigation surface.
    * If omitted, the root renders as a plain <div>.
@@ -69,7 +76,7 @@ export interface ListCardProps {
   feature?: boolean
 }
 
-export function ListCard({ icon, title, subtitle, trailing, to, tone = 'accent', feature = false }: ListCardProps) {
+export function ListCard({ icon, title, subtitle, trailing, meta, to, tone = 'accent', feature = false }: ListCardProps) {
   const content = (
     <>
       <div className={cx(classes.icon)}>{icon}</div>
@@ -78,7 +85,12 @@ export function ListCard({ icon, title, subtitle, trailing, to, tone = 'accent',
         {subtitle && <div className={cx(classes.subtitle)}>{subtitle}</div>}
       </div>
       <div className={cx(classes.trailing)}>
-        {trailing ?? <IconChevronRight size={16} />}
+        {trailing ?? (
+          <>
+            {meta && <span className={cx(classes.meta)}>{meta}</span>}
+            <IconChevronRight size={16} />
+          </>
+        )}
       </div>
     </>
   )

@@ -1,0 +1,19 @@
+/* bespoke-css-ok: Grammatica podcasts intentionally does NOT use ListCard —
+   this row has no navigation/chevron (plays inline, one tap) per the locked
+   design decision in docs/plans/2026-07-10-ontdek-card-nav-harmonization.md.
+   This module only mirrors ListCard's card chrome tokens (bg/border/radius/
+   teal medallion) so the surface reads as part of the same card family. */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+}
+.head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+.medallion {
+  width: 36px; height: 36px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background-color: var(--teal-subtle); color: var(--teal);
+  font-weight: var(--fw-semibold);
+}
+.player { width: 100%; display: block; }

@@ -1,6 +1,6 @@
 // src/pages/Podcasts.tsx
 import { useEffect, useState } from 'react'
-import { Group, Text, Badge } from '@mantine/core'
+import { Group, Text, Badge, SimpleGrid } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import {
   PageContainer,
@@ -57,7 +57,7 @@ export function Podcasts() {
     <PageContainer size="lg">
       <PageBody>
         <OntdekNav />
-        <PageHeader title={T.nav.podcasts} />
+        <PageHeader title={T.nav.podcasts} subtitle={T.ontdek.podcastsDesc} />
 
         {podcasts.length === 0 ? (
           <EmptyState
@@ -65,25 +65,27 @@ export function Podcasts() {
             message={T.podcast.noPodcasts}
           />
         ) : (
-          podcasts.map((podcast, i) => {
-            const duration = formatDuration(podcast.duration_seconds)
-            return (
-              <ListCard
-                key={podcast.id}
-                tone="gold"
-                to={`/podcast/${podcast.id}`}
-                icon={<Text fw={700} c="inherit">{String(i + 1).padStart(2, '0')}</Text>}
-                title={podcast.title}
-                subtitle={podcast.description ?? undefined}
-                trailing={(
-                  <Group gap={8}>
-                    {podcast.level && <Badge variant="light">{podcast.level}</Badge>}
-                    {duration && <Text size="sm" c="dimmed">{duration}</Text>}
-                  </Group>
-                )}
-              />
-            )
-          })
+          <SimpleGrid cols={{ base: 1 }} spacing="sm" mt="md">
+            {podcasts.map((podcast, i) => {
+              const duration = formatDuration(podcast.duration_seconds)
+              return (
+                <ListCard
+                  key={podcast.id}
+                  tone="gold"
+                  to={`/podcast/${podcast.id}`}
+                  icon={<Text fw={700} c="inherit">{String(i + 1).padStart(2, '0')}</Text>}
+                  title={podcast.title}
+                  subtitle={podcast.description ?? undefined}
+                  meta={(
+                    <Group gap={8}>
+                      {podcast.level && <Badge variant="light">{podcast.level}</Badge>}
+                      {duration && <Text size="sm" c="dimmed">{duration}</Text>}
+                    </Group>
+                  )}
+                />
+              )
+            })}
+          </SimpleGrid>
         )}
       </PageBody>
     </PageContainer>

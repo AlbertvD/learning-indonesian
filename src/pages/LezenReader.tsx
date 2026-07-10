@@ -1,8 +1,6 @@
 // src/pages/LezenReader.tsx
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { Anchor, Group } from '@mantine/core'
-import { IconArrowLeft } from '@tabler/icons-react'
+import { useParams } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
 import {
   PageContainer,
@@ -10,6 +8,7 @@ import {
   PageHeader,
   LoadingState,
 } from '@/components/page/primitives'
+import { BackLink } from '@/components/nav/BackLink'
 import { textService } from '@/services/textService'
 import { loadReader, harvestWord, type LoadedReader } from '@/lib/reading'
 import { GlossableText } from '@/components/reading'
@@ -76,11 +75,7 @@ export function LezenReader() {
   return (
     <PageContainer size="md">
       <PageBody>
-        <Group mb="sm">
-          <Anchor component={Link} to="/lezen" size="sm">
-            <Group gap={4}><IconArrowLeft size={16} />{T.reading.backToList}</Group>
-          </Anchor>
-        </Group>
+        <BackLink to="/lezen" label={T.reading.backToList} />
         {loading ? (
           <LoadingState />
         ) : reader ? (
