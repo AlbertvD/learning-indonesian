@@ -2,11 +2,14 @@
 // NOT a reusable pipeline (staff-engineer review): a throwaway that synthesises the
 // authored scripts and seeds them once. Do not promote to scripts/podcasts/.
 //
-// Flow: for each episode, synthesise every line with its own voice/language
-// (host lines in nl-NL/en-US; `id` example words via synthesizeSpeech so the
-// Chirp3-HD short-word→Wavenet fallback protects them), concatenate the per-line
-// MP3s into one episode, upload both to the `indonesian-podcasts` bucket, and
-// upsert ONE `texts` row with twin audio (audio_path=NL, audio_path_en=EN).
+// Flow: for each episode, synthesise every line with its own voice/language —
+// host lines as SSML documents on Chirp3-HD voices (nl-NL/en-US; the proven
+// Story-podcast path, scripts/podcasts/narrator.ts), `id` example words via
+// synthesizeSpeech so the Chirp3-HD short-word→Wavenet fallback protects them —
+// interleave a synthesised ~450 ms silence between all segments (turns must
+// not collide), concatenate into one episode, upload both to the
+// `indonesian-podcasts` bucket, and upsert ONE `texts` row with twin audio
+// (audio_path=NL, audio_path_en=EN).
 //
 // Run AFTER `make migrate` (needs texts.audio_path_en). Requires the gcloud TTS
 // service account (~/.config/gcloud/tts-indonesian.json) + SUPABASE_SERVICE_KEY.
@@ -15,7 +18,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { synthesizeSpeech } from '../lib/tts-client'
+import { synthesizeSpeech, synthesizeSsml } from '../lib/tts-client'
 import { EPISODES, type PodcastEpisode, type PodcastLine } from './pronunciation-podcast-scripts'
 
 const SUPABASE_URL = 'https://api.supabase.duin.home'
@@ -36,14 +39,34 @@ function voiceFor(line: PodcastLine, ep: PodcastEpisode): { voice: string; lang:
   return { voice: line.speaker === 'A' ? ep.voiceA : ep.voiceB, lang: langCodeOf(line.lang) }
 }
 
+const escapeXml = (text: string): string =>
+  text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;')
+
+// One synthesised inter-segment pause, reused between every pair of segments —
+// one mechanism for every gap (host→host, host→example, example→example).
+const GAP_SSML = '<speak><break time="450ms"/></speak>'
+
 // Naive MP3 concatenation (Buffer.concat) — adequate for a throwaway: all segments
 // are MP3 @ 24kHz mono from the same engine, which browsers play back fine. Hand-
-// check the result per ADR 0025.
-async function synthEpisode(ep: PodcastEpisode): Promise<Buffer> {
+// check the result per ADR 0025. Host lines go through the SSML path (each
+// authored line is a complete conversational turn — Chirp3-HD keeps natural
+// within-turn prosody); id example words keep the plain-text path so
+// effectiveVoiceFor's short-word fallback applies.
+async function synthEpisode(ep: PodcastEpisode, gap: Buffer): Promise<Buffer> {
   const buffers: Buffer[] = []
   for (const line of ep.lines) {
     const { voice, lang } = voiceFor(line, ep)
-    buffers.push(await synthesizeSpeech(line.text, voice, lang))
+    if (buffers.length > 0) buffers.push(gap)
+    buffers.push(
+      line.lang === 'id'
+        ? await synthesizeSpeech(line.text, voice, lang)
+        : await synthesizeSsml(`<speak>${escapeXml(line.text)}</speak>`, voice, lang),
+    )
   }
   return Buffer.concat(buffers)
 }
@@ -57,10 +80,12 @@ async function main(): Promise<void> {
   const en = EPISODES.find((e) => e.l1 === 'en')
   if (!nl || !en) throw new Error('expected both NL and EN episodes in EPISODES')
 
+  console.log('Synthesising inter-segment silence…')
+  const gap = await synthesizeSsml(GAP_SSML, nl.voiceA, 'nl-NL')
   console.log(`Synthesising NL episode (${nl.lines.length} lines)…`)
-  const nlMp3 = await synthEpisode(nl)
+  const nlMp3 = await synthEpisode(nl, gap)
   console.log(`Synthesising EN episode (${en.lines.length} lines)…`)
-  const enMp3 = await synthEpisode(en)
+  const enMp3 = await synthEpisode(en, gap)
 
   mkdirSync(LOCAL_AUDIO_DIR, { recursive: true })
   writeFileSync(resolve(LOCAL_AUDIO_DIR, 'pronunciation-nl.mp3'), nlMp3)
