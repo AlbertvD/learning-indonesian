@@ -24,6 +24,17 @@
 // legend; the top-left max label is skipped (a single ceiling number can't
 // speak for 4 bands). Rung names are the caller's concern (GrowthCurveCard
 // renders its own compact legend row below the chart).
+//
+// `belowSeries` (stacked mode only, voortgang-polish at-risk band) draws one
+// extra series BELOW the x-axis on the same px-per-unit scale as the forward
+// stack, so a word leaving the stack (lapsing) visibly moves from the "up"
+// half to the "down" half instead of just vanishing — forward-rungs-up +
+// at-risk-down accounts for every word. The axis line itself moves up to
+// `axisY` to leave room for the down half; everything about the forward
+// stack (band polygons, top strokes, right-edge labels) keeps using `yAt`'s
+// replacement `yUp`, which is `yAt` verbatim whenever `belowSeries` is absent
+// — so the no-below and single-series (DurabilityCard) paths are provably
+// unchanged.
 import { useId } from 'react'
 import classes from './TrendChart.module.css'
 
@@ -55,6 +66,10 @@ export interface TrendChartProps {
    *  bottom band) instead of independent lines. Draws right-edge count labels
    *  per band instead of the top-left max label. */
   stacked?: boolean
+  /** A single series drawn BELOW the x-axis, on a shared px-per-unit scale
+   *  with the forward `stacked` total — only meaningful when `stacked` is
+   *  true. Ignored otherwise. */
+  belowSeries?: TrendSeries
 }
 
 const W = 300
@@ -70,6 +85,7 @@ export function TrendChart({
   showMaxLabel = true,
   height = 120,
   stacked = false,
+  belowSeries,
 }: TrendChartProps) {
   const clipId = useId()
   const gradId = useId()
@@ -101,8 +117,28 @@ export function TrendChart({
   const yAt = (v: number) => PAD_Y + (1 - v / max) * (H - 2 * PAD_Y)
   const baseline = H - PAD_Y
 
+  // Below-axis band (stacked mode only): one shared px-per-unit `scale`
+  // between the forward stack (0..maxUp, drawn up from `axisY`) and
+  // `belowSeries` (0..maxDown, drawn down from `axisY`) — so a unit up and a
+  // unit down read as the same visual size. `axisY` moves up from the plot
+  // bottom to leave room for the down half. When `belowSeries` is absent,
+  // `axisY === baseline` and `yUp === yAt` exactly, so every consumer below
+  // that reads `yUp`/`axisY` instead of `yAt`/`baseline` is byte-for-byte
+  // unchanged in the no-below case.
+  const hasBelow = stacked && belowSeries != null
+  const maxUp = max
+  const maxDown = hasBelow
+    ? Math.max(1, ...belowSeries!.values.filter((v): v is number => v != null))
+    : 0
+  const scale = hasBelow ? (H - 2 * PAD_Y) / (maxUp + maxDown) : 0
+  const axisY = hasBelow ? PAD_Y + maxUp * scale : baseline
+  const yUp = hasBelow ? (v: number) => axisY - v * scale : yAt
+  const yDown = (v: number) => axisY + v * scale
+
   // Build one or more path segments per series, breaking on nulls.
-  const pathFor = (values: (number | null)[]): string => {
+  // `yFn` defaults to `yUp` (the forward-stack / non-stacked line direction);
+  // the below-axis band passes `yDown` explicitly.
+  const pathFor = (values: (number | null)[], yFn: (v: number) => number = yUp): string => {
     let d = ''
     let pen = false
     values.forEach((v, i) => {
@@ -110,7 +146,7 @@ export function TrendChart({
         pen = false
         return
       }
-      d += `${pen ? 'L' : 'M'}${xAt(i).toFixed(1)} ${yAt(v).toFixed(1)} `
+      d += `${pen ? 'L' : 'M'}${xAt(i).toFixed(1)} ${yFn(v).toFixed(1)} `
       pen = true
     })
     return d.trim()
@@ -144,15 +180,16 @@ export function TrendChart({
   // walks the cumulative-top boundary forward, then the previous-cumulative
   // (lower) boundary back, closing the polygon. `lower[i]` is only read where
   // `upper[i]` is non-null (guaranteed non-null there — see stackedCum above).
+  // Uses `yUp` (== `yAt` when `belowSeries` is absent) — forward-stack geometry.
   const stackedBandSegmentsFor = (lower: (number | null)[], upper: (number | null)[]): string[] => {
     const segments: string[] = []
     let run: { i: number; lo: number; hi: number }[] = []
     const flush = () => {
       if (run.length === 0) return
-      const top = run.map((p) => `L${xAt(p.i).toFixed(1)} ${yAt(p.hi).toFixed(1)}`).join(' ')
-      const bottom = [...run].reverse().map((p) => `L${xAt(p.i).toFixed(1)} ${yAt(p.lo).toFixed(1)}`).join(' ')
+      const top = run.map((p) => `L${xAt(p.i).toFixed(1)} ${yUp(p.hi).toFixed(1)}`).join(' ')
+      const bottom = [...run].reverse().map((p) => `L${xAt(p.i).toFixed(1)} ${yUp(p.lo).toFixed(1)}`).join(' ')
       const first = run[0]
-      segments.push(`M${xAt(first.i).toFixed(1)} ${yAt(first.lo).toFixed(1)} ${top} ${bottom} Z`)
+      segments.push(`M${xAt(first.i).toFixed(1)} ${yUp(first.lo).toFixed(1)} ${top} ${bottom} Z`)
       run = []
     }
     upper.forEach((hi, i) => {
@@ -166,12 +203,45 @@ export function TrendChart({
     return segments
   }
 
+  // One closed fill polygon per contiguous non-null run of the below-axis
+  // band — mirrors `stackedBandSegmentsFor`'s null-break rule, walking the
+  // 0-line (`axisY`) forward then the `yDown(value)` boundary back. Only
+  // meaningful when `hasBelow`.
+  const belowBandSegmentsFor = (values: (number | null)[]): string[] => {
+    const segments: string[] = []
+    let run: { i: number; v: number }[] = []
+    const flush = () => {
+      if (run.length === 0) return
+      const first = run[0]
+      const last = run[run.length - 1]
+      const edge = run.map((p) => `L${xAt(p.i).toFixed(1)} ${yDown(p.v).toFixed(1)}`).join(' ')
+      segments.push(
+        `M${xAt(first.i).toFixed(1)} ${axisY.toFixed(1)} ${edge} L${xAt(last.i).toFixed(1)} ${axisY.toFixed(1)} Z`,
+      )
+      run = []
+    }
+    values.forEach((v, i) => {
+      if (v == null) {
+        flush()
+        return
+      }
+      run.push({ i, v })
+    })
+    flush()
+    return segments
+  }
+
   const areaSeries = stacked ? [] : visible.filter((s) => s.area)
 
   // Right-edge stack labels: one per band, at the latest week where every
   // band has data, positioned at that band's cumulative vertical midpoint
-  // then nudged apart (top → bottom) so thin bands don't overlap.
+  // then nudged apart (top → bottom) so thin bands don't overlap. Uses `yUp`
+  // (== `yAt` when `belowSeries` is absent) and floors overflow at `axisY`
+  // (== `baseline` when absent) — forward-stack geometry.
   let stackLabels: { key: string; color: string; value: number; y: number }[] = []
+  // The at-risk band's single right-edge count label, at the same latest
+  // week as the forward-stack labels.
+  let belowLabel: { color: string; value: number; y: number } | null = null
   if (stacked) {
     let lastIdx = -1
     for (let i = n - 1; i >= 0; i--) {
@@ -185,7 +255,7 @@ export function TrendChart({
         .map((s, k) => {
           const lo = k === 0 ? 0 : (stackedCum[k - 1][lastIdx] ?? 0)
           const hi = stackedCum[k][lastIdx] ?? lo
-          return { key: s.key, color: s.color, value: s.values[lastIdx] ?? 0, y: yAt((lo + hi) / 2) }
+          return { key: s.key, color: s.color, value: s.values[lastIdx] ?? 0, y: yUp((lo + hi) / 2) }
         })
         .sort((a, b) => a.y - b.y)
       for (let i = 1; i < stackLabels.length; i++) {
@@ -193,9 +263,16 @@ export function TrendChart({
           stackLabels[i].y = stackLabels[i - 1].y + LABEL_MIN_GAP
         }
       }
-      const overflow = stackLabels.length ? stackLabels[stackLabels.length - 1].y - baseline : 0
+      const overflow = stackLabels.length ? stackLabels[stackLabels.length - 1].y - axisY : 0
       if (overflow > 0) {
         stackLabels = stackLabels.map((l) => ({ ...l, y: l.y - overflow }))
+      }
+
+      if (hasBelow) {
+        const belowValue = belowSeries!.values[lastIdx]
+        if (belowValue != null) {
+          belowLabel = { color: belowSeries!.color, value: belowValue, y: yDown(belowValue / 2) }
+        }
       }
     }
   }
@@ -220,8 +297,8 @@ export function TrendChart({
           </linearGradient>
         ))}
       </defs>
-      {/* baseline */}
-      <line x1={PAD_X} y1={baseline} x2={W - PAD_X} y2={baseline} className={classes.axis} />
+      {/* baseline — axisY (== plot bottom when there's no below-axis band) */}
+      <line x1={PAD_X} y1={axisY} x2={W - PAD_X} y2={axisY} className={classes.axis} />
       <g clipPath={`url(#${clipId})`}>
         {stacked ? (
           <>
@@ -236,6 +313,30 @@ export function TrendChart({
               if (!d) return null
               return <path key={`${s.key}-top`} d={d} fill="none" stroke={s.color} className={classes.line} />
             })}
+            {hasBelow &&
+              belowBandSegmentsFor(belowSeries!.values).map((d, i) => (
+                <path
+                  key={`${belowSeries!.key}-band-${i}`}
+                  d={d}
+                  fill={belowSeries!.color}
+                  fillOpacity={0.55}
+                  stroke="none"
+                />
+              ))}
+            {hasBelow &&
+              (() => {
+                const d = pathFor(belowSeries!.values, yDown)
+                if (!d) return null
+                return (
+                  <path
+                    key={`${belowSeries!.key}-edge`}
+                    d={d}
+                    fill="none"
+                    stroke={belowSeries!.color}
+                    className={classes.line}
+                  />
+                )
+              })()}
           </>
         ) : (
           <>
@@ -260,18 +361,34 @@ export function TrendChart({
           </>
         )}
       </g>
-      {stacked
-        ? stackLabels.map((l) => (
+      {stacked ? (
+        <>
+          {stackLabels.map((l) => (
             <text key={l.key} x={W - PAD_X} y={l.y} textAnchor="end" fill={l.color} className={classes.stackLabel}>
               {l.value}
             </text>
-          ))
-        : showMaxLabel &&
-          allValues.length > 0 && (
-            <text x={PAD_X} y={PAD_Y + 2} className={classes.maxLabel}>
-              {formatMax ? formatMax(max) : String(max)}
+          ))}
+          {belowLabel && (
+            <text
+              key={belowSeries!.key}
+              x={W - PAD_X}
+              y={belowLabel.y}
+              textAnchor="end"
+              fill={belowLabel.color}
+              className={classes.stackLabel}
+            >
+              {belowLabel.value}
             </text>
           )}
+        </>
+      ) : (
+        showMaxLabel &&
+        allValues.length > 0 && (
+          <text x={PAD_X} y={PAD_Y + 2} className={classes.maxLabel}>
+            {formatMax ? formatMax(max) : String(max)}
+          </text>
+        )
+      )}
     </svg>
   )
 }
