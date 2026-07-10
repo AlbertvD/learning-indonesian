@@ -308,11 +308,10 @@ export function TrendChart({
                 <path key={`${s.key}-band-${i}`} d={d} fill={s.color} fillOpacity={0.55} stroke="none" />
               ))
             })}
-            {visible.map((s, k) => {
-              const d = pathFor(stackedCum[k])
-              if (!d) return null
-              return <path key={`${s.key}-top`} d={d} fill="none" stroke={s.color} className={classes.line} />
-            })}
+            {/* No per-band top stroke: a zero-height band (e.g. mastered=0)
+                would draw a misleading colored line at the stack top (a green
+                "Zit erin" line where nothing is mastered). The fills + colors
+                carry the composition; the right-edge counts carry the values. */}
             {hasBelow &&
               belowBandSegmentsFor(belowSeries!.values).map((d, i) => (
                 <path
@@ -323,20 +322,6 @@ export function TrendChart({
                   stroke="none"
                 />
               ))}
-            {hasBelow &&
-              (() => {
-                const d = pathFor(belowSeries!.values, yDown)
-                if (!d) return null
-                return (
-                  <path
-                    key={`${belowSeries!.key}-edge`}
-                    d={d}
-                    fill="none"
-                    stroke={belowSeries!.color}
-                    className={classes.line}
-                  />
-                )
-              })()}
           </>
         ) : (
           <>
