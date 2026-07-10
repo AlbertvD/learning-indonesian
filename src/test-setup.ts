@@ -11,6 +11,14 @@ vi.stubEnv('VITE_SUPABASE_ANON_KEY', import.meta.env.VITE_SUPABASE_ANON_KEY || '
   disconnect() {}
 }
 
+// jsdom does not implement document.fonts (FontFaceSet) — Mantine v8's autosize
+// Textarea subscribes to its "loadingdone" event on mount.
+;(document as any).fonts = {
+  addEventListener: () => {},
+  removeEventListener: () => {},
+  ready: Promise.resolve(),
+}
+
 // jsdom does not implement window.matchMedia — Mantine v8's MantineProvider calls it on mount.
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
