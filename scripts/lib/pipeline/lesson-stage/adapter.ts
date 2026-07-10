@@ -257,6 +257,10 @@ export interface ItemRowInput {
   l2_translation: string | null
   /** Bet-1 §3.2 carrier — written to lesson_section_item_rows.loan_source_nl; null when absent. */
   loan_source_nl: string | null
+  /** Spreektaal §3.2 carrier — written to lesson_section_item_rows.register; null = formal/default. */
+  register: 'informal' | null
+  /** Spreektaal §3.2 carrier — base_text of the formal twin; null when register is null. */
+  register_counterpart: string | null
 }
 
 /** Replace lesson_section_item_rows for the lesson (lesson-scoped delete —

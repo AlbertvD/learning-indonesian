@@ -41,6 +41,13 @@ export const CAPABILITY_GATES = [
   // is flagged WARN here (not blocked). The hard Stage-A error (halt the publish
   // when a vocab word is unvoiced) is deferred to #165.
   'CS23', // item audio coverage (WARN — missing audio_clip for a word/phrase item)
+  // NOTE: CS24 (produce-exercise effectiveness, validators/grammarExerciseEffectiveness.ts)
+  // was wired into gate.ts without ever being added here — a pre-existing gap this
+  // entry closes (found while adding CS25 below; scripts/ has no tsc project
+  // coverage — see tsconfig.app.json's "include": ["src"] — so the literal-type
+  // mismatch on `gate: 'CS24'` was never caught).
+  'CS24', // produce-exercise effectiveness — a transform/translate exercise the runtime grader cannot actually grade (accepts the unchanged prompt or a "/" fragment). Judgment owned by @/lib/answerNormalization.
+  'CS25', // curated distractor register-twin guard (spreektaal §4) — a distractors row must never pair an answer item with its own formal/informal register twin (a second correct option disguised as wrong).
 ] as const
 
 export type CapabilityGate = typeof CAPABILITY_GATES[number]

@@ -30,6 +30,7 @@ function sections() {
         items: [
           { indonesian: 'kantor', dutch: 'kantoor', english: 'office', loanSourceNl: 'kantoor' }, // loanword → loan_source_nl set
           { indonesian: 'rumah sakit', dutch: 'ziekenhuis', english: 'hospital' }, // non-loan → loan_source_nl null
+          { indonesian: 'nggak', dutch: 'niet', english: 'not', register: 'informal', registerCounterpart: 'tidak' }, // spreektaal pair → register set
         ],
       },
     },
@@ -101,12 +102,29 @@ describe('projectSections', () => {
     ])
   })
 
-  it('harvests vocab items with item_type + per-occurrence source_item_ref + l1/l2 + loan_source_nl', () => {
+  it('harvests vocab items with item_type + per-occurrence source_item_ref + l1/l2 + loan_source_nl + register', () => {
     const vocab = out.itemRows.filter((r) => r.sourceSectionOrderIndex === 2)
     expect(vocab).toEqual([
-      { sourceSectionOrderIndex: 2, display_order: 0, source_item_ref: 'lesson-9/section-2/item-0', item_type: 'word', indonesian_text: 'kantor', l1_translation: 'kantoor', l2_translation: 'office', loan_source_nl: 'kantoor' },
-      { sourceSectionOrderIndex: 2, display_order: 1, source_item_ref: 'lesson-9/section-2/item-1', item_type: 'phrase', indonesian_text: 'rumah sakit', l1_translation: 'ziekenhuis', l2_translation: 'hospital', loan_source_nl: null },
+      { sourceSectionOrderIndex: 2, display_order: 0, source_item_ref: 'lesson-9/section-2/item-0', item_type: 'word', indonesian_text: 'kantor', l1_translation: 'kantoor', l2_translation: 'office', loan_source_nl: 'kantoor', register: null, register_counterpart: null },
+      { sourceSectionOrderIndex: 2, display_order: 1, source_item_ref: 'lesson-9/section-2/item-1', item_type: 'phrase', indonesian_text: 'rumah sakit', l1_translation: 'ziekenhuis', l2_translation: 'hospital', loan_source_nl: null, register: null, register_counterpart: null },
+      { sourceSectionOrderIndex: 2, display_order: 2, source_item_ref: 'lesson-9/section-2/item-2', item_type: 'word', indonesian_text: 'nggak', l1_translation: 'niet', l2_translation: 'not', loan_source_nl: null, register: 'informal', register_counterpart: 'tidak' },
     ])
+  })
+
+  it('non-informal register value on a staging item projects to null (only the literal string "informal" is honoured)', () => {
+    const out2 = projectSections({
+      lessonNumber: 9,
+      sections: [
+        {
+          order_index: 2,
+          content: {
+            type: 'vocabulary',
+            items: [{ indonesian: 'gue', dutch: 'ik', register: 'gaul' }],
+          },
+        },
+      ],
+    })
+    expect(out2.itemRows[0].register).toBeNull()
   })
 
   it('harvests ALL numbers items incl. composed numbers (named-number gate removed 2026-06-25)', () => {

@@ -62,6 +62,10 @@ import { validateItemPos, type ItemForPosCheck } from './validators/itemPos'
 import { validateItemCoverage, type ItemCapForCoverageCheck } from './validators/itemCoverage'
 import { validateItemDuplicates, type ItemDuplicatesInput } from './validators/itemDuplicates'
 import { validatePatternCoverage, type PatternCoverageInput } from './validators/patternCoverage'
+import {
+  validateNoRegisterTwinDistractors,
+  type DistractorRegisterTwinCheckRow,
+} from './validators/itemDistractorRegisterTwin'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -97,6 +101,8 @@ export interface ItemKindPostWriteInput {
   itemDuplicatesInput?: ItemDuplicatesInput
   /** Pattern typed-exercise coverage check input (for CS18, Slice 2). */
   patternCoverageInput?: PatternCoverageInput
+  /** Curated distractor register-twin check input (for CS25, spreektaal §4). */
+  distractorRegisterTwinInput?: DistractorRegisterTwinCheckRow[]
 }
 
 export interface CapabilityGatePostWriteInput
@@ -224,6 +230,16 @@ export async function runCapabilityGatePostWrite(
   // coverage. Optional — only present when the pattern path ran (usePatternPath).
   if (input.patternCoverageInput && input.patternCoverageInput.patternIdsBySlug.size > 0) {
     findings.push(...await validatePatternCoverage(supabase, input.patternCoverageInput))
+  }
+
+  // CS25 — curated distractor register-twin guard (spreektaal §4): no seeded
+  // distractors row may pair an answer item with its own register twin.
+  // distractorRegisterTwinInput is optional until a caller resolves + supplies
+  // the answer/distractor register columns (no live informal content exists
+  // yet — spreektaal build order steps 2/4/5 land the content this check
+  // protects; the check itself is wired now so it is never dead-on-arrival).
+  if (input.distractorRegisterTwinInput && input.distractorRegisterTwinInput.length > 0) {
+    findings.push(...validateNoRegisterTwinDistractors(input.distractorRegisterTwinInput))
   }
 
   return findings

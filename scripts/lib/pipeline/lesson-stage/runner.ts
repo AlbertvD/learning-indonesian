@@ -38,6 +38,7 @@ import {
 import { enrichMissingEnContent } from './enrichEnTranslations'
 import { projectSections, type AffixedPairInput } from './projectSections'
 import { cleanItemText } from '../../clean-item-text'
+import { itemSlug } from '@/lib/capabilities'
 import { writeLessonWithEnrichedSections } from './stagingWriteback'
 import { runLessonCountParity } from './verify/countParity'
 import { runLessonContentNonEmpty } from './verify/contentNonEmpty'
@@ -166,6 +167,13 @@ export async function runLessonStage(
     affixedPairs: staging.affixedFormPairs,
   })
 
+  // Spreektaal §3.2/§8: the phrase-anchored whitelist (register-pairs.ts's
+  // anchor_lesson-override rows, ~6 rows per §3.1) — tolerant of the file not
+  // existing yet (register-pairs.ts is authored in a parallel PR): missing
+  // file -> empty whitelist, every register='informal' row must then resolve
+  // its counterpart within THIS lesson's own item rows.
+  const phraseAnchoredWhitelist = await loadPhraseAnchoredWhitelist()
+
   // The Lesson Gate — one consolidated pre-write validator over the GT* family
   // (ADR 0013 §3). Runs AFTER enrichment so GT1/GT8/GT9 see populated values.
   // `mode` is the only knob: a real publish runs post-enrichment with
@@ -183,6 +191,7 @@ export async function runLessonStage(
       sections: staging.lesson.sections,
       projected,
       mode: input.dryRun ? 'pre-flight' : 'publish',
+      phraseAnchoredWhitelist,
     }),
   )
 
@@ -283,6 +292,8 @@ export async function runLessonStage(
       l1_translation: row.l1_translation,
       l2_translation: row.l2_translation,
       loan_source_nl: row.loan_source_nl,
+      register: row.register,
+      register_counterpart: row.register_counterpart,
     })
   }
   const itemRowCount = await replaceLessonSectionItemRows(
@@ -518,6 +529,34 @@ async function readStagingExport<T>(filePath: string): Promise<T | null> {
   const module = await import(`file://${filePath}`)
   const values = Object.values(module)
   return values.length > 0 ? (values[0] as T) : null
+}
+
+/** One authored row of scripts/data/register-pairs.ts (spec §3.1). Only the
+ *  fields this loader consumes are typed here — the artifact's full shape is
+ *  owned by the parallel PR that authors it. */
+interface RegisterPairEntry {
+  formal: string
+  informal: string
+  /** Present + truthy on the ~6 phrase-anchored rows (spec §3.1) whose
+   *  `formal` text is phrase-internal and never resolves to a standalone item. */
+  anchor_lesson?: number | string | null
+}
+
+/**
+ * Spreektaal §3.2/§8: tolerant loader for register-pairs.ts's phrase-anchored
+ * whitelist. Reuses readStagingExport's exists-check + dynamic-import pattern
+ * against a fixed repo-level path (not per-lesson staging) — missing file
+ * (register-pairs.ts not authored yet, a parallel PR) -> empty Set, never an
+ * error. Whitelist key = itemSlug(row.formal) — the phrase-internal
+ * counterpart text a register='informal' item row's register_counterpart
+ * would otherwise fail to resolve against this lesson's own item rows.
+ */
+async function loadPhraseAnchoredWhitelist(): Promise<Set<string>> {
+  const filePath = path.join(process.cwd(), 'scripts', 'data', 'register-pairs.ts')
+  const entries = (await readStagingExport<RegisterPairEntry[]>(filePath)) ?? []
+  return new Set(
+    entries.filter((e) => e.anchor_lesson != null && e.anchor_lesson !== '').map((e) => itemSlug(e.formal)),
+  )
 }
 
 function createSupabaseClient(): SupabaseClient {

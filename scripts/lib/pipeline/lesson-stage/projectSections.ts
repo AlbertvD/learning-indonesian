@@ -32,6 +32,10 @@ export interface ProjectedItemRow {
   l2_translation: string | null
   /** Bet-1 §3.2: Dutch source/cognate of a loanword (kantoor for kantor); null when absent. */
   loan_source_nl: string | null
+  /** Spreektaal §3.2: NULL = formal/default; 'informal' marks a spreektaal item. */
+  register: 'informal' | null
+  /** Spreektaal §3.2: base_text of the formal twin (e.g. 'tidak' on the nggak row); null otherwise. */
+  register_counterpart: string | null
 }
 
 export interface ProjectedGrammarCategory {
@@ -181,6 +185,8 @@ export function projectSections(input: ProjectSectionsInput): ProjectSectionsOut
           l1_translation: nonEmpty(item.dutch) ? (item.dutch as string).trim() : '',
           l2_translation: nonEmpty(item.english) ? (item.english as string).trim() : null,
           loan_source_nl: nonEmpty(item.loanSourceNl) ? (item.loanSourceNl as string).trim() : null,
+          register: item.register === 'informal' ? 'informal' : null,
+          register_counterpart: nonEmpty(item.registerCounterpart) ? (item.registerCounterpart as string).trim() : null,
         })
       })
     } else if (type === 'grammar') {

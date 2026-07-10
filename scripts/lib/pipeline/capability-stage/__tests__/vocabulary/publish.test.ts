@@ -30,6 +30,9 @@ function itemRow(indonesian_text: string, l1_translation: string): TypedItemRow 
     indonesian_text,
     l1_translation,
     l2_translation: null,
+    loan_source_nl: null,
+    register: null,
+    register_counterpart: null,
     section_kind: 'vocabulary',
   }
 }

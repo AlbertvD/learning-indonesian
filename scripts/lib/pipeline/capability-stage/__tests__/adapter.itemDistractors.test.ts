@@ -337,6 +337,8 @@ describe('upsertLearningItemIdempotent', () => {
       translation_nl: 'eten',
       translation_en: 'to eat',
       loan_source_nl: 'testbron', // Bet-1 §3.2 etymology carrier — flows into the insert payload
+      register: 'informal', // Spreektaal §3.2 — flows into the insert payload
+      register_counterpart: 'makanan-formal',
     }
     const result = await upsertLearningItemIdempotent(client, input)
     expect(result.normalized_text).toBe('makan')
@@ -349,6 +351,8 @@ describe('upsertLearningItemIdempotent', () => {
     expect(payload.translation_nl).toBe('eten')
     expect(payload.translation_en).toBe('to eat')
     expect(payload.loan_source_nl).toBe('testbron')
+    expect(payload.register).toBe('informal')
+    expect(payload.register_counterpart).toBe('makanan-formal')
     expect(payload.is_active).toBe(true)
   })
 
@@ -366,16 +370,20 @@ describe('upsertLearningItemIdempotent', () => {
       translation_nl: 'eten (nieuw)',
       translation_en: 'to eat (new)',
       loan_source_nl: 'etensbron', // §3.2: rewritten every publish like the translations
+      register: 'informal', // Spreektaal §3.2: rewritten every publish like the translations
+      register_counterpart: 'makanan-formal-nieuw',
     }
     await upsertLearningItemIdempotent(client, input)
     // UPDATE path: insertCalls must be empty, updateCalls carries the staging-rewritten columns
     expect(insertCalls).toHaveLength(0)
     expect(updateCalls).toHaveLength(1)
     const updatePayload = updateCalls[0] as Record<string, unknown>
-    // Staging-rewritten columns are refreshed (translations + etymology carrier)
+    // Staging-rewritten columns are refreshed (translations + etymology carrier + register)
     expect(updatePayload.translation_nl).toBe('eten (nieuw)')
     expect(updatePayload.translation_en).toBe('to eat (new)')
     expect(updatePayload.loan_source_nl).toBe('etensbron')
+    expect(updatePayload.register).toBe('informal')
+    expect(updatePayload.register_counterpart).toBe('makanan-formal-nieuw')
     // pos MUST NOT be in the update payload — DB-corrected pos is preserved
     expect('pos' in updatePayload).toBe(false)
     // Other capability-authored columns must not be in the update payload

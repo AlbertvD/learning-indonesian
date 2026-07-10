@@ -6,7 +6,7 @@ function clean(): ProjectSectionsOutput {
   return {
     sectionMeta: [],
     itemRows: [
-      { sourceSectionOrderIndex: 2, display_order: 0, source_item_ref: 'lesson-9/section-2/item-0', item_type: 'word', indonesian_text: 'kaki', l1_translation: 'voet', l2_translation: 'foot' },
+      { sourceSectionOrderIndex: 2, display_order: 0, source_item_ref: 'lesson-9/section-2/item-0', item_type: 'word', indonesian_text: 'kaki', l1_translation: 'voet', l2_translation: 'foot', loan_source_nl: null, register: null, register_counterpart: null },
     ],
     grammarCategories: [
       { sourceSectionOrderIndex: 4, display_order: 0, title: 'A-B-C', title_en: 'A-B-C', rules: ['r'], rules_en: ['r-en'], examples: [{ indonesian: 'Saya datang.', dutch: 'Ik kom.', english: 'I come.' }] },
@@ -70,5 +70,57 @@ describe('validateSectionShape (GT9)', () => {
     p.grammarCategories[0].rules_en = ['only-one']
     const findings = validateSectionShape(p)
     expect(findings.some((f) => /rules_en/.test(f.message))).toBe(true)
+  })
+
+  // -------------------------------------------------------------------------
+  // Spreektaal §3.2/§8 — register='informal' ⇒ register_counterpart resolves
+  // -------------------------------------------------------------------------
+
+  it('register=informal with a counterpart that resolves in this lesson passes', () => {
+    const p = clean()
+    p.itemRows.push({
+      sourceSectionOrderIndex: 2, display_order: 1, source_item_ref: 'lesson-9/section-2/item-1',
+      item_type: 'word', indonesian_text: 'nggak', l1_translation: 'niet', l2_translation: 'not',
+      loan_source_nl: null, register: 'informal', register_counterpart: 'kaki', // resolves: 'kaki' is itemRows[0]
+    })
+    expect(validateSectionShape(p)).toEqual([])
+  })
+
+  it('register=informal with a missing register_counterpart fails', () => {
+    const p = clean()
+    p.itemRows.push({
+      sourceSectionOrderIndex: 2, display_order: 1, source_item_ref: 'lesson-9/section-2/item-1',
+      item_type: 'word', indonesian_text: 'nggak', l1_translation: 'niet', l2_translation: 'not',
+      loan_source_nl: null, register: 'informal', register_counterpart: null,
+    })
+    const findings = validateSectionShape(p)
+    expect(findings.some((f) => f.gate === 'GT9' && f.severity === 'error' && /missing register_counterpart/.test(f.message))).toBe(true)
+  })
+
+  it('register=informal with a counterpart that resolves NOWHERE in the lesson and is NOT whitelisted fails', () => {
+    const p = clean()
+    p.itemRows.push({
+      sourceSectionOrderIndex: 2, display_order: 1, source_item_ref: 'lesson-9/section-2/item-1',
+      item_type: 'word', indonesian_text: 'gimana', l1_translation: 'hoe', l2_translation: 'how',
+      loan_source_nl: null, register: 'informal', register_counterpart: 'bagaimana', // never taught standalone
+    })
+    const findings = validateSectionShape(p)
+    expect(findings.some((f) => f.gate === 'GT9' && f.severity === 'error' && /does not resolve/.test(f.message))).toBe(true)
+  })
+
+  it('register=informal with a phrase-anchored counterpart in phraseAnchoredWhitelist passes', () => {
+    const p = clean()
+    p.itemRows.push({
+      sourceSectionOrderIndex: 2, display_order: 1, source_item_ref: 'lesson-9/section-2/item-1',
+      item_type: 'word', indonesian_text: 'gimana', l1_translation: 'hoe', l2_translation: 'how',
+      loan_source_nl: null, register: 'informal', register_counterpart: 'bagaimana',
+    })
+    const findings = validateSectionShape(p, { phraseAnchoredWhitelist: new Set(['bagaimana']) })
+    expect(findings).toEqual([])
+  })
+
+  it('register=null (formal item) is never subject to the register_counterpart check', () => {
+    const p = clean() // itemRows[0].register is undefined/null, no register_counterpart
+    expect(validateSectionShape(p)).toEqual([])
   })
 })
