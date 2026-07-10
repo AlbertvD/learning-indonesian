@@ -33,6 +33,7 @@ import { logError } from '@/lib/logger'
 import { supabase } from '@/lib/supabase'
 import { useAutoplay } from '@/contexts/AutoplayContext'
 import { useListening } from '@/contexts/ListeningContext'
+import { useSpreektaal } from '@/contexts/SpreektaalContext'
 
 // The edge function returns { error: <code> } on non-2xx. functions.invoke
 // never throws — it resolves { data: null, error: FunctionsHttpError } whose
@@ -53,6 +54,7 @@ export function Profile() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const { autoPlay, setAutoPlay } = useAutoplay()
   const { listeningEnabled, setListeningEnabled } = useListening()
+  const { spreektaalEnabled, setSpreektaalEnabled } = useSpreektaal()
   const isMobile = useMediaQuery('(max-width: 768px)') ?? false
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
@@ -346,6 +348,15 @@ export function Profile() {
             onChange={(e) => setListeningEnabled(e.currentTarget.checked)}
             size="md"
             label={T.profile.enableListeningExercises}
+          />
+        </SettingsCard>
+
+        <SettingsCard title={T.profile.spreektaal} description={T.profile.spreektaalDescription}>
+          <Switch
+            checked={spreektaalEnabled}
+            onChange={(e) => setSpreektaalEnabled(e.currentTarget.checked)}
+            size="md"
+            label={T.profile.enableSpreektaal}
           />
         </SettingsCard>
 
