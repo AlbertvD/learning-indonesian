@@ -51,7 +51,7 @@ type GrammarCategory = {
   examples?: Example[]
   table?: string[][]
 }
-type Item = { dutch: string; indonesian: string; audioUrl?: string }
+type Item = { dutch: string; indonesian: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 
 // ─── Inline play button ────────────────────────────────────────────────────
 
@@ -229,6 +229,7 @@ function VocabSection({ section }: { section: typeof sections[number] }) {
           <div key={i} className={classes.itemChip}>
             <PlayButton src={item.audioUrl} />
             <span className={classes.itemId}>{item.indonesian}</span>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <span className={classes.itemSep} />
             <span className={classes.itemNl}>{item.dutch}</span>
           </div>
