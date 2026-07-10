@@ -7,3 +7,12 @@
 .filter {
   max-width: 14rem;
 }
+
+/* Mobile: the lesson filter fills the width (owner request), matching the
+   full-width feel of the cards below it. */
+@media (max-width: 768px) {
+  .filter {
+    max-width: none;
+    width: 100%;
+  }
+}

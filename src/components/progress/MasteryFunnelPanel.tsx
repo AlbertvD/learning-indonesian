@@ -90,6 +90,15 @@ export function MasteryFunnelPanel({ userId, kind, unitLabel, footer, onAtRiskCl
           onChange={(value) => value && setScope(value)}
           allowDeselect={false}
           comboboxProps={{ withinPortal: false }}
+          // 16px input font stops iOS from auto-zooming on focus (owner report);
+          // green tint matches the success-green used by the ladder + cards.
+          styles={{
+            input: {
+              fontSize: '16px',
+              background: 'var(--success-subtle)',
+              borderColor: 'var(--success-border)',
+            },
+          }}
         />
       )}
       {/* key re-mounts so the ladder re-animates when the lesson filter changes */}

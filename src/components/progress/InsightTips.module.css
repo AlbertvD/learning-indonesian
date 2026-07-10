@@ -1,10 +1,13 @@
+/* bespoke-css-ok: mirrors the framework's card chrome tokens
+   (--card-bg/--card-border/--r-md) for visual parity with StatCard/
+   ActionCard, per the 2026-07-10 Voortgang chrome polish pass. Padding is
+   NOT added here — .header/.list already own their own inset (the header
+   is a full-width click target), so an outer padding would double-inset. */
 .card {
   margin-top: 0.75rem;
-  border-radius: 12px;
-  background: var(--surface-1, rgba(128, 128, 128, 0.05));
-  /* thin gradient spine — the same tamarind→success language as the funnel */
-  border-left: 3px solid transparent;
-  border-image: linear-gradient(180deg, var(--accent-primary), var(--success)) 1;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
   overflow: hidden;
 }
 
@@ -22,21 +25,17 @@
   font: inherit;
 }
 
-.bulb {
-  font-size: 1rem;
-  line-height: 1;
-}
-
 .title {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
   flex: 1;
 }
 
 .chevron {
   transition: transform 0.2s ease;
   color: var(--text-secondary, #868e96);
-  font-size: 0.7rem;
+  font-size: var(--fs-xs);
 }
 
 .chevron.open {
@@ -55,7 +54,7 @@
 .tip {
   display: flex;
   gap: 0.55rem;
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
   line-height: 1.4;
   color: var(--text-secondary, #495057);
   opacity: 0;

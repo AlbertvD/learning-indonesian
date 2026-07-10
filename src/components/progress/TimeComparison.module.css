@@ -4,18 +4,23 @@
   gap: 0.6rem;
 }
 
+/* bespoke-css-ok: mirrors the framework's card chrome tokens
+   (--card-bg/--card-border/--r-md) for visual parity with StatCard/
+   ActionCard, per the 2026-07-10 Voortgang chrome polish pass. */
 .card {
-  border-radius: 14px;
-  padding: 0.9rem;
-  background: var(--surface-1, rgba(128, 128, 128, 0.05));
-  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.16));
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
 
+/* Stat-tile eyebrow ("THIS WEEK" etc) — a micro label, not this card's
+   section title (the page header above the grid already carries that). */
 .label {
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--text-secondary, #868e96);
   text-transform: uppercase;
@@ -28,14 +33,18 @@
   gap: 0.3rem;
 }
 
+/* Big display number — same role as GroeiCard's .hero (display serif, one
+   consistent large token) so every stat figure in Voortgang reads the same. */
 .num {
-  font-size: 2rem;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
   line-height: 1;
 }
 
 .unit {
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   color: var(--text-secondary, #868e96);
 }
 
@@ -43,7 +52,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   padding: 0.12rem 0.45rem;
   border-radius: 999px;

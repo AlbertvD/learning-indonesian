@@ -22,8 +22,6 @@ const STOP_CLASS = [classes.s1, classes.s2, classes.s3, classes.s4]
 
 export function MasteryLadder({ funnel, unitLabel }: MasteryLadderProps) {
   const T = useT()
-  const usable = funnel.strengthening + funnel.mastered
-  const practising = funnel.learning + funnel.introduced
 
   const rungLabel: Record<(typeof RUNGS)[number], string> = {
     introduced: T.progress.ladderNetOntmoet,
@@ -34,15 +32,6 @@ export function MasteryLadder({ funnel, unitLabel }: MasteryLadderProps) {
 
   return (
     <div className={classes.wrap}>
-      <div className={classes.headline}>
-        <p className={classes.line}>{T.progress.ladderHeadline(usable, unitLabel)}</p>
-        <div className={classes.sub}>
-          <span><b className={classes.subNum}>{practising}</b> {T.progress.ladderSublinePractising}</span>
-          <span className={classes.dot}>·</span>
-          <span><b className={classes.subNum}>{funnel.mastered}</b> {T.progress.ladderSublineMastered}</span>
-        </div>
-      </div>
-
       <div className={classes.card}>
         <div className={classes.eyebrow}>
           <span>{T.progress.ladderEyebrow(unitLabel)}</span>
