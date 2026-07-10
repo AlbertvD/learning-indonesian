@@ -131,6 +131,10 @@ describe('AffixTrainer page', () => {
     // BackLink (shared nav component) replaces the old hand-rolled Anchor.
     const back = screen.getByRole('link', { name: /back to all affixes/i })
     expect(back).toHaveAttribute('href', '/morphology')
+    // LerenNav is NOT rendered on the detail view — its back-link/switcher to the
+    // Leren hub would be a redundant SECOND back affordance next to the BackLink
+    // above. So no link back to /leren remains on this page.
+    expect(screen.getAllByRole('link').some((a) => a.getAttribute('href') === '/leren')).toBe(false)
     // practice launches a scoped session with the affix in the URL.
     const practice = screen.getByRole('link', { name: /practise this affix/i })
     expect(practice).toHaveAttribute('href', '/session?mode=affix_practice&affix=meN-')
