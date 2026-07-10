@@ -425,6 +425,29 @@ describe('buildCuedRecall', () => {
       expect(r.exerciseItem.cuedRecallData?.options).not.toContain('salah-4')  // 4th excluded
     }
   })
+
+  // Spec docs/plans/2026-07-09-spreektaal-lesson-woven-core.md §4: the register
+  // twin (either direction) can never appear as a choose_form_ex distractor —
+  // two correct choices otherwise. recognitionMcq.ts needs no equivalent guard
+  // (its same-meaning dedup at :106 already drops the twin — architect r2).
+  it('excludes the answer item\'s register twin from the distractor pool (spec §4 — would otherwise be a second correct choice)', () => {
+    const pool = makePoolItems(5)
+    const twin = makeItem({
+      id: 'twin', base_text: 'nggak', normalized_text: 'nggak',
+      register: 'informal', register_counterpart: 'akhir', // 'akhir' == baseInput()'s answer item
+    })
+    const r = buildForExerciseType('choose_form_ex', baseInput({
+      poolItems: [...pool.items, twin],
+      poolMeaningsByItem: pool.meaningsByItem,
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      expect(r.exerciseItem.cuedRecallData?.options).toHaveLength(4)
+      expect(r.exerciseItem.cuedRecallData?.options).not.toContain('nggak')
+      // Unrelated pool items (no register link) remain eligible.
+      expect(r.exerciseItem.cuedRecallData?.options.some(o => o.startsWith('pool-base-'))).toBe(true)
+    }
+  })
 })
 
 describe('buildListeningMCQ', () => {

@@ -14,6 +14,8 @@ import { suppressGraduatedVocabDue } from '@/lib/session-builder/graduation'
 import { buildQueueDryingDiagnostic } from '@/lib/session-builder/drying'
 import { buryThinSiblings } from '@/lib/session-builder/siblingBury'
 import { excludeListeningCapabilities } from '@/lib/session-builder/listeningFilter'
+import { excludeSpreektaalCapabilities } from '@/lib/session-builder/spreektaalFilter'
+import { logError } from '@/lib/logger'
 import { isLessonScopedMode, isScopedMode, capabilityFamily } from '@/lib/session-builder/model'
 import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session-builder/model'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
@@ -441,6 +443,14 @@ export interface ForceCapabilityAdapter {
   }>
 }
 
+// Optional: supplies the informal-item source_ref set the spreektaal toggle
+// filters on (spreektaalFilter.ts). Absent from adapters that don't implement
+// it (e.g. most test doubles) — buildSession treats "no method" the same as
+// "no informal items" (both no-op the filter), same shape as ForceCapabilityAdapter.
+export interface SpreektaalRefsAdapter {
+  loadInformalItemSourceRefs(): Promise<Set<string>>
+}
+
 // Bypasses the planner; builds a single-card session for the named capability.
 // Used by the ?force_capability dev URL and scripts/force-capability-answer.ts.
 // Fail-loud: the snapshot loader throws CapabilityNotFoundError when the key does
@@ -521,7 +531,23 @@ export async function buildSession(input: {
   // before the planner runs — see listeningFilter.ts. The force-capability bypass
   // is intentionally exempt (a dev/admin override, not a learner session).
   listeningEnabled?: boolean
-  adapter: CapabilitySessionDataAdapter & Partial<ForceCapabilityAdapter>
+  // Profile "Spreektaal (informele woorden) oefenen" opt-out
+  // (src/lib/spreektaalPreferences.ts). Defaults to true (unset = spreektaal
+  // included) so existing callers/tests are unaffected. false strips every
+  // capability anchored to a register='informal' learning_items row from the
+  // snapshot before the planner runs — see spreektaalFilter.ts. Needs one extra
+  // small read (adapter.loadInformalItemSourceRefs) to learn which source_refs
+  // are informal, since register isn't part of the capability projection the way
+  // listening's modality field is — so unlike listeningEnabled, the read only
+  // happens when this flag is explicitly false. Both a pre-schema 400 (the
+  // register/register_counterpart columns don't exist yet — parallel schema PR,
+  // spec §3.2) and any post-schema transient read failure degrade OPEN below —
+  // toggling the switch off never fails the whole session build, it just fails
+  // to filter this once — but the failure is logged via logError (never
+  // silently swallowed, per CLAUDE.md Logging), so a real post-schema failure
+  // leaves a trace instead of quietly serving informal cards to an opted-out learner.
+  spreektaalEnabled?: boolean
+  adapter: CapabilitySessionDataAdapter & Partial<ForceCapabilityAdapter> & Partial<SpreektaalRefsAdapter>
 }): Promise<SessionPlan> {
   if (!input.enabled) {
     throw new Error('Capability standard session is disabled')
@@ -548,9 +574,25 @@ export async function buildSession(input: {
     selectedLessonId: input.selectedLessonId,
     selectedSourceRefs: input.selectedSourceRefs,
   })
-  const snapshot = input.listeningEnabled === false
+  const listeningFiltered = input.listeningEnabled === false
     ? excludeListeningCapabilities(rawSnapshot)
     : rawSnapshot
+
+  let snapshot = listeningFiltered
+  if (input.spreektaalEnabled === false) {
+    const informalRefs = input.adapter.loadInformalItemSourceRefs
+      ? await input.adapter.loadInformalItemSourceRefs().catch((err) => {
+          // Degrade open (no filtering) rather than fail the whole session build —
+          // but log it. Pre-schema this is an expected "column does not exist" 400
+          // (see the spreektaalEnabled doc above); post-schema it would be a real,
+          // actionable failure, and without this log a learner who opted out would
+          // silently get informal cards back with no trace anywhere.
+          logError({ page: 'session-builder', action: 'loadInformalItemSourceRefs', error: err })
+          return new Set<string>()
+        })
+      : new Set<string>()
+    snapshot = excludeSpreektaalCapabilities(listeningFiltered, informalRefs)
+  }
 
   return loadCapabilitySessionPlan({
     enabled: input.enabled,

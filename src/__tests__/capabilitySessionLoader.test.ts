@@ -1,9 +1,15 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { loadCapabilitySessionPlan, buildSession, type CapabilitySessionDataAdapter } from '@/lib/session-builder/builder'
 import type { LearnerCapabilityStateRow } from '@/lib/session-builder/dueFilter'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 import type { CapabilityReadiness } from '@/lib/capabilities'
 import { planLearningPath, type PlannerCapability, type PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
+import { logError } from '@/lib/logger'
+
+// The spreektaalEnabled ref-set read's failure path (below) logs via logError
+// rather than swallowing silently (CLAUDE.md Logging) — mocked so the assertion
+// doesn't depend on a real Supabase write succeeding in the test environment.
+vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
 
 const now = new Date('2026-04-25T10:00:00.000Z')
 const sourceRef = 'learning_items/item-1'
@@ -350,6 +356,145 @@ describe('capability session loader', () => {
 
       expect(plan.blocks.some(b => b.canonicalKeySnapshot === audioKey)).toBe(true)
       expect(plan.blocks.some(b => b.canonicalKeySnapshot === newIntroKey)).toBe(true)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === canonicalKey)).toBe(true)
+    })
+  })
+
+  // Spec docs/plans/2026-07-09-spreektaal-lesson-woven-core.md §5: the
+  // "Spreektaal (informele woorden) oefenen" Profile toggle, wired via
+  // buildSession's spreektaalEnabled param -> excludeSpreektaalCapabilities
+  // (spreektaalFilter.ts). Unlike listeningEnabled, register isn't part of the
+  // capability projection, so this needs one extra adapter read
+  // (loadInformalItemSourceRefs) to learn which source_refs are informal.
+  describe('spreektaalEnabled -- "Spreektaal (informele woorden) oefenen" opt-out', () => {
+    const informalKey = 'cap:v1:item:learning_items/nggak:recognise_meaning_from_text_cap:id_to_l1:text:nl'
+    const informalProjection = projectedCapability({
+      canonicalKey: informalKey,
+      sourceRef: 'learning_items/nggak',
+      capabilityType: 'recognise_meaning_from_text_cap',
+      skillType: 'recognise_mode',
+      requiredArtifacts: [],
+    })
+    const newIntroKey = 'cap:v1:item:learning_items/aja:recognise_meaning_from_text_cap:id_to_l1:text:nl'
+    const newIntroProjection = projectedCapability({
+      canonicalKey: newIntroKey,
+      sourceRef: 'learning_items/aja',
+      capabilityType: 'recognise_meaning_from_text_cap',
+      skillType: 'recognise_mode',
+      requiredArtifacts: [],
+    })
+
+    function adapterWithInformalAndFormal(
+      loadInformalItemSourceRefs: () => Promise<Set<string>>,
+    ): CapabilitySessionDataAdapter & { loadInformalItemSourceRefs: () => Promise<Set<string>> } {
+      return {
+        listLearnerCapabilityStates: async () => {
+          throw new Error('buildSession should use the full snapshot loader')
+        },
+        loadCapabilitySessionData: async request => ({
+          schedulerRows: [
+            activeState({ userId: request.userId }), // formal -- capability-1 / canonicalKey (default)
+            activeState({
+              userId: request.userId,
+              id: 'informal-state',
+              capabilityId: 'informal-capability',
+              canonicalKeySnapshot: informalKey,
+            }),
+          ],
+          plannerInput: {
+            userId: request.userId,
+            preferredSessionSize: request.preferredSessionSize,
+            dueCount: 0,
+            readyCapabilities: [plannerCapability({
+              id: 'informal-new-capability',
+              canonicalKey: newIntroKey,
+              sourceRef: newIntroProjection.sourceRef,
+              capabilityType: 'recognise_meaning_from_text_cap',
+              skillType: 'recognise_mode',
+            })],
+            learnerCapabilityStates: [],
+            activatedLessons: new Set<string>(),
+          },
+          capabilitiesByKey: new Map([
+            [canonicalKey, projectedCapability()],
+            [informalKey, informalProjection],
+            [newIntroKey, newIntroProjection],
+          ]),
+          readinessByKey: new Map([
+            [canonicalKey, { status: 'ready', allowedExercises: ['type_meaning_ex'] }],
+            [informalKey, { status: 'ready', allowedExercises: ['choose_meaning_ex'] }],
+            [newIntroKey, { status: 'ready', allowedExercises: ['choose_meaning_ex'] }],
+          ]),
+          currentLessonId: null,
+          nextLessonNeedsExposure: false,
+          reviewedTodayRefs: new Set<string>(),
+        }),
+        loadInformalItemSourceRefs,
+      }
+    }
+
+    it('excludes informal-item blocks (due + new-introduction) when the preference is off', async () => {
+      const plan = await buildSession({
+        enabled: true,
+        sessionId: 'session-1',
+        userId: 'user-1',
+        mode: 'standard',
+        now,
+        limit: 15,
+        preferredSessionSize: 15,
+        spreektaalEnabled: false,
+        adapter: adapterWithInformalAndFormal(async () => new Set(['learning_items/nggak', 'learning_items/aja'])),
+      })
+
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === informalKey)).toBe(false)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === newIntroKey)).toBe(false)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === canonicalKey)).toBe(true)
+    })
+
+    it('leaves informal-item blocks in the plan when the preference is on (default), and never reads the ref set', async () => {
+      let refsCalled = false
+      const plan = await buildSession({
+        enabled: true,
+        sessionId: 'session-1',
+        userId: 'user-1',
+        mode: 'standard',
+        now,
+        limit: 15,
+        preferredSessionSize: 15,
+        adapter: adapterWithInformalAndFormal(async () => {
+          refsCalled = true
+          return new Set(['learning_items/nggak', 'learning_items/aja'])
+        }),
+      })
+
+      expect(refsCalled).toBe(false)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === informalKey)).toBe(true)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === newIntroKey)).toBe(true)
+    })
+
+    it('degrades to a no-op (does not throw, does not filter) when the ref-set read fails -- merge-safety before the register/register_counterpart columns exist -- and logs it (never silently swallowed)', async () => {
+      vi.mocked(logError).mockClear()
+      const readError = new Error('column "register" does not exist')
+      const plan = await buildSession({
+        enabled: true,
+        sessionId: 'session-1',
+        userId: 'user-1',
+        mode: 'standard',
+        now,
+        limit: 15,
+        preferredSessionSize: 15,
+        spreektaalEnabled: false,
+        adapter: adapterWithInformalAndFormal(async () => {
+          throw readError
+        }),
+      })
+
+      expect(vi.mocked(logError)).toHaveBeenCalledWith(expect.objectContaining({
+        page: 'session-builder',
+        action: 'loadInformalItemSourceRefs',
+        error: readError,
+      }))
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === informalKey)).toBe(true)
       expect(plan.blocks.some(b => b.canonicalKeySnapshot === canonicalKey)).toBe(true)
     })
   })

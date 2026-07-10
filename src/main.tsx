@@ -10,6 +10,7 @@ import App from './App'
 import { useAuthStore } from '@/stores/authStore'
 import { AutoplayProvider } from '@/contexts/AutoplayContext'
 import { ListeningProvider } from '@/contexts/ListeningContext'
+import { SpreektaalProvider } from '@/contexts/SpreektaalContext'
 
 // Layer declaration must load FIRST — before any layered stylesheet — so the
 // declared order (`@layer mantine, exercises;`) governs the cascade.
@@ -355,7 +356,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <AppErrorBoundary>
           <AutoplayProvider>
             <ListeningProvider>
-              <App />
+              <SpreektaalProvider>
+                <App />
+              </SpreektaalProvider>
             </ListeningProvider>
           </AutoplayProvider>
         </AppErrorBoundary>
