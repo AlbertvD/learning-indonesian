@@ -24,6 +24,15 @@
  *              variant_text, language) DO NOTHING` — additive, re-runnable,
  *              never resurrects a DB-authored is_accepted=false rejection.
  *
+ *              apply ALSO folds in a SECOND, deterministic candidate source —
+ *              the register-pairs intersection report (docs/plans/2026-07-09
+ *              -spreektaal-lesson-woven-core.md §7, build order step 5): no
+ *              LLM call, a closed list, read from the committed
+ *              `scripts/data/register-pairs-intersection.json`. It feeds the
+ *              SAME validate/dedupe/report/upsert pipeline below as one more
+ *              source, not a parallel code path — see
+ *              `scripts/lib/registerPairVariants.ts` for the pure mapper.
+ *
  * The artifact IS the seed input, not a second source of truth — the DB stays
  * authoritative after seeding (ADR 0011); it is committed so the candidate set
  * is reviewable (like a PR diff) before `apply` ever touches the DB.
@@ -50,8 +59,17 @@ import {
   type CandidateVariant,
   type ItemForDistractorResolution,
 } from './lib/answerVariants'
+import {
+  mapRegisterPairsToCandidates,
+  registerPairSlugVariants,
+  type RegisterPairIntersectionReport,
+} from './lib/registerPairVariants'
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+// Do NOT set NODE_TLS_REJECT_UNAUTHORIZED='0' here — that disables TLS
+// verification against the live Supabase DB. If your Node/bun trust store
+// doesn't already have the homelab's internal CA, pass
+// NODE_EXTRA_CA_CERTS=<path to that CA's root> on the command line instead
+// (same convention as scripts/register-pairs-report.ts / check-supabase-deep.ts).
 
 function loadEnv(): void {
   if (!fs.existsSync('.env.local')) return
@@ -63,6 +81,7 @@ function loadEnv(): void {
 loadEnv()
 
 const DEFAULT_ARTIFACT_PATH = 'scripts/data/answer-variants-seed.json'
+const REGISTER_PAIRS_INTERSECTION_PATH = 'scripts/data/register-pairs-intersection.json'
 const MODEL = 'claude-sonnet-4-6'
 const GENERATE_BATCH_SIZE = 20
 const INSERT_CHUNK_SIZE = 500
@@ -233,8 +252,18 @@ async function runGenerate(): Promise<void> {
 }
 
 // ============================================================================
-// APPLY — deterministic. Reads the artifact; NEVER calls the LLM.
+// APPLY — deterministic. Reads the artifact + the register-pairs intersection
+// report; NEVER calls the LLM.
 // ============================================================================
+
+/** Tolerant of the file not existing (mirrors check-supabase-deep.ts's
+ *  HC45 loader) — register-pairs is an independent, parallel-landed artifact
+ *  (spec §9: "steps 5 and 6 are independent of 4"), so `apply` must keep
+ *  working before/without it. */
+function loadRegisterPairIntersection(filePath: string): RegisterPairIntersectionReport | null {
+  if (!fs.existsSync(filePath)) return null
+  return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as RegisterPairIntersectionReport
+}
 
 async function runApply(): Promise<void> {
   const inPath = arg('in') ?? DEFAULT_ARTIFACT_PATH
@@ -289,6 +318,35 @@ async function runApply(): Promise<void> {
     return out
   }
 
+  // Register-pairs source (spec §7, build order step 5): a second,
+  // deterministic candidate source, no LLM, closed list. Resolves each core
+  // pair's formal twin against the live DB and produces one
+  // item_answer_variants candidate per resolved pair — see
+  // scripts/lib/registerPairVariants.ts for the pure mapper. Kept as its own
+  // bucket rather than folded into `deduped` above so it never drags the
+  // register-pair items through the nl/en distractor-collision machinery
+  // below (those checks are meaningless for language='id' rows, which
+  // already bypass them via `otherCandidates`).
+  const registerPairIntersection = loadRegisterPairIntersection(REGISTER_PAIRS_INTERSECTION_PATH)
+  let registerPairCandidates: CandidateVariant[] = []
+  if (registerPairIntersection === null) {
+    console.log(`  register-pairs: SKIPPED — ${REGISTER_PAIRS_INTERSECTION_PATH} not found`)
+  } else {
+    const formalSlugs = [...new Set(registerPairIntersection.pairs.flatMap((p) => registerPairSlugVariants(p.formal)))]
+    const formalItemRows = await chunkedIn<{ id: string; normalized_text: string }>(
+      'learning_items', 'id, normalized_text', 'normalized_text', formalSlugs,
+    )
+    const formalItemIdBySlug = new Map(formalItemRows.map((r) => [r.normalized_text, r.id]))
+    const { candidates, unresolved } = mapRegisterPairsToCandidates(registerPairIntersection.pairs, formalItemIdBySlug)
+    registerPairCandidates = dedupeCandidates(candidates)
+    console.log(
+      `  register-pairs: ${registerPairCandidates.length} candidate(s) resolved from ${registerPairIntersection.pairs.length} core pair(s)` +
+      (unresolved.length > 0
+        ? `, ${unresolved.length} unresolved (formal twin not live: ${unresolved.slice(0, 5).map((p) => p.formal).join(', ')}${unresolved.length > 5 ? ' …' : ''})`
+        : ''),
+    )
+  }
+
   const itemIds = [...new Set(deduped.map((c) => c.learningItemId))]
   const items = await chunkedIn<{ id: string; normalized_text: string; base_text: string; translation_nl: string | null; translation_en: string | null }>(
     'learning_items', 'id, normalized_text, base_text, translation_nl, translation_en', 'id', itemIds,
@@ -325,7 +383,7 @@ async function runApply(): Promise<void> {
   const distractorTextsEn = buildDistractorTextsByItem(capabilityRows, distractorPointerRows, distractorItemById, 'en')
 
   // Corpus-wide false-accept guard: a candidate whose text is the accepted
-  // answer of a DIFFERENT item would credit the learner for another word's
+  // answer of a DIFFERENT item would credit the learner for another item's
   // meaning (e.g. `lapangan -> "square"` vs `alun-alun` = "square"). The
   // per-item distractor check above structurally can't see this. Fetch the
   // WHOLE item corpus (paginated — a plain select caps at 1000 rows in
@@ -347,7 +405,10 @@ async function runApply(): Promise<void> {
 
   const nlCandidates = deduped.filter((c) => c.language === 'nl')
   const enCandidates = deduped.filter((c) => c.language === 'en')
-  const otherCandidates = deduped.filter((c) => c.language !== 'nl' && c.language !== 'en')
+  const otherCandidates = [
+    ...deduped.filter((c) => c.language !== 'nl' && c.language !== 'en'),
+    ...registerPairCandidates,
+  ]
 
   // Two-stage drop per language: own-distractor collision, then corpus collision.
   const nlDist = dropDistractorCollisions(nlCandidates, distractorTextsNl)
