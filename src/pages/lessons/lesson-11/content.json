@@ -285,7 +285,9 @@
           {
             "dutch": "moeilijk(heden)",
             "english": "difficult",
+            "register": "informal",
             "indonesian": "susah",
+            "registerCounterpart": "sulit",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/susah-e29746fa.mp3"
           },
           {

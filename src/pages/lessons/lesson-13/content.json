@@ -317,6 +317,14 @@
             "english": "chat",
             "indonesian": "obrol",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/obrol-9619a924.mp3"
+          },
+          {
+            "dutch": "wisselen",
+            "english": "exchange",
+            "register": "informal",
+            "indonesian": "tuker",
+            "registerCounterpart": "tukar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tuker-499b93cd.mp3"
           }
         ]
       }

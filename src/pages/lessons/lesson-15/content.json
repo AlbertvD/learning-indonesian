@@ -71,6 +71,7 @@
             "dutch": "Javaans orkest",
             "english": "Javanese orchestra",
             "indonesian": "gamelan",
+            "loanSourceNl": "gamelan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gamelan-a6862cb0.mp3"
           },
           {
@@ -94,7 +95,9 @@
           {
             "dutch": "slecht / lelijk",
             "english": "bad / ugly",
+            "register": "informal",
             "indonesian": "jelek",
+            "registerCounterpart": "buruk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jelek-7547ca8d.mp3"
           },
           {
@@ -143,6 +146,7 @@
             "dutch": "lamp",
             "english": "lamp",
             "indonesian": "lampu",
+            "loanSourceNl": "lamp",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lampu-d51fc225.mp3"
           },
           {
@@ -318,6 +322,14 @@
             "english": "theater / shadow puppet play",
             "indonesian": "wayang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/wayang-7d4cd1a2.mp3"
+          },
+          {
+            "dutch": "tellen",
+            "english": "count",
+            "register": "informal",
+            "indonesian": "itung",
+            "registerCounterpart": "hitung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/itung-b0b3abcf.mp3"
           }
         ]
       }

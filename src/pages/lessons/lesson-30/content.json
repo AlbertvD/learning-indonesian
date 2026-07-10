@@ -52,6 +52,7 @@
             "dutch": "dapper / moedig",
             "english": "brave / courageous",
             "indonesian": "berani",
+            "loanSourceNl": "branie",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/berani-31838665.mp3"
           },
           {
@@ -269,6 +270,14 @@
             "english": "timbul, menimbul | appear",
             "indonesian": "timbul, menimbul",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/timbul-menimbul-9ec2e8b3.mp3"
+          },
+          {
+            "dutch": "begrijpen",
+            "english": "understand",
+            "register": "informal",
+            "indonesian": "ngerti",
+            "registerCounterpart": "mengerti",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ngerti-d586227a.mp3"
           }
         ]
       }

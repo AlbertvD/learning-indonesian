@@ -192,7 +192,9 @@
             "dutch": "kletsen",
             "english": "chat",
             "indonesian": "ngomong",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ngomong-a5c66803.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ngomong-a5c66803.mp3",
+            "register": "informal",
+            "registerCounterpart": "bicara"
           },
           {
             "dutch": "kant",
@@ -319,6 +321,14 @@
             "english": "step",
             "indonesian": "langkah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/langkah-8a92df2c.mp3"
+          },
+          {
+            "dutch": "horen",
+            "english": "hear",
+            "register": "informal",
+            "indonesian": "denger",
+            "registerCounterpart": "dengar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/denger-062362cc.mp3"
           }
         ]
       }

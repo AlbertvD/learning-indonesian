@@ -439,6 +439,7 @@
             "dutch": "universiteit",
             "english": "university",
             "indonesian": "universitas",
+            "loanSourceNl": "universiteit",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/universitas-4357790b.mp3"
           },
           {
@@ -512,6 +513,30 @@
             "english": "last",
             "indonesian": "terakhir",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/terakhir-1d3e309e.mp3"
+          },
+          {
+            "dutch": "druk, levendig",
+            "english": "busy, lively",
+            "register": "informal",
+            "indonesian": "rame",
+            "registerCounterpart": "ramai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rame-def83861.mp3"
+          },
+          {
+            "dutch": "dichtbij",
+            "english": "nearby",
+            "register": "informal",
+            "indonesian": "deket",
+            "registerCounterpart": "dekat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/deket-e39dc12f.mp3"
+          },
+          {
+            "dutch": "onthouden",
+            "english": "remember",
+            "register": "informal",
+            "indonesian": "inget",
+            "registerCounterpart": "ingat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/inget-e55ffc03.mp3"
           }
         ]
       }

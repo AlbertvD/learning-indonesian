@@ -170,7 +170,9 @@
           {
             "dutch": "lachen",
             "english": "laugh",
+            "register": "informal",
             "indonesian": "ketawa",
+            "registerCounterpart": "tertawa",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ketawa-8dd4d4e7.mp3"
           },
           {
@@ -231,6 +233,7 @@
             "dutch": "zalf",
             "english": "ointment",
             "indonesian": "salep",
+            "loanSourceNl": "zalf",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/salep-ad8b0fab.mp3"
           },
           {

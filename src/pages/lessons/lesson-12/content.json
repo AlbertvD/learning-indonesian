@@ -134,7 +134,9 @@
           {
             "dutch": "voor, t.b.v.",
             "english": "for",
+            "register": "informal",
             "indonesian": "buat",
+            "registerCounterpart": "untuk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/buat-a5d167c7.mp3"
           },
           {
@@ -171,6 +173,7 @@
             "dutch": "kaartje",
             "english": "ticket",
             "indonesian": "karcis",
+            "loanSourceNl": "kaartjes",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/karcis-b9dbd1a0.mp3"
           },
           {
@@ -230,7 +233,9 @@
           {
             "dutch": "niet, nee",
             "english": "not, no",
+            "register": "informal",
             "indonesian": "nggak",
+            "registerCounterpart": "tidak",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nggak-c8320e7b.mp3"
           },
           {
@@ -303,6 +308,7 @@
             "dutch": "station",
             "english": "station",
             "indonesian": "stasiun",
+            "loanSourceNl": "station",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/stasiun-daafc10e.mp3"
           },
           {
@@ -364,6 +370,14 @@
             "english": "west",
             "indonesian": "barat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/barat-d85129be.mp3"
+          },
+          {
+            "dutch": "zo (als dit)",
+            "english": "like this",
+            "register": "informal",
+            "indonesian": "gini",
+            "registerCounterpart": "begini",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gini-712c6954.mp3"
           }
         ]
       }
