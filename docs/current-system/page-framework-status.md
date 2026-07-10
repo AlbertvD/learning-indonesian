@@ -19,6 +19,7 @@ Located at `src/components/page/primitives/`. 14 primitives, each with its own C
 | `ListCard` | Horizontal row card: icon/title/subtitle/trailing. Switches between `<Link>` and `<div>` based on `to`. |
 | `ActionCard` | Tone-driven (`accent`/`warning`/`danger`) prominent CTA card with left border + larger icon. |
 | `MediaShowcaseCard` | Visual-forward card: banner slot + body (eyebrow/title/subtitle/tags/status/CTA). Added 2026-05-01 to drive the Lessons travel-journal redesign. Supports `featured` and `disabled` variants. |
+| `MediaPlayerCard` | Inline-media row card: medallion + title/subtitle head + a caller-owned player slot (nested `<audio>` stretched full-width). Extracted 2026-07-10 (uitspraak-harmonization) from the grammar-podcast row at its second occurrence (the pronunciation podcast panel). Deliberately nav-free — no chevron, no `to` (the locked ontdek card-nav decision). |
 | `SettingsCard` | Titled card for settings/forms. Absorbs 8× inline `<Paper p="xl"><Stack><Title order={4}>` pattern. Gained an additive, optional `aside` slot 2026-07-10 (affix-trainer-harmonization) — a trailing element beside the title (badges, a small control); omitted → byte-identical markup to every pre-existing caller. See Deviations below. |
 | `StatusPill` | Tone-driven pill: `success`/`warning`/`danger`/`accent`/`neutral`. |
 | `EmptyState` | Centered icon + message + optional CTA. |
@@ -47,6 +48,7 @@ Located at `src/components/page/primitives/`. 14 primitives, each with its own C
 | SectionCoverage (admin coverage tool) | ✅ on framework | 2026-05-01 (`8f79451`) |
 | Session (practice page chrome) | ✅ on framework | 2026-05-01 (`22d1a88`) |
 | Affix Trainer detail (`AffixDetailView`/`RuleCard`/`WordFamilyExplorer`, under `/morphology`) | ✅ on framework | 2026-07-10 (affix-trainer-harmonization) — page chrome (`PageContainer`/`PageBody`/`PageHeader`) was already on the framework; this pass moved the detail sub-view off a bespoke `<Anchor>+IconArrowLeft` header and raw Mantine `<Card>`s onto `BackLink` + `PageHeader` + `SettingsCard` (via its new `aside` slot). `WordFamilyExplorer` stays a domain component (LessonCard-pattern token-only CSS, not a new primitive — a dense repeating root list doesn't fit `SettingsCard`'s 32px padding). |
+| Uitspraak trainer (`/pronunciation`: `PitfallCard`/`MinimalPairPlayer`/`EarQuiz`/`ShadowControl`/`DialogueShadowSection` + podcast panel) | ✅ on framework | 2026-07-10 (uitspraak-harmonization) — page chrome was already on the framework; this pass moved every card off raw Mantine `<Card>`/`<Paper>` chrome: podcast panel → the extracted `MediaPlayerCard` (also adopted by GrammarPodcasts, whose bespoke module was deleted), `DialogueShadowSection` → `SettingsCard`, `PitfallCard` → LessonCard-pattern token card, pair/quiz rows → tokened inset sub-rows, status colors → `--success`/`--danger` tokens. |
 | `/admin/page-lab` | ✅ — framework's own demo route | n/a |
 | `/admin/design-lab` | ⚪ exercise-framework demo (not page-framework target) | n/a |
 | `AdminGuard` | ⚪ wrapper component with no chrome to migrate | n/a |
@@ -77,7 +79,8 @@ The 2026-04-24 implementation plan listed Phases 1–9 as "milestones only — r
 
 3. **No 4-screenshot matrix per phase.** The plan called for 4 screenshots per migrated page (mobile-light, mobile-dark, desktop-light, desktop-dark) into `docs/plans/page-framework-screenshots/phase-N/`. Today's work used inline browser smoke checks via Playwright instead — same eyes-on-it validation, but not stored as a regression baseline. If a future regression is suspected, baselines should be captured before any further visual changes.
 
-4. **`SettingsCard` gained an additive `aside` slot (2026-07-10, affix-trainer-harmonization).** `RuleCard`'s only gap versus the primitive was a trailing element beside the heading (affix-type + CEFR badges) — the same shape `PageHeader.action`/`ListCard.trailing` already use for a trailing slot. Purely additive: `aside` is optional, and when omitted the title renders as the bare `<h3>` exactly as before (byte-identical markup for Profile's 8 existing `SettingsCard` callers, none of which pass it). No other primitive was touched.
+4. **`MediaPlayerCard` was added at the second occurrence of the inline-player-row shape (2026-07-10, uitspraak-harmonization).** The grammar-podcast row's `bespoke-css-ok` module was the first occurrence; the pronunciation podcast panel was the second, which per the `MediaShowcaseCard` precedent triggers extract-don't-copy. Generic (medallion/title/subtitle/children), zero domain logic, nav-free by design.
+5. **`SettingsCard` gained an additive `aside` slot (2026-07-10, affix-trainer-harmonization).** `RuleCard`'s only gap versus the primitive was a trailing element beside the heading (affix-type + CEFR badges) — the same shape `PageHeader.action`/`ListCard.trailing` already use for a trailing slot. Purely additive: `aside` is optional, and when omitted the title renders as the bare `<h3>` exactly as before (byte-identical markup for Profile's 8 existing `SettingsCard` callers, none of which pass it). No other primitive was touched.
 
 ## Residuals
 
