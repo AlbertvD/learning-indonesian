@@ -125,6 +125,13 @@ export function GrowthCurveCard({ userId, bucket, unitLabel }: GrowthCurveCardPr
   const hasData = totals.some((v) => v > 0)
 
   const caption = T.progress.growthTotalLabel(unitLabel)
+  // Weekly x-axis: a tick per week + a few readable date marks, so the learner
+  // can place their progress in time (locale-aware short day+month).
+  const lastIdx = series.length - 1
+  const fmtDate = (iso: string) =>
+    new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' }).format(new Date(iso))
+  const dateMarkIdx = [0, Math.round(lastIdx / 3), Math.round((2 * lastIdx) / 3), lastIdx]
+    .filter((v, i, a) => a.indexOf(v) === i)
 
   return (
     <div className={classes.card}>
@@ -149,6 +156,20 @@ export function GrowthCurveCard({ userId, bucket, unitLabel }: GrowthCurveCardPr
             belowSeries={belowSeries}
             height={160}
           />
+          <div className={classes.timeAxis} aria-hidden="true">
+            {series.map((w, i) => (
+              <span
+                key={w.weekStart}
+                className={classes.tick}
+                style={{ left: `${(i / Math.max(1, lastIdx)) * 100}%` }}
+              />
+            ))}
+          </div>
+          <div className={classes.dateRow}>
+            {dateMarkIdx.map((i) => (
+              <span key={i}>{fmtDate(series[i].weekStart)}</span>
+            ))}
+          </div>
           <div className={classes.legendRow}>
             {RUNGS.map((rung) => (
               <span key={rung} className={classes.legendItem}>

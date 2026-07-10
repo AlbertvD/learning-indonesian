@@ -79,6 +79,32 @@
   margin: -0.15rem 0 0.1rem;
 }
 
+/* Weekly x-axis: a thin tick per week + a few date marks below the chart, so
+   the timeline is legible. Ticks are absolutely placed by % (the chart stretches
+   edge-to-edge), the date row distributes its marks across the same width. */
+.timeAxis {
+  position: relative;
+  height: 6px;
+  margin-top: 0.35rem;
+}
+
+.tick {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 6px;
+  background: var(--border-subtle, rgba(128, 128, 128, 0.22));
+  transform: translateX(-0.5px);
+}
+
+.dateRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  margin-top: 0.15rem;
+}
+
 /* GrowthCurveCard's compact 4-rung legend row below the stacked chart —
    replaces the old x-axis "12 weken geleden"/"nu" endpoints; the chart's own
    right-edge count labels now carry that role. Wraps on narrow screens. */

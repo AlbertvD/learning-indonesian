@@ -88,12 +88,10 @@ describe('GrowthCurveCard', () => {
     )
     expect(redLabel?.textContent).toBe('6')
 
-    // The at-risk band's stroked edge (the boundary line, not a fill) is also
-    // in the danger color.
-    const redStroke = Array.from(svg.querySelectorAll('path')).find(
-      (p) => p.getAttribute('stroke') === 'var(--danger)',
-    )
-    expect(redStroke).toBeTruthy()
+    // Per-band top strokes were removed (a zero-height band drew a misleading
+    // colored line, e.g. green "Zit erin" at mastered=0) — bands are fills only.
+    const strokedBands = Array.from(svg.querySelectorAll('path[stroke]:not([stroke="none"])'))
+    expect(strokedBands.length).toBe(0)
   })
 
   it('shows the empty state when no week has any rung data', async () => {
