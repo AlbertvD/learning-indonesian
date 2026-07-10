@@ -524,6 +524,48 @@ export const lesson = {
             "indonesian": "situ",
             "dutch": "daar",
             "english": "there"
+          },
+          {
+            "dutch": "maar, alleen",
+            "indonesian": "aja",
+            "register": "informal",
+            "registerCounterpart": "saja"
+          },
+          {
+            "dutch": "echt, juist",
+            "indonesian": "bener",
+            "register": "informal",
+            "registerCounterpart": "benar"
+          },
+          {
+            "dutch": "hongerig",
+            "indonesian": "laper",
+            "register": "informal",
+            "registerCounterpart": "lapar"
+          },
+          {
+            "dutch": "diep; in, binnen",
+            "indonesian": "dalem",
+            "register": "informal",
+            "registerCounterpart": "dalam"
+          },
+          {
+            "dutch": "hoe",
+            "indonesian": "gimana",
+            "register": "informal",
+            "registerCounterpart": "bagaimana"
+          },
+          {
+            "dutch": "weten",
+            "indonesian": "tau",
+            "register": "informal",
+            "registerCounterpart": "tahu"
+          },
+          {
+            "dutch": "klaar, af",
+            "indonesian": "kelar",
+            "register": "informal",
+            "registerCounterpart": "selesai"
           }
         ]
       }

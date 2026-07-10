@@ -1064,6 +1064,30 @@ export const lesson = {
             "indonesian": "saudari-saudari",
             "dutch": "dames",
             "english": "ladies"
+          },
+          {
+            "dutch": "op, klaar, voorbij",
+            "indonesian": "abis",
+            "register": "informal",
+            "registerCounterpart": "habis"
+          },
+          {
+            "dutch": "blij",
+            "indonesian": "seneng",
+            "register": "informal",
+            "registerCounterpart": "senang"
+          },
+          {
+            "dutch": "geld",
+            "indonesian": "duit",
+            "register": "informal",
+            "registerCounterpart": "uang"
+          },
+          {
+            "dutch": "straks, later",
+            "indonesian": "ntar",
+            "register": "informal",
+            "registerCounterpart": "nanti"
           }
         ]
       }
