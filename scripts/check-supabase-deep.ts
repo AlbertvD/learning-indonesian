@@ -2,7 +2,8 @@
 // scripts/check-supabase-deep.ts
 // Run with: make check-supabase-deep SUPABASE_SERVICE_KEY=<key>
 // Requires: SUPABASE_SERVICE_KEY env var; VITE_SUPABASE_URL from .env.local
-import { readFileSync } from 'node:fs'
+import { readFileSync, existsSync } from 'node:fs'
+import nodePath from 'node:path'
 import { createClient } from '@supabase/supabase-js'
 import { classifyDutchSeparator, classifyIndonesianSeparator, deriveSkillTypeFromCapabilityType, DROPPED_VOCAB_CAP_TYPES } from '@/lib/capabilities'
 import { findIneffectiveProduceReason } from '@/lib/answerNormalization'
@@ -2451,6 +2452,283 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     }
   } catch (err) {
     fail(HC43, err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC44-HC49 (spreektaal lesson-woven core, docs/plans/2026-07-09-spreektaal
+//    -lesson-woven-core.md §8): register-pair core carrier + generation-carve-
+//    out health checks.
+//
+//    register-pairs.ts (the hand-authored artifact, §3.1) and its committed
+//    intersection report (§9 step 2, data-architect r2 CRITICAL-1a) are
+//    authored in a PARALLEL PR — this PR lands only the schema + pipeline
+//    carrier + generation rules (build order steps 1+3). Both loaders below
+//    are TOLERANT of the file not existing yet:
+//      - loadRegisterPairsArtifact() -> null when scripts/data/register-pairs.ts
+//        is absent; HC45/HC46 skip-with-warning (not fail) in that case.
+//      - loadIntersectionReport() -> null when the intersection report is
+//        absent; HC47 skip-with-warning (not fail) — the exact filename/shape
+//        is not yet fixed by the parallel PR, so this assumes
+//        scripts/data/register-pairs-intersection.json with shape
+//        `{ pairs: Array<{ formal: string; informal: string }> }`. Adjust the
+//        path/shape here if step 2 lands something different (noted in the
+//        PR body).
+//    HC44/HC48/HC49 need no artifact — they run against the live DB
+//    unconditionally and are vacuously green while zero informal items exist
+//    (steps 2/4/5 have not seeded any content yet).
+{
+  interface RegisterPairArtifactEntry {
+    formal: string
+    informal: string
+    /** Present + truthy on the ~6 phrase-anchored rows (spec §3.1). */
+    anchor_lesson?: number | string | null
+  }
+  interface IntersectionReport {
+    pairs: Array<{ formal: string; informal: string }>
+  }
+
+  async function loadRegisterPairsArtifact(): Promise<RegisterPairArtifactEntry[] | null> {
+    const filePath = nodePath.join(process.cwd(), 'scripts', 'data', 'register-pairs.ts')
+    if (!existsSync(filePath)) return null
+    const mod = await import(`file://${filePath}`)
+    const values = Object.values(mod)
+    return values.length > 0 ? (values[0] as RegisterPairArtifactEntry[]) : null
+  }
+
+  function loadIntersectionReport(): IntersectionReport | null {
+    const filePath = nodePath.join(process.cwd(), 'scripts', 'data', 'register-pairs-intersection.json')
+    if (!existsSync(filePath)) return null
+    return JSON.parse(readFileSync(filePath, 'utf8')) as IntersectionReport
+  }
+
+  async function pageAllRP<T>(table: string, select: string, apply?: (q: any) => any): Promise<T[]> {
+    const pageSize = 1000
+    const all: T[] = []
+    for (let offset = 0; ; offset += pageSize) {
+      let q: any = supabase.schema('indonesian').from(table).select(select).range(offset, offset + pageSize - 1)
+      if (apply) q = apply(q)
+      const { data, error } = await q
+      if (error) {
+        // Friendly hint mirroring the loan_source_nl column-exists check: before
+        // `make migrate` has applied this PR's migration, register/register_counterpart
+        // don't exist yet and every query below 42703s — surface that plainly
+        // instead of a raw PostgrestError object (which stringifies to "[object Object]").
+        const msg = typeof error.message === 'string' ? error.message : JSON.stringify(error)
+        if (msg.includes('column') && (msg.includes('register') || msg.includes('register_counterpart'))) {
+          throw new Error(`${msg} — run: make migrate SUPABASE_SERVICE_KEY=<key>`)
+        }
+        throw new Error(msg)
+      }
+      const rows = (data ?? []) as T[]
+      all.push(...rows)
+      if (rows.length < pageSize) break
+    }
+    return all
+  }
+
+  type InformalItemRow = { id: string; normalized_text: string; register_counterpart: string | null }
+
+  async function fetchInformalItems(): Promise<InformalItemRow[]> {
+    return pageAllRP<InformalItemRow>(
+      'learning_items',
+      'id, normalized_text, register_counterpart',
+      (q) => q.eq('register', 'informal'),
+    )
+  }
+
+  // -- HC44: every learning_items.register='informal' row has non-null
+  //    register_counterpart (spec §3.2, §8 check 1). --------------------------
+  try {
+    const informalItems = await fetchInformalItems()
+    const missing = informalItems.filter((r) => !r.register_counterpart || !r.register_counterpart.trim())
+    if (missing.length === 0) {
+      pass(`HC44 every learning_items.register='informal' row has non-null register_counterpart (${informalItems.length} row(s) checked)`)
+    } else {
+      fail(
+        'HC44 every learning_items.register=\'informal\' row has non-null register_counterpart',
+        `${missing.length} informal row(s) missing register_counterpart: ${missing.slice(0, 5).map((r) => r.normalized_text).join(', ')}${missing.length > 5 ? ' …' : ''}`,
+      )
+    }
+  } catch (err) {
+    fail("HC44 every learning_items.register='informal' row has non-null register_counterpart", err instanceof Error ? err.message : String(err))
+  }
+
+  // -- HC45: every core pair in the committed artifact with a live formal
+  //    twin has its formal-item item_answer_variants row (spec §7 seed
+  //    completeness, §8 check 2). ---------------------------------------------
+  {
+    const HC45 = 'HC45 every core register pair with a live formal twin has its formal-item item_answer_variants row (§7)'
+    try {
+      const artifact = await loadRegisterPairsArtifact()
+      if (artifact === null) {
+        pass(`${HC45} — SKIPPED: scripts/data/register-pairs.ts not authored yet (parallel PR)`)
+      } else {
+        const formalItems = await pageAllRP<{ id: string; normalized_text: string }>(
+          'learning_items', 'id, normalized_text',
+        )
+        const formalIdByNormalizedText = new Map(formalItems.map((r) => [r.normalized_text, r.id]))
+        const liveFormalIds = new Set<string>()
+        for (const pair of artifact) {
+          const id = formalIdByNormalizedText.get(itemSlug(pair.formal))
+          if (id) liveFormalIds.add(id)
+        }
+        const variants = liveFormalIds.size === 0 ? [] : await pageAllRP<{ learning_item_id: string; variant_text: string; variant_type: string }>(
+          'item_answer_variants', 'learning_item_id, variant_text, variant_type',
+          (q) => q.in('learning_item_id', [...liveFormalIds]).eq('variant_type', 'informal'),
+        )
+        const seededFormalIds = new Set(variants.map((v) => v.learning_item_id))
+        const missingCount = [...liveFormalIds].filter((id) => !seededFormalIds.has(id)).length
+        if (missingCount === 0) {
+          pass(`${HC45} (${liveFormalIds.size} live formal twin(s) checked)`)
+        } else {
+          fail(
+            `${HC45} — EXPECTED RED until the variant seed step (§9 step 5) runs`,
+            `${missingCount} of ${liveFormalIds.size} live formal twin(s) have no informal item_answer_variants row. ` +
+            'Run: bun scripts/enrich-answer-variants.ts --apply (spec §7).',
+          )
+        }
+      }
+    } catch (err) {
+      fail(HC45, err instanceof Error ? err.message : String(err))
+    }
+  }
+
+  // -- HC46: informal rows' counterpart resolves to a live item OR the
+  //    artifact marks it phrase-anchored (spec §8 check 3). -----------------
+  {
+    const HC46 = 'HC46 informal rows\' register_counterpart resolves to a live item OR is whitelisted as phrase-anchored'
+    try {
+      const informalItems = await fetchInformalItems()
+      if (informalItems.length === 0) {
+        pass(`${HC46} (no register='informal' rows in DB; vacuously green)`)
+      } else {
+        const artifact = await loadRegisterPairsArtifact()
+        if (artifact === null) {
+          pass(`${HC46} — SKIPPED: scripts/data/register-pairs.ts not authored yet (parallel PR)`)
+        } else {
+          const phraseAnchoredWhitelist = new Set(
+            artifact.filter((p) => p.anchor_lesson != null && p.anchor_lesson !== '').map((p) => itemSlug(p.formal)),
+          )
+          const allItems = await pageAllRP<{ normalized_text: string }>('learning_items', 'normalized_text')
+          const allNormalizedTexts = new Set(allItems.map((r) => r.normalized_text))
+          const offenders = informalItems.filter((r) => {
+            const counterpartSlug = itemSlug(r.register_counterpart ?? '')
+            return !allNormalizedTexts.has(counterpartSlug) && !phraseAnchoredWhitelist.has(counterpartSlug)
+          })
+          if (offenders.length === 0) {
+            pass(`${HC46} (${informalItems.length} row(s) checked)`)
+          } else {
+            fail(
+              HC46,
+              `${offenders.length} informal row(s) have a register_counterpart that resolves nowhere and is not whitelisted: ` +
+              `${offenders.slice(0, 5).map((r) => r.normalized_text).join(', ')}${offenders.length > 5 ? ' …' : ''}`,
+            )
+          }
+        }
+      }
+    } catch (err) {
+      fail(HC46, err instanceof Error ? err.message : String(err))
+    }
+  }
+
+  // -- HC47: cardinality vs the committed intersection report (data-architect
+  //    r2 CRITICAL-1a, spec §8 check 4) — catches the whole six-file carrier
+  //    chain silently no-oping (HC44/HC46/HC48/HC49 all pass vacuously on
+  //    zero rows, so this is the ONLY check that would catch that failure
+  //    mode once content has been authored). ---------------------------------
+  {
+    const HC47 = 'HC47 count(learning_items where register=\'informal\') matches the committed intersection report'
+    try {
+      const report = loadIntersectionReport()
+      if (report === null) {
+        pass(`${HC47} — SKIPPED: scripts/data/register-pairs-intersection.json not committed yet (parallel PR)`)
+      } else {
+        const informalItems = await fetchInformalItems()
+        const expected = report.pairs.length
+        if (informalItems.length === expected) {
+          pass(`${HC47} (${informalItems.length} row(s))`)
+        } else {
+          fail(
+            HC47,
+            `Live count (${informalItems.length}) != committed intersection report count (${expected}) — ` +
+            'the lesson->capability carrier chain (staging weave, Stage A, or Stage B) is silently no-oping for some pairs.',
+          )
+        }
+      }
+    } catch (err) {
+      fail(HC47, err instanceof Error ? err.message : String(err))
+    }
+  }
+
+  // -- HC48: no forbidden caps for informal items (data-architect r2
+  //    CRITICAL-1b, spec §8 check 5). ----------------------------------------
+  {
+    const HC48 = 'HC48 zero recognise_form_from_meaning_cap/produce_form_from_meaning_cap rows for register=\'informal\' items'
+    try {
+      const informalItems = await fetchInformalItems()
+      if (informalItems.length === 0) {
+        pass(`${HC48} (no register='informal' rows in DB; vacuously green)`)
+      } else {
+        const informalSourceRefs = new Set(informalItems.map((r) => `learning_items/${r.normalized_text}`))
+        const forbiddenCaps = await pageAllRP<{ source_ref: string; capability_type: string }>(
+          'learning_capabilities', 'source_ref, capability_type',
+          (q) => q.eq('source_kind', 'vocabulary_src')
+            .in('capability_type', ['recognise_form_from_meaning_cap', 'produce_form_from_meaning_cap'])
+            .is('retired_at', null),
+        )
+        const offenders = forbiddenCaps.filter((c) => informalSourceRefs.has(c.source_ref))
+        if (offenders.length === 0) {
+          pass(`${HC48} (${forbiddenCaps.length} forbidden-type row(s) checked, 0 for informal items)`)
+        } else {
+          fail(
+            HC48,
+            `${offenders.length} forbidden-type cap(s) exist for a register='informal' item — the generation carve-out ` +
+            `(projectors/vocab.ts) did not land. Sample: ${offenders.slice(0, 5).map((o) => `${o.source_ref}:${o.capability_type}`).join(', ')}`,
+          )
+        }
+      }
+    } catch (err) {
+      fail(HC48, err instanceof Error ? err.message : String(err))
+    }
+  }
+
+  // -- HC49: every informal cap's prerequisiteKeys entries resolve to an
+  //    existing published capability (architect r2 W4, spec §8 check 6). ----
+  {
+    const HC49 = 'HC49 every register=\'informal\' item\'s cap prerequisiteKeys entries resolve to an existing published capability'
+    try {
+      const informalItems = await fetchInformalItems()
+      if (informalItems.length === 0) {
+        pass(`${HC49} (no register='informal' rows in DB; vacuously green)`)
+      } else {
+        const informalSourceRefs = new Set(informalItems.map((r) => `learning_items/${r.normalized_text}`))
+        const allVocabCaps = await pageAllRP<{ canonical_key: string; source_ref: string; prerequisite_keys: string[] | null; publication_status: string; retired_at: string | null }>(
+          'learning_capabilities', 'canonical_key, source_ref, prerequisite_keys, publication_status, retired_at',
+          (q) => q.eq('source_kind', 'vocabulary_src'),
+        )
+        const informalCaps = allVocabCaps.filter((c) => informalSourceRefs.has(c.source_ref) && !c.retired_at)
+        const publishedKeys = new Set(
+          allVocabCaps.filter((c) => c.publication_status === 'published' && !c.retired_at).map((c) => c.canonical_key),
+        )
+        const unresolved: Array<{ sourceRef: string; key: string }> = []
+        for (const cap of informalCaps) {
+          for (const prereqKey of cap.prerequisite_keys ?? []) {
+            if (!publishedKeys.has(prereqKey)) unresolved.push({ sourceRef: cap.source_ref, key: prereqKey })
+          }
+        }
+        if (unresolved.length === 0) {
+          pass(`${HC49} (${informalCaps.length} informal cap(s) checked)`)
+        } else {
+          fail(
+            HC49,
+            `${unresolved.length} prerequisiteKeys entrie(s) do not resolve to a published capability — these items would be ` +
+            `missing_prerequisite forever (pedagogy.ts:329). Sample: ${unresolved.slice(0, 5).map((u) => `${u.sourceRef} -> ${u.key}`).join(', ')}`,
+          )
+        }
+      }
+    } catch (err) {
+      fail(HC49, err instanceof Error ? err.message : String(err))
+    }
   }
 }
 
