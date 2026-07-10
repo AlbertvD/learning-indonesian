@@ -4,9 +4,10 @@
 // no recording, no scoring (ADR 0025).
 
 import { useState, useCallback } from 'react'
-import { Button, Group, Text, Paper, Stack } from '@mantine/core'
+import { Button, Group, Text, Stack } from '@mantine/core'
 import { IconVolume } from '@tabler/icons-react'
 import { PlayButton } from '@/components/PlayButton'
+import classes from './MinimalPairPlayer.module.css'
 import { playSequence } from '@/lib/pronunciation/playSequence'
 import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
 import { useT } from '@/hooks/useT'
@@ -31,7 +32,7 @@ export function MinimalPairPlayer({ pair, language, audioMap }: MinimalPairPlaye
   }, [aUrl, bUrl])
 
   return (
-    <Paper withBorder radius="sm" p="xs">
+    <div className={classes.subCard}>
       <Stack gap={4}>
         <Group justify="space-between" wrap="nowrap">
           <Group gap="xs" wrap="nowrap">
@@ -57,6 +58,6 @@ export function MinimalPairPlayer({ pair, language, audioMap }: MinimalPairPlaye
         </Group>
         <Text size="xs" c="dimmed">{contrast}</Text>
       </Stack>
-    </Paper>
+    </div>
   )
 }

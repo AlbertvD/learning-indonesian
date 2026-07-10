@@ -48,7 +48,7 @@ export function ShadowControl({ modelUrl }: ShadowControlProps) {
         <ActionIcon
           variant="subtle"
           size="xs"
-          color={recording ? 'red' : undefined}
+          style={recording ? { color: 'var(--danger)' } : undefined}
           onClick={onMic}
           aria-label={recording ? T.pronunciation.shadowStop : T.pronunciation.shadowRecord}
         >

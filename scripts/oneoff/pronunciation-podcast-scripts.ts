@@ -2,11 +2,12 @@
 // issue #315). DRAFT — pending linguist-reviewer pass on phonetic accuracy, the
 // Indonesian example words, and NL/EN naturalness.
 //
-// This is the INPUT to the one-off producer (scripts/oneoff/pronunciation-podcast.ts,
-// not yet written): each line is synthesised with its own voice/language and the
-// per-line MP3s are concatenated into one episode. Host lines play in the L1
-// (nl-NL / en-US voices); `id` lines are native Indonesian example words (routed
-// through synthesizeSpeech so the Chirp3-HD short-word→Wavenet fallback protects them).
+// This is the INPUT to the one-off producer (scripts/oneoff/pronunciation-podcast.ts):
+// each host line is a complete conversational turn, synthesised as one SSML
+// document with its speaker's Chirp3-HD voice (nl-NL / en-US); `id` lines are
+// native Indonesian example words (routed through synthesizeSpeech so the
+// Chirp3-HD short-word→Wavenet fallback protects them). The producer interleaves
+// a synthesised silence gap between all segments before concatenation.
 //
 // Example words are drawn from the vetted pitfall catalog (src/lib/pronunciation/
 // pitfallCatalog.ts). Two hosts: A = guide, B = curious learner.
@@ -34,10 +35,11 @@ export interface PodcastEpisode {
   lines: PodcastLine[]
 }
 
-// Native Indonesian example voice (Wavenet is reliable for isolated short words;
-// the producer routes id lines through synthesizeSpeech for the documented
-// Chirp3-HD short-word fallback).
-const ID_VOICE = 'id-ID-Wavenet-A'
+// Native Indonesian example voice — the same Chirp3-HD family as the in-app
+// pitfall clips, so podcast examples and tappable examples share one voice
+// world. The producer routes id lines through synthesizeSpeech, so the
+// documented short-word→Wavenet fallback still protects ≤2-char/known-bad words.
+const ID_VOICE = 'id-ID-Chirp3-HD-Despina'
 
 const A = (lang: LineLang, text: string): PodcastLine => ({ speaker: 'A', lang, text })
 const B = (lang: LineLang, text: string): PodcastLine => ({ speaker: 'B', lang, text })
@@ -47,8 +49,8 @@ export const NL_EPISODE: PodcastEpisode = {
   l1: 'nl',
   title: 'Uitspraak — voor Nederlandstaligen',
   description: 'De Indonesische klanken die Nederlandstaligen het vaakst verkeerd doen, in één aflevering. Luister en spreek mee.',
-  voiceA: 'nl-NL-Wavenet-D',
-  voiceB: 'nl-NL-Wavenet-C',
+  voiceA: 'nl-NL-Chirp3-HD-Despina',
+  voiceB: 'nl-NL-Chirp3-HD-Orus',
   exampleVoice: ID_VOICE,
   lines: [
     A('nl', 'Welkom bij Kamoe Bisa! Vandaag duiken we in de Indonesische uitspraak — speciaal voor ons, Nederlandstaligen.'),
@@ -116,8 +118,8 @@ export const EN_EPISODE: PodcastEpisode = {
   l1: 'en',
   title: 'Pronunciation — for English speakers',
   description: 'The Indonesian sounds English speakers most often get wrong, in one episode. Listen and say them along.',
-  voiceA: 'en-US-Wavenet-F',
-  voiceB: 'en-US-Wavenet-D',
+  voiceA: 'en-US-Chirp3-HD-Despina',
+  voiceB: 'en-US-Chirp3-HD-Orus',
   exampleVoice: ID_VOICE,
   lines: [
     A('en', "Welcome to Kamoe Bisa! Today we're tackling Indonesian pronunciation — the sounds English speakers tend to trip on."),
