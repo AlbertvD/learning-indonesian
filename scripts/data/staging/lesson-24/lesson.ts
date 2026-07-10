@@ -230,6 +230,18 @@ export const lesson = {
             "indonesian": "ucap, meng-kan",
             "dutch": "zeggen / uitspreken",
             "english": "say / pronounce"
+          },
+          {
+            "dutch": "zichtbaar, blijkbaar",
+            "indonesian": "keliatan",
+            "register": "informal",
+            "registerCounterpart": "kelihatan"
+          },
+          {
+            "dutch": "slim",
+            "indonesian": "pinter",
+            "register": "informal",
+            "registerCounterpart": "pintar"
           }
         ]
       }

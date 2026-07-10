@@ -224,7 +224,9 @@ export const lesson = {
           {
             "indonesian": "ngomong",
             "dutch": "kletsen",
-            "english": "chat"
+            "english": "chat",
+            "register": "informal",
+            "registerCounterpart": "bicara"
           },
           {
             "indonesian": "pinggir",
@@ -331,6 +333,12 @@ export const lesson = {
             "indonesian": "langkah",
             "dutch": "stap",
             "english": "step"
+          },
+          {
+            "dutch": "horen",
+            "indonesian": "denger",
+            "register": "informal",
+            "registerCounterpart": "dengar"
           }
         ]
       }

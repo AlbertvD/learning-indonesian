@@ -86,7 +86,9 @@ export const lesson = {
           {
             "indonesian": "jelek (jelèk)",
             "dutch": "slecht / lelijk",
-            "english": "bad / ugly"
+            "english": "bad / ugly",
+            "register": "informal",
+            "registerCounterpart": "buruk"
           },
           {
             "indonesian": "kata",
@@ -273,6 +275,12 @@ export const lesson = {
             "indonesian": "wayang",
             "dutch": "toneel / o.a. schimmenspel",
             "english": "theater / shadow puppet play"
+          },
+          {
+            "dutch": "tellen",
+            "indonesian": "itung",
+            "register": "informal",
+            "registerCounterpart": "hitung"
           }
         ]
       }

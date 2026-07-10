@@ -115,7 +115,9 @@ export const lesson = {
           {
             "indonesian": "buat",
             "dutch": "voor, t.b.v.",
-            "english": "for"
+            "english": "for",
+            "register": "informal",
+            "registerCounterpart": "untuk"
           },
           {
             "indonesian": "bunuh",
@@ -196,7 +198,9 @@ export const lesson = {
           {
             "indonesian": "nggak (Jakarta)",
             "dutch": "niet, nee",
-            "english": "not, no"
+            "english": "not, no",
+            "register": "informal",
+            "registerCounterpart": "tidak"
           },
           {
             "indonesian": "panas",
@@ -308,6 +312,12 @@ export const lesson = {
             "indonesian": "barat",
             "dutch": "west",
             "english": "west"
+          },
+          {
+            "dutch": "zo (als dit)",
+            "indonesian": "gini",
+            "register": "informal",
+            "registerCounterpart": "begini"
           }
         ]
       }

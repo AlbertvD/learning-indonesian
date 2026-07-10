@@ -227,6 +227,12 @@ export const lesson = {
             "indonesian": "timbul, menimbul",
             "dutch": "verschijnen",
             "english": "timbul, menimbul | appear"
+          },
+          {
+            "dutch": "begrijpen",
+            "indonesian": "ngerti",
+            "register": "informal",
+            "registerCounterpart": "mengerti"
           }
         ]
       }
