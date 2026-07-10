@@ -3,13 +3,13 @@
 // Woordenschat-tab wrapper (slice 2,
 // docs/plans/2026-07-09-voortgang-jouw-indonesisch-hero.md Part B) — the only
 // caller of MasteryFunnelPanel that owns the at-risk → sheet action.
-// MasteryJourney only triggers (`onAtRiskClick`, threaded through
-// MasteryFunnelPanel); this wrapper fetches the troublesome-words set and
-// holds the sheet's open-state. Unlike Dashboard's Home nudge (which filters
-// to the un-hooked subset via `fetchMnemonicsForRefs` for its own count), this
-// keeps the FULL troublesome set (at-risk ∪ stubborn) — has-hook dots and edit
-// come for free from MnemonicWordChips inside TroublesomeWordsSheet, so no
-// second fetchMnemonicsForRefs call is needed here.
+// MasteryFunnelPanel's at-risk ListCard only triggers (`onAtRiskClick`); this
+// wrapper fetches the troublesome-words set and holds the sheet's open-state.
+// Unlike Dashboard's Home nudge (which filters to the un-hooked subset via
+// `fetchMnemonicsForRefs` for its own count), this keeps the FULL troublesome
+// set (at-risk ∪ stubborn) — has-hook dots and edit come for free from
+// MnemonicWordChips inside TroublesomeWordsSheet, so no second
+// fetchMnemonicsForRefs call is needed here.
 import { useEffect, useState } from 'react'
 import { useT } from '@/hooks/useT'
 import { getTroublesomeWords, type TroublesomeWord } from '@/lib/analytics/mastery/masteryModel'

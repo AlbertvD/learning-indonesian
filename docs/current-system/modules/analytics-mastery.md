@@ -100,7 +100,11 @@ All in `masteryModel.ts`:
   (all + per-lesson in one fetch). Units are `source_ref` rolled up weakest-wins;
   the vocab/grammar split is `funnelBucket(sourceKind)` (`item`→vocab,
   `pattern`/`affixed_form_pair`→grammar, else excluded) — the single source of
-  truth shared with Weekly Movement (and HC28, ADR 0015). TS-only.
+  truth shared with Weekly Movement (and HC28, ADR 0015). TS-only. **A funnel's
+  `strengthening + mastered` is the "usable" count** the Voortgang surface
+  headlines with (`MasteryLadder`'s achievement headline, the hub's per-topic
+  summaries, `GrowthCurveCard`'s single climbing area) — computed at the UI
+  layer from the plain rung counts, not a separate deriver.
 - **Grammar topics** (per-pattern drill-down): pure deriver
   `deriveGrammarTopics({evidence, now?})` → `GrammarTopicLabel[]` (per pattern:
   `lessonNumber`, weakest-wins `label`, total `reviewCount`, and `recognise` /
@@ -202,13 +206,18 @@ lesson-status spec / `lessons-overview` module.
 - **Upstream**: `lib/capabilities/` (types), `lib/lessons/` (`listActivatedLessons`),
   `lib/chunkedQuery`, `lib/supabase`.
 - **Downstream consumers**: the Voortgang surfaces **do** consume this model
-  (updated 2026-06-12): the parallel **Woordenschat** and **Grammatica** pages
-  share `MasteryFunnelPanel` ← `getMasteryFunnels` (all-lessons + per-lesson
-  funnels, the latter from `deriveMasteryFunnelByLesson`); Grammatica's per-lesson
-  drill-down `GrammarPatternList` ← `getGrammarTopics`/`deriveGrammarTopics`;
-  `SkillModeGapsCard` ← `deriveSkillModeGaps`; the moeilijke-woorden callout ←
-  `deriveStubbornWords`; the home movement card ← `deriveWeeklyMovement`. Home's
-  troublesome-words nudge (`pages/Dashboard.tsx` → conditional `ListCard` →
+  (updated 2026-07-09 for the hub redesign): the five progress details share
+  `MasteryFunnelPanel` ← `getMasteryFunnels` (all-lessons + per-lesson
+  funnels, the latter from `deriveMasteryFunnelByLesson`), which passes the
+  scoped `MasteryFunnel` to **`MasteryLadder`** (replaces the retired
+  `MasteryJourney`) and renders the at-risk `ListCard` itself when supplied
+  `onAtRiskClick`; Grammatica's per-lesson drill-down `GrammarPatternList` ←
+  `getGrammarTopics`/`deriveGrammarTopics`; `SkillModeGapsCard` ←
+  `deriveSkillModeGaps`; the moeilijke-woorden callout ← `deriveStubbornWords`;
+  the home movement card ← `deriveWeeklyMovement`; the Voortgang hub's five
+  live-summary subtitles ← `getMasteryFunnel` (all-lessons, unscoped) +
+  `engagement.practiceTime`. Home's troublesome-words nudge
+  (`pages/Dashboard.tsx` → conditional `ListCard` →
   `components/mnemonics/TroublesomeWordsSheet` → `MnemonicWordChips`) ←
   `deriveTroublesomeWords`/`getTroublesomeWords`.
   `get_lessons_overview` mirrors the `mastered` predicate in SQL for the lesson

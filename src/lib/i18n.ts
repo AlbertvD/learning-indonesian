@@ -12,6 +12,7 @@ export const nl = {
     podcasts: 'Podcasts',
     lezen: 'Lezen',
     progress: 'Voortgang',
+    backToProgress: 'Terug naar Voortgang',
     morphology: 'Affixen',
     pronunciation: 'Uitspraak',
     profile: 'Profiel',
@@ -374,6 +375,19 @@ export const nl = {
     rungMastered: 'Beheerst',
     rungAtRisk: 'Aandacht nodig',
     atRiskExplain: 'Deze heb je vergeten of doe je steeds fout — ze zakken weg uit je geheugen. Oefen ze om ze terug te halen.',
+    // Mastery ladder (voortgang-hub-redesign) — replaces the funnel chevrons
+    // with real-life-ability rungs on one connected ramp.
+    ladderHeadline: (n: number, unitLabel: string) => `Je kunt al ${n} ${unitLabel} begrijpen en gebruiken`,
+    ladderSublinePractising: 'nog aan het oefenen',
+    ladderSublineMastered: 'beheers je al volledig',
+    ladderEyebrow: (unitLabel: string) => `Je reis met deze ${unitLabel}`,
+    ladderNetOntmoet: 'Net ontmoet',
+    ladderAanHetOefenen: 'Aan het oefenen',
+    ladderKunJeGebruiken: 'Kun je gebruiken',
+    ladderZitErin: 'Zit erin',
+    // At-risk card (moved out of the ladder into its own ListCard, below it)
+    atRiskCardTitle: (n: number) => `${n} woorden om even op te frissen`,
+    atRiskCardSubtitle: 'Deze zakken weg — één korte sessie haalt ze terug.',
     stubbornNoun: 'moeilijke woorden',
     stubbornExplain: 'Deze lukken nog niet en méér herhalen helpt hier niet goed. Probeer een andere aanpak — een geheugensteun, in stukjes, of met context.',
     grammarTopicsTitle: 'Grammatica-onderwerpen',
@@ -421,7 +435,9 @@ export const nl = {
     growthCurveTitle: 'Groei over tijd',
     growthCurveSubtitle: 'Woorden die week na week door de stadia klimmen.',
     growthCurveEmpty: 'Nog niet genoeg geschiedenis. Blijf oefenen — je groei verschijnt hier.',
-    growthNudge: 'Houd je dagelijkse sessie vast om dit tempo te halen.',
+    growthUsableLabel: (unitLabel: string) => `${unitLabel.charAt(0).toUpperCase()}${unitLabel.slice(1)} die je kunt gebruiken`,
+    growthWeeksAgo: (weeks: number) => `${weeks} weken geleden`,
+    growthNow: 'nu',
     durabilityTitle: 'Geheugensterkte over tijd',
     durabilitySubtitle: 'Hoe lang je geheugen een woord gemiddeld vasthoudt.',
     durabilityHoldsNow: 'Je geheugen houdt nu ~',
@@ -452,12 +468,14 @@ export const nl = {
     // Page header
     pageTitle: 'Jouw leervoortgang',
     pageSubtitle: 'Jouw leervoortgang',
-    // "Jouw Indonesisch" hero strip (I1) — three honest numbers above the
-    // tab strip; docs/plans/2026-07-09-voortgang-jouw-indonesisch-hero.md Part A.
-    heroTitle: 'Jouw Indonesisch',
-    heroWordsKnownLabel: 'woorden die je kent',
-    heroCoverageLabel: 'meest voorkomende woorden',
-    heroStreakLabel: 'dagen op rij',
+    // Hub (voortgang-hub-redesign, docs/plans/2026-07-09-voortgang-hub-redesign.md)
+    // — supersedes the "Jouw Indonesisch" hero strip (PR #408), retired here.
+    hubSubtitle: 'Bekijk wat je al kunt, per onderdeel.',
+    hubWoordenschatSummary: (n: number) => `je kunt ${n} woorden gebruiken`,
+    hubGrammarSummary: (n: number) => `${n} patronen onder de knie`,
+    hubMorfologieSummary: (n: number) => `${n} affixen kun je toepassen`,
+    hubVaardighedenSummary: 'herkennen · gebruiken · luisteren',
+    hubTijdSummary: (streakDays: number, minutesThisWeek: number) => `${streakDays} dagen op rij · ${minutesThisWeek} min deze week`,
     // Mastery funnel
     funnelTitle: 'Leerpijplijn',
     funnelEmpty: 'Nog geen woorden geleerd.',
@@ -700,6 +718,7 @@ export const en: typeof nl = {
     podcasts: 'Podcasts',
     lezen: 'Reading',
     progress: 'Progress',
+    backToProgress: 'Back to Progress',
     morphology: 'Affixes',
     pronunciation: 'Pronunciation',
     profile: 'Profile',
@@ -1062,6 +1081,19 @@ export const en: typeof nl = {
     rungMastered: 'Mastered',
     rungAtRisk: 'Needs review',
     atRiskExplain: "You've forgotten these or keep getting them wrong — they're slipping out of memory. Practise them to bring them back.",
+    // Mastery ladder (voortgang-hub-redesign) — replaces the funnel chevrons
+    // with real-life-ability rungs on one connected ramp.
+    ladderHeadline: (n: number, unitLabel: string) => `You can already understand and use ${n} ${unitLabel}`,
+    ladderSublinePractising: 'still practising',
+    ladderSublineMastered: 'you have fully mastered',
+    ladderEyebrow: (unitLabel: string) => `Your journey with these ${unitLabel}`,
+    ladderNetOntmoet: 'Just met',
+    ladderAanHetOefenen: 'Practising',
+    ladderKunJeGebruiken: 'You can use it',
+    ladderZitErin: 'Locked in',
+    // At-risk card (moved out of the ladder into its own ListCard, below it)
+    atRiskCardTitle: (n: number) => `${n} words to refresh`,
+    atRiskCardSubtitle: 'These are fading — one short session brings them back.',
     stubbornNoun: 'stubborn words',
     stubbornExplain: "These aren't sticking yet, and more repetition isn't the fix here. Try a different approach — a mnemonic, breaking it into pieces, or adding context.",
     grammarTopicsTitle: 'Grammar topics',
@@ -1109,7 +1141,9 @@ export const en: typeof nl = {
     growthCurveTitle: 'Growth over time',
     growthCurveSubtitle: 'Words climbing through the stages, week by week.',
     growthCurveEmpty: 'Not enough history yet. Keep practising — your growth will show here.',
-    growthNudge: 'Keep up your daily session to hold this pace.',
+    growthUsableLabel: (unitLabel: string) => `${unitLabel.charAt(0).toUpperCase()}${unitLabel.slice(1)} you can use`,
+    growthWeeksAgo: (weeks: number) => `${weeks} weeks ago`,
+    growthNow: 'now',
     durabilityTitle: 'Memory strength over time',
     durabilitySubtitle: 'How long your memory holds a word, on average.',
     durabilityHoldsNow: 'Your memory now holds words for ~',
@@ -1140,12 +1174,14 @@ export const en: typeof nl = {
     // Page header
     pageTitle: 'Your progress',
     pageSubtitle: 'Your learning progress and memory health',
-    // "Jouw Indonesisch" hero strip (I1) — three honest numbers above the
-    // tab strip; docs/plans/2026-07-09-voortgang-jouw-indonesisch-hero.md Part A.
-    heroTitle: 'Your Indonesian',
-    heroWordsKnownLabel: 'words you know',
-    heroCoverageLabel: 'most common words',
-    heroStreakLabel: 'days in a row',
+    // Hub (voortgang-hub-redesign, docs/plans/2026-07-09-voortgang-hub-redesign.md)
+    // — supersedes the "Jouw Indonesisch" hero strip (PR #408), retired here.
+    hubSubtitle: 'See what you can already do, by area.',
+    hubWoordenschatSummary: (n: number) => `you can use ${n} words`,
+    hubGrammarSummary: (n: number) => `${n} patterns down`,
+    hubMorfologieSummary: (n: number) => `${n} affixes you can apply`,
+    hubVaardighedenSummary: 'recognise · produce · listen',
+    hubTijdSummary: (streakDays: number, minutesThisWeek: number) => `${streakDays}-day streak · ${minutesThisWeek} min this week`,
     // Mastery funnel
     funnelTitle: 'Learning pipeline',
     funnelEmpty: 'No words learned yet.',

@@ -1,0 +1,162 @@
+/* bespoke-css-ok: MasteryLadder is a domain analytics viz (the mastery-ladder
+   ramp), not a page-framework card shape — no existing primitive models "four
+   connected stops on a gradient spine." Every color is a main.tsx token
+   (--text-tertiary/--mantine-color-tamarind-4/--rail-gold/--accent-primary/
+   --success — the same warm progression GrowthCurveCard's RUNG_COLOR and the
+   former MasteryJourney chevrons already used), so re-theming the app
+   re-themes the ladder for free; only the geometry (spine position, node
+   size, spacing) is bespoke here. */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ── Achievement headline — a soft gradient card, the "you can already do
+   this" framing above the ladder. ── */
+.headline {
+  background: linear-gradient(150deg, var(--accent-primary-subtle) 0%, var(--card-bg) 55%);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-lg);
+  padding: 1.1rem 1rem;
+}
+
+.line {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.sub {
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--card-border);
+  display: flex;
+  gap: 0.8rem;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.subNum {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.dot {
+  color: var(--text-tertiary);
+}
+
+/* ── The ladder card — four stops on one connected spine, grey → tamarind →
+   gold → green. ── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-lg);
+  padding: 1.1rem 1rem;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.eyebrow span {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--card-border);
+}
+
+.ladder {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: relative;
+}
+
+.ladder::before {
+  content: '';
+  position: absolute;
+  left: 12.5%;
+  right: 12.5%;
+  top: 31px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--text-tertiary) 0%,
+    var(--mantine-color-tamarind-4) 42%,
+    var(--rail-gold) 70%,
+    var(--success) 100%
+  );
+  opacity: 0.6;
+}
+
+.stop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+  position: relative;
+}
+
+.count {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.node {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 3px solid var(--card-bg);
+  box-shadow: 0 0 0 2px currentColor;
+  position: relative;
+  z-index: 1;
+}
+
+.lbl {
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  line-height: 1.25;
+  max-width: 80px;
+}
+
+.s1 { color: var(--text-tertiary); }
+.s1 .count { color: var(--text-secondary); }
+.s1 .node { background: var(--text-tertiary); }
+
+.s2 { color: var(--mantine-color-tamarind-4); }
+.s2 .count { color: var(--mantine-color-tamarind-4); }
+.s2 .node { background: var(--mantine-color-tamarind-4); }
+
+.s3 { color: var(--rail-gold); }
+.s3 .count { color: var(--accent-primary); }
+.s3 .node {
+  background: var(--rail-gold);
+  width: 18px;
+  height: 18px;
+  box-shadow: 0 0 0 2px var(--rail-gold), 0 0 12px var(--rail-gold);
+}
+
+.s4 { color: var(--success); }
+.s4 .count { color: var(--success); }
+.s4 .node { background: var(--success); }

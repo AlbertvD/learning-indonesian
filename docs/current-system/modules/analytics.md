@@ -37,16 +37,24 @@ facing, not competitive.
   sessions + the streak flame. Fed by `engagement.dailyActivity` +
   `engagement.practiceTime`.
 - **"… min deze week"** cell → deep-links to Voortgang **Tijd** (`/progress?tab=time`).
-- **"Deze week omhoog"** cell — split **woorden · grammatica** → deep-links to the
-  Voortgang **funnel** (`/progress?tab=funnel`). Fed by `getWeeklyMovement`.
+- **"Deze week omhoog"** cell — split **woorden · grammatica** → deep-links to
+  Voortgang **Woordenschat** (`/progress?tab=woorden`). Fed by `getWeeklyMovement`.
 - **Continue lesson** — latest activated lesson.
 
-**Voortgang — `src/pages/Progress.tsx`** (URL-addressable tabs via `useSearchParams`):
-- **Voortgang / funnel** (`MasteryFunnelCard`) — the ladder funnel with a
-  vocab/grammar filter.
-- **Vaardigheden** (`SkillModeGapsCard`) — skill-mode gaps (recognise/produce/listen).
-- **Tijd** (`TimeComparisonCard`) — week/month time comparison.
-- **Grammatica** (`GrammarTopicsList`) — named grammar topics + their ladder label.
+**Voortgang — `src/pages/Progress.tsx`** (hub-vs-detail on one route, switched by
+`?tab=` — voortgang-hub-redesign, docs/plans/2026-07-09-voortgang-hub-redesign.md;
+see [[progress]] for the full module spec). Mobile with no/unknown `?tab=` shows a
+five-card hub; a known `?tab=` shows that detail with the shared `ProgressNav`
+switcher; desktop always lands on a detail (no hub screen):
+- **Woordenschat** (`?tab=woorden`, `MasteryFunnelPanel` + `MasteryLadder`) — the
+  mastery ladder with a per-lesson filter, plus the at-risk `ListCard`.
+- **Grammatica** (`?tab=grammar`) / **Morfologie** (`?tab=morfologie`) — the same
+  `MasteryFunnelPanel`/`MasteryLadder`, scoped to their bucket; Grammatica adds
+  `GrammarPatternList` when a lesson is picked.
+- **Vaardigheden** (`?tab=skills`, `SkillModeGapsCard`) — skill-mode gaps
+  (recognise/produce/listen).
+- **Tijd** (`?tab=time`, `TimeComparisonCard` + `DurabilityCard`) — week/month time
+  comparison + memory durability.
 
 **Lesson tiles** — per-lesson **% mastered** from `get_lessons_overview`
 (`migration.sql:1979`); see [[lessons-overview]].

@@ -1,6 +1,13 @@
 ---
-status: implementing
-implementation: branch feat/voortgang-hero-and-atrisk
+status: shipped
+implementation: PR #408
+merged_at: 2026-07-09
+implementation_paths:
+  - src/components/progress/JouwIndonesischHero.tsx
+  - src/components/progress/MasteryFunnelPanel.tsx
+  - src/components/progress/MasteryJourney.tsx
+  - src/components/progress/VocabMasteryPanel.tsx
+  - src/pages/Progress.tsx
 reviewed_by: [staff-engineer, architect]
 review_notes: |
   staff-engineer SOUND-WITH-CHANGES + architect APPROVE-WITH-CHANGES (2026-07-09) → folded:

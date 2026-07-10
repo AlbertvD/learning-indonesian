@@ -55,10 +55,32 @@
   color: var(--text-secondary, #868e96);
 }
 
-.nudge {
-  flex-basis: 100%;
+/* GrowthCurveCard's delta badge (the mock's "▲ +58" pill) — mirrors
+   TimeComparison.module.css's .up pill (same success color-mix shape). */
+.delta {
   font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--success, #2f9e44);
+  background: var(--success-subtle, color-mix(in srgb, var(--success, #2f9e44) 14%, transparent));
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+}
+
+/* GrowthCurveCard's "Woorden die je kunt gebruiken" caption under the hero
+   number, above the chart. */
+.caption {
+  font-size: 0.8rem;
   color: var(--text-secondary, #868e96);
+  margin: -0.15rem 0 0.1rem;
+}
+
+/* GrowthCurveCard's x-axis endpoints ("12 weken geleden" / "nu"). */
+.xlab {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  margin-top: 0.25rem;
 }
 
 .empty {
@@ -66,43 +88,4 @@
   color: var(--text-secondary, #868e96);
   margin: 0.25rem 0 0.5rem;
   text-align: center;
-}
-
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.legendChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.22rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.16));
-  background: var(--surface-2, rgba(128, 128, 128, 0.08));
-  color: var(--text-primary, inherit);
-  cursor: pointer;
-  transition: opacity 0.15s ease;
-}
-
-.legendOff {
-  opacity: 0.4;
-}
-
-.swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-
-/* The line's current (endpoint) value, shown on its own legend chip so every
-   selected line reports its number — not just one shared max. */
-.chipValue {
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
 }
