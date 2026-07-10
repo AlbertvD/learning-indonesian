@@ -127,7 +127,13 @@ export function buildAffixDetail(
 
   const ruleNote = affixPairs.find((p) => p.allomorphRule.trim().length > 0)?.allomorphRule ?? null
 
+  // Dedupe by derivedText BEFORE slicing (mirrors buildWordFamiliesForAffix's
+  // byDerived map). The affixed_form_pairs table currently holds exact-duplicate
+  // rows for many derived forms, so an undeduped slice(0,3) can surface the same
+  // form twice (e.g. "berdua" under ber-). One row per derived form.
+  const seenDerived = new Set<string>()
   const examples: AffixExample[] = affixPairs
+    .filter((p) => (seenDerived.has(p.derivedText) ? false : (seenDerived.add(p.derivedText), true)))
     .slice(0, 3)
     .map((p) => ({ rootText: p.rootText, derivedText: p.derivedText, carrierText: p.carrierText, derivedMeaning: derivedMeaning(p, language) }))
 

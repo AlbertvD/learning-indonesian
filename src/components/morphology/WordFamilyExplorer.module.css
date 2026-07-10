@@ -14,28 +14,121 @@
   padding: 14px 16px;
 }
 
+/* ─── Derived-form rows ─────────────────────────────────────────────────
+   A three-column grid — [dot | content | audio] — so the mastery dot and the
+   audio button land in fixed columns that align across every row (the ragged
+   speaker-icon x-positions were the old inline `<Group>`'s doing). The content
+   column is the only flexible one (1fr), holding the word + affix pill on the
+   first line and an optional, wrap-friendly meaning below. */
+.formList {
+  display: flex;
+  flex-direction: column;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  column-gap: 10px;
+  align-items: start;
+  padding: 9px 0;
+}
+
+/* Hairline separators give the dense list structure without boxing each row. */
+.formRow + .formRow {
+  border-top: 1px solid var(--card-border);
+}
+
 /* Per-form mastery dot — replaces Mantine `<Badge circle color={...}>`.
    Colour is data-driven (masteryDotColor) so it's applied via inline style;
-   this class only owns the shape. */
+   this class only owns the shape. The top offset centres it on the first text
+   line (grid align-items: start pins it to the row top otherwise). */
 .dot {
   display: inline-block;
   width: 10px;
   height: 10px;
   border-radius: 50%;
   flex: 0 0 auto;
+  margin-top: 5px;
 }
 
 .rootUnknown {
   color: var(--warning);
 }
 
+/* Content column — word+pill line stacked over the meaning line. min-width: 0
+   lets a long word wrap inside the grid cell instead of widening the row. */
+.formContent {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* First line: derived word + affix pill. `wrap` lets the pill drop to its own
+   line when the word is very long, but the pill itself never breaks (see
+   .affixPill). Baseline alignment keeps word and pill text sitting on one line. */
+.formHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 8px;
+  row-gap: 4px;
+}
+
+.formWord {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* The affix you're on: emphasised so the family reads relative to it. */
+.formWordCurrent {
+  font-weight: var(--fw-bold);
+  color: var(--accent-primary);
+}
+
+/* Second line: meaning (may wrap to a couple of lines — that's fine) + the
+   optional "frozen / not rule-formed" marker. */
+.formSub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 6px;
+  row-gap: 2px;
+}
+
+.formMeaning {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.formFrozen {
+  font-size: var(--fs-xs);
+  font-style: italic;
+  color: var(--text-tertiary);
+}
+
+/* Audio column — fixed right-hand slot, top-aligned, so every row's speaker
+   button shares one x-position and sits level with the word line. */
+.formAudio {
+  align-self: start;
+}
+
 /* form.affix pill — tamarind (--accent-primary) for the current affix's own
-   form, a muted outline for the rest of the cross-affix family. */
+   form, a muted outline for the rest of the cross-affix family. `nowrap` +
+   no-shrink is the hard requirement: multi-part affixes like `memper-…-kan`
+   must never break across two lines. */
 .affixPill {
   display: inline-flex;
   align-items: center;
-  padding: 1px 6px;
-  border-radius: 20px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 2px 9px;
+  border-radius: var(--r-xl);
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
   border: 1px solid var(--text-tertiary);

@@ -59,30 +59,36 @@ export function WordFamilyExplorer({
                 <StatusPill tone="neutral">{known}/{family.forms.length}</StatusPill>
               </Group>
 
-              <Stack gap={4}>
+              <div className={classes.formList}>
                 {family.forms.map((form) => {
                   // Anchor the learner to "the affix you're on": the current affix's
                   // form is emphasised; the rest read as its cross-affix family.
                   const isCurrent = form.affix === affix
                   const audioUrl = resolveSessionAudioUrl(audioMap, form.derivedText, null)
                   return (
-                    <Group key={`${form.affix}:${form.derivedText}`} gap={8} wrap="nowrap" align="center">
+                    <div key={`${form.affix}:${form.derivedText}`} className={classes.formRow}>
                       <Tooltip label={form.label.replace('_', ' ')} withArrow>
                         <span className={classes.dot} style={{ background: masteryDotColor(form.label) }} />
                       </Tooltip>
-                      <Text size="sm" fw={isCurrent ? 700 : 500} c={isCurrent ? 'var(--accent-primary)' : undefined}>{form.derivedText}</Text>
-                      <span className={cx(classes.affixPill, isCurrent && classes.affixPillCurrent)}>{form.affix}</span>
-                      {form.derivedMeaning && (
-                        <Text size="xs" c="dimmed">{form.derivedMeaning}</Text>
-                      )}
-                      {!form.productive && (
-                        <Text size="xs" c="dimmed" fs="italic">({T.morphology.frozen})</Text>
-                      )}
-                      {audioUrl && <PlayButton audioUrl={audioUrl} size="xs" />}
-                    </Group>
+                      <div className={classes.formContent}>
+                        <div className={classes.formHead}>
+                          <span className={cx(classes.formWord, isCurrent && classes.formWordCurrent)}>{form.derivedText}</span>
+                          <span className={cx(classes.affixPill, isCurrent && classes.affixPillCurrent)}>{form.affix}</span>
+                        </div>
+                        {(form.derivedMeaning || !form.productive) && (
+                          <div className={classes.formSub}>
+                            {form.derivedMeaning && <span className={classes.formMeaning}>{form.derivedMeaning}</span>}
+                            {!form.productive && <span className={classes.formFrozen}>({T.morphology.frozen})</span>}
+                          </div>
+                        )}
+                      </div>
+                      <div className={classes.formAudio}>
+                        {audioUrl && <PlayButton audioUrl={audioUrl} size="xs" />}
+                      </div>
+                    </div>
                   )
                 })}
-              </Stack>
+              </div>
             </Stack>
           </div>
         )
