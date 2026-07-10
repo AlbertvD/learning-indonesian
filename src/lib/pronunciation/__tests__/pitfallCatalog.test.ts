@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getPitfallsForL1, allExampleWords } from '../pitfallCatalog'
+import { getPitfallsForL1, allExampleWords, allMinimalPairWords, PAIR_DRILL_VOICES } from '../pitfallCatalog'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 
 describe('getPitfallsForL1', () => {
@@ -88,5 +88,47 @@ describe('catalog integrity', () => {
         expect(mp.contrastEn.length, `${p.id} pair missing EN contrast`).toBeGreaterThan(0)
       }
     }
+  })
+
+  // Round 2 (review UP3, docs/plans/2026-07-09-uitspraak-round2.md §1) — the
+  // pinned pair counts after this round's additions: c-ch 2, final-consonants
+  // 2, hard-g 3, tapped-r 2, unaspirated-stops 3 (its first pairs), plus the
+  // unchanged pre-existing pairs (u-oe/e-two-sounds/ng-digraph/ny-digraph/
+  // w-sound/j-sound/pure-vowels/diphthongs-au-ai/initial-ng/penultimate-stress
+  // carry none, by design — no clean lexical contrast).
+  it('carries the round-2 pair counts per pitfall (UP3)', () => {
+    const byId = new Map(distinct.entries())
+    const countOf = (id: string) => byId.get(id)?.minimalPairs?.length ?? 0
+    expect(countOf('c-ch')).toBe(2)
+    expect(countOf('final-consonants')).toBe(2)
+    expect(countOf('hard-g')).toBe(3)
+    expect(countOf('tapped-r')).toBe(2)
+    expect(countOf('unaspirated-stops')).toBe(3)
+    // Untouched by round 2 — still no clean lexical contrast.
+    expect(countOf('e-two-sounds')).toBe(0)
+  })
+
+  it('exports exactly 3 PAIR_DRILL_VOICES, Achird first (the app-wide default seeding voice)', () => {
+    expect(PAIR_DRILL_VOICES).toEqual([
+      'id-ID-Chirp3-HD-Achird',
+      'id-ID-Chirp3-HD-Despina',
+      'id-ID-Chirp3-HD-Orus',
+    ])
+  })
+
+  it('allMinimalPairWords() returns only pair words (a narrower set than allExampleWords), including the new round-2 pairs', () => {
+    const pairWords = allMinimalPairWords()
+    const exampleWords = allExampleWords()
+    expect(pairWords.length).toBeGreaterThan(0)
+    expect(pairWords.length).toBeLessThan(exampleWords.length)
+    for (const w of pairWords) {
+      expect(w.length).toBeGreaterThan(0)
+      expect(exampleWords).toContain(w)
+    }
+    for (const expected of ['curang', 'kurang', 'tuang', 'baki', 'garam', 'karam', 'tari', 'tali', 'bagi', 'parang', 'barang', 'tua', 'dua']) {
+      expect(pairWords, `allMinimalPairWords() missing "${expected}"`).toContain(expected)
+    }
+    // A plain example word with no pair (e.g. 'gula') must NOT show up here.
+    expect(pairWords).not.toContain('gula')
   })
 })

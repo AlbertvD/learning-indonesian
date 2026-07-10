@@ -84,6 +84,12 @@ const CATALOG: readonly Pitfall[] = [
         contrastNl: "'cari' (zoeken) begint met de tj-klank; 'kari' (kerrie) met een k.",
         contrastEn: "'cari' (to look for) starts with the 'ch' sound; 'kari' (curry) with a k.",
       },
+      {
+        a: 'curang',
+        b: 'kurang',
+        contrastNl: "'curang' (vals spelen) begint met de tj-klank; 'kurang' (minder) met een k.",
+        contrastEn: "'curang' (to cheat) starts with the 'ch' sound; 'kurang' (less) with a k.",
+      },
     ],
     rank: 3,
   },
@@ -125,6 +131,12 @@ const CATALOG: readonly Pitfall[] = [
         contrastNl: "'makan' (eten) eindigt op -n; 'makam' (graf) op -m.",
         contrastEn: "'makan' (to eat) ends in -n; 'makam' (grave) ends in -m.",
       },
+      {
+        a: 'tuan',
+        b: 'tuang',
+        contrastNl: "'tuan' (meneer) eindigt op -n; 'tuang' (inschenken) op -ng.",
+        contrastEn: "'tuan' (sir) ends in -n; 'tuang' (to pour) in -ng.",
+      },
     ],
     rank: 6,
   },
@@ -144,6 +156,18 @@ const CATALOG: readonly Pitfall[] = [
         b: 'kali',
         contrastNl: "'gali' (graven) heeft de harde g; 'kali' (keer/rivier) een k.",
         contrastEn: "'gali' (to dig) has the hard g; 'kali' (times/river) a k.",
+      },
+      {
+        a: 'bagi',
+        b: 'baki',
+        contrastNl: "'bagi' (voor/delen) heeft de harde g; 'baki' (dienblad) een k.",
+        contrastEn: "'bagi' (for/to divide) has the hard g; 'baki' (tray) a k.",
+      },
+      {
+        a: 'garam',
+        b: 'karam',
+        contrastNl: "'garam' (zout) begint met de harde g; 'karam' (vergaan/zinken) met een k.",
+        contrastEn: "'garam' (salt) starts with the hard g; 'karam' (to sink) with a k.",
       },
     ],
     rank: 7,
@@ -187,6 +211,12 @@ const CATALOG: readonly Pitfall[] = [
         contrastNl: "'rusa' (hert) begint met de getikte r; 'lusa' (overmorgen) met een l.",
         contrastEn: "'rusa' (deer) starts with the tapped r; 'lusa' (the day after tomorrow) with an l.",
       },
+      {
+        a: 'tari',
+        b: 'tali',
+        contrastNl: "'tari' (dans) heeft de getikte r; 'tali' (touw) een l.",
+        contrastEn: "'tari' (dance) has the tapped r; 'tali' (rope) an l.",
+      },
     ],
     rank: 10,
   },
@@ -221,6 +251,26 @@ const CATALOG: readonly Pitfall[] = [
     pitfallNl: 'Engelstaligen blazen p/t/k; houd de lucht binnen.',
     pitfallEn: 'English speakers aspirate initial p/t/k; hold the air back.',
     examples: ['pagi', 'tiga', 'kaki', 'pintu'],
+    minimalPairs: [
+      {
+        a: 'pagi',
+        b: 'bagi',
+        contrastNl: "'pagi' (ochtend) begint met een p zonder lucht-pufje; 'bagi' (voor) met een b.",
+        contrastEn: "'pagi' (morning) starts with an unaspirated p; 'bagi' (for) with a b — without the puff they're easy to confuse.",
+      },
+      {
+        a: 'parang',
+        b: 'barang',
+        contrastNl: "'parang' (kapmes) met een p; 'barang' (spul) met een b.",
+        contrastEn: "'parang' (machete) with a p; 'barang' (goods) with a b.",
+      },
+      {
+        a: 'tua',
+        b: 'dua',
+        contrastNl: "'tua' (oud) begint met een t zonder pufje; 'dua' (twee) met een d.",
+        contrastEn: "'tua' (old) starts with an unaspirated t; 'dua' (two) with a d.",
+      },
+    ],
     rank: 13,
   },
   {
@@ -266,3 +316,27 @@ export function allExampleWords(): string[] {
   }
   return [...words]
 }
+
+/** Every distinct minimal-pair word across the catalog (pairs only, no plain
+ *  examples), normalized to the TTS lookup form. Parallel to `allExampleWords`
+ *  (which stays as-is and keeps covering pair words too) — this is the
+ *  narrower set the voice-paired perception drills (EarQuiz) and the seeding
+ *  script's second pass need. */
+export function allMinimalPairWords(): string[] {
+  const words = new Set<string>()
+  for (const p of CATALOG) {
+    for (const mp of p.minimalPairs ?? []) {
+      words.add(normalizeTtsText(mp.a))
+      words.add(normalizeTtsText(mp.b))
+    }
+  }
+  return [...words]
+}
+
+/** Voices the perception drills request per pair word (HVPT talker variability).
+ *  Achird is also the app-wide default seeding voice. */
+export const PAIR_DRILL_VOICES = [
+  'id-ID-Chirp3-HD-Achird',
+  'id-ID-Chirp3-HD-Despina',
+  'id-ID-Chirp3-HD-Orus',
+] as const

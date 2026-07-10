@@ -31,6 +31,7 @@ vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
 vi.mock('@/lib/firstRun', () => ({
   FIRST_LESSON_OPENED_KEY: 'first_lesson_opened',
   ONTDEK_VISITED_KEY: 'ontdek_visited',
+  PRONUNCIATION_VISITED_KEY: 'pronunciation_visited',
   readFirstRunFlag: vi.fn(() => false),
   setFirstRunFlag: vi.fn(),
   hasCompletedSession: vi.fn(),
@@ -158,6 +159,15 @@ describe('Dashboard — first-run checklist', () => {
 
     await screen.findByText('Vandaag')
     expect(screen.queryByTestId('first-run-checklist')).not.toBeInTheDocument()
+  })
+
+  it('reads PRONUNCIATION_VISITED_KEY into the uitspraak step (Task R2-B wiring)', async () => {
+    vi.mocked(readFirstRunFlag).mockImplementation((key: string) => key === 'first_lesson_opened')
+    vi.mocked(hasCompletedSession).mockResolvedValue(false)
+    renderDashboard()
+
+    await screen.findByTestId('first-run-checklist')
+    expect(readFirstRunFlag).toHaveBeenCalledWith('pronunciation_visited')
   })
 })
 
