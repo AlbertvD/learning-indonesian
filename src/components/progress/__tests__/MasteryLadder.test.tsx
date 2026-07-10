@@ -21,20 +21,9 @@ function renderLadder(props: Partial<Parameters<typeof MasteryLadder>[0]> = {}) 
 }
 
 describe('MasteryLadder', () => {
-  it('renders the achievement headline as strengthening + mastered', () => {
-    renderLadder()
-    expect(screen.getByText('Je kunt al 306 woorden begrijpen en gebruiken')).toBeInTheDocument()
-  })
-
-  it('renders the subline as learning + introduced practising, and mastered', () => {
-    renderLadder()
-    // 109 learning + 9 introduced = 118 practising; asserted via the sub-line's
-    // own text node (the ladder's "Zit erin" rung repeats the same mastered
-    // number elsewhere in the DOM, so a bare getByText('0') would be ambiguous).
-    expect(screen.getByText(/nog aan het oefenen/)).toHaveTextContent('118 nog aan het oefenen')
-    expect(screen.getByText(/beheers je al volledig/)).toHaveTextContent('0 beheers je al volledig')
-  })
-
+  // The achievement headline was dropped (it duplicated the ladder rungs, which
+  // already carry the same numbers with their real-life labels — owner call
+  // 2026-07-10); the ladder card + eyebrow are now the single representation.
   it('renders the four real-life-ability rung labels with their own counts', () => {
     renderLadder()
 

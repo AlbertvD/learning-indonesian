@@ -56,13 +56,10 @@ export function StubbornWordsCard({ userId }: StubbornWordsCardProps) {
   return (
     <div className={classes.card}>
       <div className={classes.head}>
-        <span className={classes.icon}>🧩</span>
-        <div className={classes.body}>
-          <span className={classes.title}>
-            {entries.length} {T.progress.stubbornNoun}
-          </span>
-          <span className={classes.explain}>{T.progress.stubbornExplain}</span>
-        </div>
+        <span className={classes.title}>
+          {entries.length} {T.progress.stubbornNoun}
+        </span>
+        <span className={classes.explain}>{T.progress.stubbornExplain}</span>
       </div>
       <MnemonicWordChips userId={userId} entries={entries} />
       <InsightTips area="stubborn" defaultOpen={false} />

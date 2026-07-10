@@ -1,7 +1,7 @@
 // src/components/progress/InsightTips.tsx
 //
 // Metacognitive nudge: evidence-based study tips for one weak area, as a
-// collapsible "💡 tips" disclosure (progressive disclosure → low cognitive
+// collapsible "tips" disclosure (progressive disclosure → low cognitive
 // overload, which the nudging literature warns against). It supports the
 // learner's strategy without touching the session engine. Visual language
 // matches the gauges/funnel (cool→green gradient spine).
@@ -29,7 +29,6 @@ export function InsightTips({ area, defaultOpen = true }: InsightTipsProps) {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
-        <span className={classes.bulb}>💡</span>
         <span className={classes.title}>{title}</span>
         <span className={`${classes.chevron} ${open ? classes.open : ''}`}>▶</span>
       </button>

@@ -80,6 +80,13 @@ export function Progress() {
   // always, mobile with a known tab) is a detail.
   const showHub = isMobile && tab === null
   const activeTab: Tab = tab ?? 'woorden'
+  const detailTitle: Record<Tab, string> = {
+    woorden: T.progress.tabWoordenschat,
+    grammar: T.progress.tabGrammar,
+    morfologie: T.progress.tabMorphology,
+    skills: T.progress.tabSkills,
+    time: T.progress.tabTime,
+  }
 
   const [hub, setHub] = useState<HubSummaries | null>(null)
   useEffect(() => {
@@ -162,8 +169,10 @@ export function Progress() {
   return (
     <PageContainer size="lg">
       <PageBody>
-        <PageHeader title={T.progress.pageTitle} />
+        {/* Detail: the section title "Jouw leervoortgang" lives on the hub only;
+            here the topic name titles the page, above the back/switcher nav. */}
         <ProgressNav />
+        <PageHeader title={detailTitle[activeTab]} />
         {/* key re-mounts the active detail so it animates in on every switch */}
         <div key={activeTab} className={classes.view}>
           {activeTab === 'woorden' && (

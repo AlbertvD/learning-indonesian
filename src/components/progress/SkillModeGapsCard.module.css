@@ -1,18 +1,25 @@
+/* bespoke-css-ok: mirrors the framework's card chrome tokens
+   (--card-bg/--card-border/--r-md) for visual parity with StatCard/
+   ActionCard, per the 2026-07-10 Voortgang chrome polish pass. */
 .card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .title {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
   color: var(--text-primary);
   margin: 0;
 }
 
 .subtitle {
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   color: var(--text-secondary, #868e96);
   margin: 0 0 0.5rem;
 }
@@ -35,26 +42,26 @@
 }
 
 .mode {
-  font-size: 0.9rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .badge {
-  font-size: 0.95rem;
+  font-size: var(--fs-xs);
   margin-right: 0.35rem;
   color: var(--text-secondary, #868e96);
 }
 
 .desc {
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   color: var(--text-secondary, #868e96);
   margin-left: 0.4rem;
   font-weight: 400;
 }
 
 .practised {
-  font-size: 0.74rem;
+  font-size: var(--fs-xs);
   color: var(--text-secondary, #868e96);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
@@ -68,22 +75,25 @@
   margin-bottom: 0.4rem;
 }
 
+/* Big display number — same role as GroeiCard's .hero (the ladder rung
+   counts / growth hero figure): display serif, one consistent large token. */
 .hero {
-  font-size: 1.6rem;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
   line-height: 1;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .heroUnit {
-  font-size: 0.78rem;
+  font-size: var(--fs-sm);
   color: var(--text-secondary, #868e96);
   font-weight: 500;
 }
 
 .note {
-  font-size: 0.76rem;
+  font-size: var(--fs-sm);
   line-height: 1.45;
   color: var(--text-secondary, #868e96);
   background: var(--surface-2, rgba(128, 128, 128, 0.08));
@@ -109,7 +119,7 @@
 }
 
 .none {
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   color: var(--text-secondary, #868e96);
   font-style: italic;
 }

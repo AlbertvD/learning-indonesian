@@ -21,3 +21,11 @@
   font-weight: 700;
   fill: var(--text-secondary, #868e96);
 }
+
+/* Stacked mode's right-edge per-band count labels — dominant-baseline centers
+   the digits on the computed y (band midpoint, nudged apart if thin). */
+.stackLabel {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  dominant-baseline: middle;
+}

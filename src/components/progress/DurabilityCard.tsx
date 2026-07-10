@@ -7,7 +7,6 @@
 // their retention is doing over time (design §3.4, research design read #3).
 import { useEffect, useState } from 'react'
 import { notifications } from '@mantine/notifications'
-import { IconClockHeart } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
 import { memory, type StabilityWeek } from '@/lib/analytics/memory'
 import { logError } from '@/lib/logger'
@@ -70,11 +69,8 @@ export function DurabilityCard({ userId, timezone }: DurabilityCardProps) {
   return (
     <div className={classes.card}>
       <div className={classes.head}>
-        <IconClockHeart size={18} className={classes.icon} />
-        <div>
-          <h3 className={classes.title}>{T.progress.durabilityTitle}</h3>
-          <p className={classes.subtitle}>{T.progress.durabilitySubtitle}</p>
-        </div>
+        <h3 className={classes.title}>{T.progress.durabilityTitle}</h3>
+        <p className={classes.subtitle}>{T.progress.durabilitySubtitle}</p>
       </div>
 
       {!hasData ? (

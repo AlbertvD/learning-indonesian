@@ -1,35 +1,36 @@
+/* bespoke-css-ok: card CONTENT (chart/legend/hero-figure stack) isn't a
+   page-framework primitive shape — this rule only mirrors the framework's
+   card chrome tokens (--card-bg/--card-border/--r-md) for visual parity
+   with StatCard/ActionCard, per the 2026-07-10 Voortgang chrome polish pass. */
 .card {
-  border-radius: 14px;
-  padding: 1rem;
-  background: var(--surface-1, rgba(128, 128, 128, 0.05));
-  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.16));
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
+/* Section header — one shared title treatment across every Voortgang card:
+   sentence-case (no caps), --fs-md, sans, left-aligned, no leading icon. */
 .head {
   display: flex;
-  align-items: flex-start;
-  gap: 0.55rem;
-}
-
-.icon {
-  color: var(--text-secondary, #868e96);
-  flex-shrink: 0;
-  margin-top: 0.1rem;
+  flex-direction: column;
+  gap: 0.1rem;
 }
 
 .title {
-  font-size: 0.98rem;
-  font-weight: 700;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
   margin: 0;
 }
 
 .subtitle {
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   color: var(--text-secondary, #868e96);
-  margin: 0.1rem 0 0;
+  margin: 0;
 }
 
 .headline {
@@ -39,26 +40,30 @@
   gap: 0.3rem 0.5rem;
 }
 
+/* Big display number — the growth/durability "hero" figure. Keeps the
+   display serif; one consistent large token across every such number. */
 .hero {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
   line-height: 1;
 }
 
 .heroUnit {
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   color: var(--text-secondary, #868e96);
 }
 
 .was {
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   color: var(--text-secondary, #868e96);
 }
 
 /* GrowthCurveCard's delta badge (the mock's "▲ +58" pill) — mirrors
    TimeComparison.module.css's .up pill (same success color-mix shape). */
 .delta {
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--success, #2f9e44);
   background: var(--success-subtle, color-mix(in srgb, var(--success, #2f9e44) 14%, transparent));
@@ -66,25 +71,41 @@
   border-radius: 999px;
 }
 
-/* GrowthCurveCard's "Woorden die je kunt gebruiken" caption under the hero
-   number, above the chart. */
+/* GrowthCurveCard's "Woorden in totaal" caption under the hero number,
+   above the chart. */
 .caption {
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   color: var(--text-secondary, #868e96);
   margin: -0.15rem 0 0.1rem;
 }
 
-/* GrowthCurveCard's x-axis endpoints ("12 weken geleden" / "nu"). */
-.xlab {
+/* GrowthCurveCard's compact 4-rung legend row below the stacked chart —
+   replaces the old x-axis "12 weken geleden"/"nu" endpoints; the chart's own
+   right-edge count labels now carry that role. Wraps on narrow screens. */
+.legendRow {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  margin-top: 0.15rem;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: var(--fs-xs);
-  color: var(--text-tertiary);
-  margin-top: 0.25rem;
+  color: var(--text-secondary, #868e96);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .empty {
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   color: var(--text-secondary, #868e96);
   margin: 0.25rem 0 0.5rem;
   text-align: center;

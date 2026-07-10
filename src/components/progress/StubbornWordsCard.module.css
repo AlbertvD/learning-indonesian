@@ -2,7 +2,14 @@
    rather than the pre-retune off-brand violet. The chip-list styles moved to
    MnemonicWordChips.module.css during the 2026-07-09 extraction (shared with
    Home's TroublesomeWordsSheet) — this file keeps only the header chrome. */
+/* bespoke-css-ok: mirrors the framework's card chrome tokens
+   (--card-bg/--card-border/--r-md) for visual parity with StatCard/
+   ActionCard, per the 2026-07-10 Voortgang chrome polish pass. */
 .card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
@@ -11,32 +18,22 @@
 
 .head {
   display: flex;
-  gap: 0.6rem;
+  flex-direction: column;
+  gap: 0.15rem;
   border-radius: 12px;
   padding: 0.7rem 0.85rem;
   background: var(--warning-subtle);
   border-left: 3px solid var(--warning);
 }
 
-.icon {
-  font-size: 1.1rem;
-  line-height: 1.3;
-}
-
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
 .title {
-  font-size: 0.86rem;
-  font-weight: 700;
-  color: var(--warning);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
 }
 
 .explain {
-  font-size: 0.78rem;
+  font-size: var(--fs-sm);
   line-height: 1.4;
   color: var(--text-secondary, #868e96);
 }

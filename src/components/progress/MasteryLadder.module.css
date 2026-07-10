@@ -51,35 +51,27 @@
 }
 
 /* ── The ladder card — four stops on one connected spine, grey → tamarind →
-   gold → green. ── */
+   gold → green. Radius/padding normalized to the framework's --r-md/16px
+   convention (2026-07-10 chrome polish pass); .headline above keeps --r-lg
+   (out of this pass's scope — see file header re: bespoke geometry). ── */
 .card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: var(--r-lg);
-  padding: 1.1rem 1rem;
+  border-radius: var(--r-md);
+  padding: 16px;
 }
 
+/* Eyebrow doubles as this card's section title — sentence-case, no hairline,
+   matching the shared title treatment used across every Voortgang card. */
 .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   margin-bottom: 0.9rem;
 }
 
 .eyebrow span {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
   color: var(--text-primary);
   white-space: nowrap;
-}
-
-.eyebrow::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--card-border);
 }
 
 .ladder {
@@ -133,7 +125,7 @@
 }
 
 .lbl {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
   color: var(--text-secondary);
   line-height: 1.25;
