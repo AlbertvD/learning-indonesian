@@ -319,7 +319,8 @@ export const lesson = {
             "dutch": "stil (zijn)",
             "indonesian": "diem",
             "register": "informal",
-            "registerCounterpart": "diam"
+            "registerCounterpart": "diam",
+            "english": "silent (be)"
           }
         ]
       }

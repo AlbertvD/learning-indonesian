@@ -937,19 +937,22 @@ export const lesson = {
             "dutch": "kwijt, verloren",
             "indonesian": "ilang",
             "register": "informal",
-            "registerCounterpart": "hilang"
+            "registerCounterpart": "hilang",
+            "english": "lost, missing"
           },
           {
             "dutch": "pittig, scherp",
             "indonesian": "pedes",
             "register": "informal",
-            "registerCounterpart": "pedas"
+            "registerCounterpart": "pedas",
+            "english": "spicy, sharp"
           },
           {
             "dutch": "verlangen, willen",
             "indonesian": "pengen",
             "register": "informal",
-            "registerCounterpart": "ingin"
+            "registerCounterpart": "ingin",
+            "english": "want, desire"
           }
         ]
       }

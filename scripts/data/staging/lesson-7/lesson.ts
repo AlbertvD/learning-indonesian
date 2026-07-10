@@ -550,7 +550,8 @@ export const lesson = {
             "dutch": "zoals, zoiets als",
             "indonesian": "kayak",
             "register": "informal",
-            "registerCounterpart": "seperti"
+            "registerCounterpart": "seperti",
+            "english": "like, such as"
           }
         ]
       }

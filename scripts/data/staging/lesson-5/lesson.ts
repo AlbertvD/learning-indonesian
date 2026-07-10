@@ -1069,25 +1069,29 @@ export const lesson = {
             "dutch": "op, klaar, voorbij",
             "indonesian": "abis",
             "register": "informal",
-            "registerCounterpart": "habis"
+            "registerCounterpart": "habis",
+            "english": "finished, done, over"
           },
           {
             "dutch": "blij",
             "indonesian": "seneng",
             "register": "informal",
-            "registerCounterpart": "senang"
+            "registerCounterpart": "senang",
+            "english": "happy"
           },
           {
             "dutch": "geld",
             "indonesian": "duit",
             "register": "informal",
-            "registerCounterpart": "uang"
+            "registerCounterpart": "uang",
+            "english": "money"
           },
           {
             "dutch": "straks, later",
             "indonesian": "ntar",
             "register": "informal",
-            "registerCounterpart": "nanti"
+            "registerCounterpart": "nanti",
+            "english": "later, soon"
           }
         ]
       }

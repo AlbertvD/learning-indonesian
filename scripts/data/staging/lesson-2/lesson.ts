@@ -447,25 +447,29 @@ export const lesson = {
             "dutch": "al, reeds",
             "indonesian": "udah",
             "register": "informal",
-            "registerCounterpart": "sudah"
+            "registerCounterpart": "sudah",
+            "english": "already"
           },
           {
             "dutch": "tot; aankomen",
             "indonesian": "sampe",
             "register": "informal",
-            "registerCounterpart": "sampai"
+            "registerCounterpart": "sampai",
+            "english": "until; arrive"
           },
           {
             "dutch": "krijgen; kunnen",
             "indonesian": "dapet",
             "register": "informal",
-            "registerCounterpart": "dapat"
+            "registerCounterpart": "dapat",
+            "english": "get; can"
           },
           {
             "dutch": "ontmoeten",
             "indonesian": "ketemu",
             "register": "informal",
-            "registerCounterpart": "bertemu"
+            "registerCounterpart": "bertemu",
+            "english": "meet"
           }
         ]
       }

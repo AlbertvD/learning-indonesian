@@ -423,19 +423,22 @@ export const lesson = {
             "dutch": "zwart",
             "indonesian": "item",
             "register": "informal",
-            "registerCounterpart": "hitam"
+            "registerCounterpart": "hitam",
+            "english": "black"
           },
           {
             "dutch": "snel",
             "indonesian": "cepet",
             "register": "informal",
-            "registerCounterpart": "cepat"
+            "registerCounterpart": "cepat",
+            "english": "fast"
           },
           {
             "dutch": "nacht, avond",
             "indonesian": "malem",
             "register": "informal",
-            "registerCounterpart": "malam"
+            "registerCounterpart": "malam",
+            "english": "night, evening"
           }
         ]
       }

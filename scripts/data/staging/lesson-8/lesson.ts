@@ -416,25 +416,29 @@ export const lesson = {
             "dutch": "gebruiken",
             "indonesian": "pake",
             "register": "informal",
-            "registerCounterpart": "pakai"
+            "registerCounterpart": "pakai",
+            "english": "use"
           },
           {
             "dutch": "groen",
             "indonesian": "ijo",
             "register": "informal",
-            "registerCounterpart": "hijau"
+            "registerCounterpart": "hijau",
+            "english": "green"
           },
           {
             "dutch": "zien",
             "indonesian": "liat",
             "register": "informal",
-            "registerCounterpart": "lihat"
+            "registerCounterpart": "lihat",
+            "english": "see"
           },
           {
             "dutch": "zo, zodanig",
             "indonesian": "gitu",
             "register": "informal",
-            "registerCounterpart": "begitu"
+            "registerCounterpart": "begitu",
+            "english": "like that, such"
           }
         ]
       }
