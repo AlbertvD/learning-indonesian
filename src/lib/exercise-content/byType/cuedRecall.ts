@@ -13,11 +13,29 @@
 // produce, ADR 0017), not per word_form_pair.
 
 import type { BuilderInputFor, BuilderResult } from './types'
-import type { ExerciseItem } from '@/types/learning'
+import type { ExerciseItem, LearningItem } from '@/types/learning'
 import { shuffle } from './helpers'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
-import { distractorAffixes } from '@/lib/capabilities'
+import { distractorAffixes, itemSlug } from '@/lib/capabilities'
+
+// Register-pair distractor guard (spec docs/plans/2026-07-09-spreektaal-
+// lesson-woven-core.md §4): a candidate that IS the answer's
+// register_counterpart, or that NAMES the answer as ITS register_counterpart,
+// is the same word in the other register — presenting it as a wrong option
+// would give the MCQ two correct choices (the formal item's choose_form_ex
+// draws from the same lesson's item pool, which now includes its informal
+// twin). Resolved through itemSlug (the canonical base_text mint), never a
+// bespoke compare, so slug edge cases can't diverge from the seed-time
+// validator. Inert while the register/register_counterpart columns don't
+// exist (both undefined on every row until the parallel schema PR lands).
+function isRegisterTwin(candidate: LearningItem, answer: LearningItem): boolean {
+  const candidateNamesAnswer = candidate.register_counterpart != null
+    && itemSlug(candidate.register_counterpart) === answer.normalized_text
+  const answerNamesCandidate = answer.register_counterpart != null
+    && itemSlug(answer.register_counterpart) === candidate.normalized_text
+  return candidateNamesAnswer || answerNamesCandidate
+}
 
 export function buildCuedRecall(input: BuilderInputFor<'choose_form_ex'>): BuilderResult {
   // word_form_pair_src path — input.affixedFormPair is populated; learningItem null.
@@ -98,7 +116,7 @@ export function buildCuedRecall(input: BuilderInputFor<'choose_form_ex'>): Build
   } else {
     // Pool fallback path (unchanged behaviour from before Task 8).
     const pool: DistractorCandidate[] = input.poolItems
-      .filter(i => i.id !== learningItem.id && i.base_text)
+      .filter(i => i.id !== learningItem.id && i.base_text && !isRegisterTwin(i, learningItem))
       .map(i => {
         const ms = input.poolMeaningsByItem.get(i.id) ?? []
         const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)
