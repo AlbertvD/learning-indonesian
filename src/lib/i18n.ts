@@ -123,6 +123,8 @@ export const nl = {
     quizNext: 'Volgende',
     quizReplay: 'Opnieuw',
     quizStreak: 'Reeks',
+    shadowSectionHeading: 'Schaduw de dialoog',
+    shadowSectionIntro: 'Luister naar een zin en zeg hem na — melodie en ritme oefen je op zinsniveau, niet per woord.',
   },
   dashboard: {
     welcomeBack: 'Welkom terug',
@@ -814,6 +816,8 @@ export const en: typeof nl = {
     quizNext: 'Next',
     quizReplay: 'Replay',
     quizStreak: 'Streak',
+    shadowSectionHeading: 'Shadow the dialogue',
+    shadowSectionIntro: 'Listen to a sentence and repeat it — melody and rhythm are trained at sentence level, not per word.',
   },
   dashboard: {
     welcomeBack: 'Welcome back',

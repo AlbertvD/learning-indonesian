@@ -9,8 +9,9 @@ import { Alert, Paper, Stack, Text, Title } from '@mantine/core'
 import { IconAlertCircle, IconVolume, IconHeadphones } from '@tabler/icons-react'
 import { PageContainer, PageBody, PageHeader, LoadingState, EmptyState } from '@/components/page/primitives'
 import { LerenNav } from '@/components/lessons/LerenNav'
-import { PitfallCard } from '@/components/pronunciation'
+import { PitfallCard, DialogueShadowSection } from '@/components/pronunciation'
 import { getPitfallsForL1, PAIR_DRILL_VOICES } from '@/lib/pronunciation/pitfallCatalog'
+import { DIALOGUE_SHADOW_SET } from '@/lib/pronunciation/dialogueShadowSet'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { textService, type Podcast } from '@/services/textService'
 import { useAuthStore } from '@/stores/authStore'
@@ -49,8 +50,14 @@ export function Pronunciation() {
         // Combined into the SAME fetchSessionAudioMap call as the existing
         // voice-agnostic requests below.
         const pairWords = pitfallsForL1.flatMap((p) => (p.minimalPairs ?? []).flatMap((mp) => [mp.a, mp.b]))
+        // "Schaduw de dialoog" sentences (UP5 shape (c)): same voice-agnostic
+        // path as the pitfall examples — talker variability is a perception-
+        // drill concern, not a shadowing one. Folded into the SAME combined
+        // request list, one fetchSessionAudioMap call for the whole page.
+        const shadowSentences = DIALOGUE_SHADOW_SET.map((s) => s.text)
         const requests = [
           ...words.map((text) => ({ text, voiceId: null as string | null })),
+          ...shadowSentences.map((text) => ({ text, voiceId: null as string | null })),
           ...pairWords.flatMap((text) => PAIR_DRILL_VOICES.map((voiceId) => ({ text, voiceId }))),
         ]
         const [map, pronunciationPodcast] = await Promise.all([
@@ -119,6 +126,7 @@ export function Pronunciation() {
               {pitfalls.map((p) => (
                 <PitfallCard key={p.id} pitfall={p} language={language} audioMap={audioMap} />
               ))}
+              <DialogueShadowSection audioMap={audioMap} />
             </Stack>
           )
         )}
