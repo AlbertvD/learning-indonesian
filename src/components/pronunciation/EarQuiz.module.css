@@ -1,0 +1,21 @@
+/* bespoke-css-ok: tokened INSET sub-row — the quiz renders inside a
+   PitfallCard, below the minimal-pair rows, so it shares their nested
+   treatment (bg-surface + r-sm), not card chrome; no primitive owns an inset
+   treatment (see the uitspraak harmonization plan's Change 3). Every value is
+   a framework token. */
+
+.subCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-sm);
+  padding: 8px 10px;
+  margin-top: 8px;
+}
+
+.correct {
+  color: var(--success);
+}
+
+.wrong {
+  color: var(--danger);
+}

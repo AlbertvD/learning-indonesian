@@ -1,0 +1,11 @@
+/* bespoke-css-ok: tokened INSET sub-row — this renders inside a PitfallCard,
+   so it deliberately reads as nested (bg-surface + r-sm), not as a competing
+   card; no primitive owns an inset treatment (see the uitspraak harmonization
+   plan's Change 3). Every value is a framework token. */
+
+.subCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-sm);
+  padding: 8px 10px;
+}

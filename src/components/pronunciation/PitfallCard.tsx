@@ -3,8 +3,9 @@
 // example words that play a native model. Presentational — reads the pitfall +
 // the prefetched audio map; no data fetching of its own.
 
-import { Card, Badge, Group, Stack, Text } from '@mantine/core'
+import { Group, Stack, Text } from '@mantine/core'
 import { PlayButton } from '@/components/PlayButton'
+import classes from './PitfallCard.module.css'
 import { MinimalPairPlayer } from './MinimalPairPlayer'
 import { ShadowControl } from './ShadowControl'
 import { EarQuiz } from './EarQuiz'
@@ -31,12 +32,10 @@ export function PitfallCard({ pitfall, language, audioMap }: PitfallCardProps) {
   )
 
   return (
-    <Card withBorder radius="md" padding="md">
+    <section className={classes.card}>
       <Stack gap="xs">
         <Group gap="sm" wrap="nowrap" align="flex-start">
-          <Badge size="lg" variant="light" style={{ flexShrink: 0 }}>
-            {pitfall.sound}
-          </Badge>
+          <span className={classes.soundPill}>{pitfall.sound}</span>
           <Text fw={600}>{rule}</Text>
         </Group>
 
@@ -79,6 +78,6 @@ export function PitfallCard({ pitfall, language, audioMap }: PitfallCardProps) {
           </div>
         )}
       </Stack>
-    </Card>
+    </section>
   )
 }

@@ -14,8 +14,9 @@
 // voice is held for the round so replay repeats the same clip.
 
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { ActionIcon, Button, Group, Paper, Stack, Text, Tooltip } from '@mantine/core'
+import { ActionIcon, Button, Group, Stack, Text, Tooltip } from '@mantine/core'
 import { IconVolume } from '@tabler/icons-react'
+import classes from './EarQuiz.module.css'
 import { playSequence } from '@/lib/pronunciation/playSequence'
 import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
 import { useT } from '@/hooks/useT'
@@ -101,7 +102,7 @@ export function EarQuiz({ playablePairs, audioMap }: EarQuizProps) {
   if (playablePairs.length === 0) return null
 
   return (
-    <Paper withBorder radius="sm" p="xs" mt="xs">
+    <div className={classes.subCard}>
       <Stack gap={4}>
         <Group justify="space-between" wrap="nowrap">
           <Text size="xs" tt="uppercase" c="dimmed">{T.pronunciation.quizHeading}</Text>
@@ -146,12 +147,12 @@ export function EarQuiz({ playablePairs, audioMap }: EarQuizProps) {
             </Group>
 
             {feedback === 'correct' && (
-              <Text size="sm" c="green" fw={600}>{T.pronunciation.quizCorrect}</Text>
+              <Text size="sm" fw={600} className={classes.correct}>{T.pronunciation.quizCorrect}</Text>
             )}
 
             {feedback === 'wrong' && (
               <Stack gap={4}>
-                <Text size="sm" c="red" fw={600}>
+                <Text size="sm" fw={600} className={classes.wrong}>
                   {T.pronunciation.quizWrongWas} {round.playedMember === 'a' ? round.pair.a : round.pair.b}
                 </Text>
                 <Button size="compact-xs" variant="light" onClick={startRound}>
@@ -164,6 +165,6 @@ export function EarQuiz({ playablePairs, audioMap }: EarQuizProps) {
           </Stack>
         )}
       </Stack>
-    </Paper>
+    </div>
   )
 }
