@@ -8,6 +8,11 @@
 // matched to the catalog tile's affix-type hue (affixVisuals.ts), threads the
 // two surfaces together — purely decorative chrome around PageHeader, which
 // itself is not touched a second time.
+//
+// The "practise this affix" CTA sits BELOW the rule card (under the rule's
+// description), not in the header's action slot — the header carries identity
+// (affix + meaning), and the practice action reads as the next step after you
+// understand the rule.
 
 import { Stack, Text, Button, Tooltip } from '@mantine/core'
 import { IconPlayerPlay } from '@tabler/icons-react'
@@ -50,10 +55,14 @@ export function AffixDetailView({ detail, audioMap }: { detail: AffixDetail; aud
         className={classes.headerAccent}
         style={{ borderLeftColor: AFFIX_TYPE_HUE[detail.affixType].solid }}
       >
-        <PageHeader title={detail.affix} subtitle={detail.gloss} action={practiseAction} />
+        <PageHeader title={detail.affix} subtitle={detail.gloss} />
       </div>
 
       <RuleCard detail={detail} audioMap={audioMap} />
+
+      {/* Primary CTA, under the rule — natural width, left-aligned (a plain
+          block wrapper decouples it from Stack's stretch). */}
+      <div>{practiseAction}</div>
 
       <div>
         <SectionHeading>{T.morphology.familiesTitle}</SectionHeading>

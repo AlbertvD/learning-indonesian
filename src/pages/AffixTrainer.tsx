@@ -79,7 +79,10 @@ export function AffixTrainer() {
   return (
     <PageContainer size="lg">
       <PageBody>
-        <LerenNav />
+        {/* Catalog view only: the detail view has its own BackLink to /morphology,
+            so LerenNav (whose mobile form shows a "terug naar leren" link) would
+            be a redundant second back affordance there. */}
+        {!affix && <LerenNav />}
         {!affix && <PageHeader title={T.morphology.title} subtitle={T.morphology.subtitle} />}
 
         {loading && <LoadingState caption={T.morphology.title} />}
