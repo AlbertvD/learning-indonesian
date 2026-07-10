@@ -23,9 +23,13 @@
  * ⚠️ CONTRACT (PR #413, `scripts/check-supabase-deep.ts` HC45/46): the
  * ONLY runtime export of this module is `registerPairs` — HC45/46 read it
  * via `Object.values(mod)[0]` and treat EVERY entry as expected schedulable
- * content. `anchor_lesson` is present+truthy ONLY on the phrase-anchored
- * rows. Deferred candidates (no defensible anchor, or a blocking DB
- * collision) are NOT a second export — ES module namespace objects sort
+ * content. `anchor_lesson` is present+truthy on the ~6 phrase-anchored rows
+ * (spec §3.1, formal twin is phrase-internal) AND on the 16
+ * informalAlreadyTaught retrofit rows (step 3 — see SCOPE NOTE below); both
+ * groups are classified PHRASE-ANCHORED by the intersection report and
+ * whitelisted for GT9's register_counterpart resolution. Deferred candidates
+ * (no defensible anchor, or a blocking DB collision) are NOT a second
+ * export — ES module namespace objects sort
  * exported keys alphabetically (verified: 'deferredPairs' < 'registerPairs'
  * would make deferred come FIRST, silently breaking HC45/46 — declaration
  * order in the source does NOT determine `Object.keys/values(mod)` order
@@ -34,22 +38,24 @@
  * `scripts/register-pairs-report.ts` (diagnostic-only, never exported from
  * here) so the intersection report can still surface them under `allPairs`.
  *
- * ⚠️ SCOPE NOTE (found during live-DB cross-check, step 2): a number of the
- * informal words below (`nggak`, `banget`, `bentar`, `bilang`, `cuma`,
- * `kalo`, `kasih`, `ngobrol`, `ngomong`, `bakal`, `biar`, `capek`, `gampang`,
- * `susah`, `ketawa`) ALREADY EXIST as live `learning_items` rows today —
- * most unmarked (no `register` column existed before this spec), a few with
- * an ad-hoc "(informeel)" PROSE marker in `translation_nl`. This artifact
- * still lists them normally (they are still correct pairs); the
- * INTERSECTION REPORT (`scripts/register-pairs-report.ts` →
- * `scripts/data/register-pairs-intersection.json`) flags each one under
- * `informalAlreadyTaught` — step 3/4 (staging weave) must RETROFIT those
- * existing rows (edit the anchor lesson's staging + re-publish), not insert
- * a fresh item, or the `learning_items_normalized_text_key` UNIQUE
- * constraint will reject the write. This is exactly the kind of drift the
- * intersection report step exists to catch before the pipeline carrier (step
- * 3) is built on top of a wrong assumption. See the PR body for the full
- * list with lesson numbers.
+ * ⚠️ SCOPE NOTE (found during live-DB cross-check, step 2; RESOLVED step 3):
+ * 16 of the scheduled-core pairs' informal words were already live
+ * `learning_items` rows in a DIFFERENT lesson than their formal twin's
+ * introducing lesson (e.g. tidak L1 / nggak L12) — most unmarked (no
+ * `register` column existed before this spec), a few with an ad-hoc
+ * "(informeel)" PROSE marker in `translation_nl`. Step 3 RETROFITTED each of
+ * these 16 rows with an explicit `anchor_lesson` override pointing at the
+ * lesson where the INFORMAL word already lives (not the formal twin's
+ * lesson) — see each row's `source` note for the specific retrofit. This
+ * makes the staging weave (step 4) edit the existing entry in place there
+ * instead of inserting a fresh item (which would violate the
+ * `learning_items_normalized_text_key` UNIQUE constraint), and correctly
+ * whitelists the row for GT9's register_counterpart resolution check (the
+ * counterpart lives in a different lesson than the one being published).
+ * The INTERSECTION REPORT (`scripts/register-pairs-report.ts` →
+ * `scripts/data/register-pairs-intersection.json`) still flags these under
+ * `informalAlreadyTaught` for visibility, now alongside their corrected
+ * `anchorLesson`.
  *
  * EXCLUDED per spec §0/§10 (never candidates here): Jakarta gaul pronouns
  * (gue/lu), the standard informal pronoun set (aku/kamu/kau/engkau — already
@@ -87,9 +93,13 @@ export interface RegisterPair {
   klasse: RegisterPairKlasse
   /** Attestation note — see file header caveat on citation grade. */
   source: string
-  /** Override for the ~6 "phrase-anchored" rows (spec §3.1) whose formal
-   *  twin is only inside a taught PHRASE, not taught as its own item. Value
-   *  is the lesson's `order_index` (the "Les N" number; 999 = the "Common
+  /** Override for two groups of rows (spec §3.1, step 3): the ~6
+   *  "phrase-anchored" rows whose formal twin is only inside a taught
+   *  PHRASE, not taught as its own item; and the 16 "retrofit" rows whose
+   *  informal word is ALREADY a live item in a lesson other than the formal
+   *  twin's introducing lesson (see SCOPE NOTE above) — set to that
+   *  informal-already-lives-here lesson, never the formal's lesson. Value is
+   *  the lesson's `order_index` (the "Les N" number; 999 = the "Common
    *  Words" catch-all pseudo-lesson). Typed loosely per the HC45/46
    *  contract (PR #413); this artifact only ever populates it with a
    *  number. */
@@ -136,7 +146,8 @@ export const registerPairs: RegisterPair[] = [
   { formal: 'ramai', informal: 'rame', gloss_nl: 'druk, levendig', klasse: 'monophthong',
     source: 'Sneddon 2006 — monophthongization class (canonical example)' },
   { formal: 'kalau', informal: 'kalo', gloss_nl: 'als, wanneer', klasse: 'monophthong',
-    source: 'Sneddon 2006 — monophthongization class (canonical example)' },
+    source: 'Sneddon 2006 — monophthongization class (canonical example); already attested live (kalo L999, prose-marked "(informeel)") — RETROFIT, not a fresh insert (step 3).',
+    anchor_lesson: 999 },
   { formal: 'hijau', informal: 'ijo', gloss_nl: 'groen', klasse: 'monophthong',
     source: 'Sneddon 2006 — au→o + h-drop; dominant colloquial form' },
 
@@ -160,7 +171,8 @@ export const registerPairs: RegisterPair[] = [
   { formal: 'senang', informal: 'seneng', gloss_nl: 'blij', klasse: 'a-e-reductie',
     source: 'Sneddon 2006 — a→e reduction class' },
   { formal: 'sebentar', informal: 'bentar', gloss_nl: 'zo, even', klasse: 'a-e-reductie',
-    source: 'Sneddon 2006 — a→e reduction + se- truncation; folded into this bucket per the task brief' },
+    source: 'Sneddon 2006 — a→e reduction + se- truncation; folded into this bucket per the task brief; already attested live (bentar L999, prose-marked "(informeel)") — RETROFIT (step 3).',
+    anchor_lesson: 999 },
   { formal: 'lapar', informal: 'laper', gloss_nl: 'hongerig', klasse: 'a-e-reductie',
     source: 'Sneddon 2006 — a→e reduction class' },
   { formal: 'pedas', informal: 'pedes', gloss_nl: 'pittig, scherp', klasse: 'a-e-reductie',
@@ -188,7 +200,8 @@ export const registerPairs: RegisterPair[] = [
   { formal: 'bertemu', informal: 'ketemu', gloss_nl: 'ontmoeten', klasse: 'frozen-verb',
     source: 'Sneddon 2006 — frozen colloquial verb (canonical example)' },
   { formal: 'bicara', informal: 'ngomong', gloss_nl: 'praten, spreken', klasse: 'frozen-verb',
-    source: 'Sneddon 2006 — frozen colloquial verb (canonical example)' },
+    source: 'Sneddon 2006 — frozen colloquial verb (canonical example); already attested live (ngomong L14, unmarked, gloss "kletsen") — RETROFIT (step 3).',
+    anchor_lesson: 14 },
   { formal: 'mengerti', informal: 'ngerti', gloss_nl: 'begrijpen', klasse: 'frozen-verb',
     source: 'Sneddon 2006 — frozen colloquial verb; formal twin only inside a taught phrase',
     anchor_lesson: 30 },
@@ -197,13 +210,15 @@ export const registerPairs: RegisterPair[] = [
   { formal: 'lihat', informal: 'liat', gloss_nl: 'zien', klasse: 'frozen-verb',
     source: 'Sneddon 2006 — intervocalic h-elision on the bare (prefix-dropped) root; grouped with frozen-verb per the task brief' },
   { formal: 'tertawa', informal: 'ketawa', gloss_nl: 'lachen', klasse: 'frozen-verb',
-    source: 'Sneddon 2006 — frozen colloquial verb (ter- → ke- irregular alternation)' },
+    source: 'Sneddon 2006 — frozen colloquial verb (ter- → ke- irregular alternation); already attested live (ketawa L26, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 26 },
 
   // ── lexical (dominant lexical replacements — different root entirely) ──
   { formal: 'seperti', informal: 'kayak', gloss_nl: 'zoals, zoiets als', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement (canonical example)' },
   { formal: 'sekali', informal: 'banget', gloss_nl: 'heel, erg', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement (canonical example, matching postposed-intensifier syntax)' },
+    source: 'Sneddon 2006 — dominant lexical replacement (canonical example, matching postposed-intensifier syntax); already attested live (banget L999, prose-marked "(informeel)") — RETROFIT (step 3).',
+    anchor_lesson: 999 },
   { formal: 'uang', informal: 'duit', gloss_nl: 'geld', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement (canonical example)' },
   { formal: 'bagaimana', informal: 'gimana', gloss_nl: 'hoe', klasse: 'lexical',
@@ -215,7 +230,8 @@ export const registerPairs: RegisterPair[] = [
   { formal: 'memang', informal: 'emang', gloss_nl: 'inderdaad, toegegeven', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement (canonical example)' },
   { formal: 'hanya', informal: 'cuma', gloss_nl: 'slechts, alleen maar', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement (canonical example)' },
+    source: 'Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (cuma L999, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 999 },
   { formal: 'nanti', informal: 'ntar', gloss_nl: 'straks, later', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement + truncation (nanti→(e)ntar)' },
   { formal: 'tahu', informal: 'tau', gloss_nl: 'weten', klasse: 'lexical',
@@ -223,29 +239,38 @@ export const registerPairs: RegisterPair[] = [
   { formal: 'terima kasih', informal: 'makasih', gloss_nl: 'dank je / dank u', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement + truncation (canonical example)' },
   { formal: 'mengapa', informal: 'kenapa', gloss_nl: 'waarom', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement; already attested live (both taught, L999, kenapa already prose-marked "(informeel)")' },
+    source: 'Sneddon 2006 — dominant lexical replacement; already attested live (both taught, L999, kenapa already prose-marked "(informeel)") — RETROFIT (step 3).',
+    anchor_lesson: 999 },
   { formal: 'tidak', informal: 'nggak', gloss_nl: 'niet, nee', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement (spec §3.1 worked example); already attested live (both taught — tidak L1, nggak L12, unmarked)' },
+    source: 'Sneddon 2006 — dominant lexical replacement (spec §3.1 worked example); already attested live (both taught — tidak L1, nggak L12, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 12 },
   { formal: 'selesai', informal: 'kelar', gloss_nl: 'klaar, af', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement (different root)' },
   { formal: 'dengan', informal: 'sama', gloss_nl: 'met', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L2, unmarked)' },
+    source: 'Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L2, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 2 },
   { formal: 'untuk', informal: 'buat', gloss_nl: 'voor, om te', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (untuk L1, buat L12, unmarked)' },
+    source: 'Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (untuk L1, buat L12, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 12 },
   { formal: 'akan', informal: 'bakal', gloss_nl: 'zullen', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement; already attested live (akan L7, bakal L9, unmarked)' },
+    source: 'Sneddon 2006 — dominant lexical replacement; already attested live (akan L7, bakal L9, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 9 },
   { formal: 'supaya', informal: 'biar', gloss_nl: 'opdat, zodat', klasse: 'lexical',
-    source: "Sneddon 2006 — dominant lexical replacement; already attested live (supaya/agar L10, biar L9, unmarked) — NOTE: informal already taught ONE LESSON BEFORE its formal twin in the live curriculum, which inverts the spec's §4 formal-first prerequisite assumption for this specific pair; flag for step 3/4." },
+    source: "Sneddon 2006 — dominant lexical replacement; already attested live (supaya/agar L10, biar L9, unmarked) — informal taught ONE LESSON BEFORE its formal twin; RETROFIT at L9 (step 3) resolves the inversion — biar's existing L9 entry is edited in place, never inserted fresh at L10, so no formal-first prereq is ever attempted across lessons.",
+    anchor_lesson: 9 },
   { formal: 'ingin', informal: 'pengen', gloss_nl: 'verlangen, willen', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement' },
   { formal: 'ketika', informal: 'pas', gloss_nl: 'toen, wanneer, precies op het moment dat', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement' },
   { formal: 'lelah', informal: 'capek', gloss_nl: 'moe, uitgeput', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L999, unmarked)' },
+    source: 'Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L999, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 999 },
   { formal: 'mudah', informal: 'gampang', gloss_nl: 'makkelijk', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (mudah L999, gampang L6, unmarked)' },
+    source: 'Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (mudah L999, gampang L6, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 6 },
   { formal: 'sulit', informal: 'susah', gloss_nl: 'moeilijk, lastig', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement; already attested live (sulit L999, susah L11, unmarked)' },
+    source: 'Sneddon 2006 — dominant lexical replacement; already attested live (sulit L999, susah L11, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 11 },
   { formal: 'sungguh', informal: 'beneran', gloss_nl: 'echt, werkelijk', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement (sungguh + -an derivational form of benar)' },
   { formal: 'tetapi', informal: 'tapi', gloss_nl: 'maar, echter', klasse: 'lexical',
@@ -257,7 +282,8 @@ export const registerPairs: RegisterPair[] = [
   { formal: 'cantik', informal: 'cakep', gloss_nl: 'mooi, knap', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement' },
   { formal: 'buruk', informal: 'jelek', gloss_nl: 'slecht, lelijk', klasse: 'lexical',
-    source: 'Sneddon 2006 — dominant lexical replacement; already attested live (buruk L2, jelek L15, unmarked)' },
+    source: 'Sneddon 2006 — dominant lexical replacement; already attested live (buruk L2, jelek L15, unmarked) — RETROFIT (step 3).',
+    anchor_lesson: 15 },
 ]
 
 /**
