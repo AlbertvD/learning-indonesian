@@ -711,6 +711,10 @@ export const nl = {
     legendClose: 'bijna',
     legendWrong: 'fout',
     legendRemaining: 'niet gedaan',
+    longestRun: 'Langste foutloze reeks',
+    runInARow: (n: number) => (n === 1 ? '1 op rij' : `${n} op rij`),
+    flawlessTitle: 'Foutloze sessie! 🎉',
+    flawlessMessage: (n: number) => `Alle ${n} kaarten in één keer goed — geweldig gedaan!`,
   },
 }
 
@@ -1424,6 +1428,10 @@ export const en: typeof nl = {
     legendClose: 'close',
     legendWrong: 'wrong',
     legendRemaining: 'not done',
+    longestRun: 'Longest flawless streak',
+    runInARow: (n: number) => (n === 1 ? '1 in a row' : `${n} in a row`),
+    flawlessTitle: 'Flawless session! 🎉',
+    flawlessMessage: (n: number) => `All ${n} cards right on the first try — brilliant!`,
   },
 }
 

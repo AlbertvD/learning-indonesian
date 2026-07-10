@@ -338,7 +338,7 @@ describe('ExperiencePlayer — stepwise shell', () => {
     expect(screen.getByText('Kon beoordeling niet opslaan — we gaan toch door.')).toBeInTheDocument()
   })
 
-  it('8. Recap renders after last block — shows saved count and Terug button', async () => {
+  it('8. Recap renders after last block — every card answered correctly celebrates a flawless session', async () => {
     const user = userEvent.setup()
     const blocks = [
       makeBlock('b1', 'due_review'),
@@ -353,7 +353,10 @@ describe('ExperiencePlayer — stepwise shell', () => {
       await user.click(screen.getByRole('button', { name: 'Mark correct' }))
     }
 
-    expect(await screen.findByText(/3 van 3 vaardigheidskaarten zijn veilig opgeslagen/)).toBeInTheDocument()
+    // All 3 answered correctly, nothing skipped → flawless celebration.
+    expect(await screen.findByText('Foutloze sessie! 🎉')).toBeInTheDocument()
+    expect(screen.getByText('Alle 3 kaarten in één keer goed — geweldig gedaan!')).toBeInTheDocument()
+    expect(screen.getByText('3 op rij')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Terug naar dashboard' })).toBeInTheDocument()
   })
 

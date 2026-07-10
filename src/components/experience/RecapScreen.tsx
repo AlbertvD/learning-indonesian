@@ -96,6 +96,27 @@ export function RecapScreen({
   const mistakes = attempts - firstTryCorrect
   const accuracy = attempts > 0 ? Math.round((firstTryCorrect / attempts) * 100) : null
 
+  // Longest streak of consecutive first-try-correct answers, in the order the
+  // learner answered (the Map preserves insertion order). A wrong/fuzzy breaks
+  // the run; a skip has no outcome and is simply absent from the sequence.
+  let longestCleanRun = 0
+  let currentRun = 0
+  for (const outcome of firstAttemptOutcomes.values()) {
+    if (outcome === 'correct') {
+      currentRun += 1
+      if (currentRun > longestCleanRun) longestCleanRun = currentRun
+    } else {
+      currentRun = 0
+    }
+  }
+
+  // Flawless = every card answered (nothing skipped or left untouched) AND no
+  // mistakes. This is the whole-session celebration, distinct from a long run.
+  const flawless = effectiveTotal > 0 && attempts === effectiveTotal && mistakes === 0
+
+  // Confetti colour cycle (celebration only). Semantic + brand tokens.
+  const confettiColors = ['var(--success)', 'var(--warning)', 'var(--accent-primary)', 'var(--teal)']
+
   // Breakdown per capability, largest group first. Each block is counted once
   // (renderableBlocks holds each capability's session block a single time).
   const tallyMap = new Map<string, CapabilityTally>()
@@ -114,16 +135,35 @@ export function RecapScreen({
 
   return (
     <Stack gap="md" data-testid="session-recap">
-      <HeroCard title={T.recap.completedTitle}>
-        <Stack gap="xs">
-          <Text>{T.recap.savedSummary(savedCount, effectiveTotal)}</Text>
-          {failedCount === 1 && (
-            <Text c="dimmed" size="sm">{T.recap.failedSingular}</Text>
-          )}
-          {failedCount >= 2 && (
-            <Text c="dimmed" size="sm">{T.recap.failedPlural(failedCount)}</Text>
-          )}
-        </Stack>
+      <HeroCard title={flawless ? T.recap.flawlessTitle : T.recap.completedTitle}>
+        {flawless ? (
+          <div className={classes.celebrate}>
+            <div className={classes.confetti} aria-hidden="true">
+              {Array.from({ length: 16 }).map((_, i) => (
+                <span
+                  key={i}
+                  className={classes.confettiPiece}
+                  style={{
+                    left: `${(i / 15) * 100}%`,
+                    backgroundColor: confettiColors[i % confettiColors.length],
+                    animationDelay: `${(i % 8) * 0.12}s`,
+                  }}
+                />
+              ))}
+            </div>
+            <Text className={classes.flawlessMsg}>{T.recap.flawlessMessage(attempts)}</Text>
+          </div>
+        ) : (
+          <Stack gap="xs">
+            <Text>{T.recap.savedSummary(savedCount, effectiveTotal)}</Text>
+            {failedCount === 1 && (
+              <Text c="dimmed" size="sm">{T.recap.failedSingular}</Text>
+            )}
+            {failedCount >= 2 && (
+              <Text c="dimmed" size="sm">{T.recap.failedPlural(failedCount)}</Text>
+            )}
+          </Stack>
+        )}
       </HeroCard>
 
       <SimpleGrid cols={3} spacing="sm">
@@ -144,6 +184,16 @@ export function RecapScreen({
           value={<span className={`${classes.metric} ${mistakes > 0 ? classes.metricWarn : ''}`}>{mistakes}</span>}
         />
       </SimpleGrid>
+
+      {longestCleanRun > 0 && (
+        <div className={classes.streakWrap}>
+          <div className={`${classes.streak} ${flawless ? classes.streakGold : ''}`}>
+            <span className={classes.streakIcon} aria-hidden="true">🔥</span>
+            <span className={classes.streakLabel}>{T.recap.longestRun}</span>
+            <span className={classes.streakValue}>{T.recap.runInARow(longestCleanRun)}</span>
+          </div>
+        </div>
+      )}
 
       <Text className={classes.tally}>
         {T.recap.tallyCaption(savedDue, savedNew, notTouched)}

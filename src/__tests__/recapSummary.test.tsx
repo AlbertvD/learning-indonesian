@@ -100,4 +100,48 @@ describe('RecapScreen — completed session summary', () => {
     expect(within(recap).getByText('—')).toBeInTheDocument()
     expect(within(recap).queryByText(/NaN/)).not.toBeInTheDocument()
   })
+
+  it('reports the longest run of consecutive first-try-correct answers', () => {
+    const blocks = ['a', 'b', 'c', 'd', 'e', 'f'].map(id =>
+      block(id, 'recognise_meaning_from_text_cap'),
+    )
+    // Answer order: ✓ ✓ ✗ ✓ ✓ ✓ → longest clean run is the trailing 3.
+    renderRecap(blocks, [
+      ['a', 'correct'],
+      ['b', 'correct'],
+      ['c', 'wrong'],
+      ['d', 'correct'],
+      ['e', 'correct'],
+      ['f', 'correct'],
+    ])
+    expect(screen.getByText('Langste foutloze reeks')).toBeInTheDocument()
+    expect(screen.getByText('3 op rij')).toBeInTheDocument()
+  })
+
+  it('hides the streak strip when there was no correct answer at all', () => {
+    const blocks = [block('a', 'recognise_meaning_from_text_cap')]
+    renderRecap(blocks, [['a', 'wrong']])
+    expect(screen.queryByText('Langste foutloze reeks')).not.toBeInTheDocument()
+  })
+
+  it('celebrates a flawless session (every card answered, zero mistakes)', () => {
+    const blocks = ['a', 'b', 'c'].map(id => block(id, 'recognise_meaning_from_text_cap'))
+    renderRecap(blocks, [
+      ['a', 'correct'],
+      ['b', 'correct'],
+      ['c', 'correct'],
+    ])
+    expect(screen.getByText('Foutloze sessie! 🎉')).toBeInTheDocument()
+    expect(screen.getByText('Alle 3 kaarten in één keer goed — geweldig gedaan!')).toBeInTheDocument()
+    // The ordinary "route completed" headline is replaced, not shown alongside.
+    expect(screen.queryByText('Sessieroute afgerond')).not.toBeInTheDocument()
+  })
+
+  it('does NOT celebrate when a card was skipped, even with no wrong answers', () => {
+    const blocks = ['a', 'b'].map(id => block(id, 'recognise_meaning_from_text_cap'))
+    // b answered correct, a never answered (skipped) → not every card answered.
+    renderRecap(blocks, [['b', 'correct']])
+    expect(screen.queryByText('Foutloze sessie! 🎉')).not.toBeInTheDocument()
+    expect(screen.getByText('Sessieroute afgerond')).toBeInTheDocument()
+  })
 })
