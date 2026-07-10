@@ -584,6 +584,7 @@
             "dutch": "gekookte rijst, daarna met kruiden gebakken",
             "english": "cooked rice, then fried with spices",
             "indonesian": "nasi goreng",
+            "loanSourceNl": "nasi goreng",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nasi-goreng-6723e6c0.mp3"
           },
           {
@@ -674,6 +675,7 @@
             "dutch": "formulier",
             "english": "form",
             "indonesian": "formulir",
+            "loanSourceNl": "formulier",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/formulir-91ed0a16.mp3"
           },
           {
@@ -746,6 +748,7 @@
             "dutch": "handdoek",
             "english": "towel",
             "indonesian": "handuk",
+            "loanSourceNl": "handdoek",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/handuk-bae810cc.mp3"
           },
           {
@@ -764,12 +767,14 @@
             "dutch": "pasta van Spaanse pepers",
             "english": "chili pepper paste",
             "indonesian": "sambal",
+            "loanSourceNl": "sambal",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sambal-4df8d8a6.mp3"
           },
           {
             "dutch": "sate",
             "english": "satay",
             "indonesian": "sate",
+            "loanSourceNl": "saté",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sate-e04b16f9.mp3"
           },
           {
@@ -872,6 +877,7 @@
             "dutch": "sojasaus",
             "english": "soy sauce",
             "indonesian": "kecap",
+            "loanSourceNl": "ketjap",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kecap-d1ad3db8.mp3"
           },
           {
@@ -896,6 +902,7 @@
             "dutch": "koffie",
             "english": "coffee",
             "indonesian": "kopi",
+            "loanSourceNl": "koffie",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kopi-038a45e2.mp3"
           },
           {
@@ -1041,6 +1048,30 @@
             "english": "table",
             "indonesian": "meja",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/meja-d7a4033f.mp3"
+          },
+          {
+            "dutch": "kwijt, verloren",
+            "english": "lost, missing",
+            "register": "informal",
+            "indonesian": "ilang",
+            "registerCounterpart": "hilang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ilang-50ca8575.mp3"
+          },
+          {
+            "dutch": "pittig, scherp",
+            "english": "spicy, sharp",
+            "register": "informal",
+            "indonesian": "pedes",
+            "registerCounterpart": "pedas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pedes-8d80b8eb.mp3"
+          },
+          {
+            "dutch": "verlangen, willen",
+            "english": "want, desire",
+            "register": "informal",
+            "indonesian": "pengen",
+            "registerCounterpart": "ingin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pengen-64635e77.mp3"
           }
         ]
       }

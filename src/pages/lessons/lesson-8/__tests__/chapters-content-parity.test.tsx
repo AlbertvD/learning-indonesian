@@ -105,7 +105,7 @@ describe('lesson 8 chapters — content parity with content.json', () => {
 
   it('renders every vocabulary item', () => {
     const c = content.sections[2].content as { items: Array<{ indonesian: string; dutch: string }> }
-    expect(c.items.length).toBe(49)
+    expect(c.items.length).toBe(53) // 49 + 4 spreektaal (pake, ijo, liat, gitu)
     for (const item of c.items) {
       expectPresent(item.indonesian)
       expectPresent(item.dutch)

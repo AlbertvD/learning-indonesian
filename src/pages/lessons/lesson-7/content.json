@@ -299,6 +299,7 @@
             "dutch": "(onder)hemd",
             "english": "shirt, undershirt",
             "indonesian": "kaus",
+            "loanSourceNl": "kous",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kaus-1e384527.mp3"
           },
           {
@@ -425,6 +426,7 @@
             "dutch": "rok",
             "english": "skirt",
             "indonesian": "rok",
+            "loanSourceNl": "rok",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rok-3da1176b.mp3"
           },
           {
@@ -642,6 +644,14 @@
             "english": "Sunday evening",
             "indonesian": "Minggu malam",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/minggu-malam-86ec30b0.mp3"
+          },
+          {
+            "dutch": "zoals, zoiets als",
+            "english": "like, such as",
+            "register": "informal",
+            "indonesian": "kayak",
+            "registerCounterpart": "seperti",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kayak-5ba6c4a0.mp3"
           }
         ]
       }

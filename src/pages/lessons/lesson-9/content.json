@@ -145,7 +145,9 @@
           {
             "dutch": "zullen / om te",
             "english": "will / in order to",
+            "register": "informal",
             "indonesian": "bakal",
+            "registerCounterpart": "akan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bakal-f430e219.mp3"
           },
           {
@@ -157,7 +159,9 @@
           {
             "dutch": "opdat / laat maar",
             "english": "so that / let",
+            "register": "informal",
             "indonesian": "biar",
+            "registerCounterpart": "supaya",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/biar-94bbdcec.mp3"
           },
           {
@@ -363,6 +367,14 @@
             "english": "very/very much",
             "indonesian": "sangat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sangat-f5f6c1fe.mp3"
+          },
+          {
+            "dutch": "stil (zijn)",
+            "english": "silent (be)",
+            "register": "informal",
+            "indonesian": "diem",
+            "registerCounterpart": "diam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/diem-9f832b01.mp3"
           }
         ]
       }

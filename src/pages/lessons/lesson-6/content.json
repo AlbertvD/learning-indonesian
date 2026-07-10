@@ -138,7 +138,9 @@
             "dutch": "makkelijk",
             "english": "easy",
             "indonesian": "gampang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/gampang-f09df200.mp3"
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/gampang-f09df200.mp3",
+            "register": "informal",
+            "registerCounterpart": "mudah"
           },
           {
             "dutch": "slechts",

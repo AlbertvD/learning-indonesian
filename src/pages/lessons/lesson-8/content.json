@@ -188,6 +188,7 @@
             "dutch": "zeden en gewoonten",
             "english": "customs and traditions",
             "indonesian": "adat",
+            "loanSourceNl": "adat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/adat-d98fa6a4.mp3"
           },
           {
@@ -212,6 +213,7 @@
             "dutch": "kleurtechniek voor stof / batik",
             "english": "batik (dyeing technique for fabric)",
             "indonesian": "batik",
+            "loanSourceNl": "batik",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/batik-5abac59b.mp3"
           },
           {
@@ -296,6 +298,7 @@
             "dutch": "kassier",
             "english": "cashier",
             "indonesian": "kasir",
+            "loanSourceNl": "kassier",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kasir-b76bbdf3.mp3"
           },
           {
@@ -308,6 +311,7 @@
             "dutch": "Javaans steekwapen",
             "english": "Javanese dagger",
             "indonesian": "keris",
+            "loanSourceNl": "kris",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/keris-15e606f1.mp3"
           },
           {
@@ -398,6 +402,7 @@
             "dutch": "denken / vinden",
             "english": "think / find",
             "indonesian": "pikir",
+            "loanSourceNl": "piekeren",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pikir-0de88f1f.mp3"
           },
           {
@@ -477,6 +482,38 @@
             "english": "small eating house",
             "indonesian": "warung",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/warung-7ce8e386.mp3"
+          },
+          {
+            "dutch": "gebruiken",
+            "english": "use",
+            "register": "informal",
+            "indonesian": "pake",
+            "registerCounterpart": "pakai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pake-9deeaa5e.mp3"
+          },
+          {
+            "dutch": "groen",
+            "english": "green",
+            "register": "informal",
+            "indonesian": "ijo",
+            "registerCounterpart": "hijau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ijo-c96e04ea.mp3"
+          },
+          {
+            "dutch": "zien",
+            "english": "see",
+            "register": "informal",
+            "indonesian": "liat",
+            "registerCounterpart": "lihat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/liat-9177c2b5.mp3"
+          },
+          {
+            "dutch": "zo, zodanig",
+            "english": "like that, such",
+            "register": "informal",
+            "indonesian": "gitu",
+            "registerCounterpart": "begitu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gitu-8bd6e456.mp3"
           }
         ]
       }

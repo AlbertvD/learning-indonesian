@@ -209,6 +209,7 @@
             "dutch": "dokter, arts",
             "english": "doctor",
             "indonesian": "dokter",
+            "loanSourceNl": "dokter",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dokter-68ca697f.mp3"
           },
           {
@@ -228,6 +229,7 @@
             "dutch": "onderwijzer, leraar",
             "english": "teacher, instructor",
             "indonesian": "guru",
+            "loanSourceNl": "goeroe",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/guru-d2917e22.mp3"
           },
           {
@@ -252,12 +254,14 @@
             "dutch": "kamer",
             "english": "room",
             "indonesian": "kamar",
+            "loanSourceNl": "kamer",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kamar-5b458d6b.mp3"
           },
           {
             "dutch": "kantoor",
             "english": "office",
             "indonesian": "kantor",
+            "loanSourceNl": "kantoor",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kantor-fee075ae.mp3"
           },
           {
@@ -312,6 +316,7 @@
             "dutch": "nummer",
             "english": "number",
             "indonesian": "nomor",
+            "loanSourceNl": "nummer",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/nomor-6660f8ae.mp3"
           },
           {
@@ -335,7 +340,9 @@
           {
             "dutch": "gelijk, dezelfde, hetzelfde",
             "english": "same, equal",
+            "register": "informal",
             "indonesian": "sama",
+            "registerCounterpart": "dengan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sama-225ccdfe.mp3"
           },
           {
@@ -402,6 +409,7 @@
             "dutch": "tas",
             "english": "bag",
             "indonesian": "tas",
+            "loanSourceNl": "tas",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tas-37b12ecf.mp3"
           },
           {
@@ -517,6 +525,38 @@
             "english": "short",
             "indonesian": "pendek",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pendek-e9b51690.mp3"
+          },
+          {
+            "dutch": "al, reeds",
+            "english": "already",
+            "register": "informal",
+            "indonesian": "udah",
+            "registerCounterpart": "sudah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/udah-fd2ac2d1.mp3"
+          },
+          {
+            "dutch": "tot; aankomen",
+            "english": "until; arrive",
+            "register": "informal",
+            "indonesian": "sampe",
+            "registerCounterpart": "sampai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sampe-b161b2a1.mp3"
+          },
+          {
+            "dutch": "krijgen; kunnen",
+            "english": "get; can",
+            "register": "informal",
+            "indonesian": "dapet",
+            "registerCounterpart": "dapat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dapet-e1e6d44e.mp3"
+          },
+          {
+            "dutch": "ontmoeten",
+            "english": "meet",
+            "register": "informal",
+            "indonesian": "ketemu",
+            "registerCounterpart": "bertemu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ketemu-b5f7e615.mp3"
           }
         ]
       }
