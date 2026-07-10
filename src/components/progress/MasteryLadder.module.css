@@ -13,47 +13,9 @@
   gap: 0.75rem;
 }
 
-/* ── Achievement headline — a soft gradient card, the "you can already do
-   this" framing above the ladder. ── */
-.headline {
-  background: linear-gradient(150deg, var(--accent-primary-subtle) 0%, var(--card-bg) 55%);
-  border: 1px solid var(--card-border);
-  border-radius: var(--r-lg);
-  padding: 1.1rem 1rem;
-}
-
-.line {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-medium);
-  line-height: 1.4;
-  color: var(--text-primary);
-}
-
-.sub {
-  margin-top: 0.7rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--card-border);
-  display: flex;
-  gap: 0.8rem;
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-
-.subNum {
-  font-family: var(--font-display);
-  font-size: var(--fs-lg);
-  color: var(--text-primary);
-  font-weight: 700;
-}
-
-.dot {
-  color: var(--text-tertiary);
-}
-
 /* ── The ladder card — four stops on one connected spine, grey → tamarind →
    gold → green. Radius/padding normalized to the framework's --r-md/16px
-   convention (2026-07-10 chrome polish pass); .headline above keeps --r-lg
-   (out of this pass's scope — see file header re: bespoke geometry). ── */
+   convention (2026-07-10 chrome polish pass). ── */
 .card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
