@@ -12,7 +12,7 @@
 //   - Spacing extends L2 vocab retention for years.
 //   - Listening gives cues; production needs you to generate your own.
 
-export type TipArea = 'recognise' | 'produce' | 'listen' | 'at_risk' | 'stubborn' | 'general'
+export type TipArea = 'recognise' | 'produce' | 'listen' | 'stubborn' | 'general'
 type Lang = 'nl' | 'en'
 
 interface TipSet {
@@ -63,21 +63,6 @@ export const STUDY_TIPS: Record<TipArea, TipSet> = {
       en: [
         'Read the word in context — short texts, subtitles — not in isolation. Context gives you free retrieval cues.',
         'Quick self-test: see the word, say the meaning aloud, check.',
-      ],
-    },
-  },
-  at_risk: {
-    title: { nl: 'Wegzakkende woorden terughalen', en: 'Bringing slipping words back' },
-    tips: {
-      nl: [
-        'Doe vandaag een sessie — de app zet je wegzakkende woorden vooraan.',
-        'Een korte sessie nu helpt al; je hoeft ze niet allemaal in één keer terug te halen.',
-        'Zeg de wegzakkende woorden hardop en koppel ze aan een beeld of een korte zin.',
-      ],
-      en: [
-        'Do a session today — the app surfaces your slipping words first.',
-        'A short session now already helps; you don’t have to claw them all back at once.',
-        'Say the slipping words aloud and tie each to an image or a short sentence.',
       ],
     },
   },

@@ -428,7 +428,6 @@ export const nl = {
     unitTopics: 'onderwerpen',
     tabFunnel: 'Voortgang',
     tabWoordenschat: 'Woordenschat',
-    tabSkills: 'Vaardigheden',
     tabTime: 'Tijd',
     tabGrammar: 'Grammatica',
     tabMorphology: 'Morfologie',
@@ -476,7 +475,6 @@ export const nl = {
     hubWoordenschatSummary: (n: number) => `je kunt ${n} woorden gebruiken`,
     hubGrammarSummary: (n: number) => `${n} patronen onder de knie`,
     hubMorfologieSummary: (n: number) => `${n} affixen kun je toepassen`,
-    hubVaardighedenSummary: 'herkennen · gebruiken · luisteren',
     hubTijdSummary: (streakDays: number, minutesThisWeek: number) => `${streakDays} dagen op rij · ${minutesThisWeek} min deze week`,
     // Mastery funnel
     funnelTitle: 'Leerpijplijn',
@@ -1136,7 +1134,6 @@ export const en: typeof nl = {
     unitTopics: 'topics',
     tabFunnel: 'Progress',
     tabWoordenschat: 'Vocabulary',
-    tabSkills: 'Skills',
     tabTime: 'Time',
     tabGrammar: 'Grammar',
     tabMorphology: 'Morphology',
@@ -1184,7 +1181,6 @@ export const en: typeof nl = {
     hubWoordenschatSummary: (n: number) => `you can use ${n} words`,
     hubGrammarSummary: (n: number) => `${n} patterns down`,
     hubMorfologieSummary: (n: number) => `${n} affixes you can apply`,
-    hubVaardighedenSummary: 'recognise · produce · listen',
     hubTijdSummary: (streakDays: number, minutesThisWeek: number) => `${streakDays}-day streak · ${minutesThisWeek} min this week`,
     // Mastery funnel
     funnelTitle: 'Learning pipeline',

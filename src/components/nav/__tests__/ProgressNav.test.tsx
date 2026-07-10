@@ -16,13 +16,12 @@ function renderNav(initialEntry: string) {
 }
 
 describe('ProgressNav', () => {
-  it('renders all five topics linking to their own ?tab= on the same /progress route', () => {
+  it('renders all four topics linking to their own ?tab= on the same /progress route', () => {
     renderNav('/progress?tab=woorden')
 
     expect(screen.getByRole('link', { name: /Woordenschat/ })).toHaveAttribute('href', '/progress?tab=woorden')
     expect(screen.getByRole('link', { name: /Grammatica/ })).toHaveAttribute('href', '/progress?tab=grammar')
     expect(screen.getByRole('link', { name: /Morfologie/ })).toHaveAttribute('href', '/progress?tab=morfologie')
-    expect(screen.getByRole('link', { name: /Vaardigheden/ })).toHaveAttribute('href', '/progress?tab=skills')
     expect(screen.getByRole('link', { name: /Tijd/ })).toHaveAttribute('href', '/progress?tab=time')
   })
 
