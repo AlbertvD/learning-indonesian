@@ -29,6 +29,9 @@ content/grammar-briefings/
 # Grammar-podcast generated episodes (MP3s, prompts, results) — local artifacts
 content/grammar-podcast/
 
+# TTS spot-check audio (e.g. content/spot-checks/spreektaal/) — local artifacts
+content/spot-checks/
+
 # Python venv for the notebooklm-py driver — never committed
 .venv/
 

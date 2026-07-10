@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-07-10T05:35:05.896Z",
+  "generatedAt": "2026-07-10T05:50:56.193Z",
   "sourceArtifact": "scripts/data/register-pairs.ts",
-  "totalPairs": 78,
+  "totalPairs": 75,
   "countsByKlasse": {
     "h-drop": 12,
-    "monophthong": 7,
+    "monophthong": 5,
     "a-e-reductie": 20,
     "frozen-verb": 9,
-    "lexical": 30
+    "lexical": 29
   },
   "countsByClassification": {
-    "CORE": 68,
+    "CORE": 65,
     "PHRASE-ANCHORED": 1,
     "UNANCHORED": 7,
     "DEFERRED": 2
@@ -119,20 +119,6 @@
         ],
         "translationNl": "als / wanneer (informeel)"
       }
-    },
-    {
-      "formal": "atau",
-      "informal": "ato",
-      "klasse": "monophthong",
-      "anchorLesson": 8,
-      "informalAlreadyTaught": null
-    },
-    {
-      "formal": "mau",
-      "informal": "mo",
-      "klasse": "monophthong",
-      "anchorLesson": 1,
-      "informalAlreadyTaught": null
     },
     {
       "formal": "hijau",
@@ -420,13 +406,6 @@
         ],
         "translationNl": "niet / nee"
       }
-    },
-    {
-      "formal": "maaf",
-      "informal": "maap",
-      "klasse": "lexical",
-      "anchorLesson": 12,
-      "informalAlreadyTaught": null
     },
     {
       "formal": "selesai",
@@ -838,38 +817,6 @@
         ],
         "translationNl": "als / wanneer (informeel)"
       }
-    },
-    {
-      "formal": "atau",
-      "informal": "ato",
-      "klasse": "monophthong",
-      "gloss_nl": "of",
-      "source": "Sneddon 2006 — monophthongization class",
-      "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 8,
-      "formalTaught": true,
-      "formalLessons": [
-        8
-      ],
-      "deferredReason": null,
-      "informalAlreadyTaught": null
-    },
-    {
-      "formal": "mau",
-      "informal": "mo",
-      "klasse": "monophthong",
-      "gloss_nl": "willen",
-      "source": "Sneddon 2006 — monophthongization class; very high frequency modal",
-      "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 1,
-      "formalTaught": true,
-      "formalLessons": [
-        1
-      ],
-      "deferredReason": null,
-      "informalAlreadyTaught": null
     },
     {
       "formal": "hijau",
@@ -1559,22 +1506,6 @@
         ],
         "translationNl": "niet / nee"
       }
-    },
-    {
-      "formal": "maaf",
-      "informal": "maap",
-      "klasse": "lexical",
-      "gloss_nl": "sorry, pardon",
-      "source": "Sneddon 2006 — f→p consonant shift, dominant in casual writing/speech",
-      "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 12,
-      "formalTaught": true,
-      "formalLessons": [
-        12
-      ],
-      "deferredReason": null,
-      "informalAlreadyTaught": null
     },
     {
       "formal": "selesai",
