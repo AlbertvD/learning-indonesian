@@ -380,9 +380,6 @@ export const nl = {
     atRiskExplain: 'Deze heb je vergeten of doe je steeds fout — ze zakken weg uit je geheugen. Oefen ze om ze terug te halen.',
     // Mastery ladder (voortgang-hub-redesign) — replaces the funnel chevrons
     // with real-life-ability rungs on one connected ramp.
-    ladderHeadline: (n: number, unitLabel: string) => `Je kunt al ${n} ${unitLabel} begrijpen en gebruiken`,
-    ladderSublinePractising: 'nog aan het oefenen',
-    ladderSublineMastered: 'beheers je al volledig',
     ladderEyebrow: (unitLabel: string) => `Je reis met deze ${unitLabel}`,
     ladderNetOntmoet: 'Net ontmoet',
     ladderAanHetOefenen: 'Aan het oefenen',
@@ -1086,9 +1083,6 @@ export const en: typeof nl = {
     atRiskExplain: "You've forgotten these or keep getting them wrong — they're slipping out of memory. Practise them to bring them back.",
     // Mastery ladder (voortgang-hub-redesign) — replaces the funnel chevrons
     // with real-life-ability rungs on one connected ramp.
-    ladderHeadline: (n: number, unitLabel: string) => `You can already understand and use ${n} ${unitLabel}`,
-    ladderSublinePractising: 'still practising',
-    ladderSublineMastered: 'you have fully mastered',
     ladderEyebrow: (unitLabel: string) => `Your journey with these ${unitLabel}`,
     ladderNetOntmoet: 'Just met',
     ladderAanHetOefenen: 'Practising',
