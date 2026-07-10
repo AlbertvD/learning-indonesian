@@ -43,20 +43,57 @@ describe('GrowthCurveCard', () => {
     // The caption names the total, not a single-rung "usable" claim.
     expect(screen.getByText('Woorden in totaal')).toBeInTheDocument()
 
-    // All 4 rung names render in the compact legend row below the chart.
+    // All 4 rung names render in the compact legend row below the chart, plus
+    // the at-risk (below-axis) band's legend entry.
     expect(screen.getByText('Net ontmoet')).toBeInTheDocument()
     expect(screen.getByText('Aan het oefenen')).toBeInTheDocument()
     expect(screen.getByText('Kun je gebruiken')).toBeInTheDocument()
     expect(screen.getByText('Zit erin')).toBeInTheDocument()
+    expect(screen.getByText('Wegzakkend')).toBeInTheDocument()
 
     // The chart's right-edge labels show each rung's latest count (from the
-    // 2026-06-08 week): introduced=4, learning=6, strengthening=2, mastered=8.
+    // 2026-06-08 week): introduced=4, learning=6, strengthening=2, mastered=8,
+    // plus the at-risk band's count (0, since neither week set at_risk).
     // "4" and "6" also appear elsewhere (e.g. week counts), so scope to text
     // nodes inside the chart svg only.
     const svg = document.querySelector('svg[aria-label="Trend"]')
     expect(svg).toBeTruthy()
     const labelTexts = Array.from(svg!.querySelectorAll('text')).map((t) => t.textContent)
-    expect(labelTexts.sort()).toEqual(['2', '4', '6', '8'])
+    expect(labelTexts.sort()).toEqual(['0', '2', '4', '6', '8'])
+  })
+
+  it('draws at-risk words as a red band below the axis, on the shared scale, with its own right-edge count', async () => {
+    vi.mocked(getFunnelSeries).mockResolvedValue([
+      week('2026-06-01', { introduced: 5, learning: 3, mastered: 3, at_risk: 2 }),
+      // 20 forward + 6 lapsed this week — the stack alone would look like a
+      // decline if a viewer only tracked the "usable" count; the at-risk band
+      // is what makes the dip legible instead of looking unexplained.
+      week('2026-06-08', { introduced: 4, learning: 6, strengthening: 2, mastered: 8, at_risk: 6 }),
+    ])
+
+    wrap(<GrowthCurveCard userId="user-1" bucket="vocabulary" unitLabel="woorden" />)
+    await screen.findByText('20')
+
+    const svg = document.querySelector('svg[aria-label="Trend"]')!
+    // One filled band per contiguous run, in the danger (red) fill color, in
+    // addition to the 4 forward rung bands — 5 stroke="none" filled <path>s.
+    const filledBands = Array.from(svg.querySelectorAll('path[stroke="none"]'))
+    const redBands = filledBands.filter((p) => p.getAttribute('fill') === 'var(--danger)')
+    expect(redBands.length).toBeGreaterThan(0)
+
+    // The at-risk band's own right-edge label (latest week's count, 6) is a
+    // red text node, distinct from the forward-rung labels.
+    const redLabel = Array.from(svg.querySelectorAll('text')).find(
+      (t) => t.getAttribute('fill') === 'var(--danger)',
+    )
+    expect(redLabel?.textContent).toBe('6')
+
+    // The at-risk band's stroked edge (the boundary line, not a fill) is also
+    // in the danger color.
+    const redStroke = Array.from(svg.querySelectorAll('path')).find(
+      (p) => p.getAttribute('stroke') === 'var(--danger)',
+    )
+    expect(redStroke).toBeTruthy()
   })
 
   it('shows the empty state when no week has any rung data', async () => {
@@ -85,9 +122,11 @@ describe('DurabilityCard', () => {
     expect(await screen.findByText(/Je geheugen houdt nu ~32/)).toBeInTheDocument()
     expect(screen.getByText(/was 18/)).toBeInTheDocument()
 
-    // Single-line mode still renders the top-left max label, not stack labels.
+    // Single-line mode still renders the top-left max label, not stack labels
+    // — the below-axis band is stacked-only and never applies here.
     const svg = document.querySelector('svg[aria-label="Trend"]')
     expect(svg?.querySelector('text')?.textContent).toContain('32')
+    expect(svg!.querySelectorAll('path[fill="var(--danger)"]').length).toBe(0)
   })
 
   it('shows the empty state before the first review', async () => {

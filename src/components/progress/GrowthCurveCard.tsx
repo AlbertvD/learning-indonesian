@@ -15,6 +15,13 @@
 // bucket toggle switches vocab/grammar/morphology (supplied by the host
 // Progress detail, no in-card toggle). Read-only over analytics.mastery
 // (getFunnelSeries, direct import).
+//
+// `funnel.at_risk` (lapsed words) never enters the forward stack — a word
+// leaving the stack when it lapses would otherwise just make the total
+// visibly shrink with no explanation. Fixed by drawing at_risk as a red band
+// BELOW the x-axis (`TrendChart`'s `belowSeries`, voortgang-polish at-risk
+// fix), on the same shared scale as the forward stack: rungs climbing above
+// the axis + at-risk sinking below it together account for every word.
 import { useEffect, useMemo, useState } from 'react'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
@@ -87,6 +94,20 @@ export function GrowthCurveCard({ userId, bucket, unitLabel }: GrowthCurveCardPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [series, bucket])
 
+  // The at-risk band drawn below the axis — same weeks, same bucket, the
+  // funnel's lapsed count. Kept out of `bands`/the forward stack: at_risk
+  // words already left the ladder, so stacking them upward would double the
+  // headline instead of explaining the dip.
+  const belowSeries: TrendSeries = useMemo(
+    () => ({
+      key: 'at_risk',
+      label: T.progress.growthAtRiskLabel,
+      color: 'var(--danger)',
+      values: series ? series.map((w) => w[bucket].at_risk) : [],
+    }),
+    [series, bucket, T.progress.growthAtRiskLabel],
+  )
+
   // Total = all 4 rungs combined — the honest "how many words has this
   // learner touched at all" headline, complementing the ladder's snapshot
   // above with a delta over time.
@@ -121,7 +142,13 @@ export function GrowthCurveCard({ userId, bucket, unitLabel }: GrowthCurveCardPr
             {delta > 0 && <span className={classes.delta}>▲ +{delta}</span>}
           </div>
           <p className={classes.caption}>{caption}</p>
-          <TrendChart xLabels={series.map((w) => w.weekStart)} series={bands} stacked height={160} />
+          <TrendChart
+            xLabels={series.map((w) => w.weekStart)}
+            series={bands}
+            stacked
+            belowSeries={belowSeries}
+            height={160}
+          />
           <div className={classes.legendRow}>
             {RUNGS.map((rung) => (
               <span key={rung} className={classes.legendItem}>
@@ -129,6 +156,10 @@ export function GrowthCurveCard({ userId, bucket, unitLabel }: GrowthCurveCardPr
                 {rungLabel[rung]}
               </span>
             ))}
+            <span className={classes.legendItem}>
+              <span className={classes.legendDot} style={{ background: 'var(--danger)' }} />
+              {T.progress.growthAtRiskLabel}
+            </span>
           </div>
         </>
       )}
