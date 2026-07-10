@@ -714,7 +714,7 @@
 
 /* Spreektaal (spec docs/plans/2026-07-09-spreektaal-lesson-woven-core.md §6):
    small inline marker on informal-register vocabulary items. */
-.registerTag {
+.spreektaalTag {
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
   color: var(--accent-primary);

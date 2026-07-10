@@ -1259,3 +1259,16 @@
   width: 100%;
   max-width: 660px;
 }
+
+/* Spreektaal (spec docs/plans/2026-07-09-spreektaal-lesson-woven-core.md §6):
+   small inline marker on informal-register vocabulary items. */
+.spreektaalTag {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+  padding: 1px 6px;
+  border-radius: var(--r-sm, 4px);
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}

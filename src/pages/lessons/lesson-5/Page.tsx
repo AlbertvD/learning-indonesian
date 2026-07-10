@@ -241,7 +241,7 @@ function ReferenceTable({ section }: { section: typeof sections[number] }) {
 
 // ─── Section: Vocabulary — reference grid ──────────────────────────────────
 
-type VocabItem = { dutch: string; indonesian: string; audioUrl?: string }
+type VocabItem = { dutch: string; indonesian: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 
 function VocabularyReference({ section }: { section: typeof sections[number] }) {
   const c = section.content as { items: VocabItem[] }
@@ -255,6 +255,7 @@ function VocabularyReference({ section }: { section: typeof sections[number] }) 
           <div key={i} className={classes.vocabChip}>
             <PlayButton src={item.audioUrl} />
             <span className={classes.vocabId}>{item.indonesian}</span>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <span className={classes.vocabSep} />
             <span className={classes.vocabNl}>{item.dutch}</span>
           </div>

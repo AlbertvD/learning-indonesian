@@ -230,7 +230,7 @@ function ItemList({
           <div key={i} className={classes.itemChip} data-tone={tone}>
             <PlayButton src={item.audioUrl} />
             <span className={classes.itemId}>{item.indonesian}</span>
-            {item.register === 'informal' && <span className={classes.registerTag}>spreektaal</span>}
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <span className={classes.itemSep} />
             <span className={classes.itemNl}>{item.dutch}</span>
           </div>
