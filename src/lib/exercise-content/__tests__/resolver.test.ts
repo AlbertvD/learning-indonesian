@@ -254,6 +254,107 @@ describe('resolver.resolveBlocks', () => {
   })
 })
 
+// ─── register-pair reader union (spec docs/plans/2026-07-09-spreektaal-lesson-
+// woven-core.md §7) ───────────────────────────────────────────────────────
+// For a register='informal' item, fetchAnswerVariants (byKind/item.ts) unions
+// in the formal twin's item_answer_variants rows (resolved via
+// register_counterpart -> itemSlug), since informal items never get their own
+// copy of the variant set (a copy would be a second, unsynced instance).
+
+describe('resolver.resolveBlocks — register-pair reader union (spec §7)', () => {
+  const commonTables = {
+    item_contexts: { rows: [], inserts: [] },
+    exercise_variants: { rows: [], inserts: [] },
+    capability_artifacts: { rows: [], inserts: [] },
+    capability_resolution_failure_events: { rows: [], inserts: [] },
+  }
+
+  it('unions the formal twin\'s item_answer_variants into an informal item\'s answerVariants when the counterpart resolves', async () => {
+    const tables: Record<string, MockTable> = {
+      learning_items: { rows: [
+        {
+          id: 'uuid-informal', item_type: 'word', base_text: 'nggak', normalized_text: 'nggak',
+          language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
+          source_card_id: null, notes: null, is_active: true, pos: 'adverb',
+          translation_nl: 'niet', translation_en: 'not', usage_note: null,
+          register: 'informal', register_counterpart: 'tidak',
+          created_at: '', updated_at: '',
+        },
+        {
+          id: 'uuid-formal', item_type: 'word', base_text: 'tidak', normalized_text: 'tidak',
+          language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
+          source_card_id: null, notes: null, is_active: true, pos: 'adverb',
+          translation_nl: 'niet', translation_en: 'not', usage_note: null,
+          created_at: '', updated_at: '',
+        },
+      ], inserts: [] },
+      item_answer_variants: { rows: [{
+        id: 'v-1', learning_item_id: 'uuid-formal', variant_text: 'nggak',
+        variant_type: 'informal', language: 'id', is_accepted: true, notes: null,
+      }], inserts: [] },
+      ...commonTables,
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const block = makeBlock({ itemId: 'nggak', exerciseType: 'type_meaning_ex' })
+    const map = await service.resolveBlocks([block], baseOptions)
+    const ctx = map.get(block.id)!
+
+    expect(ctx.exerciseItem).not.toBeNull()
+    expect(ctx.exerciseItem!.answerVariants.map(v => v.id)).toEqual(['v-1'])
+  })
+
+  it('no-ops (own set only) when the counterpart is text-only and does not resolve to a learning_items row', async () => {
+    const tables: Record<string, MockTable> = {
+      learning_items: { rows: [{
+        id: 'uuid-informal', item_type: 'phrase', base_text: 'gimana', normalized_text: 'gimana',
+        language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
+        source_card_id: null, notes: null, is_active: true, pos: 'question_word',
+        translation_nl: 'hoe', translation_en: 'how', usage_note: null,
+        // phrase-anchored row (spec §3.1): counterpart is inside a taught phrase,
+        // not itself a learning_items row.
+        register: 'informal', register_counterpart: 'bagaimana',
+        created_at: '', updated_at: '',
+      }], inserts: [] },
+      item_answer_variants: { rows: [{
+        id: 'v-own', learning_item_id: 'uuid-informal', variant_text: 'gimana',
+        variant_type: 'informal', language: 'id', is_accepted: true, notes: null,
+      }], inserts: [] },
+      ...commonTables,
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const block = makeBlock({ itemId: 'gimana', exerciseType: 'type_meaning_ex' })
+    const map = await service.resolveBlocks([block], baseOptions)
+    const ctx = map.get(block.id)!
+
+    expect(ctx.exerciseItem).not.toBeNull()
+    expect(ctx.exerciseItem!.answerVariants.map(v => v.id)).toEqual(['v-own'])
+  })
+
+  it('leaves a formal item\'s own answerVariants unaffected (no union applied)', async () => {
+    const tables: Record<string, MockTable> = {
+      learning_items: { rows: [{
+        id: 'uuid-formal', item_type: 'word', base_text: 'tidak', normalized_text: 'tidak',
+        language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
+        source_card_id: null, notes: null, is_active: true, pos: 'adverb',
+        translation_nl: 'niet', translation_en: 'not', usage_note: null,
+        created_at: '', updated_at: '',
+      }], inserts: [] },
+      item_answer_variants: { rows: [{
+        id: 'v-formal', learning_item_id: 'uuid-formal', variant_text: 'nggak',
+        variant_type: 'informal', language: 'id', is_accepted: true, notes: null,
+      }], inserts: [] },
+      ...commonTables,
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const block = makeBlock({ itemId: 'tidak', exerciseType: 'type_meaning_ex' })
+    const map = await service.resolveBlocks([block], baseOptions)
+    const ctx = map.get(block.id)!
+
+    expect(ctx.exerciseItem).not.toBeNull()
+    expect(ctx.exerciseItem!.answerVariants.map(v => v.id)).toEqual(['v-formal'])
+  })
+})
+
 describe('resolver.resolveBlocks — distractor pool chunking', () => {
   // Decision R (PR 1): item_meanings is no longer fetched. Chunking test now
   // verifies only learning_items chunked IN queries (pool of 130 items → 3 chunks).

@@ -17,6 +17,7 @@ import type {
   LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant,
 } from '@/types/learning'
 import { chunkedIn } from '@/lib/chunkedQuery'
+import { itemSlug } from '@/lib/capabilities'
 import {
   type ItemBucketEntry,
   type BlockResolutionData,
@@ -181,9 +182,48 @@ export async function fetchForItemBlocks(
 
   // Wave 1: resolve item slugs → rows.
   const items = await fetchLearningItemsByKey(itemKeys)
+  const itemByKey = new Map(items.map(i => [i.normalized_text, i]))
 
-  // Wave 2: now that we have item uuids, fan out dependent reads.
-  const itemIds = items.map(i => i.id)
+  // Register-pair reader union (spec docs/plans/2026-07-09-spreektaal-lesson-
+  // woven-core.md §7): an informal item's typed-NL recall grades against its
+  // own item_answer_variants row set PLUS the formal twin's — informal items
+  // never get their own copy (a copied variant set would be a second, unsynced
+  // instance that drifts the moment the formal item's variants are corrected
+  // via flag→review). Resolve register_counterpart through itemSlug (the
+  // canonical base_text mint — capability-stage/projectors/vocab.ts:119, never
+  // a bespoke lowercase/trim) and fetch the formal item alongside the requested
+  // batch when it isn't already in it. Inert until the register/
+  // register_counterpart columns exist (both are `undefined` on every row until
+  // then, so this loop finds nothing to resolve).
+  const counterpartKeysNeeded = [...new Set(
+    items
+      .map(i => (i.register === 'informal' ? i.register_counterpart : null))
+      .filter((text): text is string => !!text)
+      .map(text => itemSlug(text))
+      .filter(key => !itemByKey.has(key)),
+  )]
+  const counterpartItems = counterpartKeysNeeded.length > 0
+    ? await fetchLearningItemsByKey(counterpartKeysNeeded)
+    : []
+  for (const c of counterpartItems) itemByKey.set(c.normalized_text, c)
+
+  // itemUuid → formal-twin uuid, only for informal items whose counterpart
+  // resolved to a live item. Phrase-anchored rows (§3.1) whose counterpart is
+  // text-only and doesn't resolve to an item are absent from this map — the
+  // union no-ops for them (data-architect r3 addendum): the informal item
+  // grades against its own (possibly empty) variant set plus its clean
+  // translation_nl.
+  const counterpartUuidByItemUuid = new Map<string, string>()
+  for (const i of items) {
+    const counterpartText = i.register === 'informal' ? i.register_counterpart : null
+    if (!counterpartText) continue
+    const counterpart = itemByKey.get(itemSlug(counterpartText))
+    if (counterpart) counterpartUuidByItemUuid.set(i.id, counterpart.id)
+  }
+
+  // Wave 2: now that we have item uuids (incl. any resolved formal twin), fan
+  // out dependent reads.
+  const itemIds = [...new Set([...items.map(i => i.id), ...counterpartItems.map(i => i.id)])]
   // Collect capability_ids from all item blocks for curated-distractor fetch.
   const capabilityIds = [...new Set(itemBlocks.map(b => b.block.capabilityId))]
   const [contexts, answerVariants, distractorRows, capTypeRows] = await Promise.all([
@@ -218,9 +258,8 @@ export async function fetchForItemBlocks(
     if (ms.length > 0) poolMeaningsByItem.set(item.id, ms)
   }
 
-  // Indexes — both by uuid (for joins) and by key (for slug → row lookup).
-  const itemByKey = new Map(items.map(i => [i.normalized_text, i]))
-
+  // Indexes — by uuid (for joins). itemByKey (slug → row) was already built
+  // above, ahead of the register-pair counterpart resolution.
   const contextsByItem = new Map<string, ItemContext[]>()
   for (const c of contexts) {
     const list = contextsByItem.get(c.learning_item_id) ?? []
@@ -261,6 +300,14 @@ export async function fetchForItemBlocks(
     const itemUuid = learningItem.id
     // Decision R: build meanings from inline columns instead of item_meanings.
     const meanings = meaningsFromItem(learningItem)
+    // Register-pair reader union (spec §7): union in the formal twin's variants
+    // when this item is informal and its counterpart resolved to a live item;
+    // own set only otherwise (formal items are unaffected — they have no
+    // counterpart entry in the map).
+    const counterpartUuid = counterpartUuidByItemUuid.get(itemUuid)
+    const answerVariantsForItem = counterpartUuid
+      ? [...(answerVariantsByItem.get(itemUuid) ?? []), ...(answerVariantsByItem.get(counterpartUuid) ?? [])]
+      : (answerVariantsByItem.get(itemUuid) ?? [])
 
     result.set(block.id, {
       kind: 'ok',
@@ -273,7 +320,7 @@ export async function fetchForItemBlocks(
         patternExercise: null,     // item bucket — projector's bucketing invariant
         meanings,
         contexts: contextsByItem.get(itemUuid) ?? [],
-        answerVariants: answerVariantsByItem.get(itemUuid) ?? [],
+        answerVariants: answerVariantsForItem,
         // Slice 4b: the capability_artifacts bag is gone. Audio is resolved via
         // SessionAudioContext upstream; readiness is decided by renderContracts
         // routing (requiredArtifacts collapsed to []), not an artifact bag.

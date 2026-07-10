@@ -34,6 +34,20 @@ export interface LearningItem {
   translation_nl: string | null
   translation_en: string | null
   usage_note: string | null
+  /**
+   * Spec docs/plans/2026-07-09-spreektaal-lesson-woven-core.md §3.2. NULL/absent =
+   * formal/default; 'informal' marks a spreektaal item (e.g. `nggak`). Optional
+   * (not `| null`) because the column ships in a parallel schema PR — `select('*')`
+   * omits the key entirely (`undefined`, not `null`) until that migration lands.
+   * Every reader treats undefined the same as null, so this stays merge-safe.
+   */
+  register?: 'informal' | null
+  /**
+   * base_text of the formal twin (e.g. `'tidak'` on the *nggak* row); null/absent
+   * otherwise. Resolve through `itemSlug()` (never a bespoke lowercase/trim) —
+   * spec §3.2. Same undefined-until-migration caveat as `register`.
+   */
+  register_counterpart?: string | null
   created_at: string
   updated_at: string
 }
