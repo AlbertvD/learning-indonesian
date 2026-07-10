@@ -1,6 +1,12 @@
 ---
-status: approved
+status: shipped
 reviewed_by: [staff-engineer, architect, data-architect]
+implementation: PR #433
+merged_at: 2026-07-10
+implementation_paths:
+  - src/lib/morphology/
+  - src/components/morphology/
+  - src/pages/AffixTrainer.tsx
 supersedes: []
 ---
 
