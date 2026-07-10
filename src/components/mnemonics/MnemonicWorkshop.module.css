@@ -1,48 +1,172 @@
-.prompts {
+/* ─────────────────────────────────────────────────────────────────────────────
+   MnemonicWorkshop.module.css — the "Ezelsbruggetje maken" editor modal.
+
+   bespoke-css-ok: this themes a Mantine <Modal> to the app's warm palette
+   (Mantine's default modal surface is a cold neutral grey that clashes with
+   the batik-green app) and styles the angle tiles / textarea / footer. No
+   page-framework card primitive models an emoji-led info tile with an inline
+   route link, so these are hand-built from the shared tokens — every colour,
+   font, radius, and size comes from a --token (main.tsx), nothing raw.
+
+   Module CSS is unlayered, so it wins over Mantine's @layer mantine rules
+   without !important.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Modal shell ── warm surface instead of Mantine's default grey body. */
+/* bespoke-css-ok: modal shell surface, not a page card (see file header). */
+.content {
+  background: var(--bg-surface);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+}
+.overlay {
+  background: var(--bg-scrim);
+}
+.body {
+  padding: 20px 22px 22px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 16px;
 }
 
-.promptChip {
+/* ── Header ── title (display serif) + the word it's for + close. */
+.header {
   display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
   align-items: flex-start;
-  text-align: left;
-  width: 100%;
-  border: 1px solid var(--border-light);
-  border-radius: 10px;
-  background: var(--card-bg);
-  padding: 0.55rem 0.7rem;
-  cursor: pointer;
-  font-family: inherit;
+  justify-content: space-between;
+  gap: 16px;
 }
-
-.promptChip:hover {
-  border-color: var(--accent-primary);
-}
-
-.promptChip:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
-}
-
-.promptTitle {
-  font-size: 0.85rem;
-  font-weight: 700;
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
   color: var(--text-primary);
 }
+.word {
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--accent-primary);
+}
+.close {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: -4px -6px 0 0;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color .15s, background .15s;
+}
+.close:hover { color: var(--text-primary); background: var(--bg-hover); }
+.close:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 
-.promptExample {
-  font-size: 0.78rem;
-  line-height: 1.4;
-  color: var(--text-secondary, #868e96);
+/* ── Intro copy ── set for reading, not a dim wall. */
+.intro {
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-secondary);
 }
 
-.promptLink {
-  font-size: 0.78rem;
-  font-weight: 600;
+/* ── Angle tiles ── emoji-led info tiles; app card chrome from tokens. */
+.angles {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.angle {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.angleTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+.angleExample {
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.angleLink {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
   color: var(--accent-primary);
-  margin-top: 0.1rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.angleLink:hover { color: var(--accent-primary-dim); }
+
+/* ── Textarea ── warm inset input, accent focus ring. */
+.textareaInput {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  padding: 12px 14px;
+}
+.textareaInput::placeholder { color: var(--text-tertiary); }
+.textareaInput:focus,
+.textareaInput:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-primary-glow);
+}
+
+/* ── First-run callout ── warm, accent-railed (replaces the blue Mantine Alert). */
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border, var(--card-border));
+  border-left: 3px solid var(--accent-primary);
+}
+.calloutBody { flex: 1; min-width: 0; }
+.calloutTitle {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.calloutText { font-size: var(--fs-sm); line-height: 1.5; color: var(--text-secondary); }
+.calloutDismiss {
+  flex: none;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: var(--r-sm);
+  display: flex;
+}
+.calloutDismiss:hover { color: var(--text-primary); }
+.calloutDismiss:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+/* ── Footer ── */
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 2px;
 }

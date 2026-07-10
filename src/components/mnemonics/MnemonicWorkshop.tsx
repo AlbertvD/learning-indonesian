@@ -11,8 +11,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Modal, Stack, Text, Textarea, Button, Group, Alert } from '@mantine/core'
+import { Modal, Textarea, Button } from '@mantine/core'
+import { IconX } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
+import { SectionHeading } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import { fetchMnemonic, upsertMnemonic } from '@/lib/mnemonics'
@@ -96,50 +98,79 @@ export function MnemonicWorkshop({ userId, sourceRef, label, isAffixed = false, 
     : prompts
 
   return (
-    <Modal opened={opened} onClose={onClose} title={T.mnemonic.workshopTitle} size="md">
-      <Stack gap="md">
-        {!firstRunSeen && (
-          <Alert color="blue" title={T.mnemonic.firstRunTitle} withCloseButton onClose={dismissFirstRun}>
-            {T.mnemonic.firstRunBody}
-          </Alert>
-        )}
-        <Text size="sm" fw={600}>{label}</Text>
-        <Text size="sm" c="dimmed">{T.mnemonic.workshopIntro}</Text>
-        <div className={classes.prompts}>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      size="md"
+      centered
+      withCloseButton={false}
+      overlayProps={{ blur: 3 }}
+      classNames={{ content: classes.content, body: classes.body, overlay: classes.overlay }}
+    >
+      <div className={classes.header}>
+        <div>
+          <div className={classes.title}>{T.mnemonic.workshopTitle}</div>
+          <div className={classes.word}>{label}</div>
+        </div>
+        <button type="button" className={classes.close} onClick={onClose} aria-label={T.mnemonic.cancelButton}>
+          <IconX size={20} />
+        </button>
+      </div>
+
+      {!firstRunSeen && (
+        <div className={classes.callout}>
+          <div className={classes.calloutBody}>
+            <div className={classes.calloutTitle}>{T.mnemonic.firstRunTitle}</div>
+            <div className={classes.calloutText}>{T.mnemonic.firstRunBody}</div>
+          </div>
+          <button
+            type="button"
+            className={classes.calloutDismiss}
+            onClick={dismissFirstRun}
+            aria-label={T.mnemonic.firstRunDismiss}
+          >
+            <IconX size={16} />
+          </button>
+        </div>
+      )}
+
+      <p className={classes.intro}>{T.mnemonic.workshopIntro}</p>
+
+      <div>
+        <SectionHeading>{T.mnemonic.chooseAngle}</SectionHeading>
+        <div className={classes.angles}>
           {orderedPrompts.map((prompt) => (
-            <button
-              key={prompt.key}
-              type="button"
-              className={classes.promptChip}
-              onClick={() => textareaRef.current?.focus()}
-            >
-              <span className={classes.promptTitle}>{prompt.title}</span>
-              <span className={classes.promptExample}>{prompt.example}</span>
+            <div key={prompt.key} className={classes.angle}>
+              <span className={classes.angleTitle}>{prompt.title}</span>
+              <span className={classes.angleExample}>{prompt.example}</span>
               {prompt.link && (
-                <Link to="/morphology" className={classes.promptLink} onClick={(e) => e.stopPropagation()}>
+                <Link to="/morphology" className={classes.angleLink}>
                   {prompt.link}
                 </Link>
               )}
-            </button>
+            </div>
           ))}
         </div>
-        <Textarea
-          ref={textareaRef}
-          value={note}
-          onChange={(e) => setNote(e.currentTarget.value)}
-          placeholder={T.mnemonic.notePlaceholder}
-          autosize
-          minRows={3}
-          maxLength={1000}
-          disabled={loading}
-        />
-        <Group justify="flex-end">
-          <Button variant="subtle" onClick={onClose}>{T.mnemonic.cancelButton}</Button>
-          <Button onClick={handleSave} loading={saving} disabled={loading || !note.trim()}>
-            {T.mnemonic.saveButton}
-          </Button>
-        </Group>
-      </Stack>
+      </div>
+
+      <Textarea
+        ref={textareaRef}
+        value={note}
+        onChange={(e) => setNote(e.currentTarget.value)}
+        placeholder={T.mnemonic.notePlaceholder}
+        autosize
+        minRows={3}
+        maxLength={1000}
+        disabled={loading}
+        classNames={{ input: classes.textareaInput }}
+      />
+
+      <div className={classes.footer}>
+        <Button variant="subtle" color="gray" onClick={onClose}>{T.mnemonic.cancelButton}</Button>
+        <Button onClick={handleSave} loading={saving} disabled={loading || !note.trim()}>
+          {T.mnemonic.saveButton}
+        </Button>
+      </div>
     </Modal>
   )
 }
