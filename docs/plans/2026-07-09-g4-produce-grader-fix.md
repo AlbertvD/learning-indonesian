@@ -1,8 +1,12 @@
 ---
-status: approved
+status: implementing
 program: docs/research/2026-07-06-grammar-teaching-review.md (finding F4, ranked idea 4)
 reviewed_by: [staff-engineer, architect, data-architect]
 approved_at: 2026-07-09
+implementation: PR #TBD (build order steps 1-3: audit + generate + apply +
+  health checks, live-applied 2026-07-10). Step 4 (restructuring the 837
+  restructure-needed outliers via flag->review) is NOT part of this PR —
+  status stays `implementing`, not `shipped`, until step 4 closes.
 ---
 
 # G4 — fix the grammar produce grader (acceptable_answers false negatives)

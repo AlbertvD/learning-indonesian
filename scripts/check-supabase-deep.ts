@@ -18,6 +18,10 @@ import { projectionViolations, type RankedItem } from './collections/projection'
 import { transcriptDrift } from './podcasts/assemble'
 import { planLearningPath, type PlannerCapability, type PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
 import { getDueCapabilitiesFromRows, type LearnerCapabilityStateRow } from '@/lib/session-builder/dueFilter'
+import { substituteAllFormal } from './lib/registerExpansion'
+import { registerPairs } from './data/register-pairs'
+import type { AuditReport } from './audit-grammar-produce-answer-freedom'
+import type { GenerateArtifactEntry } from './enrich-grammar-acceptable-answers'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
@@ -2753,6 +2757,163 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
       }
     } catch (err) {
       fail(HC49, err instanceof Error ? err.message : String(err))
+    }
+  }
+}
+
+// ── HC50-HC51 (G4 grammar-produce-grader fix,
+//    docs/plans/2026-07-09-g4-produce-grader-fix.md §4). Both artifacts
+//    (the audit report + the generate candidate artifact) are committed in
+//    THIS SAME PR, so the tolerant-skip-if-absent guard below is a
+//    defensive fallback (file deleted/renamed later), not an expected
+//    transitional state the way HC44-49's "parallel PR" loaders were.
+//
+//    Zero-state design (mirrors HC42/43/45-49's "expected red until the
+//    owner runs --apply" convention). The two checks SHARE one "has apply
+//    run at all" signal (`hasApplyRun`, computed from HC50's generate-
+//    artifact-candidate presence): those candidate strings are this
+//    script's own deterministic rule-engine output (specific itu/adalah/
+//    synonym-substituted sentences), so their presence is an unambiguous
+//    apply-ran marker. HC51 CANNOT use its own presence count for this —
+//    live-DB check confirmed a handful of exercises already coincidentally
+//    contain their fully-informal rendering pre-apply (a human happened to
+//    author both forms for unrelated reasons, same caveat HC45 documents
+//    for item_answer_variants) — so gating HC51's own zero-state on its own
+//    count would misread that small baseline as "already run". Once
+//    `hasApplyRun` is true, both checks require FULL convergence to pass;
+//    a partial/interrupted run fails either one. ---------------------------
+{
+  function loadAuditReport(): AuditReport | null {
+    const filePath = nodePath.join(process.cwd(), 'scripts', 'data', 'grammar-produce-answer-freedom-audit.json')
+    if (!existsSync(filePath)) return null
+    return JSON.parse(readFileSync(filePath, 'utf8')) as AuditReport
+  }
+
+  function loadGenerateArtifact(): GenerateArtifactEntry[] | null {
+    const filePath = nodePath.join(process.cwd(), 'scripts', 'data', 'grammar-acceptable-answers-generate.json')
+    if (!existsSync(filePath)) return null
+    return JSON.parse(readFileSync(filePath, 'utf8')) as GenerateArtifactEntry[]
+  }
+
+  type ProduceRow = { id: string; acceptable_answers: string[] }
+
+  async function fetchProduceRows(table: string, ids: string[]): Promise<ProduceRow[]> {
+    const out: ProduceRow[] = []
+    for (let i = 0; i < ids.length; i += 50) {
+      const chunk = ids.slice(i, i + 50)
+      const { data, error } = await supabase.schema('indonesian').from(table).select('id, acceptable_answers').in('id', chunk)
+      if (error) throw new Error(error.message)
+      out.push(...((data ?? []) as ProduceRow[]))
+    }
+    return out
+  }
+
+  let hc50Ran = false
+  let hasApplyRun = false
+
+  // -- HC50: thin-set guard scoped to the audit-classified multi-answer
+  //    universe MINUS the generate artifact's restructureNeeded ids
+  //    (architect r2 W2's scoping principle extends transitively: exactly
+  //    as single_element rows legitimately sit at length 1 forever,
+  //    restructureNeeded rows are DELIBERATELY left uncovered by this PR's
+  //    mechanism — spec's own escape valve, remediated later via step 4's
+  //    flag->review content restructuring, never by re-running apply).
+  //    For every OTHER multi_answer_free id (generate found >=1 safe
+  //    candidate), apply is guaranteed by construction to reach
+  //    length>=2 (canonical had >=1 answer already + >=1 new candidate). ---
+  {
+    const HC50 = 'HC50 every enrichable multi-answer-free produce exercise has acceptable_answers length >= 2 after apply (audit + generate artifacts)'
+    try {
+      const audit = loadAuditReport()
+      const generateEntries = loadGenerateArtifact()
+      if (audit === null || generateEntries === null) {
+        pass(`${HC50} — SKIPPED: audit/generate artifact not committed (scripts/data/grammar-produce-answer-freedom-audit.json / grammar-acceptable-answers-generate.json)`)
+      } else {
+        const scoped = generateEntries.filter((e) => !e.restructureNeeded && e.additionalAnswers.length > 0)
+        if (scoped.length === 0) {
+          pass(`${HC50} (0 enrichable exercise(s) in the committed artifact; vacuously green)`)
+        } else {
+          const byTable = new Map<string, GenerateArtifactEntry[]>()
+          for (const e of scoped) byTable.set(e.table, [...(byTable.get(e.table) ?? []), e])
+
+          let applied = 0
+          let thin = 0
+          for (const [table, entries] of byTable) {
+            const rows = await fetchProduceRows(table, entries.map((e) => e.id))
+            const rowById = new Map(rows.map((r) => [r.id, r]))
+            for (const entry of entries) {
+              const row = rowById.get(entry.id)
+              if (!row) continue
+              const hasAllCandidates = entry.additionalAnswers.every((a) => row.acceptable_answers.includes(a))
+              if (hasAllCandidates) applied++
+              if (row.acceptable_answers.length < 2) thin++
+            }
+          }
+
+          hc50Ran = true
+          hasApplyRun = applied > 0
+
+          if (applied === 0) {
+            pass(`${HC50} — APPLY PENDING (0/${scoped.length} show their generate-artifact addition yet; run: bun scripts/enrich-grammar-acceptable-answers.ts apply)`)
+          } else if (applied < scoped.length) {
+            fail(HC50, `Partial apply run: ${applied}/${scoped.length} enrichable exercise(s) show their addition — re-run apply (it is idempotent) to finish the remaining ${scoped.length - applied}.`)
+          } else if (thin > 0) {
+            fail(HC50, `${thin} enrichable exercise(s) still have acceptable_answers length < 2 despite apply having run — investigate (this should be impossible by construction).`)
+          } else {
+            pass(`${HC50} (${scoped.length} enrichable exercise(s) checked, all length >= 2)`)
+          }
+        }
+      }
+    } catch (err) {
+      fail(HC50, err instanceof Error ? err.message : String(err))
+    }
+  }
+
+  // -- HC51: register-expansion predicate (spec §4 check 2, data-architect
+  //    r2) — every ACTIVE produce exercise whose canonical answer
+  //    (acceptable_answers[0]) contains a formal token from
+  //    register-pairs.ts must accept the fully-informal-substituted form.
+  //    Zero-state deferred to `hasApplyRun` (see block header). -------------
+  {
+    const HC51 = 'HC51 every active produce exercise with a formal register token accepts the informal-substituted form (register-pairs.ts)'
+    try {
+      const registerPairsLite = (registerPairs as ReadonlyArray<{ formal: string; informal: string }>).map(
+        (p) => ({ formal: p.formal, informal: p.informal }),
+      )
+      const tables = ['sentence_transformation_exercises', 'constrained_translation_exercises'] as const
+      let targetTotal = 0
+      let applied = 0
+      for (const table of tables) {
+        const allRows: Array<{ id: string; acceptable_answers: string[] }> = []
+        const pageSize = 1000
+        for (let offset = 0; ; offset += pageSize) {
+          const { data, error } = await supabase.schema('indonesian').from(table)
+            .select('id, acceptable_answers').eq('is_active', true).range(offset, offset + pageSize - 1)
+          if (error) throw new Error(error.message)
+          const rows = (data ?? []) as Array<{ id: string; acceptable_answers: string[] }>
+          allRows.push(...rows)
+          if (rows.length < pageSize) break
+        }
+        for (const row of allRows) {
+          const canonical = row.acceptable_answers[0] ?? ''
+          const target = substituteAllFormal(canonical, registerPairsLite)
+          if (target === null) continue
+          targetTotal++
+          if (row.acceptable_answers.includes(target)) applied++
+        }
+      }
+
+      if (targetTotal === 0) {
+        pass(`${HC51} (0 active produce exercise(s) with a formal register token; vacuously green)`)
+      } else if (!hc50Ran || !hasApplyRun) {
+        pass(`${HC51} — APPLY PENDING (${applied}/${targetTotal} already show the informal-substituted form — some pre-date this program per HC45's documented baseline caveat; full coverage enforced once HC50 confirms apply has run. Run: bun scripts/enrich-grammar-acceptable-answers.ts apply)`)
+      } else if (applied < targetTotal) {
+        fail(HC51, `Partial apply run: ${applied}/${targetTotal} exercise(s) accept the informal-substituted form — re-run apply (it is idempotent) to finish the remaining ${targetTotal - applied}.`)
+      } else {
+        pass(`${HC51} (${targetTotal} exercise(s) checked)`)
+      }
+    } catch (err) {
+      fail(HC51, err instanceof Error ? err.message : String(err))
     }
   }
 }
