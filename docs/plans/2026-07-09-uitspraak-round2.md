@@ -1,5 +1,6 @@
 ---
-status: approved
+status: implementing
+implementation: PR #429 (R2-A + R2-B + UP5 shape c; multi-voice seeding run live 2026-07-09)
 reviewed_by: []
 ---
 <!-- UP3 + UP6 carry no review gate in the source review's own sequencing table
