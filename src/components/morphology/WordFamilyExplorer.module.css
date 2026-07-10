@@ -1,0 +1,49 @@
+/* bespoke-css-ok: token-only domain card following the LessonCard pattern
+   (components/lessons/LessonCard.tsx/.module.css) — a dense, repeating root
+   list where SettingsCard's 32px padding is wrong (see the harmonization
+   plan's Change 5, docs/plans/2026-07-10-affix-trainer-harmonization.md).
+   Every value below is a framework token; no raw Mantine <Card>, no raw
+   Mantine palette names. */
+
+/* src/components/morphology/WordFamilyExplorer.module.css */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+}
+
+/* Per-form mastery dot — replaces Mantine `<Badge circle color={...}>`.
+   Colour is data-driven (masteryDotColor) so it's applied via inline style;
+   this class only owns the shape. */
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.rootUnknown {
+  color: var(--warning);
+}
+
+/* form.affix pill — tamarind (--accent-primary) for the current affix's own
+   form, a muted outline for the rest of the cross-affix family. */
+.affixPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 20px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  border: 1px solid var(--text-tertiary);
+  color: var(--text-tertiary);
+}
+
+.affixPillCurrent {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--text-on-accent);
+}

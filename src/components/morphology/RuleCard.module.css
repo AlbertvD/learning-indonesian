@@ -1,0 +1,28 @@
+/* src/components/morphology/RuleCard.module.css
+   Two small domain pills for RuleCard's SettingsCard `aside` slot — the
+   affix-type badge (curated brand-ramp hue, AFFIX_TYPE_HUE — see
+   affixVisuals.ts) and the outline-style allomorph-class badges (tamarind ==
+   the --accent-primary token; was Mantine `color="tamarind"`). Both are
+   single-use domain chrome, not promoted to page/primitives — affix-specific
+   richness stays in the domain folder per the harmonization plan's Design
+   principle. */
+
+.typePill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+}
+
+.allomorphBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-primary);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+}

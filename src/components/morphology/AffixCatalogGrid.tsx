@@ -11,21 +11,16 @@
 // here. Production's denominator is content-fixed and often zero (the
 // production tier doesn't exist yet for many affixes) — that renders as the
 // LessonCard Bar's null path ("—"), never a false "0%".
+//
+// The banner hue is sourced from affixVisuals.ts's AFFIX_TYPE_HUE — shared
+// with the detail page's accent so a tile's colour and the detail it opens
+// read as one surface (harmonization plan Change 6).
 
 import { SimpleGrid } from '@mantine/core'
 import { LessonCard } from '@/components/lessons/LessonCard'
 import { useT } from '@/hooks/useT'
-import type { AffixCatalogTile, AffixType } from '@/lib/morphology'
-
-// Affix-type banners drawn from the brand ramp (tamarind / teal / gold /
-// batik-green) — each type keeps a distinct hue, but all four stay in the
-// warm-editorial palette instead of the former off-brand indigo/purple/sky set.
-const TYPE_GRADIENT: Record<AffixType, string> = {
-  prefix: 'linear-gradient(135deg, #C64A26 0%, #8A3117 100%)',        // tamarind
-  suffix: 'linear-gradient(135deg, #17867F 0%, #0C5A55 100%)',        // teal
-  confix: 'linear-gradient(135deg, #B4862F 0%, #7E5F1E 100%)',        // gold
-  reduplication: 'linear-gradient(135deg, #3A6A5C 0%, #1F3D36 100%)', // batik green
-}
+import type { AffixCatalogTile } from '@/lib/morphology'
+import { AFFIX_TYPE_HUE } from './affixVisuals'
 
 type Tone = 'success' | 'warning' | 'danger' | 'accent' | 'neutral'
 
@@ -60,7 +55,7 @@ export function AffixCatalogGrid({ tiles }: { tiles: AffixCatalogTile[] }) {
             banner={
               <div
                 aria-hidden="true"
-                style={{ position: 'absolute', inset: 0, background: TYPE_GRADIENT[tile.affixType] }}
+                style={{ position: 'absolute', inset: 0, background: AFFIX_TYPE_HUE[tile.affixType].gradient }}
               />
             }
             orderIndex={tile.rank}

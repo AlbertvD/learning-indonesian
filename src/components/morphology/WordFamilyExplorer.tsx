@@ -3,23 +3,21 @@
 // per root; frozen/lexicalised forms marked "vocab, not rule-formed"; unknown
 // roots flagged (they gate the produce drills — ADR 0018, reflected here, not
 // enforced). Genuinely new — no existing equivalent to reuse (capstone §2.2).
+//
+// Stays a domain component (not promoted to page/primitives — see
+// WordFamilyExplorer.module.css's header comment); adopts the LessonCard
+// pattern of a token-only co-located CSS module instead of Mantine's <Card>.
 
-import { Card, Stack, Group, Text, Badge, Tooltip } from '@mantine/core'
+import { Stack, Group, Text, Tooltip } from '@mantine/core'
 import { IconAlertTriangle, IconAbc } from '@tabler/icons-react'
-import { EmptyState } from '@/components/page/primitives'
+import { EmptyState, StatusPill } from '@/components/page/primitives'
+import { cx } from '@/components/page/primitives/cx'
 import { useT } from '@/hooks/useT'
 import type { MasteryLabel, WordFamily } from '@/lib/morphology'
 import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
 import { PlayButton } from '@/components/PlayButton'
-
-const LABEL_COLOR: Record<MasteryLabel, string> = {
-  not_assessed: 'gray',
-  introduced: 'blue',
-  learning: 'yellow',
-  strengthening: 'teal',
-  mastered: 'green',
-  at_risk: 'red',
-}
+import { masteryDotColor } from './affixVisuals'
+import classes from './WordFamilyExplorer.module.css'
 
 const SOLID = new Set<MasteryLabel>(['mastered', 'strengthening'])
 
@@ -43,7 +41,7 @@ export function WordFamilyExplorer({
       {families.map((family) => {
         const known = family.forms.filter((f) => SOLID.has(f.label)).length
         return (
-          <Card key={family.rootText} withBorder radius="md" padding="md">
+          <div key={family.rootText} className={classes.card}>
             <Stack gap="xs">
               <Group justify="space-between" align="flex-start" wrap="nowrap">
                 <div>
@@ -53,12 +51,12 @@ export function WordFamilyExplorer({
                   </Group>
                   {!family.rootKnown && (
                     <Group gap={4} mt={2}>
-                      <IconAlertTriangle size={13} color="var(--mantine-color-orange-6)" />
-                      <Text size="xs" c="orange">{T.morphology.rootUnknown}</Text>
+                      <IconAlertTriangle size={13} color="var(--warning)" />
+                      <Text size="xs" className={classes.rootUnknown}>{T.morphology.rootUnknown}</Text>
                     </Group>
                   )}
                 </div>
-                <Badge variant="light" color="gray">{known}/{family.forms.length}</Badge>
+                <StatusPill tone="neutral">{known}/{family.forms.length}</StatusPill>
               </Group>
 
               <Stack gap={4}>
@@ -70,10 +68,10 @@ export function WordFamilyExplorer({
                   return (
                     <Group key={`${form.affix}:${form.derivedText}`} gap={8} wrap="nowrap" align="center">
                       <Tooltip label={form.label.replace('_', ' ')} withArrow>
-                        <Badge size="xs" circle color={LABEL_COLOR[form.label]} />
+                        <span className={classes.dot} style={{ background: masteryDotColor(form.label) }} />
                       </Tooltip>
                       <Text size="sm" fw={isCurrent ? 700 : 500} c={isCurrent ? 'var(--accent-primary)' : undefined}>{form.derivedText}</Text>
-                      <Badge size="xs" variant={isCurrent ? 'filled' : 'outline'} color={isCurrent ? 'tamarind' : 'gray'}>{form.affix}</Badge>
+                      <span className={cx(classes.affixPill, isCurrent && classes.affixPillCurrent)}>{form.affix}</span>
                       {form.derivedMeaning && (
                         <Text size="xs" c="dimmed">{form.derivedMeaning}</Text>
                       )}
@@ -86,7 +84,7 @@ export function WordFamilyExplorer({
                 })}
               </Stack>
             </Stack>
-          </Card>
+          </div>
         )
       })}
     </Stack>

@@ -46,12 +46,26 @@ export interface SettingsCardProps {
    * styling, so the caller owns the inner layout.
    */
   children: ReactNode
+  /**
+   * Optional trailing slot rendered at the top-right of the title row —
+   * a level/type badge, a small control, etc. Aligns to the heading and
+   * does not shrink when the title grows. Omitted → title spans full width
+   * (unchanged for every existing caller — additive, non-breaking).
+   */
+  aside?: ReactNode
 }
 
-export function SettingsCard({ title, description, children }: SettingsCardProps) {
+export function SettingsCard({ title, description, children, aside }: SettingsCardProps) {
   return (
     <section className={cx(classes.root)}>
-      <h3 className={cx(classes.title)}>{title}</h3>
+      {aside ? (
+        <div className={cx(classes.titleRow)}>
+          <h3 className={cx(classes.title)}>{title}</h3>
+          <div className={cx(classes.aside)}>{aside}</div>
+        </div>
+      ) : (
+        <h3 className={cx(classes.title)}>{title}</h3>
+      )}
       {description && <p className={cx(classes.description)}>{description}</p>}
       <div className={cx(classes.body)}>{children}</div>
     </section>

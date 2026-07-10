@@ -129,4 +129,38 @@ describe('SettingsCard', () => {
     const root = container.firstChild as HTMLElement
     expect(root.tagName).toBe('SECTION')
   })
+
+  it('renders the bare <h3> with no wrapper when aside is absent', () => {
+    const { container } = render(
+      <SettingsCard title="Account">
+        <span>body</span>
+      </SettingsCard>,
+    )
+    const root = container.firstChild as HTMLElement
+    // First child of the section is the <h3> itself — no .titleRow wrapper
+    // div when aside isn't passed (byte-identical markup for existing callers).
+    expect(root.firstElementChild?.tagName).toBe('H3')
+  })
+
+  it('renders both the title and the aside node when aside is provided', () => {
+    render(
+      <SettingsCard title="Rule" aside={<span data-testid="aside-content">A2</span>}>
+        <span>body</span>
+      </SettingsCard>,
+    )
+    expect(screen.getByRole('heading', { level: 3, name: 'Rule' })).toBeInTheDocument()
+    expect(screen.getByTestId('aside-content')).toBeInTheDocument()
+  })
+
+  it('wraps title + aside in a row when aside is provided', () => {
+    const { container } = render(
+      <SettingsCard title="Rule" aside={<span>A2</span>}>
+        <span>body</span>
+      </SettingsCard>,
+    )
+    const root = container.firstChild as HTMLElement
+    // First child of the section is now the titleRow wrapper, not a bare <h3>.
+    expect(root.firstElementChild?.tagName).toBe('DIV')
+    expect(root.firstElementChild?.querySelector('h3')).not.toBeNull()
+  })
 })

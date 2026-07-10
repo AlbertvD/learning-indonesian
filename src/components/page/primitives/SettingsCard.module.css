@@ -37,6 +37,20 @@
   margin: 0 0 4px;
 }
 
+/* Only rendered when `aside` is passed — wraps .title + .aside in a row.
+   .title keeps its own bottom margin (separates it from .description); the
+   row itself carries no margin of its own. */
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.aside {
+  flex-shrink: 0;
+}
+
 .description {
   font-size: var(--fs-sm);
   color: var(--text-secondary);

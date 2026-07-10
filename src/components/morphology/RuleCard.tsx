@@ -2,26 +2,42 @@
 // prose + audio). Built from the affix catalog metadata (gloss, allomorph
 // classes) + the morphology data (allomorph_rule prose, worked examples) + a link
 // to the introducing lesson. No re-authoring of lesson content (capstone §2.1).
+//
+// Rides the SettingsCard primitive (page/primitives) via its additive `aside`
+// slot — the affix-type + CEFR badges sit beside the "Rule" heading instead of
+// a bespoke <Card>. The gloss line moved to AffixDetailView's PageHeader
+// subtitle (it used to repeat here — deduped by the harmonization plan).
 
-import { Card, Stack, Group, Title, Text, Badge, Anchor } from '@mantine/core'
+import { Stack, Text, Group, Anchor } from '@mantine/core'
 import { Link } from 'react-router-dom'
+import { SettingsCard, StatusPill } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import type { AffixDetail } from '@/lib/morphology'
 import { resolveSessionAudioUrl, type SessionAudioMap } from '@/services/audioService'
 import { PlayButton } from '@/components/PlayButton'
+import { AFFIX_TYPE_HUE } from './affixVisuals'
+import classes from './RuleCard.module.css'
 
 export function RuleCard({ detail, audioMap }: { detail: AffixDetail; audioMap: SessionAudioMap }) {
   const T = useT()
+  const hue = AFFIX_TYPE_HUE[detail.affixType].solid
+
   return (
-    <Card withBorder radius="md" padding="lg">
-      <Stack gap="sm">
-        <Group justify="space-between" align="flex-start">
-          <Title order={3}>{T.morphology.ruleTitle}</Title>
-          <Badge variant="light" color="gray">{detail.cefrLevel}</Badge>
+    <SettingsCard
+      title={T.morphology.ruleTitle}
+      aside={
+        <Group gap={6} wrap="nowrap">
+          <span
+            className={classes.typePill}
+            style={{ background: `color-mix(in srgb, ${hue} 14%, transparent)`, color: hue }}
+          >
+            {detail.affixType}
+          </span>
+          <StatusPill tone="neutral">{detail.cefrLevel}</StatusPill>
         </Group>
-
-        <Text>{detail.gloss}</Text>
-
+      }
+    >
+      <Stack gap="sm">
         {detail.rule.patternName && (
           <Text size="sm" c="dimmed">{detail.rule.patternName}</Text>
         )}
@@ -31,7 +47,7 @@ export function RuleCard({ detail, audioMap }: { detail: AffixDetail; audioMap: 
             <Text size="sm" fw={600} c="dimmed" mb={4}>{T.morphology.allomorphsTitle}</Text>
             <Group gap={6}>
               {detail.allomorphClasses.map((cls) => (
-                <Badge key={cls} variant="outline" color="tamarind">{cls}-</Badge>
+                <span key={cls} className={classes.allomorphBadge}>{cls}-</span>
               ))}
             </Group>
           </div>
@@ -72,6 +88,6 @@ export function RuleCard({ detail, audioMap }: { detail: AffixDetail; audioMap: 
           </Anchor>
         )}
       </Stack>
-    </Card>
+    </SettingsCard>
   )
 }
