@@ -260,6 +260,7 @@ export interface ForceCapabilitySnapshot {
 
 export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supabase): CapabilitySessionDataAdapter & {
   loadForceCapabilitySnapshot(canonicalKey: string, userId: string): Promise<ForceCapabilitySnapshot>
+  loadInformalItemSourceRefs(): Promise<Set<string>>
 } {
   const db = () => client.schema('indonesian')
 
@@ -455,6 +456,27 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         readiness,
         learnerState,
       }
+    },
+
+    // Spreektaal toggle (spec docs/plans/2026-07-09-spreektaal-lesson-woven-core.md
+    // §5): the informal-item source_ref set spreektaalFilter.ts needs to strip
+    // register='informal' capabilities from a snapshot. A plain read, independent
+    // of the parity-locked get_session_build_data RPC — register isn't part of
+    // the capability projection the way listening's modality field is, so this
+    // needs its own small query. Throws on a real query error like every other
+    // method here; buildSession (builder.ts) is the layer that treats a failure
+    // as "no informal items yet" while the register/register_counterpart columns
+    // (parallel schema PR) don't exist.
+    async loadInformalItemSourceRefs(): Promise<Set<string>> {
+      const { data, error } = await db()
+        .from('learning_items')
+        .select('normalized_text')
+        .eq('register', 'informal')
+      if (error) throw error
+      return new Set(
+        ((data ?? []) as Array<{ normalized_text: string }>)
+          .map(row => `learning_items/${row.normalized_text}`),
+      )
     },
   }
 }

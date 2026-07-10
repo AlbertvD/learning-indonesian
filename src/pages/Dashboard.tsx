@@ -37,6 +37,7 @@ import {
   hasCompletedSession,
 } from '@/lib/firstRun'
 import { useListening } from '@/contexts/ListeningContext'
+import { useSpreektaal } from '@/contexts/SpreektaalContext'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
@@ -80,6 +81,7 @@ export function Dashboard() {
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
   const { listeningEnabled } = useListening()
+  const { spreektaalEnabled } = useSpreektaal()
   // Effects key on the stable id, not the user object — the auth store swaps
   // the object reference on TOKEN_REFRESHED (hourly), which must not refetch
   // Home or reset checklist state.
@@ -178,6 +180,7 @@ export function Dashboard() {
           limit: profile?.preferredSessionSize ?? 15,
           preferredSessionSize: profile?.preferredSessionSize ?? 15,
           listeningEnabled,
+          spreektaalEnabled,
           adapter: sessionBuilderAdapter,
         })
         if (import.meta.env.DEV) {
@@ -194,7 +197,7 @@ export function Dashboard() {
     }
     loadPreview()
     return () => { cancelled = true }
-  }, [userId, loading, showChecklist, preview, previewFailed, profile?.preferredSessionSize, listeningEnabled])
+  }, [userId, loading, showChecklist, preview, previewFailed, profile?.preferredSessionSize, listeningEnabled, spreektaalEnabled])
 
   if (loading) {
     return (

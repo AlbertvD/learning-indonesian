@@ -354,6 +354,138 @@ describe('capability session loader', () => {
     })
   })
 
+  // Spec docs/plans/2026-07-09-spreektaal-lesson-woven-core.md §5: the
+  // "Spreektaal (informele woorden) oefenen" Profile toggle, wired via
+  // buildSession's spreektaalEnabled param -> excludeSpreektaalCapabilities
+  // (spreektaalFilter.ts). Unlike listeningEnabled, register isn't part of the
+  // capability projection, so this needs one extra adapter read
+  // (loadInformalItemSourceRefs) to learn which source_refs are informal.
+  describe('spreektaalEnabled -- "Spreektaal (informele woorden) oefenen" opt-out', () => {
+    const informalKey = 'cap:v1:item:learning_items/nggak:recognise_meaning_from_text_cap:id_to_l1:text:nl'
+    const informalProjection = projectedCapability({
+      canonicalKey: informalKey,
+      sourceRef: 'learning_items/nggak',
+      capabilityType: 'recognise_meaning_from_text_cap',
+      skillType: 'recognise_mode',
+      requiredArtifacts: [],
+    })
+    const newIntroKey = 'cap:v1:item:learning_items/aja:recognise_meaning_from_text_cap:id_to_l1:text:nl'
+    const newIntroProjection = projectedCapability({
+      canonicalKey: newIntroKey,
+      sourceRef: 'learning_items/aja',
+      capabilityType: 'recognise_meaning_from_text_cap',
+      skillType: 'recognise_mode',
+      requiredArtifacts: [],
+    })
+
+    function adapterWithInformalAndFormal(
+      loadInformalItemSourceRefs: () => Promise<Set<string>>,
+    ): CapabilitySessionDataAdapter & { loadInformalItemSourceRefs: () => Promise<Set<string>> } {
+      return {
+        listLearnerCapabilityStates: async () => {
+          throw new Error('buildSession should use the full snapshot loader')
+        },
+        loadCapabilitySessionData: async request => ({
+          schedulerRows: [
+            activeState({ userId: request.userId }), // formal -- capability-1 / canonicalKey (default)
+            activeState({
+              userId: request.userId,
+              id: 'informal-state',
+              capabilityId: 'informal-capability',
+              canonicalKeySnapshot: informalKey,
+            }),
+          ],
+          plannerInput: {
+            userId: request.userId,
+            preferredSessionSize: request.preferredSessionSize,
+            dueCount: 0,
+            readyCapabilities: [plannerCapability({
+              id: 'informal-new-capability',
+              canonicalKey: newIntroKey,
+              sourceRef: newIntroProjection.sourceRef,
+              capabilityType: 'recognise_meaning_from_text_cap',
+              skillType: 'recognise_mode',
+            })],
+            learnerCapabilityStates: [],
+            activatedLessons: new Set<string>(),
+          },
+          capabilitiesByKey: new Map([
+            [canonicalKey, projectedCapability()],
+            [informalKey, informalProjection],
+            [newIntroKey, newIntroProjection],
+          ]),
+          readinessByKey: new Map([
+            [canonicalKey, { status: 'ready', allowedExercises: ['type_meaning_ex'] }],
+            [informalKey, { status: 'ready', allowedExercises: ['choose_meaning_ex'] }],
+            [newIntroKey, { status: 'ready', allowedExercises: ['choose_meaning_ex'] }],
+          ]),
+          currentLessonId: null,
+          nextLessonNeedsExposure: false,
+          reviewedTodayRefs: new Set<string>(),
+        }),
+        loadInformalItemSourceRefs,
+      }
+    }
+
+    it('excludes informal-item blocks (due + new-introduction) when the preference is off', async () => {
+      const plan = await buildSession({
+        enabled: true,
+        sessionId: 'session-1',
+        userId: 'user-1',
+        mode: 'standard',
+        now,
+        limit: 15,
+        preferredSessionSize: 15,
+        spreektaalEnabled: false,
+        adapter: adapterWithInformalAndFormal(async () => new Set(['learning_items/nggak', 'learning_items/aja'])),
+      })
+
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === informalKey)).toBe(false)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === newIntroKey)).toBe(false)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === canonicalKey)).toBe(true)
+    })
+
+    it('leaves informal-item blocks in the plan when the preference is on (default), and never reads the ref set', async () => {
+      let refsCalled = false
+      const plan = await buildSession({
+        enabled: true,
+        sessionId: 'session-1',
+        userId: 'user-1',
+        mode: 'standard',
+        now,
+        limit: 15,
+        preferredSessionSize: 15,
+        adapter: adapterWithInformalAndFormal(async () => {
+          refsCalled = true
+          return new Set(['learning_items/nggak', 'learning_items/aja'])
+        }),
+      })
+
+      expect(refsCalled).toBe(false)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === informalKey)).toBe(true)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === newIntroKey)).toBe(true)
+    })
+
+    it('degrades to a no-op (does not throw, does not filter) when the ref-set read fails -- merge-safety before the register/register_counterpart columns exist', async () => {
+      const plan = await buildSession({
+        enabled: true,
+        sessionId: 'session-1',
+        userId: 'user-1',
+        mode: 'standard',
+        now,
+        limit: 15,
+        preferredSessionSize: 15,
+        spreektaalEnabled: false,
+        adapter: adapterWithInformalAndFormal(async () => {
+          throw new Error('column "register" does not exist')
+        }),
+      })
+
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === informalKey)).toBe(true)
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot === canonicalKey)).toBe(true)
+    })
+  })
+
   it('loads lesson practice from selected lesson due, new, and active review candidates only', async () => {
     const selectedDueKey = 'selected-due-key'
     const selectedNewKey = 'selected-new-key'

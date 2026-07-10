@@ -9,6 +9,7 @@ import {
 } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
 import { useListening } from '@/contexts/ListeningContext'
+import { useSpreektaal } from '@/contexts/SpreektaalContext'
 import {
   buildSession,
   collectAudibleTexts,
@@ -60,6 +61,7 @@ export function Session() {
   const [searchParams] = useSearchParams()
   const { user, profile } = useAuthStore()
   const { listeningEnabled } = useListening()
+  const { spreektaalEnabled } = useSpreektaal()
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -141,6 +143,7 @@ export function Session() {
           limit: preferredSessionSize,
           preferredSessionSize,
           listeningEnabled,
+          spreektaalEnabled,
           ...(scope ?? {}),
           ...(allowForceCapability && forceCapabilityKey ? { forceCapabilityKey } : {}),
           adapter: sessionBuilderAdapter,
@@ -201,7 +204,7 @@ export function Session() {
     }
 
     initSession()
-  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, affixFilter, sessionMode, forceCapabilityKey, allowForceCapability, listeningEnabled, T])
+  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, affixFilter, sessionMode, forceCapabilityKey, allowForceCapability, listeningEnabled, spreektaalEnabled, T])
 
   // Session finished (queue exhausted) — fired by ExperiencePlayer the moment the
   // cards run out, NOT on the recap button. Marks the session complete so it
