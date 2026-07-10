@@ -1,9 +1,15 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { loadCapabilitySessionPlan, buildSession, type CapabilitySessionDataAdapter } from '@/lib/session-builder/builder'
 import type { LearnerCapabilityStateRow } from '@/lib/session-builder/dueFilter'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 import type { CapabilityReadiness } from '@/lib/capabilities'
 import { planLearningPath, type PlannerCapability, type PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
+import { logError } from '@/lib/logger'
+
+// The spreektaalEnabled ref-set read's failure path (below) logs via logError
+// rather than swallowing silently (CLAUDE.md Logging) — mocked so the assertion
+// doesn't depend on a real Supabase write succeeding in the test environment.
+vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
 
 const now = new Date('2026-04-25T10:00:00.000Z')
 const sourceRef = 'learning_items/item-1'
@@ -466,7 +472,9 @@ describe('capability session loader', () => {
       expect(plan.blocks.some(b => b.canonicalKeySnapshot === newIntroKey)).toBe(true)
     })
 
-    it('degrades to a no-op (does not throw, does not filter) when the ref-set read fails -- merge-safety before the register/register_counterpart columns exist', async () => {
+    it('degrades to a no-op (does not throw, does not filter) when the ref-set read fails -- merge-safety before the register/register_counterpart columns exist -- and logs it (never silently swallowed)', async () => {
+      vi.mocked(logError).mockClear()
+      const readError = new Error('column "register" does not exist')
       const plan = await buildSession({
         enabled: true,
         sessionId: 'session-1',
@@ -477,10 +485,15 @@ describe('capability session loader', () => {
         preferredSessionSize: 15,
         spreektaalEnabled: false,
         adapter: adapterWithInformalAndFormal(async () => {
-          throw new Error('column "register" does not exist')
+          throw readError
         }),
       })
 
+      expect(vi.mocked(logError)).toHaveBeenCalledWith(expect.objectContaining({
+        page: 'session-builder',
+        action: 'loadInformalItemSourceRefs',
+        error: readError,
+      }))
       expect(plan.blocks.some(b => b.canonicalKeySnapshot === informalKey)).toBe(true)
       expect(plan.blocks.some(b => b.canonicalKeySnapshot === canonicalKey)).toBe(true)
     })
