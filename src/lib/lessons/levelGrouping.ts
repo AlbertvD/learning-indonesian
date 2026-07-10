@@ -5,19 +5,13 @@
 // page owns the open/closed UI state. Kept out of the page file so it's unit-
 // testable without a component (and clear of the react-refresh export rule).
 import type { LessonOverviewRow } from '@/lib/lessons'
-
-const CEFR_ORDER = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] as const
+import { cefrRank as levelRank } from '@/lib/cefr'
 
 export interface LessonLevelGroup {
   level: string
   rows: LessonOverviewRow[]
   /** Average % mastered across the group — for the collapsed-section summary. */
   masteredPercent: number
-}
-
-function levelRank(level: string): number {
-  const i = CEFR_ORDER.indexOf(level.toUpperCase() as (typeof CEFR_ORDER)[number])
-  return i === -1 ? CEFR_ORDER.length : i // unknown/blank levels sort last
 }
 
 export function groupRowsByLevel(rows: LessonOverviewRow[]): LessonLevelGroup[] {

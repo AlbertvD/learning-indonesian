@@ -1,11 +1,12 @@
 // src/pages/Podcasts.tsx
-import { useEffect, useState } from 'react'
-import { Group, Text, Badge, SimpleGrid } from '@mantine/core'
+import { useEffect, useMemo, useState } from 'react'
+import { Text, SimpleGrid, Stack } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import {
   PageContainer,
   PageBody,
   PageHeader,
+  SectionHeading,
   ListCard,
   LoadingState,
   EmptyState,
@@ -13,6 +14,7 @@ import {
 import { IconHeadphones } from '@tabler/icons-react'
 import { OntdekNav } from '@/components/nav/OntdekNav'
 import { textService, type PodcastListRow } from '@/services/textService'
+import { groupByCefrLevel } from '@/lib/cefr'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
 
@@ -27,6 +29,11 @@ export function Podcasts() {
   const T = useT()
   const [podcasts, setPodcasts] = useState<PodcastListRow[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Group into CEFR sections (A1 → B2 → …), newest-first order preserved inside
+  // each level. A running index across groups keeps the numbering continuous so
+  // every episode has a stable ordinal regardless of its section.
+  const levelGroups = useMemo(() => groupByCefrLevel(podcasts, (p) => p.level), [podcasts])
 
   useEffect(() => {
     async function fetchData() {
@@ -65,27 +72,35 @@ export function Podcasts() {
             message={T.podcast.noPodcasts}
           />
         ) : (
-          <SimpleGrid cols={{ base: 1 }} spacing="sm" mt="md">
-            {podcasts.map((podcast, i) => {
-              const duration = formatDuration(podcast.duration_seconds)
-              return (
-                <ListCard
-                  key={podcast.id}
-                  tone="gold"
-                  to={`/podcast/${podcast.id}`}
-                  icon={<Text fw={700} c="inherit">{String(i + 1).padStart(2, '0')}</Text>}
-                  title={podcast.title}
-                  subtitle={podcast.description ?? undefined}
-                  meta={(
-                    <Group gap={8}>
-                      {podcast.level && <Badge variant="light">{podcast.level}</Badge>}
-                      {duration && <Text size="sm" c="dimmed">{duration}</Text>}
-                    </Group>
-                  )}
-                />
-              )
-            })}
-          </SimpleGrid>
+          <Stack gap="lg" mt="md">
+            {(() => {
+              let ordinal = 0
+              return levelGroups.map((group) => (
+                <Stack gap="sm" key={group.level}>
+                  <SectionHeading>
+                    {group.isUnknown ? T.common.levelOther : `${T.common.levelPrefix} ${group.level}`}
+                  </SectionHeading>
+                  <SimpleGrid cols={{ base: 1 }} spacing="sm">
+                    {group.items.map((podcast) => {
+                      ordinal += 1
+                      const duration = formatDuration(podcast.duration_seconds)
+                      return (
+                        <ListCard
+                          key={podcast.id}
+                          tone="gold"
+                          to={`/podcast/${podcast.id}`}
+                          icon={<Text fw={700} c="inherit">{String(ordinal).padStart(2, '0')}</Text>}
+                          title={podcast.title}
+                          subtitle={podcast.description ?? undefined}
+                          meta={duration ? <Text size="sm" c="dimmed">{duration}</Text> : undefined}
+                        />
+                      )
+                    })}
+                  </SimpleGrid>
+                </Stack>
+              ))
+            })()}
+          </Stack>
         )}
       </PageBody>
     </PageContainer>

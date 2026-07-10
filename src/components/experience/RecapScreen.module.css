@@ -1,0 +1,181 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   RecapScreen.module.css — session summary chrome.
+
+   bespoke-css-ok: no card surfaces here. The metric cards use the StatCard
+   primitive (composed in the TSX); this module only styles a segmented
+   progress bar, hairline-separated list rows, and a legend — none of which is
+   a card. Colour comes from shared role tokens (--success / --warning /
+   --danger / --card-border); no raw hex.
+───────────────────────────────────────────────────────────────────────────── */
+
+.tally {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+/* ── Longest-flawless-run strip ── a centred achievement pill, not a card. */
+.streakWrap {
+  display: flex;
+  justify-content: center;
+}
+.streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--accent-primary-subtle);
+}
+.streakGold {
+  background: rgba(206, 158, 69, 0.14);
+}
+.streakIcon { font-size: var(--fs-md); line-height: 1; }
+.streakLabel { font-size: var(--fs-sm); color: var(--text-secondary); }
+.streakValue {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Flawless-session celebration (inside the HeroCard body) ── */
+.celebrate {
+  position: relative;
+  overflow: hidden;
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flawlessMsg {
+  position: relative;
+  z-index: 1;
+  color: var(--hero-text);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  text-align: center;
+  text-wrap: balance;
+}
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.confettiPiece {
+  position: absolute;
+  top: -14px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: recap-confetti-fall 1.9s ease-in infinite;
+}
+@keyframes recap-confetti-fall {
+  0%   { transform: translateY(0) rotate(0deg);     opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(110px) rotate(360deg); opacity: 0; }
+}
+/* Motion-safety: no falling confetti; the emoji in the title + the copy still
+   carry the celebration. */
+@media (prefers-reduced-motion: reduce) {
+  .confetti { display: none; }
+}
+
+/* Big, colour-coded metric value injected into StatCard's `value` slot. */
+.metric {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.metricGood { color: var(--success); }
+.metricWarn { color: var(--danger); }
+.metricSub {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+}
+
+/* A capability breakdown row — a list item, not a card. */
+.row {
+  padding: 10px 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid var(--card-border);
+}
+.row:last-child { border-bottom: none; }
+
+.rowHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rowLabel {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.rowCount {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Segmented proportional bar. Segments are flex-grown by their share so the
+   track always fills the row; zero-width segments simply collapse. The track
+   background shows through as the "remaining" (skipped / not-done) portion. */
+.bar {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--card-border);
+}
+
+.seg { height: 100%; }
+.segCorrect { background: var(--success); }
+.segClose { background: var(--warning); }
+.segWrong { background: var(--danger); }
+
+.rowSummary {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* Legend under the breakdown — tiny swatch + label per outcome. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  justify-content: center;
+  margin-top: 4px;
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+.swatchCorrect { background: var(--success); }
+.swatchClose { background: var(--warning); }
+.swatchWrong { background: var(--danger); }
