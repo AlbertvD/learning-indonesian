@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-07-10T05:27:51.471Z",
+  "generatedAt": "2026-07-10T05:35:05.896Z",
   "sourceArtifact": "scripts/data/register-pairs.ts",
-  "totalPairs": 80,
+  "totalPairs": 78,
   "countsByKlasse": {
     "h-drop": 12,
     "monophthong": 7,
-    "a-e-reductie": 22,
+    "a-e-reductie": 20,
     "frozen-verb": 9,
     "lexical": 30
   },
   "countsByClassification": {
-    "CORE": 70,
+    "CORE": 68,
     "PHRASE-ANCHORED": 1,
     "UNANCHORED": 7,
     "DEFERRED": 2
@@ -245,13 +245,6 @@
       "informalAlreadyTaught": null
     },
     {
-      "formal": "tepat",
-      "informal": "tepet",
-      "klasse": "a-e-reductie",
-      "anchorLesson": 999,
-      "informalAlreadyTaught": null
-    },
-    {
       "formal": "tukar",
       "informal": "tuker",
       "klasse": "a-e-reductie",
@@ -270,13 +263,6 @@
       "informal": "macem",
       "klasse": "a-e-reductie",
       "anchorLesson": 999,
-      "informalAlreadyTaught": null
-    },
-    {
-      "formal": "kejar",
-      "informal": "kejer",
-      "klasse": "a-e-reductie",
-      "anchorLesson": 16,
       "informalAlreadyTaught": null
     },
     {
@@ -1173,22 +1159,6 @@
       "informalAlreadyTaught": null
     },
     {
-      "formal": "tepat",
-      "informal": "tepet",
-      "klasse": "a-e-reductie",
-      "gloss_nl": "precies, juist, op tijd",
-      "source": "Sneddon 2006 — a→e reduction class",
-      "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 999,
-      "formalTaught": true,
-      "formalLessons": [
-        999
-      ],
-      "deferredReason": null,
-      "informalAlreadyTaught": null
-    },
-    {
       "formal": "tukar",
       "informal": "tuker",
       "klasse": "a-e-reductie",
@@ -1232,22 +1202,6 @@
       "formalTaught": true,
       "formalLessons": [
         999
-      ],
-      "deferredReason": null,
-      "informalAlreadyTaught": null
-    },
-    {
-      "formal": "kejar",
-      "informal": "kejer",
-      "klasse": "a-e-reductie",
-      "gloss_nl": "najagen, achterna zitten",
-      "source": "Sneddon 2006 — a→e reduction class; medium-high confidence",
-      "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 16,
-      "formalTaught": true,
-      "formalLessons": [
-        16
       ],
       "deferredReason": null,
       "informalAlreadyTaught": null

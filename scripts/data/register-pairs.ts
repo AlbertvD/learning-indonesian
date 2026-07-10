@@ -179,16 +179,12 @@ export const registerPairs: RegisterPair[] = [
     source: 'Sneddon 2006 — a→e reduction class' },
   { formal: 'diam', informal: 'diem', gloss_nl: 'stil (zijn)', klasse: 'a-e-reductie',
     source: 'Sneddon 2006 — a→e reduction class; very high frequency' },
-  { formal: 'tepat', informal: 'tepet', gloss_nl: 'precies, juist, op tijd', klasse: 'a-e-reductie',
-    source: 'Sneddon 2006 — a→e reduction class' },
   { formal: 'tukar', informal: 'tuker', gloss_nl: 'wisselen', klasse: 'a-e-reductie',
     source: 'Sneddon 2006 — a→e reduction class' },
   { formal: 'datang', informal: 'dateng', gloss_nl: 'komen', klasse: 'a-e-reductie',
     source: 'Sneddon 2006 — a→e reduction class; very high frequency' },
   { formal: 'macam', informal: 'macem', gloss_nl: 'soort, type', klasse: 'a-e-reductie',
     source: 'Sneddon 2006 — a→e reduction class' },
-  { formal: 'kejar', informal: 'kejer', gloss_nl: 'najagen, achterna zitten', klasse: 'a-e-reductie',
-    source: 'Sneddon 2006 — a→e reduction class; medium-high confidence' },
 
   // ── frozen-verb (wholesale-different colloquial verb forms, not phonological reduction) ──
   { formal: 'berkata', informal: 'bilang', gloss_nl: 'zeggen', klasse: 'frozen-verb',
@@ -338,6 +334,14 @@ export const registerPairs: RegisterPair[] = [
  *   common, unrelated word ("in order / settled / done"), not a
  *   phonological reduction of 'beras' ("uncooked rice"). Including it would
  *   have been a false pair.
+ * - tepat → tepet — REJECTED (credit: main-thread linguistic review
+ *   2026-07-10): the a→e reduction class is lexicalized per-word (per this
+ *   file's own a-e-reductie section comment), and 'tepet' is not an
+ *   established member — 'tepat' stays 'tepat' in speech.
+ * - kejar → kejer — REJECTED, false friend (credit: main-thread linguistic
+ *   review 2026-07-10): colloquial 'kejer' means "(crying) hard/intensely"
+ *   ("nangis kejer"), NOT "chase". Including it would have taught a wrong
+ *   meaning.
  * - The productive meN-prefix-drop verb pattern (nulis/menulis,
  *   nyuci/mencuci, nanya/bertanya, ngerasa/merasa, ngambil/mengambil, ...)
  *   — regular morphological alternation, not frozen/suppletive lexical
