@@ -1,0 +1,1911 @@
+{
+  "generatedAt": "2026-07-10T05:35:05.896Z",
+  "sourceArtifact": "scripts/data/register-pairs.ts",
+  "totalPairs": 78,
+  "countsByKlasse": {
+    "h-drop": 12,
+    "monophthong": 7,
+    "a-e-reductie": 20,
+    "frozen-verb": 9,
+    "lexical": 30
+  },
+  "countsByClassification": {
+    "CORE": 68,
+    "PHRASE-ANCHORED": 1,
+    "UNANCHORED": 7,
+    "DEFERRED": 2
+  },
+  "informalAlreadyTaughtCount": 19,
+  "pairs": [
+    {
+      "formal": "habis",
+      "informal": "abis",
+      "klasse": "h-drop",
+      "anchorLesson": 5,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hilang",
+      "informal": "ilang",
+      "klasse": "h-drop",
+      "anchorLesson": 4,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hujan",
+      "informal": "ujan",
+      "klasse": "h-drop",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hitung",
+      "informal": "itung",
+      "klasse": "h-drop",
+      "anchorLesson": 15,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sudah",
+      "informal": "udah",
+      "klasse": "h-drop",
+      "anchorLesson": 2,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "saja",
+      "informal": "aja",
+      "klasse": "h-drop",
+      "anchorLesson": 3,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hangat",
+      "informal": "anget",
+      "klasse": "h-drop",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hidup",
+      "informal": "idup",
+      "klasse": "h-drop",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "kelihatan",
+      "informal": "keliatan",
+      "klasse": "h-drop",
+      "anchorLesson": 24,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hitam",
+      "informal": "item",
+      "klasse": "h-drop",
+      "anchorLesson": 6,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "pakai",
+      "informal": "pake",
+      "klasse": "monophthong",
+      "anchorLesson": 8,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sampai",
+      "informal": "sampe",
+      "klasse": "monophthong",
+      "anchorLesson": 2,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "ramai",
+      "informal": "rame",
+      "klasse": "monophthong",
+      "anchorLesson": 10,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "kalau",
+      "informal": "kalo",
+      "klasse": "monophthong",
+      "anchorLesson": 1,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "als / wanneer (informeel)"
+      }
+    },
+    {
+      "formal": "atau",
+      "informal": "ato",
+      "klasse": "monophthong",
+      "anchorLesson": 8,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "mau",
+      "informal": "mo",
+      "klasse": "monophthong",
+      "anchorLesson": 1,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hijau",
+      "informal": "ijo",
+      "klasse": "monophthong",
+      "anchorLesson": 8,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "benar",
+      "informal": "bener",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 3,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dekat",
+      "informal": "deket",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 10,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "cepat",
+      "informal": "cepet",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 6,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "pintar",
+      "informal": "pinter",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 24,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dapat",
+      "informal": "dapet",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 2,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "ingat",
+      "informal": "inget",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 10,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dengar",
+      "informal": "denger",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 14,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "senang",
+      "informal": "seneng",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 5,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sebentar",
+      "informal": "bentar",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 5,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "zo / even (informeel)"
+      }
+    },
+    {
+      "formal": "lapar",
+      "informal": "laper",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 3,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "pedas",
+      "informal": "pedes",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 4,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "malam",
+      "informal": "malem",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 6,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dalam",
+      "informal": "dalem",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 3,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "diam",
+      "informal": "diem",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 9,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "tukar",
+      "informal": "tuker",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 13,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "datang",
+      "informal": "dateng",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 1,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "macam",
+      "informal": "macem",
+      "klasse": "a-e-reductie",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "bertemu",
+      "informal": "ketemu",
+      "klasse": "frozen-verb",
+      "anchorLesson": 2,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "bicara",
+      "informal": "ngomong",
+      "klasse": "frozen-verb",
+      "anchorLesson": 13,
+      "informalAlreadyTaught": {
+        "lessons": [
+          14
+        ],
+        "translationNl": "kletsen"
+      }
+    },
+    {
+      "formal": "mengerti",
+      "informal": "ngerti",
+      "klasse": "frozen-verb",
+      "anchorLesson": 30,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "lihat",
+      "informal": "liat",
+      "klasse": "frozen-verb",
+      "anchorLesson": 8,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "tertawa",
+      "informal": "ketawa",
+      "klasse": "frozen-verb",
+      "anchorLesson": 15,
+      "informalAlreadyTaught": {
+        "lessons": [
+          26
+        ],
+        "translationNl": "lachen"
+      }
+    },
+    {
+      "formal": "seperti",
+      "informal": "kayak",
+      "klasse": "lexical",
+      "anchorLesson": 7,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sekali",
+      "informal": "banget",
+      "klasse": "lexical",
+      "anchorLesson": 3,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "heel erg (informeel)"
+      }
+    },
+    {
+      "formal": "uang",
+      "informal": "duit",
+      "klasse": "lexical",
+      "anchorLesson": 5,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "bagaimana",
+      "informal": "gimana",
+      "klasse": "lexical",
+      "anchorLesson": 3,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "begitu",
+      "informal": "gitu",
+      "klasse": "lexical",
+      "anchorLesson": 8,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "begini",
+      "informal": "gini",
+      "klasse": "lexical",
+      "anchorLesson": 12,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "memang",
+      "informal": "emang",
+      "klasse": "lexical",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hanya",
+      "informal": "cuma",
+      "klasse": "lexical",
+      "anchorLesson": 6,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "alleen / maar / slechts"
+      }
+    },
+    {
+      "formal": "nanti",
+      "informal": "ntar",
+      "klasse": "lexical",
+      "anchorLesson": 5,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "tahu",
+      "informal": "tau",
+      "klasse": "lexical",
+      "anchorLesson": 3,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "terima kasih",
+      "informal": "makasih",
+      "klasse": "lexical",
+      "anchorLesson": 1,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "mengapa",
+      "informal": "kenapa",
+      "klasse": "lexical",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "waarom (informeel)"
+      }
+    },
+    {
+      "formal": "tidak",
+      "informal": "nggak",
+      "klasse": "lexical",
+      "anchorLesson": 1,
+      "informalAlreadyTaught": {
+        "lessons": [
+          12
+        ],
+        "translationNl": "niet / nee"
+      }
+    },
+    {
+      "formal": "maaf",
+      "informal": "maap",
+      "klasse": "lexical",
+      "anchorLesson": 12,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "selesai",
+      "informal": "kelar",
+      "klasse": "lexical",
+      "anchorLesson": 3,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dengan",
+      "informal": "sama",
+      "klasse": "lexical",
+      "anchorLesson": 2,
+      "informalAlreadyTaught": {
+        "lessons": [
+          2
+        ],
+        "translationNl": "met"
+      }
+    },
+    {
+      "formal": "untuk",
+      "informal": "buat",
+      "klasse": "lexical",
+      "anchorLesson": 1,
+      "informalAlreadyTaught": {
+        "lessons": [
+          12
+        ],
+        "translationNl": "voor / t.b.v."
+      }
+    },
+    {
+      "formal": "akan",
+      "informal": "bakal",
+      "klasse": "lexical",
+      "anchorLesson": 7,
+      "informalAlreadyTaught": {
+        "lessons": [
+          9
+        ],
+        "translationNl": "zullen / om te"
+      }
+    },
+    {
+      "formal": "supaya",
+      "informal": "biar",
+      "klasse": "lexical",
+      "anchorLesson": 10,
+      "informalAlreadyTaught": {
+        "lessons": [
+          9
+        ],
+        "translationNl": "opdat / laat maar"
+      }
+    },
+    {
+      "formal": "ingin",
+      "informal": "pengen",
+      "klasse": "lexical",
+      "anchorLesson": 4,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "ketika",
+      "informal": "pas",
+      "klasse": "lexical",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "lelah",
+      "informal": "capek",
+      "klasse": "lexical",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "moe / uitgeput"
+      }
+    },
+    {
+      "formal": "mudah",
+      "informal": "gampang",
+      "klasse": "lexical",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": {
+        "lessons": [
+          6
+        ],
+        "translationNl": "makkelijk"
+      }
+    },
+    {
+      "formal": "sulit",
+      "informal": "susah",
+      "klasse": "lexical",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": {
+        "lessons": [
+          11
+        ],
+        "translationNl": "moeilijk(heden)"
+      }
+    },
+    {
+      "formal": "sungguh",
+      "informal": "beneran",
+      "klasse": "lexical",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "tetapi",
+      "informal": "tapi",
+      "klasse": "lexical",
+      "anchorLesson": 1,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sedikit",
+      "informal": "dikit",
+      "klasse": "lexical",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "besar",
+      "informal": "gede",
+      "klasse": "lexical",
+      "anchorLesson": 1,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "cantik",
+      "informal": "cakep",
+      "klasse": "lexical",
+      "anchorLesson": 999,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "buruk",
+      "informal": "jelek",
+      "klasse": "lexical",
+      "anchorLesson": 2,
+      "informalAlreadyTaught": {
+        "lessons": [
+          15
+        ],
+        "translationNl": "slecht / lelijk"
+      }
+    }
+  ],
+  "allPairs": [
+    {
+      "formal": "habis",
+      "informal": "abis",
+      "klasse": "h-drop",
+      "gloss_nl": "op, klaar, voorbij",
+      "source": "Sneddon 2006 — h-drop class (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 5,
+      "formalTaught": true,
+      "formalLessons": [
+        5
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hilang",
+      "informal": "ilang",
+      "klasse": "h-drop",
+      "gloss_nl": "kwijt, verloren",
+      "source": "Sneddon 2006 — h-drop class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 4,
+      "formalTaught": true,
+      "formalLessons": [
+        4
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hujan",
+      "informal": "ujan",
+      "klasse": "h-drop",
+      "gloss_nl": "regen",
+      "source": "Sneddon 2006 — h-drop class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hitung",
+      "informal": "itung",
+      "klasse": "h-drop",
+      "gloss_nl": "tellen",
+      "source": "Sneddon 2006 — h-drop class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 15,
+      "formalTaught": true,
+      "formalLessons": [
+        15
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sudah",
+      "informal": "udah",
+      "klasse": "h-drop",
+      "gloss_nl": "al, reeds",
+      "source": "Sneddon 2006 — h-drop class (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 2,
+      "formalTaught": true,
+      "formalLessons": [
+        2
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "saja",
+      "informal": "aja",
+      "klasse": "h-drop",
+      "gloss_nl": "maar, alleen",
+      "source": "Sneddon 2006 — grouped with h-drop per convention; phonologically an s-truncation (sahaja→saja→aja), not h-elision, but folded into this bucket per the task brief",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 3,
+      "formalTaught": true,
+      "formalLessons": [
+        3
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hangat",
+      "informal": "anget",
+      "klasse": "h-drop",
+      "gloss_nl": "warm",
+      "source": "Sneddon 2006 — h-drop class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hafal",
+      "informal": "apal",
+      "klasse": "h-drop",
+      "gloss_nl": "uit het hoofd kennen",
+      "source": "Sneddon 2006 — h-drop class + f→p; well-attested colloquial pair",
+      "declaredIn": "registerPairs",
+      "classification": "UNANCHORED",
+      "anchorLesson": null,
+      "formalTaught": false,
+      "formalLessons": [],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hidup",
+      "informal": "idup",
+      "klasse": "h-drop",
+      "gloss_nl": "leven",
+      "source": "Sneddon 2006 — h-drop class; medium-high confidence",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "kelihatan",
+      "informal": "keliatan",
+      "klasse": "h-drop",
+      "gloss_nl": "zichtbaar, blijkbaar",
+      "source": "Sneddon 2006 — h-drop class, derived from lihat/liat root",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 24,
+      "formalTaught": true,
+      "formalLessons": [
+        24
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hitam",
+      "informal": "item",
+      "klasse": "h-drop",
+      "gloss_nl": "zwart",
+      "source": "Sneddon 2006 — h-drop + vowel shift (hi-tam→i-tem); well documented",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 6,
+      "formalTaught": true,
+      "formalLessons": [
+        6
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "bohong",
+      "informal": "boong",
+      "klasse": "h-drop",
+      "gloss_nl": "liegen, leugen",
+      "source": "Sneddon 2006 — intervocalic h-elision, same mechanism as lihat/liat",
+      "declaredIn": "registerPairs",
+      "classification": "UNANCHORED",
+      "anchorLesson": null,
+      "formalTaught": false,
+      "formalLessons": [],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "pakai",
+      "informal": "pake",
+      "klasse": "monophthong",
+      "gloss_nl": "gebruiken",
+      "source": "Sneddon 2006 — monophthongization class (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 8,
+      "formalTaught": true,
+      "formalLessons": [
+        8
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sampai",
+      "informal": "sampe",
+      "klasse": "monophthong",
+      "gloss_nl": "tot; aankomen",
+      "source": "Sneddon 2006 — monophthongization class (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 2,
+      "formalTaught": true,
+      "formalLessons": [
+        2
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "ramai",
+      "informal": "rame",
+      "klasse": "monophthong",
+      "gloss_nl": "druk, levendig",
+      "source": "Sneddon 2006 — monophthongization class (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 10,
+      "formalTaught": true,
+      "formalLessons": [
+        10
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "kalau",
+      "informal": "kalo",
+      "klasse": "monophthong",
+      "gloss_nl": "als, wanneer",
+      "source": "Sneddon 2006 — monophthongization class (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 1,
+      "formalTaught": true,
+      "formalLessons": [
+        1
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "als / wanneer (informeel)"
+      }
+    },
+    {
+      "formal": "atau",
+      "informal": "ato",
+      "klasse": "monophthong",
+      "gloss_nl": "of",
+      "source": "Sneddon 2006 — monophthongization class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 8,
+      "formalTaught": true,
+      "formalLessons": [
+        8
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "mau",
+      "informal": "mo",
+      "klasse": "monophthong",
+      "gloss_nl": "willen",
+      "source": "Sneddon 2006 — monophthongization class; very high frequency modal",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 1,
+      "formalTaught": true,
+      "formalLessons": [
+        1
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hijau",
+      "informal": "ijo",
+      "klasse": "monophthong",
+      "gloss_nl": "groen",
+      "source": "Sneddon 2006 — au→o + h-drop; dominant colloquial form",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 8,
+      "formalTaught": true,
+      "formalLessons": [
+        8
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "benar",
+      "informal": "bener",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "echt, juist",
+      "source": "Sneddon 2006 — a→e reduction class (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 3,
+      "formalTaught": true,
+      "formalLessons": [
+        3
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dekat",
+      "informal": "deket",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "dichtbij",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 10,
+      "formalTaught": true,
+      "formalLessons": [
+        10
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "cepat",
+      "informal": "cepet",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "snel",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 6,
+      "formalTaught": true,
+      "formalLessons": [
+        6
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "malas",
+      "informal": "males",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "lui",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "UNANCHORED",
+      "anchorLesson": null,
+      "formalTaught": false,
+      "formalLessons": [],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "pintar",
+      "informal": "pinter",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "slim",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 24,
+      "formalTaught": true,
+      "formalLessons": [
+        24
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dapat",
+      "informal": "dapet",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "krijgen; kunnen",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 2,
+      "formalTaught": true,
+      "formalLessons": [
+        2
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "ingat",
+      "informal": "inget",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "onthouden",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 10,
+      "formalTaught": true,
+      "formalLessons": [
+        10
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dengar",
+      "informal": "denger",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "horen",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 14,
+      "formalTaught": true,
+      "formalLessons": [
+        14
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "senang",
+      "informal": "seneng",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "blij",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 5,
+      "formalTaught": true,
+      "formalLessons": [
+        5
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sebentar",
+      "informal": "bentar",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "zo, even",
+      "source": "Sneddon 2006 — a→e reduction + se- truncation; folded into this bucket per the task brief",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 5,
+      "formalTaught": true,
+      "formalLessons": [
+        5
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "zo / even (informeel)"
+      }
+    },
+    {
+      "formal": "lapar",
+      "informal": "laper",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "hongerig",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 3,
+      "formalTaught": true,
+      "formalLessons": [
+        3
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "pedas",
+      "informal": "pedes",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "pittig, scherp",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 4,
+      "formalTaught": true,
+      "formalLessons": [
+        4
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "kencang",
+      "informal": "kenceng",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "snel, strak",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "UNANCHORED",
+      "anchorLesson": null,
+      "formalTaught": false,
+      "formalLessons": [],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "lemas",
+      "informal": "lemes",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "slap, futloos",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "UNANCHORED",
+      "anchorLesson": null,
+      "formalTaught": false,
+      "formalLessons": [],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "malam",
+      "informal": "malem",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "nacht, avond",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 6,
+      "formalTaught": true,
+      "formalLessons": [
+        6
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dalam",
+      "informal": "dalem",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "diep; in, binnen",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 3,
+      "formalTaught": true,
+      "formalLessons": [
+        3
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "diam",
+      "informal": "diem",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "stil (zijn)",
+      "source": "Sneddon 2006 — a→e reduction class; very high frequency",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 9,
+      "formalTaught": true,
+      "formalLessons": [
+        9
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "tukar",
+      "informal": "tuker",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "wisselen",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 13,
+      "formalTaught": true,
+      "formalLessons": [
+        13
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "datang",
+      "informal": "dateng",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "komen",
+      "source": "Sneddon 2006 — a→e reduction class; very high frequency",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 1,
+      "formalTaught": true,
+      "formalLessons": [
+        1
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "macam",
+      "informal": "macem",
+      "klasse": "a-e-reductie",
+      "gloss_nl": "soort, type",
+      "source": "Sneddon 2006 — a→e reduction class",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "berkata",
+      "informal": "bilang",
+      "klasse": "frozen-verb",
+      "gloss_nl": "zeggen",
+      "source": "Sneddon 2006 — frozen colloquial verb (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "UNANCHORED",
+      "anchorLesson": null,
+      "formalTaught": false,
+      "formalLessons": [],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          6
+        ],
+        "translationNl": "zeggen"
+      }
+    },
+    {
+      "formal": "bertemu",
+      "informal": "ketemu",
+      "klasse": "frozen-verb",
+      "gloss_nl": "ontmoeten",
+      "source": "Sneddon 2006 — frozen colloquial verb (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 2,
+      "formalTaught": true,
+      "formalLessons": [
+        2
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "bicara",
+      "informal": "ngomong",
+      "klasse": "frozen-verb",
+      "gloss_nl": "praten, spreken",
+      "source": "Sneddon 2006 — frozen colloquial verb (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 13,
+      "formalTaught": true,
+      "formalLessons": [
+        13
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          14
+        ],
+        "translationNl": "kletsen"
+      }
+    },
+    {
+      "formal": "mengerti",
+      "informal": "ngerti",
+      "klasse": "frozen-verb",
+      "gloss_nl": "begrijpen",
+      "source": "Sneddon 2006 — frozen colloquial verb; formal twin only inside a taught phrase",
+      "declaredIn": "registerPairs",
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 30,
+      "formalTaught": false,
+      "formalLessons": [],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "bercakap-cakap",
+      "informal": "ngobrol",
+      "klasse": "frozen-verb",
+      "gloss_nl": "kletsen, babbelen",
+      "source": "Sneddon 2006 — frozen colloquial verb",
+      "declaredIn": "registerPairs",
+      "classification": "UNANCHORED",
+      "anchorLesson": null,
+      "formalTaught": false,
+      "formalLessons": [],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          14
+        ],
+        "translationNl": "kletsen"
+      }
+    },
+    {
+      "formal": "lihat",
+      "informal": "liat",
+      "klasse": "frozen-verb",
+      "gloss_nl": "zien",
+      "source": "Sneddon 2006 — intervocalic h-elision on the bare (prefix-dropped) root; grouped with frozen-verb per the task brief",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 8,
+      "formalTaught": true,
+      "formalLessons": [
+        8
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "tertawa",
+      "informal": "ketawa",
+      "klasse": "frozen-verb",
+      "gloss_nl": "lachen",
+      "source": "Sneddon 2006 — frozen colloquial verb (ter- → ke- irregular alternation)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 15,
+      "formalTaught": true,
+      "formalLessons": [
+        15
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          26
+        ],
+        "translationNl": "lachen"
+      }
+    },
+    {
+      "formal": "seperti",
+      "informal": "kayak",
+      "klasse": "lexical",
+      "gloss_nl": "zoals, zoiets als",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 7,
+      "formalTaught": true,
+      "formalLessons": [
+        7
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sekali",
+      "informal": "banget",
+      "klasse": "lexical",
+      "gloss_nl": "heel, erg",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example, matching postposed-intensifier syntax)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 3,
+      "formalTaught": true,
+      "formalLessons": [
+        3
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "heel erg (informeel)"
+      }
+    },
+    {
+      "formal": "uang",
+      "informal": "duit",
+      "klasse": "lexical",
+      "gloss_nl": "geld",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 5,
+      "formalTaught": true,
+      "formalLessons": [
+        5
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "bagaimana",
+      "informal": "gimana",
+      "klasse": "lexical",
+      "gloss_nl": "hoe",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example, initial-syllable elision)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 3,
+      "formalTaught": true,
+      "formalLessons": [
+        3
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "begitu",
+      "informal": "gitu",
+      "klasse": "lexical",
+      "gloss_nl": "zo, zodanig",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 8,
+      "formalTaught": true,
+      "formalLessons": [
+        8
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "begini",
+      "informal": "gini",
+      "klasse": "lexical",
+      "gloss_nl": "zo (als dit)",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 12,
+      "formalTaught": true,
+      "formalLessons": [
+        12
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "memang",
+      "informal": "emang",
+      "klasse": "lexical",
+      "gloss_nl": "inderdaad, toegegeven",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "hanya",
+      "informal": "cuma",
+      "klasse": "lexical",
+      "gloss_nl": "slechts, alleen maar",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 6,
+      "formalTaught": true,
+      "formalLessons": [
+        6
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "alleen / maar / slechts"
+      }
+    },
+    {
+      "formal": "nanti",
+      "informal": "ntar",
+      "klasse": "lexical",
+      "gloss_nl": "straks, later",
+      "source": "Sneddon 2006 — dominant lexical replacement + truncation (nanti→(e)ntar)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 5,
+      "formalTaught": true,
+      "formalLessons": [
+        5
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "tahu",
+      "informal": "tau",
+      "klasse": "lexical",
+      "gloss_nl": "weten",
+      "source": "Sneddon 2006 — grouped with lexical per the task brief; phonologically intervocalic h-elision",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 3,
+      "formalTaught": true,
+      "formalLessons": [
+        3
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "terima kasih",
+      "informal": "makasih",
+      "klasse": "lexical",
+      "gloss_nl": "dank je / dank u",
+      "source": "Sneddon 2006 — dominant lexical replacement + truncation (canonical example)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 1,
+      "formalTaught": true,
+      "formalLessons": [
+        1
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "mengapa",
+      "informal": "kenapa",
+      "klasse": "lexical",
+      "gloss_nl": "waarom",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (both taught, L999, kenapa already prose-marked \"(informeel)\")",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "waarom (informeel)"
+      }
+    },
+    {
+      "formal": "tidak",
+      "informal": "nggak",
+      "klasse": "lexical",
+      "gloss_nl": "niet, nee",
+      "source": "Sneddon 2006 — dominant lexical replacement (spec §3.1 worked example); already attested live (both taught — tidak L1, nggak L12, unmarked)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 1,
+      "formalTaught": true,
+      "formalLessons": [
+        1
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          12
+        ],
+        "translationNl": "niet / nee"
+      }
+    },
+    {
+      "formal": "maaf",
+      "informal": "maap",
+      "klasse": "lexical",
+      "gloss_nl": "sorry, pardon",
+      "source": "Sneddon 2006 — f→p consonant shift, dominant in casual writing/speech",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 12,
+      "formalTaught": true,
+      "formalLessons": [
+        12
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "selesai",
+      "informal": "kelar",
+      "klasse": "lexical",
+      "gloss_nl": "klaar, af",
+      "source": "Sneddon 2006 — dominant lexical replacement (different root)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 3,
+      "formalTaught": true,
+      "formalLessons": [
+        3
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "dengan",
+      "informal": "sama",
+      "klasse": "lexical",
+      "gloss_nl": "met",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L2, unmarked)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 2,
+      "formalTaught": true,
+      "formalLessons": [
+        2
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          2
+        ],
+        "translationNl": "met"
+      }
+    },
+    {
+      "formal": "untuk",
+      "informal": "buat",
+      "klasse": "lexical",
+      "gloss_nl": "voor, om te",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (untuk L1, buat L12, unmarked)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 1,
+      "formalTaught": true,
+      "formalLessons": [
+        1
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          12
+        ],
+        "translationNl": "voor / t.b.v."
+      }
+    },
+    {
+      "formal": "akan",
+      "informal": "bakal",
+      "klasse": "lexical",
+      "gloss_nl": "zullen",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (akan L7, bakal L9, unmarked)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 7,
+      "formalTaught": true,
+      "formalLessons": [
+        7
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          9
+        ],
+        "translationNl": "zullen / om te"
+      }
+    },
+    {
+      "formal": "supaya",
+      "informal": "biar",
+      "klasse": "lexical",
+      "gloss_nl": "opdat, zodat",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (supaya/agar L10, biar L9, unmarked) — NOTE: informal already taught ONE LESSON BEFORE its formal twin in the live curriculum, which inverts the spec's §4 formal-first prerequisite assumption for this specific pair; flag for step 3/4.",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 10,
+      "formalTaught": true,
+      "formalLessons": [
+        10
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          9
+        ],
+        "translationNl": "opdat / laat maar"
+      }
+    },
+    {
+      "formal": "ingin",
+      "informal": "pengen",
+      "klasse": "lexical",
+      "gloss_nl": "verlangen, willen",
+      "source": "Sneddon 2006 — dominant lexical replacement",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 4,
+      "formalTaught": true,
+      "formalLessons": [
+        4
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "ketika",
+      "informal": "pas",
+      "klasse": "lexical",
+      "gloss_nl": "toen, wanneer, precies op het moment dat",
+      "source": "Sneddon 2006 — dominant lexical replacement",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "lelah",
+      "informal": "capek",
+      "klasse": "lexical",
+      "gloss_nl": "moe, uitgeput",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L999, unmarked)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          999
+        ],
+        "translationNl": "moe / uitgeput"
+      }
+    },
+    {
+      "formal": "mudah",
+      "informal": "gampang",
+      "klasse": "lexical",
+      "gloss_nl": "makkelijk",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (mudah L999, gampang L6, unmarked)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          6
+        ],
+        "translationNl": "makkelijk"
+      }
+    },
+    {
+      "formal": "sulit",
+      "informal": "susah",
+      "klasse": "lexical",
+      "gloss_nl": "moeilijk, lastig",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (sulit L999, susah L11, unmarked)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          11
+        ],
+        "translationNl": "moeilijk(heden)"
+      }
+    },
+    {
+      "formal": "sungguh",
+      "informal": "beneran",
+      "klasse": "lexical",
+      "gloss_nl": "echt, werkelijk",
+      "source": "Sneddon 2006 — dominant lexical replacement (sungguh + -an derivational form of benar)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "tetapi",
+      "informal": "tapi",
+      "klasse": "lexical",
+      "gloss_nl": "maar, echter",
+      "source": "Sneddon 2006 — dominant lexical replacement + truncation (tetapi→tapi); extremely high frequency",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 1,
+      "formalTaught": true,
+      "formalLessons": [
+        1
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "sedikit",
+      "informal": "dikit",
+      "klasse": "lexical",
+      "gloss_nl": "een beetje, weinig",
+      "source": "Sneddon 2006 — dominant lexical replacement + se- truncation",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "besar",
+      "informal": "gede",
+      "klasse": "lexical",
+      "gloss_nl": "groot",
+      "source": "Sneddon 2006 — dominant lexical replacement",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 1,
+      "formalTaught": true,
+      "formalLessons": [
+        1
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "cantik",
+      "informal": "cakep",
+      "klasse": "lexical",
+      "gloss_nl": "mooi, knap",
+      "source": "Sneddon 2006 — dominant lexical replacement",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 999,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": null
+    },
+    {
+      "formal": "buruk",
+      "informal": "jelek",
+      "klasse": "lexical",
+      "gloss_nl": "slecht, lelijk",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (buruk L2, jelek L15, unmarked)",
+      "declaredIn": "registerPairs",
+      "classification": "CORE",
+      "anchorLesson": 2,
+      "formalTaught": true,
+      "formalLessons": [
+        2
+      ],
+      "deferredReason": null,
+      "informalAlreadyTaught": {
+        "lessons": [
+          15
+        ],
+        "translationNl": "slecht / lelijk"
+      }
+    },
+    {
+      "formal": "beri",
+      "informal": "kasih",
+      "klasse": "frozen-verb",
+      "gloss_nl": "geven",
+      "source": "Sneddon 2006 — frozen colloquial verb (canonical example)",
+      "declaredIn": "DEFERRED_PAIRS",
+      "classification": "DEFERRED",
+      "anchorLesson": null,
+      "formalTaught": true,
+      "formalLessons": [
+        999
+      ],
+      "deferredReason": "SENSE COLLISION: 'kasih' already exists live as its own learning_item (L1, 'gunst / genegenheid' — favor/affection, a noun sense), not the verb sense (give) this pair needs. Cannot insert a second 'kasih' item under normalized_text uniqueness. Needs content curation (disambiguate senses, or fold the verb sense into the existing item) before this can be scheduled.",
+      "informalAlreadyTaught": {
+        "lessons": [
+          1
+        ],
+        "translationNl": "gunst / genegenheid"
+      }
+    },
+    {
+      "formal": "membuat",
+      "informal": "bikin",
+      "klasse": "frozen-verb",
+      "gloss_nl": "maken",
+      "source": "Sneddon 2006 — frozen colloquial verb (canonical example)",
+      "declaredIn": "DEFERRED_PAIRS",
+      "classification": "DEFERRED",
+      "anchorLesson": null,
+      "formalTaught": false,
+      "formalLessons": [],
+      "deferredReason": "NO DEFENSIBLE ANCHOR: 'membuat' does not appear anywhere in taught lesson content (dialogue lines or learning_items) across L1-L30 as of this pass. The only live 'buat' item (L12) is the PREPOSITION sense ('voor / t.b.v.' — for), not the verb sense this pair needs. Revisit once 'membuat'/'buat'(verb) is taught, or when 'buat' is disambiguated.",
+      "informalAlreadyTaught": null
+    }
+  ]
+}
