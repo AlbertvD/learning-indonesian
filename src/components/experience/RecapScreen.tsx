@@ -84,7 +84,6 @@ export function RecapScreen({
   const savedCount = savedBlocks.length
   const savedDue = savedBlocks.filter(b => b.kind === 'due_review').length
   const savedNew = savedBlocks.filter(b => b.kind === 'new_introduction').length
-  const notTouched = Math.max(effectiveTotal - answeredBlocks.size, 0)
   const failedCount = commitFailedBlocks.size
 
   // Accuracy is measured on FIRST attempts only (a redrill getting it right
@@ -196,7 +195,7 @@ export function RecapScreen({
       )}
 
       <Text className={classes.tally}>
-        {T.recap.tallyCaption(savedDue, savedNew, notTouched)}
+        {T.recap.tallyCaption(savedDue, savedNew)}
       </Text>
 
       <SectionHeading>{T.recap.perSkill}</SectionHeading>
@@ -243,9 +242,6 @@ export function RecapScreen({
         )}
         <span className={classes.legendItem}>
           <span className={`${classes.swatch} ${classes.swatchWrong}`} />{T.recap.legendWrong}
-        </span>
-        <span className={classes.legendItem}>
-          <span className={`${classes.swatch} ${classes.swatchRemaining}`} />{T.recap.legendRemaining}
         </span>
       </div>
 

@@ -179,4 +179,3 @@
 .swatchCorrect { background: var(--success); }
 .swatchClose { background: var(--warning); }
 .swatchWrong { background: var(--danger); }
-.swatchRemaining { background: var(--card-border); }
