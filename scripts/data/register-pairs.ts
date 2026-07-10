@@ -20,6 +20,20 @@
  * CANDIDATES" comment block for the specific words and reasons, so a future
  * pass with real web access can revisit them.
  *
+ * ⚠️ CONTRACT (PR #413, `scripts/check-supabase-deep.ts` HC45/46): the
+ * ONLY runtime export of this module is `registerPairs` — HC45/46 read it
+ * via `Object.values(mod)[0]` and treat EVERY entry as expected schedulable
+ * content. `anchor_lesson` is present+truthy ONLY on the phrase-anchored
+ * rows. Deferred candidates (no defensible anchor, or a blocking DB
+ * collision) are NOT a second export — ES module namespace objects sort
+ * exported keys alphabetically (verified: 'deferredPairs' < 'registerPairs'
+ * would make deferred come FIRST, silently breaking HC45/46 — declaration
+ * order in the source does NOT determine `Object.keys/values(mod)` order
+ * for ES modules). Deferred rows are documented in a comment block below
+ * instead, and mirrored as a small local const inside
+ * `scripts/register-pairs-report.ts` (diagnostic-only, never exported from
+ * here) so the intersection report can still surface them under `allPairs`.
+ *
  * ⚠️ SCOPE NOTE (found during live-DB cross-check, step 2): a number of the
  * informal words below (`nggak`, `banget`, `bentar`, `bilang`, `cuma`,
  * `kalo`, `kasih`, `ngobrol`, `ngomong`, `bakal`, `biar`, `capek`, `gampang`,
@@ -36,13 +50,6 @@
  * intersection report step exists to catch before the pipeline carrier (step
  * 3) is built on top of a wrong assumption. See the PR body for the full
  * list with lesson numbers.
- *
- * ⚠️ SENSE-COLLISION NOTE: two rows below are `deferred: true` rather than
- * force-fit with an `anchor_lesson` — see each row's `deferredReason`. Both
- * are cases where the natural informal spelling already exists in the DB
- * under an UNRELATED sense (a genuine homograph, not a register variant of
- * the same word), so this mechanism (one new learning_item per informal
- * form) cannot safely represent them without further content curation.
  *
  * EXCLUDED per spec §0/§10 (never candidates here): Jakarta gaul pronouns
  * (gue/lu), the standard informal pronoun set (aku/kamu/kau/engkau — already
@@ -83,11 +90,13 @@ export interface RegisterPair {
   /** Override for the ~6 "phrase-anchored" rows (spec §3.1) whose formal
    *  twin is only inside a taught PHRASE, not taught as its own item. Value
    *  is the lesson's `order_index` (the "Les N" number; 999 = the "Common
-   *  Words" catch-all pseudo-lesson). */
-  anchor_lesson?: number
-  /** Set when review found no defensible anchor (or a blocking DB
-   *  collision) — see `deferredReason`. Excluded from the scheduled core
-   *  until resolved; kept in the artifact for a future pass. */
+   *  Words" catch-all pseudo-lesson). Typed loosely per the HC45/46
+   *  contract (PR #413); this artifact only ever populates it with a
+   *  number. */
+  anchor_lesson?: number | string | null
+  /** Only set on rows in `deferredPairs` — review found no defensible
+   *  anchor (or a blocking DB collision); see `deferredReason`. Excluded
+   *  from `registerPairs` (the scheduled-content export) until resolved. */
   deferred?: boolean
   deferredReason?: string
 }
@@ -184,10 +193,6 @@ export const registerPairs: RegisterPair[] = [
   // ── frozen-verb (wholesale-different colloquial verb forms, not phonological reduction) ──
   { formal: 'berkata', informal: 'bilang', gloss_nl: 'zeggen', klasse: 'frozen-verb',
     source: 'Sneddon 2006 — frozen colloquial verb (canonical example)' },
-  { formal: 'beri', informal: 'kasih', gloss_nl: 'geven', klasse: 'frozen-verb',
-    source: 'Sneddon 2006 — frozen colloquial verb (canonical example)',
-    deferred: true,
-    deferredReason: "SENSE COLLISION: 'kasih' already exists live as its own learning_item (L1, 'gunst / genegenheid' — favor/affection, a noun sense), not the verb sense (give) this pair needs. Cannot insert a second 'kasih' item under normalized_text uniqueness. Needs content curation (disambiguate senses, or fold the verb sense into the existing item) before this can be scheduled." },
   { formal: 'bertemu', informal: 'ketemu', gloss_nl: 'ontmoeten', klasse: 'frozen-verb',
     source: 'Sneddon 2006 — frozen colloquial verb (canonical example)' },
   { formal: 'bicara', informal: 'ngomong', gloss_nl: 'praten, spreken', klasse: 'frozen-verb',
@@ -199,10 +204,6 @@ export const registerPairs: RegisterPair[] = [
     source: 'Sneddon 2006 — frozen colloquial verb' },
   { formal: 'lihat', informal: 'liat', gloss_nl: 'zien', klasse: 'frozen-verb',
     source: 'Sneddon 2006 — intervocalic h-elision on the bare (prefix-dropped) root; grouped with frozen-verb per the task brief' },
-  { formal: 'membuat', informal: 'bikin', gloss_nl: 'maken', klasse: 'frozen-verb',
-    source: 'Sneddon 2006 — frozen colloquial verb (canonical example)',
-    deferred: true,
-    deferredReason: "NO DEFENSIBLE ANCHOR: 'membuat' does not appear anywhere in taught lesson content (dialogue lines or learning_items) across L1-L30 as of this pass. The only live 'buat' item (L12) is the PREPOSITION sense ('voor / t.b.v.' — for), not the verb sense this pair needs. Revisit once 'membuat'/'buat'(verb) is taught, or when 'buat' is disambiguated." },
   { formal: 'tertawa', informal: 'ketawa', gloss_nl: 'lachen', klasse: 'frozen-verb',
     source: 'Sneddon 2006 — frozen colloquial verb (ter- → ke- irregular alternation)' },
 
@@ -268,6 +269,33 @@ export const registerPairs: RegisterPair[] = [
   { formal: 'buruk', informal: 'jelek', gloss_nl: 'slecht, lelijk', klasse: 'lexical',
     source: 'Sneddon 2006 — dominant lexical replacement; already attested live (buruk L2, jelek L15, unmarked)' },
 ]
+
+/**
+ * Deferred candidates — review found no defensible anchor lesson, or a
+ * blocking DB collision (see `deferredReason` on each row). NOT part of the
+ * scheduled content (`registerPairs` above); kept here for a future pass.
+ * Declared AFTER `registerPairs` so it is never `Object.values(mod)[0]`.
+ */
+/*
+ * DEFERRED CANDIDATES (not exported — see header CONTRACT note above for
+ * why this is a comment block and not a second TS export). Mirror any edit
+ * here into the local `DEFERRED_PAIRS` const in
+ * `scripts/register-pairs-report.ts`.
+ *
+ * - { formal: 'beri', informal: 'kasih', klasse: 'frozen-verb' } —
+ *   SENSE COLLISION: 'kasih' already exists live as its own learning_item
+ *   (L1, 'gunst / genegenheid' — favor/affection, a noun sense), not the
+ *   verb sense (give) this pair needs. Cannot insert a second 'kasih' item
+ *   under normalized_text uniqueness. Needs content curation (disambiguate
+ *   senses, or fold the verb sense into the existing item) before this can
+ *   be scheduled.
+ * - { formal: 'membuat', informal: 'bikin', klasse: 'frozen-verb' } —
+ *   NO DEFENSIBLE ANCHOR: 'membuat' does not appear anywhere in taught
+ *   lesson content (dialogue lines or learning_items) across L1-L30 as of
+ *   this pass. The only live 'buat' item (L12) is the PREPOSITION sense
+ *   ('voor / t.b.v.' — for), not the verb sense this pair needs. Revisit
+ *   once 'membuat'/'buat'(verb) is taught, or when 'buat' is disambiguated.
+ */
 
 /*
  * EXCLUDED CANDIDATES (reviewed and left out this pass — no live web-search
