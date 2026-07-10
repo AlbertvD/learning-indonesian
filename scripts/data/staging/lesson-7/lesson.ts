@@ -545,6 +545,13 @@ export const lesson = {
             "indonesian": "Minggu malam",
             "dutch": "zondagavond",
             "english": "Sunday evening"
+          },
+          {
+            "dutch": "zoals, zoiets als",
+            "indonesian": "kayak",
+            "register": "informal",
+            "registerCounterpart": "seperti",
+            "english": "like, such as"
           }
         ]
       }

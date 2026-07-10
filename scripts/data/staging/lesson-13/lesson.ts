@@ -273,6 +273,13 @@ export const lesson = {
             "indonesian": "obrol",
             "dutch": "kletsen",
             "english": "chat"
+          },
+          {
+            "dutch": "wisselen",
+            "indonesian": "tuker",
+            "register": "informal",
+            "registerCounterpart": "tukar",
+            "english": "exchange"
           }
         ]
       }

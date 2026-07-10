@@ -186,7 +186,7 @@ const YANG_ACCENTS = ['cyan', 'purple', 'teal', 'amber', 'green'] as const
 type YangCategory = {
   title: string
   rules: string[]
-  examples?: Array<{ indonesian: string; dutch: string; audioUrl?: string }>
+  examples?: Array<{ indonesian: string; dutch: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }>
 }
 
 function YangGrammar({ section }: { section: typeof sections[number] }) {
@@ -359,7 +359,7 @@ function NumbersExponential({ section }: { section: typeof sections[number] }) {
 // ─── Section: Vocabulary reference (87 items) ──────────────────────────────
 
 function VocabularyReference({ section }: { section: typeof sections[number] }) {
-  const c = section.content as { items: Array<{ indonesian: string; dutch: string; audioUrl?: string }> }
+  const c = section.content as { items: Array<{ indonesian: string; dutch: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }> }
   return (
     <section className={classes.section} aria-labelledby="s-vocab">
       <p className={classes.vocabEyebrow}>Woordenschat · {c.items.length} woorden</p>
@@ -375,6 +375,7 @@ function VocabularyReference({ section }: { section: typeof sections[number] }) 
           <div key={i} className={classes.vocabEntry}>
             <PlayButton src={item.audioUrl} />
             <div className={classes.vocabId}>{item.indonesian}</div>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <div className={classes.vocabNl}>{item.dutch}</div>
           </div>
         ))}

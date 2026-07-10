@@ -34,7 +34,7 @@ import classes from './Page.module.css'
 
 type Example = { dutch: string; indonesian: string; audioUrl?: string }
 type GrammarCategory = { title: string; rules: string[]; examples?: Example[]; table?: string[][] }
-type Item = { dutch: string; indonesian: string; audioUrl?: string }
+type Item = { dutch: string; indonesian: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 
 const meta = content.meta
 const sections = content.sections
@@ -158,6 +158,7 @@ function VocabularyGrid({ section }: { section: typeof sections[number] }) {
                 <div key={j} className={classes.vocabChip}>
                   <PlayButton src={item.audioUrl} />
                   <span className={classes.vocabId}>{item.indonesian}</span>
+                  {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
                   <span className={classes.vocabNl}>{item.dutch}</span>
                 </div>
               ))}

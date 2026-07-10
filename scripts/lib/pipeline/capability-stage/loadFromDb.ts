@@ -215,6 +215,7 @@ export async function fetchItemCapabilityState(
       .from('learning_capabilities')
       .select('id, canonical_key')
       .eq('source_kind', 'vocabulary_src')
+      .order('id', { ascending: true })
       .range(capOffset, capOffset + PAGE_SIZE - 1)
 
     if (capError) {

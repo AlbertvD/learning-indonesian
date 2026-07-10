@@ -156,6 +156,7 @@
             "dutch": "klas",
             "english": "class",
             "indonesian": "kelas",
+            "loanSourceNl": "klas",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kelas-3b35be85.mp3"
           },
           {
@@ -198,6 +199,7 @@
             "dutch": "knap / intelligent",
             "english": "smart / intelligent",
             "indonesian": "pintar",
+            "loanSourceNl": "pienter",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pintar-8f4f58fc.mp3"
           },
           {
@@ -271,6 +273,22 @@
             "english": "say / pronounce",
             "indonesian": "ucap, meng-kan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ucap-mengkan-10ab0b6b.mp3"
+          },
+          {
+            "dutch": "zichtbaar, blijkbaar",
+            "english": "visible, apparent",
+            "register": "informal",
+            "indonesian": "keliatan",
+            "registerCounterpart": "kelihatan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/keliatan-bc2ac089.mp3"
+          },
+          {
+            "dutch": "slim",
+            "english": "clever",
+            "register": "informal",
+            "indonesian": "pinter",
+            "registerCounterpart": "pintar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pinter-12c3c1b7.mp3"
           }
         ]
       }

@@ -224,7 +224,9 @@ export const lesson = {
           {
             "indonesian": "gampang",
             "dutch": "makkelijk",
-            "english": "easy"
+            "english": "easy",
+            "register": "informal",
+            "registerCounterpart": "mudah"
           },
           {
             "indonesian": "hanya",
@@ -416,6 +418,27 @@ export const lesson = {
             "indonesian": "abad",
             "dutch": "eeuw",
             "english": "century"
+          },
+          {
+            "dutch": "zwart",
+            "indonesian": "item",
+            "register": "informal",
+            "registerCounterpart": "hitam",
+            "english": "black"
+          },
+          {
+            "dutch": "snel",
+            "indonesian": "cepet",
+            "register": "informal",
+            "registerCounterpart": "cepat",
+            "english": "fast"
+          },
+          {
+            "dutch": "nacht, avond",
+            "indonesian": "malem",
+            "register": "informal",
+            "registerCounterpart": "malam",
+            "english": "night, evening"
           }
         ]
       }

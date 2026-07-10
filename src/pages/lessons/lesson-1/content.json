@@ -254,6 +254,7 @@
             "dutch": "winkel",
             "english": "shop",
             "indonesian": "toko",
+            "loanSourceNl": "toko",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/toko-2e48cfb0.mp3"
           },
           {
@@ -482,6 +483,7 @@
             "dutch": "markt",
             "english": "market",
             "indonesian": "pasar",
+            "loanSourceNl": "pasar (malam)",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pasar-30e9a349.mp3"
           },
           {
@@ -494,6 +496,7 @@
             "dutch": "banaan",
             "english": "banana",
             "indonesian": "pisang",
+            "loanSourceNl": "pisang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pisang-5de724c3.mp3"
           },
           {
@@ -537,6 +540,38 @@
             "english": "not, no",
             "indonesian": "tidak",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tidak-40bb4679.mp3"
+          },
+          {
+            "dutch": "komen",
+            "english": "come",
+            "register": "informal",
+            "indonesian": "dateng",
+            "registerCounterpart": "datang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dateng-f34439d7.mp3"
+          },
+          {
+            "dutch": "dank je / dank u",
+            "english": "thank you",
+            "register": "informal",
+            "indonesian": "makasih",
+            "registerCounterpart": "terima kasih",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/makasih-5b626c1b.mp3"
+          },
+          {
+            "dutch": "maar, echter",
+            "english": "but, however",
+            "register": "informal",
+            "indonesian": "tapi",
+            "registerCounterpart": "tetapi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tapi-f1d4ee77.mp3"
+          },
+          {
+            "dutch": "groot",
+            "english": "big",
+            "register": "informal",
+            "indonesian": "gede",
+            "registerCounterpart": "besar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gede-57baa166.mp3"
           }
         ]
       }

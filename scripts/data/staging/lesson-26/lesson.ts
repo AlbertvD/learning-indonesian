@@ -144,7 +144,9 @@ export const lesson = {
           {
             "indonesian": "ketawa",
             "dutch": "lachen",
-            "english": "laugh"
+            "english": "laugh",
+            "register": "informal",
+            "registerCounterpart": "tertawa"
           },
           {
             "indonesian": "komputer",

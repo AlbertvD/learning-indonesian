@@ -1,8 +1,25 @@
 ---
-status: approved
+status: shipped
 program: 2026-07-06-spreektaal-program.md (Bet 6)
 reviewed_by: [staff-engineer, architect, data-architect]
 approved_at: 2026-07-09
+implementation: PRs #413, #414, #415, #416, #418, #423
+merged_at: 2026-07-10
+implementation_paths:
+  - scripts/data/register-pairs.ts
+  - scripts/data/register-pairs-intersection.json
+  - scripts/lib/pipeline/lesson-stage/adapter.ts
+  - scripts/lib/pipeline/lesson-stage/projectSections.ts
+  - scripts/lib/pipeline/lesson-stage/runner.ts
+  - scripts/lib/pipeline/lesson-stage/validators/sectionShape.ts
+  - scripts/lib/pipeline/capability-stage/loadFromDb.ts
+  - scripts/lib/pipeline/capability-stage/projectors/vocab.ts
+  - scripts/data/staging/lesson-{1..15,24,26,30,999}/lesson.ts
+  - src/lib/spreektaalPreferences.ts
+  - src/lib/session-builder/spreektaalFilter.ts
+  - src/lib/exercise-content/byKind/item.ts
+  - src/pages/lessons/lesson-{1..15,24,26,30}/Page.tsx
+  - scripts/check-supabase-deep.ts (HC44-HC49)
 ---
 
 # Spreektaal slice 1+2 (merged): the lesson-woven register-pair core

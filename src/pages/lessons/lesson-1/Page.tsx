@@ -24,7 +24,7 @@ type Spelling = { rule: string; dutch: string; example: string }
 type Sentence = { dutch: string; indonesian: string; audioUrl?: string }
 type GrammarCategory = { title: string; rules: string[]; examples: Array<{ dutch: string; indonesian: string; audioUrl?: string }> }
 type DialogueLine = { text: string; speaker: string; translation: string; audioUrl?: string }
-type Item = { dutch: string; indonesian: string; audioUrl?: string }
+type Item = { dutch: string; indonesian: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 type Letter = { letter: string; rule: string; examples: string[] }
 
 const meta = content.meta
@@ -230,6 +230,7 @@ function ItemList({
           <div key={i} className={classes.itemChip} data-tone={tone}>
             <PlayButton src={item.audioUrl} />
             <span className={classes.itemId}>{item.indonesian}</span>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <span className={classes.itemSep} />
             <span className={classes.itemNl}>{item.dutch}</span>
           </div>

@@ -434,6 +434,27 @@ export const lesson = {
             "indonesian": "terakhir",
             "dutch": "laatste",
             "english": "last"
+          },
+          {
+            "dutch": "druk, levendig",
+            "indonesian": "rame",
+            "register": "informal",
+            "registerCounterpart": "ramai",
+            "english": "busy, lively"
+          },
+          {
+            "dutch": "dichtbij",
+            "indonesian": "deket",
+            "register": "informal",
+            "registerCounterpart": "dekat",
+            "english": "nearby"
+          },
+          {
+            "dutch": "onthouden",
+            "indonesian": "inget",
+            "register": "informal",
+            "registerCounterpart": "ingat",
+            "english": "remember"
           }
         ]
       }

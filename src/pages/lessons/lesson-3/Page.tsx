@@ -223,7 +223,7 @@ function QuestionWordsSection({ section }: { section: typeof sections[number] })
     intro?: string
     note?: string
     categories: Array<{ title: string; table?: QuestionWord[] }>
-    examples?: Array<{ indonesian: string; dutch: string; audioUrl?: string }>
+    examples?: Array<{ indonesian: string; dutch: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }>
   }
   const cat = c.categories[0]
   const rows = cat?.table ?? []
@@ -392,7 +392,7 @@ function AdaSection({ section }: { section: typeof sections[number] }) {
 // ─── Section: Numbers 10–100 — the puluh ladder ────────────────────────────
 
 function NumbersLadder({ section }: { section: typeof sections[number] }) {
-  const c = section.content as { items: Array<{ indonesian: string; dutch: string; audioUrl?: string }> }
+  const c = section.content as { items: Array<{ indonesian: string; dutch: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }> }
   return (
     <section className={classes.section} aria-labelledby="s-num">
       <p className={classes.numbersEyebrow}>Tien naar honderd</p>
@@ -420,7 +420,7 @@ function NumbersLadder({ section }: { section: typeof sections[number] }) {
 // ─── Section: Vocabulary — dense reference grid ────────────────────────────
 
 function VocabularyReference({ section }: { section: typeof sections[number] }) {
-  const c = section.content as { items: Array<{ indonesian: string; dutch: string; audioUrl?: string }> }
+  const c = section.content as { items: Array<{ indonesian: string; dutch: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }> }
   return (
     <section className={classes.section} aria-labelledby="s-vocab">
       <p className={classes.vocabEyebrow}>Woordenschat · {c.items.length} woorden</p>
@@ -432,6 +432,7 @@ function VocabularyReference({ section }: { section: typeof sections[number] }) 
           <div key={i} className={classes.vocabEntry}>
             <PlayButton src={item.audioUrl} />
             <div className={classes.vocabId}>{item.indonesian}</div>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <div className={classes.vocabNl}>{item.dutch}</div>
           </div>
         ))}
@@ -443,7 +444,7 @@ function VocabularyReference({ section }: { section: typeof sections[number] }) 
 // ─── Section: Expressions — six polite phrases ─────────────────────────────
 
 function ExpressionsBand({ section }: { section: typeof sections[number] }) {
-  const c = section.content as { items: Array<{ indonesian: string; dutch: string; audioUrl?: string }> }
+  const c = section.content as { items: Array<{ indonesian: string; dutch: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }> }
   return (
     <section className={classes.section} aria-labelledby="s-expr">
       <p className={classes.expressionsEyebrow}>Beleefdheid op het vliegveld</p>

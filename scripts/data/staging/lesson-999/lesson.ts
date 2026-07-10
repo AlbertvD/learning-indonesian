@@ -1,8 +1,4 @@
-// Common Words — hidden gap-word home for collections (spec §6). module_id
-// 'common-words' / order_index 999 match the seeded hidden lesson. Sections:
-// 0 = PBWL top-100 residual, 1 = PBWL 101–1000 residual, 2 = themepack gaps
-// (words for the 7 theme collections not in any lesson). Publish: bun
-// scripts/publish-approved-content.ts 999. NL is author-draft — review.
+// Enriched by lesson-stage
 export const lesson = {
   "title": "Common Words",
   "description": "Veelvoorkomende + thematische woorden die in geen enkel hoofdstuk worden onderwezen — voor de woordenlijsten (frequentiebanden + themapakketten).",
@@ -16,32 +12,201 @@ export const lesson = {
       "content": {
         "type": "vocabulary",
         "items": [
-          { "indonesian": "untuk", "dutch": "voor, om te", "english": "for, in order to" },
-          { "indonesian": "bagai", "dutch": "zoals, als", "english": "like, as" },
-          { "indonesian": "adalah", "dutch": "is, zijn (koppelwerkwoord)", "english": "is, are (copula)" },
-          { "indonesian": "oleh", "dutch": "door (in lijdende vorm)", "english": "by (agent in passive)" },
-          { "indonesian": "cara", "dutch": "manier, wijze", "english": "way, method, manner" },
-          { "indonesian": "saat", "dutch": "moment, tijdens, toen", "english": "moment, when, at the time" },
-          { "indonesian": "bahwa", "dutch": "dat (voegwoord)", "english": "that (conjunction)" },
-          { "indonesian": "jika", "dutch": "als, indien", "english": "if" },
-          { "indonesian": "tiap", "dutch": "elk, ieder", "english": "each, every" },
-          { "indonesian": "pun", "dutch": "ook, zelfs (partikel)", "english": "even, also (particle)" },
-          { "indonesian": "ketika", "dutch": "toen, wanneer", "english": "when, at the time that" },
-          { "indonesian": "sering", "dutch": "vaak, dikwijls", "english": "often" },
-          { "indonesian": "masing", "dutch": "elk, ieder (masing-masing)", "english": "each (in masing-masing)" },
-          { "indonesian": "ya", "dutch": "ja", "english": "yes" },
-          { "indonesian": "sang", "dutch": "de/het (eervol lidwoord)", "english": "the (honorific article)" },
-          { "indonesian": "mohon", "dutch": "verzoeken, alstublieft", "english": "to request, please" },
-          { "indonesian": "sila", "dutch": "alstublieft, ga uw gang (silakan)", "english": "please, go ahead (silakan)" },
-          { "indonesian": "mengapa", "dutch": "waarom", "english": "why" },
-          { "indonesian": "kenapa", "dutch": "waarom (informeel)", "english": "why (informal)" },
-          { "indonesian": "kapan", "dutch": "wanneer", "english": "when" },
-          { "indonesian": "mari", "dutch": "laten we, kom", "english": "let's, come on" },
-          { "indonesian": "ayo", "dutch": "kom op, laten we", "english": "come on, let's" },
-          { "indonesian": "laku", "dutch": "gewild zijn, verkocht worden", "english": "to sell well, be in demand" },
-          { "indonesian": "guna", "dutch": "nut, gebruik; om te", "english": "use, purpose; in order to" },
-          { "indonesian": "hingga", "dutch": "tot, totdat", "english": "until, up to" },
-          { "indonesian": "milik", "dutch": "bezit, eigendom", "english": "possession, property" }
+          {
+            "indonesian": "untuk",
+            "dutch": "voor, om te",
+            "english": "for, in order to"
+          },
+          {
+            "indonesian": "bagai",
+            "dutch": "zoals, als",
+            "english": "like, as"
+          },
+          {
+            "indonesian": "adalah",
+            "dutch": "is, zijn (koppelwerkwoord)",
+            "english": "is, are (copula)"
+          },
+          {
+            "indonesian": "oleh",
+            "dutch": "door (in lijdende vorm)",
+            "english": "by (agent in passive)"
+          },
+          {
+            "indonesian": "cara",
+            "dutch": "manier, wijze",
+            "english": "way, method, manner"
+          },
+          {
+            "indonesian": "saat",
+            "dutch": "moment, tijdens, toen",
+            "english": "moment, when, at the time"
+          },
+          {
+            "indonesian": "bahwa",
+            "dutch": "dat (voegwoord)",
+            "english": "that (conjunction)"
+          },
+          {
+            "indonesian": "jika",
+            "dutch": "als, indien",
+            "english": "if"
+          },
+          {
+            "indonesian": "tiap",
+            "dutch": "elk, ieder",
+            "english": "each, every"
+          },
+          {
+            "indonesian": "pun",
+            "dutch": "ook, zelfs (partikel)",
+            "english": "even, also (particle)"
+          },
+          {
+            "indonesian": "ketika",
+            "dutch": "toen, wanneer",
+            "english": "when, at the time that"
+          },
+          {
+            "indonesian": "sering",
+            "dutch": "vaak, dikwijls",
+            "english": "often"
+          },
+          {
+            "indonesian": "masing",
+            "dutch": "elk, ieder (masing-masing)",
+            "english": "each (in masing-masing)"
+          },
+          {
+            "indonesian": "ya",
+            "dutch": "ja",
+            "english": "yes"
+          },
+          {
+            "indonesian": "sang",
+            "dutch": "de/het (eervol lidwoord)",
+            "english": "the (honorific article)"
+          },
+          {
+            "indonesian": "mohon",
+            "dutch": "verzoeken, alstublieft",
+            "english": "to request, please"
+          },
+          {
+            "indonesian": "sila",
+            "dutch": "alstublieft, ga uw gang (silakan)",
+            "english": "please, go ahead (silakan)"
+          },
+          {
+            "indonesian": "mengapa",
+            "dutch": "waarom",
+            "english": "why"
+          },
+          {
+            "indonesian": "kenapa",
+            "dutch": "waarom",
+            "english": "why",
+            "register": "informal",
+            "registerCounterpart": "mengapa"
+          },
+          {
+            "indonesian": "kapan",
+            "dutch": "wanneer",
+            "english": "when"
+          },
+          {
+            "indonesian": "mari",
+            "dutch": "laten we, kom",
+            "english": "let's, come on"
+          },
+          {
+            "indonesian": "ayo",
+            "dutch": "kom op, laten we",
+            "english": "come on, let's"
+          },
+          {
+            "indonesian": "laku",
+            "dutch": "gewild zijn, verkocht worden",
+            "english": "to sell well, be in demand"
+          },
+          {
+            "indonesian": "guna",
+            "dutch": "nut, gebruik; om te",
+            "english": "use, purpose; in order to"
+          },
+          {
+            "indonesian": "hingga",
+            "dutch": "tot, totdat",
+            "english": "until, up to"
+          },
+          {
+            "indonesian": "milik",
+            "dutch": "bezit, eigendom",
+            "english": "possession, property"
+          },
+          {
+            "dutch": "regen",
+            "indonesian": "ujan",
+            "register": "informal",
+            "registerCounterpart": "hujan",
+            "english": "rain"
+          },
+          {
+            "dutch": "warm",
+            "indonesian": "anget",
+            "register": "informal",
+            "registerCounterpart": "hangat",
+            "english": "warm"
+          },
+          {
+            "dutch": "leven",
+            "indonesian": "idup",
+            "register": "informal",
+            "registerCounterpart": "hidup",
+            "english": "life"
+          },
+          {
+            "dutch": "soort, type",
+            "indonesian": "macem",
+            "register": "informal",
+            "registerCounterpart": "macam",
+            "english": "kind, type"
+          },
+          {
+            "dutch": "inderdaad, toegegeven",
+            "indonesian": "emang",
+            "register": "informal",
+            "registerCounterpart": "memang",
+            "english": "indeed, admittedly"
+          },
+          {
+            "dutch": "toen, wanneer, precies op het moment dat",
+            "indonesian": "pas",
+            "register": "informal",
+            "registerCounterpart": "ketika",
+            "english": "when, right at the moment that"
+          },
+          {
+            "dutch": "echt, werkelijk",
+            "indonesian": "beneran",
+            "register": "informal",
+            "registerCounterpart": "sungguh",
+            "english": "really, truly"
+          },
+          {
+            "dutch": "een beetje, weinig",
+            "indonesian": "dikit",
+            "register": "informal",
+            "registerCounterpart": "sedikit",
+            "english": "a bit, little"
+          },
+          {
+            "dutch": "mooi, knap",
+            "indonesian": "cakep",
+            "register": "informal",
+            "registerCounterpart": "cantik",
+            "english": "beautiful, handsome"
+          }
         ]
       }
     },
@@ -51,498 +216,2492 @@ export const lesson = {
       "content": {
         "type": "vocabulary",
         "items": [
-          { "indonesian": "beri", "dutch": "geven", "english": "to give" },
-          { "indonesian": "hadap", "dutch": "tegenover, met betrekking tot", "english": "facing, regarding" },
-          { "indonesian": "namun", "dutch": "echter, maar", "english": "however" },
-          { "indonesian": "salah", "dutch": "fout, verkeerd", "english": "wrong, mistaken" },
-          { "indonesian": "beberapa", "dutch": "enkele, sommige", "english": "some, several" },
-          { "indonesian": "turut", "dutch": "meedoen, volgen", "english": "to join in, to follow" },
-          { "indonesian": "mula", "dutch": "begin", "english": "start, beginning" },
-          { "indonesian": "temu", "dutch": "ontmoeten, aantreffen", "english": "to meet, to find" },
-          { "indonesian": "nyata", "dutch": "duidelijk, echt", "english": "real, evident" },
-          { "indonesian": "hidup", "dutch": "leven; levend", "english": "to live; alive" },
-          { "indonesian": "tetap", "dutch": "vast, blijvend; toch", "english": "fixed, permanent; still" },
-          { "indonesian": "jelas", "dutch": "duidelijk", "english": "clear, evident" },
-          { "indonesian": "siswa", "dutch": "leerling, student", "english": "pupil, student" },
-          { "indonesian": "dunia", "dutch": "wereld", "english": "world" },
-          { "indonesian": "harap", "dutch": "hopen, verwachten", "english": "to hope, to expect" },
-          { "indonesian": "dasar", "dutch": "basis, grond", "english": "basis, foundation" },
-          { "indonesian": "masalah", "dutch": "probleem, kwestie", "english": "problem, issue" },
-          { "indonesian": "umum", "dutch": "algemeen, openbaar", "english": "general, public" },
-          { "loanSourceNl": "politie", "indonesian": "polisi", "dutch": "politie", "english": "police" },
-          { "indonesian": "bahkan", "dutch": "zelfs, sterker nog", "english": "even, in fact" },
-          { "indonesian": "sehat", "dutch": "gezond", "english": "healthy" },
-          { "indonesian": "kuat", "dutch": "sterk, krachtig", "english": "strong" },
-          { "indonesian": "awal", "dutch": "begin, vroeg", "english": "beginning, early" },
-          { "indonesian": "mudah", "dutch": "makkelijk", "english": "easy" },
-          { "indonesian": "dahulu", "dutch": "vroeger, eerst", "english": "formerly, earlier" },
-          { "indonesian": "tanya", "dutch": "vraag, vragen", "english": "question, to ask" },
-          { "indonesian": "asal", "dutch": "herkomst, oorsprong; mits", "english": "origin; as long as" },
-          { "indonesian": "tarik", "dutch": "trekken", "english": "to pull" },
-          { "indonesian": "buku", "dutch": "boek", "english": "book" },
-          { "indonesian": "bila", "dutch": "wanneer, als", "english": "when, if" },
-          { "indonesian": "ruang", "dutch": "ruimte, kamer", "english": "room, space" },
-          { "indonesian": "segera", "dutch": "onmiddellijk, gauw", "english": "immediately, soon" },
-          { "indonesian": "pula", "dutch": "ook, eveneens", "english": "likewise, also" },
-          { "indonesian": "badan", "dutch": "lichaam; instantie", "english": "body; agency" },
-          { "indonesian": "paham", "dutch": "begrijpen, snappen", "english": "to understand" },
-          { "indonesian": "tepat", "dutch": "precies, juist, op tijd", "english": "exact, precise, on time" },
-          { "indonesian": "wanita", "dutch": "vrouw", "english": "woman" },
-          { "indonesian": "sulit", "dutch": "moeilijk, lastig", "english": "difficult" },
-          { "indonesian": "sedikit", "dutch": "een beetje, weinig", "english": "a little, few" },
-          { "indonesian": "pukul", "dutch": "slaan; uur", "english": "to hit; o'clock" },
-          { "indonesian": "usia", "dutch": "leeftijd", "english": "age" },
-          { "indonesian": "bebas", "dutch": "vrij, onafhankelijk", "english": "free, independent" },
-          { "loanSourceNl": "klas", "indonesian": "kelas", "dutch": "klas, klasse", "english": "class, grade" },
-          { "indonesian": "cinta", "dutch": "liefde, houden van", "english": "love" },
-          { "indonesian": "arah", "dutch": "richting", "english": "direction" },
-          { "indonesian": "catat", "dutch": "noteren, opschrijven", "english": "to note, to record" },
-          { "indonesian": "ribu", "dutch": "duizend", "english": "thousand" },
-          { "indonesian": "mati", "dutch": "dood; uitgaan", "english": "dead; to die, switch off" },
-          { "indonesian": "film", "dutch": "film", "english": "film, movie" },
-          { "indonesian": "foto", "dutch": "foto", "english": "photo" },
-          { "loanSourceNl": "motor", "indonesian": "motor", "dutch": "motor, motorfiets", "english": "motorcycle" },
-          { "indonesian": "si", "dutch": "de (lidwoord bij namen)", "english": "the (article before names)" },
-          { "indonesian": "pesawat", "dutch": "vliegtuig; toestel", "english": "airplane; device" },
-          { "indonesian": "pria", "dutch": "man", "english": "man, male" },
-          { "indonesian": "musim", "dutch": "seizoen", "english": "season" },
-          { "indonesian": "bumi", "dutch": "aarde, grond", "english": "earth, ground" },
-          { "indonesian": "berita", "dutch": "nieuws, bericht", "english": "news, report" },
-          { "indonesian": "senin", "dutch": "maandag", "english": "Monday" },
-          { "indonesian": "rabu", "dutch": "woensdag", "english": "Wednesday" },
-          { "indonesian": "indah", "dutch": "mooi, prachtig", "english": "beautiful" },
-          { "indonesian": "dorong", "dutch": "duwen; aansporen", "english": "to push; to encourage" },
-          { "indonesian": "sayang", "dutch": "jammer; lieverd, liefde", "english": "what a pity; dear, love" },
-          { "indonesian": "kamis", "dutch": "donderdag", "english": "Thursday" },
-          { "indonesian": "selasa", "dutch": "dinsdag", "english": "Tuesday" },
-          { "indonesian": "musik", "dutch": "muziek", "english": "music" },
-          { "indonesian": "pak", "dutch": "meneer, vader", "english": "sir, father" },
-          { "indonesian": "jumat", "dutch": "vrijdag", "english": "Friday" },
-          { "indonesian": "batu", "dutch": "steen", "english": "stone, rock" },
-          { "indonesian": "olahraga", "dutch": "sport", "english": "sports" },
-          { "loanSourceNl": "toko", "indonesian": "toko", "dutch": "winkel", "english": "shop, store" },
-          { "indonesian": "puluh", "dutch": "tiental (in tellen)", "english": "tens (in counting)" },
-          { "indonesian": "laki", "dutch": "man, echtgenoot", "english": "man, husband" },
-          { "indonesian": "televisi", "dutch": "televisie", "english": "television" },
-          { "indonesian": "moga", "dutch": "hopelijk, moge", "english": "hopefully, may" },
-          { "loanSourceNl": "gram", "indonesian": "gram", "dutch": "gram", "english": "gram" },
-          { "indonesian": "bunga", "dutch": "bloem; rente", "english": "flower; interest" },
-          { "indonesian": "gunung", "dutch": "berg", "english": "mountain" },
-          { "indonesian": "larang", "dutch": "verbieden", "english": "to forbid" },
-          { "indonesian": "bayi", "dutch": "baby", "english": "baby" },
-          { "indonesian": "kadang", "dutch": "soms", "english": "sometimes" },
-          { "indonesian": "bola", "dutch": "bal", "english": "ball" },
-          { "indonesian": "sungai", "dutch": "rivier", "english": "river" },
-          { "indonesian": "panggil", "dutch": "roepen, oproepen", "english": "to call, to summon" },
-          { "indonesian": "video", "dutch": "video", "english": "video" },
-          { "indonesian": "hujan", "dutch": "regen", "english": "rain" },
-          { "indonesian": "sabtu", "dutch": "zaterdag", "english": "Saturday" },
-          { "loanSourceNl": "kaart", "indonesian": "kartu", "dutch": "kaart", "english": "card" },
-          { "indonesian": "lambat", "dutch": "langzaam, laat", "english": "slow, late" },
-          { "indonesian": "sederhana", "dutch": "eenvoudig, simpel", "english": "simple, modest" },
-          { "indonesian": "ratus", "dutch": "honderd(tal)", "english": "hundred" },
-          { "indonesian": "bintang", "dutch": "ster", "english": "star" },
-          { "indonesian": "kayu", "dutch": "hout", "english": "wood" },
-          { "indonesian": "putri", "dutch": "dochter; prinses", "english": "daughter; princess" },
-          { "indonesian": "cantik", "dutch": "mooi, knap", "english": "pretty, beautiful" },
-          { "indonesian": "putra", "dutch": "zoon; prins", "english": "son; prince" },
-          { "indonesian": "bahagia", "dutch": "gelukkig", "english": "happy" },
-          { "indonesian": "sapi", "dutch": "koe", "english": "cow" },
-          { "indonesian": "sampah", "dutch": "afval, vuilnis", "english": "rubbish, trash" },
-          { "indonesian": "matahari", "dutch": "zon", "english": "sun" },
-          { "indonesian": "gula", "dutch": "suiker", "english": "sugar" },
-          { "indonesian": "marah", "dutch": "boos, kwaad", "english": "angry" },
-          { "indonesian": "aneh", "dutch": "vreemd, raar", "english": "strange, weird" },
-          { "indonesian": "cahaya", "dutch": "licht, schijnsel", "english": "light, ray" },
-          { "indonesian": "telur", "dutch": "ei", "english": "egg" },
-          { "indonesian": "mimpi", "dutch": "droom", "english": "dream" },
-          { "indonesian": "baju", "dutch": "kleding, shirt", "english": "clothes, shirt" },
-          { "indonesian": "peta", "dutch": "kaart, plattegrond", "english": "map" },
-          { "indonesian": "gelap", "dutch": "donker", "english": "dark" },
-          { "indonesian": "belas", "dutch": "-tien (achtervoegsel, 11–19)", "english": "-teen (suffix, 11–19)" },
-          { "indonesian": "sedih", "dutch": "verdrietig", "english": "sad" },
-          { "indonesian": "gadis", "dutch": "meisje", "english": "girl" },
-          { "indonesian": "radio", "dutch": "radio", "english": "radio" },
-          { "loanSourceNl": "liter", "indonesian": "liter", "dutch": "liter", "english": "liter" },
-          { "indonesian": "jumpa", "dutch": "ontmoeten", "english": "to meet" },
-          { "indonesian": "kaca", "dutch": "glas; spiegel", "english": "glass; mirror" },
-          { "indonesian": "hangat", "dutch": "warm", "english": "warm" },
-          { "indonesian": "langit", "dutch": "lucht, hemel", "english": "sky, heaven" },
-          { "indonesian": "cermin", "dutch": "spiegel; weerspiegelen", "english": "mirror; to reflect" },
-          { "indonesian": "kotak", "dutch": "doos, vak", "english": "box, compartment" },
-          { "indonesian": "cuaca", "dutch": "weer", "english": "weather" },
-          { "indonesian": "tawa", "dutch": "lach, lachen", "english": "laugh" },
-          { "indonesian": "bunyi", "dutch": "geluid, klank", "english": "sound, tone" },
-          { "indonesian": "lelah", "dutch": "moe, vermoeid", "english": "tired" },
-          { "indonesian": "binatang", "dutch": "dier", "english": "animal" },
-          { "indonesian": "jari", "dutch": "vinger", "english": "finger" },
-          { "indonesian": "es", "dutch": "ijs", "english": "ice" },
-          { "indonesian": "tenis", "dutch": "tennis", "english": "tennis" },
-          { "indonesian": "garam", "dutch": "zout", "english": "salt" },
-          { "indonesian": "bodoh", "dutch": "dom, stom", "english": "stupid" },
-          { "indonesian": "jendela", "dutch": "raam, venster", "english": "window" },
-          { "indonesian": "lucu", "dutch": "grappig, schattig", "english": "funny, cute" },
-          { "indonesian": "yah", "dutch": "ach, nou ja", "english": "well... (interjection)" },
-          { "indonesian": "jeruk", "dutch": "sinaasappel, citrusvrucht", "english": "orange, citrus" },
-          { "indonesian": "gugur", "dutch": "vallen (van bladeren)", "english": "to fall (leaves)" },
-          { "indonesian": "hobi", "dutch": "hobby", "english": "hobby" },
-          { "indonesian": "kakek", "dutch": "opa, grootvader", "english": "grandfather" },
-          { "indonesian": "cucu", "dutch": "kleinkind", "english": "grandchild" },
-          { "indonesian": "awan", "dutch": "wolk", "english": "cloud" },
-          { "indonesian": "gitar", "dutch": "gitaar", "english": "guitar" },
-          { "indonesian": "semi", "dutch": "scheut, knop", "english": "sprout, bud" },
-          { "indonesian": "sarap", "dutch": "ontbijt eten; (sarapan = ontbijt)", "english": "to eat breakfast (root; 'sarapan' = breakfast)" },
-          { "indonesian": "golf", "dutch": "golf", "english": "golf" },
-          { "indonesian": "tangkis", "dutch": "afweren, pareren", "english": "to parry, fend off, deflect" },
-          { "indonesian": "toilet", "dutch": "toilet, wc", "english": "toilet" },
-          { "indonesian": "jus", "dutch": "sap", "english": "juice" },
-          { "indonesian": "dompet", "dutch": "portemonnee", "english": "wallet" },
-          { "indonesian": "drum", "dutch": "drum, trommel", "english": "drum" },
-          { "indonesian": "haus", "dutch": "dorstig", "english": "thirsty" },
-          { "indonesian": "pena", "dutch": "pen", "english": "pen" },
-          { "indonesian": "cangkir", "dutch": "kopje", "english": "cup" },
-          { "indonesian": "piano", "dutch": "piano", "english": "piano" },
-          { "indonesian": "pensil", "dutch": "potlood", "english": "pencil" },
-          { "loanSourceNl": "wortel", "indonesian": "wortel", "dutch": "wortel (groente)", "english": "carrot" },
-          { "loanSourceNl": "soep", "indonesian": "sup", "dutch": "soep", "english": "soup" },
-          { "indonesian": "biola", "dutch": "viool", "english": "violin" },
-          { "indonesian": "usaha", "dutch": "bedrijf; inspanning", "english": "business; effort" },
-          { "indonesian": "hasil", "dutch": "resultaat, opbrengst", "english": "result, yield" },
-          { "indonesian": "perintah", "dutch": "bevel; regering", "english": "command; government" },
-          { "indonesian": "serta", "dutch": "samen met, alsook", "english": "along with, as well as" },
-          { "indonesian": "alam", "dutch": "natuur; wereld", "english": "nature; world" },
-          { "indonesian": "produk", "dutch": "product", "english": "product" },
-          { "indonesian": "langsung", "dutch": "direct, meteen", "english": "directly, straightaway" },
-          { "indonesian": "mampu", "dutch": "in staat zijn; bemiddeld", "english": "able; capable" },
-          { "indonesian": "nasion", "dutch": "natie, nationaal", "english": "nation, national" },
-          { "indonesian": "informasi", "dutch": "informatie", "english": "information" },
-          { "indonesian": "yaitu", "dutch": "namelijk, dat wil zeggen", "english": "namely, that is" },
-          { "indonesian": "hubung", "dutch": "verbinden; verbinding", "english": "to connect; connection" },
-          { "indonesian": "butuh", "dutch": "nodig hebben", "english": "to need" },
-          { "indonesian": "kemudi", "dutch": "stuur, roer; besturen", "english": "steering wheel, helm; to steer" },
-          { "indonesian": "memang", "dutch": "inderdaad, echt wel", "english": "indeed" },
-          { "indonesian": "kitar", "dutch": "rondgaan, omcirkelen", "english": "to go around, to revolve" },
-          { "indonesian": "seluruh", "dutch": "geheel, heel", "english": "entire, whole" },
-          { "indonesian": "capai", "dutch": "bereiken", "english": "to achieve, reach" },
-          { "indonesian": "kena", "dutch": "raken; betreffen", "english": "to hit; about" },
-          { "indonesian": "makin", "dutch": "steeds meer", "english": "increasingly" },
-          { "indonesian": "tim", "dutch": "team", "english": "team" },
-          { "indonesian": "data", "dutch": "gegevens, data", "english": "data" },
-          { "indonesian": "allah", "dutch": "God, Allah", "english": "God" },
-          { "indonesian": "beda", "dutch": "verschil, verschillen", "english": "difference, to differ" },
-          { "indonesian": "ubah", "dutch": "verandering, veranderen", "english": "change" },
-          { "indonesian": "layan", "dutch": "bediening, dienst", "english": "service" },
-          { "indonesian": "pimpin", "dutch": "leiden", "english": "to lead" },
-          { "indonesian": "tugas", "dutch": "taak, opdracht", "english": "task, duty" },
-          { "indonesian": "sedia", "dutch": "klaar; leveren, verschaffen", "english": "ready; to provide, supply" },
-          { "indonesian": "juta", "dutch": "miljoen", "english": "million" },
-          { "indonesian": "anggota", "dutch": "lid; lichaamsdeel", "english": "member; limb" },
-          { "indonesian": "ilmu", "dutch": "wetenschap, kennis", "english": "science, knowledge" },
-          { "indonesian": "rencana", "dutch": "plan, programma", "english": "plan, program" },
-          { "indonesian": "masa", "dutch": "periode, tijdperk", "english": "period, era" },
-          { "indonesian": "sempat", "dutch": "gelegenheid, de tijd hebben", "english": "opportunity, to have time" },
-          { "indonesian": "putus", "dutch": "afbreken, doorknippen; ophouden", "english": "to break off, snap; to stop" },
-          { "indonesian": "daya", "dutch": "kracht, vermogen", "english": "power, energy" },
-          { "indonesian": "meski", "dutch": "hoewel, ook al", "english": "even though" },
-          { "indonesian": "agama", "dutch": "godsdienst, religie", "english": "religion" },
-          { "indonesian": "latih", "dutch": "training, oefenen", "english": "training, to practice" },
-          { "indonesian": "jawab", "dutch": "antwoord, antwoorden", "english": "answer, to reply" },
-          { "indonesian": "acara", "dutch": "programma, evenement", "english": "program, event" },
-          { "indonesian": "sosial", "dutch": "sociaal", "english": "social" },
-          { "indonesian": "politik", "dutch": "politiek", "english": "politics" },
-          { "indonesian": "manfaat", "dutch": "nut, voordeel", "english": "benefit, use" },
-          { "indonesian": "desa", "dutch": "dorp", "english": "village" },
-          { "indonesian": "luas", "dutch": "ruim, uitgestrekt", "english": "spacious, wide" },
-          { "indonesian": "lokasi", "dutch": "locatie, plaats", "english": "location" },
-          { "indonesian": "gerak", "dutch": "beweging, bewegen", "english": "movement, to move" },
-          { "indonesian": "wilayah", "dutch": "gebied, regio", "english": "area, region" },
-          { "indonesian": "bahan", "dutch": "materiaal, ingrediënt", "english": "material, ingredient" },
-          { "indonesian": "banding", "dutch": "vergelijking; beroep", "english": "comparison; appeal" },
-          { "indonesian": "wakil", "dutch": "plaatsvervanger, vertegenwoordiger", "english": "deputy, representative" },
-          { "indonesian": "kini", "dutch": "nu, tegenwoordig", "english": "now, currently" },
-          { "loanSourceNl": "veer", "indonesian": "per", "dutch": "per", "english": "per" },
-          { "indonesian": "kelompok", "dutch": "groep", "english": "group" },
-          { "indonesian": "tampil", "dutch": "verschijnen, optreden", "english": "to appear, perform" },
-          { "indonesian": "kunjung", "dutch": "bezoek", "english": "visit" },
-          { "indonesian": "biaya", "dutch": "kosten", "english": "cost, expense" },
-          { "indonesian": "tubuh", "dutch": "lichaam", "english": "body" },
-          { "indonesian": "bisnis", "dutch": "zaken, business", "english": "business" },
-          { "indonesian": "teknologi", "dutch": "technologie", "english": "technology" },
-          { "indonesian": "miliar", "dutch": "miljard", "english": "billion" },
-          { "indonesian": "daftar", "dutch": "lijst, register", "english": "list, register" },
-          { "indonesian": "tanam", "dutch": "planten, aanplanten", "english": "to plant" },
-          { "indonesian": "posisi", "dutch": "positie, plaats", "english": "position" },
-          { "indonesian": "uji", "dutch": "test, proef", "english": "test, trial" },
-          { "indonesian": "peran", "dutch": "rol", "english": "role" },
-          { "indonesian": "lahir", "dutch": "geboren worden", "english": "to be born" },
-          { "indonesian": "percaya", "dutch": "geloven, vertrouwen", "english": "to believe, trust" },
-          { "indonesian": "suara", "dutch": "stem; geluid", "english": "voice; sound" },
-          { "indonesian": "muncul", "dutch": "verschijnen, opduiken", "english": "to appear, emerge" },
-          { "indonesian": "anggap", "dutch": "beschouwen als, achten", "english": "to consider, regard" },
-          { "indonesian": "misal", "dutch": "voorbeeld", "english": "example, instance" },
-          { "indonesian": "jaga", "dutch": "bewaken, oppassen", "english": "to guard, watch" },
-          { "indonesian": "yakin", "dutch": "zeker, overtuigd", "english": "certain, confident" },
-          { "indonesian": "ukur", "dutch": "meten", "english": "to measure" },
-          { "indonesian": "terang", "dutch": "helder, licht", "english": "bright, clear" },
-          { "indonesian": "kendara", "dutch": "voertuig, rijden", "english": "vehicle, to drive" },
-          { "indonesian": "tampak", "dutch": "lijken, zichtbaar zijn", "english": "to appear, seem" },
-          { "indonesian": "lawan", "dutch": "tegenstander; bestrijden", "english": "opponent; to oppose" },
-          { "indonesian": "untung", "dutch": "winst, voordeel; gelukkig", "english": "profit, advantage; lucky" },
-          { "indonesian": "segala", "dutch": "alle, allerlei", "english": "all, every kind" },
-          { "indonesian": "macam", "dutch": "soort, type", "english": "kind, type" },
-          { "indonesian": "unit", "dutch": "eenheid, unit", "english": "unit" },
-          { "indonesian": "tekan", "dutch": "druk, drukken", "english": "pressure, to press" },
-          { "indonesian": "balik", "dutch": "terug; omgekeerd", "english": "back; conversely" },
-          { "indonesian": "metode", "dutch": "methode", "english": "method" },
-          { "indonesian": "ucap", "dutch": "uitspreken, zeggen", "english": "to utter, say" },
-          { "indonesian": "alas", "dutch": "onderlaag, mat; woud", "english": "base, mat; forest" },
-          { "indonesian": "tanding", "dutch": "wedstrijd, match", "english": "match, contest" },
-          { "indonesian": "rendah", "dutch": "laag, nederig", "english": "low, humble" },
-          { "indonesian": "bakar", "dutch": "branden, grillen, roosteren", "english": "to burn, grill, roast" },
-          { "indonesian": "target", "dutch": "doel, target", "english": "target, goal" },
-          { "indonesian": "darah", "dutch": "bloed", "english": "blood" },
-          { "indonesian": "sungguh", "dutch": "echt, werkelijk", "english": "really, truly" },
-          { "indonesian": "total", "dutch": "totaal", "english": "total" },
-          { "indonesian": "rawat", "dutch": "verzorgen, verplegen", "english": "to care for, nurse" },
-          { "indonesian": "sukses", "dutch": "succes; succesvol", "english": "success; successful" },
-          { "indonesian": "walau", "dutch": "hoewel, ook al", "english": "although" },
-          { "indonesian": "kalah", "dutch": "verliezen, verslagen", "english": "to lose, defeated" },
-          { "indonesian": "muslim", "dutch": "moslim", "english": "Muslim" },
-          { "indonesian": "lapang", "dutch": "ruim; veld", "english": "spacious; field" },
-          { "indonesian": "pribadi", "dutch": "privé, persoonlijk", "english": "private, personal" },
-          { "indonesian": "sisi", "dutch": "kant, zijde", "english": "side" },
-          { "indonesian": "mesin", "dutch": "machine", "english": "machine" },
-          { "indonesian": "tolak", "dutch": "weigeren, afwijzen", "english": "to reject, refuse" },
-          { "indonesian": "energi", "dutch": "energie", "english": "energy" },
-          { "indonesian": "resmi", "dutch": "officieel, formeel", "english": "official, formal" },
-          { "indonesian": "gabung", "dutch": "samenvoegen, zich aansluiten", "english": "to combine, join" },
-          { "indonesian": "triliun", "dutch": "biljoen", "english": "trillion" },
-          { "indonesian": "model", "dutch": "model", "english": "model" },
-          { "indonesian": "listrik", "dutch": "elektriciteit; elektrisch", "english": "electricity; electric" },
-          { "indonesian": "raja", "dutch": "koning", "english": "king" },
-          { "indonesian": "angka", "dutch": "cijfer, getal", "english": "number, figure" },
-          { "indonesian": "komputer", "dutch": "computer", "english": "computer" },
-          { "indonesian": "internet", "dutch": "internet", "english": "internet" },
-          { "indonesian": "nikah", "dutch": "huwelijk, trouwen", "english": "marriage, to marry" },
-          { "indonesian": "tentara", "dutch": "leger, soldaat", "english": "army, soldier" },
-          { "indonesian": "publik", "dutch": "publiek, openbaar", "english": "public" },
-          { "indonesian": "sambil", "dutch": "terwijl, tegelijk", "english": "while, at the same time" },
-          { "indonesian": "jiwa", "dutch": "ziel, leven", "english": "soul, life" },
-          { "indonesian": "situs", "dutch": "site, plek", "english": "site" },
-          { "indonesian": "erti", "dutch": "betekenis, zin", "english": "meaning, sense" },
-          { "indonesian": "saing", "dutch": "concurreren, wedijveren", "english": "to compete, to rival" },
-          { "indonesian": "nyaman", "dutch": "comfortabel, aangenaam", "english": "comfortable, pleasant" },
-          { "indonesian": "gol", "dutch": "doelpunt", "english": "goal" },
-          { "indonesian": "gagal", "dutch": "mislukken, falen", "english": "to fail" },
-          { "indonesian": "semangat", "dutch": "enthousiasme, geestdrift", "english": "enthusiasm, spirit" },
-          { "indonesian": "lokal", "dutch": "lokaal, plaatselijk", "english": "local" },
-          { "indonesian": "demi", "dutch": "omwille van, voor", "english": "for the sake of" },
-          { "indonesian": "serikat", "dutch": "unie, bond", "english": "union, alliance" },
-          { "indonesian": "banjir", "dutch": "overstroming", "english": "flood" },
-          { "indonesian": "kan", "dutch": "toch? (partikel)", "english": "right? (particle)" },
-          { "indonesian": "tiket", "dutch": "kaartje, ticket", "english": "ticket" },
-          { "indonesian": "salat", "dutch": "islamitisch gebed", "english": "Islamic prayer" },
-          { "indonesian": "emas", "dutch": "goud", "english": "gold" },
-          { "indonesian": "sisa", "dutch": "rest, overschot", "english": "rest, remainder" },
-          { "indonesian": "sempurna", "dutch": "perfect, volmaakt", "english": "perfect, complete" },
-          { "indonesian": "halaman", "dutch": "pagina; erf", "english": "page; yard" },
-          { "indonesian": "rancang", "dutch": "ontwerpen, plannen", "english": "to design, plan" },
-          { "indonesian": "pindah", "dutch": "verhuizen, verplaatsen", "english": "to move, relocate" },
-          { "indonesian": "salur", "dutch": "kanaliseren, doorgeleiden", "english": "to channel, to distribute" },
-          { "indonesian": "kristus", "dutch": "Christus", "english": "Christ" },
-          { "indonesian": "lomba", "dutch": "wedstrijd, race", "english": "race, competition" },
-          { "indonesian": "zaman", "dutch": "tijdperk, tijd", "english": "era, time" },
-          { "indonesian": "gas", "dutch": "gas, benzine", "english": "gas, gasoline" },
-          { "indonesian": "wajah", "dutch": "gezicht", "english": "face" },
-          { "indonesian": "khawatir", "dutch": "bezorgd, ongerust", "english": "worried" },
-          { "indonesian": "belah", "dutch": "helft, kant; splijten", "english": "half, side; to split" },
-          { "indonesian": "doa", "dutch": "gebed", "english": "prayer" },
-          { "loanSourceNl": "gratis", "indonesian": "gratis", "dutch": "gratis", "english": "free, gratis" },
-          { "indonesian": "kecuali", "dutch": "behalve", "english": "except" },
-          { "indonesian": "titik", "dutch": "punt, stip", "english": "dot, point" },
-          { "indonesian": "sahabat", "dutch": "goede vriend, makker", "english": "close friend" },
-          { "indonesian": "klub", "dutch": "club", "english": "club" },
-          { "indonesian": "tumpang", "dutch": "meerijden, ergens verblijven; opstapelen", "english": "to hitch a ride, to lodge/stay (with someone); to stack/overlap" },
-          { "indonesian": "kalo", "dutch": "als, wanneer (informeel)", "english": "if, when (informal)" },
-          { "indonesian": "pabrik", "dutch": "fabriek", "english": "factory" },
-          { "indonesian": "masjid", "dutch": "moskee", "english": "mosque" },
-          { "indonesian": "sepak", "dutch": "schoppen (sepak bola = voetbal)", "english": "to kick (sepak bola = soccer)" },
-          { "indonesian": "kebun", "dutch": "tuin, plantage", "english": "garden, plantation" },
-          { "indonesian": "pasien", "dutch": "patiënt", "english": "patient" },
-          { "indonesian": "level", "dutch": "niveau, level", "english": "level" },
-          { "indonesian": "pustaka", "dutch": "boek, geschrift", "english": "book, literary work" },
-          { "indonesian": "judul", "dutch": "titel", "english": "title" },
-          { "indonesian": "cuma", "dutch": "alleen, maar, slechts", "english": "only, but" },
-          { "indonesian": "tes", "dutch": "test, examen", "english": "test, exam" },
-          { "indonesian": "samping", "dutch": "naast; zijkant", "english": "next to; side" },
-          { "indonesian": "area", "dutch": "gebied, terrein", "english": "area" },
-          { "indonesian": "jadwal", "dutch": "rooster, schema", "english": "schedule, timetable" },
-          { "indonesian": "pecah", "dutch": "breken, barsten", "english": "to break, shatter" },
-          { "indonesian": "peduli", "dutch": "geven om, zich bekommeren", "english": "to care about" },
-          { "indonesian": "sempit", "dutch": "smal, nauw", "english": "narrow" },
-          { "loanSourceNl": "ton", "indonesian": "ton", "dutch": "ton (gewicht)", "english": "ton" },
-          { "loanSourceNl": "branie", "indonesian": "berani", "dutch": "dapper, moedig", "english": "brave, daring" },
-          { "indonesian": "ikat", "dutch": "binden, vastmaken", "english": "to tie, bind" },
-          { "indonesian": "gereja", "dutch": "kerk", "english": "church" },
-          { "loanSourceNl": "kampong", "indonesian": "kampung", "dutch": "dorp, wijk", "english": "village, hamlet" },
-          { "indonesian": "lebar", "dutch": "breed, wijd", "english": "wide" },
-          { "indonesian": "malu", "dutch": "verlegen, beschaamd", "english": "shy, ashamed" },
-          { "indonesian": "tenang", "dutch": "kalm, rustig", "english": "calm, quiet" },
-          { "indonesian": "benda", "dutch": "voorwerp, ding", "english": "object, thing" },
-          { "indonesian": "bangga", "dutch": "trots", "english": "proud" },
-          { "indonesian": "kitab", "dutch": "heilig boek, boek", "english": "holy book, book" },
-          { "indonesian": "hewan", "dutch": "dier", "english": "animal" },
-          { "indonesian": "qur'an", "dutch": "de Koran", "english": "the Quran" },
-          { "indonesian": "otak", "dutch": "hersenen, brein", "english": "brain" },
-          { "indonesian": "alamat", "dutch": "adres", "english": "address" },
-          { "indonesian": "jarang", "dutch": "zelden", "english": "rarely" },
-          { "indonesian": "labuh", "dutch": "ankeren, aanmeren", "english": "to anchor, moor" },
-          { "indonesian": "celaka", "dutch": "ongeluk, ramp", "english": "accident, misfortune" },
-          { "indonesian": "garis", "dutch": "lijn, streep", "english": "line" },
-          { "indonesian": "kisah", "dutch": "verhaal, vertelling", "english": "tale, story" },
-          { "indonesian": "daun", "dutch": "blad (van plant)", "english": "leaf" },
-          { "indonesian": "ramadan", "dutch": "ramadan (vastenmaand)", "english": "Ramadan" },
-          { "indonesian": "gempa", "dutch": "aardbeving", "english": "earthquake" },
-          { "indonesian": "rute", "dutch": "route", "english": "route" },
-          { "indonesian": "web", "dutch": "web", "english": "web" },
-          { "indonesian": "jujur", "dutch": "eerlijk", "english": "honest" },
-          { "indonesian": "segar", "dutch": "fris, vers", "english": "fresh" },
-          { "indonesian": "parkir", "dutch": "parkeren", "english": "to park" },
-          { "indonesian": "kejut", "dutch": "opschrikken, verbazen; schrik", "english": "startle, surprise; shock" },
-          { "indonesian": "hebat", "dutch": "geweldig, fantastisch", "english": "great, awesome" },
-          { "indonesian": "kelapa", "dutch": "kokosnoot", "english": "coconut" },
-          { "indonesian": "tulang", "dutch": "bot, been", "english": "bone" },
-          { "indonesian": "kalimat", "dutch": "zin", "english": "sentence" },
-          { "indonesian": "kamera", "dutch": "camera", "english": "camera" },
-          { "indonesian": "emosi", "dutch": "emotie; emotioneel", "english": "emotion; emotional" },
-          { "indonesian": "rahasia", "dutch": "geheim", "english": "secret" },
-          { "indonesian": "kecewa", "dutch": "teleurgesteld", "english": "disappointed" },
-          { "indonesian": "tenggara", "dutch": "zuidoosten", "english": "southeast" },
-          { "indonesian": "juru", "dutch": "vakman, specialist", "english": "expert, specialist" },
-          { "indonesian": "menu", "dutch": "menu", "english": "menu" },
-          { "indonesian": "paruh", "dutch": "helft; snavel", "english": "half; beak" },
-          { "indonesian": "suhu", "dutch": "temperatuur", "english": "temperature" },
-          { "indonesian": "kawan", "dutch": "vriend, kameraad", "english": "friend, companion" },
-          { "indonesian": "sudut", "dutch": "hoek; gezichtspunt", "english": "corner, angle; viewpoint" },
-          { "indonesian": "sinar", "dutch": "straal, licht", "english": "ray, light" },
-          { "indonesian": "batang", "dutch": "stengel, staaf (telwoord)", "english": "stalk, rod (classifier)" },
-          { "indonesian": "macet", "dutch": "vastlopen, file", "english": "stuck, traffic jam" },
-          { "indonesian": "banget", "dutch": "heel erg (informeel)", "english": "very (informal)" },
-          { "indonesian": "gembira", "dutch": "blij, vrolijk", "english": "glad, cheerful" },
-          { "indonesian": "majalah", "dutch": "tijdschrift", "english": "magazine" },
-          { "indonesian": "volume", "dutch": "volume", "english": "volume" },
-          { "indonesian": "blok", "dutch": "blok", "english": "block" },
-          { "indonesian": "tetangga", "dutch": "buurman, buur", "english": "neighbor" },
-          { "indonesian": "lembar", "dutch": "vel (telwoord)", "english": "sheet (classifier)" },
-          { "indonesian": "album", "dutch": "album", "english": "album" },
-          { "loanSourceNl": "band", "indonesian": "ban", "dutch": "band (van wiel)", "english": "tire" },
-          { "indonesian": "populasi", "dutch": "bevolking, populatie", "english": "population" },
-          { "indonesian": "batal", "dutch": "annuleren, afgelasten", "english": "to cancel" },
-          { "indonesian": "lubang", "dutch": "gat, opening", "english": "hole" },
-          { "indonesian": "natal", "dutch": "Kerstmis", "english": "Christmas" },
-          { "indonesian": "pesta", "dutch": "feest", "english": "party" },
-          { "indonesian": "terminal", "dutch": "terminal", "english": "terminal" },
-          { "indonesian": "bau", "dutch": "geur, stank; ruiken", "english": "smell, odor; to stink" },
-          { "indonesian": "roda", "dutch": "wiel", "english": "wheel" },
-          { "indonesian": "anggur", "dutch": "druif; wijn", "english": "grape; wine" },
-          { "indonesian": "surga", "dutch": "hemel, paradijs", "english": "heaven, paradise" },
-          { "indonesian": "lukis", "dutch": "schilderen, tekenen", "english": "to paint, to draw" },
-          { "indonesian": "kolam", "dutch": "vijver, zwembad", "english": "pool, pond" },
-          { "indonesian": "artis", "dutch": "artiest", "english": "artist" },
-          { "indonesian": "tipis", "dutch": "dun", "english": "thin" },
-          { "indonesian": "anti", "dutch": "anti, tegen", "english": "anti, against" },
-          { "indonesian": "derajat", "dutch": "graad (temperatuur, hoek, rang)", "english": "degree (temperature, angle, rank)" },
-          { "indonesian": "teks", "dutch": "tekst", "english": "text" },
-          { "indonesian": "besi", "dutch": "ijzer", "english": "iron" },
-          { "indonesian": "pasir", "dutch": "zand", "english": "sand" },
-          { "indonesian": "metro", "dutch": "metro", "english": "metro" },
-          { "loanSourceNl": "chocolade", "indonesian": "cokelat", "dutch": "chocolade; bruin", "english": "chocolate; brown" },
-          { "indonesian": "haram", "dutch": "verboden (islam), taboe", "english": "forbidden (Islam)" },
-          { "indonesian": "truk", "dutch": "vrachtwagen", "english": "truck" },
-          { "indonesian": "bukit", "dutch": "heuvel", "english": "hill" },
-          { "indonesian": "halal", "dutch": "toegestaan, halal", "english": "permitted, halal" },
-          { "indonesian": "gali", "dutch": "graven", "english": "to dig" },
-          { "indonesian": "otot", "dutch": "spier", "english": "muscle" },
-          { "indonesian": "asisten", "dutch": "assistent", "english": "assistant" },
-          { "indonesian": "pacar", "dutch": "vriend(in), partner", "english": "boyfriend/girlfriend" },
-          { "indonesian": "aktor", "dutch": "acteur", "english": "actor" },
-          { "indonesian": "sapa", "dutch": "aanspreken, groeten", "english": "to greet, speak to" },
-          { "indonesian": "lempar", "dutch": "gooien, werpen", "english": "to throw" },
-          { "indonesian": "cerah", "dutch": "helder, zonnig", "english": "bright, clear" },
-          { "indonesian": "bentar", "dutch": "zo, even (informeel)", "english": "in a moment (informal)" },
-          { "indonesian": "basah", "dutch": "nat, vochtig", "english": "wet" },
-          { "indonesian": "tebal", "dutch": "dik", "english": "thick" },
-          { "indonesian": "karet", "dutch": "rubber, elastiek", "english": "rubber" },
-          { "indonesian": "buddha", "dutch": "Boeddha, boeddhisme", "english": "Buddha, Buddhism" },
-          { "indonesian": "klinik", "dutch": "kliniek", "english": "clinic" },
-          { "indonesian": "papan", "dutch": "plank, bord", "english": "board, plank" },
-          { "loanSourceNl": "krant", "indonesian": "koran", "dutch": "krant", "english": "newspaper" },
-          { "indonesian": "kuda", "dutch": "paard", "english": "horse" },
-          { "indonesian": "benci", "dutch": "haten, een hekel hebben aan", "english": "to hate" },
-          { "indonesian": "danau", "dutch": "meer", "english": "lake" },
-          { "indonesian": "cium", "dutch": "ruiken; kussen", "english": "to smell; to kiss" },
-          { "indonesian": "drama", "dutch": "drama", "english": "drama" },
-          { "indonesian": "konser", "dutch": "concert", "english": "concert" },
-          { "indonesian": "bawang", "dutch": "ui, knoflook", "english": "onion, garlic" },
-          { "indonesian": "punggung", "dutch": "rug", "english": "back (of body)" },
-          { "indonesian": "atap", "dutch": "dak", "english": "roof" },
-          { "indonesian": "tali", "dutch": "touw, koord", "english": "rope, cord" },
-          { "indonesian": "bendera", "dutch": "vlag", "english": "flag" },
-          { "indonesian": "mama", "dutch": "mama", "english": "mom" },
-          { "indonesian": "label", "dutch": "label, etiket", "english": "label" },
-          { "indonesian": "ratu", "dutch": "koningin", "english": "queen" },
-          { "indonesian": "nyala", "dutch": "branden, aangaan", "english": "to light up, turn on" },
-          { "indonesian": "lidah", "dutch": "tong", "english": "tongue" },
-          { "indonesian": "katolik", "dutch": "katholiek", "english": "Catholic" },
-          { "indonesian": "sepi", "dutch": "stil, eenzaam, verlaten", "english": "quiet, lonely" },
-          { "indonesian": "rumput", "dutch": "gras", "english": "grass" },
-          { "indonesian": "tombol", "dutch": "knop, toets", "english": "button, key" },
-          { "indonesian": "robot", "dutch": "robot", "english": "robot" },
-          { "indonesian": "asap", "dutch": "rook, damp", "english": "smoke" },
-          { "indonesian": "gerbang", "dutch": "poort", "english": "gate" },
-          { "indonesian": "perak", "dutch": "zilver", "english": "silver" },
-          { "indonesian": "garasi", "dutch": "garage", "english": "garage" },
-          { "indonesian": "influenza", "dutch": "griep", "english": "flu, influenza" },
-          { "indonesian": "idul", "dutch": "islamitisch feest, Eid", "english": "Islamic feast, Eid" },
-          { "indonesian": "perahu", "dutch": "boot, prauw", "english": "boat" },
-          { "indonesian": "gajah", "dutch": "olifant", "english": "elephant" },
-          { "indonesian": "pangeran", "dutch": "prins", "english": "prince" },
-          { "indonesian": "fitri", "dutch": "zuiver, natuurlijk", "english": "pure, natural" },
-          { "indonesian": "sains", "dutch": "wetenschap", "english": "science" },
-          { "indonesian": "paru", "dutch": "long", "english": "lung" },
-          { "indonesian": "kacang", "dutch": "boon, pinda, noot", "english": "bean, peanut, nut" },
-          { "indonesian": "madu", "dutch": "honing", "english": "honey" },
-          { "indonesian": "rumit", "dutch": "ingewikkeld, complex", "english": "complicated" },
-          { "indonesian": "leher", "dutch": "nek, hals", "english": "neck" },
-          { "indonesian": "neraka", "dutch": "hel", "english": "hell" },
-          { "indonesian": "babi", "dutch": "varken", "english": "pig" },
-          { "indonesian": "mbak", "dutch": "mevrouw, zus (beleefd)", "english": "miss (polite, female)" },
-          { "indonesian": "bahu", "dutch": "schouder", "english": "shoulder" },
-          { "indonesian": "menara", "dutch": "toren, minaret", "english": "tower, minaret" },
-          { "indonesian": "cabai", "dutch": "chili, peper", "english": "chili, pepper" },
-          { "indonesian": "teluk", "dutch": "baai, golf", "english": "gulf, bay" },
-          { "indonesian": "tikus", "dutch": "muis, rat", "english": "mouse, rat" },
-          { "indonesian": "bumbu", "dutch": "specerij, kruiden", "english": "spice, seasoning" },
-          { "indonesian": "handphone", "dutch": "mobiele telefoon", "english": "cell phone" },
-          { "indonesian": "diet", "dutch": "dieet", "english": "diet" },
-          { "indonesian": "beku", "dutch": "bevroren", "english": "frozen" },
-          { "indonesian": "mal", "dutch": "mal, sjabloon; (ook) winkelcentrum", "english": "mold, template, pattern; (also) shopping mall" },
-          { "indonesian": "kompas", "dutch": "kompas", "english": "compass" },
-          { "indonesian": "badai", "dutch": "storm, orkaan", "english": "storm" },
-          { "indonesian": "kafe", "dutch": "café", "english": "cafe" },
-          { "indonesian": "pilot", "dutch": "piloot", "english": "pilot" },
-          { "indonesian": "ular", "dutch": "slang", "english": "snake" },
-          { "indonesian": "teater", "dutch": "theater", "english": "theater" },
-          { "indonesian": "lompat", "dutch": "springen", "english": "to jump" },
-          { "indonesian": "hai", "dutch": "hoi, hallo", "english": "hi" },
-          { "indonesian": "pinggang", "dutch": "middel, taille", "english": "waist" },
-          { "loanSourceNl": "kalender", "indonesian": "kalender", "dutch": "kalender", "english": "calendar" },
-          { "indonesian": "gigit", "dutch": "bijten", "english": "to bite" },
-          { "indonesian": "krim", "dutch": "crème, room", "english": "cream" },
-          { "indonesian": "payung", "dutch": "paraplu", "english": "umbrella" },
-          { "indonesian": "papa", "dutch": "papa", "english": "dad" },
-          { "indonesian": "nyamuk", "dutch": "mug", "english": "mosquito" },
-          { "indonesian": "mabuk", "dutch": "dronken; misselijk", "english": "drunk; nauseous" }
+          {
+            "indonesian": "beri",
+            "dutch": "geven",
+            "english": "to give"
+          },
+          {
+            "indonesian": "hadap",
+            "dutch": "tegenover, met betrekking tot",
+            "english": "facing, regarding"
+          },
+          {
+            "indonesian": "namun",
+            "dutch": "echter, maar",
+            "english": "however"
+          },
+          {
+            "indonesian": "salah",
+            "dutch": "fout, verkeerd",
+            "english": "wrong, mistaken"
+          },
+          {
+            "indonesian": "beberapa",
+            "dutch": "enkele, sommige",
+            "english": "some, several"
+          },
+          {
+            "indonesian": "turut",
+            "dutch": "meedoen, volgen",
+            "english": "to join in, to follow"
+          },
+          {
+            "indonesian": "mula",
+            "dutch": "begin",
+            "english": "start, beginning"
+          },
+          {
+            "indonesian": "temu",
+            "dutch": "ontmoeten, aantreffen",
+            "english": "to meet, to find"
+          },
+          {
+            "indonesian": "nyata",
+            "dutch": "duidelijk, echt",
+            "english": "real, evident"
+          },
+          {
+            "indonesian": "hidup",
+            "dutch": "leven; levend",
+            "english": "to live; alive"
+          },
+          {
+            "indonesian": "tetap",
+            "dutch": "vast, blijvend; toch",
+            "english": "fixed, permanent; still"
+          },
+          {
+            "indonesian": "jelas",
+            "dutch": "duidelijk",
+            "english": "clear, evident"
+          },
+          {
+            "indonesian": "siswa",
+            "dutch": "leerling, student",
+            "english": "pupil, student"
+          },
+          {
+            "indonesian": "dunia",
+            "dutch": "wereld",
+            "english": "world"
+          },
+          {
+            "indonesian": "harap",
+            "dutch": "hopen, verwachten",
+            "english": "to hope, to expect"
+          },
+          {
+            "indonesian": "dasar",
+            "dutch": "basis, grond",
+            "english": "basis, foundation"
+          },
+          {
+            "indonesian": "masalah",
+            "dutch": "probleem, kwestie",
+            "english": "problem, issue"
+          },
+          {
+            "indonesian": "umum",
+            "dutch": "algemeen, openbaar",
+            "english": "general, public"
+          },
+          {
+            "loanSourceNl": "politie",
+            "indonesian": "polisi",
+            "dutch": "politie",
+            "english": "police"
+          },
+          {
+            "indonesian": "bahkan",
+            "dutch": "zelfs, sterker nog",
+            "english": "even, in fact"
+          },
+          {
+            "indonesian": "sehat",
+            "dutch": "gezond",
+            "english": "healthy"
+          },
+          {
+            "indonesian": "kuat",
+            "dutch": "sterk, krachtig",
+            "english": "strong"
+          },
+          {
+            "indonesian": "awal",
+            "dutch": "begin, vroeg",
+            "english": "beginning, early"
+          },
+          {
+            "indonesian": "mudah",
+            "dutch": "makkelijk",
+            "english": "easy"
+          },
+          {
+            "indonesian": "dahulu",
+            "dutch": "vroeger, eerst",
+            "english": "formerly, earlier"
+          },
+          {
+            "indonesian": "tanya",
+            "dutch": "vraag, vragen",
+            "english": "question, to ask"
+          },
+          {
+            "indonesian": "asal",
+            "dutch": "herkomst, oorsprong; mits",
+            "english": "origin; as long as"
+          },
+          {
+            "indonesian": "tarik",
+            "dutch": "trekken",
+            "english": "to pull"
+          },
+          {
+            "indonesian": "buku",
+            "dutch": "boek",
+            "english": "book"
+          },
+          {
+            "indonesian": "bila",
+            "dutch": "wanneer, als",
+            "english": "when, if"
+          },
+          {
+            "indonesian": "ruang",
+            "dutch": "ruimte, kamer",
+            "english": "room, space"
+          },
+          {
+            "indonesian": "segera",
+            "dutch": "onmiddellijk, gauw",
+            "english": "immediately, soon"
+          },
+          {
+            "indonesian": "pula",
+            "dutch": "ook, eveneens",
+            "english": "likewise, also"
+          },
+          {
+            "indonesian": "badan",
+            "dutch": "lichaam; instantie",
+            "english": "body; agency"
+          },
+          {
+            "indonesian": "paham",
+            "dutch": "begrijpen, snappen",
+            "english": "to understand"
+          },
+          {
+            "indonesian": "tepat",
+            "dutch": "precies, juist, op tijd",
+            "english": "exact, precise, on time"
+          },
+          {
+            "indonesian": "wanita",
+            "dutch": "vrouw",
+            "english": "woman"
+          },
+          {
+            "indonesian": "sulit",
+            "dutch": "moeilijk, lastig",
+            "english": "difficult"
+          },
+          {
+            "indonesian": "sedikit",
+            "dutch": "een beetje, weinig",
+            "english": "a little, few"
+          },
+          {
+            "indonesian": "pukul",
+            "dutch": "slaan; uur",
+            "english": "to hit; o'clock"
+          },
+          {
+            "indonesian": "usia",
+            "dutch": "leeftijd",
+            "english": "age"
+          },
+          {
+            "indonesian": "bebas",
+            "dutch": "vrij, onafhankelijk",
+            "english": "free, independent"
+          },
+          {
+            "loanSourceNl": "klas",
+            "indonesian": "kelas",
+            "dutch": "klas, klasse",
+            "english": "class, grade"
+          },
+          {
+            "indonesian": "cinta",
+            "dutch": "liefde, houden van",
+            "english": "love"
+          },
+          {
+            "indonesian": "arah",
+            "dutch": "richting",
+            "english": "direction"
+          },
+          {
+            "indonesian": "catat",
+            "dutch": "noteren, opschrijven",
+            "english": "to note, to record"
+          },
+          {
+            "indonesian": "ribu",
+            "dutch": "duizend",
+            "english": "thousand"
+          },
+          {
+            "indonesian": "mati",
+            "dutch": "dood; uitgaan",
+            "english": "dead; to die, switch off"
+          },
+          {
+            "indonesian": "film",
+            "dutch": "film",
+            "english": "film, movie"
+          },
+          {
+            "indonesian": "foto",
+            "dutch": "foto",
+            "english": "photo"
+          },
+          {
+            "loanSourceNl": "motor",
+            "indonesian": "motor",
+            "dutch": "motor, motorfiets",
+            "english": "motorcycle"
+          },
+          {
+            "indonesian": "si",
+            "dutch": "de (lidwoord bij namen)",
+            "english": "the (article before names)"
+          },
+          {
+            "indonesian": "pesawat",
+            "dutch": "vliegtuig; toestel",
+            "english": "airplane; device"
+          },
+          {
+            "indonesian": "pria",
+            "dutch": "man",
+            "english": "man, male"
+          },
+          {
+            "indonesian": "musim",
+            "dutch": "seizoen",
+            "english": "season"
+          },
+          {
+            "indonesian": "bumi",
+            "dutch": "aarde, grond",
+            "english": "earth, ground"
+          },
+          {
+            "indonesian": "berita",
+            "dutch": "nieuws, bericht",
+            "english": "news, report"
+          },
+          {
+            "indonesian": "senin",
+            "dutch": "maandag",
+            "english": "Monday"
+          },
+          {
+            "indonesian": "rabu",
+            "dutch": "woensdag",
+            "english": "Wednesday"
+          },
+          {
+            "indonesian": "indah",
+            "dutch": "mooi, prachtig",
+            "english": "beautiful"
+          },
+          {
+            "indonesian": "dorong",
+            "dutch": "duwen; aansporen",
+            "english": "to push; to encourage"
+          },
+          {
+            "indonesian": "sayang",
+            "dutch": "jammer; lieverd, liefde",
+            "english": "what a pity; dear, love"
+          },
+          {
+            "indonesian": "kamis",
+            "dutch": "donderdag",
+            "english": "Thursday"
+          },
+          {
+            "indonesian": "selasa",
+            "dutch": "dinsdag",
+            "english": "Tuesday"
+          },
+          {
+            "indonesian": "musik",
+            "dutch": "muziek",
+            "english": "music"
+          },
+          {
+            "indonesian": "pak",
+            "dutch": "meneer, vader",
+            "english": "sir, father"
+          },
+          {
+            "indonesian": "jumat",
+            "dutch": "vrijdag",
+            "english": "Friday"
+          },
+          {
+            "indonesian": "batu",
+            "dutch": "steen",
+            "english": "stone, rock"
+          },
+          {
+            "indonesian": "olahraga",
+            "dutch": "sport",
+            "english": "sports"
+          },
+          {
+            "loanSourceNl": "toko",
+            "indonesian": "toko",
+            "dutch": "winkel",
+            "english": "shop, store"
+          },
+          {
+            "indonesian": "puluh",
+            "dutch": "tiental (in tellen)",
+            "english": "tens (in counting)"
+          },
+          {
+            "indonesian": "laki",
+            "dutch": "man, echtgenoot",
+            "english": "man, husband"
+          },
+          {
+            "indonesian": "televisi",
+            "dutch": "televisie",
+            "english": "television"
+          },
+          {
+            "indonesian": "moga",
+            "dutch": "hopelijk, moge",
+            "english": "hopefully, may"
+          },
+          {
+            "loanSourceNl": "gram",
+            "indonesian": "gram",
+            "dutch": "gram",
+            "english": "gram"
+          },
+          {
+            "indonesian": "bunga",
+            "dutch": "bloem; rente",
+            "english": "flower; interest"
+          },
+          {
+            "indonesian": "gunung",
+            "dutch": "berg",
+            "english": "mountain"
+          },
+          {
+            "indonesian": "larang",
+            "dutch": "verbieden",
+            "english": "to forbid"
+          },
+          {
+            "indonesian": "bayi",
+            "dutch": "baby",
+            "english": "baby"
+          },
+          {
+            "indonesian": "kadang",
+            "dutch": "soms",
+            "english": "sometimes"
+          },
+          {
+            "indonesian": "bola",
+            "dutch": "bal",
+            "english": "ball"
+          },
+          {
+            "indonesian": "sungai",
+            "dutch": "rivier",
+            "english": "river"
+          },
+          {
+            "indonesian": "panggil",
+            "dutch": "roepen, oproepen",
+            "english": "to call, to summon"
+          },
+          {
+            "indonesian": "video",
+            "dutch": "video",
+            "english": "video"
+          },
+          {
+            "indonesian": "hujan",
+            "dutch": "regen",
+            "english": "rain"
+          },
+          {
+            "indonesian": "sabtu",
+            "dutch": "zaterdag",
+            "english": "Saturday"
+          },
+          {
+            "loanSourceNl": "kaart",
+            "indonesian": "kartu",
+            "dutch": "kaart",
+            "english": "card"
+          },
+          {
+            "indonesian": "lambat",
+            "dutch": "langzaam, laat",
+            "english": "slow, late"
+          },
+          {
+            "indonesian": "sederhana",
+            "dutch": "eenvoudig, simpel",
+            "english": "simple, modest"
+          },
+          {
+            "indonesian": "ratus",
+            "dutch": "honderd(tal)",
+            "english": "hundred"
+          },
+          {
+            "indonesian": "bintang",
+            "dutch": "ster",
+            "english": "star"
+          },
+          {
+            "indonesian": "kayu",
+            "dutch": "hout",
+            "english": "wood"
+          },
+          {
+            "indonesian": "putri",
+            "dutch": "dochter; prinses",
+            "english": "daughter; princess"
+          },
+          {
+            "indonesian": "cantik",
+            "dutch": "mooi, knap",
+            "english": "pretty, beautiful"
+          },
+          {
+            "indonesian": "putra",
+            "dutch": "zoon; prins",
+            "english": "son; prince"
+          },
+          {
+            "indonesian": "bahagia",
+            "dutch": "gelukkig",
+            "english": "happy"
+          },
+          {
+            "indonesian": "sapi",
+            "dutch": "koe",
+            "english": "cow"
+          },
+          {
+            "indonesian": "sampah",
+            "dutch": "afval, vuilnis",
+            "english": "rubbish, trash"
+          },
+          {
+            "indonesian": "matahari",
+            "dutch": "zon",
+            "english": "sun"
+          },
+          {
+            "indonesian": "gula",
+            "dutch": "suiker",
+            "english": "sugar"
+          },
+          {
+            "indonesian": "marah",
+            "dutch": "boos, kwaad",
+            "english": "angry"
+          },
+          {
+            "indonesian": "aneh",
+            "dutch": "vreemd, raar",
+            "english": "strange, weird"
+          },
+          {
+            "indonesian": "cahaya",
+            "dutch": "licht, schijnsel",
+            "english": "light, ray"
+          },
+          {
+            "indonesian": "telur",
+            "dutch": "ei",
+            "english": "egg"
+          },
+          {
+            "indonesian": "mimpi",
+            "dutch": "droom",
+            "english": "dream"
+          },
+          {
+            "indonesian": "baju",
+            "dutch": "kleding, shirt",
+            "english": "clothes, shirt"
+          },
+          {
+            "indonesian": "peta",
+            "dutch": "kaart, plattegrond",
+            "english": "map"
+          },
+          {
+            "indonesian": "gelap",
+            "dutch": "donker",
+            "english": "dark"
+          },
+          {
+            "indonesian": "belas",
+            "dutch": "-tien (achtervoegsel, 11–19)",
+            "english": "-teen (suffix, 11–19)"
+          },
+          {
+            "indonesian": "sedih",
+            "dutch": "verdrietig",
+            "english": "sad"
+          },
+          {
+            "indonesian": "gadis",
+            "dutch": "meisje",
+            "english": "girl"
+          },
+          {
+            "indonesian": "radio",
+            "dutch": "radio",
+            "english": "radio"
+          },
+          {
+            "loanSourceNl": "liter",
+            "indonesian": "liter",
+            "dutch": "liter",
+            "english": "liter"
+          },
+          {
+            "indonesian": "jumpa",
+            "dutch": "ontmoeten",
+            "english": "to meet"
+          },
+          {
+            "indonesian": "kaca",
+            "dutch": "glas; spiegel",
+            "english": "glass; mirror"
+          },
+          {
+            "indonesian": "hangat",
+            "dutch": "warm",
+            "english": "warm"
+          },
+          {
+            "indonesian": "langit",
+            "dutch": "lucht, hemel",
+            "english": "sky, heaven"
+          },
+          {
+            "indonesian": "cermin",
+            "dutch": "spiegel; weerspiegelen",
+            "english": "mirror; to reflect"
+          },
+          {
+            "indonesian": "kotak",
+            "dutch": "doos, vak",
+            "english": "box, compartment"
+          },
+          {
+            "indonesian": "cuaca",
+            "dutch": "weer",
+            "english": "weather"
+          },
+          {
+            "indonesian": "tawa",
+            "dutch": "lach, lachen",
+            "english": "laugh"
+          },
+          {
+            "indonesian": "bunyi",
+            "dutch": "geluid, klank",
+            "english": "sound, tone"
+          },
+          {
+            "indonesian": "lelah",
+            "dutch": "moe, vermoeid",
+            "english": "tired"
+          },
+          {
+            "indonesian": "binatang",
+            "dutch": "dier",
+            "english": "animal"
+          },
+          {
+            "indonesian": "jari",
+            "dutch": "vinger",
+            "english": "finger"
+          },
+          {
+            "indonesian": "es",
+            "dutch": "ijs",
+            "english": "ice"
+          },
+          {
+            "indonesian": "tenis",
+            "dutch": "tennis",
+            "english": "tennis"
+          },
+          {
+            "indonesian": "garam",
+            "dutch": "zout",
+            "english": "salt"
+          },
+          {
+            "indonesian": "bodoh",
+            "dutch": "dom, stom",
+            "english": "stupid"
+          },
+          {
+            "indonesian": "jendela",
+            "dutch": "raam, venster",
+            "english": "window"
+          },
+          {
+            "indonesian": "lucu",
+            "dutch": "grappig, schattig",
+            "english": "funny, cute"
+          },
+          {
+            "indonesian": "yah",
+            "dutch": "ach, nou ja",
+            "english": "well... (interjection)"
+          },
+          {
+            "indonesian": "jeruk",
+            "dutch": "sinaasappel, citrusvrucht",
+            "english": "orange, citrus"
+          },
+          {
+            "indonesian": "gugur",
+            "dutch": "vallen (van bladeren)",
+            "english": "to fall (leaves)"
+          },
+          {
+            "indonesian": "hobi",
+            "dutch": "hobby",
+            "english": "hobby"
+          },
+          {
+            "indonesian": "kakek",
+            "dutch": "opa, grootvader",
+            "english": "grandfather"
+          },
+          {
+            "indonesian": "cucu",
+            "dutch": "kleinkind",
+            "english": "grandchild"
+          },
+          {
+            "indonesian": "awan",
+            "dutch": "wolk",
+            "english": "cloud"
+          },
+          {
+            "indonesian": "gitar",
+            "dutch": "gitaar",
+            "english": "guitar"
+          },
+          {
+            "indonesian": "semi",
+            "dutch": "scheut, knop",
+            "english": "sprout, bud"
+          },
+          {
+            "indonesian": "sarap",
+            "dutch": "ontbijt eten; (sarapan = ontbijt)",
+            "english": "to eat breakfast (root; 'sarapan' = breakfast)"
+          },
+          {
+            "indonesian": "golf",
+            "dutch": "golf",
+            "english": "golf"
+          },
+          {
+            "indonesian": "tangkis",
+            "dutch": "afweren, pareren",
+            "english": "to parry, fend off, deflect"
+          },
+          {
+            "indonesian": "toilet",
+            "dutch": "toilet, wc",
+            "english": "toilet"
+          },
+          {
+            "indonesian": "jus",
+            "dutch": "sap",
+            "english": "juice"
+          },
+          {
+            "indonesian": "dompet",
+            "dutch": "portemonnee",
+            "english": "wallet"
+          },
+          {
+            "indonesian": "drum",
+            "dutch": "drum, trommel",
+            "english": "drum"
+          },
+          {
+            "indonesian": "haus",
+            "dutch": "dorstig",
+            "english": "thirsty"
+          },
+          {
+            "indonesian": "pena",
+            "dutch": "pen",
+            "english": "pen"
+          },
+          {
+            "indonesian": "cangkir",
+            "dutch": "kopje",
+            "english": "cup"
+          },
+          {
+            "indonesian": "piano",
+            "dutch": "piano",
+            "english": "piano"
+          },
+          {
+            "indonesian": "pensil",
+            "dutch": "potlood",
+            "english": "pencil"
+          },
+          {
+            "loanSourceNl": "wortel",
+            "indonesian": "wortel",
+            "dutch": "wortel (groente)",
+            "english": "carrot"
+          },
+          {
+            "loanSourceNl": "soep",
+            "indonesian": "sup",
+            "dutch": "soep",
+            "english": "soup"
+          },
+          {
+            "indonesian": "biola",
+            "dutch": "viool",
+            "english": "violin"
+          },
+          {
+            "indonesian": "usaha",
+            "dutch": "bedrijf; inspanning",
+            "english": "business; effort"
+          },
+          {
+            "indonesian": "hasil",
+            "dutch": "resultaat, opbrengst",
+            "english": "result, yield"
+          },
+          {
+            "indonesian": "perintah",
+            "dutch": "bevel; regering",
+            "english": "command; government"
+          },
+          {
+            "indonesian": "serta",
+            "dutch": "samen met, alsook",
+            "english": "along with, as well as"
+          },
+          {
+            "indonesian": "alam",
+            "dutch": "natuur; wereld",
+            "english": "nature; world"
+          },
+          {
+            "indonesian": "produk",
+            "dutch": "product",
+            "english": "product"
+          },
+          {
+            "indonesian": "langsung",
+            "dutch": "direct, meteen",
+            "english": "directly, straightaway"
+          },
+          {
+            "indonesian": "mampu",
+            "dutch": "in staat zijn; bemiddeld",
+            "english": "able; capable"
+          },
+          {
+            "indonesian": "nasion",
+            "dutch": "natie, nationaal",
+            "english": "nation, national"
+          },
+          {
+            "indonesian": "informasi",
+            "dutch": "informatie",
+            "english": "information"
+          },
+          {
+            "indonesian": "yaitu",
+            "dutch": "namelijk, dat wil zeggen",
+            "english": "namely, that is"
+          },
+          {
+            "indonesian": "hubung",
+            "dutch": "verbinden; verbinding",
+            "english": "to connect; connection"
+          },
+          {
+            "indonesian": "butuh",
+            "dutch": "nodig hebben",
+            "english": "to need"
+          },
+          {
+            "indonesian": "kemudi",
+            "dutch": "stuur, roer; besturen",
+            "english": "steering wheel, helm; to steer"
+          },
+          {
+            "indonesian": "memang",
+            "dutch": "inderdaad, echt wel",
+            "english": "indeed"
+          },
+          {
+            "indonesian": "kitar",
+            "dutch": "rondgaan, omcirkelen",
+            "english": "to go around, to revolve"
+          },
+          {
+            "indonesian": "seluruh",
+            "dutch": "geheel, heel",
+            "english": "entire, whole"
+          },
+          {
+            "indonesian": "capai",
+            "dutch": "bereiken",
+            "english": "to achieve, reach"
+          },
+          {
+            "indonesian": "kena",
+            "dutch": "raken; betreffen",
+            "english": "to hit; about"
+          },
+          {
+            "indonesian": "makin",
+            "dutch": "steeds meer",
+            "english": "increasingly"
+          },
+          {
+            "indonesian": "tim",
+            "dutch": "team",
+            "english": "team"
+          },
+          {
+            "indonesian": "data",
+            "dutch": "gegevens, data",
+            "english": "data"
+          },
+          {
+            "indonesian": "allah",
+            "dutch": "God, Allah",
+            "english": "God"
+          },
+          {
+            "indonesian": "beda",
+            "dutch": "verschil, verschillen",
+            "english": "difference, to differ"
+          },
+          {
+            "indonesian": "ubah",
+            "dutch": "verandering, veranderen",
+            "english": "change"
+          },
+          {
+            "indonesian": "layan",
+            "dutch": "bediening, dienst",
+            "english": "service"
+          },
+          {
+            "indonesian": "pimpin",
+            "dutch": "leiden",
+            "english": "to lead"
+          },
+          {
+            "indonesian": "tugas",
+            "dutch": "taak, opdracht",
+            "english": "task, duty"
+          },
+          {
+            "indonesian": "sedia",
+            "dutch": "klaar; leveren, verschaffen",
+            "english": "ready; to provide, supply"
+          },
+          {
+            "indonesian": "juta",
+            "dutch": "miljoen",
+            "english": "million"
+          },
+          {
+            "indonesian": "anggota",
+            "dutch": "lid; lichaamsdeel",
+            "english": "member; limb"
+          },
+          {
+            "indonesian": "ilmu",
+            "dutch": "wetenschap, kennis",
+            "english": "science, knowledge"
+          },
+          {
+            "indonesian": "rencana",
+            "dutch": "plan, programma",
+            "english": "plan, program"
+          },
+          {
+            "indonesian": "masa",
+            "dutch": "periode, tijdperk",
+            "english": "period, era"
+          },
+          {
+            "indonesian": "sempat",
+            "dutch": "gelegenheid, de tijd hebben",
+            "english": "opportunity, to have time"
+          },
+          {
+            "indonesian": "putus",
+            "dutch": "afbreken, doorknippen; ophouden",
+            "english": "to break off, snap; to stop"
+          },
+          {
+            "indonesian": "daya",
+            "dutch": "kracht, vermogen",
+            "english": "power, energy"
+          },
+          {
+            "indonesian": "meski",
+            "dutch": "hoewel, ook al",
+            "english": "even though"
+          },
+          {
+            "indonesian": "agama",
+            "dutch": "godsdienst, religie",
+            "english": "religion"
+          },
+          {
+            "indonesian": "latih",
+            "dutch": "training, oefenen",
+            "english": "training, to practice"
+          },
+          {
+            "indonesian": "jawab",
+            "dutch": "antwoord, antwoorden",
+            "english": "answer, to reply"
+          },
+          {
+            "indonesian": "acara",
+            "dutch": "programma, evenement",
+            "english": "program, event"
+          },
+          {
+            "indonesian": "sosial",
+            "dutch": "sociaal",
+            "english": "social"
+          },
+          {
+            "indonesian": "politik",
+            "dutch": "politiek",
+            "english": "politics"
+          },
+          {
+            "indonesian": "manfaat",
+            "dutch": "nut, voordeel",
+            "english": "benefit, use"
+          },
+          {
+            "indonesian": "desa",
+            "dutch": "dorp",
+            "english": "village"
+          },
+          {
+            "indonesian": "luas",
+            "dutch": "ruim, uitgestrekt",
+            "english": "spacious, wide"
+          },
+          {
+            "indonesian": "lokasi",
+            "dutch": "locatie, plaats",
+            "english": "location"
+          },
+          {
+            "indonesian": "gerak",
+            "dutch": "beweging, bewegen",
+            "english": "movement, to move"
+          },
+          {
+            "indonesian": "wilayah",
+            "dutch": "gebied, regio",
+            "english": "area, region"
+          },
+          {
+            "indonesian": "bahan",
+            "dutch": "materiaal, ingrediënt",
+            "english": "material, ingredient"
+          },
+          {
+            "indonesian": "banding",
+            "dutch": "vergelijking; beroep",
+            "english": "comparison; appeal"
+          },
+          {
+            "indonesian": "wakil",
+            "dutch": "plaatsvervanger, vertegenwoordiger",
+            "english": "deputy, representative"
+          },
+          {
+            "indonesian": "kini",
+            "dutch": "nu, tegenwoordig",
+            "english": "now, currently"
+          },
+          {
+            "loanSourceNl": "veer",
+            "indonesian": "per",
+            "dutch": "per",
+            "english": "per"
+          },
+          {
+            "indonesian": "kelompok",
+            "dutch": "groep",
+            "english": "group"
+          },
+          {
+            "indonesian": "tampil",
+            "dutch": "verschijnen, optreden",
+            "english": "to appear, perform"
+          },
+          {
+            "indonesian": "kunjung",
+            "dutch": "bezoek",
+            "english": "visit"
+          },
+          {
+            "indonesian": "biaya",
+            "dutch": "kosten",
+            "english": "cost, expense"
+          },
+          {
+            "indonesian": "tubuh",
+            "dutch": "lichaam",
+            "english": "body"
+          },
+          {
+            "indonesian": "bisnis",
+            "dutch": "zaken, business",
+            "english": "business"
+          },
+          {
+            "indonesian": "teknologi",
+            "dutch": "technologie",
+            "english": "technology"
+          },
+          {
+            "indonesian": "miliar",
+            "dutch": "miljard",
+            "english": "billion"
+          },
+          {
+            "indonesian": "daftar",
+            "dutch": "lijst, register",
+            "english": "list, register"
+          },
+          {
+            "indonesian": "tanam",
+            "dutch": "planten, aanplanten",
+            "english": "to plant"
+          },
+          {
+            "indonesian": "posisi",
+            "dutch": "positie, plaats",
+            "english": "position"
+          },
+          {
+            "indonesian": "uji",
+            "dutch": "test, proef",
+            "english": "test, trial"
+          },
+          {
+            "indonesian": "peran",
+            "dutch": "rol",
+            "english": "role"
+          },
+          {
+            "indonesian": "lahir",
+            "dutch": "geboren worden",
+            "english": "to be born"
+          },
+          {
+            "indonesian": "percaya",
+            "dutch": "geloven, vertrouwen",
+            "english": "to believe, trust"
+          },
+          {
+            "indonesian": "suara",
+            "dutch": "stem; geluid",
+            "english": "voice; sound"
+          },
+          {
+            "indonesian": "muncul",
+            "dutch": "verschijnen, opduiken",
+            "english": "to appear, emerge"
+          },
+          {
+            "indonesian": "anggap",
+            "dutch": "beschouwen als, achten",
+            "english": "to consider, regard"
+          },
+          {
+            "indonesian": "misal",
+            "dutch": "voorbeeld",
+            "english": "example, instance"
+          },
+          {
+            "indonesian": "jaga",
+            "dutch": "bewaken, oppassen",
+            "english": "to guard, watch"
+          },
+          {
+            "indonesian": "yakin",
+            "dutch": "zeker, overtuigd",
+            "english": "certain, confident"
+          },
+          {
+            "indonesian": "ukur",
+            "dutch": "meten",
+            "english": "to measure"
+          },
+          {
+            "indonesian": "terang",
+            "dutch": "helder, licht",
+            "english": "bright, clear"
+          },
+          {
+            "indonesian": "kendara",
+            "dutch": "voertuig, rijden",
+            "english": "vehicle, to drive"
+          },
+          {
+            "indonesian": "tampak",
+            "dutch": "lijken, zichtbaar zijn",
+            "english": "to appear, seem"
+          },
+          {
+            "indonesian": "lawan",
+            "dutch": "tegenstander; bestrijden",
+            "english": "opponent; to oppose"
+          },
+          {
+            "indonesian": "untung",
+            "dutch": "winst, voordeel; gelukkig",
+            "english": "profit, advantage; lucky"
+          },
+          {
+            "indonesian": "segala",
+            "dutch": "alle, allerlei",
+            "english": "all, every kind"
+          },
+          {
+            "indonesian": "macam",
+            "dutch": "soort, type",
+            "english": "kind, type"
+          },
+          {
+            "indonesian": "unit",
+            "dutch": "eenheid, unit",
+            "english": "unit"
+          },
+          {
+            "indonesian": "tekan",
+            "dutch": "druk, drukken",
+            "english": "pressure, to press"
+          },
+          {
+            "indonesian": "balik",
+            "dutch": "terug; omgekeerd",
+            "english": "back; conversely"
+          },
+          {
+            "indonesian": "metode",
+            "dutch": "methode",
+            "english": "method"
+          },
+          {
+            "indonesian": "ucap",
+            "dutch": "uitspreken, zeggen",
+            "english": "to utter, say"
+          },
+          {
+            "indonesian": "alas",
+            "dutch": "onderlaag, mat; woud",
+            "english": "base, mat; forest"
+          },
+          {
+            "indonesian": "tanding",
+            "dutch": "wedstrijd, match",
+            "english": "match, contest"
+          },
+          {
+            "indonesian": "rendah",
+            "dutch": "laag, nederig",
+            "english": "low, humble"
+          },
+          {
+            "indonesian": "bakar",
+            "dutch": "branden, grillen, roosteren",
+            "english": "to burn, grill, roast"
+          },
+          {
+            "indonesian": "target",
+            "dutch": "doel, target",
+            "english": "target, goal"
+          },
+          {
+            "indonesian": "darah",
+            "dutch": "bloed",
+            "english": "blood"
+          },
+          {
+            "indonesian": "sungguh",
+            "dutch": "echt, werkelijk",
+            "english": "really, truly"
+          },
+          {
+            "indonesian": "total",
+            "dutch": "totaal",
+            "english": "total"
+          },
+          {
+            "indonesian": "rawat",
+            "dutch": "verzorgen, verplegen",
+            "english": "to care for, nurse"
+          },
+          {
+            "indonesian": "sukses",
+            "dutch": "succes; succesvol",
+            "english": "success; successful"
+          },
+          {
+            "indonesian": "walau",
+            "dutch": "hoewel, ook al",
+            "english": "although"
+          },
+          {
+            "indonesian": "kalah",
+            "dutch": "verliezen, verslagen",
+            "english": "to lose, defeated"
+          },
+          {
+            "indonesian": "muslim",
+            "dutch": "moslim",
+            "english": "Muslim"
+          },
+          {
+            "indonesian": "lapang",
+            "dutch": "ruim; veld",
+            "english": "spacious; field"
+          },
+          {
+            "indonesian": "pribadi",
+            "dutch": "privé, persoonlijk",
+            "english": "private, personal"
+          },
+          {
+            "indonesian": "sisi",
+            "dutch": "kant, zijde",
+            "english": "side"
+          },
+          {
+            "indonesian": "mesin",
+            "dutch": "machine",
+            "english": "machine"
+          },
+          {
+            "indonesian": "tolak",
+            "dutch": "weigeren, afwijzen",
+            "english": "to reject, refuse"
+          },
+          {
+            "indonesian": "energi",
+            "dutch": "energie",
+            "english": "energy"
+          },
+          {
+            "indonesian": "resmi",
+            "dutch": "officieel, formeel",
+            "english": "official, formal"
+          },
+          {
+            "indonesian": "gabung",
+            "dutch": "samenvoegen, zich aansluiten",
+            "english": "to combine, join"
+          },
+          {
+            "indonesian": "triliun",
+            "dutch": "biljoen",
+            "english": "trillion"
+          },
+          {
+            "indonesian": "model",
+            "dutch": "model",
+            "english": "model"
+          },
+          {
+            "indonesian": "listrik",
+            "dutch": "elektriciteit; elektrisch",
+            "english": "electricity; electric"
+          },
+          {
+            "indonesian": "raja",
+            "dutch": "koning",
+            "english": "king"
+          },
+          {
+            "indonesian": "angka",
+            "dutch": "cijfer, getal",
+            "english": "number, figure"
+          },
+          {
+            "indonesian": "komputer",
+            "dutch": "computer",
+            "english": "computer"
+          },
+          {
+            "indonesian": "internet",
+            "dutch": "internet",
+            "english": "internet"
+          },
+          {
+            "indonesian": "nikah",
+            "dutch": "huwelijk, trouwen",
+            "english": "marriage, to marry"
+          },
+          {
+            "indonesian": "tentara",
+            "dutch": "leger, soldaat",
+            "english": "army, soldier"
+          },
+          {
+            "indonesian": "publik",
+            "dutch": "publiek, openbaar",
+            "english": "public"
+          },
+          {
+            "indonesian": "sambil",
+            "dutch": "terwijl, tegelijk",
+            "english": "while, at the same time"
+          },
+          {
+            "indonesian": "jiwa",
+            "dutch": "ziel, leven",
+            "english": "soul, life"
+          },
+          {
+            "indonesian": "situs",
+            "dutch": "site, plek",
+            "english": "site"
+          },
+          {
+            "indonesian": "erti",
+            "dutch": "betekenis, zin",
+            "english": "meaning, sense"
+          },
+          {
+            "indonesian": "saing",
+            "dutch": "concurreren, wedijveren",
+            "english": "to compete, to rival"
+          },
+          {
+            "indonesian": "nyaman",
+            "dutch": "comfortabel, aangenaam",
+            "english": "comfortable, pleasant"
+          },
+          {
+            "indonesian": "gol",
+            "dutch": "doelpunt",
+            "english": "goal"
+          },
+          {
+            "indonesian": "gagal",
+            "dutch": "mislukken, falen",
+            "english": "to fail"
+          },
+          {
+            "indonesian": "semangat",
+            "dutch": "enthousiasme, geestdrift",
+            "english": "enthusiasm, spirit"
+          },
+          {
+            "indonesian": "lokal",
+            "dutch": "lokaal, plaatselijk",
+            "english": "local"
+          },
+          {
+            "indonesian": "demi",
+            "dutch": "omwille van, voor",
+            "english": "for the sake of"
+          },
+          {
+            "indonesian": "serikat",
+            "dutch": "unie, bond",
+            "english": "union, alliance"
+          },
+          {
+            "indonesian": "banjir",
+            "dutch": "overstroming",
+            "english": "flood"
+          },
+          {
+            "indonesian": "kan",
+            "dutch": "toch? (partikel)",
+            "english": "right? (particle)"
+          },
+          {
+            "indonesian": "tiket",
+            "dutch": "kaartje, ticket",
+            "english": "ticket"
+          },
+          {
+            "indonesian": "salat",
+            "dutch": "islamitisch gebed",
+            "english": "Islamic prayer"
+          },
+          {
+            "indonesian": "emas",
+            "dutch": "goud",
+            "english": "gold"
+          },
+          {
+            "indonesian": "sisa",
+            "dutch": "rest, overschot",
+            "english": "rest, remainder"
+          },
+          {
+            "indonesian": "sempurna",
+            "dutch": "perfect, volmaakt",
+            "english": "perfect, complete"
+          },
+          {
+            "indonesian": "halaman",
+            "dutch": "pagina; erf",
+            "english": "page; yard"
+          },
+          {
+            "indonesian": "rancang",
+            "dutch": "ontwerpen, plannen",
+            "english": "to design, plan"
+          },
+          {
+            "indonesian": "pindah",
+            "dutch": "verhuizen, verplaatsen",
+            "english": "to move, relocate"
+          },
+          {
+            "indonesian": "salur",
+            "dutch": "kanaliseren, doorgeleiden",
+            "english": "to channel, to distribute"
+          },
+          {
+            "indonesian": "kristus",
+            "dutch": "Christus",
+            "english": "Christ"
+          },
+          {
+            "indonesian": "lomba",
+            "dutch": "wedstrijd, race",
+            "english": "race, competition"
+          },
+          {
+            "indonesian": "zaman",
+            "dutch": "tijdperk, tijd",
+            "english": "era, time"
+          },
+          {
+            "indonesian": "gas",
+            "dutch": "gas, benzine",
+            "english": "gas, gasoline"
+          },
+          {
+            "indonesian": "wajah",
+            "dutch": "gezicht",
+            "english": "face"
+          },
+          {
+            "indonesian": "khawatir",
+            "dutch": "bezorgd, ongerust",
+            "english": "worried"
+          },
+          {
+            "indonesian": "belah",
+            "dutch": "helft, kant; splijten",
+            "english": "half, side; to split"
+          },
+          {
+            "indonesian": "doa",
+            "dutch": "gebed",
+            "english": "prayer"
+          },
+          {
+            "loanSourceNl": "gratis",
+            "indonesian": "gratis",
+            "dutch": "gratis",
+            "english": "free, gratis"
+          },
+          {
+            "indonesian": "kecuali",
+            "dutch": "behalve",
+            "english": "except"
+          },
+          {
+            "indonesian": "titik",
+            "dutch": "punt, stip",
+            "english": "dot, point"
+          },
+          {
+            "indonesian": "sahabat",
+            "dutch": "goede vriend, makker",
+            "english": "close friend"
+          },
+          {
+            "indonesian": "klub",
+            "dutch": "club",
+            "english": "club"
+          },
+          {
+            "indonesian": "tumpang",
+            "dutch": "meerijden, ergens verblijven; opstapelen",
+            "english": "to hitch a ride, to lodge/stay (with someone); to stack/overlap"
+          },
+          {
+            "indonesian": "kalo",
+            "dutch": "als, wanneer",
+            "english": "if, when",
+            "register": "informal",
+            "registerCounterpart": "kalau"
+          },
+          {
+            "indonesian": "pabrik",
+            "dutch": "fabriek",
+            "english": "factory"
+          },
+          {
+            "indonesian": "masjid",
+            "dutch": "moskee",
+            "english": "mosque"
+          },
+          {
+            "indonesian": "sepak",
+            "dutch": "schoppen (sepak bola = voetbal)",
+            "english": "to kick (sepak bola = soccer)"
+          },
+          {
+            "indonesian": "kebun",
+            "dutch": "tuin, plantage",
+            "english": "garden, plantation"
+          },
+          {
+            "indonesian": "pasien",
+            "dutch": "patiënt",
+            "english": "patient"
+          },
+          {
+            "indonesian": "level",
+            "dutch": "niveau, level",
+            "english": "level"
+          },
+          {
+            "indonesian": "pustaka",
+            "dutch": "boek, geschrift",
+            "english": "book, literary work"
+          },
+          {
+            "indonesian": "judul",
+            "dutch": "titel",
+            "english": "title"
+          },
+          {
+            "indonesian": "cuma",
+            "dutch": "alleen, maar, slechts",
+            "english": "only, but",
+            "register": "informal",
+            "registerCounterpart": "hanya"
+          },
+          {
+            "indonesian": "tes",
+            "dutch": "test, examen",
+            "english": "test, exam"
+          },
+          {
+            "indonesian": "samping",
+            "dutch": "naast; zijkant",
+            "english": "next to; side"
+          },
+          {
+            "indonesian": "area",
+            "dutch": "gebied, terrein",
+            "english": "area"
+          },
+          {
+            "indonesian": "jadwal",
+            "dutch": "rooster, schema",
+            "english": "schedule, timetable"
+          },
+          {
+            "indonesian": "pecah",
+            "dutch": "breken, barsten",
+            "english": "to break, shatter"
+          },
+          {
+            "indonesian": "peduli",
+            "dutch": "geven om, zich bekommeren",
+            "english": "to care about"
+          },
+          {
+            "indonesian": "sempit",
+            "dutch": "smal, nauw",
+            "english": "narrow"
+          },
+          {
+            "loanSourceNl": "ton",
+            "indonesian": "ton",
+            "dutch": "ton (gewicht)",
+            "english": "ton"
+          },
+          {
+            "loanSourceNl": "branie",
+            "indonesian": "berani",
+            "dutch": "dapper, moedig",
+            "english": "brave, daring"
+          },
+          {
+            "indonesian": "ikat",
+            "dutch": "binden, vastmaken",
+            "english": "to tie, bind"
+          },
+          {
+            "indonesian": "gereja",
+            "dutch": "kerk",
+            "english": "church"
+          },
+          {
+            "loanSourceNl": "kampong",
+            "indonesian": "kampung",
+            "dutch": "dorp, wijk",
+            "english": "village, hamlet"
+          },
+          {
+            "indonesian": "lebar",
+            "dutch": "breed, wijd",
+            "english": "wide"
+          },
+          {
+            "indonesian": "malu",
+            "dutch": "verlegen, beschaamd",
+            "english": "shy, ashamed"
+          },
+          {
+            "indonesian": "tenang",
+            "dutch": "kalm, rustig",
+            "english": "calm, quiet"
+          },
+          {
+            "indonesian": "benda",
+            "dutch": "voorwerp, ding",
+            "english": "object, thing"
+          },
+          {
+            "indonesian": "bangga",
+            "dutch": "trots",
+            "english": "proud"
+          },
+          {
+            "indonesian": "kitab",
+            "dutch": "heilig boek, boek",
+            "english": "holy book, book"
+          },
+          {
+            "indonesian": "hewan",
+            "dutch": "dier",
+            "english": "animal"
+          },
+          {
+            "indonesian": "qur'an",
+            "dutch": "de Koran",
+            "english": "the Quran"
+          },
+          {
+            "indonesian": "otak",
+            "dutch": "hersenen, brein",
+            "english": "brain"
+          },
+          {
+            "indonesian": "alamat",
+            "dutch": "adres",
+            "english": "address"
+          },
+          {
+            "indonesian": "jarang",
+            "dutch": "zelden",
+            "english": "rarely"
+          },
+          {
+            "indonesian": "labuh",
+            "dutch": "ankeren, aanmeren",
+            "english": "to anchor, moor"
+          },
+          {
+            "indonesian": "celaka",
+            "dutch": "ongeluk, ramp",
+            "english": "accident, misfortune"
+          },
+          {
+            "indonesian": "garis",
+            "dutch": "lijn, streep",
+            "english": "line"
+          },
+          {
+            "indonesian": "kisah",
+            "dutch": "verhaal, vertelling",
+            "english": "tale, story"
+          },
+          {
+            "indonesian": "daun",
+            "dutch": "blad (van plant)",
+            "english": "leaf"
+          },
+          {
+            "indonesian": "ramadan",
+            "dutch": "ramadan (vastenmaand)",
+            "english": "Ramadan"
+          },
+          {
+            "indonesian": "gempa",
+            "dutch": "aardbeving",
+            "english": "earthquake"
+          },
+          {
+            "indonesian": "rute",
+            "dutch": "route",
+            "english": "route"
+          },
+          {
+            "indonesian": "web",
+            "dutch": "web",
+            "english": "web"
+          },
+          {
+            "indonesian": "jujur",
+            "dutch": "eerlijk",
+            "english": "honest"
+          },
+          {
+            "indonesian": "segar",
+            "dutch": "fris, vers",
+            "english": "fresh"
+          },
+          {
+            "indonesian": "parkir",
+            "dutch": "parkeren",
+            "english": "to park"
+          },
+          {
+            "indonesian": "kejut",
+            "dutch": "opschrikken, verbazen; schrik",
+            "english": "startle, surprise; shock"
+          },
+          {
+            "indonesian": "hebat",
+            "dutch": "geweldig, fantastisch",
+            "english": "great, awesome"
+          },
+          {
+            "indonesian": "kelapa",
+            "dutch": "kokosnoot",
+            "english": "coconut"
+          },
+          {
+            "indonesian": "tulang",
+            "dutch": "bot, been",
+            "english": "bone"
+          },
+          {
+            "indonesian": "kalimat",
+            "dutch": "zin",
+            "english": "sentence"
+          },
+          {
+            "indonesian": "kamera",
+            "dutch": "camera",
+            "english": "camera"
+          },
+          {
+            "indonesian": "emosi",
+            "dutch": "emotie; emotioneel",
+            "english": "emotion; emotional"
+          },
+          {
+            "indonesian": "rahasia",
+            "dutch": "geheim",
+            "english": "secret"
+          },
+          {
+            "indonesian": "kecewa",
+            "dutch": "teleurgesteld",
+            "english": "disappointed"
+          },
+          {
+            "indonesian": "tenggara",
+            "dutch": "zuidoosten",
+            "english": "southeast"
+          },
+          {
+            "indonesian": "juru",
+            "dutch": "vakman, specialist",
+            "english": "expert, specialist"
+          },
+          {
+            "indonesian": "menu",
+            "dutch": "menu",
+            "english": "menu"
+          },
+          {
+            "indonesian": "paruh",
+            "dutch": "helft; snavel",
+            "english": "half; beak"
+          },
+          {
+            "indonesian": "suhu",
+            "dutch": "temperatuur",
+            "english": "temperature"
+          },
+          {
+            "indonesian": "kawan",
+            "dutch": "vriend, kameraad",
+            "english": "friend, companion"
+          },
+          {
+            "indonesian": "sudut",
+            "dutch": "hoek; gezichtspunt",
+            "english": "corner, angle; viewpoint"
+          },
+          {
+            "indonesian": "sinar",
+            "dutch": "straal, licht",
+            "english": "ray, light"
+          },
+          {
+            "indonesian": "batang",
+            "dutch": "stengel, staaf (telwoord)",
+            "english": "stalk, rod (classifier)"
+          },
+          {
+            "indonesian": "macet",
+            "dutch": "vastlopen, file",
+            "english": "stuck, traffic jam"
+          },
+          {
+            "indonesian": "banget",
+            "dutch": "heel erg",
+            "english": "very",
+            "register": "informal",
+            "registerCounterpart": "sekali"
+          },
+          {
+            "indonesian": "gembira",
+            "dutch": "blij, vrolijk",
+            "english": "glad, cheerful"
+          },
+          {
+            "indonesian": "majalah",
+            "dutch": "tijdschrift",
+            "english": "magazine"
+          },
+          {
+            "indonesian": "volume",
+            "dutch": "volume",
+            "english": "volume"
+          },
+          {
+            "indonesian": "blok",
+            "dutch": "blok",
+            "english": "block"
+          },
+          {
+            "indonesian": "tetangga",
+            "dutch": "buurman, buur",
+            "english": "neighbor"
+          },
+          {
+            "indonesian": "lembar",
+            "dutch": "vel (telwoord)",
+            "english": "sheet (classifier)"
+          },
+          {
+            "indonesian": "album",
+            "dutch": "album",
+            "english": "album"
+          },
+          {
+            "loanSourceNl": "band",
+            "indonesian": "ban",
+            "dutch": "band (van wiel)",
+            "english": "tire"
+          },
+          {
+            "indonesian": "populasi",
+            "dutch": "bevolking, populatie",
+            "english": "population"
+          },
+          {
+            "indonesian": "batal",
+            "dutch": "annuleren, afgelasten",
+            "english": "to cancel"
+          },
+          {
+            "indonesian": "lubang",
+            "dutch": "gat, opening",
+            "english": "hole"
+          },
+          {
+            "indonesian": "natal",
+            "dutch": "Kerstmis",
+            "english": "Christmas"
+          },
+          {
+            "indonesian": "pesta",
+            "dutch": "feest",
+            "english": "party"
+          },
+          {
+            "indonesian": "terminal",
+            "dutch": "terminal",
+            "english": "terminal"
+          },
+          {
+            "indonesian": "bau",
+            "dutch": "geur, stank; ruiken",
+            "english": "smell, odor; to stink"
+          },
+          {
+            "indonesian": "roda",
+            "dutch": "wiel",
+            "english": "wheel"
+          },
+          {
+            "indonesian": "anggur",
+            "dutch": "druif; wijn",
+            "english": "grape; wine"
+          },
+          {
+            "indonesian": "surga",
+            "dutch": "hemel, paradijs",
+            "english": "heaven, paradise"
+          },
+          {
+            "indonesian": "lukis",
+            "dutch": "schilderen, tekenen",
+            "english": "to paint, to draw"
+          },
+          {
+            "indonesian": "kolam",
+            "dutch": "vijver, zwembad",
+            "english": "pool, pond"
+          },
+          {
+            "indonesian": "artis",
+            "dutch": "artiest",
+            "english": "artist"
+          },
+          {
+            "indonesian": "tipis",
+            "dutch": "dun",
+            "english": "thin"
+          },
+          {
+            "indonesian": "anti",
+            "dutch": "anti, tegen",
+            "english": "anti, against"
+          },
+          {
+            "indonesian": "derajat",
+            "dutch": "graad (temperatuur, hoek, rang)",
+            "english": "degree (temperature, angle, rank)"
+          },
+          {
+            "indonesian": "teks",
+            "dutch": "tekst",
+            "english": "text"
+          },
+          {
+            "indonesian": "besi",
+            "dutch": "ijzer",
+            "english": "iron"
+          },
+          {
+            "indonesian": "pasir",
+            "dutch": "zand",
+            "english": "sand"
+          },
+          {
+            "indonesian": "metro",
+            "dutch": "metro",
+            "english": "metro"
+          },
+          {
+            "loanSourceNl": "chocolade",
+            "indonesian": "cokelat",
+            "dutch": "chocolade; bruin",
+            "english": "chocolate; brown"
+          },
+          {
+            "indonesian": "haram",
+            "dutch": "verboden (islam), taboe",
+            "english": "forbidden (Islam)"
+          },
+          {
+            "indonesian": "truk",
+            "dutch": "vrachtwagen",
+            "english": "truck"
+          },
+          {
+            "indonesian": "bukit",
+            "dutch": "heuvel",
+            "english": "hill"
+          },
+          {
+            "indonesian": "halal",
+            "dutch": "toegestaan, halal",
+            "english": "permitted, halal"
+          },
+          {
+            "indonesian": "gali",
+            "dutch": "graven",
+            "english": "to dig"
+          },
+          {
+            "indonesian": "otot",
+            "dutch": "spier",
+            "english": "muscle"
+          },
+          {
+            "indonesian": "asisten",
+            "dutch": "assistent",
+            "english": "assistant"
+          },
+          {
+            "indonesian": "pacar",
+            "dutch": "vriend(in), partner",
+            "english": "boyfriend/girlfriend"
+          },
+          {
+            "indonesian": "aktor",
+            "dutch": "acteur",
+            "english": "actor"
+          },
+          {
+            "indonesian": "sapa",
+            "dutch": "aanspreken, groeten",
+            "english": "to greet, speak to"
+          },
+          {
+            "indonesian": "lempar",
+            "dutch": "gooien, werpen",
+            "english": "to throw"
+          },
+          {
+            "indonesian": "cerah",
+            "dutch": "helder, zonnig",
+            "english": "bright, clear"
+          },
+          {
+            "indonesian": "bentar",
+            "dutch": "zo, even",
+            "english": "in a moment",
+            "register": "informal",
+            "registerCounterpart": "sebentar"
+          },
+          {
+            "indonesian": "basah",
+            "dutch": "nat, vochtig",
+            "english": "wet"
+          },
+          {
+            "indonesian": "tebal",
+            "dutch": "dik",
+            "english": "thick"
+          },
+          {
+            "indonesian": "karet",
+            "dutch": "rubber, elastiek",
+            "english": "rubber"
+          },
+          {
+            "indonesian": "buddha",
+            "dutch": "Boeddha, boeddhisme",
+            "english": "Buddha, Buddhism"
+          },
+          {
+            "indonesian": "klinik",
+            "dutch": "kliniek",
+            "english": "clinic"
+          },
+          {
+            "indonesian": "papan",
+            "dutch": "plank, bord",
+            "english": "board, plank"
+          },
+          {
+            "loanSourceNl": "krant",
+            "indonesian": "koran",
+            "dutch": "krant",
+            "english": "newspaper"
+          },
+          {
+            "indonesian": "kuda",
+            "dutch": "paard",
+            "english": "horse"
+          },
+          {
+            "indonesian": "benci",
+            "dutch": "haten, een hekel hebben aan",
+            "english": "to hate"
+          },
+          {
+            "indonesian": "danau",
+            "dutch": "meer",
+            "english": "lake"
+          },
+          {
+            "indonesian": "cium",
+            "dutch": "ruiken; kussen",
+            "english": "to smell; to kiss"
+          },
+          {
+            "indonesian": "drama",
+            "dutch": "drama",
+            "english": "drama"
+          },
+          {
+            "indonesian": "konser",
+            "dutch": "concert",
+            "english": "concert"
+          },
+          {
+            "indonesian": "bawang",
+            "dutch": "ui, knoflook",
+            "english": "onion, garlic"
+          },
+          {
+            "indonesian": "punggung",
+            "dutch": "rug",
+            "english": "back (of body)"
+          },
+          {
+            "indonesian": "atap",
+            "dutch": "dak",
+            "english": "roof"
+          },
+          {
+            "indonesian": "tali",
+            "dutch": "touw, koord",
+            "english": "rope, cord"
+          },
+          {
+            "indonesian": "bendera",
+            "dutch": "vlag",
+            "english": "flag"
+          },
+          {
+            "indonesian": "mama",
+            "dutch": "mama",
+            "english": "mom"
+          },
+          {
+            "indonesian": "label",
+            "dutch": "label, etiket",
+            "english": "label"
+          },
+          {
+            "indonesian": "ratu",
+            "dutch": "koningin",
+            "english": "queen"
+          },
+          {
+            "indonesian": "nyala",
+            "dutch": "branden, aangaan",
+            "english": "to light up, turn on"
+          },
+          {
+            "indonesian": "lidah",
+            "dutch": "tong",
+            "english": "tongue"
+          },
+          {
+            "indonesian": "katolik",
+            "dutch": "katholiek",
+            "english": "Catholic"
+          },
+          {
+            "indonesian": "sepi",
+            "dutch": "stil, eenzaam, verlaten",
+            "english": "quiet, lonely"
+          },
+          {
+            "indonesian": "rumput",
+            "dutch": "gras",
+            "english": "grass"
+          },
+          {
+            "indonesian": "tombol",
+            "dutch": "knop, toets",
+            "english": "button, key"
+          },
+          {
+            "indonesian": "robot",
+            "dutch": "robot",
+            "english": "robot"
+          },
+          {
+            "indonesian": "asap",
+            "dutch": "rook, damp",
+            "english": "smoke"
+          },
+          {
+            "indonesian": "gerbang",
+            "dutch": "poort",
+            "english": "gate"
+          },
+          {
+            "indonesian": "perak",
+            "dutch": "zilver",
+            "english": "silver"
+          },
+          {
+            "indonesian": "garasi",
+            "dutch": "garage",
+            "english": "garage"
+          },
+          {
+            "indonesian": "influenza",
+            "dutch": "griep",
+            "english": "flu, influenza"
+          },
+          {
+            "indonesian": "idul",
+            "dutch": "islamitisch feest, Eid",
+            "english": "Islamic feast, Eid"
+          },
+          {
+            "indonesian": "perahu",
+            "dutch": "boot, prauw",
+            "english": "boat"
+          },
+          {
+            "indonesian": "gajah",
+            "dutch": "olifant",
+            "english": "elephant"
+          },
+          {
+            "indonesian": "pangeran",
+            "dutch": "prins",
+            "english": "prince"
+          },
+          {
+            "indonesian": "fitri",
+            "dutch": "zuiver, natuurlijk",
+            "english": "pure, natural"
+          },
+          {
+            "indonesian": "sains",
+            "dutch": "wetenschap",
+            "english": "science"
+          },
+          {
+            "indonesian": "paru",
+            "dutch": "long",
+            "english": "lung"
+          },
+          {
+            "indonesian": "kacang",
+            "dutch": "boon, pinda, noot",
+            "english": "bean, peanut, nut"
+          },
+          {
+            "indonesian": "madu",
+            "dutch": "honing",
+            "english": "honey"
+          },
+          {
+            "indonesian": "rumit",
+            "dutch": "ingewikkeld, complex",
+            "english": "complicated"
+          },
+          {
+            "indonesian": "leher",
+            "dutch": "nek, hals",
+            "english": "neck"
+          },
+          {
+            "indonesian": "neraka",
+            "dutch": "hel",
+            "english": "hell"
+          },
+          {
+            "indonesian": "babi",
+            "dutch": "varken",
+            "english": "pig"
+          },
+          {
+            "indonesian": "mbak",
+            "dutch": "mevrouw, zus (beleefd)",
+            "english": "miss (polite, female)"
+          },
+          {
+            "indonesian": "bahu",
+            "dutch": "schouder",
+            "english": "shoulder"
+          },
+          {
+            "indonesian": "menara",
+            "dutch": "toren, minaret",
+            "english": "tower, minaret"
+          },
+          {
+            "indonesian": "cabai",
+            "dutch": "chili, peper",
+            "english": "chili, pepper"
+          },
+          {
+            "indonesian": "teluk",
+            "dutch": "baai, golf",
+            "english": "gulf, bay"
+          },
+          {
+            "indonesian": "tikus",
+            "dutch": "muis, rat",
+            "english": "mouse, rat"
+          },
+          {
+            "indonesian": "bumbu",
+            "dutch": "specerij, kruiden",
+            "english": "spice, seasoning"
+          },
+          {
+            "indonesian": "handphone",
+            "dutch": "mobiele telefoon",
+            "english": "cell phone"
+          },
+          {
+            "indonesian": "diet",
+            "dutch": "dieet",
+            "english": "diet"
+          },
+          {
+            "indonesian": "beku",
+            "dutch": "bevroren",
+            "english": "frozen"
+          },
+          {
+            "indonesian": "mal",
+            "dutch": "mal, sjabloon; (ook) winkelcentrum",
+            "english": "mold, template, pattern; (also) shopping mall"
+          },
+          {
+            "indonesian": "kompas",
+            "dutch": "kompas",
+            "english": "compass"
+          },
+          {
+            "indonesian": "badai",
+            "dutch": "storm, orkaan",
+            "english": "storm"
+          },
+          {
+            "indonesian": "kafe",
+            "dutch": "café",
+            "english": "cafe"
+          },
+          {
+            "indonesian": "pilot",
+            "dutch": "piloot",
+            "english": "pilot"
+          },
+          {
+            "indonesian": "ular",
+            "dutch": "slang",
+            "english": "snake"
+          },
+          {
+            "indonesian": "teater",
+            "dutch": "theater",
+            "english": "theater"
+          },
+          {
+            "indonesian": "lompat",
+            "dutch": "springen",
+            "english": "to jump"
+          },
+          {
+            "indonesian": "hai",
+            "dutch": "hoi, hallo",
+            "english": "hi"
+          },
+          {
+            "indonesian": "pinggang",
+            "dutch": "middel, taille",
+            "english": "waist"
+          },
+          {
+            "loanSourceNl": "kalender",
+            "indonesian": "kalender",
+            "dutch": "kalender",
+            "english": "calendar"
+          },
+          {
+            "indonesian": "gigit",
+            "dutch": "bijten",
+            "english": "to bite"
+          },
+          {
+            "indonesian": "krim",
+            "dutch": "crème, room",
+            "english": "cream"
+          },
+          {
+            "indonesian": "payung",
+            "dutch": "paraplu",
+            "english": "umbrella"
+          },
+          {
+            "indonesian": "papa",
+            "dutch": "papa",
+            "english": "dad"
+          },
+          {
+            "indonesian": "nyamuk",
+            "dutch": "mug",
+            "english": "mosquito"
+          },
+          {
+            "indonesian": "mabuk",
+            "dutch": "dronken; misselijk",
+            "english": "drunk; nauseous"
+          }
         ]
       }
     },
@@ -552,30 +2711,130 @@ export const lesson = {
       "content": {
         "type": "vocabulary",
         "items": [
-          { "indonesian": "mangga", "dutch": "mango", "english": "mango" },
-          { "indonesian": "alpukat", "dutch": "avocado", "english": "avocado" },
-          { "indonesian": "air mineral", "dutch": "mineraalwater", "english": "mineral water" },
-          { "indonesian": "rumah makan", "dutch": "restaurant, eethuis", "english": "restaurant" },
-          { "indonesian": "sarapan", "dutch": "ontbijt", "english": "breakfast" },
-          { "indonesian": "gua", "dutch": "grot", "english": "cave" },
-          { "indonesian": "air terjun", "dutch": "waterval", "english": "waterfall" },
-          { "indonesian": "berdiri", "dutch": "staan", "english": "to stand" },
-          { "indonesian": "bingung", "dutch": "verward, in de war", "english": "confused" },
-          { "indonesian": "bantal", "dutch": "kussen", "english": "pillow" },
-          { "indonesian": "selimut", "dutch": "deken", "english": "blanket" },
-          { "loanSourceNl": "koelkast", "indonesian": "kulkas", "dutch": "koelkast", "english": "refrigerator" },
-          { "loanSourceNl": "komfoor", "indonesian": "kompor", "dutch": "fornuis, kookplaat", "english": "stove" },
-          { "indonesian": "kipas", "dutch": "waaier, ventilator", "english": "fan" },
-          { "indonesian": "kaos", "dutch": "T-shirt", "english": "T-shirt" },
-          { "indonesian": "gaun", "dutch": "jurk, japon", "english": "dress, gown" },
-          { "indonesian": "jaket", "dutch": "jas, jasje", "english": "jacket" },
-          { "indonesian": "sweter", "dutch": "trui", "english": "sweater" },
-          { "indonesian": "kaus kaki", "dutch": "sokken", "english": "socks" },
-          { "loanSourceNl": "dasje / das", "indonesian": "dasi", "dutch": "stropdas", "english": "tie" },
-          { "indonesian": "sabuk", "dutch": "riem, gordel", "english": "belt" },
-          { "loanSourceNl": "sarong", "indonesian": "sarung", "dutch": "sarong", "english": "sarong" },
-          { "indonesian": "jilbab", "dutch": "hoofddoek", "english": "headscarf" },
-          { "indonesian": "jam tangan", "dutch": "horloge", "english": "watch" }
+          {
+            "indonesian": "mangga",
+            "dutch": "mango",
+            "english": "mango"
+          },
+          {
+            "indonesian": "alpukat",
+            "dutch": "avocado",
+            "english": "avocado"
+          },
+          {
+            "indonesian": "air mineral",
+            "dutch": "mineraalwater",
+            "english": "mineral water"
+          },
+          {
+            "indonesian": "rumah makan",
+            "dutch": "restaurant, eethuis",
+            "english": "restaurant"
+          },
+          {
+            "indonesian": "sarapan",
+            "dutch": "ontbijt",
+            "english": "breakfast"
+          },
+          {
+            "indonesian": "gua",
+            "dutch": "grot",
+            "english": "cave"
+          },
+          {
+            "indonesian": "air terjun",
+            "dutch": "waterval",
+            "english": "waterfall"
+          },
+          {
+            "indonesian": "berdiri",
+            "dutch": "staan",
+            "english": "to stand"
+          },
+          {
+            "indonesian": "bingung",
+            "dutch": "verward, in de war",
+            "english": "confused"
+          },
+          {
+            "indonesian": "bantal",
+            "dutch": "kussen",
+            "english": "pillow"
+          },
+          {
+            "indonesian": "selimut",
+            "dutch": "deken",
+            "english": "blanket"
+          },
+          {
+            "loanSourceNl": "koelkast",
+            "indonesian": "kulkas",
+            "dutch": "koelkast",
+            "english": "refrigerator"
+          },
+          {
+            "loanSourceNl": "komfoor",
+            "indonesian": "kompor",
+            "dutch": "fornuis, kookplaat",
+            "english": "stove"
+          },
+          {
+            "indonesian": "kipas",
+            "dutch": "waaier, ventilator",
+            "english": "fan"
+          },
+          {
+            "indonesian": "kaos",
+            "dutch": "T-shirt",
+            "english": "T-shirt"
+          },
+          {
+            "indonesian": "gaun",
+            "dutch": "jurk, japon",
+            "english": "dress, gown"
+          },
+          {
+            "indonesian": "jaket",
+            "dutch": "jas, jasje",
+            "english": "jacket"
+          },
+          {
+            "indonesian": "sweter",
+            "dutch": "trui",
+            "english": "sweater"
+          },
+          {
+            "indonesian": "kaus kaki",
+            "dutch": "sokken",
+            "english": "socks"
+          },
+          {
+            "loanSourceNl": "dasje / das",
+            "indonesian": "dasi",
+            "dutch": "stropdas",
+            "english": "tie"
+          },
+          {
+            "indonesian": "sabuk",
+            "dutch": "riem, gordel",
+            "english": "belt"
+          },
+          {
+            "loanSourceNl": "sarong",
+            "indonesian": "sarung",
+            "dutch": "sarong",
+            "english": "sarong"
+          },
+          {
+            "indonesian": "jilbab",
+            "dutch": "hoofddoek",
+            "english": "headscarf"
+          },
+          {
+            "indonesian": "jam tangan",
+            "dutch": "horloge",
+            "english": "watch"
+          }
         ]
       }
     },
@@ -585,107 +2844,514 @@ export const lesson = {
       "content": {
         "type": "vocabulary",
         "items": [
-          {"loanSourceNl": "jas", "indonesian":"jas","dutch":"jas, colbert","english":"jacket, coat"},
-          {"indonesian":"laptop","dutch":"laptop","english":"laptop"},
-          {"indonesian":"ponsel","dutch":"mobiele telefoon","english":"mobile phone"},
-          {"indonesian":"email","dutch":"e-mail","english":"email"},
-          {"indonesian":"peramban","dutch":"webbrowser","english":"web browser"},
-          {"indonesian":"nirkabel","dutch":"draadloos","english":"wireless"},
-          {"indonesian":"ilmuwan","dutch":"wetenschapper","english":"scientist"},
-          {"indonesian":"kontraktor","dutch":"aannemer","english":"contractor"},
-          {"indonesian":"singa","dutch":"leeuw","english":"lion"},
-          {"indonesian":"hiu","dutch":"haai","english":"shark"},
-          {"indonesian":"rusa","dutch":"hert","english":"deer"},
-          {"indonesian":"panda","dutch":"panda","english":"panda"},
-          {"indonesian":"jambu","dutch":"jambu (roze appel, guave)","english":"rose apple, guava"},
-          {"indonesian":"kapak","dutch":"bijl","english":"axe"},
-          {"indonesian":"kruk","dutch":"kruk (loophulp)","english":"crutch"},
-          {"indonesian":"jaring","dutch":"net, visnet","english":"net"},
-          {"indonesian":"pancing","dutch":"hengel","english":"fishing rod"},
-          {"indonesian":"kabut","dutch":"mist, nevel","english":"fog, mist"},
-          {"indonesian":"longsor","dutch":"aardverschuiving","english":"landslide"},
-          {"indonesian":"padang","dutch":"vlakte, veld","english":"field, plain"},
-          {"indonesian":"panen","dutch":"oogst","english":"harvest"},
-          {"indonesian":"judi","dutch":"gokken, kansspel","english":"gambling"},
-          {"indonesian":"ide","dutch":"idee","english":"idea"},
-          {"indonesian":"bayang","dutch":"schaduw","english":"shadow"},
-          {"indonesian":"belang","dutch":"streep, bonte vlek (op vacht)","english":"stripe, blaze"},
-          {"indonesian":"bintik","dutch":"stip, spikkel","english":"spot, dot"},
-          {"indonesian":"tepuk","dutch":"klap, applaus","english":"clap, pat"},
-          {"indonesian":"teriak","dutch":"schreeuw, kreet","english":"shout, scream"},
-          {"indonesian":"tetua","dutch":"oudste, ouderling","english":"elder"},
-          {"indonesian":"sesal","dutch":"spijt, berouw","english":"regret"},
-          {"indonesian":"milik","dutch":"bezit, eigendom","english":"property, possession"},
-          {"indonesian":"kuasa","dutch":"macht, gezag","english":"power, authority"},
-          {"indonesian":"jaran","dutch":"paard (Javaans)","english":"horse (Javanese)"},
-          {"indonesian":"capek","dutch":"moe, uitgeput","english":"tired"},
-          {"indonesian":"harum","dutch":"geurig, welriekend","english":"fragrant"},
-          {"indonesian":"heran","dutch":"verbaasd, verwonderd","english":"amazed, astonished"},
-          {"indonesian":"lembut","dutch":"zacht, teder","english":"soft, gentle"},
-          {"indonesian":"liar","dutch":"wild, ongetemd","english":"wild, untamed"},
-          {"indonesian":"lumpuh","dutch":"verlamd","english":"paralyzed"},
-          {"indonesian":"mirip","dutch":"gelijkend, lijkend op","english":"similar, alike"},
-          {"indonesian":"parah","dutch":"ernstig, erg","english":"severe"},
-          {"indonesian":"pelit","dutch":"gierig","english":"stingy"},
-          {"indonesian":"populer","dutch":"populair","english":"popular"},
-          {"indonesian":"positif","dutch":"positief","english":"positive"},
-          {"indonesian":"riang","dutch":"vrolijk, blij","english":"cheerful, joyous"},
-          {"indonesian":"ribut","dutch":"rumoerig, lawaaierig","english":"noisy"},
-          {"indonesian":"serakah","dutch":"hebzuchtig, gulzig","english":"greedy"},
-          {"indonesian":"curiga","dutch":"achterdochtig, wantrouwig","english":"suspicious, wary"},
-          {"indonesian":"jelas","dutch":"duidelijk","english":"clear"},
-          {"indonesian":"putus","dutch":"afgebroken, verbroken","english":"broken off, cut off"},
-          {"indonesian":"hanyut","dutch":"meegesleurd, weggespoeld","english":"swept away, adrift"},
-          {"indonesian":"ajak","dutch":"uitnodigen, meevragen","english":"to invite, ask along"},
-          {"indonesian":"antar","dutch":"brengen, bezorgen","english":"to deliver, take to"},
-          {"indonesian":"berenang","dutch":"zwemmen","english":"to swim"},
-          {"indonesian":"tumbuh","dutch":"groeien","english":"to grow"},
-          {"indonesian":"usir","dutch":"verjagen, wegjagen","english":"to chase away"},
-          {"indonesian":"tebang","dutch":"omhakken, vellen","english":"to fell, chop down"},
-          {"indonesian":"peluk","dutch":"omhelzen, knuffelen","english":"to hug, embrace"},
-          {"indonesian":"petik","dutch":"plukken","english":"to pick, pluck"},
-          {"indonesian":"siram","dutch":"begieten, overgieten","english":"to pour, water"},
-          {"indonesian":"langgar","dutch":"overtreden, schenden","english":"to violate"},
-          {"indonesian":"panjat","dutch":"klimmen, beklimmen","english":"to climb"},
-          {"indonesian":"sebar","dutch":"verspreiden","english":"to spread"},
-          {"indonesian":"tengkar","dutch":"ruziën, twisten","english":"to quarrel"},
-          {"indonesian":"lindung","dutch":"beschermen, beschutten","english":"to protect, shelter"},
-          {"indonesian":"ejek","dutch":"bespotten, uitlachen","english":"to mock, ridicule"},
-          {"indonesian":"jatuh","dutch":"vallen","english":"to fall"},
-          {"indonesian":"renggut","dutch":"wegrukken, grissen","english":"to snatch, wrench away"},
-          {"indonesian":"peleset","dutch":"uitglijden, misstappen","english":"to slip"},
-          {"indonesian":"timpa","dutch":"treffen, op iemand vallen","english":"to befall, fall upon"},
-          {"indonesian":"bambu","dutch":"bamboe","english":"bamboo"},
-          {"indonesian":"baris","dutch":"rij","english":"row, line"},
-          {"indonesian":"biji","dutch":"zaadje, pit","english":"seed"},
-          {"indonesian":"bungkus","dutch":"verpakking, pakketje","english":"wrapper, package"},
-          {"indonesian":"ceria","dutch":"vrolijk, opgewekt","english":"cheerful"},
-          {"indonesian":"damai","dutch":"vredig","english":"peaceful"},
-          {"indonesian":"didih","dutch":"koken (vloeistof aan de kook)","english":"to boil (of liquid)"},
-          {"indonesian":"hutang","dutch":"schuld (geld)","english":"debt"},
-          {"indonesian":"jarum","dutch":"naald","english":"needle"},
-          {"indonesian":"kala","dutch":"tijd (suatu kala: er was eens)","english":"time (suatu kala: once upon a time)"},
-          {"indonesian":"kancil","dutch":"dwerghert (kantjil)","english":"mousedeer"},
-          {"indonesian":"ketiga","dutch":"derde","english":"third"},
-          {"indonesian":"lumpur","dutch":"modder","english":"mud"},
-          {"indonesian":"nikmat","dutch":"heerlijk, genotvol","english":"delicious, delightful"},
-          {"indonesian":"ojek","dutch":"motortaxi","english":"motorcycle taxi"},
-          {"indonesian":"rak","dutch":"schap, rek","english":"shelf, rack"},
-          {"indonesian":"rayakan","dutch":"vieren","english":"to celebrate"},
-          {"indonesian":"sejuk","dutch":"koel, fris","english":"cool (of air)"},
-          {"indonesian":"semalam","dutch":"één nacht; gisteravond","english":"a night; last night"},
-          {"indonesian":"suasana","dutch":"sfeer","english":"atmosphere"},
-          {"indonesian":"tajam","dutch":"scherp","english":"sharp"},
-          {"indonesian":"taruh","dutch":"neerzetten, leggen","english":"to put, to place"},
-          {"indonesian":"tenggelam","dutch":"zinken, verdrinken","english":"to sink, to drown"},
-          {"indonesian":"timun","dutch":"komkommer","english":"cucumber"},
-          {"indonesian":"piknik","dutch":"picknick","english":"picnic"},
-          {"indonesian":"seberang","dutch":"overkant","english":"the other side, across"},
-          {"indonesian":"pelan","dutch":"langzaam, zachtjes","english":"slow, gentle"},
-          {"indonesian":"termos","dutch":"thermoskan","english":"thermos flask"},
-          {"indonesian":"cemberut","dutch":"nors, pruilend","english":"sulky, scowling"},
-          {"indonesian":"jenguk","dutch":"opzoeken, bezoeken (iemand)","english":"to visit (someone)"},
-          {"indonesian":"erang","dutch":"kreunen","english":"to groan"}
+          {
+            "loanSourceNl": "jas",
+            "indonesian": "jas",
+            "dutch": "jas, colbert",
+            "english": "jacket, coat"
+          },
+          {
+            "indonesian": "laptop",
+            "dutch": "laptop",
+            "english": "laptop"
+          },
+          {
+            "indonesian": "ponsel",
+            "dutch": "mobiele telefoon",
+            "english": "mobile phone"
+          },
+          {
+            "indonesian": "email",
+            "dutch": "e-mail",
+            "english": "email"
+          },
+          {
+            "indonesian": "peramban",
+            "dutch": "webbrowser",
+            "english": "web browser"
+          },
+          {
+            "indonesian": "nirkabel",
+            "dutch": "draadloos",
+            "english": "wireless"
+          },
+          {
+            "indonesian": "ilmuwan",
+            "dutch": "wetenschapper",
+            "english": "scientist"
+          },
+          {
+            "indonesian": "kontraktor",
+            "dutch": "aannemer",
+            "english": "contractor"
+          },
+          {
+            "indonesian": "singa",
+            "dutch": "leeuw",
+            "english": "lion"
+          },
+          {
+            "indonesian": "hiu",
+            "dutch": "haai",
+            "english": "shark"
+          },
+          {
+            "indonesian": "rusa",
+            "dutch": "hert",
+            "english": "deer"
+          },
+          {
+            "indonesian": "panda",
+            "dutch": "panda",
+            "english": "panda"
+          },
+          {
+            "indonesian": "jambu",
+            "dutch": "jambu (roze appel, guave)",
+            "english": "rose apple, guava"
+          },
+          {
+            "indonesian": "kapak",
+            "dutch": "bijl",
+            "english": "axe"
+          },
+          {
+            "indonesian": "kruk",
+            "dutch": "kruk (loophulp)",
+            "english": "crutch"
+          },
+          {
+            "indonesian": "jaring",
+            "dutch": "net, visnet",
+            "english": "net"
+          },
+          {
+            "indonesian": "pancing",
+            "dutch": "hengel",
+            "english": "fishing rod"
+          },
+          {
+            "indonesian": "kabut",
+            "dutch": "mist, nevel",
+            "english": "fog, mist"
+          },
+          {
+            "indonesian": "longsor",
+            "dutch": "aardverschuiving",
+            "english": "landslide"
+          },
+          {
+            "indonesian": "padang",
+            "dutch": "vlakte, veld",
+            "english": "field, plain"
+          },
+          {
+            "indonesian": "panen",
+            "dutch": "oogst",
+            "english": "harvest"
+          },
+          {
+            "indonesian": "judi",
+            "dutch": "gokken, kansspel",
+            "english": "gambling"
+          },
+          {
+            "indonesian": "ide",
+            "dutch": "idee",
+            "english": "idea"
+          },
+          {
+            "indonesian": "bayang",
+            "dutch": "schaduw",
+            "english": "shadow"
+          },
+          {
+            "indonesian": "belang",
+            "dutch": "streep, bonte vlek (op vacht)",
+            "english": "stripe, blaze"
+          },
+          {
+            "indonesian": "bintik",
+            "dutch": "stip, spikkel",
+            "english": "spot, dot"
+          },
+          {
+            "indonesian": "tepuk",
+            "dutch": "klap, applaus",
+            "english": "clap, pat"
+          },
+          {
+            "indonesian": "teriak",
+            "dutch": "schreeuw, kreet",
+            "english": "shout, scream"
+          },
+          {
+            "indonesian": "tetua",
+            "dutch": "oudste, ouderling",
+            "english": "elder"
+          },
+          {
+            "indonesian": "sesal",
+            "dutch": "spijt, berouw",
+            "english": "regret"
+          },
+          {
+            "indonesian": "milik",
+            "dutch": "bezit, eigendom",
+            "english": "property, possession"
+          },
+          {
+            "indonesian": "kuasa",
+            "dutch": "macht, gezag",
+            "english": "power, authority"
+          },
+          {
+            "indonesian": "jaran",
+            "dutch": "paard (Javaans)",
+            "english": "horse (Javanese)"
+          },
+          {
+            "indonesian": "capek",
+            "dutch": "moe, uitgeput",
+            "english": "tired",
+            "register": "informal",
+            "registerCounterpart": "lelah"
+          },
+          {
+            "indonesian": "harum",
+            "dutch": "geurig, welriekend",
+            "english": "fragrant"
+          },
+          {
+            "indonesian": "heran",
+            "dutch": "verbaasd, verwonderd",
+            "english": "amazed, astonished"
+          },
+          {
+            "indonesian": "lembut",
+            "dutch": "zacht, teder",
+            "english": "soft, gentle"
+          },
+          {
+            "indonesian": "liar",
+            "dutch": "wild, ongetemd",
+            "english": "wild, untamed"
+          },
+          {
+            "indonesian": "lumpuh",
+            "dutch": "verlamd",
+            "english": "paralyzed"
+          },
+          {
+            "indonesian": "mirip",
+            "dutch": "gelijkend, lijkend op",
+            "english": "similar, alike"
+          },
+          {
+            "indonesian": "parah",
+            "dutch": "ernstig, erg",
+            "english": "severe"
+          },
+          {
+            "indonesian": "pelit",
+            "dutch": "gierig",
+            "english": "stingy"
+          },
+          {
+            "indonesian": "populer",
+            "dutch": "populair",
+            "english": "popular"
+          },
+          {
+            "indonesian": "positif",
+            "dutch": "positief",
+            "english": "positive"
+          },
+          {
+            "indonesian": "riang",
+            "dutch": "vrolijk, blij",
+            "english": "cheerful, joyous"
+          },
+          {
+            "indonesian": "ribut",
+            "dutch": "rumoerig, lawaaierig",
+            "english": "noisy"
+          },
+          {
+            "indonesian": "serakah",
+            "dutch": "hebzuchtig, gulzig",
+            "english": "greedy"
+          },
+          {
+            "indonesian": "curiga",
+            "dutch": "achterdochtig, wantrouwig",
+            "english": "suspicious, wary"
+          },
+          {
+            "indonesian": "jelas",
+            "dutch": "duidelijk",
+            "english": "clear"
+          },
+          {
+            "indonesian": "putus",
+            "dutch": "afgebroken, verbroken",
+            "english": "broken off, cut off"
+          },
+          {
+            "indonesian": "hanyut",
+            "dutch": "meegesleurd, weggespoeld",
+            "english": "swept away, adrift"
+          },
+          {
+            "indonesian": "ajak",
+            "dutch": "uitnodigen, meevragen",
+            "english": "to invite, ask along"
+          },
+          {
+            "indonesian": "antar",
+            "dutch": "brengen, bezorgen",
+            "english": "to deliver, take to"
+          },
+          {
+            "indonesian": "berenang",
+            "dutch": "zwemmen",
+            "english": "to swim"
+          },
+          {
+            "indonesian": "tumbuh",
+            "dutch": "groeien",
+            "english": "to grow"
+          },
+          {
+            "indonesian": "usir",
+            "dutch": "verjagen, wegjagen",
+            "english": "to chase away"
+          },
+          {
+            "indonesian": "tebang",
+            "dutch": "omhakken, vellen",
+            "english": "to fell, chop down"
+          },
+          {
+            "indonesian": "peluk",
+            "dutch": "omhelzen, knuffelen",
+            "english": "to hug, embrace"
+          },
+          {
+            "indonesian": "petik",
+            "dutch": "plukken",
+            "english": "to pick, pluck"
+          },
+          {
+            "indonesian": "siram",
+            "dutch": "begieten, overgieten",
+            "english": "to pour, water"
+          },
+          {
+            "indonesian": "langgar",
+            "dutch": "overtreden, schenden",
+            "english": "to violate"
+          },
+          {
+            "indonesian": "panjat",
+            "dutch": "klimmen, beklimmen",
+            "english": "to climb"
+          },
+          {
+            "indonesian": "sebar",
+            "dutch": "verspreiden",
+            "english": "to spread"
+          },
+          {
+            "indonesian": "tengkar",
+            "dutch": "ruziën, twisten",
+            "english": "to quarrel"
+          },
+          {
+            "indonesian": "lindung",
+            "dutch": "beschermen, beschutten",
+            "english": "to protect, shelter"
+          },
+          {
+            "indonesian": "ejek",
+            "dutch": "bespotten, uitlachen",
+            "english": "to mock, ridicule"
+          },
+          {
+            "indonesian": "jatuh",
+            "dutch": "vallen",
+            "english": "to fall"
+          },
+          {
+            "indonesian": "renggut",
+            "dutch": "wegrukken, grissen",
+            "english": "to snatch, wrench away"
+          },
+          {
+            "indonesian": "peleset",
+            "dutch": "uitglijden, misstappen",
+            "english": "to slip"
+          },
+          {
+            "indonesian": "timpa",
+            "dutch": "treffen, op iemand vallen",
+            "english": "to befall, fall upon"
+          },
+          {
+            "indonesian": "bambu",
+            "dutch": "bamboe",
+            "english": "bamboo"
+          },
+          {
+            "indonesian": "baris",
+            "dutch": "rij",
+            "english": "row, line"
+          },
+          {
+            "indonesian": "biji",
+            "dutch": "zaadje, pit",
+            "english": "seed"
+          },
+          {
+            "indonesian": "bungkus",
+            "dutch": "verpakking, pakketje",
+            "english": "wrapper, package"
+          },
+          {
+            "indonesian": "ceria",
+            "dutch": "vrolijk, opgewekt",
+            "english": "cheerful"
+          },
+          {
+            "indonesian": "damai",
+            "dutch": "vredig",
+            "english": "peaceful"
+          },
+          {
+            "indonesian": "didih",
+            "dutch": "koken (vloeistof aan de kook)",
+            "english": "to boil (of liquid)"
+          },
+          {
+            "indonesian": "hutang",
+            "dutch": "schuld (geld)",
+            "english": "debt"
+          },
+          {
+            "indonesian": "jarum",
+            "dutch": "naald",
+            "english": "needle"
+          },
+          {
+            "indonesian": "kala",
+            "dutch": "tijd (suatu kala: er was eens)",
+            "english": "time (suatu kala: once upon a time)"
+          },
+          {
+            "indonesian": "kancil",
+            "dutch": "dwerghert (kantjil)",
+            "english": "mousedeer"
+          },
+          {
+            "indonesian": "ketiga",
+            "dutch": "derde",
+            "english": "third"
+          },
+          {
+            "indonesian": "lumpur",
+            "dutch": "modder",
+            "english": "mud"
+          },
+          {
+            "indonesian": "nikmat",
+            "dutch": "heerlijk, genotvol",
+            "english": "delicious, delightful"
+          },
+          {
+            "indonesian": "ojek",
+            "dutch": "motortaxi",
+            "english": "motorcycle taxi"
+          },
+          {
+            "indonesian": "rak",
+            "dutch": "schap, rek",
+            "english": "shelf, rack"
+          },
+          {
+            "indonesian": "rayakan",
+            "dutch": "vieren",
+            "english": "to celebrate"
+          },
+          {
+            "indonesian": "sejuk",
+            "dutch": "koel, fris",
+            "english": "cool (of air)"
+          },
+          {
+            "indonesian": "semalam",
+            "dutch": "één nacht; gisteravond",
+            "english": "a night; last night"
+          },
+          {
+            "indonesian": "suasana",
+            "dutch": "sfeer",
+            "english": "atmosphere"
+          },
+          {
+            "indonesian": "tajam",
+            "dutch": "scherp",
+            "english": "sharp"
+          },
+          {
+            "indonesian": "taruh",
+            "dutch": "neerzetten, leggen",
+            "english": "to put, to place"
+          },
+          {
+            "indonesian": "tenggelam",
+            "dutch": "zinken, verdrinken",
+            "english": "to sink, to drown"
+          },
+          {
+            "indonesian": "timun",
+            "dutch": "komkommer",
+            "english": "cucumber"
+          },
+          {
+            "indonesian": "piknik",
+            "dutch": "picknick",
+            "english": "picnic"
+          },
+          {
+            "indonesian": "seberang",
+            "dutch": "overkant",
+            "english": "the other side, across"
+          },
+          {
+            "indonesian": "pelan",
+            "dutch": "langzaam, zachtjes",
+            "english": "slow, gentle"
+          },
+          {
+            "indonesian": "termos",
+            "dutch": "thermoskan",
+            "english": "thermos flask"
+          },
+          {
+            "indonesian": "cemberut",
+            "dutch": "nors, pruilend",
+            "english": "sulky, scowling"
+          },
+          {
+            "indonesian": "jenguk",
+            "dutch": "opzoeken, bezoeken (iemand)",
+            "english": "to visit (someone)"
+          },
+          {
+            "indonesian": "erang",
+            "dutch": "kreunen",
+            "english": "to groan"
+          }
         ]
       }
     },
@@ -695,97 +3361,552 @@ export const lesson = {
       "content": {
         "type": "vocabulary",
         "items": [
-          { "loanSourceNl": "bak", "indonesian": "bak", "dutch": "bak", "english": "tub / basin" },
-          { "loanSourceNl": "kans", "indonesian": "kans", "dutch": "kans", "english": "chance / odds" },
-          { "loanSourceNl": "balkon", "indonesian": "balkon", "dutch": "balkon", "english": "balcony" },
-          { "loanSourceNl": "helm", "indonesian": "helm", "dutch": "helm", "english": "helmet" },
-          { "loanSourceNl": "mantel", "indonesian": "mantel", "dutch": "mantel", "english": "coat / mantle" },
-          { "loanSourceNl": "wol", "indonesian": "wol", "dutch": "wol", "english": "wool" },
-          { "loanSourceNl": "dynamo", "indonesian": "dinamo", "dutch": "dynamo", "english": "dynamo" },
-          { "loanSourceNl": "oma", "indonesian": "oma", "dutch": "oma", "english": "grandma" },
-          { "loanSourceNl": "opa", "indonesian": "opa", "dutch": "opa", "english": "grandpa" },
-          { "loanSourceNl": "tante", "indonesian": "tante", "dutch": "tante", "english": "aunt" },
-          { "loanSourceNl": "kroket", "indonesian": "kroket", "dutch": "kroket", "english": "croquette" },
-          { "loanSourceNl": "saus", "indonesian": "saus", "dutch": "saus", "english": "sauce" },
-          { "loanSourceNl": "asbak", "indonesian": "asbak", "dutch": "asbak", "english": "ashtray" },
-          { "loanSourceNl": "prei", "indonesian": "prei", "dutch": "prei", "english": "leek" },
-          { "loanSourceNl": "wastafel", "indonesian": "wastafel", "dutch": "wastafel", "english": "washbasin" },
-          { "loanSourceNl": "ons", "indonesian": "ons", "dutch": "ons", "english": "100 grams" },
-          { "loanSourceNl": "dosis", "indonesian": "dosis", "dutch": "dosis", "english": "dose" },
-          { "loanSourceNl": "pil", "indonesian": "pil", "dutch": "pil", "english": "pill" },
-          { "loanSourceNl": "kolonel", "indonesian": "kolonel", "dutch": "kolonel", "english": "colonel" },
-          { "loanSourceNl": "bruto", "indonesian": "bruto", "dutch": "bruto", "english": "gross" },
-          { "loanSourceNl": "giro", "indonesian": "giro", "dutch": "giro", "english": "giro" },
-          { "loanSourceNl": "gulden", "indonesian": "gulden", "dutch": "gulden", "english": "guilder" },
-          { "loanSourceNl": "netto", "indonesian": "netto", "dutch": "netto", "english": "net" },
-          { "loanSourceNl": "saldo", "indonesian": "saldo", "dutch": "saldo", "english": "balance" },
-          { "loanSourceNl": "agenda", "indonesian": "agenda", "dutch": "agenda", "english": "diary / agenda" },
-          { "loanSourceNl": "kas", "indonesian": "kas", "dutch": "kas", "english": "cash / till" },
-          { "loanSourceNl": "map", "indonesian": "map", "dutch": "map", "english": "folder" },
-          { "loanSourceNl": "rekening", "indonesian": "rekening", "dutch": "rekening", "english": "account / bill" },
-          { "loanSourceNl": "stempel", "indonesian": "stempel", "dutch": "stempel", "english": "rubber stamp" },
-          { "loanSourceNl": "katrol", "indonesian": "katrol", "dutch": "katrol", "english": "pulley" },
-          { "loanSourceNl": "tang", "indonesian": "tang", "dutch": "tang", "english": "pliers" },
-          { "loanSourceNl": "waterpas", "indonesian": "waterpas", "dutch": "waterpas", "english": "spirit level" },
-          { "loanSourceNl": "halte", "indonesian": "halte", "dutch": "halte", "english": "(bus/tram) stop" },
-          { "loanSourceNl": "tram", "indonesian": "trem", "dutch": "tram", "english": "tram" },
-          { "loanSourceNl": "rem", "indonesian": "rem", "dutch": "rem", "english": "brake" },
-          { "loanSourceNl": "standaard", "indonesian": "standar", "dutch": "standaard", "english": "standard" },
-          { "loanSourceNl": "gang", "indonesian": "gang", "dutch": "gang", "english": "alley / lane" },
-          { "loanSourceNl": "pilaar", "indonesian": "pilar", "dutch": "pilaar", "english": "pillar" },
-          { "loanSourceNl": "riool", "indonesian": "riol", "dutch": "riool", "english": "sewer" },
-          { "loanSourceNl": "cement", "indonesian": "semen", "dutch": "cement", "english": "cement" },
-          { "loanSourceNl": "bloes", "indonesian": "blus", "dutch": "bloes", "english": "blouse" },
-          { "loanSourceNl": "katoen", "indonesian": "katun", "dutch": "katoen", "english": "cotton" },
-          { "loanSourceNl": "cursus", "indonesian": "kursus", "dutch": "cursus", "english": "course" },
-          { "loanSourceNl": "les", "indonesian": "les", "dutch": "les", "english": "private lesson" },
-          { "loanSourceNl": "accu", "indonesian": "aki", "dutch": "accu", "english": "(car) battery" },
-          { "loanSourceNl": "stekker", "indonesian": "steker", "dutch": "stekker", "english": "electrical plug" },
-          { "loanSourceNl": "stopcontact", "indonesian": "stopkontak", "dutch": "stopcontact", "english": "power socket" },
-          { "loanSourceNl": "siroop", "indonesian": "sirop", "dutch": "siroop", "english": "syrup / cordial" },
-          { "loanSourceNl": "oom", "indonesian": "om", "dutch": "oom", "english": "uncle" },
-          { "loanSourceNl": "grendel", "indonesian": "grendel", "dutch": "grendel", "english": "bolt / latch" },
-          { "loanSourceNl": "pomp", "indonesian": "pompa", "dutch": "pomp", "english": "pump" },
-          { "loanSourceNl": "biet", "indonesian": "bit", "dutch": "biet", "english": "beetroot" },
-          { "loanSourceNl": "kool", "indonesian": "kol", "dutch": "kool", "english": "cabbage" },
-          { "loanSourceNl": "kraan", "indonesian": "kran", "dutch": "kraan", "english": "tap / faucet" },
-          { "loanSourceNl": "hectare", "indonesian": "hektar", "dutch": "hectare", "english": "hectare" },
-          { "loanSourceNl": "pond", "indonesian": "pon", "dutch": "pond", "english": "pound (500 g)" },
-          { "loanSourceNl": "apotheek", "indonesian": "apotek", "dutch": "apotheek", "english": "pharmacy" },
-          { "loanSourceNl": "apotheker", "indonesian": "apoteker", "dutch": "apotheker", "english": "pharmacist" },
-          { "loanSourceNl": "pastoor", "indonesian": "pastor", "dutch": "pastoor", "english": "(Catholic) priest" },
-          { "loanSourceNl": "zuster", "indonesian": "suster", "dutch": "zuster", "english": "nurse / nun" },
-          { "loanSourceNl": "verband", "indonesian": "verban", "dutch": "verband", "english": "bandage" },
-          { "loanSourceNl": "granaat", "indonesian": "granat", "dutch": "granaat", "english": "grenade" },
-          { "loanSourceNl": "commandant", "indonesian": "komandan", "dutch": "commandant", "english": "commander" },
-          { "loanSourceNl": "majoor", "indonesian": "mayor", "dutch": "majoor", "english": "major" },
-          { "loanSourceNl": "pistool", "indonesian": "pistol", "dutch": "pistool", "english": "pistol" },
-          { "loanSourceNl": "korting", "indonesian": "korting", "dutch": "korting", "english": "discount" },
-          { "loanSourceNl": "pensioen", "indonesian": "pensiun", "dutch": "pensioen", "english": "pension" },
-          { "loanSourceNl": "absent", "indonesian": "absen", "dutch": "absent", "english": "absent / roll-call" },
-          { "loanSourceNl": "archief", "indonesian": "arsip", "dutch": "archief", "english": "archive" },
-          { "loanSourceNl": "directeur", "indonesian": "direktur", "dutch": "directeur", "english": "director" },
-          { "loanSourceNl": "factuur", "indonesian": "faktur", "dutch": "factuur", "english": "invoice" },
-          { "loanSourceNl": "kantine", "indonesian": "kantin", "dutch": "kantine", "english": "canteen" },
-          { "loanSourceNl": "kwitantie", "indonesian": "kwitansi", "dutch": "kwitantie", "english": "receipt" },
-          { "loanSourceNl": "sigaret", "indonesian": "sigaret", "dutch": "sigaret", "english": "cigarette" },
-          { "loanSourceNl": "agent", "indonesian": "agen", "dutch": "agent", "english": "agent" },
-          { "loanSourceNl": "bout", "indonesian": "baut", "dutch": "bout", "english": "bolt" },
-          { "loanSourceNl": "boor", "indonesian": "bor", "dutch": "boor", "english": "drill" },
-          { "loanSourceNl": "moer", "indonesian": "mur", "dutch": "moer", "english": "nut (bolt)" },
-          { "loanSourceNl": "paspoort", "indonesian": "paspor", "dutch": "paspoort", "english": "passport" },
-          { "loanSourceNl": "dop", "indonesian": "dop", "dutch": "dop", "english": "hubcap / cap" },
-          { "loanSourceNl": "versnelling", "indonesian": "versneling", "dutch": "versnelling", "english": "gear" },
-          { "loanSourceNl": "gong", "indonesian": "gong", "dutch": "gong", "english": "gong" },
-          { "loanSourceNl": "rotan", "indonesian": "rotan", "dutch": "rotan", "english": "rattan" },
-          { "loanSourceNl": "kaketoe", "indonesian": "kakatua", "dutch": "kaketoe", "english": "cockatoo" },
-          { "loanSourceNl": "orang-oetan", "indonesian": "orang hutan", "dutch": "orang-oetan", "english": "orangutan" },
-          { "loanSourceNl": "kapok", "indonesian": "kapuk", "dutch": "kapok", "english": "kapok fibre" },
-          { "loanSourceNl": "klewang", "indonesian": "klewang", "dutch": "klewang", "english": "cutlass" },
-          { "loanSourceNl": "klamboe", "indonesian": "kelambu", "dutch": "klamboe", "english": "mosquito net" },
-          { "loanSourceNl": "loempia", "indonesian": "lumpia", "dutch": "loempia", "english": "spring roll" },
-          { "loanSourceNl": "taugé", "indonesian": "tauge", "dutch": "taugé", "english": "bean sprouts" },
-          { "loanSourceNl": "koelie", "indonesian": "kuli", "dutch": "koelie", "english": "coolie / labourer" }
+          {
+            "loanSourceNl": "bak",
+            "indonesian": "bak",
+            "dutch": "bak",
+            "english": "tub / basin"
+          },
+          {
+            "loanSourceNl": "kans",
+            "indonesian": "kans",
+            "dutch": "kans",
+            "english": "chance / odds"
+          },
+          {
+            "loanSourceNl": "balkon",
+            "indonesian": "balkon",
+            "dutch": "balkon",
+            "english": "balcony"
+          },
+          {
+            "loanSourceNl": "helm",
+            "indonesian": "helm",
+            "dutch": "helm",
+            "english": "helmet"
+          },
+          {
+            "loanSourceNl": "mantel",
+            "indonesian": "mantel",
+            "dutch": "mantel",
+            "english": "coat / mantle"
+          },
+          {
+            "loanSourceNl": "wol",
+            "indonesian": "wol",
+            "dutch": "wol",
+            "english": "wool"
+          },
+          {
+            "loanSourceNl": "dynamo",
+            "indonesian": "dinamo",
+            "dutch": "dynamo",
+            "english": "dynamo"
+          },
+          {
+            "loanSourceNl": "oma",
+            "indonesian": "oma",
+            "dutch": "oma",
+            "english": "grandma"
+          },
+          {
+            "loanSourceNl": "opa",
+            "indonesian": "opa",
+            "dutch": "opa",
+            "english": "grandpa"
+          },
+          {
+            "loanSourceNl": "tante",
+            "indonesian": "tante",
+            "dutch": "tante",
+            "english": "aunt"
+          },
+          {
+            "loanSourceNl": "kroket",
+            "indonesian": "kroket",
+            "dutch": "kroket",
+            "english": "croquette"
+          },
+          {
+            "loanSourceNl": "saus",
+            "indonesian": "saus",
+            "dutch": "saus",
+            "english": "sauce"
+          },
+          {
+            "loanSourceNl": "asbak",
+            "indonesian": "asbak",
+            "dutch": "asbak",
+            "english": "ashtray"
+          },
+          {
+            "loanSourceNl": "prei",
+            "indonesian": "prei",
+            "dutch": "prei",
+            "english": "leek"
+          },
+          {
+            "loanSourceNl": "wastafel",
+            "indonesian": "wastafel",
+            "dutch": "wastafel",
+            "english": "washbasin"
+          },
+          {
+            "loanSourceNl": "ons",
+            "indonesian": "ons",
+            "dutch": "ons",
+            "english": "100 grams"
+          },
+          {
+            "loanSourceNl": "dosis",
+            "indonesian": "dosis",
+            "dutch": "dosis",
+            "english": "dose"
+          },
+          {
+            "loanSourceNl": "pil",
+            "indonesian": "pil",
+            "dutch": "pil",
+            "english": "pill"
+          },
+          {
+            "loanSourceNl": "kolonel",
+            "indonesian": "kolonel",
+            "dutch": "kolonel",
+            "english": "colonel"
+          },
+          {
+            "loanSourceNl": "bruto",
+            "indonesian": "bruto",
+            "dutch": "bruto",
+            "english": "gross"
+          },
+          {
+            "loanSourceNl": "giro",
+            "indonesian": "giro",
+            "dutch": "giro",
+            "english": "giro"
+          },
+          {
+            "loanSourceNl": "gulden",
+            "indonesian": "gulden",
+            "dutch": "gulden",
+            "english": "guilder"
+          },
+          {
+            "loanSourceNl": "netto",
+            "indonesian": "netto",
+            "dutch": "netto",
+            "english": "net"
+          },
+          {
+            "loanSourceNl": "saldo",
+            "indonesian": "saldo",
+            "dutch": "saldo",
+            "english": "balance"
+          },
+          {
+            "loanSourceNl": "agenda",
+            "indonesian": "agenda",
+            "dutch": "agenda",
+            "english": "diary / agenda"
+          },
+          {
+            "loanSourceNl": "kas",
+            "indonesian": "kas",
+            "dutch": "kas",
+            "english": "cash / till"
+          },
+          {
+            "loanSourceNl": "map",
+            "indonesian": "map",
+            "dutch": "map",
+            "english": "folder"
+          },
+          {
+            "loanSourceNl": "rekening",
+            "indonesian": "rekening",
+            "dutch": "rekening",
+            "english": "account / bill"
+          },
+          {
+            "loanSourceNl": "stempel",
+            "indonesian": "stempel",
+            "dutch": "stempel",
+            "english": "rubber stamp"
+          },
+          {
+            "loanSourceNl": "katrol",
+            "indonesian": "katrol",
+            "dutch": "katrol",
+            "english": "pulley"
+          },
+          {
+            "loanSourceNl": "tang",
+            "indonesian": "tang",
+            "dutch": "tang",
+            "english": "pliers"
+          },
+          {
+            "loanSourceNl": "waterpas",
+            "indonesian": "waterpas",
+            "dutch": "waterpas",
+            "english": "spirit level"
+          },
+          {
+            "loanSourceNl": "halte",
+            "indonesian": "halte",
+            "dutch": "halte",
+            "english": "(bus/tram) stop"
+          },
+          {
+            "loanSourceNl": "tram",
+            "indonesian": "trem",
+            "dutch": "tram",
+            "english": "tram"
+          },
+          {
+            "loanSourceNl": "rem",
+            "indonesian": "rem",
+            "dutch": "rem",
+            "english": "brake"
+          },
+          {
+            "loanSourceNl": "standaard",
+            "indonesian": "standar",
+            "dutch": "standaard",
+            "english": "standard"
+          },
+          {
+            "loanSourceNl": "gang",
+            "indonesian": "gang",
+            "dutch": "gang",
+            "english": "alley / lane"
+          },
+          {
+            "loanSourceNl": "pilaar",
+            "indonesian": "pilar",
+            "dutch": "pilaar",
+            "english": "pillar"
+          },
+          {
+            "loanSourceNl": "riool",
+            "indonesian": "riol",
+            "dutch": "riool",
+            "english": "sewer"
+          },
+          {
+            "loanSourceNl": "cement",
+            "indonesian": "semen",
+            "dutch": "cement",
+            "english": "cement"
+          },
+          {
+            "loanSourceNl": "bloes",
+            "indonesian": "blus",
+            "dutch": "bloes",
+            "english": "blouse"
+          },
+          {
+            "loanSourceNl": "katoen",
+            "indonesian": "katun",
+            "dutch": "katoen",
+            "english": "cotton"
+          },
+          {
+            "loanSourceNl": "cursus",
+            "indonesian": "kursus",
+            "dutch": "cursus",
+            "english": "course"
+          },
+          {
+            "loanSourceNl": "les",
+            "indonesian": "les",
+            "dutch": "les",
+            "english": "private lesson"
+          },
+          {
+            "loanSourceNl": "accu",
+            "indonesian": "aki",
+            "dutch": "accu",
+            "english": "(car) battery"
+          },
+          {
+            "loanSourceNl": "stekker",
+            "indonesian": "steker",
+            "dutch": "stekker",
+            "english": "electrical plug"
+          },
+          {
+            "loanSourceNl": "stopcontact",
+            "indonesian": "stopkontak",
+            "dutch": "stopcontact",
+            "english": "power socket"
+          },
+          {
+            "loanSourceNl": "siroop",
+            "indonesian": "sirop",
+            "dutch": "siroop",
+            "english": "syrup / cordial"
+          },
+          {
+            "loanSourceNl": "oom",
+            "indonesian": "om",
+            "dutch": "oom",
+            "english": "uncle"
+          },
+          {
+            "loanSourceNl": "grendel",
+            "indonesian": "grendel",
+            "dutch": "grendel",
+            "english": "bolt / latch"
+          },
+          {
+            "loanSourceNl": "pomp",
+            "indonesian": "pompa",
+            "dutch": "pomp",
+            "english": "pump"
+          },
+          {
+            "loanSourceNl": "biet",
+            "indonesian": "bit",
+            "dutch": "biet",
+            "english": "beetroot"
+          },
+          {
+            "loanSourceNl": "kool",
+            "indonesian": "kol",
+            "dutch": "kool",
+            "english": "cabbage"
+          },
+          {
+            "loanSourceNl": "kraan",
+            "indonesian": "kran",
+            "dutch": "kraan",
+            "english": "tap / faucet"
+          },
+          {
+            "loanSourceNl": "hectare",
+            "indonesian": "hektar",
+            "dutch": "hectare",
+            "english": "hectare"
+          },
+          {
+            "loanSourceNl": "pond",
+            "indonesian": "pon",
+            "dutch": "pond",
+            "english": "pound (500 g)"
+          },
+          {
+            "loanSourceNl": "apotheek",
+            "indonesian": "apotek",
+            "dutch": "apotheek",
+            "english": "pharmacy"
+          },
+          {
+            "loanSourceNl": "apotheker",
+            "indonesian": "apoteker",
+            "dutch": "apotheker",
+            "english": "pharmacist"
+          },
+          {
+            "loanSourceNl": "pastoor",
+            "indonesian": "pastor",
+            "dutch": "pastoor",
+            "english": "(Catholic) priest"
+          },
+          {
+            "loanSourceNl": "zuster",
+            "indonesian": "suster",
+            "dutch": "zuster",
+            "english": "nurse / nun"
+          },
+          {
+            "loanSourceNl": "verband",
+            "indonesian": "verban",
+            "dutch": "verband",
+            "english": "bandage"
+          },
+          {
+            "loanSourceNl": "granaat",
+            "indonesian": "granat",
+            "dutch": "granaat",
+            "english": "grenade"
+          },
+          {
+            "loanSourceNl": "commandant",
+            "indonesian": "komandan",
+            "dutch": "commandant",
+            "english": "commander"
+          },
+          {
+            "loanSourceNl": "majoor",
+            "indonesian": "mayor",
+            "dutch": "majoor",
+            "english": "major"
+          },
+          {
+            "loanSourceNl": "pistool",
+            "indonesian": "pistol",
+            "dutch": "pistool",
+            "english": "pistol"
+          },
+          {
+            "loanSourceNl": "korting",
+            "indonesian": "korting",
+            "dutch": "korting",
+            "english": "discount"
+          },
+          {
+            "loanSourceNl": "pensioen",
+            "indonesian": "pensiun",
+            "dutch": "pensioen",
+            "english": "pension"
+          },
+          {
+            "loanSourceNl": "absent",
+            "indonesian": "absen",
+            "dutch": "absent",
+            "english": "absent / roll-call"
+          },
+          {
+            "loanSourceNl": "archief",
+            "indonesian": "arsip",
+            "dutch": "archief",
+            "english": "archive"
+          },
+          {
+            "loanSourceNl": "directeur",
+            "indonesian": "direktur",
+            "dutch": "directeur",
+            "english": "director"
+          },
+          {
+            "loanSourceNl": "factuur",
+            "indonesian": "faktur",
+            "dutch": "factuur",
+            "english": "invoice"
+          },
+          {
+            "loanSourceNl": "kantine",
+            "indonesian": "kantin",
+            "dutch": "kantine",
+            "english": "canteen"
+          },
+          {
+            "loanSourceNl": "kwitantie",
+            "indonesian": "kwitansi",
+            "dutch": "kwitantie",
+            "english": "receipt"
+          },
+          {
+            "loanSourceNl": "sigaret",
+            "indonesian": "sigaret",
+            "dutch": "sigaret",
+            "english": "cigarette"
+          },
+          {
+            "loanSourceNl": "agent",
+            "indonesian": "agen",
+            "dutch": "agent",
+            "english": "agent"
+          },
+          {
+            "loanSourceNl": "bout",
+            "indonesian": "baut",
+            "dutch": "bout",
+            "english": "bolt"
+          },
+          {
+            "loanSourceNl": "boor",
+            "indonesian": "bor",
+            "dutch": "boor",
+            "english": "drill"
+          },
+          {
+            "loanSourceNl": "moer",
+            "indonesian": "mur",
+            "dutch": "moer",
+            "english": "nut (bolt)"
+          },
+          {
+            "loanSourceNl": "paspoort",
+            "indonesian": "paspor",
+            "dutch": "paspoort",
+            "english": "passport"
+          },
+          {
+            "loanSourceNl": "dop",
+            "indonesian": "dop",
+            "dutch": "dop",
+            "english": "hubcap / cap"
+          },
+          {
+            "loanSourceNl": "versnelling",
+            "indonesian": "versneling",
+            "dutch": "versnelling",
+            "english": "gear"
+          },
+          {
+            "loanSourceNl": "gong",
+            "indonesian": "gong",
+            "dutch": "gong",
+            "english": "gong"
+          },
+          {
+            "loanSourceNl": "rotan",
+            "indonesian": "rotan",
+            "dutch": "rotan",
+            "english": "rattan"
+          },
+          {
+            "loanSourceNl": "kaketoe",
+            "indonesian": "kakatua",
+            "dutch": "kaketoe",
+            "english": "cockatoo"
+          },
+          {
+            "loanSourceNl": "orang-oetan",
+            "indonesian": "orang hutan",
+            "dutch": "orang-oetan",
+            "english": "orangutan"
+          },
+          {
+            "loanSourceNl": "kapok",
+            "indonesian": "kapuk",
+            "dutch": "kapok",
+            "english": "kapok fibre"
+          },
+          {
+            "loanSourceNl": "klewang",
+            "indonesian": "klewang",
+            "dutch": "klewang",
+            "english": "cutlass"
+          },
+          {
+            "loanSourceNl": "klamboe",
+            "indonesian": "kelambu",
+            "dutch": "klamboe",
+            "english": "mosquito net"
+          },
+          {
+            "loanSourceNl": "loempia",
+            "indonesian": "lumpia",
+            "dutch": "loempia",
+            "english": "spring roll"
+          },
+          {
+            "loanSourceNl": "taugé",
+            "indonesian": "tauge",
+            "dutch": "taugé",
+            "english": "bean sprouts"
+          },
+          {
+            "loanSourceNl": "koelie",
+            "indonesian": "kuli",
+            "dutch": "koelie",
+            "english": "coolie / labourer"
+          }
         ]
       }
     }

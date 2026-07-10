@@ -995,6 +995,7 @@
             "dutch": "zich prettig voelen, blij, leuk",
             "english": "feel pleased, happy, nice",
             "indonesian": "senang",
+            "loanSourceNl": "senang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/senang-610d2a8a.mp3"
           },
           {
@@ -1158,6 +1159,38 @@
             "english": "ladies",
             "indonesian": "saudari-saudari",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saudarisaudari-3403bdd1.mp3"
+          },
+          {
+            "dutch": "op, klaar, voorbij",
+            "english": "finished, done, over",
+            "register": "informal",
+            "indonesian": "abis",
+            "registerCounterpart": "habis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/abis-1d4b5e05.mp3"
+          },
+          {
+            "dutch": "blij",
+            "english": "happy",
+            "register": "informal",
+            "indonesian": "seneng",
+            "registerCounterpart": "senang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/seneng-60506c51.mp3"
+          },
+          {
+            "dutch": "geld",
+            "english": "money",
+            "register": "informal",
+            "indonesian": "duit",
+            "registerCounterpart": "uang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/duit-90df40d9.mp3"
+          },
+          {
+            "dutch": "straks, later",
+            "english": "later, soon",
+            "register": "informal",
+            "indonesian": "ntar",
+            "registerCounterpart": "nanti",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ntar-5cd55411.mp3"
           }
         ]
       }

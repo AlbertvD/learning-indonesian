@@ -33,7 +33,7 @@ import classes from './Page.module.css'
 const meta = content.meta
 const sections = content.sections
 
-type Item = { dutch: string; indonesian: string; audioUrl?: string }
+type Item = { dutch: string; indonesian: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 type GrammarExample = { dutch: string; indonesian: string; audioUrl?: string }
 type GrammarCategory = { title: string; rules: string[]; examples: GrammarExample[] }
 
@@ -124,6 +124,7 @@ function Lexicon({
           <div key={i} className={classes.itemChip} data-tone={tone}>
             <PlayButton src={item.audioUrl} />
             <span className={classes.itemId}>{item.indonesian}</span>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <span className={classes.itemSep} />
             <span className={classes.itemNl}>{item.dutch}</span>
           </div>
@@ -147,6 +148,7 @@ function Expressions({ section }: { section: typeof sections[number] }) {
             <div className={classes.exprIdRow}>
               <PlayButton src={item.audioUrl} />
               <span className={classes.exprId}>{item.indonesian}</span>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             </div>
             <span className={classes.exprNl}>{item.dutch}</span>
           </div>

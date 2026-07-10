@@ -288,7 +288,9 @@ export const lesson = {
           {
             "dutch": "gelijk, dezelfde, hetzelfde",
             "indonesian": "sama",
-            "english": "same, equal"
+            "english": "same, equal",
+            "register": "informal",
+            "registerCounterpart": "dengan"
           },
           {
             "dutch": "gelijk aan",
@@ -440,6 +442,34 @@ export const lesson = {
             "indonesian": "pendek",
             "dutch": "kort",
             "english": "short"
+          },
+          {
+            "dutch": "al, reeds",
+            "indonesian": "udah",
+            "register": "informal",
+            "registerCounterpart": "sudah",
+            "english": "already"
+          },
+          {
+            "dutch": "tot; aankomen",
+            "indonesian": "sampe",
+            "register": "informal",
+            "registerCounterpart": "sampai",
+            "english": "until; arrive"
+          },
+          {
+            "dutch": "krijgen; kunnen",
+            "indonesian": "dapet",
+            "register": "informal",
+            "registerCounterpart": "dapat",
+            "english": "get; can"
+          },
+          {
+            "dutch": "ontmoeten",
+            "indonesian": "ketemu",
+            "register": "informal",
+            "registerCounterpart": "bertemu",
+            "english": "meet"
           }
         ]
       }

@@ -129,7 +129,9 @@ export const lesson = {
           {
             "indonesian": "bakal",
             "dutch": "zullen / om te",
-            "english": "will / in order to"
+            "english": "will / in order to",
+            "register": "informal",
+            "registerCounterpart": "akan"
           },
           {
             "indonesian": "bekerja",
@@ -139,7 +141,9 @@ export const lesson = {
           {
             "indonesian": "biar",
             "dutch": "opdat / laat maar",
-            "english": "so that / let"
+            "english": "so that / let",
+            "register": "informal",
+            "registerCounterpart": "supaya"
           },
           {
             "indonesian": "burung",
@@ -310,6 +314,13 @@ export const lesson = {
             "indonesian": "sangat",
             "dutch": "zeer/erg",
             "english": "very/very much"
+          },
+          {
+            "dutch": "stil (zijn)",
+            "indonesian": "diem",
+            "register": "informal",
+            "registerCounterpart": "diam",
+            "english": "silent (be)"
           }
         ]
       }

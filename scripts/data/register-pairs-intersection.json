@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T05:50:56.193Z",
+  "generatedAt": "2026-07-10T06:20:35.878Z",
   "sourceArtifact": "scripts/data/register-pairs.ts",
   "totalPairs": 75,
   "countsByKlasse": {
@@ -10,8 +10,8 @@
     "lexical": 29
   },
   "countsByClassification": {
-    "CORE": 65,
-    "PHRASE-ANCHORED": 1,
+    "CORE": 49,
+    "PHRASE-ANCHORED": 17,
     "UNANCHORED": 7,
     "DEFERRED": 2
   },
@@ -112,7 +112,7 @@
       "formal": "kalau",
       "informal": "kalo",
       "klasse": "monophthong",
-      "anchorLesson": 1,
+      "anchorLesson": 999,
       "informalAlreadyTaught": {
         "lessons": [
           999
@@ -187,7 +187,7 @@
       "formal": "sebentar",
       "informal": "bentar",
       "klasse": "a-e-reductie",
-      "anchorLesson": 5,
+      "anchorLesson": 999,
       "informalAlreadyTaught": {
         "lessons": [
           999
@@ -262,7 +262,7 @@
       "formal": "bicara",
       "informal": "ngomong",
       "klasse": "frozen-verb",
-      "anchorLesson": 13,
+      "anchorLesson": 14,
       "informalAlreadyTaught": {
         "lessons": [
           14
@@ -288,7 +288,7 @@
       "formal": "tertawa",
       "informal": "ketawa",
       "klasse": "frozen-verb",
-      "anchorLesson": 15,
+      "anchorLesson": 26,
       "informalAlreadyTaught": {
         "lessons": [
           26
@@ -307,7 +307,7 @@
       "formal": "sekali",
       "informal": "banget",
       "klasse": "lexical",
-      "anchorLesson": 3,
+      "anchorLesson": 999,
       "informalAlreadyTaught": {
         "lessons": [
           999
@@ -354,7 +354,7 @@
       "formal": "hanya",
       "informal": "cuma",
       "klasse": "lexical",
-      "anchorLesson": 6,
+      "anchorLesson": 999,
       "informalAlreadyTaught": {
         "lessons": [
           999
@@ -399,7 +399,7 @@
       "formal": "tidak",
       "informal": "nggak",
       "klasse": "lexical",
-      "anchorLesson": 1,
+      "anchorLesson": 12,
       "informalAlreadyTaught": {
         "lessons": [
           12
@@ -430,7 +430,7 @@
       "formal": "untuk",
       "informal": "buat",
       "klasse": "lexical",
-      "anchorLesson": 1,
+      "anchorLesson": 12,
       "informalAlreadyTaught": {
         "lessons": [
           12
@@ -442,7 +442,7 @@
       "formal": "akan",
       "informal": "bakal",
       "klasse": "lexical",
-      "anchorLesson": 7,
+      "anchorLesson": 9,
       "informalAlreadyTaught": {
         "lessons": [
           9
@@ -454,7 +454,7 @@
       "formal": "supaya",
       "informal": "biar",
       "klasse": "lexical",
-      "anchorLesson": 10,
+      "anchorLesson": 9,
       "informalAlreadyTaught": {
         "lessons": [
           9
@@ -492,7 +492,7 @@
       "formal": "mudah",
       "informal": "gampang",
       "klasse": "lexical",
-      "anchorLesson": 999,
+      "anchorLesson": 6,
       "informalAlreadyTaught": {
         "lessons": [
           6
@@ -504,7 +504,7 @@
       "formal": "sulit",
       "informal": "susah",
       "klasse": "lexical",
-      "anchorLesson": 999,
+      "anchorLesson": 11,
       "informalAlreadyTaught": {
         "lessons": [
           11
@@ -551,7 +551,7 @@
       "formal": "buruk",
       "informal": "jelek",
       "klasse": "lexical",
-      "anchorLesson": 2,
+      "anchorLesson": 15,
       "informalAlreadyTaught": {
         "lessons": [
           15
@@ -802,10 +802,10 @@
       "informal": "kalo",
       "klasse": "monophthong",
       "gloss_nl": "als, wanneer",
-      "source": "Sneddon 2006 — monophthongization class (canonical example)",
+      "source": "Sneddon 2006 — monophthongization class (canonical example); already attested live (kalo L999, prose-marked \"(informeel)\") — RETROFIT, not a fresh insert (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 1,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 999,
       "formalTaught": true,
       "formalLessons": [
         1
@@ -981,10 +981,10 @@
       "informal": "bentar",
       "klasse": "a-e-reductie",
       "gloss_nl": "zo, even",
-      "source": "Sneddon 2006 — a→e reduction + se- truncation; folded into this bucket per the task brief",
+      "source": "Sneddon 2006 — a→e reduction + se- truncation; folded into this bucket per the task brief; already attested live (bentar L999, prose-marked \"(informeel)\") — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 5,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 999,
       "formalTaught": true,
       "formalLessons": [
         5
@@ -1193,10 +1193,10 @@
       "informal": "ngomong",
       "klasse": "frozen-verb",
       "gloss_nl": "praten, spreken",
-      "source": "Sneddon 2006 — frozen colloquial verb (canonical example)",
+      "source": "Sneddon 2006 — frozen colloquial verb (canonical example); already attested live (ngomong L14, unmarked, gloss \"kletsen\") — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 13,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 14,
       "formalTaught": true,
       "formalLessons": [
         13
@@ -1263,10 +1263,10 @@
       "informal": "ketawa",
       "klasse": "frozen-verb",
       "gloss_nl": "lachen",
-      "source": "Sneddon 2006 — frozen colloquial verb (ter- → ke- irregular alternation)",
+      "source": "Sneddon 2006 — frozen colloquial verb (ter- → ke- irregular alternation); already attested live (ketawa L26, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 15,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 26,
       "formalTaught": true,
       "formalLessons": [
         15
@@ -1300,10 +1300,10 @@
       "informal": "banget",
       "klasse": "lexical",
       "gloss_nl": "heel, erg",
-      "source": "Sneddon 2006 — dominant lexical replacement (canonical example, matching postposed-intensifier syntax)",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example, matching postposed-intensifier syntax); already attested live (banget L999, prose-marked \"(informeel)\") — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 3,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 999,
       "formalTaught": true,
       "formalLessons": [
         3
@@ -1401,10 +1401,10 @@
       "informal": "cuma",
       "klasse": "lexical",
       "gloss_nl": "slechts, alleen maar",
-      "source": "Sneddon 2006 — dominant lexical replacement (canonical example)",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (cuma L999, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 6,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 999,
       "formalTaught": true,
       "formalLessons": [
         6
@@ -1470,9 +1470,9 @@
       "informal": "kenapa",
       "klasse": "lexical",
       "gloss_nl": "waarom",
-      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (both taught, L999, kenapa already prose-marked \"(informeel)\")",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (both taught, L999, kenapa already prose-marked \"(informeel)\") — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
+      "classification": "PHRASE-ANCHORED",
       "anchorLesson": 999,
       "formalTaught": true,
       "formalLessons": [
@@ -1491,10 +1491,10 @@
       "informal": "nggak",
       "klasse": "lexical",
       "gloss_nl": "niet, nee",
-      "source": "Sneddon 2006 — dominant lexical replacement (spec §3.1 worked example); already attested live (both taught — tidak L1, nggak L12, unmarked)",
+      "source": "Sneddon 2006 — dominant lexical replacement (spec §3.1 worked example); already attested live (both taught — tidak L1, nggak L12, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 1,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 12,
       "formalTaught": true,
       "formalLessons": [
         1
@@ -1528,9 +1528,9 @@
       "informal": "sama",
       "klasse": "lexical",
       "gloss_nl": "met",
-      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L2, unmarked)",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L2, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
+      "classification": "PHRASE-ANCHORED",
       "anchorLesson": 2,
       "formalTaught": true,
       "formalLessons": [
@@ -1549,10 +1549,10 @@
       "informal": "buat",
       "klasse": "lexical",
       "gloss_nl": "voor, om te",
-      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (untuk L1, buat L12, unmarked)",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (untuk L1, buat L12, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 1,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 12,
       "formalTaught": true,
       "formalLessons": [
         1
@@ -1570,10 +1570,10 @@
       "informal": "bakal",
       "klasse": "lexical",
       "gloss_nl": "zullen",
-      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (akan L7, bakal L9, unmarked)",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (akan L7, bakal L9, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 7,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 9,
       "formalTaught": true,
       "formalLessons": [
         7
@@ -1591,10 +1591,10 @@
       "informal": "biar",
       "klasse": "lexical",
       "gloss_nl": "opdat, zodat",
-      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (supaya/agar L10, biar L9, unmarked) — NOTE: informal already taught ONE LESSON BEFORE its formal twin in the live curriculum, which inverts the spec's §4 formal-first prerequisite assumption for this specific pair; flag for step 3/4.",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (supaya/agar L10, biar L9, unmarked) — informal taught ONE LESSON BEFORE its formal twin; RETROFIT at L9 (step 3) resolves the inversion — biar's existing L9 entry is edited in place, never inserted fresh at L10, so no formal-first prereq is ever attempted across lessons.",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 10,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 9,
       "formalTaught": true,
       "formalLessons": [
         10
@@ -1644,9 +1644,9 @@
       "informal": "capek",
       "klasse": "lexical",
       "gloss_nl": "moe, uitgeput",
-      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L999, unmarked)",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (both taught, same lesson L999, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
+      "classification": "PHRASE-ANCHORED",
       "anchorLesson": 999,
       "formalTaught": true,
       "formalLessons": [
@@ -1665,10 +1665,10 @@
       "informal": "gampang",
       "klasse": "lexical",
       "gloss_nl": "makkelijk",
-      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (mudah L999, gampang L6, unmarked)",
+      "source": "Sneddon 2006 — dominant lexical replacement (canonical example); already attested live (mudah L999, gampang L6, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 999,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 6,
       "formalTaught": true,
       "formalLessons": [
         999
@@ -1686,10 +1686,10 @@
       "informal": "susah",
       "klasse": "lexical",
       "gloss_nl": "moeilijk, lastig",
-      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (sulit L999, susah L11, unmarked)",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (sulit L999, susah L11, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 999,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 11,
       "formalTaught": true,
       "formalLessons": [
         999
@@ -1787,10 +1787,10 @@
       "informal": "jelek",
       "klasse": "lexical",
       "gloss_nl": "slecht, lelijk",
-      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (buruk L2, jelek L15, unmarked)",
+      "source": "Sneddon 2006 — dominant lexical replacement; already attested live (buruk L2, jelek L15, unmarked) — RETROFIT (step 3).",
       "declaredIn": "registerPairs",
-      "classification": "CORE",
-      "anchorLesson": 2,
+      "classification": "PHRASE-ANCHORED",
+      "anchorLesson": 15,
       "formalTaught": true,
       "formalLessons": [
         2

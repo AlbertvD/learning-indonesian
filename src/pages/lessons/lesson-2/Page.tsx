@@ -20,7 +20,7 @@ import content from './content.json'
 import classes from './Page.module.css'
 
 type DialogueLine = { text: string; speaker: string; translation: string; audioUrl?: string }
-type Item = { dutch: string; indonesian: string; audioUrl?: string }
+type Item = { dutch: string; indonesian: string; audioUrl?: string; register?: 'informal'; registerCounterpart?: string }
 type GrammarExample = { indonesian: string; dutch: string; note?: string; audioUrl?: string }
 type GrammarCategory = {
   title: string
@@ -406,6 +406,7 @@ function VocabularyReference({ section }: { section: typeof sections[number] }) 
           <div key={i} className={classes.vocabEntry}>
             <PlayButton src={item.audioUrl} />
             <div className={classes.vocabId}>{item.indonesian}</div>
+            {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <div className={classes.vocabNl}>{item.dutch}</div>
           </div>
         ))}

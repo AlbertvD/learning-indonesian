@@ -476,6 +476,34 @@ export const lesson = {
             "dutch": "niet, nee",
             "indonesian": "tidak",
             "english": "not, no"
+          },
+          {
+            "dutch": "komen",
+            "indonesian": "dateng",
+            "register": "informal",
+            "registerCounterpart": "datang",
+            "english": "come"
+          },
+          {
+            "dutch": "dank je / dank u",
+            "indonesian": "makasih",
+            "register": "informal",
+            "registerCounterpart": "terima kasih",
+            "english": "thank you"
+          },
+          {
+            "dutch": "maar, echter",
+            "indonesian": "tapi",
+            "register": "informal",
+            "registerCounterpart": "tetapi",
+            "english": "but, however"
+          },
+          {
+            "dutch": "groot",
+            "indonesian": "gede",
+            "register": "informal",
+            "registerCounterpart": "besar",
+            "english": "big"
           }
         ]
       }

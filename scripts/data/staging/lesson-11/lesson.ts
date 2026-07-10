@@ -244,7 +244,9 @@ export const lesson = {
           {
             "indonesian": "susah",
             "dutch": "moeilijk(heden)",
-            "english": "difficult"
+            "english": "difficult",
+            "register": "informal",
+            "registerCounterpart": "sulit"
           },
           {
             "indonesian": "terdapat",

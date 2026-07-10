@@ -411,6 +411,34 @@ export const lesson = {
             "indonesian": "warung",
             "dutch": "eethuisje",
             "english": "small eating house"
+          },
+          {
+            "dutch": "gebruiken",
+            "indonesian": "pake",
+            "register": "informal",
+            "registerCounterpart": "pakai",
+            "english": "use"
+          },
+          {
+            "dutch": "groen",
+            "indonesian": "ijo",
+            "register": "informal",
+            "registerCounterpart": "hijau",
+            "english": "green"
+          },
+          {
+            "dutch": "zien",
+            "indonesian": "liat",
+            "register": "informal",
+            "registerCounterpart": "lihat",
+            "english": "see"
+          },
+          {
+            "dutch": "zo, zodanig",
+            "indonesian": "gitu",
+            "register": "informal",
+            "registerCounterpart": "begitu",
+            "english": "like that, such"
           }
         ]
       }
