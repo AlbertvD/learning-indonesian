@@ -4407,3 +4407,36 @@ $$;
 
 revoke all on function indonesian.apply_placement_result(text[], text[]) from public;
 grant execute on function indonesian.apply_placement_result(text[], text[]) to authenticated, service_role;
+
+-- ============================================================================
+-- Spreektaal slice 1+2 — register-pair carrier (docs/plans/2026-07-09-spreektaal
+-- -lesson-woven-core.md §3.2, §8). Build order step 1 of 6.
+-- ============================================================================
+-- Two nullable columns, each on a carrier table and its destination table,
+-- riding the loan_source_nl groove exactly (ADR 0012: the Capability Stage
+-- reads item data only from the DB, never from staging):
+--   staging item register/registerCounterpart fields
+--     -> lesson_section_item_rows.register / register_counterpart (carrier)
+--     -> TypedItemRow (capability-stage/loadFromDb.ts)
+--     -> vocab projector generation carve-out + prerequisite wiring (§4)
+--     -> upsertLearningItemIdempotent -> learning_items.register / register_counterpart
+-- The CHECK is deliberately single-valued today (NOT a finished taxonomy) —
+-- widening it (e.g. adding 'gaul') is a cheap additive migration when
+-- Jakarta-register content arrives (§3.2).
+alter table indonesian.lesson_section_item_rows
+  add column if not exists register text null check (register in ('informal')),
+  add column if not exists register_counterpart text null;
+
+comment on column indonesian.lesson_section_item_rows.register is
+  'NULL = formal/default; ''informal'' marks a spreektaal item. Carrier for learning_items.register across the lesson->capability DB boundary (spec §3.2). Lesson-stage-written from staging; capability-stage-read.';
+comment on column indonesian.lesson_section_item_rows.register_counterpart is
+  'base_text of the formal twin (e.g. ''tidak'' on the nggak row); NULL otherwise. Carrier for learning_items.register_counterpart (spec §3.2).';
+
+alter table indonesian.learning_items
+  add column if not exists register text null check (register in ('informal')),
+  add column if not exists register_counterpart text null;
+
+comment on column indonesian.learning_items.register is
+  'NULL = formal/default; ''informal'' marks a spreektaal item (spec §3.2). Pipeline-written from staging every publish, like loan_source_nl -- a direct DB edit is silently clobbered next publish.';
+comment on column indonesian.learning_items.register_counterpart is
+  'base_text of the formal twin for an informal item; NULL otherwise (spec §3.2). Resolved to a learning_items row via the canonical itemSlug() mint, never a bespoke lowercase/trim.';
