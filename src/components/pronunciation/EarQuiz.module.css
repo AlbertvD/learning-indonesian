@@ -5,12 +5,11 @@
    a framework token. */
 
 /* bespoke-css-ok: token-only inset quiz row (see file header) — warmed off the
-   flat grey surface onto the card family with an accent edge, matching the
-   minimal-pair rows above it. Pure framework tokens. */
+   flat grey surface onto the card family, matching the minimal-pair rows above
+   it. Pure framework tokens. */
 .subCard {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-left: 3px solid var(--accent-primary-dim);
   border-radius: var(--r-sm);
   padding: 10px 12px;
   margin-top: 8px;
