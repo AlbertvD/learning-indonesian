@@ -53,11 +53,18 @@ export interface SettingsCardProps {
    * (unchanged for every existing caller — additive, non-breaking).
    */
   aside?: ReactNode
+  /**
+   * Visual tone. `default` is the neutral settings card. `danger` tints the
+   * border and title red so destructive-action cards (e.g. delete account)
+   * read as "handle with care" without any bespoke callsite CSS. Additive,
+   * non-breaking — every existing caller keeps the default.
+   */
+  tone?: 'default' | 'danger'
 }
 
-export function SettingsCard({ title, description, children, aside }: SettingsCardProps) {
+export function SettingsCard({ title, description, children, aside, tone = 'default' }: SettingsCardProps) {
   return (
-    <section className={cx(classes.root)}>
+    <section className={cx(classes.root, tone === 'danger' && classes.danger)}>
       {aside ? (
         <div className={cx(classes.titleRow)}>
           <h3 className={cx(classes.title)}>{title}</h3>
