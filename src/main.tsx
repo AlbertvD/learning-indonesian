@@ -15,6 +15,7 @@ import { SpreektaalProvider } from '@/contexts/SpreektaalContext'
 // Layer declaration must load FIRST — before any layered stylesheet — so the
 // declared order (`@layer mantine, exercises;`) governs the cascade.
 import './styles/layers.css'
+import './styles/fonts.css'
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
 import './index.css'

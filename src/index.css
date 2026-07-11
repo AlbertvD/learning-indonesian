@@ -5,7 +5,9 @@
    Never add colors, font sizes, or spacing values directly here.
 ───────────────────────────────────────────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+/* 'Plus Jakarta Sans' @font-face declarations live in src/styles/fonts.css
+   (self-hosted, imported in main.tsx) — see that file for the vendoring
+   rationale. Previously an @import of the Google Fonts CDN here. */
 
 /* ── Reset ──────────────────────────────────────────────────────────────────── */
 
