@@ -118,3 +118,35 @@ html[data-mantine-color-scheme="light"] body {
   height: 1px;
   background: var(--card-border);
 }
+
+/* ── Eyebrow label ───────────────────────────────────────────────────────────
+   Small warm section label used INSIDE cards (e.g. the pronunciation primer's
+   "Voorbeelden" / "Hoor het verschil"). Warmer and lighter than .section-label,
+   which owns full page-section headers with a trailing rule. Replaces the old
+   grey `c="dimmed"` micro-labels so nested sections read as brand, not chrome.
+─────────────────────────────────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+
+/* ── Native media controls ───────────────────────────────────────────────────
+   The browser-native <audio controls> widget renders as a light-grey slab by
+   default, which fights the warm dark palette everywhere it appears (podcasts,
+   grammar podcasts, lesson audio, the pronunciation primer). `color-scheme`
+   makes the widget adopt the dark (or light) system rendering so it sits in the
+   theme instead of glowing grey; `accent-color` tints its scrubber/volume
+   toward the brand where the engine honours it. One rule, every player.
+─────────────────────────────────────────────────────────────────────────── */
+audio {
+  color-scheme: dark;
+  accent-color: var(--accent-primary);
+}
+
+html[data-mantine-color-scheme="light"] audio {
+  color-scheme: light;
+}

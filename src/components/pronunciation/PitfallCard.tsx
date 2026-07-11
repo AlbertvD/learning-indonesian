@@ -4,6 +4,7 @@
 // the prefetched audio map; no data fetching of its own.
 
 import { Group, Stack, Text } from '@mantine/core'
+import { IconAlertTriangle } from '@tabler/icons-react'
 import { PlayButton } from '@/components/PlayButton'
 import classes from './PitfallCard.module.css'
 import { MinimalPairPlayer } from './MinimalPairPlayer'
@@ -33,40 +34,47 @@ export function PitfallCard({ pitfall, language, audioMap }: PitfallCardProps) {
 
   return (
     <section className={classes.card}>
-      <Stack gap="xs">
+      <Stack gap="md">
         <Group gap="sm" wrap="nowrap" align="flex-start">
           <span className={classes.soundPill}>{pitfall.sound}</span>
           <Text fw={600}>{rule}</Text>
         </Group>
 
-        <Text size="sm" c="dimmed">
-          <Text span fw={600} size="sm">{T.pronunciation.mistakeLabel}: </Text>
-          {mistake}
-        </Text>
+        <div className={classes.mistake}>
+          <IconAlertTriangle size={16} className={classes.mistakeIcon} />
+          <Text size="sm">
+            <Text span fw={700} size="sm" className={classes.mistakeLabel}>
+              {T.pronunciation.mistakeLabel}:{' '}
+            </Text>
+            {mistake}
+          </Text>
+        </div>
 
         <div>
-          <Text size="xs" tt="uppercase" c="dimmed" mb={4}>
+          <div className="eyebrow" style={{ marginBottom: 8 }}>
             {T.pronunciation.examplesLabel}
-          </Text>
-          <Group gap="md">
+          </div>
+          <div className={classes.examplesGrid}>
             {pitfall.examples.map((word) => {
               const url = resolveSessionAudioUrl(audioMap, word, null)
               return (
-                <Group key={word} gap={2} wrap="nowrap">
-                  <Text size="sm">{word}</Text>
-                  <PlayButton audioUrl={url} size="xs" />
-                  {url && <ShadowControl word={word} modelUrl={url} />}
-                </Group>
+                <div key={word} className={classes.exampleChip}>
+                  <Text className={classes.exampleWord}>{word}</Text>
+                  <div className={classes.exampleControls}>
+                    <PlayButton audioUrl={url} size="lg" />
+                    {url && <ShadowControl word={word} modelUrl={url} size="lg" />}
+                  </div>
+                </div>
               )
             })}
-          </Group>
+          </div>
         </div>
 
         {pitfall.minimalPairs && pitfall.minimalPairs.length > 0 && (
           <div>
-            <Text size="xs" tt="uppercase" c="dimmed" mb={4}>
+            <div className="eyebrow" style={{ marginBottom: 8 }}>
               {T.pronunciation.perceptionLabel}
-            </Text>
+            </div>
             <Stack gap="xs">
               {pitfall.minimalPairs.map((mp) => (
                 <MinimalPairPlayer key={`${mp.a}-${mp.b}`} pair={mp} language={language} audioMap={audioMap} />

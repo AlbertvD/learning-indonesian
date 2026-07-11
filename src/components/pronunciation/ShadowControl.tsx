@@ -13,10 +13,20 @@ import { useT } from '@/hooks/useT'
 interface ShadowControlProps {
   word: string
   modelUrl: string | undefined
+  /** ActionIcon size — defaults to the compact `xs` used in the minimal-pair rows. */
+  size?: 'xs' | 'sm' | 'md' | 'lg'
 }
 
-export function ShadowControl({ modelUrl }: ShadowControlProps) {
+const ICON_SIZE: Record<NonNullable<ShadowControlProps['size']>, number> = {
+  xs: 14,
+  sm: 14,
+  md: 16,
+  lg: 18,
+}
+
+export function ShadowControl({ modelUrl, size = 'xs' }: ShadowControlProps) {
   const T = useT()
+  const iconSize = ICON_SIZE[size]
   const [state, setState] = useState<ShadowState>('idle')
   const recorderRef = useRef<ShadowRecorder | null>(null)
   if (recorderRef.current == null) {
@@ -47,19 +57,19 @@ export function ShadowControl({ modelUrl }: ShadowControlProps) {
       <Tooltip label={recording ? T.pronunciation.shadowStop : T.pronunciation.shadowRecord} withArrow>
         <ActionIcon
           variant="subtle"
-          size="xs"
+          size={size}
           style={recording ? { color: 'var(--danger)' } : undefined}
           onClick={onMic}
           aria-label={recording ? T.pronunciation.shadowStop : T.pronunciation.shadowRecord}
         >
-          {recording ? <IconPlayerStopFilled size={14} /> : <IconMicrophone size={14} />}
+          {recording ? <IconPlayerStopFilled size={iconSize} /> : <IconMicrophone size={iconSize} />}
         </ActionIcon>
       </Tooltip>
 
       {state === 'recorded' && (
         <Tooltip label={T.pronunciation.shadowCompare} withArrow>
-          <ActionIcon variant="subtle" size="xs" onClick={onCompare} aria-label={T.pronunciation.shadowCompare}>
-            <IconArrowsLeftRight size={14} />
+          <ActionIcon variant="subtle" size={size} onClick={onCompare} aria-label={T.pronunciation.shadowCompare}>
+            <IconArrowsLeftRight size={iconSize} />
           </ActionIcon>
         </Tooltip>
       )}
