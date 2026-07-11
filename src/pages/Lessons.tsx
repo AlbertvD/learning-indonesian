@@ -391,7 +391,7 @@ export function Lessons() {
     return (
       <PageContainer size="lg">
         <PageBody>
-          <PageHeader title={T.nav.leren} />
+          <PageHeader title={T.nav.leren} subtitle={T.leren.subtitle} />
           <SimpleGrid cols={{ base: 1 }} spacing="sm" mt="md">
             <ListCard
               feature

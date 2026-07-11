@@ -37,26 +37,26 @@ export function MinimalPairPlayer({ pair, language, audioMap }: MinimalPairPlaye
         <Group justify="space-between" wrap="nowrap">
           <Group gap="xs" wrap="nowrap">
             <Group gap={2} wrap="nowrap">
-              <Text size="sm" fw={600}>{pair.a}</Text>
-              <PlayButton audioUrl={aUrl} size="xs" />
+              <Text size="md" fw={600}>{pair.a}</Text>
+              <PlayButton audioUrl={aUrl} size="sm" />
             </Group>
-            <Text size="sm" c="dimmed">/</Text>
+            <Text size="md" c="dimmed">/</Text>
             <Group gap={2} wrap="nowrap">
-              <Text size="sm" fw={600}>{pair.b}</Text>
-              <PlayButton audioUrl={bUrl} size="xs" />
+              <Text size="md" fw={600}>{pair.b}</Text>
+              <PlayButton audioUrl={bUrl} size="sm" />
             </Group>
           </Group>
           <Button
-            size="compact-xs"
+            size="compact-sm"
             variant="light"
-            leftSection={<IconVolume size={14} />}
+            leftSection={<IconVolume size={16} />}
             onClick={playBoth}
             disabled={playing || !aUrl || !bUrl}
           >
             {T.pronunciation.compareLabel}
           </Button>
         </Group>
-        <Text size="xs" c="dimmed">{contrast}</Text>
+        <Text size="sm" c="dimmed">{contrast}</Text>
       </Stack>
     </div>
   )

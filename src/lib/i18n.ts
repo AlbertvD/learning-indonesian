@@ -65,6 +65,7 @@ export const nl = {
     grammarLesson: 'Les {n}',
   },
   leren: {
+    subtitle: 'Doe een les, selecteer een woordenlijst of gebruik een van de trainers.',
     lessenTab: 'Lessen',
     lessenDesc: 'Werk de cursus door, les voor les.',
     woordenlijstenDesc: 'Oefen woorden per thema en frequentie.',
@@ -794,6 +795,7 @@ export const en: typeof nl = {
     grammarLesson: 'Lesson {n}',
   },
   leren: {
+    subtitle: 'Do a lesson, pick a word list or use one of the trainers.',
     lessenTab: 'Lessons',
     lessenDesc: 'Work through the course, lesson by lesson.',
     woordenlijstenDesc: 'Practise words by theme and frequency.',
