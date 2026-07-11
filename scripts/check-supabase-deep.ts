@@ -2510,7 +2510,14 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     const pageSize = 1000
     const all: T[] = []
     for (let offset = 0; ; offset += pageSize) {
-      let q: any = supabase.schema('indonesian').from(table).select(select).range(offset, offset + pageSize - 1)
+      // .order('id') is REQUIRED for correctness, not cosmetics: .range()
+      // without a stable sort lets PostgREST's page boundaries drift, so on
+      // tables >1 page (learning_capabilities is ~16k rows / 16 pages) rows
+      // silently duplicate and drop across pages. That produced HC49's flaky
+      // false positive — dropped published caps made real prerequisites look
+      // unresolved, with tell-tale duplicated sample rows. Every caller table
+      // (learning_items, learning_capabilities, item_answer_variants) has id.
+      let q: any = supabase.schema('indonesian').from(table).select(select).order('id').range(offset, offset + pageSize - 1)
       if (apply) q = apply(q)
       const { data, error } = await q
       if (error) {
