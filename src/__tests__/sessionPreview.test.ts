@@ -38,10 +38,11 @@ describe('summarizeSessionPlan', () => {
     expect(counts.grammar).toBe(0)
   })
 
-  it('estimates duration at ~25s per exercise with a 1-minute floor', () => {
+  it('estimates duration at ~13s per exercise with a 1-minute floor', () => {
     expect(summarizeSessionPlan([block('due_review', 'x_cap')]).estMinutes).toBe(1)
+    // 16 × 13s = 208s ≈ 3 min (was 7 min at the old, unfounded 25s/item rate)
     const sixteen = Array.from({ length: 16 }, () => block('due_review', 'x_cap'))
-    expect(summarizeSessionPlan(sixteen).estMinutes).toBe(7)
+    expect(summarizeSessionPlan(sixteen).estMinutes).toBe(3)
   })
 
   it('returns all zeros for an empty plan', () => {

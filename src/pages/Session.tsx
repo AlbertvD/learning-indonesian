@@ -76,7 +76,7 @@ export function Session() {
   const affixFilter = searchParams.get('affix')
   const sessionModeParam = searchParams.get('mode')
   const sessionMode = parseSessionMode(sessionModeParam)
-  const preferredSessionSize = profile?.preferredSessionSize ?? 15
+  const preferredSessionSize = profile?.preferredSessionSize ?? 20
   const userLanguage = (profile?.language ?? 'nl') as 'en' | 'nl'
   const T = translations[userLanguage]
   // ?force_capability=<canonical_key> — admin-only dev bypass for the per-PR E2E

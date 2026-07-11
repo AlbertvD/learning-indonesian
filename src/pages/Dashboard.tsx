@@ -179,8 +179,8 @@ export function Dashboard() {
           userId: userId!,
           mode: 'standard',
           now: new Date(),
-          limit: profile?.preferredSessionSize ?? 15,
-          preferredSessionSize: profile?.preferredSessionSize ?? 15,
+          limit: profile?.preferredSessionSize ?? 20,
+          preferredSessionSize: profile?.preferredSessionSize ?? 20,
           listeningEnabled,
           spreektaalEnabled,
           adapter: sessionBuilderAdapter,
@@ -232,7 +232,7 @@ export function Dashboard() {
   // material got in) AND the backlog is larger than a whole session, new
   // introductions are budget-starved (openSlots = max(0, size − dueCount) = 0).
   // Surface a consistency nudge rather than leaving the frozen frontier unexplained.
-  const sessionSize = profile?.preferredSessionSize ?? 15
+  const sessionSize = profile?.preferredSessionSize ?? 20
   const showBacklogInsight = preview !== null && preview.newItems === 0 && backlog > sessionSize
 
   return (

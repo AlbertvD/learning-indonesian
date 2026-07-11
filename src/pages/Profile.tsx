@@ -86,7 +86,7 @@ export function Profile() {
 
   const [loading, setLoading] = useState(true)
   const [displayName, setDisplayName] = useState('')
-  const [sessionSize, setSessionSize] = useState(15)
+  const [sessionSize, setSessionSize] = useState(20)
   const [timezone, setTimezone] = useState<string | null>(null)
   const [momentum, setMomentum] = useState<Momentum | null>(null)
   const [savingSessionSize, setSavingSessionSize] = useState(false)
@@ -101,7 +101,7 @@ export function Profile() {
       if (!user) return
       try {
         setDisplayName(profile?.fullName ?? '')
-        setSessionSize(profile?.preferredSessionSize ?? 15)
+        setSessionSize(profile?.preferredSessionSize ?? 20)
         setTimezone(profile?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone)
       } catch (err) {
         logError({ page: 'profile', action: 'fetchData', error: err })
@@ -195,7 +195,7 @@ export function Profile() {
         title: T.profile.failedToSave,
         message: T.profile.somethingWentWrong,
       })
-      setSessionSize(profile?.preferredSessionSize ?? 15)
+      setSessionSize(profile?.preferredSessionSize ?? 20)
     } finally {
       setSavingSessionSize(false)
     }
