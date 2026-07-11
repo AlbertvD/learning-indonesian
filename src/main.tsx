@@ -243,8 +243,13 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
 
     // Text
     '--text-primary':   '#ECE7D8',
-    '--text-secondary': '#849A8D',
-    '--text-tertiary':  '#5E6E64',
+    // Warm greige, lightened off the old sage (#849A8D / #5E6E64) — that
+    // green-grey read as "grey text" against the cream primary. These stay a
+    // clear step below --text-primary (hierarchy intact) while lifting contrast
+    // on ground + card (AA+), so secondary/dimmed text everywhere reads warm
+    // and legible instead of washed grey-green.
+    '--text-secondary': '#B4AE9E',
+    '--text-tertiary':  '#8B8578',
 
     // Borders
     '--border':       '#2B3731',

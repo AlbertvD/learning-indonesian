@@ -27,8 +27,8 @@ export default defineConfig({
         }],
       },
       manifest: {
-        name: 'Learning Indonesian',
-        short_name: 'Indonesian',
+        name: 'Kamoe Bisa',
+        short_name: 'Kamoe Bisa',
         theme_color: '#1a1b1e',
         background_color: '#1a1b1e',
         display: 'standalone',
