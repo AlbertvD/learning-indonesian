@@ -9,12 +9,11 @@ import {
   SegmentedControl,
   Switch,
   Slider,
-  Box,
   Select,
   Modal,
 } from '@mantine/core'
 import { useMantineColorScheme } from '@mantine/core'
-import { IconMoon, IconSun, IconChevronLeft, IconChevronRight, IconLogout } from '@tabler/icons-react'
+import { IconMoon, IconSun, IconLogout, IconFlame, IconClock } from '@tabler/icons-react'
 import { useMediaQuery } from '@mantine/hooks'
 import { useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
@@ -22,7 +21,7 @@ import { FunctionsHttpError } from '@supabase/supabase-js'
 import {
   PageContainer,
   PageBody,
-  PageHeader,
+  HeroCard,
   SettingsCard,
   LoadingState,
 } from '@/components/page/primitives'
@@ -31,9 +30,11 @@ import { useT } from '@/hooks/useT'
 import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
 import { supabase } from '@/lib/supabase'
+import { engagement } from '@/lib/analytics/engagement'
 import { useAutoplay } from '@/contexts/AutoplayContext'
 import { useListening } from '@/contexts/ListeningContext'
 import { useSpreektaal } from '@/contexts/SpreektaalContext'
+import classes from './Profile.module.css'
 
 // The edge function returns { error: <code> } on non-2xx. functions.invoke
 // never throws — it resolves { data: null, error: FunctionsHttpError } whose
@@ -47,6 +48,24 @@ async function extractErrorCode(error: unknown): Promise<string | undefined> {
   } catch {
     return undefined
   }
+}
+
+// Avatar initials — first + last initial of the display name, or the email's
+// first letter when no name is set. Never empty (falls back to '?').
+function initials(name: string, email: string): string {
+  const trimmed = name.trim()
+  if (trimmed) {
+    const parts = trimmed.split(/\s+/)
+    const first = parts[0]?.[0] ?? ''
+    const last = parts.length > 1 ? (parts[parts.length - 1][0] ?? '') : ''
+    return (first + last).toUpperCase()
+  }
+  return (email.trim()[0] ?? '?').toUpperCase()
+}
+
+interface Momentum {
+  streakDays: number
+  minutesThisWeek: number
 }
 
 export function Profile() {
@@ -69,10 +88,10 @@ export function Profile() {
   const [displayName, setDisplayName] = useState('')
   const [sessionSize, setSessionSize] = useState(15)
   const [timezone, setTimezone] = useState<string | null>(null)
-  const [saving, setSaving] = useState(false)
-  const [savingLang, setSavingLang] = useState(false)
+  const [momentum, setMomentum] = useState<Momentum | null>(null)
   const [savingSessionSize, setSavingSessionSize] = useState(false)
   const [savingTimezone, setSavingTimezone] = useState(false)
+  const [savingLang, setSavingLang] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
   const [deletingAccount, setDeletingAccount] = useState(false)
@@ -98,9 +117,29 @@ export function Profile() {
     fetchData()
   }, [user, profile, T])
 
-  async function handleSave() {
+  // Momentum stats for the hero — streak + minutes this week. Best-effort:
+  // a failure just hides the row (the hero still shows identity + member-since),
+  // so it never blocks the page. Same source Dashboard reads (Dashboard.tsx).
+  useEffect(() => {
     if (!user) return
-    setSaving(true)
+    let cancelled = false
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+    engagement
+      .practiceTime(user.id, tz)
+      .then((pt) => {
+        if (!cancelled) setMomentum({ streakDays: pt.streakDays, minutesThisWeek: pt.minutesThisWeek })
+      })
+      .catch((err) => {
+        logError({ page: 'profile', action: 'fetchMomentum', error: err })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [user])
+
+  async function handleSaveDisplayName() {
+    if (!user) return
+    if (displayName.trim() === (profile?.fullName ?? '').trim()) return
     try {
       await updateDisplayName(displayName)
       notifications.show({
@@ -115,8 +154,6 @@ export function Profile() {
         title: T.profile.failedToSave,
         message: T.profile.somethingWentWrong,
       })
-    } finally {
-      setSaving(false)
     }
   }
 
@@ -187,18 +224,6 @@ export function Profile() {
     }
   }
 
-  function handleDecreaseSessionSize() {
-    const newSize = Math.max(5, sessionSize - 1)
-    setSessionSize(newSize)
-    handleSessionSizeChange(newSize)
-  }
-
-  function handleIncreaseSessionSize() {
-    const newSize = Math.min(50, sessionSize + 1)
-    setSessionSize(newSize)
-    handleSessionSizeChange(newSize)
-  }
-
   async function handleDeleteAccount() {
     setDeletingAccount(true)
     try {
@@ -233,6 +258,10 @@ export function Profile() {
     )
   }
 
+  const email = user?.email ?? ''
+  const savedName = (profile?.fullName ?? '').trim()
+  const heroName = savedName || email || '—'
+  const showEmailLine = Boolean(savedName) && Boolean(email)
   const memberSince = user?.created_at
     ? new Date(user.created_at).toLocaleDateString(undefined, {
         year: 'numeric',
@@ -244,183 +273,218 @@ export function Profile() {
   return (
     <PageContainer size="sm">
       <PageBody>
-        <PageHeader title={T.profile.title} />
-
-        <SettingsCard title={T.profile.account}>
-          <Stack gap="md">
-            <Group gap="sm">
-              <Text fw={500} w={120}>{T.profile.email}</Text>
-              <Text c="dimmed">{user?.email ?? '—'}</Text>
-            </Group>
-            <Group gap="sm">
-              <Text fw={500} w={120}>{T.profile.memberSince}</Text>
-              <Text c="dimmed">{memberSince}</Text>
-            </Group>
-            {/* Sign-out lives here since the rail's ProfileMenu was deleted
-                (desktop program slice 2); this is also the first sign-out
-                control mobile has ever had. */}
-            <Group justify="flex-end">
-              <Button
-                variant="default"
-                leftSection={<IconLogout size={16} />}
+        <Stack gap="lg">
+          {/* ── Identity hero ─────────────────────────────────────────────── */}
+          <HeroCard>
+            <div className={classes.heroTop}>
+              <div className={classes.identity}>
+                <div className={classes.avatar} aria-hidden="true">
+                  {initials(savedName, email)}
+                </div>
+                <div className={classes.identityText}>
+                  <div className={classes.name}>{heroName}</div>
+                  {showEmailLine && <div className={classes.email}>{email}</div>}
+                  <div className={classes.memberSince}>
+                    {T.profile.memberSince} {memberSince}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                className={classes.signOut}
                 onClick={async () => {
                   await signOut()
                   navigate('/')
                 }}
               >
+                <IconLogout size={15} />
                 {T.nav.logout}
-              </Button>
-            </Group>
-          </Stack>
-        </SettingsCard>
+              </button>
+            </div>
 
-        <SettingsCard title={T.profile.displayName}>
-          <Stack gap="md">
-            <TextInput
-              label={T.profile.displayName}
-              placeholder={T.profile.displayNamePlaceholder}
-              value={displayName}
-              onChange={(e) => setDisplayName(e.currentTarget.value)}
-            />
-            <Group justify="flex-end">
-              <Button onClick={handleSave} loading={saving}>
-                {T.profile.save}
-              </Button>
-            </Group>
-          </Stack>
-        </SettingsCard>
+            {momentum && (
+              <div className={classes.momentum}>
+                <div className={classes.stat}>
+                  <IconFlame size={20} className={classes.statIcon} />
+                  <div className={classes.statText}>
+                    <span className={classes.statValue}>{momentum.streakDays}</span>
+                    <span className={classes.statLabel}>{T.profile.streakTileLabel}</span>
+                  </div>
+                </div>
+                <div className={classes.stat}>
+                  <IconClock size={20} className={classes.statIcon} />
+                  <div className={classes.statText}>
+                    <span className={classes.statValue}>{momentum.minutesThisWeek}</span>
+                    <span className={classes.statLabel}>{T.profile.minutesTileLabel}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </HeroCard>
 
-        {isMobile && (
-          <SettingsCard title={T.profile.appearance}>
-            <Group justify="space-between">
-              <Group gap="xs">
-                {colorScheme === 'dark' ? <IconMoon size={16} /> : <IconSun size={16} />}
-                <Text size="sm">{colorScheme === 'dark' ? T.profile.darkMode : T.profile.lightMode}</Text>
-              </Group>
-              <Switch
-                checked={colorScheme === 'dark'}
-                onChange={toggleColorScheme}
-                size="md"
-              />
-            </Group>
+          {/* ── Account & display ─────────────────────────────────────────── */}
+          <SettingsCard title={T.profile.accountAndDisplay}>
+            <div className={classes.rows}>
+              <div className={classes.rowStacked}>
+                <div className={classes.rowLabel}>
+                  <span className={classes.rowTitle}>{T.profile.displayName}</span>
+                </div>
+                <TextInput
+                  aria-label={T.profile.displayName}
+                  placeholder={T.profile.displayNamePlaceholder}
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.currentTarget.value)}
+                  onBlur={handleSaveDisplayName}
+                />
+              </div>
+
+              <div className={classes.row}>
+                <div className={classes.rowLabel}>
+                  <span className={classes.rowTitle}>{T.profile.language}</span>
+                </div>
+                <div className={classes.rowControl}>
+                  <SegmentedControl
+                    value={profile?.language ?? 'nl'}
+                    onChange={(val) => handleLanguageChange(val as 'nl' | 'en')}
+                    disabled={savingLang}
+                    data={[
+                      { label: T.profile.dutch, value: 'nl' },
+                      { label: T.profile.english, value: 'en' },
+                    ]}
+                  />
+                </div>
+              </div>
+
+              {/* Dark-mode toggle is mobile-only — desktop keeps it in the rail,
+                  so surfacing it here would duplicate that control. */}
+              {isMobile && (
+                <div className={classes.row}>
+                  <div className={classes.rowLabel}>
+                    <span className={classes.rowTitle}>{T.profile.appearance}</span>
+                  </div>
+                  <Group gap="xs" className={classes.rowControl}>
+                    {colorScheme === 'dark' ? <IconMoon size={16} /> : <IconSun size={16} />}
+                    <Switch
+                      aria-label={colorScheme === 'dark' ? T.profile.darkMode : T.profile.lightMode}
+                      checked={colorScheme === 'dark'}
+                      onChange={toggleColorScheme}
+                      size="md"
+                    />
+                  </Group>
+                </div>
+              )}
+
+              <div className={classes.rowStacked}>
+                <div className={classes.rowLabel}>
+                  <span className={classes.rowTitle}>{T.profile.timezone}</span>
+                  <span className={classes.rowDesc}>{T.profile.timezoneDescription}</span>
+                </div>
+                <Select
+                  searchable
+                  aria-label={T.profile.selectTimezone}
+                  placeholder={T.profile.pickTimezone}
+                  data={Intl.supportedValuesOf('timeZone')}
+                  value={timezone}
+                  onChange={(val) => {
+                    setTimezone(val)
+                    handleTimezoneChange(val)
+                  }}
+                  disabled={savingTimezone}
+                />
+              </div>
+            </div>
           </SettingsCard>
-        )}
 
-        <SettingsCard title={T.profile.timezone} description={T.profile.timezoneDescription}>
-          <Select
-            searchable
-            label={T.profile.selectTimezone}
-            placeholder={T.profile.pickTimezone}
-            data={Intl.supportedValuesOf('timeZone')}
-            value={timezone}
-            onChange={(val) => {
-              setTimezone(val)
-              handleTimezoneChange(val)
-            }}
-            disabled={savingTimezone}
-          />
-        </SettingsCard>
+          {/* ── Practice ──────────────────────────────────────────────────── */}
+          <SettingsCard title={T.profile.practiceSettings}>
+            <div className={classes.rows}>
+              <div className={classes.rowStacked}>
+                <div className={classes.rowLabel}>
+                  <span className={classes.rowTitle}>{T.profile.sessionSize}</span>
+                  <span className={classes.rowDesc}>{T.profile.sessionSizeDescription}</span>
+                </div>
+                <div>
+                  <div className={classes.sessionValue}>{sessionSize}</div>
+                  <div className={classes.sessionUnit}>{T.profile.items}</div>
+                  <Slider
+                    mt="md"
+                    value={sessionSize}
+                    onChange={setSessionSize}
+                    onChangeEnd={handleSessionSizeChange}
+                    min={5}
+                    max={50}
+                    step={1}
+                    disabled={savingSessionSize}
+                    marks={[
+                      { value: 5, label: '5' },
+                      { value: 15, label: '15' },
+                      { value: 30, label: '30' },
+                      { value: 50, label: '50' },
+                    ]}
+                    label={(value) => `${value} ${T.profile.items}`}
+                  />
+                </div>
+              </div>
 
-        <SettingsCard title={T.profile.language}>
-          <SegmentedControl
-            value={profile?.language ?? 'nl'}
-            onChange={(val) => handleLanguageChange(val as 'nl' | 'en')}
-            disabled={savingLang}
-            data={[
-              { label: T.profile.dutch, value: 'nl' },
-              { label: T.profile.english, value: 'en' },
-            ]}
-          />
-        </SettingsCard>
+              <div className={classes.row}>
+                <div className={classes.rowLabel}>
+                  <span className={classes.rowTitle}>{T.profile.autoPlayAudio}</span>
+                  <span className={classes.rowDesc}>{T.profile.autoPlayAudioDescription}</span>
+                </div>
+                <Switch
+                  className={classes.rowControl}
+                  aria-label={T.profile.autoPlayAudio}
+                  checked={autoPlay}
+                  onChange={(e) => setAutoPlay(e.currentTarget.checked)}
+                  size="md"
+                />
+              </div>
 
-        <SettingsCard title={T.profile.autoPlayAudio} description={T.profile.autoPlayAudioDescription}>
-          <Switch
-            checked={autoPlay}
-            onChange={(e) => setAutoPlay(e.currentTarget.checked)}
-            size="md"
-            label={T.profile.autoPlayAudio}
-          />
-        </SettingsCard>
+              <div className={classes.row}>
+                <div className={classes.rowLabel}>
+                  <span className={classes.rowTitle}>{T.profile.listeningExercises}</span>
+                  <span className={classes.rowDesc}>{T.profile.listeningExercisesDescription}</span>
+                </div>
+                <Switch
+                  className={classes.rowControl}
+                  aria-label={T.profile.enableListeningExercises}
+                  checked={listeningEnabled}
+                  onChange={(e) => setListeningEnabled(e.currentTarget.checked)}
+                  size="md"
+                />
+              </div>
 
-        <SettingsCard title={T.profile.listeningExercises} description={T.profile.listeningExercisesDescription}>
-          <Switch
-            checked={listeningEnabled}
-            onChange={(e) => setListeningEnabled(e.currentTarget.checked)}
-            size="md"
-            label={T.profile.enableListeningExercises}
-          />
-        </SettingsCard>
+              <div className={classes.row}>
+                <div className={classes.rowLabel}>
+                  <span className={classes.rowTitle}>{T.profile.spreektaal}</span>
+                  <span className={classes.rowDesc}>{T.profile.spreektaalDescription}</span>
+                </div>
+                <Switch
+                  className={classes.rowControl}
+                  aria-label={T.profile.enableSpreektaal}
+                  checked={spreektaalEnabled}
+                  onChange={(e) => setSpreektaalEnabled(e.currentTarget.checked)}
+                  size="md"
+                />
+              </div>
+            </div>
+          </SettingsCard>
 
-        <SettingsCard title={T.profile.spreektaal} description={T.profile.spreektaalDescription}>
-          <Switch
-            checked={spreektaalEnabled}
-            onChange={(e) => setSpreektaalEnabled(e.currentTarget.checked)}
-            size="md"
-            label={T.profile.enableSpreektaal}
-          />
-        </SettingsCard>
-
-        <SettingsCard title={T.profile.sessionSize}>
-          <Stack gap="md">
-            <Group justify="center" gap="md">
-              <Button
-                variant="default"
-                size="sm"
-                onClick={handleDecreaseSessionSize}
-                disabled={savingSessionSize || sessionSize <= 5}
-              >
-                <IconChevronLeft size={16} />
-              </Button>
-              <Text size="lg" fw={700} w={40} ta="center">
-                {sessionSize}
+          {/* ── Danger zone ───────────────────────────────────────────────── */}
+          <SettingsCard title={T.profile.deleteAccountSectionTitle} tone="danger">
+            <Stack gap="md">
+              <Text size="sm" c="dimmed">
+                {T.profile.deleteAccountDescription}{' '}
+                <a href="/privacy">{T.privacy.viewLink}</a>
               </Text>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={handleIncreaseSessionSize}
-                disabled={savingSessionSize || sessionSize >= 50}
-              >
-                <IconChevronRight size={16} />
-              </Button>
-            </Group>
-            <Box w="100%">
-              <Slider
-                value={sessionSize}
-                onChange={setSessionSize}
-                onChangeEnd={handleSessionSizeChange}
-                min={5}
-                max={50}
-                step={1}
-                disabled={savingSessionSize}
-                marks={[
-                  { value: 5, label: '5' },
-                  { value: 15, label: '15' },
-                  { value: 30, label: '30' },
-                  { value: 50, label: '50' },
-                ]}
-                label={(value) => `${value} ${T.profile.items}`}
-              />
-            </Box>
-          </Stack>
-        </SettingsCard>
-
-        <SettingsCard title={T.profile.deleteAccountSectionTitle}>
-          <Stack gap="md">
-            <Text size="sm" c="dimmed">
-              {T.profile.deleteAccountDescription}{' '}
-              <a href="/privacy">{T.privacy.viewLink}</a>
-            </Text>
-            <Group justify="flex-end">
-              <Button
-                color="red"
-                variant="outline"
-                onClick={() => setDeleteModalOpen(true)}
-              >
-                {T.profile.deleteAccountButton}
-              </Button>
-            </Group>
-          </Stack>
-        </SettingsCard>
+              <Group justify="flex-end">
+                <Button color="red" variant="outline" onClick={() => setDeleteModalOpen(true)}>
+                  {T.profile.deleteAccountButton}
+                </Button>
+              </Group>
+            </Stack>
+          </SettingsCard>
+        </Stack>
       </PageBody>
 
       <Modal

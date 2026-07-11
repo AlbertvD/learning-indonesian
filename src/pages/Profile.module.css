@@ -1,0 +1,224 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Profile.module.css — the identity hero + settings-row treatments for the
+   Profile page. Composed as children INSIDE the shared HeroCard / SettingsCard
+   primitives, so all hero text uses the `--hero-*` token family (theme-aware:
+   white on the dark batik gradient, ink on the light paper gradient) and all
+   card chrome comes from the primitives. Nothing here re-implements card shell.
+
+   bespoke-css-ok: this file styles only the INNER composition HeroCard and
+   SettingsCard explicitly delegate to the caller (their docs: "caller owns the
+   inner layout entirely") — an avatar disc, the sign-out button, momentum
+   tiles, and label/control rows. No card surface, tone tint, or hover is
+   reconstructed here; those still come from the primitives. See
+   feedback_ui_default_to_existing_framework.
+
+   No @container / @media / @layer / !important — the hero scales the same on
+   mobile and desktop; row wrapping is handled by flex, not breakpoints.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Identity hero ─────────────────────────────────────────────────────────── */
+
+.heroTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+.identityText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  line-height: 1.15;
+  color: var(--hero-text);
+  overflow-wrap: anywhere;
+}
+
+.email {
+  font-size: var(--fs-sm);
+  color: var(--hero-text-dim);
+  overflow-wrap: anywhere;
+}
+
+.memberSince {
+  margin-top: 2px;
+  font-size: var(--fs-sm);
+  color: var(--hero-label);
+}
+
+/* Sign-out — a plain button styled to read on the hero gradient in both
+   themes (Mantine's variants colour their text off the accent, which fights
+   the hero surface). */
+.signOut {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid var(--hero-border);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--hero-text-dim);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.signOut:hover {
+  color: var(--hero-text);
+  background: var(--accent-primary-subtle);
+  border-color: var(--hero-text-muted);
+}
+
+/* Momentum row — streak + minutes-this-week tiles, separated from the identity
+   block by a hairline in the hero border colour. */
+.momentum {
+  display: flex;
+  gap: 28px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hero-border);
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.statIcon {
+  color: var(--hero-text-dim);
+  flex-shrink: 0;
+}
+
+.statText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.statValue {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--hero-text);
+}
+
+.statLabel {
+  font-size: var(--fs-xs);
+  color: var(--hero-label);
+}
+
+/* ── Settings rows (composed inside SettingsCard body) ─────────────────────── */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hairline divider between consecutive rows; first/last rows shed the padding
+   that would otherwise gap them from the card title / bottom edge. */
+.rows > * + * {
+  border-top: 1px solid var(--card-border);
+}
+
+.row,
+.rowStacked {
+  padding: 16px 0;
+}
+
+.rows > *:first-child {
+  padding-top: 0;
+}
+
+.rows > *:last-child {
+  padding-bottom: 0;
+}
+
+/* Inline row — label block left, compact control right. */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Stacked row — label block on top, full-width control below (text input,
+   searchable select, session slider). */
+.rowStacked {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rowLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.rowTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.rowDesc {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.rowControl {
+  flex-shrink: 0;
+}
+
+/* ── Session size ──────────────────────────────────────────────────────────── */
+
+.sessionValue {
+  text-align: center;
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--accent-primary);
+  line-height: 1;
+}
+
+.sessionUnit {
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin-top: 4px;
+}

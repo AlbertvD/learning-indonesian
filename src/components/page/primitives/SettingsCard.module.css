@@ -37,6 +37,17 @@
   margin: 0 0 4px;
 }
 
+/* Danger tone — destructive-action cards (e.g. delete account). Two-class
+   specificity (0,2,0) so the red border wins over the mobile frosted-glass
+   `.root` rule (0,1,0) below without !important. */
+.root.danger {
+  border-color: var(--danger-border);
+}
+
+.danger .title {
+  color: var(--danger);
+}
+
 /* Only rendered when `aside` is passed — wraps .title + .aside in a row.
    .title keeps its own bottom margin (separates it from .description); the
    row itself carries no margin of its own. */
