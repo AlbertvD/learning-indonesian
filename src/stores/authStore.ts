@@ -205,7 +205,7 @@ async function loadProfileData(userId: string): Promise<{ displayName: string | 
   return {
     displayName: data?.display_name ?? null,
     language: data?.language === 'en' ? 'en' : 'nl',
-    preferredSessionSize: data?.preferred_session_size ?? 15,
+    preferredSessionSize: data?.preferred_session_size ?? 20,
     timezone: data?.timezone ?? null,
   }
 }

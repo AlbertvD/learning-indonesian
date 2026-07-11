@@ -20,7 +20,9 @@ export interface SessionPreviewCounts {
   newItems: number
   grammar: number
   listening: number
-  /** Rough "± N min" estimate (~25s per exercise, minimum 1). */
+  /** Rough "± N min" estimate (~13s per exercise, minimum 1). Grounded in
+   *  measured session timings (185 real sessions, 2026-07-11): ~13s mean /
+   *  ~8s median wall-clock per item. The old 25s/item roughly doubled it. */
   estMinutes: number
 }
 
@@ -53,6 +55,6 @@ export function summarizeSessionPlan(blocks: SessionPreviewBlock[]): SessionPrev
     newItems,
     grammar,
     listening,
-    estMinutes: total === 0 ? 0 : Math.max(1, Math.round((total * 25) / 60)),
+    estMinutes: total === 0 ? 0 : Math.max(1, Math.round((total * 13) / 60)),
   }
 }

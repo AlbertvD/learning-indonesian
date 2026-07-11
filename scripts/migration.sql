@@ -51,13 +51,16 @@ CREATE TABLE IF NOT EXISTS indonesian.profiles (
   id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   display_name text,
   language text NOT NULL DEFAULT 'nl' CHECK (language IN ('nl', 'en')),
-  preferred_session_size integer NOT NULL DEFAULT 15,
+  preferred_session_size integer NOT NULL DEFAULT 20,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
 
 -- Ensure preferred_session_size exists if table was already there
-ALTER TABLE indonesian.profiles ADD COLUMN IF NOT EXISTS preferred_session_size integer NOT NULL DEFAULT 15;
+ALTER TABLE indonesian.profiles ADD COLUMN IF NOT EXISTS preferred_session_size integer NOT NULL DEFAULT 20;
+-- Default bumped 15 -> 20 (2026-07-11, grounded in measured session timings: ~3–5 min
+-- for 20 items). Metadata-only; existing rows keep their stored value.
+ALTER TABLE indonesian.profiles ALTER COLUMN preferred_session_size SET DEFAULT 20;
 
 -- Timezone for weekly goal system (IANA timezone name, e.g. 'Europe/Amsterdam')
 ALTER TABLE indonesian.profiles ADD COLUMN IF NOT EXISTS timezone text;
