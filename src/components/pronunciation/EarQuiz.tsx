@@ -110,26 +110,26 @@ export function EarQuiz({ playablePairs, audioMap }: EarQuizProps) {
             <Tooltip label={T.pronunciation.quizReplay} withArrow>
               <ActionIcon
                 variant="subtle"
-                size="xs"
+                size="sm"
                 onClick={handleReplay}
                 aria-label={T.pronunciation.quizReplay}
               >
-                <IconVolume size={14} />
+                <IconVolume size={16} />
               </ActionIcon>
             </Tooltip>
           )}
         </Group>
 
         {!round ? (
-          <Button size="compact-xs" variant="light" onClick={startRound}>
+          <Button size="compact-sm" variant="light" onClick={startRound}>
             {T.pronunciation.quizStart}
           </Button>
         ) : (
           <Stack gap={4}>
-            <Text size="sm" c="dimmed">{T.pronunciation.quizPrompt}</Text>
+            <Text size="md" c="dimmed">{T.pronunciation.quizPrompt}</Text>
             <Group gap="xs">
               <Button
-                size="compact-xs"
+                size="compact-sm"
                 variant="light"
                 disabled={feedback !== null}
                 onClick={() => handleAnswer(round.pair.a)}
@@ -137,7 +137,7 @@ export function EarQuiz({ playablePairs, audioMap }: EarQuizProps) {
                 {round.pair.a}
               </Button>
               <Button
-                size="compact-xs"
+                size="compact-sm"
                 variant="light"
                 disabled={feedback !== null}
                 onClick={() => handleAnswer(round.pair.b)}
@@ -147,21 +147,21 @@ export function EarQuiz({ playablePairs, audioMap }: EarQuizProps) {
             </Group>
 
             {feedback === 'correct' && (
-              <Text size="sm" fw={600} className={classes.correct}>{T.pronunciation.quizCorrect}</Text>
+              <Text size="md" fw={600} className={classes.correct}>{T.pronunciation.quizCorrect}</Text>
             )}
 
             {feedback === 'wrong' && (
               <Stack gap={4}>
-                <Text size="sm" fw={600} className={classes.wrong}>
+                <Text size="md" fw={600} className={classes.wrong}>
                   {T.pronunciation.quizWrongWas} {round.playedMember === 'a' ? round.pair.a : round.pair.b}
                 </Text>
-                <Button size="compact-xs" variant="light" onClick={startRound}>
+                <Button size="compact-sm" variant="light" onClick={startRound}>
                   {T.pronunciation.quizNext}
                 </Button>
               </Stack>
             )}
 
-            <Text size="xs" c="dimmed">{T.pronunciation.quizStreak}: {streak}</Text>
+            <Text size="sm" c="dimmed">{T.pronunciation.quizStreak}: {streak}</Text>
           </Stack>
         )}
       </Stack>
