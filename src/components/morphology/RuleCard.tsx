@@ -46,12 +46,12 @@ export function RuleCard({ detail, audioMap }: { detail: AffixDetail; audioMap: 
     >
       <Stack gap="sm">
         {detail.rule.patternName && (
-          <Text size="sm" c="dimmed">{detail.rule.patternName}</Text>
+          <Text size="sm" fw={600}>{detail.rule.patternName}</Text>
         )}
 
         {detail.allomorphClasses.length > 0 && (
           <div>
-            <Text size="sm" fw={600} c="dimmed" mb={4}>{T.morphology.allomorphsTitle}</Text>
+            <div className="eyebrow" style={{ marginBottom: 6 }}>{T.morphology.allomorphsTitle}</div>
             <Group gap={6}>
               {detail.allomorphClasses.map((cls) => (
                 <span key={cls} className={classes.allomorphBadge}>{cls}-</span>
@@ -61,12 +61,12 @@ export function RuleCard({ detail, audioMap }: { detail: AffixDetail; audioMap: 
         )}
 
         {detail.ruleNote && (
-          <Text size="sm" c="dimmed">{detail.ruleNote}</Text>
+          <Text size="sm">{detail.ruleNote}</Text>
         )}
 
         {detail.examples.length > 0 && (
           <div>
-            <Text size="sm" fw={600} c="dimmed" mb={4}>{T.morphology.examplesTitle}</Text>
+            <div className="eyebrow" style={{ marginBottom: 6 }}>{T.morphology.examplesTitle}</div>
             <Stack gap={4}>
               {detail.examples.map((ex) => {
                 const audioUrl = resolveSessionAudioUrl(audioMap, ex.derivedText, null)

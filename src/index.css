@@ -156,12 +156,19 @@ html[data-mantine-color-scheme="light"] audio {
    already brand tamarind (theme primaryColor). Warm the off track app-wide so
    toggles (e.g. the woordenlijsten scheduler switch) sit in the palette. These
    rules are unlayered so they win over Mantine's layered scheme default; the
-   checked rule re-asserts the brand fill at higher specificity so ON stays
-   tamarind. One place, every switch. */
-.mantine-Switch-track {
+   checked/disabled rules re-assert their fills at higher specificity so ON
+   stays tamarind. Mantine's own switch CSS is UNLAYERED and sets --switch-bg
+   via `[data-mantine-color-scheme] .track` (specificity 0,2,0), so these rules
+   carry the same scheme prefix to match it and win on source order (index.css
+   loads after Mantine's). One place, every switch. */
+[data-mantine-color-scheme] .mantine-Switch-track {
   --switch-bg: var(--border-light);
 }
 
-.mantine-Switch-input:checked + .mantine-Switch-track {
+[data-mantine-color-scheme] .mantine-Switch-input:checked + .mantine-Switch-track {
   --switch-bg: var(--switch-color);
+}
+
+[data-mantine-color-scheme] .mantine-Switch-input:disabled + .mantine-Switch-track {
+  --switch-bg: var(--switch-disabled-color);
 }

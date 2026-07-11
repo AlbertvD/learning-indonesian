@@ -20,7 +20,7 @@
 
 /* "Veelgemaakte fout" — a warm caution callout, not grey body text. Uses the
    warning token family (semantically "watch out") at subtle strength so it
-   reads as a soft aside inside the card, tied together with an accent edge. */
+   reads as a soft aside inside the card. */
 .mistake {
   display: flex;
   align-items: flex-start;
@@ -29,7 +29,6 @@
   border-radius: var(--r-sm);
   background: var(--warning-subtle);
   border: 1px solid var(--warning-border);
-  border-left: 3px solid var(--warning);
   color: var(--text-primary);
 }
 
