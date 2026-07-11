@@ -167,7 +167,7 @@ export function ChapterExperience({ lessonId, chapters, hero }: {
             reaches /leren, but a mode-switch tab doesn't read as "back" from
             inside a lesson — so the chrome carries its own up-affordance. */}
         <Link to="/leren" className={classes.backLink}>
-          <IconArrowLeft size={15} stroke={2.2} aria-hidden="true" />
+          <IconArrowLeft size={17} stroke={2.2} aria-hidden="true" />
           {T.lessons.backToLessons}
         </Link>
         <ol className={classes.segments}>

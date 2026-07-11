@@ -150,3 +150,18 @@ audio {
 html[data-mantine-color-scheme="light"] audio {
   color-scheme: light;
 }
+
+/* ── Switch off-state ─────────────────────────────────────────────────────────
+   Mantine's <Switch> defaults its OFF track to a cool grey; the ON track is
+   already brand tamarind (theme primaryColor). Warm the off track app-wide so
+   toggles (e.g. the woordenlijsten scheduler switch) sit in the palette. These
+   rules are unlayered so they win over Mantine's layered scheme default; the
+   checked rule re-asserts the brand fill at higher specificity so ON stays
+   tamarind. One place, every switch. */
+.mantine-Switch-track {
+  --switch-bg: var(--border-light);
+}
+
+.mantine-Switch-input:checked + .mantine-Switch-track {
+  --switch-bg: var(--switch-color);
+}

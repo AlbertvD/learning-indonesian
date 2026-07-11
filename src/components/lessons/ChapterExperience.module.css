@@ -1,7 +1,9 @@
 /* ChapterExperience — shared chapter chrome for bespoke lesson pages.
    Visually quiet: a translucent sticky header that sits over ANY lesson's
-   editorial theme (each bespoke page brings its own palette), Mantine tokens
-   only — no per-lesson colors here. */
+   editorial theme (each bespoke page brings its own palette). Uses the app's
+   warm design tokens (--bg-main / --card-border / --text-* / --accent-primary)
+   rather than Mantine's cool-grey defaults, so the chrome reads as the app's
+   palette, not a grey band, over any lesson. No per-lesson colors here. */
 
 .experience {
   display: flex;
@@ -18,10 +20,10 @@
   padding: 10px var(--page-pad-x, 16px) 8px;
   /* Near-solid: over the hero's saturated gradient a translucent bar reads
      as background chrome instead of the lesson's navigation. */
-  background: color-mix(in srgb, var(--mantine-color-body) 96%, transparent);
+  background: color-mix(in srgb, var(--bg-main) 96%, transparent);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--mantine-color-default-border);
+  border-bottom: 1px solid var(--card-border);
 }
 
 /* Inner content aligns to the page's lesson column (--lesson-col, set on the
@@ -36,16 +38,24 @@
 .backLink {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  margin-bottom: 8px;
-  font-size: 0.78rem;
+  gap: 7px;
+  /* Comfortable tap target with its own padding so a mis-tap doesn't hit the
+     chapter pills below; negative left margin keeps the label edge aligned
+     with the content column. */
+  margin: 0 0 12px -8px;
+  padding: 7px 12px;
+  border-radius: var(--r-sm);
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--mantine-color-dimmed);
+  color: var(--text-secondary);
   text-decoration: none;
-  transition: color 120ms ease;
+  transition: color 120ms ease, background 120ms ease;
 }
 
-.backLink:hover { color: var(--mantine-color-text); }
+.backLink:hover {
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
 
 .backLink svg { flex-shrink: 0; }
 
@@ -73,10 +83,10 @@
   justify-content: center;
   width: 100%;
   gap: 6px;
-  border: 1px solid var(--mantine-color-default-border);
+  border: 1px solid var(--card-border);
   border-radius: 999px;
   background: transparent;
-  color: var(--mantine-color-dimmed);
+  color: var(--text-secondary);
   font-size: 0.78rem;
   line-height: 1;
   padding: 7px 12px 7px 8px;
@@ -86,19 +96,19 @@
 }
 
 .segment:hover {
-  color: var(--mantine-color-text);
-  border-color: var(--mantine-color-dimmed);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
 }
 
 .segment[data-current='true'] {
   background: var(--mantine-primary-color-light);
   border-color: var(--mantine-primary-color-filled);
-  color: var(--mantine-color-text);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .segment[data-visited='true'] {
-  color: var(--mantine-color-text);
+  color: var(--text-primary);
 }
 
 .segmentIndex {
@@ -125,7 +135,7 @@
 .progressLabel {
   margin: 4px 2px 0;
   font-size: 0.68rem;
-  color: var(--mantine-color-dimmed);
+  color: var(--text-secondary);
 }
 
 /* ─── Resume chip ────────────────────────────────────────────────────────── */
@@ -140,7 +150,7 @@
   border: 1px solid var(--mantine-primary-color-filled);
   border-radius: 999px;
   background: var(--mantine-primary-color-light);
-  color: var(--mantine-color-text);
+  color: var(--text-primary);
   font-size: 0.82rem;
   padding: 8px 16px;
   cursor: pointer;
@@ -169,10 +179,10 @@
 
 .navButton,
 .navButtonNext {
-  border: 1px solid var(--mantine-color-default-border);
+  border: 1px solid var(--card-border);
   border-radius: 10px;
   background: transparent;
-  color: var(--mantine-color-text);
+  color: var(--text-primary);
   font-size: 0.86rem;
   padding: 12px 18px;
   cursor: pointer;
@@ -181,8 +191,8 @@
 
 .navButton:hover,
 .navButtonNext:hover {
-  border-color: var(--mantine-color-dimmed);
-  background: color-mix(in srgb, var(--mantine-color-text) 6%, transparent);
+  border-color: var(--text-secondary);
+  background: color-mix(in srgb, var(--text-primary) 6%, transparent);
 }
 
 .navButtonNext {
