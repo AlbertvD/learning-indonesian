@@ -1,7 +1,7 @@
 // src/main.tsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { MantineProvider, createTheme, localStorageColorSchemeManager } from '@mantine/core'
+import { MantineProvider, createTheme, localStorageColorSchemeManager, TextInput, Select, SegmentedControl } from '@mantine/core'
 import type { CSSVariablesResolver } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { AppErrorBoundary } from '@/components/AppErrorBoundary'
@@ -62,6 +62,27 @@ const theme = createTheme({
       '#009DB3', // 8
       '#00778C', // 9 — darkest
     ],
+  },
+
+  // Warm the form controls to match the tamarind retune. Mantine's default
+  // input border + segmented-control track are a cool neutral grey that reads
+  // as flat against the warm paper/ink palette; retune them to the app's warm
+  // card tokens (borders stay defined; focus border is already tamarind via
+  // primaryColor). App-wide so every form (Profile, Login, Register, admin)
+  // is consistent rather than grey here / warm there.
+  components: {
+    TextInput: TextInput.extend({
+      styles: { input: { backgroundColor: 'var(--card-bg)', borderColor: 'var(--card-border)' } },
+    }),
+    Select: Select.extend({
+      styles: { input: { backgroundColor: 'var(--card-bg)', borderColor: 'var(--card-border)' } },
+    }),
+    SegmentedControl: SegmentedControl.extend({
+      styles: {
+        root: { backgroundColor: 'var(--bg-surface)' },
+        indicator: { backgroundColor: 'var(--card-bg)' },
+      },
+    }),
   },
 })
 
