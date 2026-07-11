@@ -11,45 +11,26 @@
 // reader — an unregistered UUID is a not-found case (every published lesson has
 // a bespoke page).
 //
+// Lesson metadata (id / orderIndex / title / level / description) comes from
+// the hand-maintained src/pages/lessons/meta.ts, NOT from importing every
+// lesson's content.json here. Each lesson's content.json is imported exactly
+// once, inside that lesson's own lazily-loaded Page.tsx — so it rides in that
+// lesson's lazy chunk instead of bloating every route that reads this
+// registry (Lessons list, LessonRouter, LocalPreview). See meta.ts's header
+// comment for the full rationale (2026-07-11 prod-ready audit, HIGH bundle
+// finding).
+//
 // To publish a new lesson's bespoke page:
 //   1. Author the page at src/pages/lessons/lesson-<N>/Page.tsx + content.json
-//   2. Add the import + entry below, keyed by `<content>.meta.id` (the lesson UUID)
-//   3. The /lesson/<uuid> route automatically picks it up
+//   2. Append its meta to src/pages/lessons/meta.ts (in order_index order)
+//   3. Add the lazy import + LESSON_COMPONENTS entry below, in the same order
+//   4. The /lesson/<uuid> route automatically picks it up
 
 import { lazy, Suspense } from 'react'
-import type { ReactElement } from 'react'
+import type { ComponentType, ReactElement } from 'react'
 import { Center, Loader } from '@mantine/core'
 
-import lesson1Content from '@/pages/lessons/lesson-1/content.json'
-import lesson2Content from '@/pages/lessons/lesson-2/content.json'
-import lesson3Content from '@/pages/lessons/lesson-3/content.json'
-import lesson4Content from '@/pages/lessons/lesson-4/content.json'
-import lesson5Content from '@/pages/lessons/lesson-5/content.json'
-import lesson6Content from '@/pages/lessons/lesson-6/content.json'
-import lesson7Content from '@/pages/lessons/lesson-7/content.json'
-import lesson8Content from '@/pages/lessons/lesson-8/content.json'
-import lesson9Content from '@/pages/lessons/lesson-9/content.json'
-import lesson10Content from '@/pages/lessons/lesson-10/content.json'
-import lesson11Content from '@/pages/lessons/lesson-11/content.json'
-import lesson12Content from '@/pages/lessons/lesson-12/content.json'
-import lesson13Content from '@/pages/lessons/lesson-13/content.json'
-import lesson14Content from '@/pages/lessons/lesson-14/content.json'
-import lesson15Content from '@/pages/lessons/lesson-15/content.json'
-import lesson16Content from '@/pages/lessons/lesson-16/content.json'
-import lesson17Content from '@/pages/lessons/lesson-17/content.json'
-import lesson18Content from '@/pages/lessons/lesson-18/content.json'
-import lesson19Content from '@/pages/lessons/lesson-19/content.json'
-import lesson20Content from '@/pages/lessons/lesson-20/content.json'
-import lesson21Content from '@/pages/lessons/lesson-21/content.json'
-import lesson22Content from '@/pages/lessons/lesson-22/content.json'
-import lesson23Content from '@/pages/lessons/lesson-23/content.json'
-import lesson24Content from '@/pages/lessons/lesson-24/content.json'
-import lesson25Content from '@/pages/lessons/lesson-25/content.json'
-import lesson26Content from '@/pages/lessons/lesson-26/content.json'
-import lesson27Content from '@/pages/lessons/lesson-27/content.json'
-import lesson28Content from '@/pages/lessons/lesson-28/content.json'
-import lesson29Content from '@/pages/lessons/lesson-29/content.json'
-import lesson30Content from '@/pages/lessons/lesson-30/content.json'
+import { bespokeLessonMetas, type BespokeLessonMeta } from '@/pages/lessons/meta'
 
 const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
 const Lesson2Bespoke = lazy(() => import('@/pages/lessons/lesson-2/Page'))
@@ -82,74 +63,35 @@ const Lesson28Bespoke = lazy(() => import('@/pages/lessons/lesson-28/Page'))
 const Lesson29Bespoke = lazy(() => import('@/pages/lessons/lesson-29/Page'))
 const Lesson30Bespoke = lazy(() => import('@/pages/lessons/lesson-30/Page'))
 
+// Positional correspondence with bespokeLessonMetas: index i here is lesson
+// (i + 1)'s lazy component, matching meta.ts's order_index-ordered entries.
+const LESSON_COMPONENTS: ComponentType[] = [
+  Lesson1Bespoke, Lesson2Bespoke, Lesson3Bespoke, Lesson4Bespoke, Lesson5Bespoke,
+  Lesson6Bespoke, Lesson7Bespoke, Lesson8Bespoke, Lesson9Bespoke, Lesson10Bespoke,
+  Lesson11Bespoke, Lesson12Bespoke, Lesson13Bespoke, Lesson14Bespoke, Lesson15Bespoke,
+  Lesson16Bespoke, Lesson17Bespoke, Lesson18Bespoke, Lesson19Bespoke, Lesson20Bespoke,
+  Lesson21Bespoke, Lesson22Bespoke, Lesson23Bespoke, Lesson24Bespoke, Lesson25Bespoke,
+  Lesson26Bespoke, Lesson27Bespoke, Lesson28Bespoke, Lesson29Bespoke, Lesson30Bespoke,
+]
+
 const fallback = <Center h="60vh"><Loader size="lg" /></Center>
 
-export const bespokeLessonElements: Record<string, ReactElement> = {
-  [lesson1Content.meta.id]: <Suspense fallback={fallback}><Lesson1Bespoke /></Suspense>,
-  [lesson2Content.meta.id]: <Suspense fallback={fallback}><Lesson2Bespoke /></Suspense>,
-  [lesson3Content.meta.id]: <Suspense fallback={fallback}><Lesson3Bespoke /></Suspense>,
-  [lesson4Content.meta.id]: <Suspense fallback={fallback}><Lesson4Bespoke /></Suspense>,
-  [lesson5Content.meta.id]: <Suspense fallback={fallback}><Lesson5Bespoke /></Suspense>,
-  [lesson6Content.meta.id]: <Suspense fallback={fallback}><Lesson6Bespoke /></Suspense>,
-  [lesson7Content.meta.id]: <Suspense fallback={fallback}><Lesson7Bespoke /></Suspense>,
-  [lesson8Content.meta.id]: <Suspense fallback={fallback}><Lesson8Bespoke /></Suspense>,
-  [lesson9Content.meta.id]: <Suspense fallback={fallback}><Lesson9Bespoke /></Suspense>,
-  [lesson10Content.meta.id]: <Suspense fallback={fallback}><Lesson10Bespoke /></Suspense>,
-  [lesson11Content.meta.id]: <Suspense fallback={fallback}><Lesson11Bespoke /></Suspense>,
-  [lesson12Content.meta.id]: <Suspense fallback={fallback}><Lesson12Bespoke /></Suspense>,
-  [lesson13Content.meta.id]: <Suspense fallback={fallback}><Lesson13Bespoke /></Suspense>,
-  [lesson14Content.meta.id]: <Suspense fallback={fallback}><Lesson14Bespoke /></Suspense>,
-  [lesson15Content.meta.id]: <Suspense fallback={fallback}><Lesson15Bespoke /></Suspense>,
-  [lesson16Content.meta.id]: <Suspense fallback={fallback}><Lesson16Bespoke /></Suspense>,
-  [lesson17Content.meta.id]: <Suspense fallback={fallback}><Lesson17Bespoke /></Suspense>,
-  [lesson18Content.meta.id]: <Suspense fallback={fallback}><Lesson18Bespoke /></Suspense>,
-  [lesson19Content.meta.id]: <Suspense fallback={fallback}><Lesson19Bespoke /></Suspense>,
-  [lesson20Content.meta.id]: <Suspense fallback={fallback}><Lesson20Bespoke /></Suspense>,
-  [lesson21Content.meta.id]: <Suspense fallback={fallback}><Lesson21Bespoke /></Suspense>,
-  [lesson22Content.meta.id]: <Suspense fallback={fallback}><Lesson22Bespoke /></Suspense>,
-  [lesson23Content.meta.id]: <Suspense fallback={fallback}><Lesson23Bespoke /></Suspense>,
-  [lesson24Content.meta.id]: <Suspense fallback={fallback}><Lesson24Bespoke /></Suspense>,
-  [lesson25Content.meta.id]: <Suspense fallback={fallback}><Lesson25Bespoke /></Suspense>,
-  [lesson26Content.meta.id]: <Suspense fallback={fallback}><Lesson26Bespoke /></Suspense>,
-  [lesson27Content.meta.id]: <Suspense fallback={fallback}><Lesson27Bespoke /></Suspense>,
-  [lesson28Content.meta.id]: <Suspense fallback={fallback}><Lesson28Bespoke /></Suspense>,
-  [lesson29Content.meta.id]: <Suspense fallback={fallback}><Lesson29Bespoke /></Suspense>,
-  [lesson30Content.meta.id]: <Suspense fallback={fallback}><Lesson30Bespoke /></Suspense>,
-}
+export const bespokeLessonElements: Record<string, ReactElement> = Object.fromEntries(
+  bespokeLessonMetas.map((meta, i) => {
+    const LessonComponent = LESSON_COMPONENTS[i]
+    return [meta.id, <Suspense fallback={fallback}><LessonComponent /></Suspense>]
+  }),
+)
 
-// Ordered index of the bespoke lessons, derived from the same content.json
-// metas. Used by the local content preview (/preview) to list and render the
-// real bespoke pages without Supabase — bespoke pages read static content.json
-// and their footer controls (ActivationGate / PracticeActions) no-op without
-// an authenticated user.
-export interface BespokeLessonPreview {
-  id: string
-  orderIndex: number
-  title: string
-  level: string
-  description: string | null
-}
+// Ordered index of the bespoke lessons, derived from meta.ts. Used by the
+// local content preview (/preview) to list and render the real bespoke pages
+// without Supabase — bespoke pages read their own content.json and their
+// footer controls (ActivationGate / PracticeActions) no-op without an
+// authenticated user.
+export type BespokeLessonPreview = BespokeLessonMeta
 
-export const bespokeLessonPreviews: BespokeLessonPreview[] = [
-  lesson1Content.meta, lesson2Content.meta, lesson3Content.meta,
-  lesson4Content.meta, lesson5Content.meta, lesson6Content.meta,
-  lesson7Content.meta, lesson8Content.meta, lesson9Content.meta,
-  lesson10Content.meta, lesson11Content.meta, lesson12Content.meta,
-  lesson13Content.meta, lesson14Content.meta, lesson15Content.meta,
-  lesson16Content.meta, lesson17Content.meta, lesson18Content.meta,
-  lesson19Content.meta, lesson20Content.meta, lesson21Content.meta,
-  lesson22Content.meta, lesson23Content.meta, lesson24Content.meta,
-  lesson25Content.meta, lesson26Content.meta, lesson27Content.meta,
-  lesson28Content.meta, lesson29Content.meta, lesson30Content.meta,
-]
-  .map(m => ({
-    id: m.id,
-    orderIndex: m.order_index,
-    title: m.title,
-    level: m.level,
-    description: m.description ?? null,
-  }))
-  .sort((a, b) => a.orderIndex - b.orderIndex)
+export const bespokeLessonPreviews: BespokeLessonPreview[] =
+  [...bespokeLessonMetas].sort((a, b) => a.orderIndex - b.orderIndex)
 
 // UUIDs of lessons that have a bespoke page. A lesson is "prepared" (openable —
 // its tile links to /lesson/:id) iff it is in this set; the Lessons overview
@@ -157,7 +99,7 @@ export const bespokeLessonPreviews: BespokeLessonPreview[] = [
 // `has_page_blocks` RPC signal — "openable" is a client fact (bespoke page
 // exists), not a DB one.
 export const bespokeLessonIdSet: ReadonlySet<string> = new Set(
-  Object.keys(bespokeLessonElements),
+  bespokeLessonMetas.map((m) => m.id),
 )
 
 // Hero image path for each bespoke lesson, keyed by order_index — the SAME
