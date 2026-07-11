@@ -408,6 +408,7 @@ export function Profile() {
                   <div className={classes.sessionUnit}>{T.profile.items}</div>
                   <Slider
                     mt="md"
+                    className={classes.sessionSlider}
                     value={sessionSize}
                     onChange={setSessionSize}
                     onChangeEnd={handleSessionSizeChange}

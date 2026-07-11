@@ -222,3 +222,10 @@
   color: var(--text-secondary);
   margin-top: 4px;
 }
+
+/* The Slider's mark labels (5/15/30/50) render absolutely below the track and
+   overflow the row box; without this the next row's hairline divider crosses
+   them. Reserve room so the divider clears the labels. */
+.sessionSlider {
+  margin-bottom: 26px;
+}
