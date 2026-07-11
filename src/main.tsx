@@ -94,12 +94,6 @@ const theme = createTheme({
 
 const cssVariablesResolver: CSSVariablesResolver = () => ({
   variables: {
-    // Remap Mantine's secondary-text token onto the app's own warm sage so
-    // `c="dimmed"` reads as brand, not the default cool grey — app-wide, one
-    // place (the affix trainer's rule/family sub-labels and every other dimmed
-    // line). --text-secondary is theme-scoped, so this resolves per theme.
-    '--mantine-color-dimmed': 'var(--text-secondary)',
-
     // Typography scale — mobile-first, 16px body baseline per exercise framework design.
     // Desktop overrides for --fs-3xl/4xl live in primitive CSS via @container queries
     // (the resolver can't emit @media rules).
@@ -251,6 +245,14 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--text-secondary': '#B4AE9E',
     '--text-tertiary':  '#8B8578',
 
+    // Bridge Mantine's secondary-text token onto ours. MUST live in the `dark`
+    // block (not `variables`): Mantine defines --mantine-color-dimmed inside
+    // `[data-mantine-color-scheme='dark']`, which out-specifies a :root/variables
+    // override — so a `variables` entry silently loses and `c="dimmed"` stays
+    // Mantine grey (dark-2). Emitted here, it shares Mantine's selector and wins
+    // on source order, so every `c="dimmed"` inherits the app palette.
+    '--mantine-color-dimmed': 'var(--text-secondary)',
+
     // Borders
     '--border':       '#2B3731',
     '--border-light': '#35433C',
@@ -321,6 +323,9 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--text-primary':   '#1E2A25',
     '--text-secondary': '#5F6D64',
     '--text-tertiary':  '#77857B',
+    // Bridge Mantine dimmed → app token (light). See the dark block for why this
+    // must live in the scheme block rather than `variables`.
+    '--mantine-color-dimmed': 'var(--text-secondary)',
 
     // Borders
     '--border':       '#E7DECE',
