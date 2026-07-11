@@ -9,7 +9,8 @@ import { classifyDutchSeparator, classifyIndonesianSeparator, deriveSkillTypeFro
 import { findIneffectiveProduceReason } from '@/lib/answerNormalization'
 import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
-import { funnelBucket } from '@/lib/analytics/mastery/masteryModel'
+import { funnelBucket, weekEndsBackFrom, deriveFunnelSeries } from '@/lib/analytics/mastery/masteryModel'
+import { chunkedIn } from '@/lib/chunkedQuery'
 import { findCapsMissingSatellite, type CapForSatelliteCheck } from './lib/pipeline/capability-stage/satellitePresence'
 import { isCatalogAffix, routesToMeaningUsage } from '@/lib/capabilities/affixCatalog'
 import { itemSlug } from '@/lib/capabilities/itemSlug'
@@ -2921,6 +2922,218 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
       }
     } catch (err) {
       fail(HC51, err instanceof Error ? err.message : String(err))
+    }
+  }
+}
+
+// ── HC52 (2026-07-11, mastery evidence RPC narrowing,
+//    docs/plans/2026-07-11-mastery-evidence-rpc-narrowing.md §5 HC-a): static
+//    source check that the C1 truncation bug class (an unbounded, unchunked
+//    client-side .from('learner_capability_state')/.from('capability_review_events')
+//    read filtered ONLY by .eq('user_id', …), which silently truncates past
+//    PGRST_DB_MAX_ROWS) is gone from masteryModel.ts, replaced by the two
+//    scalar-jsonb RPCs get_mastery_evidence / get_funnel_series_events (both
+//    immune to row truncation, HC39-style). Must NOT flag (and must not be
+//    weakened to miss) the LEGITIMATELY RETAINED chunkedIn('learner_capability_state', …)
+//    path inside learnerStates — the content-unit/pattern readers
+//    (getContentUnitMastery/getPatternMastery) keep their scoped, chunked
+//    reads; this plan does not migrate them, and they are not the truncation
+//    bug. HC53 (below) is the live semantic/parity guard for the RPC path.
+{
+  const HC52 = 'HC52 masteryModel.ts has no unbounded client-side learner_capability_state/capability_review_events read (RPC-narrowed, C1)'
+  try {
+    const src = readFileSync('src/lib/analytics/mastery/masteryModel.ts', 'utf8')
+    const hasOldStateFetch = src.includes(".from('learner_capability_state')")
+    const hasOldEventFetch = src.includes(".from('capability_review_events')")
+    const callsEvidenceRpc = src.includes("rpc('get_mastery_evidence'")
+    const callsFunnelEventsRpc = src.includes("rpc('get_funnel_series_events'")
+    // Positive check: the retained, legitimately-chunked learnerStates path
+    // must still be present — this must fail loudly if it's ever accidentally
+    // deleted, not just pass vacuously on the absence checks above.
+    const retainsChunkedLearnerStates = src.includes('chunkedIn<LearnerCapabilityStateRow>(')
+      && src.includes("'learner_capability_state',")
+
+    if (hasOldStateFetch || hasOldEventFetch) {
+      fail(
+        HC52,
+        `masteryModel.ts still contains an unbounded .from('learner_capability_state')/.from('capability_review_events') ` +
+          `read — the C1 truncation bug may have been reintroduced. allLearnerEvidence/getFunnelSeries should call the ` +
+          `get_mastery_evidence/get_funnel_series_events RPCs instead.`,
+      )
+    } else if (!callsEvidenceRpc || !callsFunnelEventsRpc) {
+      fail(
+        HC52,
+        `masteryModel.ts no longer calls get_mastery_evidence and/or get_funnel_series_events — the RPC-narrowed ` +
+          `transport may have regressed to a different unbounded fetch pattern.`,
+      )
+    } else if (!retainsChunkedLearnerStates) {
+      fail(
+        HC52,
+        `masteryModel.ts's legitimately-retained chunkedIn('learner_capability_state', …) path (learnerStates, used by ` +
+          `getContentUnitMastery/getPatternMastery) appears to be missing — this check must not be weakened to miss it.`,
+      )
+    } else {
+      pass(`${HC52} (allLearnerEvidence/getFunnelSeries now via get_mastery_evidence/get_funnel_series_events; learnerStates' scoped chunkedIn read retained)`)
+    }
+  } catch (err) {
+    fail(HC52, err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC53 (2026-07-11, mastery evidence RPC narrowing §5 HC-b, live) — mastery
+//    evidence RPC parity under REAL authenticated-role RLS. SECURITY INVOKER +
+//    a silent RLS-deny returns *empty*, and empty ≡ empty is green — so this
+//    check (1) signs in as the E2E test user via the anon key (the
+//    network-reachable equivalent of scripts/verify-lessons-overview-rls.ts's
+//    `SET LOCAL ROLE authenticated` + `SET LOCAL request.jwt.claims` — signing
+//    in with a real user JWT makes PostgREST set those exact two GUCs
+//    per-request, the same as a real browser session; this script has no SSH
+//    session to run raw psql, unlike that script), (2) asserts
+//    states/capabilities/baseline are NON-EMPTY first (a fixture-too-young or
+//    RLS-deny failure both surface here, not as a false-green empty-vs-empty
+//    parity pass), then (3) parity-compares RPC A vs direct SERVICE-ROLE reads
+//    (counts + id sets) and deriveFunnelSeries(baseline ∪ window) vs the same
+//    deriver over the FULL event history (12-week window).
+{
+  const HC53 = 'HC53 mastery evidence RPC parity under real authenticated-role RLS (get_mastery_evidence / get_funnel_series_events)'
+  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL ?? 'testuser@duin.home'
+  const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD
+  const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY
+  const WEEKS = 12
+
+  type RpcStateRow = { capability_id: string }
+  type RpcCapabilityRow = {
+    id: string; canonical_key: string; source_kind: CapabilitySourceKind; source_ref: string
+    capability_type: string; modality: string; readiness_status: string; publication_status: string
+    lesson_id: string | null
+  }
+  type RpcEventRow = { id: string; capability_id: string; created_at: string; state_after_json: Record<string, unknown> | null }
+
+  if (!ANON_KEY || !TEST_USER_PASSWORD) {
+    fail(
+      HC53,
+      'VITE_SUPABASE_ANON_KEY and/or TEST_USER_PASSWORD not set (.env.local) — cannot sign in as the E2E test user ' +
+        'to exercise real authenticated-role RLS.',
+    )
+  } else {
+    try {
+      const userClient = createClient(SUPABASE_URL, ANON_KEY, { auth: { persistSession: false } })
+      const { error: signInErr } = await userClient.auth.signInWithPassword({ email: TEST_USER_EMAIL, password: TEST_USER_PASSWORD })
+      if (signInErr) throw new Error(`sign-in as ${TEST_USER_EMAIL} failed: ${signInErr.message}`)
+
+      const weekEnds = weekEndsBackFrom(new Date(), 'UTC', WEEKS)
+      // Same "ask for one more week, read only its [0].cutoff" trick
+      // masteryModel.ts's getFunnelSeries uses to get the oldest requested
+      // week's local-Monday START (not its cutoff/END) — reuses the one place
+      // the window math lives instead of re-deriving it here.
+      const windowStart = weekEndsBackFrom(new Date(), 'UTC', WEEKS + 1)[0]!.cutoff
+
+      const { data: evidenceData, error: evidenceErr } = await userClient
+        .schema('indonesian')
+        .rpc('get_mastery_evidence', { p_user_id: TEST_USER_ID })
+      if (evidenceErr) throw new Error(`get_mastery_evidence: ${evidenceErr.message}`)
+      const evidence = (evidenceData ?? {}) as {
+        states?: RpcStateRow[]; capabilities?: RpcCapabilityRow[]
+        activated_lesson_ids?: string[]; lessons?: Array<{ id: string; order_index: number }>
+      }
+      const rpcStates = evidence.states ?? []
+      const rpcCapabilities = evidence.capabilities ?? []
+
+      const { data: eventsData, error: eventsErr } = await userClient
+        .schema('indonesian')
+        .rpc('get_funnel_series_events', { p_user_id: TEST_USER_ID, p_window_start: windowStart.toISOString() })
+      if (eventsErr) throw new Error(`get_funnel_series_events: ${eventsErr.message}`)
+      const eventsPayload = (eventsData ?? {}) as { baseline?: RpcEventRow[]; window_events?: RpcEventRow[] }
+      const rpcBaseline = eventsPayload.baseline ?? []
+      const rpcWindowEvents = eventsPayload.window_events ?? []
+
+      if (rpcStates.length === 0 || rpcCapabilities.length === 0) {
+        fail(
+          HC53,
+          `RPC returned empty states (${rpcStates.length}) or capabilities (${rpcCapabilities.length}) for the E2E ` +
+            `test user — either the RLS-deny regression this check guards against, or the test user has no review ` +
+            `history. This check must not pass vacuously on empty ≡ empty.`,
+        )
+      } else if (rpcBaseline.length === 0) {
+        fail(
+          HC53,
+          `get_funnel_series_events returned an empty baseline (0 rows with created_at < ${windowStart.toISOString()}) ` +
+            `— either an RLS-deny, or the test user's oldest event does not predate the ${WEEKS}-week window ` +
+            `(fixture too young: seed pre-window review events for ${TEST_USER_EMAIL}, or widen the window). This ` +
+            `check cannot prove the DISTINCT ON baseline collapse without a non-empty baseline.`,
+        )
+      } else {
+        // ---- Parity 1: RPC A vs direct SERVICE-ROLE reads (counts + id sets) ----
+        // .range() pagination REQUIRES a stable .order() or pages can
+        // duplicate/drop rows (project pitfall — caused the HC49 flaky false
+        // positive; see memory/project_range_needs_order_pagination). Both
+        // tables here have a unique `id` per row… but learner_capability_state
+        // is selected by capability_id, which is unique per user — order on
+        // the selected key each table guarantees stable.
+        async function pageAll<T>(table: string, select: string, orderCol: string): Promise<T[]> {
+          const out: T[] = []
+          for (let from = 0; ; from += 1000) {
+            const { data, error } = await supabase.schema('indonesian').from(table)
+              .select(select).eq('user_id', TEST_USER_ID).order(orderCol, { ascending: true }).range(from, from + 999)
+            if (error) throw new Error(`${table}: ${error.message}`)
+            out.push(...((data ?? []) as T[]))
+            if (!data || data.length < 1000) break
+          }
+          return out
+        }
+        const directStates = await pageAll<{ capability_id: string }>('learner_capability_state', 'capability_id', 'capability_id')
+        const directStateCapIds = [...new Set(directStates.map(s => s.capability_id))]
+        const directCapabilities = await chunkedIn<{ id: string }>(
+          'learning_capabilities', 'id', directStateCapIds,
+          (q: any) => q.select('id').is('retired_at', null),
+          supabase as any,
+        )
+
+        const symmetricDiff = (a: Set<string>, b: Set<string>): string[] => [
+          ...[...a].filter(k => !b.has(k)),
+          ...[...b].filter(k => !a.has(k)),
+        ]
+        const stateDiff = symmetricDiff(new Set(rpcStates.map(s => s.capability_id)), new Set(directStateCapIds))
+        const capDiff = symmetricDiff(new Set(rpcCapabilities.map(c => c.id)), new Set(directCapabilities.map(c => c.id)))
+
+        // ---- Parity 2: deriveFunnelSeries(baseline ∪ window) vs deriveFunnelSeries(full history) ----
+        const toEvent = (row: RpcEventRow) => {
+          const s = row.state_after_json ?? {}
+          return {
+            id: row.id,
+            capabilityId: row.capability_id,
+            createdAt: row.created_at,
+            reviewCount: Number(s.reviewCount ?? 0),
+            lapseCount: Number(s.lapseCount ?? 0),
+            consecutiveFailureCount: Number(s.consecutiveFailureCount ?? 0),
+            stability: s.stability == null ? null : Number(s.stability),
+            lastReviewedAt: (s.lastReviewedAt as string | null) ?? null,
+          }
+        }
+        const boundedEvents = [...rpcBaseline, ...rpcWindowEvents].map(toEvent)
+        const fullEventRows = await pageAll<RpcEventRow>('capability_review_events', 'id, capability_id, created_at, state_after_json', 'id')
+        const fullEvents = fullEventRows.map(toEvent)
+
+        const activatedLessons = new Set(evidence.activated_lesson_ids ?? [])
+        const lessonOrderById = new Map((evidence.lessons ?? []).map(l => [l.id, l.order_index]))
+        const boundedSeries = deriveFunnelSeries({ events: boundedEvents, weekEnds, capabilities: rpcCapabilities as any, activatedLessons, lessonOrderById })
+        const fullSeries = deriveFunnelSeries({ events: fullEvents, weekEnds, capabilities: rpcCapabilities as any, activatedLessons, lessonOrderById })
+        const seriesMatch = JSON.stringify(boundedSeries) === JSON.stringify(fullSeries)
+
+        if (stateDiff.length === 0 && capDiff.length === 0 && seriesMatch) {
+          pass(`${HC53} (states=${rpcStates.length} capabilities=${rpcCapabilities.length} baseline=${rpcBaseline.length} window_events=${rpcWindowEvents.length}; RPC A id-set parity + deriveFunnelSeries(baseline∪window)==deriveFunnelSeries(full) over ${WEEKS} weeks)`)
+        } else {
+          fail(
+            HC53,
+            `state id diff: ${stateDiff.slice(0, 5).join(', ') || 'none'}; capability id diff: ${capDiff.slice(0, 5).join(', ') || 'none'}; ` +
+              `funnel series match: ${seriesMatch} — get_mastery_evidence/get_funnel_series_events diverged from the direct ` +
+              `service-role reads under real authenticated-role RLS.`,
+          )
+        }
+      }
+    } catch (err) {
+      fail(HC53, err instanceof Error ? err.message : String(err))
     }
   }
 }

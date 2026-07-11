@@ -4443,3 +4443,161 @@ comment on column indonesian.learning_items.register is
   'NULL = formal/default; ''informal'' marks a spreektaal item (spec §3.2). Pipeline-written from staging every publish, like loan_source_nl -- a direct DB edit is silently clobbered next publish.';
 comment on column indonesian.learning_items.register_counterpart is
   'base_text of the formal twin for an informal item; NULL otherwise (spec §3.2). Resolved to a learning_items row via the canonical itemSlug() mint, never a bespoke lowercase/trim.';
+
+-- ============================================================================
+-- Mastery evidence RPC narrowing
+-- (docs/plans/2026-07-11-mastery-evidence-rpc-narrowing.md)
+-- ============================================================================
+-- Fixes C1 (silent truncation): masteryModel.ts's allLearnerEvidence and
+--   getFunnelSeries fetched ALL learner_capability_state rows and the
+--   learner's LIFETIME capability_review_events via plain client-side
+--   .select().eq('user_id') reads -- no limit, no pagination, no RPC. Past
+--   PGRST_DB_MAX_ROWS (~1000 default) the result silently truncates and every
+--   mastery surface computes wrong numbers. Same bug class already fixed for
+--   the session-builder by get_session_build_data (above, :4083-4198) -- both
+--   new functions copy its idiom verbatim: scalar jsonb (immune to row
+--   truncation), `language sql stable security invoker`,
+--   `set search_path = indonesian, public`, DROP-first, revoke-from-public +
+--   grant-to-authenticated,service_role.
+-- ============================================================================
+
+-- get_mastery_evidence -- replaces allLearnerEvidence's four client reads
+--   (learner_capability_state -> capabilityRowsByIds -> listActivatedLessons ->
+--   lessonOrderMap) with one scalar snapshot.
+--
+-- PARITY IS SACRED (do not "improve" these clauses without re-deriving the
+-- plan's parity argument):
+--   - `states` is unfiltered beyond user_id -- every learner_capability_state
+--     row for p_user_id, matching allLearnerEvidence's pre-cutover select.
+--   - `capabilities` filters ONLY retired_at is null -- NOT readiness or
+--     publication status. The pre-cutover capabilityRowsByIds includes
+--     reviewed-but-since-unpublished caps in evidence; matching this keeps
+--     mastery counts stable across the cutover.
+--
+-- SECURITY INVOKER: RLS on the owner-scoped tables (learner_capability_state,
+-- learner_lesson_activation) keeps every read scoped to auth.uid(); a spoofed
+-- p_user_id yields an empty snapshot, not a leak (get_session_build_data
+-- precedent, :4055-4056). `lessons` is authenticated-readable (lessons_read
+-- policy).
+drop function if exists indonesian.get_mastery_evidence(uuid);
+create or replace function indonesian.get_mastery_evidence(
+  p_user_id uuid
+)
+returns jsonb
+language sql stable security invoker
+set search_path = indonesian, public
+as $$
+  with
+  user_states as (
+    select s.capability_id, s.review_count, s.lapse_count,
+           s.consecutive_failure_count, s.stability, s.last_reviewed_at
+    from indonesian.learner_capability_state s
+    where s.user_id = p_user_id
+  ),
+  evidence_caps as (
+    select c.id, c.canonical_key, c.source_kind, c.source_ref, c.capability_type,
+           c.modality, c.readiness_status, c.publication_status, c.lesson_id
+    from indonesian.learning_capabilities c
+    where c.retired_at is null
+      and exists (select 1 from user_states us where us.capability_id = c.id)
+  ),
+  activated_lessons as (
+    select lla.lesson_id
+    from indonesian.learner_lesson_activation lla
+    where lla.user_id = p_user_id
+  )
+  select jsonb_build_object(
+    'states', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'capability_id', us.capability_id,
+        'review_count', us.review_count,
+        'lapse_count', us.lapse_count,
+        'consecutive_failure_count', us.consecutive_failure_count,
+        'stability', us.stability,
+        'last_reviewed_at', us.last_reviewed_at
+      )) from user_states us
+    ), '[]'::jsonb),
+    'capabilities', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', c.id,
+        'canonical_key', c.canonical_key,
+        'source_kind', c.source_kind,
+        'source_ref', c.source_ref,
+        'capability_type', c.capability_type,
+        'modality', c.modality,
+        'readiness_status', c.readiness_status,
+        'publication_status', c.publication_status,
+        'lesson_id', c.lesson_id
+      )) from evidence_caps c
+    ), '[]'::jsonb),
+    'activated_lesson_ids', coalesce((
+      select jsonb_agg(lesson_id) from activated_lessons
+    ), '[]'::jsonb),
+    'lessons', coalesce((
+      select jsonb_agg(jsonb_build_object('id', l.id, 'order_index', l.order_index))
+      from indonesian.lessons l
+    ), '[]'::jsonb)
+  );
+$$;
+
+revoke all on function indonesian.get_mastery_evidence(uuid) from public;
+grant execute on function indonesian.get_mastery_evidence(uuid) to authenticated, service_role;
+
+-- get_funnel_series_events -- replaces getFunnelSeries' lifetime
+-- capability_review_events fetch with a BOUNDED baseline + window pair.
+-- baseline union window_events is EXACT for deriveFunnelSeries (which only
+-- ever needs the latest event per capability <= some cutoff >= p_window_start)
+-- -- see the plan §2 for the equivalence proof. Do NOT parse state_after_json
+-- in SQL -- it is a raw passthrough; the camelCase unpack stays entirely in
+-- masteryModel.ts.
+--
+-- Tiebreak: "latest event per capability" orders created_at desc, id desc --
+-- mirrored by the TS-side sort (masteryModel.ts deriveFunnelSeries) so
+-- same-instant events resolve identically on both sides (the one ADR-0015
+-- mirrored predicate this plan introduces).
+drop function if exists indonesian.get_funnel_series_events(uuid, timestamptz);
+create or replace function indonesian.get_funnel_series_events(
+  p_user_id       uuid,
+  p_window_start  timestamptz
+)
+returns jsonb
+language sql stable security invoker
+set search_path = indonesian, public
+as $$
+  with
+  baseline_events as (
+    select distinct on (e.capability_id)
+      e.id, e.capability_id, e.created_at, e.state_after_json
+    from indonesian.capability_review_events e
+    where e.user_id = p_user_id
+      and e.created_at < p_window_start
+    order by e.capability_id, e.created_at desc, e.id desc
+  ),
+  window_events as (
+    select e.id, e.capability_id, e.created_at, e.state_after_json
+    from indonesian.capability_review_events e
+    where e.user_id = p_user_id
+      and e.created_at >= p_window_start
+  )
+  select jsonb_build_object(
+    'baseline', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', b.id,
+        'capability_id', b.capability_id,
+        'created_at', b.created_at,
+        'state_after_json', b.state_after_json
+      )) from baseline_events b
+    ), '[]'::jsonb),
+    'window_events', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', w.id,
+        'capability_id', w.capability_id,
+        'created_at', w.created_at,
+        'state_after_json', w.state_after_json
+      )) from window_events w
+    ), '[]'::jsonb)
+  );
+$$;
+
+revoke all on function indonesian.get_funnel_series_events(uuid, timestamptz) from public;
+grant execute on function indonesian.get_funnel_series_events(uuid, timestamptz) to authenticated, service_role;

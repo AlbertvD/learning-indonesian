@@ -103,6 +103,7 @@ export interface MasteryOverview {
 interface SupabaseSchemaClient {
   schema(schema: 'indonesian'): {
     from(table: string): any
+    rpc(fn: string, args?: Record<string, unknown>): any
   }
 }
 
@@ -477,6 +478,13 @@ export function deriveMasteryFunnelByLesson(input: {
 
 /** One capability's `state_after` at a review, as read from the event log. */
 export interface FunnelSeriesEvent {
+  /** Event row id (capability_review_events.id) -- a same-instant tiebreak
+   *  ONLY, mirroring the SQL `ORDER BY created_at DESC, id DESC` in
+   *  get_funnel_series_events' baseline DISTINCT ON
+   *  (docs/plans/2026-07-11-mastery-evidence-rpc-narrowing.md §2). Optional:
+   *  synthetic test events without an id fall back to the pre-existing
+   *  createdAt-only ordering (both empty -> tie, same as before). */
+  id?: string
   capabilityId: string
   /** ISO timestamp of the review (`created_at`). */
   createdAt: string
@@ -535,7 +543,15 @@ export function deriveFunnelSeries(input: {
     else byCapability.set(event.capabilityId, [event])
   }
   for (const list of byCapability.values()) {
-    list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0))
+    // id DESC tiebreak on same-instant events, mirroring get_funnel_series_events'
+    // `ORDER BY created_at DESC, id DESC` (the one ADR-0015-style mirrored
+    // predicate this plan introduces -- see FunnelSeriesEvent.id).
+    list.sort((a, b) => {
+      if (a.createdAt !== b.createdAt) return a.createdAt < b.createdAt ? 1 : -1
+      const aId = a.id ?? ''
+      const bId = b.id ?? ''
+      return aId < bId ? 1 : aId > bId ? -1 : 0
+    })
   }
   const capabilityById = new Map(input.capabilities.map(c => [c.id, c]))
 
@@ -981,6 +997,106 @@ export function deriveWeeklyMovement(input: {
   }
 }
 
+// -- Mastery evidence fetch -- RPC A (get_mastery_evidence) + in-flight dedup --
+//
+// C1 fix (docs/plans/2026-07-11-mastery-evidence-rpc-narrowing.md): replaces
+// the direct, unbounded client-side learner_capability_state read with ONE
+// scalar-jsonb RPC (immune to PGRST_DB_MAX_ROWS truncation, same idiom as
+// get_session_build_data). C2 fix: the RPC call is deduped in-flight per
+// (client, userId) -- the woorden tab's five concurrent card mounts coalesce
+// into one network call. No TTL: the entry lives only while the fetch is
+// outstanding, evicted on settle (resolve AND reject) -- a later call after
+// settle always issues a fresh, now-cheap fetch, so every reader stays
+// observationally identical to the uncached path (module spec §1).
+
+/** Shape of get_mastery_evidence's jsonb payload (snake_case, as Postgres returns it). */
+interface MasteryEvidenceRpcPayload {
+  states?: LearnerCapabilityStateRow[]
+  capabilities?: LearningCapabilityRow[]
+  activated_lesson_ids?: string[]
+  lessons?: Array<{ id: string; order_index: number }>
+}
+
+/** The row-typed shape masteryModel's derivers consume, adapted from the RPC payload. */
+interface RawMasteryEvidence {
+  states: LearnerCapabilityStateRow[]
+  capabilities: LearningCapabilityRow[]
+  activatedLessons: Set<string>
+  lessonOrderById: Map<string, number>
+}
+
+// Pure adapter -- exported for direct unit testing of the jsonb-to-row-type
+// shape mapping (missing keys default to empty, matching the `?? []`
+// fallback convention used throughout the RPC-narrowed readers in this file).
+export function adaptMasteryEvidenceRpc(payload: MasteryEvidenceRpcPayload | null | undefined): RawMasteryEvidence {
+  const p = payload ?? {}
+  return {
+    states: p.states ?? [],
+    capabilities: p.capabilities ?? [],
+    activatedLessons: new Set(p.activated_lesson_ids ?? []),
+    lessonOrderById: new Map((p.lessons ?? []).map(l => [l.id, l.order_index])),
+  }
+}
+
+// Keyed by client so injected test clients get isolated dedup entries -- a
+// fresh mock client per test never shares an entry with another test or with
+// the browser's single global `supabase` client (module spec §1).
+const evidenceInFlight = new WeakMap<SupabaseSchemaClient, Map<string, Promise<RawMasteryEvidence>>>()
+
+async function fetchMasteryEvidenceRpc(client: SupabaseSchemaClient, userId: string): Promise<RawMasteryEvidence> {
+  const { data, error } = await client.schema('indonesian').rpc('get_mastery_evidence', { p_user_id: userId })
+  if (error) throw error
+  return adaptMasteryEvidenceRpc(data as MasteryEvidenceRpcPayload | null)
+}
+
+// In-flight dedup ONLY -- no TTL (staff-engineer 2026-07-11: a timed cache
+// solves tab-switch re-fetch, which C2 never claimed, and buys a
+// Session->Progress staleness window for it).
+function rawMasteryEvidence(client: SupabaseSchemaClient, userId: string): Promise<RawMasteryEvidence> {
+  let byUser = evidenceInFlight.get(client)
+  if (!byUser) {
+    byUser = new Map()
+    evidenceInFlight.set(client, byUser)
+  }
+  const existing = byUser.get(userId)
+  if (existing) return existing
+
+  const promise = fetchMasteryEvidenceRpc(client, userId).finally(() => byUser!.delete(userId))
+  byUser.set(userId, promise)
+  return promise
+}
+
+// -- Funnel-series events -- RPC B (get_funnel_series_events) -----------------
+//
+// Replaces the lifetime capability_review_events fetch with a bounded
+// baseline union window pair. baseline union window is EXACT for
+// deriveFunnelSeries (which only ever needs the latest event per capability
+// <= some cutoff >= the window start) -- see the plan §2 for the proof.
+// state_after_json is a RAW passthrough; the camelCase unpack happens only
+// here, client-side, unchanged from the pre-RPC inline mapping.
+interface FunnelSeriesEventRpcRow {
+  id: string
+  capability_id: string
+  created_at: string
+  state_after_json: Record<string, unknown> | null
+}
+
+// Pure adapter -- exported for direct unit testing (null stability, missing
+// state_after_json keys).
+export function adaptFunnelSeriesEventRow(row: FunnelSeriesEventRpcRow): FunnelSeriesEvent {
+  const s = row.state_after_json ?? {}
+  return {
+    id: row.id,
+    capabilityId: row.capability_id,
+    createdAt: row.created_at,
+    reviewCount: Number(s.reviewCount ?? 0),
+    lapseCount: Number(s.lapseCount ?? 0),
+    consecutiveFailureCount: Number(s.consecutiveFailureCount ?? 0),
+    stability: s.stability == null ? null : Number(s.stability),
+    lastReviewedAt: (s.lastReviewedAt as string | null) ?? null,
+  }
+}
+
 function toEvidence(input: {
   capabilities: LearningCapabilityRow[]
   states: LearnerCapabilityStateRow[]
@@ -1071,18 +1187,10 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
   // The learner's full evidence set — every capability with a state row, joined to
   // its capability + activation + lesson-number. Shared by the overview, funnel,
   // skill, grammar and stubborn readers (all previously duplicated this fetch).
+  // Fetched via get_mastery_evidence (RPC A), in-flight deduped per (client,
+  // userId) — see rawMasteryEvidence above.
   async function allLearnerEvidence(userId: string): Promise<CapabilityMasteryEvidence[]> {
-    const { data: stateRows, error: stateError } = await db()
-      .from('learner_capability_state')
-      .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
-      .eq('user_id', userId)
-    if (stateError) throw stateError
-    const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
-    const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
-    const [activatedLessons, lessonOrderById] = await Promise.all([
-      listActivatedLessons(userId, client),
-      lessonOrderMap(),
-    ])
+    const { states, capabilities, activatedLessons, lessonOrderById } = await rawMasteryEvidence(client, userId)
     return toEvidence({ capabilities, states, activatedLessons, lessonOrderById })
   }
 
@@ -1134,56 +1242,45 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
 
     // Growth curve — the funnel reconstructed per week-end from the event log
     // (design §3.2, Path A: client-derived, reuses deriveMasteryFunnel verbatim).
+    // Capability set/activations/lessons reuse the SAME RPC A fetch as
+    // allLearnerEvidence (rawMasteryEvidence, deduped) — I1 still holds: the cap
+    // set is exactly the learner's `learner_capability_state` rows, so the
+    // newest week-end == the live funnel. Events come from RPC B
+    // (get_funnel_series_events) as an exact baseline ∪ window pair: for every
+    // cutoff this deriver ever computes (>= the window start), the latest event
+    // <= cutoff over (baseline ∪ window) is identical to the latest event <=
+    // cutoff over the FULL lifetime history — baseline supplies each
+    // capability's latest pre-window event, window supplies everything since.
+    // See docs/plans/2026-07-11-mastery-evidence-rpc-narrowing.md §2 for the
+    // full proof; that bound replaces the old "M1: UNBOUNDED on time" caveat,
+    // which no longer applies.
     async getFunnelSeries(userId: string, timezone: string, weeks: number): Promise<FunnelWeek[]> {
-      // I1: the cap set is the learner's `learner_capability_state` rows — exactly
-      // what allLearnerEvidence uses — so the newest week-end == the live funnel.
-      const { data: stateRows, error: stateError } = await db()
-        .from('learner_capability_state')
-        .select('capability_id')
-        .eq('user_id', userId)
-      if (stateError) throw stateError
-      const capabilityIds = uniq(((stateRows ?? []) as Array<{ capability_id: string }>).map(r => r.capability_id))
-      if (capabilityIds.length === 0) return weekEndsBackFrom(new Date(), timezone, weeks).map(w => ({
+      const { capabilities, activatedLessons, lessonOrderById } = await rawMasteryEvidence(client, userId)
+      // One `now` for both weekEndsBackFrom calls — two separate `new Date()`s
+      // could straddle a week boundary at local Monday 00:00 and desync the
+      // window start from the week list.
+      const now = new Date()
+      const weekEnds = weekEndsBackFrom(now, timezone, weeks)
+      if (capabilities.length === 0) return weekEnds.map(w => ({
         weekStart: w.weekStart, vocabulary: emptyFunnel(), grammar: emptyFunnel(), morphology: emptyFunnel(),
       }))
 
-      // M1: the event fetch is UNBOUNDED on time — a single owner-scoped query, no
-      // `created_at` floor. A window would misclassify caps whose last event predates
-      // it (silently, uncaught by the newest-week validator).
-      const { data: eventRows, error: eventError } = await db()
-        .from('capability_review_events')
-        .select('capability_id, created_at, state_after_json')
-        .eq('user_id', userId)
-      if (eventError) throw eventError
+      // p_window_start = the UTC instant of the OLDEST requested week's local-
+      // Monday START. weekEndsBackFrom(now, tz, n)[i].cutoff is defined as the
+      // END of week i (= the START of week i+1) — so asking for one MORE week
+      // and reading only its [0].cutoff reuses that exact math to get week[0]'s
+      // START, with no new helper (the window math stays in one place).
+      const windowStart = weekEndsBackFrom(now, timezone, weeks + 1)[0]!.cutoff
 
-      const [capabilities, activatedLessons, lessonOrderById] = await Promise.all([
-        capabilityRowsByIds(capabilityIds),
-        listActivatedLessons(userId, client),
-        lessonOrderMap(),
-      ])
-
-      const events: FunnelSeriesEvent[] = ((eventRows ?? []) as Array<{
-        capability_id: string; created_at: string; state_after_json: Record<string, unknown> | null
-      }>).map(row => {
-        const s = row.state_after_json ?? {}
-        return {
-          capabilityId: row.capability_id,
-          createdAt: row.created_at,
-          reviewCount: Number(s.reviewCount ?? 0),
-          lapseCount: Number(s.lapseCount ?? 0),
-          consecutiveFailureCount: Number(s.consecutiveFailureCount ?? 0),
-          stability: s.stability == null ? null : Number(s.stability),
-          lastReviewedAt: (s.lastReviewedAt as string | null) ?? null,
-        }
+      const { data, error } = await db().rpc('get_funnel_series_events', {
+        p_user_id: userId,
+        p_window_start: windowStart.toISOString(),
       })
+      if (error) throw error
+      const payload = (data ?? {}) as { baseline?: FunnelSeriesEventRpcRow[]; window_events?: FunnelSeriesEventRpcRow[] }
+      const events = [...(payload.baseline ?? []), ...(payload.window_events ?? [])].map(adaptFunnelSeriesEventRow)
 
-      return deriveFunnelSeries({
-        events,
-        weekEnds: weekEndsBackFrom(new Date(), timezone, weeks),
-        capabilities,
-        activatedLessons,
-        lessonOrderById,
-      })
+      return deriveFunnelSeries({ events, weekEnds, capabilities, activatedLessons, lessonOrderById })
     },
 
     async getSkillModeGaps(userId: string): Promise<SkillModeGap[]> {

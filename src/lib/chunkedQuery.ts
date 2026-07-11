@@ -15,7 +15,9 @@ type SchemaClient = {
 
 /**
  * Run a Supabase query in chunks to avoid Kong's URL length limit
- * when using .in() with many UUIDs.
+ * when using .in() with many UUIDs. Chunks are dispatched in PARALLEL
+ * (Promise.all) — result order matches chunk order regardless of which
+ * chunk's response lands first (Promise.all preserves input-array order).
  *
  * @param queryFn - Optional function to add filters (e.g. `.eq('is_active', true)`)
  *                  or override the select (e.g. `.select('id, name')`)
@@ -32,15 +34,17 @@ export async function chunkedIn<T>(
   client?: SchemaClient,
 ): Promise<T[]> {
   if (ids.length === 0) return []
-  const results: T[] = []
   const sb = client ?? supabase
+  const chunks: string[][] = []
   for (let i = 0; i < ids.length; i += CHUNK_SIZE) {
-    const chunk = ids.slice(i, i + CHUNK_SIZE)
+    chunks.push(ids.slice(i, i + CHUNK_SIZE))
+  }
+  const results = await Promise.all(chunks.map(async (chunk) => {
     let builder = (sb.schema('indonesian').from(table) as any).select('*').in(column, chunk)
     if (queryFn) builder = queryFn(builder)
     const { data, error } = await builder
     if (error) throw error
-    results.push(...(data as T[]))
-  }
-  return results
+    return data as T[]
+  }))
+  return results.flat()
 }
