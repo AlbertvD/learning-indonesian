@@ -105,7 +105,7 @@ export function EarQuiz({ playablePairs, audioMap }: EarQuizProps) {
     <div className={classes.subCard}>
       <Stack gap={4}>
         <Group justify="space-between" wrap="nowrap">
-          <Text size="xs" tt="uppercase" c="dimmed">{T.pronunciation.quizHeading}</Text>
+          <span className="eyebrow">{T.pronunciation.quizHeading}</span>
           {round && (
             <Tooltip label={T.pronunciation.quizReplay} withArrow>
               <ActionIcon

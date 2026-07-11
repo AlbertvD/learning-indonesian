@@ -5,7 +5,7 @@ import { IconVolume, IconPlayerStop } from '@tabler/icons-react'
 interface PlayButtonProps {
   audioUrl: string | undefined
   autoPlay?: boolean
-  size?: 'xs' | 'sm' | 'md'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
 }
 
 export function PlayButton({ audioUrl, autoPlay = false, size = 'sm' }: PlayButtonProps) {

@@ -94,6 +94,12 @@ const theme = createTheme({
 
 const cssVariablesResolver: CSSVariablesResolver = () => ({
   variables: {
+    // Remap Mantine's secondary-text token onto the app's own warm sage so
+    // `c="dimmed"` reads as brand, not the default cool grey — app-wide, one
+    // place (the affix trainer's rule/family sub-labels and every other dimmed
+    // line). --text-secondary is theme-scoped, so this resolves per theme.
+    '--mantine-color-dimmed': 'var(--text-secondary)',
+
     // Typography scale — mobile-first, 16px body baseline per exercise framework design.
     // Desktop overrides for --fs-3xl/4xl live in primitive CSS via @container queries
     // (the resolver can't emit @media rules).
