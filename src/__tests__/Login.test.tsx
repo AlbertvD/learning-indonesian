@@ -9,10 +9,16 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
+import { AuthApiError } from '@supabase/supabase-js'
 import { Login } from '@/pages/Login'
+import { logError } from '@/lib/logger'
 
 vi.mock('@mantine/notifications', () => ({
   notifications: { show: vi.fn() },
+}))
+
+vi.mock('@/lib/logger', () => ({
+  logError: vi.fn(),
 }))
 
 const { mockNavigate, mockSignIn } = vi.hoisted(() => ({
@@ -92,5 +98,38 @@ describe('Login', () => {
       expect.objectContaining({ color: 'red' }),
     )
     expect(mockNavigate).not.toHaveBeenCalled()
+  })
+
+  it('shows "incorrect credentials" only for a real invalid_credentials AuthApiError, and logs it', async () => {
+    const authError = new AuthApiError('Invalid login credentials', 400, 'invalid_credentials')
+    mockSignIn.mockRejectedValue(authError)
+    const user = userEvent.setup()
+    renderLogin('/login')
+
+    await fillAndSubmit(user)
+
+    const { notifications } = await import('@mantine/notifications')
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({ color: 'red', message: 'Onjuist e-mailadres of wachtwoord.' }),
+    )
+    expect(logError).toHaveBeenCalledWith({ page: 'Login', action: 'signIn', error: authError })
+  })
+
+  it('shows a generic failure message (not "incorrect credentials") for a network/outage error, and logs it', async () => {
+    const networkError = new TypeError('Failed to fetch')
+    mockSignIn.mockRejectedValue(networkError)
+    const user = userEvent.setup()
+    renderLogin('/login')
+
+    await fillAndSubmit(user)
+
+    const { notifications } = await import('@mantine/notifications')
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({ color: 'red', message: 'Er ging iets mis. Probeer het opnieuw.' }),
+    )
+    expect(notifications.show).not.toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Onjuist e-mailadres of wachtwoord.' }),
+    )
+    expect(logError).toHaveBeenCalledWith({ page: 'Login', action: 'signIn', error: networkError })
   })
 })

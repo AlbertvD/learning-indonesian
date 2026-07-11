@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
@@ -17,6 +18,7 @@ import {
   getLessonCapabilityPracticeSummaryByLessonId,
   buildLessonPracticeActions,
 } from '@/lib/lessons'
+import { logError } from '@/lib/logger'
 
 function renderPracticeActions(lessonId: string, activated: boolean) {
   return render(
@@ -87,5 +89,46 @@ describe('PracticeActions', () => {
   it('renders empty-state button when no practice actions are available', async () => {
     renderPracticeActions('lesson-abc', true)
     expect(await screen.findByText(/Geen oefeningen beschikbaar/i)).toBeInTheDocument()
+  })
+
+  describe('fetch failure (false "no exercises available" fix)', () => {
+    it('shows a load-failed notice with a retry affordance instead of the empty-actions fallthrough, and logs the error', async () => {
+      const fetchError = new Error('network error')
+      vi.mocked(getLessonCapabilityPracticeSummaryByLessonId).mockRejectedValue(fetchError)
+
+      renderPracticeActions('lesson-abc', true)
+
+      expect(await screen.findByText(/Oefeningen konden niet worden geladen/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Probeer opnieuw/i })).toBeInTheDocument()
+      // The stale "no exercises available" fallthrough must not also render.
+      expect(screen.queryByText(/Geen oefeningen beschikbaar/i)).not.toBeInTheDocument()
+      await waitFor(() => {
+        expect(logError).toHaveBeenCalledWith(
+          expect.objectContaining({ page: 'lesson-page', action: 'load-practice-counts', error: fetchError }),
+        )
+      })
+    })
+
+    it('retry re-runs the fetch and renders the real actions once it succeeds', async () => {
+      vi.mocked(getLessonCapabilityPracticeSummaryByLessonId).mockRejectedValueOnce(new Error('network error'))
+      vi.mocked(getLessonCapabilityPracticeSummaryByLessonId).mockResolvedValueOnce({
+        readyCapabilityCount: 3,
+        activePracticedCapabilityCount: 0,
+      })
+      vi.mocked(buildLessonPracticeActions).mockImplementation(({ state }) =>
+        state.practiceReadyCount > 0
+          ? [{ kind: 'practice', label: `Oefen deze les · ${state.practiceReadyCount} klaar`, href: '/session', priority: 'primary' }]
+          : [],
+      )
+
+      const user = userEvent.setup()
+      renderPracticeActions('lesson-abc', true)
+
+      const retryButton = await screen.findByRole('button', { name: /Probeer opnieuw/i })
+      await user.click(retryButton)
+
+      expect(await screen.findByText(/Oefen deze les · 3 klaar/i)).toBeInTheDocument()
+      expect(getLessonCapabilityPracticeSummaryByLessonId).toHaveBeenCalledTimes(2)
+    })
   })
 })

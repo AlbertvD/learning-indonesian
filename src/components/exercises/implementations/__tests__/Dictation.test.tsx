@@ -4,10 +4,11 @@
 // shows the NL meaning under the Indonesian transcript.
 
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MantineProvider } from '@mantine/core'
 import Dictation from '../Dictation'
+import { ExerciseErrorBoundary } from '../../ExerciseErrorBoundary'
 import { SessionAudioProvider } from '@/contexts/SessionAudioContext'
 import type { ExerciseItem, LearningItem } from '@/types/learning'
 
@@ -131,5 +132,47 @@ describe('Dictation — variant grading is Indonesian-only', () => {
     await playAndAnswer('makanan')
     await waitFor(() => expect(onAnswer).toHaveBeenCalled(), { timeout: 3000 })
     expect(onAnswer.mock.calls[0][0].wasCorrect).toBe(true)
+  })
+})
+
+describe('Dictation — audio playback failure (audio-gated soft-lock fix, prod-ready audit finding 1)', () => {
+  it('lets the learner move on via the ExerciseErrorBoundary skip path when the clip fails to load, instead of a permanently-disabled submit button', async () => {
+    // Mirrors playButton.test.tsx's Audio-mock pattern: capture the listener
+    // registered for the 'error' event so the test can fire a real playback
+    // failure (404/network) exactly as ExerciseAudioButton:53-58 would.
+    const audioListeners: Record<string, () => void> = {}
+    const fakeAudio = {
+      play: vi.fn().mockResolvedValue(undefined),
+      pause: vi.fn(),
+      currentTime: 0,
+      addEventListener: vi.fn((event: string, handler: () => void) => { audioListeners[event] = handler }),
+      removeEventListener: vi.fn(),
+    }
+    const OriginalAudio = window.Audio
+    ;(window as any).Audio = function Audio() { return fakeAudio }
+
+    // In real composition (CapabilityExerciseFrame) the same callback is
+    // wired as both the boundary's onAnswer and the exercise's onAnswer —
+    // mirror that here rather than inventing a parallel test-only wiring.
+    const onAnswer = vi.fn()
+    render(
+      <MantineProvider>
+        <SessionAudioProvider audioMap={audioMap}>
+          <ExerciseErrorBoundary exerciseType="type_form_from_audio_ex" userLanguage="nl" onAnswer={onAnswer}>
+            <Dictation exerciseItem={makeExerciseItem()} userLanguage="nl" onAnswer={onAnswer} onEvent={vi.fn()} />
+          </ExerciseErrorBoundary>
+        </SessionAudioProvider>
+      </MantineProvider>
+    )
+
+    act(() => {
+      audioListeners.error?.()
+    })
+
+    expect(await screen.findByText('Even overslaan')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Volgende' })).toBeInTheDocument()
+    expect(onAnswer).toHaveBeenCalledWith({ skipped: true, reviewRecorded: false })
+
+    ;(window as any).Audio = OriginalAudio
   })
 })

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Button, Stack } from '@mantine/core'
+import { Button, Stack, Text } from '@mantine/core'
 import { Link } from 'react-router-dom'
 import { IconPlayerPlay, IconRotateClockwise } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
@@ -21,23 +21,32 @@ export function PracticeActions({ lessonId, activated }: { lessonId: string; act
   const T = useT()
   const [readyCount, setReadyCount] = useState(0)
   const [practicedCount, setPracticedCount] = useState(0)
+  // Distinguishes "the fetch failed" from "the fetch succeeded and there are
+  // genuinely zero ready exercises" — collapsing these into the same 0/0
+  // state made every network hiccup read as a false "no exercises available"
+  // dead end with no way back in. See docs/audits/2026-07-11-prod-ready.md.
+  const [loadFailed, setLoadFailed] = useState(false)
+  const [retryToken, setRetryToken] = useState(0)
 
   useEffect(() => {
     if (!userId) return
     let cancelled = false
     async function load() {
       try {
+        setLoadFailed(false)
         const summary = await getLessonCapabilityPracticeSummaryByLessonId(userId!, lessonId)
         if (cancelled) return
         setReadyCount(summary.readyCapabilityCount)
         setPracticedCount(summary.activePracticedCapabilityCount)
       } catch (err) {
+        if (cancelled) return
+        setLoadFailed(true)
         logError({ page: 'lesson-page', action: 'load-practice-counts', error: err })
       }
     }
     void load()
     return () => { cancelled = true }
-  }, [userId, lessonId])
+  }, [userId, lessonId, retryToken])
 
   const actions = useMemo(() => {
     const practiceReadyCount = activated ? Math.max(0, readyCount - practicedCount) : 0
@@ -51,6 +60,17 @@ export function PracticeActions({ lessonId, activated }: { lessonId: string; act
       userLanguage,
     })
   }, [lessonId, readyCount, practicedCount, activated, userLanguage])
+
+  if (loadFailed) {
+    return (
+      <Stack gap={8}>
+        <Text size="sm" c="red">{T.lessons.practiceActionsLoadFailed}</Text>
+        <Button variant="default" fullWidth onClick={() => setRetryToken(n => n + 1)}>
+          {T.lessons.retry}
+        </Button>
+      </Stack>
+    )
+  }
 
   if (actions.length === 0) {
     return (
