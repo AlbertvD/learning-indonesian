@@ -24,6 +24,8 @@ import { OntdekNav } from '@/components/nav/OntdekNav'
 import { lessonService, type GrammarPodcastRow } from '@/services/lessonService'
 import { GRAMMAR_TOPIC_SUMMARIES } from '@/lib/lessons/grammarTopicSummaries'
 import { useAuthStore } from '@/stores/authStore'
+import { supabase } from '@/lib/supabase'
+import { SIGNED_URL_TTL_SECONDS } from '@/lib/signedAudioUrl'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
 
@@ -53,15 +55,29 @@ export function GrammarPodcasts() {
           }))
           .filter((e): e is { order: number; summary: string; path: string } => !!e.path)
         // Signing moves into this async load path (the bucket is private) —
-        // each row's audio_path resolves to a signed URL before the player
-        // ever mounts, so <audio src=> never receives a raw storage path.
-        const signed = await Promise.all(
-          candidates.map(async (c) => ({
-            order: c.order,
-            summary: c.summary,
-            url: await lessonService.getSignedAudioUrl(c.path),
-          })),
-        )
+        // ONE batch createSignedUrls call for every candidate path instead of
+        // one getSignedAudioUrl call per episode (a full 30-lesson hub page
+        // used to issue up to 30 requests; now issues one).
+        const urlByPath = new Map<string, string>()
+        if (candidates.length > 0) {
+          const { data: signedRows, error: signError } = await supabase.storage
+            .from('indonesian-lessons')
+            .createSignedUrls(candidates.map((c) => c.path), SIGNED_URL_TTL_SECONDS)
+          if (signError) {
+            // Wholesale batch failure (network/plumbing) — logged, mirroring
+            // audioService.fetchSessionAudioMap. Per-path failures below are
+            // NOT logged (non-entitled user, missing object — expected).
+            logError({ page: 'grammarPodcasts', action: 'createSignedUrls', error: signError })
+          }
+          for (const row of signedRows ?? []) {
+            if (row.path && row.signedUrl) urlByPath.set(row.path, row.signedUrl)
+          }
+        }
+        const signed = candidates.map((c) => ({
+          order: c.order,
+          summary: c.summary,
+          url: urlByPath.get(c.path) ?? null,
+        }))
         if (!cancelled) {
           setEpisodes(signed.filter((e): e is Episode => !!e.url))
         }

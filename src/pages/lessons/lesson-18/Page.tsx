@@ -11,10 +11,9 @@
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 18 --pretty > src/pages/lessons/lesson-18/content.json
 
-import { useRef, useState, useEffect } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { AudioPlayButton } from '@/components/lessons/AudioPlayButton'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
-import { signStoredAudioUrl } from '@/lib/signedAudioUrl'
 import { ReaderGrammarAudioBand } from '@/components/lessons/ReaderGrammarAudioBand'
 import { AffixTrainerLink } from '@/components/lessons/AffixTrainerLink'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
@@ -30,53 +29,6 @@ type DialogueLine = { text: string; speaker: string; translation: string; audioU
 
 const meta = content.meta
 const sections = content.sections
-
-// ─── Inline play button ────────────────────────────────────────────────────
-
-function PlayButton({ src }: { src?: string }) {
-  const ref = useRef<HTMLAudioElement | null>(null)
-  const [playing, setPlaying] = useState(false)
-  const [signedSrc, setSignedSrc] = useState<string | null>(null)
-
-  // The indonesian-lessons bucket is private — resolve the raw storage_path
-  // baked into content.json to a signed URL in this async load path before the
-  // <audio> element ever mounts a src.
-  useEffect(() => {
-    let cancelled = false
-    if (!src) {
-      setSignedSrc(null)
-      return
-    }
-    signStoredAudioUrl(src).then((url) => {
-      if (!cancelled) setSignedSrc(url)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [src])
-
-  if (!src) return null
-  return (
-    <>
-      <button
-        type="button"
-        className={classes.playButton}
-        data-playing={playing}
-        aria-label={playing ? 'Stop' : 'Speel uit'}
-        onClick={() => {
-          if (!ref.current) return
-          if (playing) { ref.current.pause(); ref.current.currentTime = 0; setPlaying(false); return }
-          void ref.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
-        }}
-      >
-        <svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-          {playing ? <><rect x="2" y="2" width="3" height="8" /><rect x="7" y="2" width="3" height="8" /></> : <polygon points="3,1 11,6 3,11" />}
-        </svg>
-      </button>
-      {signedSrc && <audio ref={ref} src={signedSrc} preload="none" onEnded={() => setPlaying(false)} />}
-    </>
-  )
-}
 
 // ─── Section: Dialogue — the visit, with a narrator framing the scene ───────
 
@@ -113,7 +65,7 @@ function DialogueScene({ section }: { section: typeof sections[number] }) {
                 <p key={i} className={classes.narratorLine}>
                   <span className={classes.narratorId}>
                     {line.text}
-                    <PlayButton src={line.audioUrl} />
+                    <AudioPlayButton src={line.audioUrl} className={classes.playButton} />
                   </span>
                   <span className={classes.narratorNl}>{line.translation}</span>
                 </p>
@@ -125,7 +77,7 @@ function DialogueScene({ section }: { section: typeof sections[number] }) {
                 <div className={classes.dialogueBody}>
                   <div className={classes.dialogueIdRow}>
                     <span className={classes.dialogueId}>{line.text}</span>
-                    <PlayButton src={line.audioUrl} />
+                    <AudioPlayButton src={line.audioUrl} className={classes.playButton} />
                   </div>
                   <div className={classes.dialogueNl}>{line.translation}</div>
                 </div>
@@ -171,7 +123,7 @@ function PassiveSection({ section }: { section: typeof sections[number] }) {
                     <div key={j} className={classes.passiveExample}>
                       <div className={classes.passiveExampleId}>
                         <span>{ex.indonesian}</span>
-                        <PlayButton src={ex.audioUrl} />
+                        <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
                       </div>
                       <div className={classes.passiveExampleNl}>{ex.dutch}</div>
                     </div>
@@ -208,7 +160,7 @@ function TimeMarkersSection({ section }: { section: typeof sections[number] }) {
                 <div key={j} className={classes.timeExample}>
                   <div className={classes.timeExampleId}>
                     <span>{ex.indonesian}</span>
-                    <PlayButton src={ex.audioUrl} />
+                    <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
                   </div>
                   <div className={classes.timeExampleNl}>{ex.dutch}</div>
                 </div>
@@ -252,7 +204,7 @@ function QuantifierSection({ section }: { section: typeof sections[number] }) {
           <div key={j} className={classes.quantRow}>
             <span className={classes.quantId}>
               {ex.indonesian}
-              <PlayButton src={ex.audioUrl} />
+              <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
             </span>
             <span className={classes.quantNl}>{ex.dutch}</span>
           </div>
@@ -290,7 +242,7 @@ function ItemList({
       <div className={classes.itemGrid}>
         {c.items.map((item, i) => (
           <div key={i} className={classes.itemChip} data-tone={tone}>
-            <PlayButton src={item.audioUrl} />
+            <AudioPlayButton src={item.audioUrl} className={classes.playButton} />
             <span className={classes.itemId}>{item.indonesian}</span>
             <span className={classes.itemSep} />
             <span className={classes.itemNl}>{item.dutch}</span>

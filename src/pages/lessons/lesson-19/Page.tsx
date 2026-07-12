@@ -23,10 +23,9 @@
 // Re-roll by re-running:
 //   NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/fetch-lesson-content.ts 19 --pretty > src/pages/lessons/lesson-19/content.json
 
-import { useRef, useState, useEffect } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { AudioPlayButton } from '@/components/lessons/AudioPlayButton'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
-import { signStoredAudioUrl } from '@/lib/signedAudioUrl'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ReaderGrammarAudioBand } from '@/components/lessons/ReaderGrammarAudioBand'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
@@ -43,53 +42,6 @@ type ExerciseSub = { title: string; instruction: string; type: string }
 const meta = content.meta
 const sections = content.sections
 
-// ─── Inline play button ────────────────────────────────────────────────────
-
-function PlayButton({ src }: { src?: string }) {
-  const ref = useRef<HTMLAudioElement | null>(null)
-  const [playing, setPlaying] = useState(false)
-  const [signedSrc, setSignedSrc] = useState<string | null>(null)
-
-  // The indonesian-lessons bucket is private — resolve the raw storage_path
-  // baked into content.json to a signed URL in this async load path before the
-  // <audio> element ever mounts a src.
-  useEffect(() => {
-    let cancelled = false
-    if (!src) {
-      setSignedSrc(null)
-      return
-    }
-    signStoredAudioUrl(src).then((url) => {
-      if (!cancelled) setSignedSrc(url)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [src])
-
-  if (!src) return null
-  return (
-    <>
-      <button
-        type="button"
-        className={classes.playButton}
-        data-playing={playing}
-        aria-label={playing ? 'Stop' : 'Speel uit'}
-        onClick={() => {
-          if (!ref.current) return
-          if (playing) { ref.current.pause(); ref.current.currentTime = 0; setPlaying(false); return }
-          void ref.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
-        }}
-      >
-        <svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-          {playing ? <><rect x="2" y="2" width="3" height="8" /><rect x="7" y="2" width="3" height="8" /></> : <polygon points="3,1 11,6 3,11" />}
-        </svg>
-      </button>
-      {signedSrc && <audio ref={ref} src={signedSrc} preload="none" onEnded={() => setPlaying(false)} />}
-    </>
-  )
-}
-
 // ─── Example pair: Indonesisch primary, Nederlands beneath ──────────────────
 
 function ExampleRow({ ex }: { ex: Example }) {
@@ -97,7 +49,7 @@ function ExampleRow({ ex }: { ex: Example }) {
     <div className={classes.example}>
       <div className={classes.exampleId}>
         <span className={classes.exampleIdText}>{ex.indonesian}</span>
-        <PlayButton src={ex.audioUrl} />
+        <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
       </div>
       <div className={classes.exampleNl}>{ex.dutch}</div>
     </div>
@@ -150,7 +102,7 @@ function DialogueScene({ section }: { section: typeof sections[number] }) {
                 <p key={i} className={classes.narratorLine}>
                   <span className={classes.narratorId}>
                     {line.text}
-                    <PlayButton src={line.audioUrl} />
+                    <AudioPlayButton src={line.audioUrl} className={classes.playButton} />
                   </span>
                   <span className={classes.narratorNl}>{line.translation}</span>
                 </p>
@@ -162,7 +114,7 @@ function DialogueScene({ section }: { section: typeof sections[number] }) {
                 <div className={classes.dialogueBody}>
                   <div className={classes.dialogueIdRow}>
                     <span className={classes.dialogueId}>{line.text}</span>
-                    <PlayButton src={line.audioUrl} />
+                    <AudioPlayButton src={line.audioUrl} className={classes.playButton} />
                   </div>
                   <div className={classes.dialogueNl}>{line.translation}</div>
                 </div>
@@ -191,7 +143,7 @@ function VocabList({ section }: { section: typeof sections[number] }) {
       <div className={classes.itemGrid}>
         {c.items.map((item, i) => (
           <div key={i} className={classes.itemChip}>
-            <PlayButton src={item.audioUrl} />
+            <AudioPlayButton src={item.audioUrl} className={classes.playButton} />
             <span className={classes.itemId}>{item.indonesian}</span>
             <span className={classes.itemSep} />
             <span className={classes.itemNl}>{item.dutch}</span>
@@ -223,7 +175,7 @@ function SepedaMotorSpread({ section }: { section: typeof sections[number] }) {
             <span className={classes.partBody}>
               <span className={classes.partIdRow}>
                 <span className={classes.partId}>{item.indonesian}</span>
-                <PlayButton src={item.audioUrl} />
+                <AudioPlayButton src={item.audioUrl} className={classes.playButton} />
               </span>
               <span className={classes.partNl}>{item.dutch}</span>
             </span>

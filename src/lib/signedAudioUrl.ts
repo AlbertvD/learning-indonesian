@@ -14,7 +14,18 @@
 // call `createSignedUrl(s)` directly against their own bucket; this helper is
 // for the one case that doesn't know its bucket ahead of time: reader pages
 // resolving a URL that was baked into static content.json.
+//
+// useSignedAudioSrc (below) is the React-hook flavor of the same resolution,
+// built on a small request-coalescing batch signer: sibling components that
+// each call the hook within the same microtask/short tick (e.g. up to 10
+// AudioPlayButtons mounted on one vocab-heavy lesson page,
+// src/components/lessons/AudioPlayButton.tsx) get folded into ONE
+// `createSignedUrls` call per bucket instead of one `createSignedUrl` call
+// each. `signStoredAudioUrl` above stays single-shot/unbatched — its
+// existing callers (ReaderGrammarAudioBand) don't have the same sibling-burst
+// shape and its test suite pins the single-call contract.
 
+import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { logError } from '@/lib/logger'
 
@@ -78,4 +89,106 @@ export async function signStoredAudioUrl(storedUrl: string): Promise<string | nu
     .createSignedUrl(location.path, SIGNED_URL_TTL_SECONDS)
   if (error) return null
   return data.signedUrl
+}
+
+// ─── Request-coalescing batch signer (useSignedAudioSrc) ───────────────────
+//
+// Module-level (not per-hook-instance) queue, keyed by bucket, so unrelated
+// components mounted in the same tick still coalesce. A request joins the
+// queue and schedules a microtask flush if one isn't already pending; React
+// runs every sibling component's passive effects synchronously within one
+// commit, so by the time the FIRST scheduled microtask actually runs, every
+// sibling's request for that tick has already joined the same queue.
+const pendingByBucket = new Map<StoredAudioBucket, Map<string, Array<(url: string | null) => void>>>()
+const scheduledBuckets = new Set<StoredAudioBucket>()
+
+async function flushBucket(bucket: StoredAudioBucket): Promise<void> {
+  const queue = pendingByBucket.get(bucket)
+  pendingByBucket.delete(bucket)
+  if (!queue || queue.size === 0) return
+
+  const paths = [...queue.keys()]
+  const { data, error } = await supabase.storage.from(bucket).createSignedUrls(paths, SIGNED_URL_TTL_SECONDS)
+
+  if (error || !data) {
+    // Wholesale batch failure (network/plumbing) — logged, mirroring
+    // audioService.fetchSessionAudioMap's same-shaped batch call. Per-path
+    // failures below are NOT logged (non-entitled user, missing object —
+    // expected, not a bug).
+    logError({ page: 'signed-audio-url', action: 'createSignedUrls', error: error ?? new Error('no data returned') })
+    for (const resolvers of queue.values()) {
+      for (const resolve of resolvers) resolve(null)
+    }
+    return
+  }
+
+  const urlByPath = new Map<string, string | null>()
+  for (const row of data) {
+    if (row.path) urlByPath.set(row.path, row.error ? null : row.signedUrl)
+  }
+  for (const [path, resolvers] of queue) {
+    const url = urlByPath.get(path) ?? null
+    for (const resolve of resolvers) resolve(url)
+  }
+}
+
+function requestSignedUrl(bucket: StoredAudioBucket, path: string): Promise<string | null> {
+  return new Promise((resolve) => {
+    let queue = pendingByBucket.get(bucket)
+    if (!queue) {
+      queue = new Map()
+      pendingByBucket.set(bucket, queue)
+    }
+    const resolvers = queue.get(path)
+    if (resolvers) {
+      resolvers.push(resolve)
+    } else {
+      queue.set(path, [resolve])
+    }
+    if (!scheduledBuckets.has(bucket)) {
+      scheduledBuckets.add(bucket)
+      queueMicrotask(() => {
+        scheduledBuckets.delete(bucket)
+        void flushBucket(bucket)
+      })
+    }
+  })
+}
+
+/**
+ * React-hook flavor of `signStoredAudioUrl`: resolves a stored audio
+ * reference to a signed URL, batching same-tick sibling requests per bucket
+ * (see module comment above). Returns null while unresolved, on an
+ * unparseable reference (logged), or on a signing failure (not logged —
+ * expected for a non-entitled user). Guards against setting state after
+ * unmount the same way the pre-extraction inline PlayButton did.
+ */
+export function useSignedAudioSrc(src: string | undefined): string | null {
+  const [signedSrc, setSignedSrc] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    if (!src) {
+      setSignedSrc(null)
+      return
+    }
+    const location = parseStoredAudioUrl(src)
+    if (!location) {
+      logError({
+        page: 'signed-audio-url',
+        action: 'parseStoredAudioUrl',
+        error: new Error(`Unrecognized stored audio reference: ${src}`),
+      })
+      setSignedSrc(null)
+      return
+    }
+    requestSignedUrl(location.bucket, location.path).then((url) => {
+      if (!cancelled) setSignedSrc(url)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [src])
+
+  return signedSrc
 }

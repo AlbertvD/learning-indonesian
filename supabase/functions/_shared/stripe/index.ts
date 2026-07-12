@@ -13,3 +13,4 @@ export {
   findEntitlementUserIdForSubscription,
   fetchEntitlementColumns,
 } from './entitlement.ts'
+export { resolveId } from './ids.ts'

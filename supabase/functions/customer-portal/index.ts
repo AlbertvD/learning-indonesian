@@ -10,7 +10,7 @@
 // jsonResponse/publicReject idioms, JWT verify via GET /auth/v1/user, and
 // service-role PostgREST fetch pattern.
 
-import { getStripeClient } from '../_shared/stripe/index.ts'
+import { getStripeClient, fetchEntitlementColumns } from '../_shared/stripe/index.ts'
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -25,27 +25,6 @@ function publicReject(status: number, error: string): Response {
 
 interface EntitlementRow {
   stripe_customer_id: string | null
-}
-
-async function fetchStripeCustomerId(
-  supabaseUrl: string,
-  serviceRoleKey: string,
-  userId: string,
-): Promise<string | null> {
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/entitlements?user_id=eq.${encodeURIComponent(userId)}&select=stripe_customer_id&limit=1`,
-    {
-      headers: {
-        Authorization: `Bearer ${serviceRoleKey}`,
-        apikey: serviceRoleKey,
-        'Accept-Profile': 'indonesian',
-      },
-    },
-  )
-  if (!response.ok) throw new Error(`entitlement_lookup_failed:${response.status}`)
-  const rows = await response.json().catch(() => null)
-  const row = Array.isArray(rows) ? (rows[0] as EntitlementRow | undefined) : undefined
-  return row?.stripe_customer_id ?? null
 }
 
 Deno.serve(async (request) => {
@@ -81,7 +60,8 @@ Deno.serve(async (request) => {
   }
 
   try {
-    const stripeCustomerId = await fetchStripeCustomerId(supabaseUrl, serviceRoleKey, userId)
+    const entitlementRow = await fetchEntitlementColumns<EntitlementRow>(supabaseUrl, serviceRoleKey, userId, 'stripe_customer_id')
+    const stripeCustomerId = entitlementRow?.stripe_customer_id ?? null
     if (!stripeCustomerId) {
       return publicReject(404, 'no_stripe_customer')
     }

@@ -246,12 +246,16 @@ export function Profile() {
       window.location.href = url
       // Browser is navigating away — no further state update needed.
     } catch (err) {
-      logError({ page: 'profile', action: 'manageSubscription', error: err })
+      const code = await extractEdgeFunctionErrorCode(err)
+      const message = code === 'invalid_user_jwt' || code === 'missing_user_jwt'
+        ? T.paywall.sessionExpired
+        : T.profile.somethingWentWrong
       notifications.show({
         color: 'red',
         title: T.profile.manageSubscriptionFailed,
-        message: T.profile.somethingWentWrong,
+        message,
       })
+      logError({ page: 'profile', action: 'manageSubscription', error: err })
       setPortalLoading(false)
     }
   }

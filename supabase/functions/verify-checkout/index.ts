@@ -13,7 +13,7 @@
 // Modeled on commit-capability-answer-report/index.ts — same
 // jsonResponse/publicReject/isRecord idioms and JWT verify pattern.
 
-import { getStripeClient, upsertEntitlementFromSubscription } from '../_shared/stripe/index.ts'
+import { getStripeClient, upsertEntitlementFromSubscription, fetchEntitlementColumns, resolveId } from '../_shared/stripe/index.ts'
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -30,11 +30,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
 }
 
-function resolveId(value: string | { id: string } | null | undefined): string | null {
-  if (!value) return null
-  return typeof value === 'string' ? value : value.id
-}
-
 interface EntitlementRow {
   status: string
 }
@@ -48,19 +43,7 @@ async function fetchCurrentStatus(
   serviceRoleKey: string,
   userId: string,
 ): Promise<string> {
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/entitlements?user_id=eq.${encodeURIComponent(userId)}&select=status&limit=1`,
-    {
-      headers: {
-        Authorization: `Bearer ${serviceRoleKey}`,
-        apikey: serviceRoleKey,
-        'Accept-Profile': 'indonesian',
-      },
-    },
-  )
-  if (!response.ok) throw new Error(`entitlement_lookup_failed:${response.status}`)
-  const rows = await response.json().catch(() => null)
-  const row = Array.isArray(rows) ? (rows[0] as EntitlementRow | undefined) : undefined
+  const row = await fetchEntitlementColumns<EntitlementRow>(supabaseUrl, serviceRoleKey, userId, 'status')
   return row?.status ?? 'canceled'
 }
 

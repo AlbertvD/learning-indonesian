@@ -7,11 +7,19 @@
 // still works, §1 design notes). No entitlement row at all renders the
 // free-plan paywall CTA (PaywallPanel) inline.
 
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
+import { FunctionsHttpError } from '@supabase/supabase-js'
 import { Profile } from '@/pages/Profile'
+
+// Mirrors the shape FunctionsClient constructs for a non-2xx response
+// (delete-account.test.tsx's httpError helper).
+function httpError(code: string): FunctionsHttpError {
+  return new FunctionsHttpError({ json: async () => ({ error: code }) })
+}
 
 vi.mock('@mantine/notifications', () => ({ notifications: { show: vi.fn() } }))
 vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
@@ -110,5 +118,57 @@ describe('Profile — subscription block', () => {
     renderProfile()
     expect(await screen.findByRole('button', { name: 'Abonnement beheren' })).toBeInTheDocument()
     expect(await screen.findByTestId('paywall-panel')).toBeInTheDocument()
+  })
+
+  it('handleManageSubscription: shows the paywall session-expired message (not the generic one) on a 401', async () => {
+    mockChain.maybeSingle.mockResolvedValue({
+      data: {
+        user_id: 'user-1', status: 'active', source: 'stripe',
+        stripe_customer_id: 'cus_1', stripe_subscription_id: 'sub_1',
+        current_period_end: '2026-08-01T00:00:00Z',
+      },
+      error: null,
+    })
+    mockInvoke.mockResolvedValue({ data: null, error: httpError('invalid_user_jwt') })
+    const user = userEvent.setup()
+    renderProfile()
+
+    await user.click(await screen.findByRole('button', { name: 'Abonnement beheren' }))
+
+    const { notifications } = await import('@mantine/notifications')
+    await waitFor(() => {
+      expect(notifications.show).toHaveBeenCalledWith(
+        expect.objectContaining({
+          color: 'red',
+          message: 'Je sessie is verlopen. Log opnieuw in en probeer het nog eens.',
+        }),
+      )
+    })
+  })
+
+  it('handleManageSubscription: shows the generic error message for an unrecognised failure', async () => {
+    mockChain.maybeSingle.mockResolvedValue({
+      data: {
+        user_id: 'user-1', status: 'active', source: 'stripe',
+        stripe_customer_id: 'cus_1', stripe_subscription_id: 'sub_1',
+        current_period_end: '2026-08-01T00:00:00Z',
+      },
+      error: null,
+    })
+    mockInvoke.mockResolvedValue({ data: null, error: httpError('portal_session_failed') })
+    const user = userEvent.setup()
+    renderProfile()
+
+    await user.click(await screen.findByRole('button', { name: 'Abonnement beheren' }))
+
+    const { notifications } = await import('@mantine/notifications')
+    await waitFor(() => {
+      expect(notifications.show).toHaveBeenCalledWith(
+        expect.objectContaining({
+          color: 'red',
+          message: 'Er ging iets mis. Probeer het opnieuw.',
+        }),
+      )
+    })
   })
 })

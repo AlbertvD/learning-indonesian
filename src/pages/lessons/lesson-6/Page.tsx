@@ -22,10 +22,9 @@
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 6 --pretty > src/pages/lessons/lesson-6/content.json
 
-import { useRef, useState, useEffect } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { AudioPlayButton } from '@/components/lessons/AudioPlayButton'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
-import { signStoredAudioUrl } from '@/lib/signedAudioUrl'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ReaderGrammarAudioBand } from '@/components/lessons/ReaderGrammarAudioBand'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
@@ -39,53 +38,6 @@ type Item = { dutch: string; indonesian: string; audioUrl?: string; register?: '
 
 const meta = content.meta
 const sections = content.sections
-
-// ─── Inline play button ────────────────────────────────────────────────────
-
-function PlayButton({ src }: { src?: string }) {
-  const ref = useRef<HTMLAudioElement | null>(null)
-  const [playing, setPlaying] = useState(false)
-  const [signedSrc, setSignedSrc] = useState<string | null>(null)
-
-  // The indonesian-lessons bucket is private — resolve the raw storage_path
-  // baked into content.json to a signed URL in this async load path before the
-  // <audio> element ever mounts a src.
-  useEffect(() => {
-    let cancelled = false
-    if (!src) {
-      setSignedSrc(null)
-      return
-    }
-    signStoredAudioUrl(src).then((url) => {
-      if (!cancelled) setSignedSrc(url)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [src])
-
-  if (!src) return null
-  return (
-    <>
-      <button
-        type="button"
-        className={classes.playButton}
-        data-playing={playing}
-        aria-label={playing ? 'Stop' : 'Speel uit'}
-        onClick={() => {
-          if (!ref.current) return
-          if (playing) { ref.current.pause(); ref.current.currentTime = 0; setPlaying(false); return }
-          void ref.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
-        }}
-      >
-        <svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-          {playing ? <><rect x="2" y="2" width="3" height="8" /><rect x="7" y="2" width="3" height="8" /></> : <polygon points="3,1 11,6 3,11" />}
-        </svg>
-      </button>
-      {signedSrc && <audio ref={ref} src={signedSrc} preload="none" onEnded={() => setPlaying(false)} />}
-    </>
-  )
-}
 
 // ─── History timeline — section 0 (14 paragraphs about Batavia) ────────────
 //
@@ -176,7 +128,7 @@ function VocabularyGrid({ section }: { section: typeof sections[number] }) {
             <div className={classes.vocabGrid}>
               {band.items.map((item, j) => (
                 <div key={j} className={classes.vocabChip}>
-                  <PlayButton src={item.audioUrl} />
+                  <AudioPlayButton src={item.audioUrl} className={classes.playButton} />
                   <span className={classes.vocabId}>{item.indonesian}</span>
                   {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
                   <span className={classes.vocabNl}>{item.dutch}</span>
@@ -279,7 +231,7 @@ function NegationQuartet() {
                 <div key={i} className={classes.negationExample}>
                   <div className={classes.negationExampleId}>
                     <span>{ex.indonesian}</span>
-                    <PlayButton src={ex.audioUrl} />
+                    <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
                   </div>
                   <div className={classes.negationExampleNl}>{ex.dutch}</div>
                 </div>
@@ -300,7 +252,7 @@ function NegationQuartet() {
             <div key={i} className={classes.negationExample}>
               <div className={classes.negationExampleId}>
                 <span>{ex.indonesian}</span>
-                <PlayButton src={ex.audioUrl} />
+                <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
               </div>
               <div className={classes.negationExampleNl}>{ex.dutch}</div>
             </div>
@@ -368,7 +320,7 @@ function SuffixPair() {
               <div key={i} className={classes.suffixExample}>
                 <div className={classes.suffixExampleId}>
                   <span>{ex.indonesian}</span>
-                  <PlayButton src={ex.audioUrl} />
+                  <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
                 </div>
                 <div className={classes.suffixExampleNl}>{ex.dutch}</div>
               </div>
@@ -391,7 +343,7 @@ function SuffixPair() {
               <div key={i} className={classes.suffixExample}>
                 <div className={classes.suffixExampleId}>
                   <span>{ex.indonesian}</span>
-                  <PlayButton src={ex.audioUrl} />
+                  <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
                 </div>
                 <div className={classes.suffixExampleNl}>{ex.dutch}</div>
               </div>
@@ -462,7 +414,7 @@ function TimeMovement() {
             <div key={i} className={classes.clockExample}>
               <div className={classes.clockExampleId}>
                 <span>{ex.indonesian}</span>
-                <PlayButton src={ex.audioUrl} />
+                <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
               </div>
               <div className={classes.clockExampleNl}>{ex.dutch}</div>
             </div>
@@ -497,7 +449,7 @@ function TimeMovement() {
               <span className={classes.clockTimeStamp}>{ex.dutch}</span>
               <span className={classes.clockTimeId}>
                 {ex.indonesian}
-                <PlayButton src={ex.audioUrl} />
+                <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
               </span>
             </div>
           ))}

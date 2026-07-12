@@ -11,10 +11,9 @@
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 12 --pretty > src/pages/lessons/lesson-12/content.json
 
-import { useRef, useState, useEffect } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { AudioPlayButton } from '@/components/lessons/AudioPlayButton'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
-import { signStoredAudioUrl } from '@/lib/signedAudioUrl'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ReaderGrammarAudioBand } from '@/components/lessons/ReaderGrammarAudioBand'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
@@ -24,53 +23,6 @@ import classes from './Page.module.css'
 
 const meta = content.meta
 const sections = content.sections
-
-// ─── Inline play button ────────────────────────────────────────────────────
-
-function PlayButton({ src }: { src?: string }) {
-  const ref = useRef<HTMLAudioElement | null>(null)
-  const [playing, setPlaying] = useState(false)
-  const [signedSrc, setSignedSrc] = useState<string | null>(null)
-
-  // The indonesian-lessons bucket is private — resolve the raw storage_path
-  // baked into content.json to a signed URL in this async load path before the
-  // <audio> element ever mounts a src.
-  useEffect(() => {
-    let cancelled = false
-    if (!src) {
-      setSignedSrc(null)
-      return
-    }
-    signStoredAudioUrl(src).then((url) => {
-      if (!cancelled) setSignedSrc(url)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [src])
-
-  if (!src) return null
-  return (
-    <>
-      <button
-        type="button"
-        className={classes.playButton}
-        data-playing={playing}
-        aria-label={playing ? 'Stop' : 'Speel uit'}
-        onClick={() => {
-          if (!ref.current) return
-          if (playing) { ref.current.pause(); ref.current.currentTime = 0; setPlaying(false); return }
-          void ref.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
-        }}
-      >
-        <svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-          {playing ? <><rect x="2" y="2" width="3" height="8" /><rect x="7" y="2" width="3" height="8" /></> : <polygon points="3,1 11,6 3,11" />}
-        </svg>
-      </button>
-      {signedSrc && <audio ref={ref} src={signedSrc} preload="none" onEnded={() => setPlaying(false)} />}
-    </>
-  )
-}
 
 // ─── 1. Dialogue — the platform reunion ────────────────────────────────────
 
@@ -112,7 +64,7 @@ function PlatformScene({ section }: { section: typeof sections[number] }) {
               return (
                 <div key={i} className={classes.narratorLine}>
                   <span className={classes.narratorId}>{line.text}</span>
-                  <PlayButton src={line.audioUrl} />
+                  <AudioPlayButton src={line.audioUrl} className={classes.playButton} />
                   <span className={classes.narratorNl}>{line.translation}</span>
                 </div>
               )
@@ -123,7 +75,7 @@ function PlatformScene({ section }: { section: typeof sections[number] }) {
                 <div className={classes.dialogueBody}>
                   <div className={classes.dialogueIdRow}>
                     <span className={classes.dialogueId}>{line.text}</span>
-                    <PlayButton src={line.audioUrl} />
+                    <AudioPlayButton src={line.audioUrl} className={classes.playButton} />
                   </div>
                   <div className={classes.dialogueNl}>{line.translation}</div>
                 </div>
@@ -155,7 +107,7 @@ function Lexicon({ section }: { section: typeof sections[number] }) {
       <div className={classes.vocabGrid}>
         {c.items.map((item, i) => (
           <div key={i} className={classes.vocabChip}>
-            <PlayButton src={item.audioUrl} />
+            <AudioPlayButton src={item.audioUrl} className={classes.playButton} />
             <span className={classes.vocabId}>{item.indonesian}</span>
             {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
             <span className={classes.vocabSep} />
@@ -182,7 +134,7 @@ function Expressions({ section }: { section: typeof sections[number] }) {
             <div className={classes.exprTop}>
               <span className={classes.exprId}>{item.indonesian}</span>
               {item.register === 'informal' && <span className={classes.spreektaalTag}>spreektaal</span>}
-              <PlayButton src={item.audioUrl} />
+              <AudioPlayButton src={item.audioUrl} className={classes.playButton} />
             </div>
             <span className={classes.exprNl}>{item.dutch}</span>
           </div>

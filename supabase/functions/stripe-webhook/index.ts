@@ -19,6 +19,7 @@ import type Stripe from 'npm:stripe@22.3.1'
 import {
   findEntitlementUserIdForSubscription,
   getStripeClient,
+  resolveId,
   upsertEntitlementFromSubscription,
 } from '../_shared/stripe/index.ts'
 
@@ -76,11 +77,6 @@ async function recordEventProcessed(
     const detail = await response.text().catch(() => '')
     throw new Error(`webhook_event_record_failed:${response.status}:${detail}`)
   }
-}
-
-function resolveId(value: string | { id: string } | null | undefined): string | null {
-  if (!value) return null
-  return typeof value === 'string' ? value : value.id
 }
 
 async function handleCheckoutSessionCompleted(

@@ -8,7 +8,7 @@
 // jsonResponse/publicReject/isRecord idioms, JWT verify via
 // GET /auth/v1/user, and service-role PostgREST fetch pattern.
 
-import { getStripeClient } from '../_shared/stripe/index.ts'
+import { getStripeClient, fetchEntitlementColumns } from '../_shared/stripe/index.ts'
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -27,26 +27,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 interface EntitlementRow {
   stripe_customer_id: string | null
-}
-
-async function fetchEntitlementRow(
-  supabaseUrl: string,
-  serviceRoleKey: string,
-  userId: string,
-): Promise<EntitlementRow | null> {
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/entitlements?user_id=eq.${encodeURIComponent(userId)}&select=stripe_customer_id&limit=1`,
-    {
-      headers: {
-        Authorization: `Bearer ${serviceRoleKey}`,
-        apikey: serviceRoleKey,
-        'Accept-Profile': 'indonesian',
-      },
-    },
-  )
-  if (!response.ok) throw new Error(`entitlement_lookup_failed:${response.status}`)
-  const rows = await response.json().catch(() => null)
-  return Array.isArray(rows) ? (rows[0] as EntitlementRow | undefined) ?? null : null
 }
 
 // Persists a freshly-created Stripe customer id on the caller's entitlement
@@ -143,7 +123,7 @@ Deno.serve(async (request) => {
     const stripe = getStripeClient()
 
     // 2. Reuse or create the Stripe Customer.
-    const existingRow = await fetchEntitlementRow(supabaseUrl, serviceRoleKey, userId)
+    const existingRow = await fetchEntitlementColumns<EntitlementRow>(supabaseUrl, serviceRoleKey, userId, 'stripe_customer_id')
     let stripeCustomerId = existingRow?.stripe_customer_id ?? null
     if (!stripeCustomerId) {
       const customer = await stripe.customers.create({
