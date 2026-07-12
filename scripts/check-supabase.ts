@@ -137,49 +137,54 @@ try {
   warn('Public signup gate', `Could not determine signup gate state: ${(err as Error).message}`)
 }
 
-// ── Checks 5–7: Storage buckets ───────────────────────────────────────────
-// Storage's bucket-metadata endpoint requires service_role even for buckets
-// that are publicly readable (anon role can read public OBJECTS via
-// /object/public/<bucket>/<key> but not bucket records). When SERVICE_KEY is
-// available, use it for the metadata read. Otherwise fall back to a public-
-// object reachability HEAD which works without auth — less precise but
-// validates the path the runtime app actually uses.
-const SERVICE_KEY_FOR_BUCKET_CHECK = process.env.SUPABASE_SERVICE_KEY
+// ── Checks 5–7: Storage buckets are private (anon probe) ──────────────────
+// All 3 buckets flip public=false as part of the entitlement DB slice
+// (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §4). Storage's
+// /object/public/ route filters on bucket.public=true BEFORE attempting any
+// object lookup, so an unauthenticated fetch against a private bucket 400s/
+// 404s regardless of whether the path exists — this is the "buckets
+// actually private" functional signal from the anon key alone. The
+// structural service-key assertion (storage.buckets.public=false ×3) lives
+// in check-supabase-deep.ts per the spec's split-by-key rule (§8): a
+// service-key check here would carry BYPASSRLS and prove nothing about the
+// public flag either way.
+//
+// NOTE: this check fails against a not-yet-migrated DB (buckets are still
+// public until the coordinated rollout, spec §7) — expected until then.
 for (const bucket of ['indonesian-lessons', 'indonesian-podcasts', 'indonesian-tts']) {
   try {
-    if (SERVICE_KEY_FOR_BUCKET_CHECK) {
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${bucket}`, {
-        headers: { apikey: SERVICE_KEY_FOR_BUCKET_CHECK, authorization: `Bearer ${SERVICE_KEY_FOR_BUCKET_CHECK}` },
-      })
-      if (res.ok) {
-        const data = await res.json()
-        if ((data as { public?: boolean }).public) {
-          pass(`Storage bucket: ${bucket} (public)`)
-        } else {
-          fail(`Storage bucket: ${bucket}`, `Bucket exists but is not public — make it public in Supabase Studio > Storage`)
-        }
-      } else if (res.status === 404) {
-        fail(`Storage bucket: ${bucket}`, `Bucket not found — create it in Supabase Studio > Storage, or check seed script`)
-      } else {
-        fail(`Storage bucket: ${bucket}`, `HTTP ${res.status}: ${await res.text()}`)
-      }
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/public/${bucket}/__nonexistent__`)
+    if (res.status === 400 || res.status === 404) {
+      pass(`Storage bucket private: ${bucket} (unauthenticated fetch → HTTP ${res.status})`)
     } else {
-      // Anon-only fallback: probe a known-public path. We don't know an exact
-      // file name, so HEAD the bucket's listing endpoint via a public OPTIONS
-      // preflight to confirm reachability.
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/public/${bucket}/__nonexistent__`)
-      // 404 with a Storage-shaped error means the bucket exists and is public
-      // (Storage routed our request and looked up the (missing) object). Any
-      // other status indicates a routing or auth failure.
-      if (res.status === 404 || res.status === 400) {
-        pass(`Storage bucket: ${bucket} (reachable; set SUPABASE_SERVICE_KEY for stricter check)`)
-      } else {
-        fail(`Storage bucket: ${bucket}`, `Unexpected HTTP ${res.status} on public-object probe — bucket may not exist or not be public`)
-      }
+      fail(`Storage bucket private: ${bucket}`, `Unexpected HTTP ${res.status} on unauthenticated public-object probe — bucket may still be public=true; run: make migrate SUPABASE_SERVICE_KEY=<key>`)
     }
   } catch (err) {
-    fail(`Storage bucket: ${bucket}`, `Request failed: ${(err as Error).message}`)
+    fail(`Storage bucket private: ${bucket}`, `Request failed: ${(err as Error).message}`)
   }
+}
+
+// ── Check: stripe-webhook rejects unsigned requests ────────────────────────
+// Deployed via SCP + edge-functions container restart, not this DB slice
+// (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §3.2/§7). An
+// unsigned POST (no stripe-signature header) must be rejected 400 by the
+// function's constructEventAsync verification step before reaching any
+// handler logic.
+try {
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/stripe-webhook`, {
+    method: 'POST',
+    headers: { apikey: ANON_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'probe.unsigned' }),
+  })
+  if (res.status === 400) {
+    pass('stripe-webhook rejects unsigned POST (HTTP 400)')
+  } else if (res.status === 404) {
+    fail('stripe-webhook rejects unsigned POST', 'HTTP 404 — function not deployed yet (expected until the entitlement rollout window, spec §7); SCP supabase/functions/stripe-webhook/index.ts to the homelab bind mount and restart supabase-edge-functions')
+  } else {
+    fail('stripe-webhook rejects unsigned POST', `Unexpected HTTP ${res.status} — signature verification may be missing or misconfigured`)
+  }
+} catch (err) {
+  fail('stripe-webhook rejects unsigned POST', `Request failed: ${(err as Error).message}`)
 }
 
 // ── Checks 7–9: Table reads (anon key via authenticated session) ──────────
@@ -291,6 +296,99 @@ if (authed) {
         }
       } catch (err) {
         fail(`Audio URL accessible: ${lesson.audio_path}`, `Request failed: ${(err as Error).message}`)
+      }
+    }
+  }
+  // ── Entitlement RLS probes (2026-07-12 entitlement design §8) ────────────
+  // Anon key + REAL signed-in test users — the service-key client in
+  // check-supabase-deep.ts carries BYPASSRLS and would sign ANY path
+  // regardless of the storage/RPC policy (the b38e467f false-green class).
+  // CHECK_TEST_EMAIL is comped via the §6 migration backfill (existing
+  // preview users → source='comp'), so the `supabase` client already signed
+  // in above IS the comped probe. A second, dedicated non-entitled account
+  // (never comped, no Stripe subscription) proves the DENY path.
+  //
+  // NOTE: this fails against a not-yet-migrated DB (entitlements/can_read_media/
+  // the set_lesson_activation gate don't exist yet) — expected until the
+  // coordinated rollout, spec §7.
+  const NONENTITLED_EMAIL = process.env.CHECK_TEST_NONENTITLED_EMAIL
+  const NONENTITLED_PASSWORD = process.env.CHECK_TEST_NONENTITLED_PASSWORD
+  if (!NONENTITLED_EMAIL || !NONENTITLED_PASSWORD) {
+    results.push({ label: 'Entitlement RLS probes (skipped — no CHECK_TEST_NONENTITLED_EMAIL/CHECK_TEST_NONENTITLED_PASSWORD set)', ok: true })
+  } else {
+    const nonentitled = createClient(SUPABASE_URL, ANON_KEY)
+    const { error: neSignInErr } = await nonentitled.auth.signInWithPassword({ email: NONENTITLED_EMAIL, password: NONENTITLED_PASSWORD })
+    if (neSignInErr) {
+      fail('Entitlement RLS probes — non-entitled sign-in', `${neSignInErr.message} — check CHECK_TEST_NONENTITLED_EMAIL/CHECK_TEST_NONENTITLED_PASSWORD`)
+    } else {
+      try {
+        // Find a genuinely paid-only clip (generated for a lesson beyond the
+        // free tier, with NO free-tier sibling sharing normalized_text — the
+        // free-tier TTS grant is text-level, spec §10) and a free-tier clip.
+        const { data: lessonRows, error: lessonErr } = await supabase
+          .schema('indonesian').from('lessons').select('id, order_index')
+        if (lessonErr) throw new Error(`lessons lookup: ${lessonErr.message}`)
+        const allLessons = (lessonRows ?? []) as { id: string; order_index: number }[]
+        const freeLessonIds = allLessons.filter(l => l.order_index <= 3).map(l => l.id)
+        const paidLessonIds = allLessons.filter(l => l.order_index > 3).map(l => l.id)
+        const paidLesson = allLessons.find(l => l.order_index > 3)
+
+        const { data: freeClipRows, error: freeErr } = await supabase
+          .schema('indonesian').from('audio_clips').select('normalized_text, storage_path')
+          .in('generated_for_lesson_id', freeLessonIds)
+        if (freeErr) throw new Error(`free-tier clips lookup: ${freeErr.message}`)
+        const freeClips = (freeClipRows ?? []) as { normalized_text: string; storage_path: string }[]
+        const freeNormalizedTexts = new Set(freeClips.map(c => c.normalized_text))
+        const freeClip = freeClips[0]
+
+        const { data: paidClipRows, error: paidErr } = await supabase
+          .schema('indonesian').from('audio_clips').select('normalized_text, storage_path')
+          .in('generated_for_lesson_id', paidLessonIds)
+        if (paidErr) throw new Error(`paid clips lookup: ${paidErr.message}`)
+        const paidClips = (paidClipRows ?? []) as { normalized_text: string; storage_path: string }[]
+        const paidOnlyClip = paidClips.find(c => !freeNormalizedTexts.has(c.normalized_text))
+
+        if (!paidOnlyClip || !freeClip || !paidLesson) {
+          fail('Entitlement RLS probes — fixture', 'no paid-only TTS clip / free-tier TTS clip / paid (order_index>3) lesson found to probe against')
+        } else {
+          const { data: compedSigned, error: compedErr } = await supabase.storage
+            .from('indonesian-tts').createSignedUrl(paidOnlyClip.storage_path, 60)
+          if (compedErr || !compedSigned?.signedUrl) {
+            fail('Comped test user can sign a paid TTS clip', compedErr?.message ?? 'no signedUrl returned')
+          } else {
+            pass('Comped test user can sign a paid TTS clip')
+          }
+
+          const { data: neDeniedSigned, error: neDeniedErr } = await nonentitled.storage
+            .from('indonesian-tts').createSignedUrl(paidOnlyClip.storage_path, 60)
+          if (!neDeniedErr && neDeniedSigned?.signedUrl) {
+            fail('Non-entitled probe cannot sign a paid TTS clip', 'signing succeeded — indonesian_media_read policy is not gating the indonesian-tts bucket')
+          } else {
+            pass('Non-entitled probe cannot sign a paid TTS clip')
+          }
+
+          const { data: neAllowedSigned, error: neAllowedErr } = await nonentitled.storage
+            .from('indonesian-tts').createSignedUrl(freeClip.storage_path, 60)
+          if (neAllowedErr || !neAllowedSigned?.signedUrl) {
+            fail('Non-entitled probe can sign a free-tier TTS clip', neAllowedErr?.message ?? 'no signedUrl returned')
+          } else {
+            pass('Non-entitled probe can sign a free-tier TTS clip')
+          }
+
+          const { data: neUser } = await nonentitled.auth.getUser()
+          const neUid = neUser.user?.id
+          const { error: activationErr } = await nonentitled
+            .schema('indonesian').rpc('set_lesson_activation', { p_user_id: neUid, p_lesson_id: paidLesson.id, p_activated: true })
+          if (!activationErr) {
+            fail('set_lesson_activation raises entitlement_required for non-entitled probe', 'RPC succeeded — the entitlement gate in set_lesson_activation is missing or misordered')
+          } else if (!activationErr.message.includes('entitlement_required')) {
+            fail('set_lesson_activation raises entitlement_required for non-entitled probe', `raised a different error: ${activationErr.message}`)
+          } else {
+            pass('set_lesson_activation raises entitlement_required for non-entitled probe')
+          }
+        }
+      } catch (err) {
+        fail('Entitlement RLS probes', (err as Error).message)
       }
     }
   }
