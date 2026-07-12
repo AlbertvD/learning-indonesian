@@ -553,7 +553,7 @@ function OefenenChapter({ activation }: { activation: ReturnType<typeof useLesso
           Activeer de les — en de vraagwoorden, plaatsbepalingen en getallen tot honderd komen vanzelf in je oefensessies langs.
         </p>
         <div className={classes.closingActivation}>
-          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} loadFailed={activation.loadFailed} onRetryLoad={activation.retryLoad} />
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} loadFailed={activation.loadFailed} onRetryLoad={activation.retryLoad} orderIndex={meta.order_index} />
         </div>
         <div className={classes.closingActions}>
           <PracticeActions lessonId={meta.id} activated={activation.activated} />

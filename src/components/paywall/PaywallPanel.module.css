@@ -1,0 +1,156 @@
+/* bespoke-css-ok: pricing plan grid (two-up price cards, best-deal badge,
+   per-plan CTA) — not modeled by ListCard/MediaShowcaseCard/ActionCard/
+   StatCard (list-row and single-CTA shapes) or HeroCard (generic shell
+   only, no grid). The outer card chrome itself IS HeroCard — see
+   PaywallPanel.tsx — this module only owns the inner price-grid content
+   that sits inside HeroCard's children slot. */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PaywallPanel.module.css — the app's single monetization surface.
+
+   Two-up price grid collapses to one column under 480px — both the
+   lesson-gate modal and the Profile embed context can be that narrow. The
+   annual plan is the "best deal": a tone-accented border + badge (mirrors
+   ActionCard's tone-border idiom) makes it visually dominant without a
+   second component. Renders inside HeroCard's gradient shell, so the two
+   plan boxes get a solid --card-bg background to read as "cards afloat on
+   the hero" rather than blending into the gradient.
+
+   No @container / @layer / !important.
+───────────────────────────────────────────────────────────────────────────── */
+
+.eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hero-text-dim, var(--accent-primary));
+  margin: 0 0 6px;
+}
+
+.title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--hero-text);
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: var(--fs-sm);
+  color: var(--hero-text-dim, var(--hero-text));
+  margin: 0 0 20px;
+}
+
+.plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 480px) {
+  .plans {
+    grid-template-columns: 1fr;
+  }
+}
+
+.plan,
+.planFeatured {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 16px;
+}
+
+.planFeatured {
+  border: 2px solid var(--accent-primary);
+}
+
+.badge {
+  position: absolute;
+  top: -11px;
+  right: 12px;
+  background: var(--accent-primary);
+  color: #fff;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.planHeader {
+  margin-bottom: 8px;
+}
+
+.planLabel {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.planPriceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.planPrice {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.planPeriod {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.planHint {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+}
+
+.plan > :last-child,
+.planFeatured > :last-child {
+  margin-top: auto;
+}
+
+.benefits {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.benefits li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-sm);
+  color: var(--hero-text-dim, var(--hero-text));
+}
+
+.benefitIcon {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+.legal {
+  font-size: var(--fs-xs);
+  color: var(--hero-text-muted, var(--hero-text-dim));
+  margin: 0;
+}
+
+.legal a {
+  color: inherit;
+  text-decoration: underline;
+}

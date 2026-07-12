@@ -1,6 +1,6 @@
 // src/App.tsx
 import { lazy, Suspense } from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, Navigate } from 'react-router-dom'
 import { Container, Title, Text, Button, Center, Loader } from '@mantine/core'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
@@ -40,6 +40,9 @@ const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ de
 const DesignLab = lazy(() => import('@/pages/admin/DesignLab').then(m => ({ default: m.DesignLab })))
 const PageLab = lazy(() => import('@/pages/admin/PageLab').then(m => ({ default: m.PageLab })))
 const Privacy = lazy(() => import('@/pages/Privacy').then(m => ({ default: m.Privacy })))
+const Terms = lazy(() => import('@/pages/Terms').then(m => ({ default: m.Terms })))
+const Refunds = lazy(() => import('@/pages/Refunds').then(m => ({ default: m.Refunds })))
+const CheckoutSuccess = lazy(() => import('@/pages/CheckoutSuccess').then(m => ({ default: m.CheckoutSuccess })))
 const Landing = lazy(() => import('@/pages/Landing').then(m => ({ default: m.Landing })))
 
 // ─── Bespoke lesson pages — preview routes ────────────────────────────────────
@@ -114,6 +117,11 @@ function App() {
       <Route path="/preview" element={<LazyPage><LocalPreviewIndex /></LazyPage>} />
       <Route path="/preview/lesson/:slug" element={<LazyPage><LocalPreviewLesson /></LazyPage>} />
       <Route path="/privacy" element={<LazyPage><Privacy /></LazyPage>} />
+      {/* Public — reachable pre-auth via Stripe Checkout's consent-collection
+          link and PaywallPanel's footer, mirrors /privacy (docs/plans/
+          2026-07-12-oauth-stripe-entitlement-design.md §3.4). */}
+      <Route path="/terms" element={<LazyPage><Terms /></LazyPage>} />
+      <Route path="/refunds" element={<LazyPage><Refunds /></LazyPage>} />
 
       <Route element={<Layout />}>
         {!showLanding && (
@@ -427,6 +435,25 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><Profile /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout/success"
+          element={
+            <ProtectedRoute>
+              <LazyPage><CheckoutSuccess /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        {/* Stripe's cancel_url (create-checkout-session/index.ts:
+            `${APP_BASE_URL}/checkout/cancel`) — no new page per the spec,
+            just land back on Profile where the subscribe CTA still is. */}
+        <Route
+          path="/checkout/cancel"
+          element={
+            <ProtectedRoute>
+              <Navigate to="/profile" replace />
             </ProtectedRoute>
           }
         />

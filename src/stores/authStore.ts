@@ -5,6 +5,7 @@ import type { User } from '@supabase/supabase-js'
 import type { UserProfile } from '@/types/auth'
 import { logError } from '@/lib/logger'
 import { setLessonActivated } from '@/lib/lessons'
+import { entitlementService, isActiveStatus, type EntitlementStatus } from '@/services/entitlementService'
 
 interface AuthState {
   user: User | null
@@ -12,11 +13,14 @@ interface AuthState {
   loading: boolean
   initialize: () => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
+  signUp: (email: string, password: string, fullName: string) => Promise<void>
+  signInWithGoogle: (next?: string) => Promise<void>
   signOut: () => Promise<void>
   updateDisplayName: (name: string) => Promise<void>
   updateLanguage: (lang: 'nl' | 'en') => Promise<void>
   updatePreferredSessionSize: (size: number) => Promise<void>
   updateTimezone: (timezone: string) => Promise<void>
+  refreshEntitlement: () => Promise<void>
 }
 
 // Stored outside the store so initialize() can be called multiple times safely
@@ -35,13 +39,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
-        const [{ displayName, language, preferredSessionSize, timezone }, isAdmin] = await Promise.all([
+        const [{ displayName, language, preferredSessionSize, timezone }, isAdmin, entitlementStatus] = await Promise.all([
           loadProfileData(session.user.id),
           checkAdmin(session.user.id),
+          loadEntitlementStatus(session.user.id),
         ])
         set({
           user: session.user,
-          profile: toProfile(session.user, isAdmin, displayName, language, preferredSessionSize, timezone),
+          profile: toProfile(session.user, isAdmin, displayName, language, preferredSessionSize, timezone, isEntitledFrom(isAdmin, entitlementStatus)),
           loading: false,
         })
       } else {
@@ -83,11 +88,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
                   },
                   { onConflict: 'id', ignoreDuplicates: true }
                 )
-              const [{ displayName, language, preferredSessionSize, timezone }, isAdmin] = await Promise.all([
+              const [{ displayName, language, preferredSessionSize, timezone }, isAdmin, entitlementStatus] = await Promise.all([
                 loadProfileData(session.user!.id),
                 checkAdmin(session.user!.id),
+                loadEntitlementStatus(session.user!.id),
               ])
-              set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language, preferredSessionSize, timezone) })
+              set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language, preferredSessionSize, timezone, isEntitledFrom(isAdmin, entitlementStatus)) })
             } catch (err) {
               logError({ page: 'auth', action: 'load-profile-after-signin', error: err })
               set({ user: session.user, profile: null })
@@ -125,6 +131,37 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (data.user) set({ user: data.user })
   },
 
+  signUp: async (email, password, fullName) => {
+    // MAILER_AUTOCONFIRM is on (no email verification), so a successful signUp
+    // returns an active session directly — GoTrue emits SIGNED_IN and the
+    // handler above upserts the profile / activates starter lessons the same
+    // way a password sign-in does. No separate signIn() call needed.
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
+    })
+    if (error) throw error
+    // Same race-avoidance as signIn: set the user immediately so Register's
+    // post-await navigation isn't bounced by ProtectedRoute before the
+    // SIGNED_IN handler's deferred profile fetch resolves.
+    if (data.user) set({ user: data.user })
+  },
+
+  signInWithGoogle: async (next) => {
+    // @supabase/ssr's browser client uses PKCE and handles the code exchange
+    // on return (detectSessionInUrl) — the SIGNED_IN handler above then fires
+    // normally, same as password sign-in/sign-up.
+    const redirectTo = next
+      ? `${window.location.origin}/login?next=${encodeURIComponent(next)}`
+      : `${window.location.origin}/login`
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo },
+    })
+    if (error) throw error
+  },
+
   signOut: async () => {
     await supabase.auth.signOut()
     set({ user: null, profile: null })
@@ -144,6 +181,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   updateTimezone: async (timezone) => {
     await updateProfile(get, set, { timezone }, { timezone })
+  },
+
+  // Re-reads the caller's entitlement row and patches `profile.isEntitled` in
+  // place — no other profile field changes. Used by /checkout/success (§5)
+  // after `verify-checkout` resolves, so the store reflects the just-paid
+  // subscription without a full page reload. A failure here is logged and
+  // otherwise silent — the page's own verify-checkout error/retry state is
+  // the primary UX; a stale isEntitled just means the store catches up on
+  // the next natural profile reload (next sign-in / tab refresh).
+  refreshEntitlement: async () => {
+    const { user, profile } = get()
+    if (!user || !profile) return
+    try {
+      const status = await loadEntitlementStatus(user.id)
+      set({ profile: { ...profile, isEntitled: isEntitledFrom(profile.isAdmin, status) } })
+    } catch (err) {
+      logError({ page: 'auth', action: 'refresh-entitlement', error: err })
+    }
   },
 }))
 
@@ -214,7 +269,26 @@ async function loadProfileData(userId: string): Promise<{ displayName: string | 
   }
 }
 
-function toProfile(user: User, isAdmin: boolean, displayName: string | null, language: 'nl' | 'en', preferredSessionSize: number, timezone: string | null): UserProfile {
+// Entitlement fetch runs in parallel with the profile/admin loads above, so
+// it must never reject that Promise.all — a transient entitlement-read
+// failure must not break sign-in. Failure defaults to null (treated as "no
+// active entitlement") and is logged, matching the store's existing error
+// posture elsewhere in this file.
+async function loadEntitlementStatus(userId: string): Promise<EntitlementStatus | null> {
+  try {
+    const row = await entitlementService.getEntitlement(userId)
+    return row?.status ?? null
+  } catch (err) {
+    logError({ page: 'auth', action: 'load-entitlement', error: err })
+    return null
+  }
+}
+
+function isEntitledFrom(isAdmin: boolean, entitlementStatus: EntitlementStatus | null): boolean {
+  return isAdmin || (entitlementStatus !== null && isActiveStatus(entitlementStatus))
+}
+
+function toProfile(user: User, isAdmin: boolean, displayName: string | null, language: 'nl' | 'en', preferredSessionSize: number, timezone: string | null, isEntitled: boolean): UserProfile {
   return {
     id: user.id,
     email: user.email!,
@@ -223,5 +297,6 @@ function toProfile(user: User, isAdmin: boolean, displayName: string | null, lan
     preferredSessionSize,
     timezone,
     isAdmin,
+    isEntitled,
   }
 }
