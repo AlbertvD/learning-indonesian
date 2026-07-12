@@ -17,10 +17,13 @@ vi.mock('@/lib/supabase', () => {
       return Promise.resolve({ data: [], error: null }).then(onFulfilled)
     })
   }
-  
+
   const mockStorage = {
     from: vi.fn().mockReturnValue({
-      getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/audio.mp3' } })
+      createSignedUrl: vi.fn().mockResolvedValue({
+        data: { signedUrl: 'https://example.com/audio.mp3?token=abc' },
+        error: null,
+      })
     })
   }
 
@@ -33,6 +36,8 @@ vi.mock('@/lib/supabase', () => {
     },
   }
 })
+
+vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
 
 describe('textService', () => {
   const getMock = () => (supabase.schema('indonesian').from('any') as any)
@@ -115,9 +120,22 @@ describe('textService', () => {
     expect(result).toBeNull()
   })
 
-  it('getAudioUrl calls supabase storage', () => {
-    const url = textService.getAudioUrl('path/to/audio.mp3')
+  it('getSignedAudioUrl signs against the indonesian-podcasts bucket (private bucket, entitlement cutover)', async () => {
+    const url = await textService.getSignedAudioUrl('path/to/audio.mp3')
     expect(supabase.storage.from).toHaveBeenCalledWith('indonesian-podcasts')
-    expect(url).toBe('https://example.com/audio.mp3')
+    expect(supabase.storage.from('indonesian-podcasts').createSignedUrl).toHaveBeenCalledWith(
+      'path/to/audio.mp3',
+      21600,
+    )
+    expect(url).toBe('https://example.com/audio.mp3?token=abc')
+  })
+
+  it('getSignedAudioUrl returns null and logs on a signing failure', async () => {
+    vi.mocked(supabase.storage.from).mockReturnValueOnce({
+      createSignedUrl: vi.fn().mockResolvedValue({ data: null, error: new Error('not entitled') }),
+    } as any)
+
+    const url = await textService.getSignedAudioUrl('path/to/audio.mp3')
+    expect(url).toBeNull()
   })
 })
