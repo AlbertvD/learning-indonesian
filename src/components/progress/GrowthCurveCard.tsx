@@ -22,12 +22,19 @@
 // BELOW the x-axis (`TrendChart`'s `belowSeries`, voortgang-polish at-risk
 // fix), on the same shared scale as the forward stack: rungs climbing above
 // the axis + at-risk sinking below it together account for every word.
+//
+// Loading/error states (2026-07-11 prod-ready audit): a Skeleton roughly the
+// shape of the loaded card while the fetch is in flight, and the shared
+// CardErrorNotice on failure (replaces the old "return null forever" branch).
+// `retryTick` re-runs the effect.
 import { useEffect, useMemo, useState } from 'react'
+import { Skeleton } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
 import { getFunnelSeries, type FunnelWeek } from '@/lib/analytics/mastery/masteryModel'
 import { logError } from '@/lib/logger'
 import { TrendChart, type TrendSeries } from './TrendChart'
+import { CardErrorNotice } from './CardErrorNotice'
 import classes from './GroeiCard.module.css'
 
 const WEEKS = 12
@@ -59,19 +66,24 @@ export function GrowthCurveCard({ userId, bucket, unitLabel }: GrowthCurveCardPr
   const T = useT()
   const timezone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone, [])
   const [series, setSeries] = useState<FunnelWeek[] | null>(null)
+  const [loadFailed, setLoadFailed] = useState(false)
+  const [retryTick, setRetryTick] = useState(0)
 
   useEffect(() => {
     let active = true
+    setLoadFailed(false)
     getFunnelSeries(userId, timezone, WEEKS)
       .then((v) => active && setSeries(v))
       .catch((err) => {
+        if (!active) return
         logError({ page: 'progress', action: 'funnelSeries', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
+        setLoadFailed(true)
       })
     return () => {
       active = false
     }
-  }, [userId, timezone, T.common.error, T.common.somethingWentWrong])
+  }, [userId, timezone, retryTick, T.common.error, T.common.somethingWentWrong])
 
   const rungLabel: Record<Rung, string> = {
     introduced: T.progress.ladderNetOntmoet,
@@ -116,7 +128,23 @@ export function GrowthCurveCard({ userId, bucket, unitLabel }: GrowthCurveCardPr
     return series.map((w) => RUNGS.reduce((sum, rung) => sum + w[bucket][rung], 0))
   }, [series, bucket])
 
-  if (!series) return null
+  if (loadFailed) {
+    return (
+      <div className={classes.card}>
+        <CardErrorNotice onRetry={() => setRetryTick((t) => t + 1)} />
+      </div>
+    )
+  }
+
+  if (!series) {
+    return (
+      <div className={classes.card}>
+        <Skeleton height={18} width="40%" radius="sm" mb={6} />
+        <Skeleton height={12} width="65%" radius="sm" mb={12} />
+        <Skeleton height={160} radius="md" />
+      </div>
+    )
+  }
 
   const now = totals.length ? totals[totals.length - 1] : 0
   const priorIdx = Math.max(0, totals.length - 5)

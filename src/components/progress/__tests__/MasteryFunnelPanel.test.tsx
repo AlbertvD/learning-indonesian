@@ -90,4 +90,28 @@ describe('MasteryFunnelPanel', () => {
     await user.click(card)
     expect(onAtRiskClick).toHaveBeenCalledTimes(1)
   })
+
+  it('shows an error notice with a retry button on fetch failure, and recovers on retry', async () => {
+    vi.mocked(getMasteryFunnels)
+      .mockRejectedValueOnce(new Error('network down'))
+      .mockResolvedValueOnce({
+        all: { vocabulary: funnel({ mastered: 9 }), grammar: funnel(), morphology: funnel() },
+        byLesson: new Map(),
+      })
+
+    render(
+      <MantineProvider>
+        <MasteryFunnelPanel userId="user-1" kind="vocabulary" unitLabel="woorden" />
+      </MantineProvider>,
+    )
+
+    const retryButton = await screen.findByRole('button', { name: 'Probeer opnieuw' })
+    expect(screen.queryByText('Je reis met deze woorden')).not.toBeInTheDocument()
+
+    const user = userEvent.setup()
+    await user.click(retryButton)
+
+    expect(await screen.findByText('Je reis met deze woorden')).toBeInTheDocument()
+    expect(getMasteryFunnels).toHaveBeenCalledTimes(2)
+  })
 })

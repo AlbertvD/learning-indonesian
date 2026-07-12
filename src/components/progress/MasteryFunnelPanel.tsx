@@ -13,8 +13,13 @@
 // renders when the caller supplies `onAtRiskClick` (Woordenschat only, via
 // VocabMasteryPanel) AND the scoped funnel has at-risk words; grammar/
 // morfologie never pass the callback, so they never render the card.
+//
+// Loading/error states (2026-07-11 prod-ready audit): a Skeleton sized
+// roughly like the loaded panel while the fetch is in flight, and a shared
+// CardErrorNotice (icon + message + retry) on failure — replacing the old
+// "return null forever on error" behaviour. `retryTick` re-runs the effect.
 import { useEffect, useState, type ReactNode } from 'react'
-import { Select, UnstyledButton } from '@mantine/core'
+import { Select, UnstyledButton, Skeleton, Stack } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconLeaf2 } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
@@ -22,6 +27,7 @@ import { getMasteryFunnels, type MasteryFunnels } from '@/lib/analytics/mastery/
 import { logError } from '@/lib/logger'
 import { ListCard } from '@/components/page/primitives'
 import { MasteryLadder } from './MasteryLadder'
+import { CardErrorNotice } from './CardErrorNotice'
 import classes from './MasteryFunnelPanel.module.css'
 
 const ALL = 'all'
@@ -53,22 +59,36 @@ export interface MasteryFunnelPanelProps {
 export function MasteryFunnelPanel({ userId, kind, unitLabel, footer, onAtRiskClick }: MasteryFunnelPanelProps) {
   const T = useT()
   const [data, setData] = useState<{ all: MasteryFunnels; byLesson: Map<number, MasteryFunnels> } | null>(null)
+  const [loadFailed, setLoadFailed] = useState(false)
+  const [retryTick, setRetryTick] = useState(0)
   const [scope, setScope] = useState<string>(ALL)
 
   useEffect(() => {
     let active = true
+    setLoadFailed(false)
     getMasteryFunnels(userId)
       .then((v) => active && setData(v))
       .catch((err) => {
+        if (!active) return
         logError({ page: 'progress', action: 'masteryFunnels', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
+        setLoadFailed(true)
       })
     return () => {
       active = false
     }
-  }, [userId, T.common.error, T.common.somethingWentWrong])
+  }, [userId, retryTick, T.common.error, T.common.somethingWentWrong])
 
-  if (!data) return null
+  if (loadFailed) return <CardErrorNotice onRetry={() => setRetryTick((t) => t + 1)} />
+
+  if (!data) {
+    return (
+      <Stack gap="xs">
+        <Skeleton height={36} width="60%" radius="sm" />
+        <Skeleton height={140} radius="md" />
+      </Stack>
+    )
+  }
 
   const lessons = [...data.byLesson.keys()].sort((a, b) => a - b)
   const selectData = [

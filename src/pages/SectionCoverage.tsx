@@ -90,7 +90,7 @@ export function SectionCoverage() {
           subtitle="Which section types are published per lesson."
           action={(
             <Tooltip label="Refresh">
-              <ActionIcon variant="subtle" size="lg" onClick={load} loading={loading}>
+              <ActionIcon variant="subtle" size="lg" onClick={load} loading={loading} aria-label="Refresh">
                 <IconRefresh size={18} />
               </ActionIcon>
             </Tooltip>
