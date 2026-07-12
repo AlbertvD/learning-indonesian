@@ -1,6 +1,12 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #445
+merged_at: 2026-07-12
+implementation_paths:
+  - scripts/migration.sql
+  - src/lib/analytics/mastery/masteryModel.ts
+  - src/lib/chunkedQuery.ts
+  - scripts/check-supabase-deep.ts
 reviewed_by:
   - staff-engineer (2026-07-11 — GO after revisions; TTL dropped, tiebreak pinned)
   - data-architect (2026-07-11 — SIGN-OFF yes; 3 minors folded in below)
