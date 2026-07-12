@@ -255,18 +255,14 @@ export const nl = {
     emailPlaceholder: 'jij@voorbeeld.com',
     password: 'Wachtwoord',
     passwordPlaceholder: 'Je wachtwoord',
-    inviteCode: 'Uitnodigingscode',
-    inviteCodePlaceholder: 'Je uitnodigingscode',
     createAccount: 'Account aanmaken',
     registrationSuccess: 'Registratie geslaagd',
     accountCreated: 'Je account is aangemaakt. Je kunt nu inloggen.',
     registrationFailed: 'Registratie mislukt',
-    invalidInviteCode: 'Deze uitnodigingscode is ongeldig of al gebruikt.',
-    // emailTaken retired 2026-07-12 (SIGNUP ENUMERATION fix, prod-ready audit):
-    // the edge function no longer distinguishes "email taken" from any other
-    // post-redeem failure, so this copy is unused. See Register.tsx.
-    rateLimited: 'Te veel pogingen. Probeer het later opnieuw.',
+    emailTaken: 'Dit e-mailadres is al geregistreerd. Probeer in te loggen.',
     somethingWentWrong: 'Er ging iets mis. Probeer het opnieuw.',
+    continueWithGoogle: 'Doorgaan met Google',
+    orDivider: 'of',
   },
   pwa: {
     updateTitle: 'Nieuwe versie beschikbaar',
@@ -284,6 +280,9 @@ export const nl = {
     loginFailed: 'Inloggen mislukt',
     incorrectCredentials: 'Onjuist e-mailadres of wachtwoord.',
     somethingWentWrong: 'Er ging iets mis. Probeer het opnieuw.',
+    continueWithGoogle: 'Doorgaan met Google',
+    orDivider: 'of',
+    oauthFailed: 'Aanmelden met Google is mislukt. Probeer het opnieuw.',
   },
   privacy: {
     title: 'Privacybeleid',
@@ -991,18 +990,14 @@ export const en: typeof nl = {
     emailPlaceholder: 'you@example.com',
     password: 'Password',
     passwordPlaceholder: 'Your password',
-    inviteCode: 'Invite code',
-    inviteCodePlaceholder: 'Your invite code',
     createAccount: 'Create account',
     registrationSuccess: 'Registration successful',
     accountCreated: 'Your account has been created. You can now log in.',
     registrationFailed: 'Registration failed',
-    invalidInviteCode: 'This invite code is invalid or already used.',
-    // emailTaken retired 2026-07-12 (SIGNUP ENUMERATION fix, prod-ready audit):
-    // the edge function no longer distinguishes "email taken" from any other
-    // post-redeem failure, so this copy is unused. See Register.tsx.
-    rateLimited: 'Too many attempts. Please try again later.',
+    emailTaken: 'This email is already registered. Try logging in instead.',
     somethingWentWrong: 'Something went wrong. Please try again.',
+    continueWithGoogle: 'Continue with Google',
+    orDivider: 'or',
   },
   pwa: {
     updateTitle: 'New version available',
@@ -1020,6 +1015,9 @@ export const en: typeof nl = {
     loginFailed: 'Login failed',
     incorrectCredentials: 'Incorrect email or password.',
     somethingWentWrong: 'Something went wrong. Please try again.',
+    continueWithGoogle: 'Continue with Google',
+    orDivider: 'or',
+    oauthFailed: 'Signing in with Google failed. Please try again.',
   },
   privacy: {
     title: 'Privacy Policy',

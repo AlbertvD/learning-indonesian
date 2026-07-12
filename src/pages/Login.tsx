@@ -1,6 +1,7 @@
 // src/pages/Login.tsx
-import { useState } from 'react'
-import { PasswordInput, TextInput, Button, Stack, Text } from '@mantine/core'
+import { useEffect, useState } from 'react'
+import { PasswordInput, TextInput, Button, Stack, Text, Divider } from '@mantine/core'
+import { IconBrandGoogle } from '@tabler/icons-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
 import { AuthApiError } from '@supabase/supabase-js'
@@ -13,13 +14,51 @@ import { logError } from '@/lib/logger'
 // language detection helper.
 import { nl as T } from '@/lib/i18n'
 
+// Only accept a same-app relative path — never redirect off-site from a
+// query param (open-redirect guard, CRIT-1).
+function safeNext(next: string | null): string {
+  return next && next.startsWith('/') && !next.startsWith('//') ? next : '/'
+}
+
 export function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const signIn = useAuthStore(s => s.signIn)
+  const signInWithGoogle = useAuthStore(s => s.signInWithGoogle)
+  const user = useAuthStore(s => s.user)
+
+  // Google OAuth is a full-page redirect round trip, not a form submit — it
+  // returns here (redirectTo carries the same ?next= this page was loaded
+  // with) already signed in via the SIGNED_IN handler in authStore. This page
+  // has no other mechanism to leave /login once that happens, so watch for
+  // the store's user appearing and forward on, mirroring handleSubmit's
+  // post-signIn navigation.
+  useEffect(() => {
+    if (user) navigate(safeNext(searchParams.get('next')))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
+  // GoTrue redirects OAuth failures back to redirectTo with an `error` query
+  // param (e.g. access_denied) instead of establishing a session.
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (!error) return
+    notifications.show({
+      color: 'red',
+      title: T.login.loginFailed,
+      message: T.login.oauthFailed,
+    })
+    logError({
+      page: 'Login',
+      action: 'oauthCallback',
+      error: new Error(searchParams.get('error_description') ?? error),
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,10 +67,8 @@ export function Login() {
     try {
       await signIn(email, password)
       // ProtectedRoute carries a `?next=` param when it bounces a logged-out
-      // visitor here so they land back where they were headed. Only accept a
-      // same-app relative path — never redirect off-site from a query param.
-      const next = searchParams.get('next')
-      navigate(next && next.startsWith('/') && !next.startsWith('//') ? next : '/')
+      // visitor here so they land back where they were headed.
+      navigate(safeNext(searchParams.get('next')))
     } catch (err) {
       // Only a genuine invalid_credentials response from GoTrue means "the
       // email/password combo is wrong" — a network/CORS/outage failure is a
@@ -48,6 +85,23 @@ export function Login() {
       logError({ page: 'Login', action: 'signIn', error: err })
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleGoogle = async () => {
+    setGoogleLoading(true)
+    try {
+      await signInWithGoogle(searchParams.get('next') ?? undefined)
+      // On success the browser navigates away to Google immediately; no
+      // further action here.
+    } catch (err) {
+      notifications.show({
+        color: 'red',
+        title: T.login.loginFailed,
+        message: T.login.oauthFailed,
+      })
+      logError({ page: 'Login', action: 'signInWithGoogle', error: err })
+      setGoogleLoading(false)
     }
   }
 
@@ -77,6 +131,16 @@ export function Login() {
             </Button>
           </Stack>
         </form>
+        <Divider label={T.login.orDivider} labelPosition="center" />
+        <Button
+          variant="default"
+          fullWidth
+          leftSection={<IconBrandGoogle size={18} />}
+          onClick={handleGoogle}
+          loading={googleLoading}
+        >
+          {T.login.continueWithGoogle}
+        </Button>
         <Text size="sm" c="dimmed">
           {T.login.noAccount} <a href="/register">{T.login.createOne}</a>
         </Text>

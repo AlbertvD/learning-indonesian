@@ -1,52 +1,40 @@
 // src/pages/Register.tsx
+//
+// Open signup (payment is the gate, not an invite code — docs/plans/
+// 2026-07-12-oauth-stripe-entitlement-design.md, owner decision #2). Calls
+// authStore.signUp directly; the invite-code field and the signup-with-invite
+// edge function are retired.
+
 import { useState } from 'react'
-import { PasswordInput, TextInput, Button, Stack, Text } from '@mantine/core'
+import { PasswordInput, TextInput, Button, Stack, Text, Divider } from '@mantine/core'
+import { IconBrandGoogle } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
-import { FunctionsHttpError } from '@supabase/supabase-js'
+import { AuthApiError } from '@supabase/supabase-js'
 import { PageFormLayout } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
-import { supabase } from '@/lib/supabase'
 import { logError } from '@/lib/logger'
 // See Login.tsx — auth pages render before the user profile loads, so we
 // pin the language to NL (the project default) until EN-first onboarding
 // is introduced.
 import { nl as T } from '@/lib/i18n'
 
-// The edge function returns { error: <code> } on non-2xx. functions.invoke
-// never throws — it resolves { data: null, error: FunctionsHttpError } whose
-// .context is the raw Response. Best-effort parse; unknown/unparseable shapes
-// fall back to the generic message.
-async function extractErrorCode(error: unknown): Promise<string | undefined> {
-  if (!(error instanceof FunctionsHttpError)) return undefined
-  try {
-    const body = await error.context.json()
-    return typeof body?.error === 'string' ? body.error : undefined
-  } catch {
-    return undefined
-  }
-}
-
 export function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
-  const [inviteCode, setInviteCode] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const navigate = useNavigate()
-  const signIn = useAuthStore(s => s.signIn)
+  const signUp = useAuthStore(s => s.signUp)
+  const signInWithGoogle = useAuthStore(s => s.signInWithGoogle)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      const { error } = await supabase.functions.invoke('signup-with-invite', {
-        body: { email, password, fullName, inviteCode },
-      })
-      if (error) throw error
-
-      await signIn(email, password)
+      await signUp(email, password, fullName)
       notifications.show({
         color: 'green',
         title: T.register.registrationSuccess,
@@ -55,20 +43,9 @@ export function Register() {
       // Day-one loanword-bridge onboarding (Bet-1 §3.4) instead of the dashboard.
       navigate('/welkom')
     } catch (err) {
-      const code = await extractErrorCode(err)
-      // 2026-07-11 prod-ready audit ("SIGNUP ENUMERATION"): the edge function
-      // collapses "email already registered" and every other post-redeem
-      // failure into the same generic signup_failed/500 response, so there is
-      // no email_taken branch here — a distinct "that email is taken" message
-      // would let an attacker probe arbitrary addresses and learn which ones
-      // already have an account. invalid_invite_code stays distinct: an
-      // invite-holder who mistypes their code needs that feedback, and it
-      // reveals nothing about any particular email.
-      const message = code === 'invalid_invite_code'
-        ? T.register.invalidInviteCode
-        : code === 'rate_limited'
-          ? T.register.rateLimited
-          : T.register.somethingWentWrong
+      const message = err instanceof AuthApiError && err.code === 'user_already_exists'
+        ? T.register.emailTaken
+        : T.register.somethingWentWrong
       notifications.show({
         color: 'red',
         title: T.register.registrationFailed,
@@ -77,6 +54,23 @@ export function Register() {
       logError({ page: 'Register', action: 'signUp', error: err })
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleGoogle = async () => {
+    setGoogleLoading(true)
+    try {
+      await signInWithGoogle()
+      // On success the browser navigates away to Google immediately; no
+      // further action here.
+    } catch (err) {
+      notifications.show({
+        color: 'red',
+        title: T.register.registrationFailed,
+        message: T.login.oauthFailed,
+      })
+      logError({ page: 'Register', action: 'signInWithGoogle', error: err })
+      setGoogleLoading(false)
     }
   }
 
@@ -109,19 +103,21 @@ export function Register() {
               disabled={loading}
               required
             />
-            <TextInput
-              label={T.register.inviteCode}
-              placeholder={T.register.inviteCodePlaceholder}
-              value={inviteCode}
-              onChange={(e) => setInviteCode(e.currentTarget.value)}
-              disabled={loading}
-              required
-            />
             <Button type="submit" fullWidth loading={loading}>
               {T.register.createAccount}
             </Button>
           </Stack>
         </form>
+        <Divider label={T.register.orDivider} labelPosition="center" />
+        <Button
+          variant="default"
+          fullWidth
+          leftSection={<IconBrandGoogle size={18} />}
+          onClick={handleGoogle}
+          loading={googleLoading}
+        >
+          {T.register.continueWithGoogle}
+        </Button>
         <Text size="sm" c="dimmed">
           {T.register.alreadyHaveAccount} <a href="/login">{T.register.logIn}</a>
         </Text>
