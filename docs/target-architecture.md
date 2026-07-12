@@ -836,7 +836,7 @@ src/components/audio/
 - `lib/session-builder/` — reads `useListening()` preference (or its localStorage key directly) when filtering exercise types
 
 **Not part of this module.**
-- Long-form lesson audio (`indonesian-lessons` bucket; resolved via `lessonService.getAudioUrl` which folds into `lib/lessons/`).
+- Long-form lesson audio (`indonesian-lessons` bucket; resolved via `lessonService.getSignedAudioUrl` which folds into `lib/lessons/`).
 - Podcast audio (`indonesian-podcasts` bucket; resolved via `podcastService` which stays as a thin service).
 - TTS synthesis. That's content-pipeline work (Plate IV); this module reads pre-synthesized audio.
 - The `audibleTexts` list itself. Computed by `lib/session-builder/`.
@@ -1051,7 +1051,7 @@ CommitResult {
 ```ts
 listPodcasts()                  → Promise<Podcast[]>
 getPodcast(podcastId)           → Promise<Podcast>
-getAudioUrl(audioPath)          → string
+getSignedAudioUrl(audioPath)    → Promise<string | null>  // private bucket; entitlement-gating cutover, docs/plans/2026-07-12-oauth-stripe-entitlement-design.md
 
 Podcast {
   id, title, description, audio_path, level, duration_seconds,

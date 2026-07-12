@@ -8,6 +8,7 @@
 // a bespoke <Card>. The gloss line moved to AffixDetailView's PageHeader
 // subtitle (it used to repeat here — deduped by the harmonization plan).
 
+import { useEffect, useState } from 'react'
 import { Stack, Text, Group, Anchor } from '@mantine/core'
 import { Link } from 'react-router-dom'
 import { SettingsCard, StatusPill } from '@/components/page/primitives'
@@ -24,10 +25,30 @@ export function RuleCard({ detail, audioMap }: { detail: AffixDetail; audioMap: 
   const T = useT()
   const hue = AFFIX_TYPE_HUE[detail.affixType].solid
   // Bucket paths are storage keys, not playable URLs — resolve at this edge
-  // (mirrors GrammarPodcasts.tsx / Podcast.tsx). LessonGrammarAudioBand picks
-  // nl/en by app language and renders nothing when that language's src is null.
-  const podcastNlUrl = detail.rule.podcastNl ? lessonService.getAudioUrl(detail.rule.podcastNl) : null
-  const podcastEnUrl = detail.rule.podcastEn ? lessonService.getAudioUrl(detail.rule.podcastEn) : null
+  // (mirrors GrammarPodcasts.tsx / Podcast.tsx). The `indonesian-lessons`
+  // bucket is private, so this resolves to a SIGNED url via the async load
+  // path below; LessonGrammarAudioBand renders nothing until it lands (and
+  // picks nl/en by app language, rendering nothing when that language's src
+  // stays null).
+  const { podcastNl, podcastEn } = detail.rule
+  const [podcastNlUrl, setPodcastNlUrl] = useState<string | null>(null)
+  const [podcastEnUrl, setPodcastEnUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    Promise.all([
+      podcastNl ? lessonService.getSignedAudioUrl(podcastNl) : Promise.resolve(null),
+      podcastEn ? lessonService.getSignedAudioUrl(podcastEn) : Promise.resolve(null),
+    ]).then(([nl, en]) => {
+      if (!cancelled) {
+        setPodcastNlUrl(nl)
+        setPodcastEnUrl(en)
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [podcastNl, podcastEn])
 
   return (
     <SettingsCard

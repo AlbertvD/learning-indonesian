@@ -129,8 +129,9 @@ export interface AffixRuleSource {
   patternExplanation: string | null
   /** The introducing lesson's raw grammar-podcast bucket paths (storage keys,
    *  NOT playable URLs) — null when the lesson or that language's episode is
-   *  absent. Resolve to a URL via lessonService.getAudioUrl() at the UI edge
-   *  (RuleCard.tsx); the pure layer has no storage client. */
+   *  absent. Resolve to a SIGNED URL via lessonService.getSignedAudioUrl()
+   *  (async — the indonesian-lessons bucket is private) in RuleCard.tsx's own
+   *  load effect; the pure layer has no storage client. */
   podcastNl: string | null
   podcastEn: string | null
 }

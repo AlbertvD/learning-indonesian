@@ -27,33 +27,57 @@ import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
 
+interface Episode {
+  order: number
+  summary: string
+  url: string
+}
+
 export function GrammarPodcasts() {
   const T = useT()
   const lang = useAuthStore((s) => s.profile?.language ?? 'nl')
-  const [rows, setRows] = useState<GrammarPodcastRow[]>([])
+  const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let cancelled = false
     async function fetchData() {
+      setLoading(true)
       try {
-        setRows(await lessonService.listGrammarPodcasts())
+        const rows: GrammarPodcastRow[] = await lessonService.listGrammarPodcasts()
+        const candidates = rows
+          .map((r) => ({
+            order: r.order_index,
+            summary: GRAMMAR_TOPIC_SUMMARIES[r.order_index]?.[lang],
+            path: lang === 'en' ? r.audio_path_en : r.audio_path,
+          }))
+          .filter((e): e is { order: number; summary: string; path: string } => !!e.path)
+        // Signing moves into this async load path (the bucket is private) —
+        // each row's audio_path resolves to a signed URL before the player
+        // ever mounts, so <audio src=> never receives a raw storage path.
+        const signed = await Promise.all(
+          candidates.map(async (c) => ({
+            order: c.order,
+            summary: c.summary,
+            url: await lessonService.getSignedAudioUrl(c.path),
+          })),
+        )
+        if (!cancelled) {
+          setEpisodes(signed.filter((e): e is Episode => !!e.url))
+        }
       } catch (err) {
+        if (cancelled) return
         logError({ page: 'grammarPodcasts', action: 'fetchData', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     }
     fetchData()
-  }, [T.common.error, T.common.somethingWentWrong])
-
-  const episodes = rows
-    .map((r) => ({
-      order: r.order_index,
-      summary: GRAMMAR_TOPIC_SUMMARIES[r.order_index]?.[lang],
-      path: lang === 'en' ? r.audio_path_en : r.audio_path,
-    }))
-    .filter((e): e is { order: number; summary: string; path: string } => !!e.path)
+    return () => {
+      cancelled = true
+    }
+  }, [lang, T.common.error, T.common.somethingWentWrong])
 
   if (loading) {
     return (
@@ -85,7 +109,7 @@ export function GrammarPodcasts() {
                 <audio
                   controls
                   preload="none"
-                  src={lessonService.getAudioUrl(e.path)}
+                  src={e.url}
                   data-testid="grammar-podcast-player"
                 />
               </MediaPlayerCard>

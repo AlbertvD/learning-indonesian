@@ -53,9 +53,12 @@ View-model types (`model.ts`): `AffixCatalogTile`, `AffixDetail`, `AffixProgress
   grammar-podcast bucket paths (storage keys, NOT playable URLs; null when the
   lesson or that language's episode is absent). `family.ts:buildAffixDetail`
   resolves them off `lessonPodcastById` via the representative cap's
-  `lessonId`; `RuleCard.tsx` resolves the paths to playable URLs with
-  `lessonService.getAudioUrl()` at the UI edge (the pure layer has no storage
-  client) before handing them to `<LessonGrammarAudioBand/>`.
+  `lessonId`; `RuleCard.tsx` resolves the paths to SIGNED, playable URLs with
+  `lessonService.getSignedAudioUrl()` (async — the `indonesian-lessons` bucket
+  is private per the entitlement-gating cutover,
+  `docs/plans/2026-07-12-oauth-stripe-entitlement-design.md`) in its own load
+  effect, holding the resolved URLs in state before handing them to
+  `<LessonGrammarAudioBand/>` (the pure layer has no storage client).
 - **`WordFamily.rootIntroLessonNumber`** — the lowest `lessonOrderById` value
   across the root's vocab caps (`family.ts:rootIntroLessonNumber`), mirroring
   how the rule card picks an affix's introducing lesson. Null covers both a
