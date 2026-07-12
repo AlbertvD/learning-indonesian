@@ -29,7 +29,7 @@ vi.mock('@/stores/authStore', () => ({
 
 vi.mock('@/services/lessonService', () => ({
   lessonService: {
-    getAudioUrl: (path: string) => `https://cdn.test/indonesian-lessons/${path}`,
+    getSignedAudioUrl: async (path: string) => `https://cdn.test/indonesian-lessons/${path}`,
     listGrammarPodcasts: vi.fn(async () => [
       { order_index: 1, audio_path: 'grammar/l1-nl.mp3', audio_path_en: 'grammar/l1-en.mp3' },
       { order_index: 2, audio_path: 'grammar/l2-nl.mp3', audio_path_en: null },

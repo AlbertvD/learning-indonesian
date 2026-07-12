@@ -13,7 +13,7 @@ import { PitfallCard, DialogueShadowSection } from '@/components/pronunciation'
 import { getPitfallsForL1, PAIR_DRILL_VOICES } from '@/lib/pronunciation/pitfallCatalog'
 import { DIALOGUE_SHADOW_SET } from '@/lib/pronunciation/dialogueShadowSet'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
-import { textService, type Podcast } from '@/services/textService'
+import { textService } from '@/services/textService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
@@ -28,7 +28,7 @@ export function Pronunciation() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [audioMap, setAudioMap] = useState<SessionAudioMap>(new Map())
-  const [podcast, setPodcast] = useState<Podcast | null>(null)
+  const [podcastUrl, setPodcastUrl] = useState<string | null>(null)
 
   // First-run checklist step (day-one hook, review UP6): done on first visit —
   // the exact Ontdek.tsx:26 pattern.
@@ -64,9 +64,20 @@ export function Pronunciation() {
           fetchSessionAudioMap(requests),
           textService.getPronunciationPodcast(),
         ])
+        // L1 routing (ADR 0025): the English learner hears the English twin
+        // (audio_path_en); everyone else hears the NL host track (audio_path).
+        const podcastSource = pronunciationPodcast
+          ? (language === 'en' && pronunciationPodcast.audio_path_en
+              ? pronunciationPodcast.audio_path_en
+              : pronunciationPodcast.audio_path)
+          : null
+        // Signing moves into this async load path (the bucket is private) —
+        // resolved before the player mounts, so <audio src=> never receives a
+        // raw storage path.
+        const url = podcastSource ? await textService.getSignedAudioUrl(podcastSource) : null
         if (!cancelled) {
           setAudioMap(map)
-          setPodcast(pronunciationPodcast)
+          setPodcastUrl(url)
         }
       } catch (err) {
         if (cancelled) return
@@ -81,13 +92,6 @@ export function Pronunciation() {
       cancelled = true
     }
   }, [language, T.pronunciation.loadError])
-
-  // L1 routing (ADR 0025): the English learner hears the English twin
-  // (audio_path_en); everyone else hears the NL host track (audio_path).
-  const podcastSource = podcast
-    ? (language === 'en' && podcast.audio_path_en ? podcast.audio_path_en : podcast.audio_path)
-    : null
-  const podcastUrl = podcastSource ? textService.getAudioUrl(podcastSource) : ''
 
   return (
     <PageContainer size="lg">

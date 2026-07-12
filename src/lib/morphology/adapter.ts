@@ -79,8 +79,8 @@ export interface PatternInfo {
 }
 
 /** A lesson's two grammar-podcast bucket paths (storage keys, NOT playable
- *  URLs — resolve with lessonService.getAudioUrl() at the UI edge). Either may
- *  be null (a lesson can have one language before the other). */
+ *  URLs — resolve with lessonService.getSignedAudioUrl() at the UI edge).
+ *  Either may be null (a lesson can have one language before the other). */
 export interface LessonPodcastPaths {
   nl: string | null
   en: string | null
