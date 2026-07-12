@@ -4,6 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import { Container, Title, Text, Button, Center, Loader } from '@mantine/core'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { AdminGuard } from '@/pages/admin/AdminGuard'
 import { PwaUpdatePrompt } from '@/components/PwaUpdatePrompt'
 import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
@@ -455,7 +456,9 @@ function App() {
           path="/content/sections"
           element={
             <ProtectedRoute>
-              <LazyPage><SectionCoverage /></LazyPage>
+              <AdminGuard>
+                <LazyPage><SectionCoverage /></LazyPage>
+              </AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -463,7 +466,9 @@ function App() {
           path="/content/exercises"
           element={
             <ProtectedRoute>
-              <LazyPage><ExerciseCoverage /></LazyPage>
+              <AdminGuard>
+                <LazyPage><ExerciseCoverage /></LazyPage>
+              </AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -471,7 +476,9 @@ function App() {
           path="/admin/content-review"
           element={
             <ProtectedRoute>
-              <LazyPage><ContentReview /></LazyPage>
+              <AdminGuard>
+                <LazyPage><ContentReview /></LazyPage>
+              </AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -479,7 +486,9 @@ function App() {
           path="/admin/design-lab"
           element={
             <ProtectedRoute>
-              <LazyPage><DesignLab /></LazyPage>
+              <AdminGuard>
+                <LazyPage><DesignLab /></LazyPage>
+              </AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -487,7 +496,9 @@ function App() {
           path="/admin/page-lab"
           element={
             <ProtectedRoute>
-              <LazyPage><PageLab /></LazyPage>
+              <AdminGuard>
+                <LazyPage><PageLab /></LazyPage>
+              </AdminGuard>
             </ProtectedRoute>
           }
         />

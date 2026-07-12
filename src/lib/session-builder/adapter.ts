@@ -45,12 +45,6 @@ const CAPABILITY_COLUMNS = [
   'prerequisite_keys',
 ].join(',')
 
-// toLearnerRow only ever reads readiness_status/publication_status off a capability
-// row (see below) — listLearnerCapabilityStates needs nothing else from
-// learning_capabilities, so its select is trimmed to this narrow set (+ id, the
-// join key) rather than the full CAPABILITY_COLUMNS projection.
-const CAPABILITY_READINESS_COLUMNS = 'id, readiness_status, publication_status'
-
 // toLearnerRow's full column list for learner_capability_state — deliberately
 // excludes fsrs_state_json (an FSRS-internal jsonb blob no mapper reads; the FSRS
 // review-commit path reads/writes it via the SECURITY DEFINER RPC, not this
@@ -106,8 +100,8 @@ interface LearnerCapabilityStateDbRow {
 
 // The subset of a learning_capabilities row toLearnerRow actually consults.
 // LearningCapabilityDbRow satisfies this structurally, so toLearnerRow accepts
-// either the full projection (loadCapabilitySessionData/loadForceCapabilitySnapshot)
-// or this narrower listLearnerCapabilityStates-only row.
+// the full projection (loadCapabilitySessionData/loadForceCapabilitySnapshot)
+// without needing a dedicated narrower select.
 interface CapabilityReadinessRow {
   readiness_status: CapabilityReadinessStatus
   publication_status: CapabilityPublicationStatus
@@ -265,27 +259,6 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
   const db = () => client.schema('indonesian')
 
   return {
-    async listLearnerCapabilityStates(request) {
-      const { data: capabilities, error: capabilitiesError } = await db()
-        .from('learning_capabilities')
-        .select(CAPABILITY_READINESS_COLUMNS)
-        .is('retired_at', null)
-      if (capabilitiesError) throw capabilitiesError
-      const capabilityById = new Map<string, CapabilityReadinessRow>(
-        ((capabilities ?? []) as (CapabilityReadinessRow & { id: string })[]).map(row => [row.id, row]),
-      )
-
-      const { data, error } = await db()
-        .from('learner_capability_state')
-        .select(LEARNER_STATE_COLUMNS)
-        .eq('user_id', request.userId)
-      if (error) throw error
-
-      return (data ?? [])
-        .filter((row: LearnerCapabilityStateDbRow) => capabilityById.has(row.capability_id))
-        .map((row: LearnerCapabilityStateDbRow) => toLearnerRow(row, capabilityById))
-    },
-
     async loadCapabilitySessionData(request: CapabilitySessionDataRequest): Promise<CapabilitySessionDataSnapshot> {
       // Local-midnight boundary for sibling burying. request.now is constructed
       // browser-side (Session.tsx), so its local date is the learner's wall-clock
@@ -467,18 +440,54 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
     // method here; buildSession (builder.ts) is the layer that treats a failure
     // as "no informal items yet" while the register/register_counterpart columns
     // (parallel schema PR) don't exist.
+    //
+    // Memoized module-wide (see informalItemSourceRefsMemo below, 2026-07-11
+    // prod-ready audit "REPEATED CONTENT FETCH"): every session build was
+    // re-scanning the FULL learning_items register='informal' registry, but this
+    // is content data — DB-authoritative-after-seeding (ADR 0011), it only
+    // changes at publish time. Caching it for the lifetime of the page load
+    // (staleness-until-reload) is correct under that regime; a learner who wants
+    // a freshly-published informal item reflected just needs a page reload, the
+    // same bar every other content read in this app already accepts.
     async loadInformalItemSourceRefs(): Promise<Set<string>> {
-      const { data, error } = await db()
-        .from('learning_items')
-        .select('normalized_text')
-        .eq('register', 'informal')
-      if (error) throw error
-      return new Set(
-        ((data ?? []) as Array<{ normalized_text: string }>)
-          .map(row => `learning_items/${row.normalized_text}`),
-      )
+      if (!informalItemSourceRefsMemo) {
+        informalItemSourceRefsMemo = (async () => {
+          const { data, error } = await db()
+            .from('learning_items')
+            .select('normalized_text')
+            .eq('register', 'informal')
+          if (error) throw error
+          return new Set(
+            ((data ?? []) as Array<{ normalized_text: string }>)
+              .map(row => `learning_items/${row.normalized_text}`),
+          )
+        })().catch((err) => {
+          // Don't cache a rejected promise — a transient network blip would
+          // otherwise permanently poison the memo for the rest of the page
+          // session. The caller (buildSession, builder.ts) already treats a
+          // thrown error as "no informal items this build" and logs it.
+          informalItemSourceRefsMemo = null
+          throw err
+        })
+      }
+      return informalItemSourceRefsMemo
     },
   }
+}
+
+// Module-level memo for loadInformalItemSourceRefs above. Caching the PROMISE
+// (not just the resolved Set) dedupes in-flight requests — two session builds
+// racing on first page load share one query rather than firing two. Shared
+// across every createSessionBuilderAdapter() instance (there is exactly one
+// production instance, `sessionBuilderAdapter` below); test doubles that build
+// their own CapabilitySessionDataAdapter object literal never touch this.
+let informalItemSourceRefsMemo: Promise<Set<string>> | null = null
+
+// Test-only: clears the module-level memo so a test can assert a fresh fetch
+// happens, or so cache state doesn't leak across test files/order. Underscore
+// prefix marks it test-only; no production caller should ever need it.
+export function _resetInformalItemSourceRefsMemo(): void {
+  informalItemSourceRefsMemo = null
 }
 
 export const sessionBuilderAdapter = createSessionBuilderAdapter()

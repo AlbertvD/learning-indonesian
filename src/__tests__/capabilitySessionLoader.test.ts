@@ -209,9 +209,6 @@ describe('capability session loader', () => {
 
   it('loads user sessions through the production data adapter seam', async () => {
     const adapter: CapabilitySessionDataAdapter = {
-      listLearnerCapabilityStates: async () => {
-        throw new Error('buildSession should use the full snapshot loader')
-      },
       loadCapabilitySessionData: async request => {
         const base = baseInput({
           schedulerRows: [activeState({ userId: request.userId })],
@@ -280,9 +277,6 @@ describe('capability session loader', () => {
 
     function adapterWithAudioAndText(): CapabilitySessionDataAdapter {
       return {
-        listLearnerCapabilityStates: async () => {
-          throw new Error('buildSession should use the full snapshot loader')
-        },
         loadCapabilitySessionData: async request => ({
           schedulerRows: [
             activeState({ userId: request.userId }), // text -- capability-1 / canonicalKey (default)
@@ -388,9 +382,6 @@ describe('capability session loader', () => {
       loadInformalItemSourceRefs: () => Promise<Set<string>>,
     ): CapabilitySessionDataAdapter & { loadInformalItemSourceRefs: () => Promise<Set<string>> } {
       return {
-        listLearnerCapabilityStates: async () => {
-          throw new Error('buildSession should use the full snapshot loader')
-        },
         loadCapabilitySessionData: async request => ({
           schedulerRows: [
             activeState({ userId: request.userId }), // formal -- capability-1 / canonicalKey (default)

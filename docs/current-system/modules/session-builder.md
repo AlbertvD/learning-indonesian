@@ -113,15 +113,20 @@ Internal entry points also exported from `builder.ts:168-339`:
 - `loadCapabilitySessionPlan(input)` (`builder.ts:199-339`) — same logic but accepts a pre-loaded `CapabilitySessionDataSnapshot` instead of fetching it. Used by tests.
 - `resolveCandidate(meta, ctx)` (`builder.ts:168-197`) — the shared resolver helper called by all three passes. Used by `__tests__/resolveCandidate.test.ts`.
 
-The adapter contract — `builder.ts:48-50`:
+The adapter contract — `builder.ts:73-75` (2026-07-12: dropped the `extends
+CapabilitySchedulerReadAdapter` — `listLearnerCapabilityStates` was a dead
+requirement no production caller ever invoked; `getDueCapabilities` is always
+called with an inline in-memory adapter built from the already-loaded
+`schedulerRows`, never through the production adapter. See the 2026-07-11
+prod-ready audit):
 
 ```typescript
-interface CapabilitySessionDataAdapter extends CapabilitySchedulerReadAdapter {
+interface CapabilitySessionDataAdapter {
   loadCapabilitySessionData(request: CapabilitySessionDataRequest): Promise<CapabilitySessionDataSnapshot>
 }
 ```
 
-The production implementation lives at `adapter.ts:201-310`.
+The production implementation lives at `adapter.ts` (`createSessionBuilderAdapter`).
 
 ---
 

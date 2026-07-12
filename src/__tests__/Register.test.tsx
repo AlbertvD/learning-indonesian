@@ -113,8 +113,15 @@ describe('Register', () => {
     expect(mockNavigate).not.toHaveBeenCalled()
   })
 
-  it('shows a friendly message when the email is already registered', async () => {
-    mockInvoke.mockResolvedValue({ data: null, error: httpError('email_taken') })
+  // 2026-07-11 prod-ready audit ("SIGNUP ENUMERATION"): the edge function
+  // deliberately collapses "email already registered" and every other
+  // post-redeem failure into the same generic signup_failed/500 response —
+  // a distinct "that email is taken" message would let an attacker probe
+  // arbitrary addresses and learn which ones already have an account.
+  // invalid_invite_code (tested above) stays distinct on purpose: it reveals
+  // nothing about any particular email.
+  it('shows the same generic message for signup_failed as any other post-redeem error (no email-enumeration signal)', async () => {
+    mockInvoke.mockResolvedValue({ data: null, error: httpError('signup_failed') })
     const user = userEvent.setup()
     renderRegister()
 
@@ -125,7 +132,7 @@ describe('Register', () => {
       expect(notifications.show).toHaveBeenCalledWith(
         expect.objectContaining({
           color: 'red',
-          message: 'Dit e-mailadres is al geregistreerd.',
+          message: 'Er ging iets mis. Probeer het opnieuw.',
         }),
       )
     })
