@@ -4,7 +4,6 @@ import {
 } from '@/lib/capabilities'
 import {
   getDueCapabilities,
-  type CapabilitySchedulerReadAdapter,
   type LearnerCapabilityStateRow,
 } from './dueFilter'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
@@ -64,7 +63,14 @@ export interface CapabilitySessionDataRequest {
   selectedSourceRefs?: string[]
 }
 
-export interface CapabilitySessionDataAdapter extends CapabilitySchedulerReadAdapter {
+// Deliberately does NOT extend CapabilitySchedulerReadAdapter (dueFilter.ts):
+// getDueCapabilities is always called below with an inline in-memory adapter
+// built from the already-loaded schedulerRows (see loadCapabilitySessionPlan),
+// never through this production adapter. A prior version required
+// listLearnerCapabilityStates here, which forced adapter.ts to carry a real,
+// unbounded-query implementation that no production path ever invoked — see
+// the 2026-07-11 prod-ready audit.
+export interface CapabilitySessionDataAdapter {
   loadCapabilitySessionData(request: CapabilitySessionDataRequest): Promise<CapabilitySessionDataSnapshot>
 }
 

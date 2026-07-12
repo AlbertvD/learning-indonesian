@@ -56,13 +56,19 @@ export function Register() {
       navigate('/welkom')
     } catch (err) {
       const code = await extractErrorCode(err)
+      // 2026-07-11 prod-ready audit ("SIGNUP ENUMERATION"): the edge function
+      // collapses "email already registered" and every other post-redeem
+      // failure into the same generic signup_failed/500 response, so there is
+      // no email_taken branch here — a distinct "that email is taken" message
+      // would let an attacker probe arbitrary addresses and learn which ones
+      // already have an account. invalid_invite_code stays distinct: an
+      // invite-holder who mistypes their code needs that feedback, and it
+      // reveals nothing about any particular email.
       const message = code === 'invalid_invite_code'
         ? T.register.invalidInviteCode
-        : code === 'email_taken'
-          ? T.register.emailTaken
-          : code === 'rate_limited'
-            ? T.register.rateLimited
-            : T.register.somethingWentWrong
+        : code === 'rate_limited'
+          ? T.register.rateLimited
+          : T.register.somethingWentWrong
       notifications.show({
         color: 'red',
         title: T.register.registrationFailed,

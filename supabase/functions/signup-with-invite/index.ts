@@ -116,7 +116,14 @@ async function restoreInviteCode(supabaseUrl: string, serviceRoleKey: string, co
 
 // ── GoTrue admin user creation ───────────────────────────────────────────
 
-type CreateUserResult = { ok: true } | { ok: false; code: 'email_taken' | 'signup_failed' }
+// 2026-07-11 prod-ready audit ("SIGNUP ENUMERATION"): the result deliberately
+// carries NO reason code. Register.tsx used to be able to tell "email already
+// registered" (409) apart from any other post-redeem failure (500), which let
+// an attacker probe arbitrary addresses and learn which ones already have an
+// account. Every post-redeem failure — email taken or otherwise — now looks
+// identical to the caller; the real reason is still logged server-side below
+// for admin debugging, it's just never returned in the HTTP response.
+type CreateUserResult = { ok: true } | { ok: false }
 
 async function createGoTrueUser(
   supabaseUrl: string,
@@ -145,10 +152,12 @@ async function createGoTrueUser(
   const message = isRecord(errorBody)
     ? String(errorBody.msg ?? errorBody.error_description ?? errorBody.error_code ?? errorBody.error ?? '')
     : ''
+  // Logged for admin debugging only — never surfaced to the caller (see the
+  // CreateUserResult comment above).
   const isEmailTaken = /already.*registered|already.*exists|email_exists|user_already_exists/i.test(message)
 
-  console.error('gotrue_admin_create_user_failed', { status: response.status, message })
-  return { ok: false, code: isEmailTaken ? 'email_taken' : 'signup_failed' }
+  console.error('gotrue_admin_create_user_failed', { status: response.status, message, isEmailTaken })
+  return { ok: false }
 }
 
 // ── Handler ───────────────────────────────────────────────────────────────
@@ -191,8 +200,12 @@ Deno.serve(async (request) => {
   const userResult = await createGoTrueUser(supabaseUrl, serviceRoleKey, email, password, fullName)
   if (!userResult.ok) {
     await restoreInviteCode(supabaseUrl, serviceRoleKey, inviteCode)
-    const status = userResult.code === 'email_taken' ? 409 : 500
-    return publicReject(status, userResult.code)
+    // Deliberately generic + a single status for every post-redeem failure,
+    // including "email already registered" — see the CreateUserResult comment
+    // above. invalid_invite_code (below, pre-redemption) stays distinct: it
+    // reveals nothing about any particular email, and an invite-holder who
+    // mistypes their code needs that feedback to fix it.
+    return publicReject(500, 'signup_failed')
   }
 
   return jsonResponse({ ok: true })

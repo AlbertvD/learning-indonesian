@@ -262,7 +262,9 @@ export const nl = {
     accountCreated: 'Je account is aangemaakt. Je kunt nu inloggen.',
     registrationFailed: 'Registratie mislukt',
     invalidInviteCode: 'Deze uitnodigingscode is ongeldig of al gebruikt.',
-    emailTaken: 'Dit e-mailadres is al geregistreerd.',
+    // emailTaken retired 2026-07-12 (SIGNUP ENUMERATION fix, prod-ready audit):
+    // the edge function no longer distinguishes "email taken" from any other
+    // post-redeem failure, so this copy is unused. See Register.tsx.
     rateLimited: 'Te veel pogingen. Probeer het later opnieuw.',
     somethingWentWrong: 'Er ging iets mis. Probeer het opnieuw.',
   },
@@ -994,7 +996,9 @@ export const en: typeof nl = {
     accountCreated: 'Your account has been created. You can now log in.',
     registrationFailed: 'Registration failed',
     invalidInviteCode: 'This invite code is invalid or already used.',
-    emailTaken: 'This email address is already registered.',
+    // emailTaken retired 2026-07-12 (SIGNUP ENUMERATION fix, prod-ready audit):
+    // the edge function no longer distinguishes "email taken" from any other
+    // post-redeem failure, so this copy is unused. See Register.tsx.
     rateLimited: 'Too many attempts. Please try again later.',
     somethingWentWrong: 'Something went wrong. Please try again.',
   },
