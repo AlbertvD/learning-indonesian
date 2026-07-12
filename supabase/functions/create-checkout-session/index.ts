@@ -115,10 +115,14 @@ Deno.serve(async (request) => {
     return publicReject(401, 'missing_user_jwt')
   }
 
+  // Wire shape is { plan: 'monthly' | 'annual' }, never a raw Stripe price id
+  // — the frontend must not carry Stripe price ids (that would add VITE_
+  // build envs for no benefit); prices stay server-side and are mapped here.
   const body = await request.json().catch(() => null)
-  const priceId = isRecord(body) && typeof body.priceId === 'string' ? body.priceId : null
-  if (!priceId || (priceId !== priceMonthly && priceId !== priceAnnual)) {
-    return publicReject(400, 'invalid_price')
+  const plan = isRecord(body) && typeof body.plan === 'string' ? body.plan : null
+  const priceId = plan === 'monthly' ? priceMonthly : plan === 'annual' ? priceAnnual : null
+  if (!priceId) {
+    return publicReject(400, 'invalid_plan')
   }
 
   // 1. Verify the caller's JWT.
