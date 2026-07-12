@@ -239,11 +239,23 @@ JSX in pages); pages call store actions only):
 - **Error mapping:** OAuth failures land back on `/login` with an error query
   param — map to a friendly message per the CLAUDE.md error rules.
 
-**Known accepted risk:** open signup + autoconfirm (no email verification, no
-captcha) permits bot account creation. Bots get free-tier only; GoTrue
-supports hCaptcha (`GOTRUE_SECURITY_CAPTCHA_*`) if this becomes real at cloud
-exposure. Not built now (omission test: nothing breaks; paid content is
-gated).
+**Known accepted risks** (both revisited at cloud exposure, both mitigated
+by the same gateway rate limit):
+
+- Open signup + autoconfirm (no email verification, no captcha) permits bot
+  account creation. Bots get free-tier only; GoTrue supports hCaptcha
+  (`GOTRUE_SECURITY_CAPTCHA_*`) if this becomes real.
+- **Email enumeration is inherent to open GoTrue signup with autoconfirm**
+  (verified 2026-07-12 during integration review): the public
+  `/auth/v1/signup` endpoint returns a distinguishable `user_already_exists`
+  to any direct caller — GoTrue's obfuscated response only exists when email
+  confirmation is on. The 2026-07-11 audit's enumeration fix protected the
+  *edge-function* signup path, which this design deletes; no UI copy choice
+  can close an API-level oracle, so Register may show the friendlier
+  "already registered" message. Mitigation when it matters: per-IP rate
+  limiting at the gateway (Traefik/Kong middleware on `/auth/v1/signup`) —
+  also the successor to the deleted edge function's in-memory rate limit —
+  scheduled with the cloud-exposure work, not built on the homelab preview.
 
 ## 3. Stripe integration — four edge functions
 
@@ -363,18 +375,17 @@ set search_path = indonesian, public
 as $$
   select indonesian.has_active_entitlement(auth.uid())
   or (
-    -- Free tier: TTS whose text belongs to a free lesson. Clips are REUSED
-    -- across lessons (get_audio_clip_per_text earliest-lesson preference) and
-    -- generated_for_lesson_id is nullable/SET NULL — so key on the TEXT, not
-    -- the clip: a clip is free if any clip of the same normalized_text was
-    -- generated for a free lesson.
-    p_bucket = 'indonesian-tts' and exists (
-      select 1
-      from indonesian.audio_clips ac
-      join indonesian.audio_clips ac2 on ac2.normalized_text = ac.normalized_text
-      join indonesian.lessons l on l.id = ac2.generated_for_lesson_id
-      where ac.storage_path = p_name
-        and indonesian.is_free_tier_lesson(l.order_index))
+    -- AMENDED 2026-07-12 post-approval (integration review finding): the
+    -- entire indonesian-tts bucket is free for any AUTHENTICATED user (still
+    -- private to anon — no hotlinking). The original text-belongs-to-a-free-
+    -- lesson self-join silently broke the FREE pronunciation onboarding page,
+    -- whose pitfall/minimal-pair/dialogue-shadowing clips share no
+    -- normalized_text with lessons 1-3. Word-snippet TTS is not where the
+    -- product's paid value concentrates (lesson content + long-form audio
+    -- are), and free users cannot reach paid lessons' exercises anyway (the
+    -- activation gate is the load-bearing one). Deleting the self-join also
+    -- removes that predicate's per-signing join cost and its fragility.
+    p_bucket = 'indonesian-tts'
   ) or (
     p_bucket = 'indonesian-lessons' and exists (
       select 1 from indonesian.lessons l
@@ -404,11 +415,9 @@ create policy "indonesian_media_read" on storage.objects
 -- role needs EXECUTE on the policy's function:
 grant execute on function indonesian.can_read_media(text, text) to authenticated;
 
-create index if not exists idx_audio_clips_storage_path
-  on indonesian.audio_clips (storage_path);
--- No index needed for the normalized_text self-join: the existing
--- UNIQUE(normalized_text, voice_id) (migration.sql:1014) already serves
--- leftmost-column equality lookups.
+-- (AMENDED 2026-07-12: idx_audio_clips_storage_path and the normalized_text
+-- self-join note were removed with the TTS free-for-authenticated amendment
+-- above — the predicate no longer touches audio_clips at all.)
 ```
 
 **Bucket privatization lives IN migration.sql** (not a manual step). The two
@@ -439,7 +448,7 @@ keep-buckets-public transition phase.
 
 `security definer` because the policy runs as the storage API's role, which
 has no grants on `indonesian.*`; the function needs owner rights to read
-`entitlements`/`audio_clips`/`lessons`/`texts`. Execute granted to
+`entitlements`/`lessons`/`texts`. Execute granted to
 `authenticated`.
 
 **Client changes — every consumer enumerated (grep-verified 2026-07-12;
@@ -599,8 +608,9 @@ fires). Minimize the window by preparing everything deployable first:
 
 ### Schema changes
 - New: `indonesian.entitlements`, `indonesian.stripe_webhook_events`,
-  `has_active_entitlement()`, `can_read_media()`, `is_free_tier_lesson()`,
-  `idx_audio_clips_storage_path` — all in `scripts/migration.sql`.
+  `has_active_entitlement()`, `can_read_media()`, `is_free_tier_lesson()` —
+  all in `scripts/migration.sql`. (idx_audio_clips_storage_path removed by
+  the 2026-07-12 TTS amendment.)
 - Changed: `set_lesson_activation` (entitlement check),
   `storage.buckets.public=false` ×3, new `storage.objects` policy.
 - Dropped: `signup_invite_codes`, `redeem_invite_code`,
@@ -679,13 +689,13 @@ regardless of the policy (the exact `b38e467f` failure class):
   Full content RLS would touch ~20 tables for marginal protection of text
   that's progressively being re-authored anyway. Revisit only with evidence
   of abuse.
-- **The free-tier TTS grant is text-level, not clip-level** (§4): a user who
-  hand-crafts the storage path of a *paid* lesson's clip whose
-  `normalized_text` also has a free-lesson clip (e.g. a different voice of
-  the same sentence) can sign it. Deliberate — clip reuse plus nullable
-  `generated_for_lesson_id` make exact clip-level gating unreliable, the
-  activation gate is the load-bearing one, and the exposure is single
-  shared sentences, not lesson content.
+- **The entire TTS bucket is free for authenticated users** (§4, amended
+  2026-07-12): any signed-in user can sign any word/sentence snippet in
+  `indonesian-tts`. Deliberate — the paid value concentrates in lesson
+  content and long-form audio, the activation gate is the load-bearing one,
+  and per-clip gating silently broke the free pronunciation onboarding (its
+  clips share no text with lessons 1–3). Anonymous access stays blocked
+  (bucket private).
 - No trials, no multi-product, no seat/team billing, no in-app invoice UI
   (portal owns it), no captcha, no Apple.
 - Data export, `.duin.home` decoupling, and the Traefik forward-auth removal

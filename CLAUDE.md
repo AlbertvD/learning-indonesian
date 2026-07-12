@@ -288,26 +288,26 @@ Email is **not configured** on the self-hosted Supabase instance. GoTrue has `GO
 
 Password resets are handled by an admin via Supabase Studio. If email is needed in the future it's a GoTrue SMTP config change — no app code changes required.
 
-## Signup gating
+## Signup gating & entitlements
 
-Self-signup is gated behind a one-time-use invite code (pre-cloud-hardening item 1). `Register.tsx` no longer calls `supabase.auth.signUp` directly — it invokes the `signup-with-invite` edge function (`supabase/functions/signup-with-invite/index.ts`), which redeems an `indonesian.signup_invite_codes` row via the `redeem_invite_code`/`restore_invite_code` RPCs (service-role-only, no anon/authenticated grants) and then creates the user via the GoTrue admin API (`/auth/v1/admin/users`), bypassing the public signup endpoint entirely. It also carries a basic per-IP in-memory rate limit (5/hour) — best-effort, per-instance; real rate limiting for a cloud-facing preview belongs at the gateway.
+**The invite-code system is retired (2026-07-12) — payment is the gate.** See `docs/plans/2026-07-12-oauth-stripe-entitlement-design.md` (the authoritative spec). Signup is open: `Register.tsx` calls `supabase.auth.signUp` (via `authStore.signUp`) and offers Google OAuth (`authStore.signInWithGoogle`, GoTrue external provider). `GOTRUE_DISABLE_SIGNUP=false` in homelab-configs. The `signup-with-invite` edge function, `signup_invite_codes` table, and `redeem_invite_code`/`restore_invite_code` RPCs are deleted — do not reintroduce them.
 
-Two manual steps this depends on, neither automated by `make migrate`:
+What gates access instead:
 
-1. **Close the public signup endpoint at the GoTrue level** — set `GOTRUE_DISABLE_SIGNUP=true` in `homelab-configs/services/supabase/docker-compose.yml` and apply via the compose route (`git pull` on the host + `docker compose ... up -d auth` — see "Supabase Infrastructure Fixes" § two-lane rule; never a bare `docker run` recreate). *Done 2026-07-02; flag verified live 2026-07-11.* Without this, `supabase.auth.signUp` still works for anyone who calls it directly (the app no longer does, but the endpoint itself stays open until this flag is set). `make check-supabase` has a WARNING-level check for this ("Public signup gate") — it does not fail the gate, so don't skip this step just because CI/`make pre-deploy` is green.
-2. **Seed invite codes** — as an admin, insert directly into `indonesian.signup_invite_codes` (service-role only, e.g. via Supabase Studio SQL editor or `psql`):
-   ```sql
-   insert into indonesian.signup_invite_codes (code, uses_remaining, note)
-   values ('welcome-preview-1', 1, 'customer preview invite');
-   ```
+- **`indonesian.entitlements`** — one row per paying/comped user; owner-read RLS, ALL writes service-role (Stripe webhook / `verify-checkout` / admin). LEARNER DATA — precious, gated migrations only.
+- **Free tier = lessons 1–3** (`indonesian.is_free_tier_lesson()` in SQL, `FREE_TIER_MAX_LESSON` in `src/services/entitlementService.ts` — change BOTH or the parity health check fails). Enforced server-side in `set_lesson_activation`; mirrored client-side as paywall UX.
+- **Storage buckets are private**; audio is consumed via signed URLs under the `indonesian_media_read` policy → `indonesian.can_read_media()`. TTS bucket is free for any authenticated user; `indonesian-lessons`/`indonesian-podcasts` need an entitlement (free carve-outs: lessons 1–3 audio, the pronunciation podcast).
+- **Comp access** = admin inserts an entitlement row (`status='comped', source='comp'`) via psql/Studio — there are no codes.
 
-**Edge function deployment.** `signup-with-invite` deploys the same way as `commit-capability-answer-report` (self-hosted edge functions are bind-mounted, not pushed via `supabase functions deploy`): SCP the file to the homelab bind-mount path, then restart the edge functions container.
+Known accepted residuals (documented in the spec §2/§10): email enumeration is inherent to open GoTrue signup with autoconfirm (mitigation = gateway rate limiting at cloud exposure); no captcha; bot accounts get free tier only.
+
+**Edge function deployment** (self-hosted: bind-mounted, not `supabase functions deploy`): SCP the function directory (and `_shared/`) to the homelab bind-mount path, then restart the container.
 ```bash
-scp supabase/functions/signup-with-invite/index.ts \
-    mrblond@master-docker:/opt/docker/appdata/supabase/functions/signup-with-invite/index.ts
+scp -r supabase/functions/<name> \
+    mrblond@master-docker:/opt/docker/appdata/supabase/functions/<name>
 ssh mrblond@master-docker "sudo docker restart supabase-edge-functions"
 ```
-`docker` on the homelab requires `sudo` — a plain `docker restart` fails with "permission denied on /var/run/docker.sock".
+`docker` on the homelab requires `sudo` — a plain `docker restart` fails with "permission denied on /var/run/docker.sock". Stripe env vars for the functions container live in homelab-configs (infra lane, compose route).
 
 ## Key Conventions
 
