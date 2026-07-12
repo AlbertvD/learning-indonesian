@@ -20,6 +20,7 @@ interface AuthState {
   updateLanguage: (lang: 'nl' | 'en') => Promise<void>
   updatePreferredSessionSize: (size: number) => Promise<void>
   updateTimezone: (timezone: string) => Promise<void>
+  refreshEntitlement: () => Promise<void>
 }
 
 // Stored outside the store so initialize() can be called multiple times safely
@@ -180,6 +181,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   updateTimezone: async (timezone) => {
     await updateProfile(get, set, { timezone }, { timezone })
+  },
+
+  // Re-reads the caller's entitlement row and patches `profile.isEntitled` in
+  // place — no other profile field changes. Used by /checkout/success (§5)
+  // after `verify-checkout` resolves, so the store reflects the just-paid
+  // subscription without a full page reload. A failure here is logged and
+  // otherwise silent — the page's own verify-checkout error/retry state is
+  // the primary UX; a stale isEntitled just means the store catches up on
+  // the next natural profile reload (next sign-in / tab refresh).
+  refreshEntitlement: async () => {
+    const { user, profile } = get()
+    if (!user || !profile) return
+    try {
+      const status = await loadEntitlementStatus(user.id)
+      set({ profile: { ...profile, isEntitled: isEntitledFrom(profile.isAdmin, status) } })
+    } catch (err) {
+      logError({ page: 'auth', action: 'refresh-entitlement', error: err })
+    }
   },
 }))
 
