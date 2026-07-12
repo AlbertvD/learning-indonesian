@@ -19,15 +19,17 @@
 --
 -- Relationship to scripts/migrations/*.sql:
 --   These files are paper-trail audit logs and emergency rollback tools.
---   Some predate the inversion of 2026-04-02 (when migrate.ts stopped
---   regenerating migration.sql) and still hold load-bearing schema for the
---   capability + content-units subsystem (tracked:
---   content_units, capability_content_units, learning_capabilities,
---   capability_aliases, capability_artifacts, learner_capability_state,
---   capability_review_events, capability_resolution_failure_events).
---   Until those are folded back here in a follow-up, fresh DB rebuilds need
---   both this file AND those standalone files. New schema must land here,
---   not in a new standalone file.
+--   Some predated the inversion of 2026-04-02 (when migrate.ts stopped
+--   regenerating migration.sql) and held load-bearing schema that lived only
+--   in a standalone file. That backlog is now closed: the capability
+--   subsystem was folded in cap-v2 Slice 1 (issue #161, see "Capability
+--   subsystem — base tables" below), and content_units / capability_content_units
+--   — the last two outstanding tables — were folded in the 2026-07-12 drift
+--   reconciliation (near the end of this file), which also folded the
+--   stable_slug/immutable_unaccent helper functions and their expression
+--   index. A fresh `make migrate` run against an empty DB now needs ONLY this
+--   file — no standalone scripts/migrations/*.sql application. New schema
+--   must land here, not in a new standalone file.
 --
 -- See docs/known-regressions.md and CLAUDE.md (Health checks) for context.
 -- ============================================================================
@@ -539,8 +541,18 @@ $$;
 -- 2026-06-26 security audit: revoke the default PUBLIC EXECUTE (never revoked,
 -- unlike the other SECURITY DEFINER functions) so anon cannot dump the full
 -- security topology (tables, grants, every policy predicate) with the public key.
+-- 2026-07-12 drift reconciliation (audit medium #9): narrowed further to
+-- service_role only. Callers were re-verified: check-supabase-deep.ts (the only
+-- caller) creates its client with SUPABASE_SERVICE_KEY -- it never calls this as
+-- authenticated -- and check-supabase.ts (tier 1, anon key) does not call it at
+-- all. `authenticated` never needed schema_health(): it exists purely to feed
+-- the service-key health-check gate, and its payload (every table/policy/grant
+-- in the schema) is exactly the topology-dump surface the 2026-06-26 audit was
+-- narrowing in the first place -- granting it to every logged-in learner was an
+-- oversight the audit didn't fully close.
 REVOKE ALL ON FUNCTION indonesian.schema_health() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO authenticated;
+REVOKE EXECUTE ON FUNCTION indonesian.schema_health() FROM authenticated;
+GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO service_role;
 
 -- Goal System Scheduled Jobs (pg_cron)
 -- These jobs maintain the weekly goal system consistency and generate reports.
@@ -4601,3 +4613,161 @@ $$;
 
 revoke all on function indonesian.get_funnel_series_events(uuid, timestamptz) from public;
 grant execute on function indonesian.get_funnel_series_events(uuid, timestamptz) to authenticated, service_role;
+
+-- ============================================================================
+-- 2026-07-12 drift reconciliation
+-- ============================================================================
+-- The 2026-07-11 live-vs-repo audit found objects that exist in the live DB
+-- but were never folded into this file (they predate the 2026-05-08
+-- "scripts/migrations/*.sql is paper-trail only" rule). A fresh-DB replay of
+-- this file -- the planned cloud migration -- would silently omit them and
+-- diverge from what the homelab instance actually runs. Two independent
+-- pieces, landed together under one date (a third piece, the schema_health()
+-- grant narrowing per audit medium #9, is an in-place edit on the existing
+-- schema_health() block above, not repeated here):
+--   A. FOLD content_units + capability_content_units (alive, pipeline-written;
+--      capability_content_units is read by masteryModel.ts:1200) plus the
+--      stable_slug/immutable_unaccent helpers and the expression index built
+--      on them (learning_items_slug_idx) -- load-bearing, never folded.
+--   B. RETIRE seven dead pre-redesign analytics RPCs (zero consumers).
+-- ============================================================================
+
+-- ── A1. content_units + capability_content_units. Source DDL taken from
+-- scripts/migrations/2026-04-25-content-units-lesson-blocks.sql and verified
+-- against the live schema (openbrain live-object audit, 2026-07-11); the
+-- table/index/policy shapes matched exactly, so no live-vs-paper-trail
+-- disagreement was found for these two objects. lesson_page_blocks, the third
+-- table in that same paper-trail file, is deliberately NOT folded here -- it
+-- was already retired via `drop table if exists indonesian.lesson_page_blocks
+-- cascade;` in the PR 5 (2026-05-25) block above and stays dropped.
+create table if not exists indonesian.content_units (
+  id uuid primary key default gen_random_uuid(),
+  content_unit_key text not null unique,
+  source_ref text not null,
+  source_section_ref text not null,
+  unit_kind text not null check (unit_kind in ('lesson_section','learning_item','grammar_pattern','dialogue_line','podcast_segment','podcast_phrase','affixed_form_pair')),
+  unit_slug text not null,
+  display_order integer not null,
+  payload_json jsonb not null default '{}',
+  source_fingerprint text not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique(source_ref, source_section_ref, unit_slug)
+);
+
+create index if not exists content_units_source_idx
+  on indonesian.content_units(source_ref, source_section_ref);
+
+create table if not exists indonesian.capability_content_units (
+  id uuid primary key default gen_random_uuid(),
+  capability_id uuid not null references indonesian.learning_capabilities(id) on delete cascade,
+  content_unit_id uuid not null references indonesian.content_units(id) on delete cascade,
+  relationship_kind text not null check (relationship_kind in ('introduced_by','practiced_by','assessed_by','referenced_by')),
+  created_at timestamptz not null default now(),
+  unique(capability_id, content_unit_id, relationship_kind)
+);
+
+create index if not exists capability_content_units_content_unit_idx
+  on indonesian.capability_content_units(content_unit_id);
+
+alter table indonesian.content_units enable row level security;
+alter table indonesian.capability_content_units enable row level security;
+
+drop policy if exists "content units authenticated read" on indonesian.content_units;
+create policy "content units authenticated read"
+  on indonesian.content_units for select
+  to authenticated
+  using (true);
+
+drop policy if exists "capability content units authenticated read" on indonesian.capability_content_units;
+create policy "capability content units authenticated read"
+  on indonesian.capability_content_units for select
+  to authenticated
+  using (true);
+
+-- schema usage for authenticated/service_role is already granted earlier in
+-- this file -- not repeated here. Content tables: world-readable to
+-- authenticated (matches the `collections`/`collection_items` idiom above);
+-- pipeline (service_role) writes. No INSERT/UPDATE/DELETE was ever granted to
+-- authenticated on either table, so there is nothing to revoke.
+grant select on indonesian.content_units to authenticated;
+grant select on indonesian.capability_content_units to authenticated;
+grant all on indonesian.content_units to service_role;
+grant all on indonesian.capability_content_units to service_role;
+
+-- ── A2. stable_slug / immutable_unaccent + the expression index built on them
+-- (learning_items_slug_idx). Function bodies folded verbatim from the live
+-- pg_get_functiondef() output (openbrain live-object audit, 2026-07-11).
+-- Order matters: CREATE EXTENSION -> immutable_unaccent -> stable_slug -> the
+-- index; learning_items itself already exists far earlier in this file.
+--
+-- The CREATE EXTENSION line below is NOT part of the brief's live-DDL dump
+-- (pg_get_functiondef only dumps function bodies) but is a genuine
+-- prerequisite found while folding: immutable_unaccent's body casts the
+-- literal 'unaccent' to regdictionary, which Postgres resolves against
+-- pg_ts_dict AT FUNCTION-CREATE TIME for `language sql` bodies
+-- (check_function_bodies=on by default) -- on a fresh DB without the
+-- extension, `CREATE FUNCTION indonesian.immutable_unaccent` itself fails
+-- with "text search dictionary unaccent does not exist", not just a later
+-- call. WITH SCHEMA storage is load-bearing for a fresh replay: the function
+-- body calls storage.unaccent() schema-qualified, and the live DB has the
+-- extension installed in the storage schema (verified via pg_extension,
+-- 2026-07-12) -- an unqualified CREATE EXTENSION would land it in public on
+-- a fresh DB and the function body would still fail to validate. Idempotent:
+-- IF NOT EXISTS no-ops on the live homelab install regardless of schema.
+CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA storage;
+
+CREATE OR REPLACE FUNCTION indonesian.immutable_unaccent(p_text text)
+ RETURNS text
+ LANGUAGE sql
+ IMMUTABLE PARALLEL SAFE
+ SET search_path TO 'storage', 'public', 'pg_catalog'
+AS $function$
+  SELECT storage.unaccent('unaccent'::regdictionary, p_text);
+$function$;
+
+CREATE OR REPLACE FUNCTION indonesian.stable_slug(p_text text)
+ RETURNS text
+ LANGUAGE sql
+ IMMUTABLE PARALLEL SAFE
+AS $function$
+  SELECT regexp_replace(
+    regexp_replace(
+      lower(indonesian.immutable_unaccent(p_text)),
+      '[^a-z0-9]+', '-', 'g'
+    ),
+    '^-+|-+$', '', 'g'
+  );
+$function$;
+
+create index if not exists learning_items_slug_idx
+  on indonesian.learning_items using btree (indonesian.stable_slug(base_text));
+
+create index if not exists idx_item_answer_variants_learning_item_id
+  on indonesian.item_answer_variants using btree (learning_item_id);
+
+-- ── B. Retire seven dead pre-redesign analytics RPCs (grep-verified zero
+-- consumers across src/ pages+components, supabase/functions, and scripts/;
+-- the only references left anywhere in the repo were the
+-- src/services/learnerProgressService.ts methods that called them -- deleted
+-- in this same change, along with the now-empty service file and its test --
+-- and the standalone paper-trail file
+-- scripts/migrations/2026-05-01-learner-progress-functions.sql they were
+-- never folded out of). They are relics of the pre-redesign analytics surface
+-- (Dashboard / Voortgang / lapsing-card / weekly-goal reads); the two-axis
+-- analytics redesign (PRs #213-234) replaced their functionality with
+-- lib/analytics/* and the get_mastery_evidence / get_funnel_series_events
+-- RPCs above. Two are provably broken on the live DB today, not just unused:
+-- get_vulnerable_capabilities references the DROPPED item_meanings table
+-- (Slice 4a teardown above) and errors at runtime; get_memory_health and
+-- get_recall_accuracy_by_direction filter on extinct capability_type names
+-- ('text_recognition' / 'form_recall') that no live capability carries.
+-- Mirrors the table-retirement style used elsewhere in this file (drop-if-
+-- exists with the exact live signature, one why-comment block per group).
+drop function if exists indonesian.get_lapse_prevention(uuid);
+drop function if exists indonesian.get_lapsing_count(uuid);
+drop function if exists indonesian.get_memory_health(uuid);
+drop function if exists indonesian.get_recall_accuracy_by_direction(uuid);
+drop function if exists indonesian.get_review_forecast(uuid, integer, text);
+drop function if exists indonesian.get_review_latency_stats(uuid);
+drop function if exists indonesian.get_vulnerable_capabilities(uuid, integer);
