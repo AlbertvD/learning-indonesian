@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 'Plus Jakarta Sans' is self-hosted (src/styles/fonts.css, public/fonts/) —
+         no external Google Fonts network call. Preload the primary (normal-weight)
+         face only; italic is used sparingly and can wait for the CSS parse. -->
+    <link rel="preload" href="/fonts/plus-jakarta-sans-latin-400-800.woff2" as="font" type="font/woff2" crossorigin>
     <title>Kamoe Bisa</title>
   </head>
   <body>

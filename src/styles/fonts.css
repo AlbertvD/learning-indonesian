@@ -1,0 +1,52 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   fonts.css
+   Self-hosted @font-face for 'Plus Jakarta Sans' — vendored 2026-07-11 as part
+   of the security-hardening pass (2026-07-11 prod-ready audit). Previously
+   loaded via a Google Fonts CDN `@import` in index.css,
+   which (a) leaked every visitor's IP to Google on first paint (GDPR) and
+   (b) blocked a tight script/style/font CSP (nginx.conf can't allow-list an
+   external font origin AND claim font-src 'self').
+
+   Files live in public/fonts/ (served at /fonts/*, same-origin — no CORS/CSP
+   allowance needed beyond font-src 'self').
+
+   Subset: 'latin' only (Google Fonts' own subset split — U+0000-00FF plus
+   typographic extras: smart quotes, en/em dash range, ellipsis, €, ™, arrows,
+   minus). This is sufficient for the app's actual content — Indonesian
+   (plain ASCII) and Dutch/English (diacritics ë ï é è ö ü etc. all sit at or
+   below U+00FF). The 'latin-ext', 'vietnamese', and 'cyrillic-ext' subsets
+   Google also serves are NOT vendored — no content in this app uses those
+   ranges, and shipping them would just be dead weight.
+
+   Weight range: normal 400–800 as a single variable-font file (matches the
+   `wght@0,400;0,500;0,600;0,700;0,800` request the old Google Fonts URL
+   used — verified via WOFF2 table directory: this file carries `fvar`/`gvar`/
+   `HVAR`/`MVAR`/`STAT`, i.e. it IS the variable font, not a static weight).
+   Italic: 400 only (the old URL only ever requested `1,400`). font-weight:900
+   usage elsewhere in the app (--fw-black) was ALREADY being clamped by the
+   browser to the nearest available instance (800) under the old Google Fonts
+   load — unchanged here, not a regression this migration introduces.
+
+   Re-vendor procedure (if weights/styles change): curl the Google Fonts CSS
+   endpoint with a modern desktop Chrome User-Agent string (returns woff2 URLs
+   instead of the legacy ttf fallback), fetch the referenced 'latin' subset
+   URLs, drop them in public/fonts/, update the src: url()s below.
+───────────────────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/plus-jakarta-sans-latin-400-800.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/plus-jakarta-sans-latin-italic-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
