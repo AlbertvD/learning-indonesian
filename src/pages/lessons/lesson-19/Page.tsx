@@ -23,11 +23,12 @@
 // Re-roll by re-running:
 //   NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/fetch-lesson-content.ts 19 --pretty > src/pages/lessons/lesson-19/content.json
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
+import { signStoredAudioUrl } from '@/lib/signedAudioUrl'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
-import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { ReaderGrammarAudioBand } from '@/components/lessons/ReaderGrammarAudioBand'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
 import { LessonChapterOverview } from '@/components/lessons/LessonChapterOverview'
 import content from './content.json'
@@ -47,6 +48,25 @@ const sections = content.sections
 function PlayButton({ src }: { src?: string }) {
   const ref = useRef<HTMLAudioElement | null>(null)
   const [playing, setPlaying] = useState(false)
+  const [signedSrc, setSignedSrc] = useState<string | null>(null)
+
+  // The indonesian-lessons bucket is private — resolve the raw storage_path
+  // baked into content.json to a signed URL in this async load path before the
+  // <audio> element ever mounts a src.
+  useEffect(() => {
+    let cancelled = false
+    if (!src) {
+      setSignedSrc(null)
+      return
+    }
+    signStoredAudioUrl(src).then((url) => {
+      if (!cancelled) setSignedSrc(url)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [src])
+
   if (!src) return null
   return (
     <>
@@ -65,7 +85,7 @@ function PlayButton({ src }: { src?: string }) {
           {playing ? <><rect x="2" y="2" width="3" height="8" /><rect x="7" y="2" width="3" height="8" /></> : <polygon points="3,1 11,6 3,11" />}
         </svg>
       </button>
-      <audio ref={ref} src={src} preload="none" onEnded={() => setPlaying(false)} />
+      {signedSrc && <audio ref={ref} src={signedSrc} preload="none" onEnded={() => setPlaying(false)} />}
     </>
   )
 }
@@ -510,9 +530,9 @@ export function buildChapters(activation: ReturnType<typeof useLessonActivation>
         <>
           {/* The grammar podcast audio lives WITH the grammar — the
               grammar-most chapter. */}
-          <LessonGrammarAudioBand
-            nl={meta.lesson_audio_url}
-            en={meta.lesson_audio_url_en}
+          <ReaderGrammarAudioBand
+            nlPath={meta.lesson_audio_url}
+            enPath={meta.lesson_audio_url_en}
             voice={meta.primary_voice ?? undefined}
             bandClassName={classes.audioBand}
             innerClassName={classes.audioInner}
