@@ -719,7 +719,7 @@ function OefenenChapter({ activation }: { activation: ReturnType<typeof useLesso
           werkwoorden en de intensiveerders komen vanzelf in je oefensessies langs.
         </p>
         <div className={classes.closingActivation}>
-          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} loadFailed={activation.loadFailed} onRetryLoad={activation.retryLoad} />
         </div>
         <div className={classes.closingActions}>
           <PracticeActions lessonId={meta.id} activated={activation.activated} />

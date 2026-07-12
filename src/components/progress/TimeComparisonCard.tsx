@@ -3,12 +3,19 @@
 // Practice-time comparison (the "Tijd" tab): this week vs last week, this month
 // vs last month — Stripe-style stat cards with an up/down trend cue — plus the
 // streak. Read-only over analytics.engagement.
+//
+// Loading/error states (2026-07-11 prod-ready audit): a Skeleton grid roughly
+// the shape of the loaded 3-tile grid while the fetch is in flight, and the
+// shared CardErrorNotice on failure (replaces the old "return null forever"
+// branch). `retryTick` re-runs the effect.
 import { useEffect, useState } from 'react'
+import { Skeleton, SimpleGrid } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconFlame, IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
 import { engagement, type PracticeTime } from '@/lib/analytics/engagement'
 import { logError } from '@/lib/logger'
+import { CardErrorNotice } from './CardErrorNotice'
 import classes from './TimeComparison.module.css'
 
 export interface TimeComparisonCardProps {
@@ -31,22 +38,37 @@ function Trend({ delta, suffix }: { delta: number; suffix: string }) {
 export function TimeComparisonCard({ userId, timezone }: TimeComparisonCardProps) {
   const T = useT()
   const [pt, setPt] = useState<PracticeTime | null>(null)
+  const [loadFailed, setLoadFailed] = useState(false)
+  const [retryTick, setRetryTick] = useState(0)
 
   useEffect(() => {
     let active = true
+    setLoadFailed(false)
     engagement
       .practiceTime(userId, timezone)
       .then((v) => active && setPt(v))
       .catch((err) => {
+        if (!active) return
         logError({ page: 'progress', action: 'timeComparison', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
+        setLoadFailed(true)
       })
     return () => {
       active = false
     }
-  }, [userId, timezone, T.common.error, T.common.somethingWentWrong])
+  }, [userId, timezone, retryTick, T.common.error, T.common.somethingWentWrong])
 
-  if (!pt) return null
+  if (loadFailed) return <CardErrorNotice onRetry={() => setRetryTick((t) => t + 1)} />
+
+  if (!pt) {
+    return (
+      <SimpleGrid cols={2} spacing="0.6rem">
+        <Skeleton height={90} radius="md" />
+        <Skeleton height={90} radius="md" />
+        <Skeleton height={90} radius="md" style={{ gridColumn: '1 / -1' }} />
+      </SimpleGrid>
+    )
+  }
 
   return (
     <div className={classes.grid}>

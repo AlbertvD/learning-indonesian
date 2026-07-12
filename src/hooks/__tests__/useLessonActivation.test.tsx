@@ -61,4 +61,33 @@ describe('useLessonActivation', () => {
       expect.objectContaining({ color: 'red' }),
     )
   })
+
+  it('exposes loadFailed and notifies when the initial fetch fails, without misrepresenting activated', async () => {
+    vi.mocked(isLessonActivated).mockRejectedValue(new Error('network down'))
+
+    const { result } = renderHook(() => useLessonActivation('lesson-abc'))
+
+    await waitFor(() => expect(result.current.loadFailed).toBe(true))
+    // activated stays at its uninformative default — the consumer is expected
+    // to check loadFailed before trusting it, not render this as a fact.
+    expect(result.current.activated).toBe(false)
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({ color: 'red' }),
+    )
+  })
+
+  it('retryLoad clears loadFailed and re-fetches on success', async () => {
+    vi.mocked(isLessonActivated)
+      .mockRejectedValueOnce(new Error('network down'))
+      .mockResolvedValueOnce(true)
+
+    const { result } = renderHook(() => useLessonActivation('lesson-abc'))
+    await waitFor(() => expect(result.current.loadFailed).toBe(true))
+
+    act(() => result.current.retryLoad())
+
+    await waitFor(() => expect(result.current.loadFailed).toBe(false))
+    await waitFor(() => expect(result.current.activated).toBe(true))
+    expect(isLessonActivated).toHaveBeenCalledTimes(2)
+  })
 })

@@ -5,12 +5,19 @@
 // barrel). Plain-language calibrating headline ("your memory now holds ~X days")
 // rather than a raw stability number — the point is to teach the learner what
 // their retention is doing over time (design §3.4, research design read #3).
+//
+// Loading/error states (2026-07-11 prod-ready audit): a Skeleton roughly the
+// shape of the loaded card while the fetch is in flight, and the shared
+// CardErrorNotice on failure (replaces the old "return null forever" branch).
+// `retryTick` re-runs the effect.
 import { useEffect, useState } from 'react'
+import { Skeleton } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
 import { memory, type StabilityWeek } from '@/lib/analytics/memory'
 import { logError } from '@/lib/logger'
 import { TrendChart } from './TrendChart'
+import { CardErrorNotice } from './CardErrorNotice'
 import classes from './GroeiCard.module.css'
 
 const WEEKS = 12
@@ -46,22 +53,43 @@ function latestAndPrior(series: StabilityWeek[]): { now: number | null; prior: n
 export function DurabilityCard({ userId, timezone }: DurabilityCardProps) {
   const T = useT()
   const [series, setSeries] = useState<StabilityWeek[] | null>(null)
+  const [loadFailed, setLoadFailed] = useState(false)
+  const [retryTick, setRetryTick] = useState(0)
 
   useEffect(() => {
     let active = true
+    setLoadFailed(false)
     memory
       .stabilitySeries(userId, timezone, WEEKS)
       .then((v) => active && setSeries(v))
       .catch((err) => {
+        if (!active) return
         logError({ page: 'progress', action: 'durabilitySeries', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
+        setLoadFailed(true)
       })
     return () => {
       active = false
     }
-  }, [userId, timezone, T.common.error, T.common.somethingWentWrong])
+  }, [userId, timezone, retryTick, T.common.error, T.common.somethingWentWrong])
 
-  if (!series) return null
+  if (loadFailed) {
+    return (
+      <div className={classes.card}>
+        <CardErrorNotice onRetry={() => setRetryTick((t) => t + 1)} />
+      </div>
+    )
+  }
+
+  if (!series) {
+    return (
+      <div className={classes.card}>
+        <Skeleton height={18} width="55%" radius="sm" mb={6} />
+        <Skeleton height={12} width="70%" radius="sm" mb={12} />
+        <Skeleton height={120} radius="md" />
+      </div>
+    )
+  }
 
   const { now, prior } = latestAndPrior(series)
   const hasData = now != null

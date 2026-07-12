@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MantineProvider } from '@mantine/core'
 import { PlayButton } from '@/components/PlayButton'
 
@@ -42,5 +43,22 @@ describe('PlayButton', () => {
   it('autoplays when the session preference enables it', () => {
     renderWithProviders(<PlayButton audioUrl="https://example.com/audio.mp3" autoPlay />)
     expect(mockAudio.play).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not enter the playing state when audio.play() rejects on toggle', async () => {
+    const user = userEvent.setup()
+    mockAudio.play = vi.fn().mockRejectedValue(new Error('NotAllowedError'))
+    renderWithProviders(<PlayButton audioUrl="https://example.com/audio.mp3" />)
+    const button = screen.getByRole('button', { name: 'Play audio' })
+
+    await user.click(button)
+    // If `playing` incorrectly flipped to true on a failed play() (the bug this
+    // guards against), this second click would call pause() instead of retrying
+    // play() — asserting play() fires twice and pause() never fires proves the
+    // component stayed in the "not playing" state after the rejection.
+    await user.click(button)
+
+    expect(mockAudio.play).toHaveBeenCalledTimes(2)
+    expect(mockAudio.pause).not.toHaveBeenCalled()
   })
 })

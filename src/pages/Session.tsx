@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Alert } from '@mantine/core'
+import { Alert, Button } from '@mantine/core'
 import { IconAlertCircle, IconInfoCircle } from '@tabler/icons-react'
 import {
   PageContainer,
@@ -47,7 +47,14 @@ async function loadSelectedLessonScope(lessonId: string | null): Promise<{
   // Lesson scope = the lesson's ready+published capability source_refs, keyed by
   // learning_capabilities.lesson_id (ADR 0006). Replaces the retired
   // lesson_page_blocks fan-out; the session-builder match is unchanged.
-  const selectedSourceRefs = await getLessonSourceRefsByLessonId(lessonId).catch(() => [])
+  //
+  // A genuine fetch failure is left to PROPAGATE (2026-07-11 prod-ready audit)
+  // — it used to be swallowed into an empty array here, which made a real
+  // outage render identical to "this lesson has no ready content yet" with no
+  // log. The caller's outer try/catch now distinguishes the two: a thrown
+  // error becomes a logged, retryable error state; an empty (but successfully
+  // fetched) result stays the friendly "not ready" copy.
+  const selectedSourceRefs = await getLessonSourceRefsByLessonId(lessonId)
   if (selectedSourceRefs.length === 0) return null
 
   return {
@@ -65,6 +72,10 @@ export function Session() {
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  // Set only when `error` came from a genuine fetch/build failure (not a
+  // friendly "not ready yet" state) — gates the retry button in the error
+  // Alert (2026-07-11 prod-ready audit).
+  const [errorRetryable, setErrorRetryable] = useState(false)
   const [capabilityPlan, setCapabilityPlan] = useState<SessionPlan | null>(null)
   const [capabilityContexts, setCapabilityContexts] = useState<Map<string, CapabilityRenderContext> | null>(null)
   const [capabilityAudioMap, setCapabilityAudioMap] = useState<SessionAudioMap | null>(null)
@@ -92,6 +103,113 @@ export function Session() {
   // The client-minted sessionId, kept so onComplete can mark the session finished.
   const sessionIdRef = useRef<string | null>(null)
 
+  // Initialize (and re-initialize, on retry) the session. Extracted to a
+  // stable callback — the init effect below calls it once on mount, and the
+  // error state's retry button calls it directly on demand.
+  const runInit = useCallback(async () => {
+    if (!user) return
+    try {
+      setLoading(true)
+      setError(null)
+      setErrorRetryable(false)
+
+      // Mint a client-side sessionId. Retirement #5 (2026-05-07): the
+      // commit_capability_answer_report RPC materialises the
+      // learning_sessions row lazily on the first answer; no DB write at
+      // session start. See docs/plans/2026-05-07-retire-session-lifecycle.md.
+      const sid = crypto.randomUUID()
+      sessionIdRef.current = sid
+      // Resolve the session scope. Lesson modes need a lesson id + its
+      // source_refs; the affix mode (capstone item F′) resolves the affix
+      // label in the URL to source_refs ONLY (an affix spans many lessons).
+      // Both mirror loadSelectedLessonScope; an unresolved scope is a friendly
+      // error, not a broken session.
+      let scope: { selectedLessonId?: string; selectedSourceRefs: string[] } | null = null
+      if (isLessonScopedMode(sessionMode)) {
+        scope = await loadSelectedLessonScope(lessonFilter)
+        if (!scope) {
+          setError(T.session.notReady)
+          setLoading(false)
+          return
+        }
+      } else if (isSourceRefScopedMode(sessionMode)) {
+        scope = await loadSelectedAffixScope(affixFilter)
+        if (!scope) {
+          setError(T.session.affixNotReady)
+          setLoading(false)
+          return
+        }
+      }
+      const capabilityPlan = await buildSession({
+        enabled: true,
+        sessionId: sid,
+        userId: user.id,
+        mode: sessionMode,
+        now: new Date(),
+        limit: preferredSessionSize,
+        preferredSessionSize,
+        listeningEnabled,
+        spreektaalEnabled,
+        ...(scope ?? {}),
+        ...(allowForceCapability && forceCapabilityKey ? { forceCapabilityKey } : {}),
+        adapter: sessionBuilderAdapter,
+      })
+      setCapabilityPlan(capabilityPlan)
+
+      // Empty standard session → diagnose WHY for the recap (ux audit MAJ-3):
+      // a brand-new account with nothing activated needs a "go activate a
+      // lesson" CTA; an account that's simply done for today gets positive
+      // framing. Scoped modes (lesson/affix) keep the generic copy.
+      if (capabilityPlan.blocks.length === 0 && sessionMode === 'standard') {
+        try {
+          const activated = await listActivatedLessons(user.id)
+          setEmptyReason(activated.size === 0 ? 'no_active_lesson' : 'caught_up')
+        } catch {
+          // diagnosis is best-effort — generic empty copy still renders
+        }
+      }
+
+      // Resolve render contexts + fetch audio map. ExperiencePlayer is
+      // presentational and depends on both being present before mount.
+      // Failures degrade gracefully — silent-skipped blocks don't block the
+      // user, and missing audio just hides the play button.
+      try {
+        const contexts = await resolveCapabilityBlocks(capabilityPlan.blocks, {
+          userId: user.id,
+          userLanguage: (profile?.language ?? 'nl') as 'en' | 'nl',
+          sessionId: sid,
+        })
+        setCapabilityContexts(contexts)
+
+        const audioTexts = collectAudibleTexts(contexts.values())
+        const audioMap = audioTexts.length > 0
+          ? await fetchSessionAudioMap(audioTexts.map((text) => ({ text, voiceId: null })))
+          : new Map() as SessionAudioMap
+        setCapabilityAudioMap(audioMap)
+
+        // Prefetch the session's saved mnemonics, mirroring audioMap exactly —
+        // ExperiencePlayer stays DB-read-free (docs/current-system/modules/mnemonics.md).
+        const mnemonicSourceRefs = [...new Set(capabilityPlan.blocks.map((b) => b.renderPlan.sourceRef))]
+        const notes = await fetchMnemonicsForRefs(user.id, mnemonicSourceRefs).catch((err) => {
+          logError({ page: 'session', action: 'fetchMnemonicsForRefs', error: err })
+          return new Map<string, string>()
+        })
+        setMnemonicMap(notes)
+      } catch (err) {
+        logError({ page: 'session', action: 'resolveCapabilityBlocks', error: err })
+        setCapabilityContexts(new Map())
+        setCapabilityAudioMap(new Map() as SessionAudioMap)
+      }
+
+      setLoading(false)
+    } catch (err) {
+      logError({ page: 'session', action: 'initialize', error: err })
+      setError(T.session.failedToLoadSession)
+      setErrorRetryable(true)
+      setLoading(false)
+    }
+  }, [user, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, affixFilter, sessionMode, forceCapabilityKey, allowForceCapability, listeningEnabled, spreektaalEnabled, T])
+
   // Initialize session
   useEffect(() => {
     if (!user) {
@@ -102,109 +220,8 @@ export function Session() {
     if (didInit.current) return
     didInit.current = true
 
-    const initSession = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        // Mint a client-side sessionId. Retirement #5 (2026-05-07): the
-        // commit_capability_answer_report RPC materialises the
-        // learning_sessions row lazily on the first answer; no DB write at
-        // session start. See docs/plans/2026-05-07-retire-session-lifecycle.md.
-        const sid = crypto.randomUUID()
-        sessionIdRef.current = sid
-        // Resolve the session scope. Lesson modes need a lesson id + its
-        // source_refs; the affix mode (capstone item F′) resolves the affix
-        // label in the URL to source_refs ONLY (an affix spans many lessons).
-        // Both mirror loadSelectedLessonScope; an unresolved scope is a friendly
-        // error, not a broken session.
-        let scope: { selectedLessonId?: string; selectedSourceRefs: string[] } | null = null
-        if (isLessonScopedMode(sessionMode)) {
-          scope = await loadSelectedLessonScope(lessonFilter)
-          if (!scope) {
-            setError(T.session.notReady)
-            setLoading(false)
-            return
-          }
-        } else if (isSourceRefScopedMode(sessionMode)) {
-          scope = await loadSelectedAffixScope(affixFilter)
-          if (!scope) {
-            setError(T.session.affixNotReady)
-            setLoading(false)
-            return
-          }
-        }
-        const capabilityPlan = await buildSession({
-          enabled: true,
-          sessionId: sid,
-          userId: user.id,
-          mode: sessionMode,
-          now: new Date(),
-          limit: preferredSessionSize,
-          preferredSessionSize,
-          listeningEnabled,
-          spreektaalEnabled,
-          ...(scope ?? {}),
-          ...(allowForceCapability && forceCapabilityKey ? { forceCapabilityKey } : {}),
-          adapter: sessionBuilderAdapter,
-        })
-        setCapabilityPlan(capabilityPlan)
-
-        // Empty standard session → diagnose WHY for the recap (ux audit MAJ-3):
-        // a brand-new account with nothing activated needs a "go activate a
-        // lesson" CTA; an account that's simply done for today gets positive
-        // framing. Scoped modes (lesson/affix) keep the generic copy.
-        if (capabilityPlan.blocks.length === 0 && sessionMode === 'standard') {
-          try {
-            const activated = await listActivatedLessons(user.id)
-            setEmptyReason(activated.size === 0 ? 'no_active_lesson' : 'caught_up')
-          } catch {
-            // diagnosis is best-effort — generic empty copy still renders
-          }
-        }
-
-        // Resolve render contexts + fetch audio map. ExperiencePlayer is
-        // presentational and depends on both being present before mount.
-        // Failures degrade gracefully — silent-skipped blocks don't block the
-        // user, and missing audio just hides the play button.
-        try {
-          const contexts = await resolveCapabilityBlocks(capabilityPlan.blocks, {
-            userId: user.id,
-            userLanguage: (profile?.language ?? 'nl') as 'en' | 'nl',
-            sessionId: sid,
-          })
-          setCapabilityContexts(contexts)
-
-          const audioTexts = collectAudibleTexts(contexts.values())
-          const audioMap = audioTexts.length > 0
-            ? await fetchSessionAudioMap(audioTexts.map((text) => ({ text, voiceId: null })))
-            : new Map() as SessionAudioMap
-          setCapabilityAudioMap(audioMap)
-
-          // Prefetch the session's saved mnemonics, mirroring audioMap exactly —
-          // ExperiencePlayer stays DB-read-free (docs/current-system/modules/mnemonics.md).
-          const mnemonicSourceRefs = [...new Set(capabilityPlan.blocks.map((b) => b.renderPlan.sourceRef))]
-          const notes = await fetchMnemonicsForRefs(user.id, mnemonicSourceRefs).catch((err) => {
-            logError({ page: 'session', action: 'fetchMnemonicsForRefs', error: err })
-            return new Map<string, string>()
-          })
-          setMnemonicMap(notes)
-        } catch (err) {
-          logError({ page: 'session', action: 'resolveCapabilityBlocks', error: err })
-          setCapabilityContexts(new Map())
-          setCapabilityAudioMap(new Map() as SessionAudioMap)
-        }
-
-        setLoading(false)
-      } catch (err) {
-        logError({ page: 'session', action: 'initialize', error: err })
-        setError(T.session.failedToLoadSession)
-        setLoading(false)
-      }
-    }
-
-    initSession()
-  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, affixFilter, sessionMode, forceCapabilityKey, allowForceCapability, listeningEnabled, spreektaalEnabled, T])
+    runInit()
+  }, [user, navigate, runInit])
 
   // Session finished (queue exhausted) — fired by ExperiencePlayer the moment the
   // cards run out, NOT on the recap button. Marks the session complete so it
@@ -274,6 +291,11 @@ export function Session() {
         <PageBody>
           <Alert icon={<IconAlertCircle size={16} />} color="red" title={T.session.errorTitle}>
             {error}
+            {errorRetryable && (
+              <Button mt="sm" size="xs" variant="light" color="red" onClick={runInit}>
+                {T.common.retry}
+              </Button>
+            )}
           </Alert>
         </PageBody>
       </PageContainer>

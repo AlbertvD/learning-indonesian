@@ -172,7 +172,6 @@ export function Lessons() {
   const [openLevel, setOpenLevel] = useState<string | null>(null)
   const [model, setModel] = useState<LessonOverviewModel>(emptyModel)
   const [loading, setLoading] = useState(true)
-  const [progressRefreshFailed, setProgressRefreshFailed] = useState(false)
   const [loadFailed, setLoadFailed] = useState(false)
   const didRestoreScrollRef = useRef(false)
   const user = useAuthStore((state) => state.user)
@@ -188,7 +187,6 @@ export function Lessons() {
 
       setLoading(true)
       setLoadFailed(false)
-      setProgressRefreshFailed(false)
 
       try {
         // Single round trip: indonesian.get_lessons_overview(user_id) returns
@@ -334,11 +332,6 @@ export function Lessons() {
       {loadFailed && (
         <div className={classes.notice} role="status">
           {T.common.somethingWentWrong}
-        </div>
-      )}
-      {progressRefreshFailed && (
-        <div className={classes.notice} role="status">
-          {T.lessons.progressRefreshFailed}
         </div>
       )}
     </>

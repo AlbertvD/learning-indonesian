@@ -5,6 +5,7 @@ import { Container, Title, Text, Button, Center, Loader } from '@mantine/core'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { PwaUpdatePrompt } from '@/components/PwaUpdatePrompt'
+import { OfflineBanner } from '@/components/OfflineBanner'
 import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
 import { Dashboard } from '@/pages/Dashboard'
@@ -104,6 +105,7 @@ function App() {
   return (
     <>
       <PwaUpdatePrompt />
+      <OfflineBanner />
       <Routes>
       {showLanding && <Route path="/" element={<LazyPage><Landing /></LazyPage>} />}
       <Route path="/login" element={<Login />} />

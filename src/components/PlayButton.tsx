@@ -41,8 +41,7 @@ export function PlayButton({ audioUrl, autoPlay = false, size = 'sm' }: PlayButt
       audio.currentTime = 0
       setPlaying(false)
     } else {
-      audio.play().catch(() => {})
-      setPlaying(true)
+      audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
     }
   }, [playing])
 

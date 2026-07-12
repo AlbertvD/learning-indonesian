@@ -1,0 +1,42 @@
+/* bespoke-css-ok: a fixed-position, full-bleed top strip is a shape no
+   page-framework primitive covers (PageHeader/Alert are in-flow, scoped to
+   one page's content column) — this renders above the routed page, app-shell
+   wide. Mirrors the app's warning-status tokens (--warning/-subtle/-border),
+   not a new palette. */
+.banner {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  background: var(--warning-subtle);
+  border-bottom: 1px solid var(--warning-border);
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.15rem;
+  border-radius: var(--r-sm);
+}
+
+.dismiss:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}

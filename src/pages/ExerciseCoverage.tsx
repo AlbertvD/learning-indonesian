@@ -144,7 +144,7 @@ export function ExerciseCoverage() {
           subtitle="Which exercise types are available per lesson based on published content."
           action={(
             <Tooltip label="Refresh">
-              <ActionIcon variant="subtle" size="lg" onClick={load} loading={loading}>
+              <ActionIcon variant="subtle" size="lg" onClick={load} loading={loading} aria-label="Refresh">
                 <IconRefresh size={18} />
               </ActionIcon>
             </Tooltip>
