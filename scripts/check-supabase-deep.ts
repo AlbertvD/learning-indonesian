@@ -64,6 +64,10 @@ const EXPECTED_TABLES = [
   'learner_collection_activation',
   'learner_reading_harvest',     // reader Phase 2 §4: tapped-word harvest membership
   'learner_word_mnemonics',      // stubborn-word mnemonic workshop: one hook per (user, source_ref)
+  // signup_invite_codes: dropped 2026-07-12 (entitlement design §6) — asserted
+  // absent below, not listed here (mirrors the SM-2 teardown / HC38 style).
+  'entitlements',                 // entitlement design §1 — learner-data, owner-read only
+  'stripe_webhook_events',        // entitlement design §1 — service-role-only idempotency ledger
 ]
 
 // Expected grants: table → { role → privileges[] }
@@ -92,6 +96,10 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   learner_reading_harvest: { authenticated: ['SELECT', 'INSERT'] },
   // Word mnemonics: owner-RLS, fully owner-editable (create/edit/delete your own hook).
   learner_word_mnemonics: { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
+  // Entitlements: owner-read only, ALL writes are service-role (webhook / admin).
+  // stripe_webhook_events carries no authenticated grant at all — see
+  // intentionallyDenyAll below.
+  entitlements: { authenticated: ['SELECT'] },
 }
 
 // ── Fetch schema health report ─────────────────────────────────────────────
@@ -111,6 +119,8 @@ const report = health as {
   policies?: { table: string; policy: string; cmd: string; roles: string[] }[]
   placement_activation_source_check_ok?: boolean
   apply_placement_result_anon_execute?: boolean
+  has_active_entitlement_authenticated_execute?: boolean
+  indonesian_media_read_policy_exists?: boolean
 }
 
 const existingTables = new Set(report.tables.map((t) => t.name))
@@ -147,7 +157,10 @@ for (const p of report.policies ?? []) {
 // class: deny-all surfaces reached only via service_role (which bypasses RLS).
 // Each entry must say who the sole writer/reader is.
 const intentionallyDenyAll = new Set([
-  'signup_invite_codes', // service-role only — consumed by the signup-with-invite edge function
+  // signup_invite_codes removed 2026-07-12 (entitlement design §6) — the table
+  // itself is dropped, so it no longer appears in EXPECTED_TABLES; see the
+  // teardown HC near the end of this file for the "is gone" assertion.
+  'stripe_webhook_events', // service-role only — Stripe webhook idempotency ledger, no policies
 ])
 for (const t of report.tables) {
   if (!t.rls_enabled) continue
@@ -3168,6 +3181,143 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     } catch (err) {
       fail(HC53, err instanceof Error ? err.message : String(err))
     }
+  }
+}
+
+// ── HC54 (2026-07-12 entitlement design §1/§8) — has_active_entitlement
+//    carries NO authenticated EXECUTE grant. As SECURITY INVOKER it would
+//    silently return false for any p_user_id other than the caller (RLS
+//    hides other rows) -- a trap for a future caller assuming a general
+//    oracle. Its two consumers (can_read_media, set_lesson_activation) are
+//    SECURITY DEFINER, so they don't need the grant.
+{
+  const HC54 = 'HC54 has_active_entitlement has no authenticated EXECUTE grant'
+  if (report.has_active_entitlement_authenticated_execute === undefined) {
+    fail(HC54, 'schema_health() did not return has_active_entitlement_authenticated_execute -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
+  } else if (report.has_active_entitlement_authenticated_execute === true) {
+    fail(
+      HC54,
+      'authenticated has EXECUTE on indonesian.has_active_entitlement(uuid) -- revoke it (entitlement design §1): ' +
+        'as SECURITY INVOKER it silently returns false for any p_user_id other than the caller.',
+    )
+  } else {
+    pass(HC54)
+  }
+}
+
+// ── HC55 (2026-07-12 entitlement design §4/§8) — can_read_media and
+//    is_free_tier_lesson exist, and is_free_tier_lesson's boundary matches
+//    the client's FREE_TIER_MAX_LESSON=3 constant (entitlementService) --
+//    a boundary edit that missed one side shows up here, not as a silent
+//    paywall drift.
+{
+  const HC55 = 'HC55 can_read_media / is_free_tier_lesson exist + free-tier boundary parity'
+  try {
+    const { error: canReadErr } = await supabase
+      .schema('indonesian')
+      .rpc('can_read_media', { p_bucket: 'indonesian-tts', p_name: '__hc55_probe__' })
+    if (canReadErr && canReadErr.message.includes('does not exist')) {
+      fail(HC55, 'indonesian.can_read_media(text, text) not found -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
+    } else {
+      const { data: freeAt3, error: err3 } = await supabase.schema('indonesian').rpc('is_free_tier_lesson', { p_order_index: 3 })
+      const { data: freeAt4, error: err4 } = await supabase.schema('indonesian').rpc('is_free_tier_lesson', { p_order_index: 4 })
+      if (err3 || err4) {
+        if ((err3 ?? err4)!.message.includes('does not exist')) {
+          fail(HC55, 'indonesian.is_free_tier_lesson(int) not found -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
+        } else {
+          fail(HC55, `is_free_tier_lesson call failed: ${err3?.message ?? err4?.message}`)
+        }
+      } else if (freeAt3 !== true || freeAt4 !== false) {
+        fail(
+          HC55,
+          `is_free_tier_lesson(3)=${freeAt3}, is_free_tier_lesson(4)=${freeAt4} -- expected true/false. ` +
+            'Must match FREE_TIER_MAX_LESSON in src/services/entitlementService.ts -- a boundary edit missed one side.',
+        )
+      } else {
+        pass(HC55)
+      }
+    }
+  } catch (err) {
+    fail(HC55, err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC56 (2026-07-12 entitlement design §4/§8) — all 3 storage buckets are
+//    private. public=true bypasses storage RLS entirely on the
+//    /object/public/ path (the PR #450 fresh-DB-replay property) -- a
+//    rebuild that recreated the buckets public would silently disable the
+//    whole paywall while every other check stayed green.
+{
+  const HC56 = 'HC56 storage buckets public=false'
+  for (const bucket of ['indonesian-lessons', 'indonesian-podcasts', 'indonesian-tts']) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${bucket}`, {
+        headers: { apikey: SERVICE_KEY, authorization: `Bearer ${SERVICE_KEY}` },
+      })
+      if (!res.ok) {
+        fail(`${HC56}: ${bucket}`, `HTTP ${res.status} fetching bucket metadata`)
+        continue
+      }
+      const data = (await res.json()) as { public?: boolean }
+      if (data.public === false) {
+        pass(`${HC56}: ${bucket}`)
+      } else {
+        fail(`${HC56}: ${bucket}`, `public=${data.public} -- expected false; run: make migrate SUPABASE_SERVICE_KEY=<key>`)
+      }
+    } catch (err) {
+      fail(`${HC56}: ${bucket}`, err instanceof Error ? err.message : String(err))
+    }
+  }
+}
+
+// ── HC57 (2026-07-12 entitlement design §4/§8) — the indonesian_media_read
+//    policy exists on storage.objects. report.policies (the generic
+//    policyCount loop above) only covers schemaname='indonesian' --
+//    storage.objects lives in a different schema, hence the targeted
+//    schema_health() probe rather than the generic loop.
+{
+  const HC57 = 'HC57 indonesian_media_read policy present on storage.objects'
+  if (report.indonesian_media_read_policy_exists === true) {
+    pass(HC57)
+  } else {
+    fail(HC57, 'storage.objects has no indonesian_media_read policy -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
+  }
+}
+
+// ── HC58 (2026-07-12 entitlement design §6) — invite-gated signup is fully
+//    retired: table + both RPCs gone. Mirrors HC38's style (probe, expect a
+//    "does not exist" / "could not find the table" error).
+{
+  const HC58 = 'HC58 signup_invite_codes + redeem/restore_invite_code retired'
+  try {
+    const { error: tableErr } = await supabase
+      .schema('indonesian')
+      .from('signup_invite_codes')
+      .select('*')
+      .limit(1)
+    const tableGone = !!tableErr && /PGRST205|could not find the table|does not exist/i.test(tableErr.message ?? '')
+
+    const { error: redeemErr } = await supabase
+      .schema('indonesian')
+      .rpc('redeem_invite_code', { p_code: '__hc58_probe__' })
+    const redeemGone = !!redeemErr && redeemErr.message.includes('does not exist')
+
+    const { error: restoreErr } = await supabase
+      .schema('indonesian')
+      .rpc('restore_invite_code', { p_code: '__hc58_probe__' })
+    const restoreGone = !!restoreErr && restoreErr.message.includes('does not exist')
+
+    if (tableGone && redeemGone && restoreGone) {
+      pass(HC58)
+    } else {
+      fail(
+        HC58,
+        `table gone=${tableGone}, redeem_invite_code gone=${redeemGone}, restore_invite_code gone=${restoreGone} -- ` +
+          'the invite-gated-signup teardown (entitlement design §6) did not fully land; run: make migrate SUPABASE_SERVICE_KEY=<key>',
+      )
+    }
+  } catch (err) {
+    fail(HC58, err instanceof Error ? err.message : String(err))
   }
 }
 

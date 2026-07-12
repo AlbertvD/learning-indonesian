@@ -534,6 +534,21 @@ RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian 
     ),
     'apply_placement_result_anon_execute', has_function_privilege(
       'anon', 'indonesian.apply_placement_result(text[],text[])', 'execute'
+    ),
+    -- Entitlement design (2026-07-12) structural probes read by
+    -- check-supabase-deep.ts. has_active_entitlement is deliberately NOT
+    -- granted to authenticated (§1 comment) -- this proves the omission
+    -- holds, not just that it was written that way once. Mirrors the
+    -- has_function_privilege probe style above; text-signature argument is
+    -- resolved lazily at CALL time, so definition order in this file does
+    -- not matter (has_active_entitlement is created later in this file).
+    'has_active_entitlement_authenticated_execute', has_function_privilege(
+      'authenticated', 'indonesian.has_active_entitlement(uuid)', 'execute'
+    ),
+    'indonesian_media_read_policy_exists', EXISTS (
+      SELECT 1 FROM pg_policies
+      WHERE schemaname = 'storage' AND tablename = 'objects'
+        AND policyname = 'indonesian_media_read'
     )
   )
 $$;
@@ -757,10 +772,15 @@ GRANT SELECT ON indonesian.exercise_type_availability TO authenticated;
 -- generated_exercise_candidates: no grant to authenticated — admin-only via service_role
 
 -- Storage buckets
+-- public=false (2026-07-12 entitlement design §4): storage RLS
+-- (indonesian_media_read policy, added near the end of this file) is the
+-- access gate. The idempotent `update storage.buckets set public = false`
+-- appended near the end of this file converges DBs where these rows already
+-- exist (this INSERT's ON CONFLICT DO NOTHING can't flip an existing row).
 INSERT INTO storage.buckets (id, name, public)
 VALUES
-  ('indonesian-lessons', 'indonesian-lessons', true),
-  ('indonesian-podcasts', 'indonesian-podcasts', true)
+  ('indonesian-lessons', 'indonesian-lessons', false),
+  ('indonesian-podcasts', 'indonesian-podcasts', false)
 ON CONFLICT (id) DO NOTHING;
 
 -- Content flags: admin-only exercise review annotations
@@ -1060,8 +1080,10 @@ $$;
 GRANT EXECUTE ON FUNCTION indonesian.get_audio_clip_per_text(text[]) TO authenticated;
 
 -- Storage bucket
+-- public=false (2026-07-12 entitlement design §4) -- see the bucket-flip
+-- comment near line ~760 for the full rationale.
 INSERT INTO storage.buckets (id, name, public)
-VALUES ('indonesian-tts', 'indonesian-tts', true)
+VALUES ('indonesian-tts', 'indonesian-tts', false)
 ON CONFLICT (id) DO NOTHING;
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -1876,6 +1898,20 @@ begin
 
   if not exists (select 1 from indonesian.lessons where id = p_lesson_id) then
     raise exception 'set_lesson_activation lesson not found: %', p_lesson_id;
+  end if;
+
+  -- Entitlement gate (2026-07-12 entitlement design §5). Placed AFTER the
+  -- lesson-exists check (not before) so a nonexistent lesson id is reported
+  -- as "lesson not found", not misreported as entitlement_required. Free-tier
+  -- lessons (1-3) and deactivation stay open; service-role callers bypass
+  -- (e.g. the starter-lesson auto-activation backfill).
+  if p_activated
+     and coalesce(auth.role(), '') <> 'service_role'
+     and not indonesian.has_active_entitlement(p_user_id)
+     and not exists (select 1 from indonesian.lessons
+                     where id = p_lesson_id
+                       and indonesian.is_free_tier_lesson(order_index)) then
+    raise exception 'entitlement_required';
   end if;
 
   if p_activated then
@@ -3977,82 +4013,21 @@ $$;
 grant execute on function indonesian.get_text_coverage(uuid, text[]) to authenticated;
 
 -- ============================================================================
--- Pre-cloud-preview hardening item 1: invite-gated signup
+-- Invite-gated signup -- RETIRED 2026-07-12 (OAuth + Stripe entitlement design §6)
 -- ============================================================================
--- Self-signup via `supabase.auth.signUp` is gated behind a one-time-use invite
--- code, consumed by the `signup-with-invite` edge function (which creates the
--- user via the GoTrue admin API, not the public signup endpoint). This table
--- is a SERVICE-ROLE-ONLY surface: no RLS policies, no anon/authenticated
--- grants — the edge function is the only caller, using the service key.
-create table if not exists indonesian.signup_invite_codes (
-  code           text primary key,
-  uses_remaining int not null default 1 check (uses_remaining >= 0),
-  note           text,
-  created_at     timestamptz not null default now()
-);
-
-alter table indonesian.signup_invite_codes enable row level security;
--- No policies — service_role bypasses RLS; anon/authenticated have zero grants.
-grant all on indonesian.signup_invite_codes to service_role;
-
--- redeem_invite_code: atomically decrements uses_remaining if > 0, returning
--- whether a code was found and had capacity. Called by the signup-with-invite
--- edge function BEFORE creating the GoTrue user — redeem-first means a code
--- can never be spent twice by two concurrent signups, and an invalid/exhausted
--- code fails fast with no GoTrue call. On a subsequent user-creation failure
--- the edge function calls restore_invite_code to give the code back.
-create or replace function indonesian.redeem_invite_code(p_code text)
-returns boolean
-language plpgsql
-security definer
-set search_path = indonesian, public
-as $$
-declare
-  v_found boolean;
-begin
-  if coalesce(auth.role(), '') <> 'service_role' then
-    raise exception 'redeem_invite_code requires a trusted service role caller';
-  end if;
-
-  update indonesian.signup_invite_codes
-  set uses_remaining = uses_remaining - 1
-  where code = p_code and uses_remaining > 0
-  returning true into v_found;
-
-  return coalesce(v_found, false);
-end;
-$$;
-
-revoke all on function indonesian.redeem_invite_code(text) from public;
-grant execute on function indonesian.redeem_invite_code(text) to service_role;
-
--- restore_invite_code: increments uses_remaining back after a redeem whose
--- follow-up GoTrue user creation failed (e.g. a typo'd, already-registered
--- email) — so the invite code isn't burned for nothing.
-create or replace function indonesian.restore_invite_code(p_code text)
-returns boolean
-language plpgsql
-security definer
-set search_path = indonesian, public
-as $$
-declare
-  v_found boolean;
-begin
-  if coalesce(auth.role(), '') <> 'service_role' then
-    raise exception 'restore_invite_code requires a trusted service role caller';
-  end if;
-
-  update indonesian.signup_invite_codes
-  set uses_remaining = uses_remaining + 1
-  where code = p_code
-  returning true into v_found;
-
-  return coalesce(v_found, false);
-end;
-$$;
-
-revoke all on function indonesian.restore_invite_code(text) from public;
-grant execute on function indonesian.restore_invite_code(text) to service_role;
+-- Payment is the gate now; the invite-code system (table + 2 RPCs + the
+-- signup-with-invite edge function) is deleted -- this removes the parked
+-- invite-brute-force HIGH by removing the attack surface. Grep-verified
+-- 2026-07-12: the only references to signup_invite_codes/redeem_invite_code/
+-- restore_invite_code were the edge function (deleted separately), this file,
+-- and a check-supabase-deep.ts skip-set entry (removed in the same PR) -- no
+-- FK points INTO any of these objects, so no CASCADE is needed. Mirrors the
+-- "never create-then-dropped" style used by the SM-2 teardown above: the
+-- original CREATE TABLE/FUNCTION blocks are excised, not left to be
+-- immediately undone by a DROP a few lines later.
+drop function if exists indonesian.redeem_invite_code(text);
+drop function if exists indonesian.restore_invite_code(text);
+drop table if exists indonesian.signup_invite_codes;
 
 -- ============================================================================
 -- Pre-cloud-preview hardening item 7: session-data narrowing RPC
@@ -4771,3 +4746,162 @@ drop function if exists indonesian.get_recall_accuracy_by_direction(uuid);
 drop function if exists indonesian.get_review_forecast(uuid, integer, text);
 drop function if exists indonesian.get_review_latency_stats(uuid);
 drop function if exists indonesian.get_vulnerable_capabilities(uuid, integer);
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Entitlements: OAuth + Stripe + private-bucket paywall
+-- (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md, DB slice)
+-- ═══════════════════════════════════════════════════════════════════════════
+-- entitlements is a LEARNER-DATA table from birth (CLAUDE.md Operating
+-- Context) — it is the record of who paid. One row per user who has ever had
+-- access beyond free tier; ALL writes are service-role (the Stripe webhook /
+-- verify-checkout edge functions, or an admin comp insert) — owners only
+-- ever read their own row (policy below).
+create table if not exists indonesian.entitlements (
+  user_id                uuid primary key references auth.users(id) on delete cascade,
+  status                 text not null check (status in
+                           ('active', 'past_due', 'canceled', 'comped')),
+  source                 text not null check (source in ('stripe', 'comp')),
+  stripe_customer_id     text unique,
+  stripe_subscription_id text unique,
+  current_period_end     timestamptz,
+  created_at             timestamptz not null default now(),
+  updated_at             timestamptz not null default now(),
+  -- source and status are correlated discriminators; enforce the pairing so a
+  -- writer bug can't mint a mismatched row (e.g. source='comp' status='active').
+  -- A comp row MAY carry a stripe_customer_id (set when a comped user starts a
+  -- checkout, spec §3.1 step 2) but never a subscription while still comped.
+  constraint entitlements_source_status_check check (
+    (source = 'stripe' and status in ('active', 'past_due', 'canceled')
+      and stripe_customer_id is not null)
+    or
+    (source = 'comp' and status = 'comped' and stripe_subscription_id is null)
+  )
+);
+
+alter table indonesian.entitlements enable row level security;
+
+-- Owner reads own row; ALL writes are service-role (webhook / admin) only.
+-- Per-policy drop+create idiom (this file's header rule — PG has no CREATE
+-- POLICY IF NOT EXISTS; make migrate-idempotent-check enforces this).
+drop policy if exists "entitlements_owner_read" on indonesian.entitlements;
+create policy "entitlements_owner_read" on indonesian.entitlements
+  for select to authenticated using (auth.uid() = user_id);
+grant select on indonesian.entitlements to authenticated;
+grant all on indonesian.entitlements to service_role;
+
+-- Webhook idempotency ledger. Service-role only, no policies. No payload
+-- column: Stripe's dashboard retains full event bodies already.
+create table if not exists indonesian.stripe_webhook_events (
+  event_id    text primary key,
+  event_type  text not null,
+  received_at timestamptz not null default now()
+);
+alter table indonesian.stripe_webhook_events enable row level security;
+grant all on indonesian.stripe_webhook_events to service_role;
+
+-- Access predicate (single definition, consumed by storage RLS via
+-- can_read_media below and by set_lesson_activation above — both SECURITY
+-- DEFINER, so it executes with owner rights and needs no broad grants; the
+-- client never calls it, it reads its own owner-visible entitlements row
+-- instead).
+create or replace function indonesian.has_active_entitlement(p_user_id uuid)
+returns boolean language sql stable
+set search_path = indonesian, public
+as $$
+  select exists (
+    select 1 from indonesian.entitlements
+    where user_id = p_user_id and status in ('active', 'past_due', 'comped')
+  ) or exists (
+    select 1 from indonesian.user_roles
+    where user_id = p_user_id and role = 'admin'
+  );
+$$;
+revoke all on function indonesian.has_active_entitlement(uuid) from public;
+grant execute on function indonesian.has_active_entitlement(uuid) to service_role;
+-- Deliberately NOT granted to authenticated: as SECURITY INVOKER it would
+-- silently return false for any p_user_id other than the caller (RLS hides
+-- other rows) — a trap for a future caller assuming a general oracle. Its
+-- two consumers are SECURITY DEFINER functions, which don't need the grant.
+
+-- Free-tier boundary — one canonical definition ("free = lessons 1–3"),
+-- consumed by the activation gate above, both can_read_media clauses below,
+-- and the client paywall mirror (FREE_TIER_MAX_LESSON in entitlementService).
+-- No explicit grant needed: pure computation on its own parameter (no table
+-- access), and its two callers are SECURITY DEFINER functions whose nested
+-- calls bypass EXECUTE checks via ownership; PUBLIC's default EXECUTE on
+-- functions is harmless here.
+create or replace function indonesian.is_free_tier_lesson(p_order_index int)
+returns boolean language sql immutable
+as $$ select p_order_index <= 3 $$;
+
+-- ── Private buckets + signed URLs (spec §4) ──────────────────────────────
+-- can_read_media: the storage RLS predicate. security definer because the
+-- policy runs as the storage API's role, which has no grants on
+-- indonesian.*; the function needs owner rights to read
+-- entitlements/audio_clips/lessons/texts. Execute granted to authenticated
+-- (storage-api evaluates the policy as the querying role, so the invoking
+-- role needs EXECUTE on the policy's function).
+create or replace function indonesian.can_read_media(p_bucket text, p_name text)
+returns boolean language sql stable security definer
+set search_path = indonesian, public
+as $$
+  select indonesian.has_active_entitlement(auth.uid())
+  or (
+    -- Free tier: TTS whose text belongs to a free lesson. Clips are REUSED
+    -- across lessons (get_audio_clip_per_text earliest-lesson preference) and
+    -- generated_for_lesson_id is nullable/SET NULL — so key on the TEXT, not
+    -- the clip: a clip is free if any clip of the same normalized_text was
+    -- generated for a free lesson.
+    p_bucket = 'indonesian-tts' and exists (
+      select 1
+      from indonesian.audio_clips ac
+      join indonesian.audio_clips ac2 on ac2.normalized_text = ac.normalized_text
+      join indonesian.lessons l on l.id = ac2.generated_for_lesson_id
+      where ac.storage_path = p_name
+        and indonesian.is_free_tier_lesson(l.order_index))
+  ) or (
+    p_bucket = 'indonesian-lessons' and exists (
+      select 1 from indonesian.lessons l
+      where indonesian.is_free_tier_lesson(l.order_index)
+        and (l.audio_path = p_name or l.audio_path_en = p_name))
+  ) or (
+    -- Free tier: the single pronunciation podcast (ADR 0025; the one texts
+    -- row with twin NL/EN audio). It is part of the day-one onboarding
+    -- program — pay-walling it would gut the free experience. Story/reading
+    -- podcasts (audio_path set, audio_path_en null) stay paid.
+    p_bucket = 'indonesian-podcasts' and exists (
+      select 1 from indonesian.texts t
+      where t.audio_path_en is not null
+        and (t.audio_path = p_name or t.audio_path_en = p_name))
+  );
+$$;
+
+drop policy if exists "indonesian_media_read" on storage.objects;
+create policy "indonesian_media_read" on storage.objects
+  for select to authenticated
+  using (
+    bucket_id in ('indonesian-lessons', 'indonesian-podcasts', 'indonesian-tts')
+    and indonesian.can_read_media(bucket_id, name)
+  );
+
+-- Storage-api evaluates the policy as the querying role, so the invoking
+-- role needs EXECUTE on the policy's function:
+grant execute on function indonesian.can_read_media(text, text) to authenticated;
+
+create index if not exists idx_audio_clips_storage_path
+  on indonesian.audio_clips (storage_path);
+-- No index needed for the normalized_text self-join: the existing
+-- UNIQUE(normalized_text, voice_id) (migration.sql:1014) already serves
+-- leftmost-column equality lookups.
+
+-- Bucket privatization — a fresh-DB-replay requirement (the PR #450
+-- property): public=true bypasses storage RLS entirely on the
+-- /object/public/ path, so a rebuild that recreated the buckets public would
+-- silently disable the whole paywall while every check stayed green. The two
+-- INSERTs above (~line 760, ~line 1063) now insert public=false directly;
+-- this UPDATE converges DBs where the bucket rows already exist (their ON
+-- CONFLICT DO NOTHING can't flip an existing row). Sequenced AFTER the
+-- indonesian_media_read policy above per spec §4 — the flip lands with the
+-- migrate, one coordinated deploy window (spec §7), not a phased rollout.
+update storage.buckets set public = false
+where id in ('indonesian-lessons', 'indonesian-podcasts', 'indonesian-tts');
