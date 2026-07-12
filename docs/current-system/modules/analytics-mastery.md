@@ -1,7 +1,7 @@
 ---
 module: analytics-mastery
 surface: src/lib/analytics/mastery/
-last_verified_against_code: 2026-07-09
+last_verified_against_code: 2026-07-11
 status: partial
 ---
 
@@ -30,11 +30,38 @@ All in `masteryModel.ts`:
   `deriveMasteryOverview({userId, evidence, now?})`.
 - **IO model**: `createMasteryModel(client)` → `{ getContentUnitMastery,
   getPatternMastery, getMasteryOverview, getMasteryFunnel, getMasteryFunnels,
-  getSkillModeGaps, getGrammarTopics, getStubbornWords, getTroublesomeWords }`
-  (+ the standalone `getWeeklyMovement` RPC wrapper); every method has a
-  default-client wrapper of the same name. All readers except content-unit/pattern
-  share one `allLearnerEvidence(userId)` fetch (states → caps → activation →
-  lesson-number).
+  getSkillModeGaps, getGrammarTopics, getStubbornWords, getTroublesomeWords,
+  getFunnelSeries }` (+ the standalone `getWeeklyMovement` RPC wrapper); every
+  method has a default-client wrapper of the same name. All readers except
+  content-unit/pattern share one `allLearnerEvidence(userId)` fetch (states →
+  caps → activation → lesson-number).
+  **Narrowed to two RPCs** (2026-07-11,
+  `docs/plans/2026-07-11-mastery-evidence-rpc-narrowing.md`, fixing a silent
+  PGRST_DB_MAX_ROWS truncation risk — the C1 finding): `allLearnerEvidence` and
+  `getFunnelSeries`'s capability/state/activation/lesson set are sourced from
+  ONE scalar-jsonb RPC, `get_mastery_evidence(p_user_id)` — same idiom as
+  `get_session_build_data` (immune to row truncation; `states` unfiltered
+  beyond `user_id`; `capabilities` filtered ONLY `retired_at is null`, no
+  readiness/publication filter — parity with the pre-cutover client join).
+  `getFunnelSeries`'s events come from a second RPC,
+  `get_funnel_series_events(p_user_id, p_window_start)`, returning a bounded
+  `{baseline, window_events}` pair (latest pre-window event per capability +
+  everything since) instead of the learner's lifetime event history — exact
+  for `deriveFunnelSeries`, see §3. The content-unit/pattern readers
+  (`getContentUnitMastery`/`getPatternMastery`) are UNCHANGED: they still use
+  the direct, chunked `learner_capability_state`/`learning_capabilities` reads
+  (`capabilityRowsByIds`/`learnerStates`, both via `chunkedIn`) — this
+  narrowing does not touch them (guarded by HC52).
+  **In-flight dedup** (fixing the C2 finding — five Voortgang cards each
+  independently calling `allLearnerEvidence`): the `get_mastery_evidence` RPC
+  call is deduped per `(client, userId)` in a module-level `WeakMap`, entry
+  created on fetch start and evicted on settle (resolve AND reject) — no TTL.
+  Concurrent callers on one page load coalesce into a single network call; a
+  call issued after the in-flight one settles always gets a fresh fetch. This
+  keeps every reader **observationally identical to the uncached path** —
+  same data, same errors, same read-only/deterministic behaviour — dedup is
+  purely a transport optimisation, not a caching layer with its own
+  invalidation semantics.
 - **Types**: `MasteryLabel`, `MasteryConfidence`, `MasteryDimension`,
   `CapabilityMasteryEvidence` (carries the introducing `lessonNumber` — cap
   `lesson_id` → `lessons.order_index` — for per-lesson funnels),
@@ -118,7 +145,7 @@ All in `masteryModel.ts`:
 
 ## 2. The canonical `mastered` predicate (single source of truth)
 
-`labelForCapability` (`masteryModel.ts:169`) maps one capability's evidence
+`labelForCapability` (`masteryModel.ts:177`) maps one capability's evidence
 to a `MasteryLabel` on the ladder
 `at_risk / not_assessed / introduced / learning / strengthening / mastered`
 (current as of 2026-06-12 — the at_risk gate was a permanent OR, then self-healing
@@ -180,13 +207,19 @@ verify-lessons-overview-rls`).
 
 ## 3. Internal flow (functional)
 
-`toEvidence` (`:358`) joins `learning_capabilities` rows to the learner's
-`learner_capability_state` and the activated-lesson set (`listActivatedLessons`
-from `lib/lessons`) into `CapabilityMasteryEvidence[]`; podcast caps (null
-`lesson_id`) count as activated (ADR 0006). `deriveMasteryDimensions` buckets
-evidence by `MasteryDimension` (`dimensionForCapability`, `:134`), labelling each
-dimension by `weakestLabel` and scoring `confidence`. The scope derivers roll the
-dimensions up via `weakestLabel` + `aggregateConfidence`.
+`toEvidence` (`:1100`) joins `learning_capabilities` rows to the learner's
+`learner_capability_state` and the activated-lesson set into
+`CapabilityMasteryEvidence[]`; podcast caps (null `lesson_id`) count as
+activated (ADR 0006). For `allLearnerEvidence`/`getFunnelSeries`, the three
+inputs `toEvidence` joins (states, capabilities, activated-lesson set) are all
+sourced from ONE `get_mastery_evidence` RPC call (`rawMasteryEvidence`,
+`:1055`) rather than `listActivatedLessons` + a direct client read — the
+content-unit/pattern readers (`evidenceForCapabilities`, `:1177`) still call
+`listActivatedLessons` from `lib/lessons` directly, since they are not on the
+RPC path. `deriveMasteryDimensions` buckets evidence by `MasteryDimension`
+(`dimensionForCapability`, `:140`), labelling each dimension by `weakestLabel`
+and scoring `confidence`. The scope derivers roll the dimensions up via
+`weakestLabel` + `aggregateConfidence`.
 
 **`weakestLabel` rollup is per content-unit / pattern / overview — NOT per
 lesson.** Lesson-level mastery is a *coverage percentage* (`mastered / introducible`)
@@ -197,14 +230,26 @@ lesson-status spec / `lessons-overview` module.
 ## 4. Invariants
 
 - Read-only; no writes, no scheduling.
-- Retired caps excluded (`retired_at is null`, `:403`).
+- Retired caps excluded (`retired_at is null`, `capabilityRowsByIds` `:1154`;
+  `get_mastery_evidence`'s `evidence_caps` CTE mirrors the same filter server-side).
 - `mastered` is level-independent and strict; a forgiving signal would get a
   *different word*, never a diluted `mastered` (CONTEXT.md → Mastered).
 
 ## 5. Seams
 
-- **Upstream**: `lib/capabilities/` (types), `lib/lessons/` (`listActivatedLessons`),
-  `lib/chunkedQuery`, `lib/supabase`.
+- **Upstream**: `lib/capabilities/` (types), `lib/lessons/` (`listActivatedLessons`
+  — content-unit/pattern readers only, see §3), `lib/chunkedQuery` (content-unit/
+  pattern readers only), `lib/supabase`. Two RPCs: `indonesian.get_mastery_evidence`
+  and `indonesian.get_funnel_series_events` (`scripts/migration.sql`, appended
+  next to `get_session_build_data`) — the `allLearnerEvidence`/`getFunnelSeries`
+  transport (2026-07-11 narrowing, see §1). Guarded by **HC52** (static source
+  check — no unbounded client-side `learner_capability_state`/
+  `capability_review_events` read; the retained chunked `learnerStates` path
+  must stay present) and **HC53** (live parity under real authenticated-role
+  RLS — signs in as the E2E test user, asserts non-empty states/capabilities/
+  baseline, then parity-compares RPC A vs direct service-role reads and
+  `deriveFunnelSeries(baseline ∪ window)` vs the same deriver over the full
+  event history).
 - **Downstream consumers**: the Voortgang surfaces **do** consume this model
   (updated 2026-07-09 for the hub redesign): the five progress details share
   `MasteryFunnelPanel` ← `getMasteryFunnels` (all-lessons + per-lesson
