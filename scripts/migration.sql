@@ -534,6 +534,21 @@ RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian 
     ),
     'apply_placement_result_anon_execute', has_function_privilege(
       'anon', 'indonesian.apply_placement_result(text[],text[])', 'execute'
+    ),
+    -- Entitlement design (2026-07-12) structural probes read by
+    -- check-supabase-deep.ts. has_active_entitlement is deliberately NOT
+    -- granted to authenticated (§1 comment) -- this proves the omission
+    -- holds, not just that it was written that way once. Mirrors the
+    -- has_function_privilege probe style above; text-signature argument is
+    -- resolved lazily at CALL time, so definition order in this file does
+    -- not matter (has_active_entitlement is created later in this file).
+    'has_active_entitlement_authenticated_execute', has_function_privilege(
+      'authenticated', 'indonesian.has_active_entitlement(uuid)', 'execute'
+    ),
+    'indonesian_media_read_policy_exists', EXISTS (
+      SELECT 1 FROM pg_policies
+      WHERE schemaname = 'storage' AND tablename = 'objects'
+        AND policyname = 'indonesian_media_read'
     )
   )
 $$;
