@@ -47,7 +47,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       } else {
         set({ loading: false })
       }
-    } catch {
+    } catch (err) {
+      // The landing redirect on a failed session-restore is a valid state —
+      // no user-facing notification needed. But the failure must not vanish
+      // silently; log it so a CORS/network regression stays diagnosable.
+      logError({ page: 'auth', action: 'initialize', error: err })
       set({ loading: false })
     }
 

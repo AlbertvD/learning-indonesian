@@ -37,6 +37,12 @@ export default function ListeningMCQ({
   // here stays false, so no setState-in-effect churn.
   const hasPlayedRef = useRef(false)
   const [hasPlayed, setHasPlayed] = useState(false)
+  // A real playback failure (404/network) must not soft-lock the learner
+  // behind permanently-disabled options — throw during render so the
+  // surrounding ExerciseErrorBoundary (CapabilityExerciseFrame) takes over
+  // with its existing friendly skip + FSRS-consistent accounting, instead of
+  // a parallel escape mechanism here.
+  const [audioFailed, setAudioFailed] = useState(false)
 
   const scoring = useExerciseScoring<string>({
     mode: 'tap',
@@ -54,6 +60,10 @@ export default function ListeningMCQ({
     },
     onEvent,
   })
+
+  if (audioFailed) {
+    throw new Error('Audio playback failed for choose_meaning_from_audio_ex')
+  }
 
   if (!audioUrl) {
     return (
@@ -79,6 +89,7 @@ export default function ListeningMCQ({
           audioUrl={audioUrl}
           autoplay
           onPlay={() => { hasPlayedRef.current = true; setHasPlayed(true) }}
+          onError={() => setAudioFailed(true)}
           aria-label={userLanguage === 'nl' ? 'Speel audio af' : 'Play audio'}
         />
       </ExercisePromptCard>

@@ -37,6 +37,12 @@ export default function Dictation({
 
   const hasPlayedRef = useRef(false)
   const [, setHasPlayedTick] = useState(0)
+  // A real playback failure (404/network) must not soft-lock the learner
+  // behind a permanently-disabled submit button — throw during render so the
+  // surrounding ExerciseErrorBoundary (CapabilityExerciseFrame) takes over
+  // with its existing friendly skip + FSRS-consistent accounting, instead of
+  // a parallel escape mechanism here.
+  const [audioFailed, setAudioFailed] = useState(false)
 
   const scoring = useExerciseScoring<string>({
     mode: 'typed',
@@ -60,6 +66,10 @@ export default function Dictation({
     // Submit blocked until the clip has played once.
     gate: () => hasPlayedRef.current,
   })
+
+  if (audioFailed) {
+    throw new Error('Audio playback failed for type_form_from_audio_ex')
+  }
 
   if (!audioUrl) {
     return (
@@ -104,6 +114,7 @@ export default function Dictation({
             // Force a re-render so `canSubmit` recomputes with the open gate.
             setHasPlayedTick(n => n + 1)
           }}
+          onError={() => setAudioFailed(true)}
           aria-label={userLanguage === 'nl' ? 'Speel audio af' : 'Play audio'}
         />
       </ExercisePromptCard>

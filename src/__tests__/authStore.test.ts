@@ -2,6 +2,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
+import { logError } from '@/lib/logger'
+
+vi.mock('@/lib/logger', () => ({
+  logError: vi.fn(),
+}))
 
 // Build a chainable mock that mirrors supabase.schema('x').from('y').select().eq().maybeSingle()
 function createChainableMock(terminal: Record<string, any> = {}) {
@@ -85,6 +90,17 @@ describe('authStore', () => {
       timezone: null,
     })
     expect(useAuthStore.getState().loading).toBe(false)
+  })
+
+  it('initialize logs the failure and still resolves loading=false when session-restore throws (silent-failure fix)', async () => {
+    const sessionError = new Error('Failed to fetch')
+    vi.mocked(supabase.auth.getSession).mockRejectedValue(sessionError)
+
+    await useAuthStore.getState().initialize()
+
+    expect(logError).toHaveBeenCalledWith({ page: 'auth', action: 'initialize', error: sessionError })
+    expect(useAuthStore.getState().loading).toBe(false)
+    expect(useAuthStore.getState().user).toBeNull()
   })
 
   it('updateDisplayName updates profile in store and calls correct Supabase chain', async () => {
