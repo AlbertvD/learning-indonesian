@@ -1,5 +1,6 @@
 ---
-status: approved
+status: implementing
+implementation: PR #445
 reviewed_by:
   - staff-engineer (2026-07-11 — GO after revisions; TTL dropped, tiebreak pinned)
   - data-architect (2026-07-11 — SIGN-OFF yes; 3 minors folded in below)
@@ -193,6 +194,14 @@ current max at implementation time — do not assume).
   test user's oldest event predates the 12-week window (and fail the check
   with a "fixture too young" message if not) or seed pre-window events for the
   test account.
+  **RESOLVED 2026-07-12 (first live run):** the fixed 12-week window DID fail
+  on the young fixture. Instead of seeding synthetic rows into a precious
+  learner table, HC53 derives the widest window (≤12 weeks) whose start
+  postdates the fixture's oldest real event — the baseline branch is always
+  exercised on real data and the check survives fixture resets. History under
+  ~2 weeks fails explicitly as fixture-too-young; an empty baseline is now
+  unambiguously the RLS-deny regression (the window construction guarantees
+  ≥1 baseline row otherwise).
 
 ### 6. Tests
 

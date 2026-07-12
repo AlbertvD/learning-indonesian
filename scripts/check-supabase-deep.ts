@@ -3022,12 +3022,44 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
       const { error: signInErr } = await userClient.auth.signInWithPassword({ email: TEST_USER_EMAIL, password: TEST_USER_PASSWORD })
       if (signInErr) throw new Error(`sign-in as ${TEST_USER_EMAIL} failed: ${signInErr.message}`)
 
-      const weekEnds = weekEndsBackFrom(new Date(), 'UTC', WEEKS)
-      // Same "ask for one more week, read only its [0].cutoff" trick
-      // masteryModel.ts's getFunnelSeries uses to get the oldest requested
-      // week's local-Monday START (not its cutoff/END) — reuses the one place
-      // the window math lives instead of re-deriving it here.
-      const windowStart = weekEndsBackFrom(new Date(), 'UTC', WEEKS + 1)[0]!.cutoff
+      // SELF-ADAPTING WINDOW (2026-07-12, first live run): a fixed 12-week
+      // window fails whenever the E2E user's history is younger than 12
+      // weeks (baseline empty → the DISTINCT ON collapse is unproven). Per
+      // the spec's §5 fixture precondition, instead of seeding synthetic
+      // rows into capability_review_events (a precious learner table),
+      // derive the WIDEST window (≤ WEEKS) whose start still postdates the
+      // user's oldest event — the baseline branch is then exercised on real
+      // data regardless of fixture age, and the check never rots when the
+      // fixture account is reset. History spanning < ~2 weeks genuinely
+      // cannot prove the collapse → explicit fixture-too-young failure.
+      const now = new Date()
+      const { data: oldestRows, error: oldestErr } = await supabase.schema('indonesian')
+        .from('capability_review_events')
+        .select('created_at').eq('user_id', TEST_USER_ID)
+        .order('created_at', { ascending: true }).limit(1)
+      if (oldestErr) throw new Error(`oldest-event probe: ${oldestErr.message}`)
+      const oldestEventAt = oldestRows?.[0]?.created_at ? new Date(oldestRows[0].created_at as string) : null
+      if (!oldestEventAt) throw new Error(`test user ${TEST_USER_EMAIL} has zero capability_review_events — fixture unusable`)
+
+      // Largest weeks w (1..WEEKS) whose window start is still AFTER the
+      // oldest event. Window start for w weeks = weekEndsBackFrom(now, 'UTC',
+      // w+1)[0].cutoff — same "one extra week, read its [0].cutoff" trick
+      // masteryModel.ts's getFunnelSeries uses (the one place the week math lives).
+      let weeks = 0
+      for (let w = 1; w <= WEEKS; w++) {
+        const ws = weekEndsBackFrom(now, 'UTC', w + 1)[0]!.cutoff
+        if (ws.getTime() > oldestEventAt.getTime()) weeks = w
+        else break
+      }
+      if (weeks === 0) {
+        throw new Error(
+          `fixture too young: ${TEST_USER_EMAIL}'s oldest event (${oldestEventAt.toISOString()}) is within the ` +
+            `current week — no window start can postdate it, so the baseline DISTINCT ON collapse cannot be proven. ` +
+            `Wait a week or seed pre-window review events for the fixture account.`,
+        )
+      }
+      const weekEnds = weekEndsBackFrom(now, 'UTC', weeks)
+      const windowStart = weekEndsBackFrom(now, 'UTC', weeks + 1)[0]!.cutoff
 
       const { data: evidenceData, error: evidenceErr } = await userClient
         .schema('indonesian')
@@ -3059,9 +3091,10 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         fail(
           HC53,
           `get_funnel_series_events returned an empty baseline (0 rows with created_at < ${windowStart.toISOString()}) ` +
-            `— either an RLS-deny, or the test user's oldest event does not predate the ${WEEKS}-week window ` +
-            `(fixture too young: seed pre-window review events for ${TEST_USER_EMAIL}, or widen the window). This ` +
-            `check cannot prove the DISTINCT ON baseline collapse without a non-empty baseline.`,
+            `even though the window was derived to postdate the test user's oldest event ` +
+            `(${oldestEventAt.toISOString()}) — this is the RLS-deny regression this check guards against ` +
+            `(SECURITY INVOKER returning empty under the authenticated role). This check cannot prove the ` +
+            `DISTINCT ON baseline collapse without a non-empty baseline.`,
         )
       } else {
         // ---- Parity 1: RPC A vs direct SERVICE-ROLE reads (counts + id sets) ----
@@ -3122,7 +3155,7 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
         const seriesMatch = JSON.stringify(boundedSeries) === JSON.stringify(fullSeries)
 
         if (stateDiff.length === 0 && capDiff.length === 0 && seriesMatch) {
-          pass(`${HC53} (states=${rpcStates.length} capabilities=${rpcCapabilities.length} baseline=${rpcBaseline.length} window_events=${rpcWindowEvents.length}; RPC A id-set parity + deriveFunnelSeries(baseline∪window)==deriveFunnelSeries(full) over ${WEEKS} weeks)`)
+          pass(`${HC53} (states=${rpcStates.length} capabilities=${rpcCapabilities.length} baseline=${rpcBaseline.length} window_events=${rpcWindowEvents.length}; RPC A id-set parity + deriveFunnelSeries(baseline∪window)==deriveFunnelSeries(full) over ${weeks} adaptive weeks, cap ${WEEKS})`)
         } else {
           fail(
             HC53,
