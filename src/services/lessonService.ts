@@ -9,7 +9,6 @@
 // (getUserLessonProgress removed 2026-07-01 with the lesson_progress table — #150.)
 
 import { supabase } from '@/lib/supabase'
-import { logError } from '@/lib/logger'
 import { SIGNED_URL_TTL_SECONDS } from '@/lib/signedAudioUrl'
 
 // One lesson's grammar-podcast paths, for the Ontdek "Grammatica podcasts" hub.
@@ -34,10 +33,10 @@ export const lessonService = {
     const { data, error } = await supabase.storage
       .from('indonesian-lessons')
       .createSignedUrl(audioPath, SIGNED_URL_TTL_SECONDS)
-    if (error) {
-      logError({ page: 'lesson-service', action: 'getSignedAudioUrl', error })
-      return null
-    }
+    // NOT logged — a non-entitled user or a missing object is an expected
+    // outcome, not a bug (cf. signStoredAudioUrl in lib/signedAudioUrl.ts).
+    // Callers already treat a null URL as the existing absent-audio state.
+    if (error) return null
     return data.signedUrl
   },
 

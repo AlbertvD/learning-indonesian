@@ -1,16 +1,24 @@
 // supabase/functions/delete-account/index.ts
 //
 // Self-serve account erasure (GDPR Art. 17). Verifies the caller's JWT via
-// GoTrue /auth/v1/user, then deletes the user via the GoTrue admin API
+// GoTrue /auth/v1/user, then — per
+// docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §6 — cancels any
+// live Stripe subscription and erases the Stripe Customer BEFORE deleting
+// the user, then deletes the user via the GoTrue admin API
 // DELETE /auth/v1/admin/users/{id} with the service key. Deleting the
 // auth.users row triggers every ON DELETE CASCADE in scripts/migration.sql
 // (see docs/plans/2026-07-02-gdpr-erasure-retention.md §1.2), wiping all
-// learner data in one Postgres-native operation. error_logs +
+// learner data in one Postgres-native operation (the entitlements row dies
+// via its own ON DELETE CASCADE). error_logs +
 // capability_resolution_failure_events survive with user_id nulled (SET NULL).
 //
 // Modeled on commit-capability-answer-report/index.ts (JWT verify) and
 // signup-with-invite/index.ts (GoTrue admin fetch). Consumes NO invite code.
-// Idempotent: a second call after the user is gone returns 200 (see §1.6).
+// Idempotent: a second call after the user is gone returns 200 (see §1.6) —
+// the entitlements row is already cascaded away by then, so the Stripe step
+// below is a no-op on retry, not a second cancellation attempt.
+
+import { fetchEntitlementColumns, getStripeClient } from '../_shared/stripe/index.ts'
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -66,7 +74,64 @@ Deno.serve(async (request) => {
     return publicReject(403, 'user_mismatch')
   }
 
-  // 2. Delete via GoTrue admin API. 404 = already gone = idempotent success.
+  // 2. Cancel any live Stripe subscription and erase the Stripe Customer
+  // BEFORE deleting the user (spec §6, GDPR). A live subscription still
+  // charging a deleted, untraceable Stripe customer is worse than a
+  // failed/retried account deletion, so any REQUIRED Stripe call failing
+  // here aborts the whole request — the user is NOT deleted. No entitlement
+  // row / no Stripe ids on the row is the common case (never subscribed, or
+  // a second idempotent call after the row already cascaded away) and
+  // proceeds normally without touching Stripe at all.
+  interface DeleteAccountEntitlementRow {
+    stripe_subscription_id: string | null
+    stripe_customer_id: string | null
+    status: string
+  }
+  let entitlementRow: DeleteAccountEntitlementRow | null
+  try {
+    entitlementRow = await fetchEntitlementColumns<DeleteAccountEntitlementRow>(
+      supabaseUrl,
+      serviceRoleKey,
+      userId,
+      'stripe_subscription_id,stripe_customer_id,status',
+    )
+  } catch (error) {
+    console.error('delete_account_entitlement_lookup_failed', { userId, error })
+    return publicReject(500, 'entitlement_lookup_failed')
+  }
+
+  const hasLiveSubscription = Boolean(
+    entitlementRow?.stripe_subscription_id && ['active', 'past_due'].includes(entitlementRow.status),
+  )
+
+  if (entitlementRow?.stripe_subscription_id || entitlementRow?.stripe_customer_id) {
+    const stripeConfigured = Boolean(Deno.env.get('STRIPE_SECRET_KEY'))
+    if (!stripeConfigured) {
+      // STRIPE_SECRET_KEY absent is expected on an old deployment that
+      // predates the entitlement design. That's only safe to proceed past
+      // if there's no live subscription left dangling and chargeable.
+      if (hasLiveSubscription) {
+        console.error('delete_account_stripe_not_configured_with_live_subscription', { userId })
+        return publicReject(500, 'stripe_not_configured')
+      }
+    } else {
+      try {
+        const stripe = getStripeClient()
+        if (entitlementRow.stripe_subscription_id && hasLiveSubscription) {
+          await stripe.subscriptions.cancel(entitlementRow.stripe_subscription_id)
+        }
+        if (entitlementRow.stripe_customer_id) {
+          // Erases Stripe-side PII (email, name, payment methods) per GDPR.
+          await stripe.customers.del(entitlementRow.stripe_customer_id)
+        }
+      } catch (error) {
+        console.error('delete_account_stripe_cleanup_failed', { userId, error })
+        return publicReject(500, 'stripe_cleanup_failed')
+      }
+    }
+  }
+
+  // 3. Delete via GoTrue admin API. 404 = already gone = idempotent success.
   // should_soft_delete: false is LOAD-BEARING (data-architect G1): a soft
   // delete would ban/scramble the auth.users row WITHOUT removing it, so the
   // ON DELETE CASCADE / SET NULL clauses never fire and every indonesian.*

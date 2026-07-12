@@ -130,12 +130,15 @@ describe('textService', () => {
     expect(url).toBe('https://example.com/audio.mp3?token=abc')
   })
 
-  it('getSignedAudioUrl returns null and logs on a signing failure', async () => {
+  it('getSignedAudioUrl returns null and does NOT log on an expected signing failure (non-entitled)', async () => {
     vi.mocked(supabase.storage.from).mockReturnValueOnce({
       createSignedUrl: vi.fn().mockResolvedValue({ data: null, error: new Error('not entitled') }),
     } as any)
 
     const url = await textService.getSignedAudioUrl('path/to/audio.mp3')
     expect(url).toBeNull()
+
+    const { logError } = await import('@/lib/logger')
+    expect(logError).not.toHaveBeenCalled()
   })
 })

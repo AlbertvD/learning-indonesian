@@ -12,9 +12,12 @@
 //
 // Error-code contract (verify-checkout/index.ts): 400 missing_session_id,
 // 403 user_mismatch → not retryable (the session itself is invalid or not
-// this user's), generic failure + link to Profile. 500
-// checkout_session_incomplete / verify_checkout_failed (and any
-// unrecognised/network error) → retryable, Retry button re-calls
+// this user's), generic failure + link to Profile. 401 missing_user_jwt /
+// invalid_user_jwt → not retryable EITHER, but a distinct dead-end: retrying
+// with the same expired/missing session just fails again, so these get their
+// own session-expired state with a link to /login instead of the generic
+// blocked copy. 500 checkout_session_incomplete / verify_checkout_failed
+// (and any unrecognised/network error) → retryable, Retry button re-calls
 // verify-checkout with the same session_id. A `session_id` missing from the
 // URL itself is treated the same as the 400 — no call is even made.
 //
@@ -39,12 +42,18 @@ import { extractEdgeFunctionErrorCode } from '@/lib/edgeFunctionError'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
 
-type ViewState = 'loading' | 'success' | 'pending' | 'retryable' | 'blocked'
+type ViewState = 'loading' | 'success' | 'pending' | 'retryable' | 'blocked' | 'sessionExpired'
 
 // 403/400 mean the session itself can't be confirmed by retrying the same
 // call — everything else (500s, network errors, unknown codes) is treated
 // as transient and gets the retry affordance.
 const NON_RETRYABLE_CODES = new Set(['missing_session_id', 'user_mismatch'])
+
+// A dead-end distinct from the other non-retryable codes: retrying against
+// an expired/missing JWT fails the exact same way every time, so this gets
+// its own state (session-expired copy + a link to /login) instead of the
+// generic blocked state's "check your profile" dead end.
+const SESSION_EXPIRED_CODES = new Set(['missing_user_jwt', 'invalid_user_jwt'])
 
 export function CheckoutSuccess() {
   const T = useT()
@@ -68,7 +77,13 @@ export function CheckoutSuccess() {
       setState(status && isActiveStatus(status) ? 'success' : 'pending')
     } catch (err) {
       const code = await extractEdgeFunctionErrorCode(err)
-      setState(code && NON_RETRYABLE_CODES.has(code) ? 'blocked' : 'retryable')
+      setState(
+        code && SESSION_EXPIRED_CODES.has(code)
+          ? 'sessionExpired'
+          : code && NON_RETRYABLE_CODES.has(code)
+            ? 'blocked'
+            : 'retryable',
+      )
       logError({ page: 'checkout-success', action: 'verify-checkout', error: err })
     }
   }, [sessionId, refreshEntitlement])
@@ -131,6 +146,21 @@ export function CheckoutSuccess() {
             icon={<IconAlertTriangle size={48} />}
             message={T.checkout.errorRetryableBody}
             cta={<Button onClick={() => void verify()}>{T.checkout.retryButton}</Button>}
+          />
+        </PageBody>
+      </PageContainer>
+    )
+  }
+
+  if (state === 'sessionExpired') {
+    return (
+      <PageContainer size="sm">
+        <PageBody>
+          <PageHeader title={T.checkout.sessionExpiredTitle} />
+          <EmptyState
+            icon={<IconAlertTriangle size={48} />}
+            message={T.checkout.sessionExpiredBody}
+            cta={<Button onClick={() => navigate('/login')}>{T.checkout.goToLogin}</Button>}
           />
         </PageBody>
       </PageContainer>

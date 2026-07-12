@@ -4838,27 +4838,26 @@ as $$ select p_order_index <= 3 $$;
 -- can_read_media: the storage RLS predicate. security definer because the
 -- policy runs as the storage API's role, which has no grants on
 -- indonesian.*; the function needs owner rights to read
--- entitlements/audio_clips/lessons/texts. Execute granted to authenticated
--- (storage-api evaluates the policy as the querying role, so the invoking
--- role needs EXECUTE on the policy's function).
+-- entitlements/lessons/texts. Execute granted to authenticated (storage-api
+-- evaluates the policy as the querying role, so the invoking role needs
+-- EXECUTE on the policy's function).
 create or replace function indonesian.can_read_media(p_bucket text, p_name text)
 returns boolean language sql stable security definer
 set search_path = indonesian, public
 as $$
   select indonesian.has_active_entitlement(auth.uid())
   or (
-    -- Free tier: TTS whose text belongs to a free lesson. Clips are REUSED
-    -- across lessons (get_audio_clip_per_text earliest-lesson preference) and
-    -- generated_for_lesson_id is nullable/SET NULL — so key on the TEXT, not
-    -- the clip: a clip is free if any clip of the same normalized_text was
-    -- generated for a free lesson.
-    p_bucket = 'indonesian-tts' and exists (
-      select 1
-      from indonesian.audio_clips ac
-      join indonesian.audio_clips ac2 on ac2.normalized_text = ac.normalized_text
-      join indonesian.lessons l on l.id = ac2.generated_for_lesson_id
-      where ac.storage_path = p_name
-        and indonesian.is_free_tier_lesson(l.order_index))
+    -- AMENDED 2026-07-12 post-approval (integration review finding): the
+    -- entire indonesian-tts bucket is free for any AUTHENTICATED user (still
+    -- private to anon — no hotlinking). The original text-belongs-to-a-free-
+    -- lesson self-join silently broke the FREE pronunciation onboarding page,
+    -- whose pitfall/minimal-pair/dialogue-shadowing clips share no
+    -- normalized_text with lessons 1-3. Word-snippet TTS is not where the
+    -- product's paid value concentrates (lesson content + long-form audio
+    -- are), and free users cannot reach paid lessons' exercises anyway (the
+    -- activation gate is the load-bearing one). Deleting the self-join also
+    -- removes that predicate's per-signing join cost and its fragility.
+    p_bucket = 'indonesian-tts'
   ) or (
     p_bucket = 'indonesian-lessons' and exists (
       select 1 from indonesian.lessons l
@@ -4888,11 +4887,9 @@ create policy "indonesian_media_read" on storage.objects
 -- role needs EXECUTE on the policy's function:
 grant execute on function indonesian.can_read_media(text, text) to authenticated;
 
-create index if not exists idx_audio_clips_storage_path
-  on indonesian.audio_clips (storage_path);
--- No index needed for the normalized_text self-join: the existing
--- UNIQUE(normalized_text, voice_id) (migration.sql:1014) already serves
--- leftmost-column equality lookups.
+-- (AMENDED 2026-07-12: idx_audio_clips_storage_path and the normalized_text
+-- self-join note were removed with the TTS free-for-authenticated amendment
+-- above — the predicate no longer touches audio_clips at all.)
 
 -- Bucket privatization — a fresh-DB-replay requirement (the PR #450
 -- property): public=true bypasses storage RLS entirely on the

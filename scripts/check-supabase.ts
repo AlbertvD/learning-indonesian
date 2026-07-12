@@ -25,11 +25,11 @@ function fail(label: string, detail: string) {
   results.push({ label, ok: false, detail })
 }
 
-// Non-blocking: the check ran fine but surfaced something worth a human's
-// attention. Does NOT count toward `failures` / the non-zero exit code.
-function warn(label: string, detail: string) {
-  results.push({ label, ok: true, warn: true, detail })
-}
+// results[].warn is read by the output loop below for the non-blocking
+// warning display; no producer currently sets it (the one check that did,
+// the public-signup-gate probe, was deleted 2026-07-12 — open signup is now
+// the designed state, see Check 4b's removal note). Left as general-purpose
+// result-shape plumbing for a future WARNING-level check.
 
 // ── Check 1: API reachability ─────────────────────────────────────────────
 try {
@@ -107,35 +107,15 @@ try {
   fail('Auth endpoint', `Request failed: ${(err as Error).message}`)
 }
 
-// ── Check 4b: public signup gate ───────────────────────────────────────────
-// Pre-cloud-hardening item 1 gates self-signup behind an invite code
-// (supabase/functions/signup-with-invite). The public auth.signUp endpoint
-// should be DISABLED at the GoTrue level (GOTRUE_DISABLE_SIGNUP) so nobody
-// can bypass the invite-code edge function. This is a WARNING, not a
-// failure, because it doesn't block local dev — but it must be closed
-// before any customer preview goes out.
-try {
-  const probeClient = createClient(SUPABASE_URL, ANON_KEY)
-  const probeSuffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`
-  const throwawayEmail = `signup-probe-${probeSuffix}@duin.home`
-  const { data, error } = await probeClient.auth.signUp({
-    email: throwawayEmail,
-    password: `Probe-${probeSuffix}!`,
-  })
-  if (!error && data.user) {
-    warn(
-      'Public signup gate',
-      `Public signup is still OPEN — supabase.auth.signUp succeeded and created a user ` +
-      `(id ${data.user.id}, email ${throwawayEmail}). Set GOTRUE_DISABLE_SIGNUP=true in ` +
-      `homelab-configs services/supabase/docker-compose.yml and restart GoTrue. Delete the ` +
-      `throwaway user first: DELETE FROM auth.users WHERE id = '${data.user.id}';`,
-    )
-  } else {
-    pass('Public signup gate (auth.signUp disabled)')
-  }
-} catch (err) {
-  warn('Public signup gate', `Could not determine signup gate state: ${(err as Error).message}`)
-}
+// ── Check 4b: (removed) ─────────────────────────────────────────────────
+// Open signup + payment-as-the-gate is the designed state since the
+// 2026-07-12 entitlement design (§2 "Invite gate: dropped entirely — payment
+// is the gate"; GOTRUE_DISABLE_SIGNUP=false). The old probe here predated
+// that flip, asserted the OPPOSITE of the current design (it warned when
+// supabase.auth.signUp succeeded), and minted a real throwaway auth.users
+// row on every run. Deleted rather than inverted — there is no invariant
+// left to probe: the public signup endpoint being open is correct, not a
+// misconfiguration to detect.
 
 // ── Checks 5–7: Storage buckets are private (anon probe) ──────────────────
 // All 3 buckets flip public=false as part of the entitlement DB slice
@@ -299,7 +279,8 @@ if (authed) {
       }
     }
   }
-  // ── Entitlement RLS probes (2026-07-12 entitlement design §8) ────────────
+  // ── Entitlement RLS probes (2026-07-12 entitlement design §8, reworked
+  //    2026-07-12 for the TTS-free-for-authenticated amendment §4/§10)  ────
   // Anon key + REAL signed-in test users — the service-key client in
   // check-supabase-deep.ts carries BYPASSRLS and would sign ANY path
   // regardless of the storage/RPC policy (the b38e467f false-green class).
@@ -307,6 +288,13 @@ if (authed) {
   // preview users → source='comp'), so the `supabase` client already signed
   // in above IS the comped probe. A second, dedicated non-entitled account
   // (never comped, no Stripe subscription) proves the DENY path.
+  //
+  // The entire indonesian-tts bucket is now free for any AUTHENTICATED user
+  // (spec §4 amendment), so the paid/free-TTS distinction this block used to
+  // probe no longer exists — a non-entitled probe is EXPECTED to sign any
+  // TTS clip. The load-bearing paid-audio deny probe moves to
+  // indonesian-lessons (a lesson beyond the free tier's audio_path); the TTS
+  // probe now asserts the free-for-authenticated grant instead of a deny.
   //
   // NOTE: this fails against a not-yet-migrated DB (entitlements/can_read_media/
   // the set_lesson_activation gate don't exist yet) — expected until the
@@ -322,57 +310,46 @@ if (authed) {
       fail('Entitlement RLS probes — non-entitled sign-in', `${neSignInErr.message} — check CHECK_TEST_NONENTITLED_EMAIL/CHECK_TEST_NONENTITLED_PASSWORD`)
     } else {
       try {
-        // Find a genuinely paid-only clip (generated for a lesson beyond the
-        // free tier, with NO free-tier sibling sharing normalized_text — the
-        // free-tier TTS grant is text-level, spec §10) and a free-tier clip.
+        // A paid (order_index>3) lesson with audio — the load-bearing
+        // paid-media probe now that TTS is free-for-authenticated — plus any
+        // TTS clip to prove the free-for-authenticated bucket grant.
         const { data: lessonRows, error: lessonErr } = await supabase
-          .schema('indonesian').from('lessons').select('id, order_index')
+          .schema('indonesian').from('lessons').select('id, order_index, audio_path')
+          .not('audio_path', 'is', null)
         if (lessonErr) throw new Error(`lessons lookup: ${lessonErr.message}`)
-        const allLessons = (lessonRows ?? []) as { id: string; order_index: number }[]
-        const freeLessonIds = allLessons.filter(l => l.order_index <= 3).map(l => l.id)
-        const paidLessonIds = allLessons.filter(l => l.order_index > 3).map(l => l.id)
+        const allLessons = (lessonRows ?? []) as { id: string; order_index: number; audio_path: string }[]
         const paidLesson = allLessons.find(l => l.order_index > 3)
 
-        const { data: freeClipRows, error: freeErr } = await supabase
-          .schema('indonesian').from('audio_clips').select('normalized_text, storage_path')
-          .in('generated_for_lesson_id', freeLessonIds)
-        if (freeErr) throw new Error(`free-tier clips lookup: ${freeErr.message}`)
-        const freeClips = (freeClipRows ?? []) as { normalized_text: string; storage_path: string }[]
-        const freeNormalizedTexts = new Set(freeClips.map(c => c.normalized_text))
-        const freeClip = freeClips[0]
+        const { data: anyClipRows, error: clipErr } = await supabase
+          .schema('indonesian').from('audio_clips').select('storage_path').limit(1)
+        if (clipErr) throw new Error(`TTS clip lookup: ${clipErr.message}`)
+        const anyClip = (anyClipRows ?? [])[0] as { storage_path: string } | undefined
 
-        const { data: paidClipRows, error: paidErr } = await supabase
-          .schema('indonesian').from('audio_clips').select('normalized_text, storage_path')
-          .in('generated_for_lesson_id', paidLessonIds)
-        if (paidErr) throw new Error(`paid clips lookup: ${paidErr.message}`)
-        const paidClips = (paidClipRows ?? []) as { normalized_text: string; storage_path: string }[]
-        const paidOnlyClip = paidClips.find(c => !freeNormalizedTexts.has(c.normalized_text))
-
-        if (!paidOnlyClip || !freeClip || !paidLesson) {
-          fail('Entitlement RLS probes — fixture', 'no paid-only TTS clip / free-tier TTS clip / paid (order_index>3) lesson found to probe against')
+        if (!paidLesson || !anyClip) {
+          fail('Entitlement RLS probes — fixture', 'no paid (order_index>3) lesson with audio / TTS clip found to probe against')
         } else {
           const { data: compedSigned, error: compedErr } = await supabase.storage
-            .from('indonesian-tts').createSignedUrl(paidOnlyClip.storage_path, 60)
+            .from('indonesian-lessons').createSignedUrl(paidLesson.audio_path, 60)
           if (compedErr || !compedSigned?.signedUrl) {
-            fail('Comped test user can sign a paid TTS clip', compedErr?.message ?? 'no signedUrl returned')
+            fail('Comped test user can sign a paid lesson audio clip', compedErr?.message ?? 'no signedUrl returned')
           } else {
-            pass('Comped test user can sign a paid TTS clip')
+            pass('Comped test user can sign a paid lesson audio clip')
           }
 
           const { data: neDeniedSigned, error: neDeniedErr } = await nonentitled.storage
-            .from('indonesian-tts').createSignedUrl(paidOnlyClip.storage_path, 60)
+            .from('indonesian-lessons').createSignedUrl(paidLesson.audio_path, 60)
           if (!neDeniedErr && neDeniedSigned?.signedUrl) {
-            fail('Non-entitled probe cannot sign a paid TTS clip', 'signing succeeded — indonesian_media_read policy is not gating the indonesian-tts bucket')
+            fail('Non-entitled probe cannot sign a paid lesson audio clip', 'signing succeeded — indonesian_media_read policy is not gating the indonesian-lessons bucket')
           } else {
-            pass('Non-entitled probe cannot sign a paid TTS clip')
+            pass('Non-entitled probe cannot sign a paid lesson audio clip')
           }
 
-          const { data: neAllowedSigned, error: neAllowedErr } = await nonentitled.storage
-            .from('indonesian-tts').createSignedUrl(freeClip.storage_path, 60)
-          if (neAllowedErr || !neAllowedSigned?.signedUrl) {
-            fail('Non-entitled probe can sign a free-tier TTS clip', neAllowedErr?.message ?? 'no signedUrl returned')
+          const { data: neTtsSigned, error: neTtsErr } = await nonentitled.storage
+            .from('indonesian-tts').createSignedUrl(anyClip.storage_path, 60)
+          if (neTtsErr || !neTtsSigned?.signedUrl) {
+            fail('Non-entitled probe can sign any TTS clip (bucket is free-for-authenticated)', neTtsErr?.message ?? 'no signedUrl returned')
           } else {
-            pass('Non-entitled probe can sign a free-tier TTS clip')
+            pass('Non-entitled probe can sign any TTS clip (bucket is free-for-authenticated)')
           }
 
           const { data: neUser } = await nonentitled.auth.getUser()

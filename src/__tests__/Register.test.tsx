@@ -134,4 +134,23 @@ describe('Register', () => {
 
     expect(mockSignInWithGoogle).toHaveBeenCalled()
   })
+
+  it('shows registration-specific OAuth failure copy (not the login copy) when signInWithGoogle rejects', async () => {
+    mockSignInWithGoogle.mockRejectedValue(new Error('oauth_failed'))
+    const user = userEvent.setup()
+    renderRegister()
+
+    await user.click(screen.getByRole('button', { name: 'Doorgaan met Google' }))
+
+    const { notifications } = await import('@mantine/notifications')
+    await waitFor(() => {
+      expect(notifications.show).toHaveBeenCalledWith(
+        expect.objectContaining({
+          color: 'red',
+          title: 'Registratie mislukt',
+          message: 'Registreren met Google is mislukt. Probeer het opnieuw.',
+        }),
+      )
+    })
+  })
 })

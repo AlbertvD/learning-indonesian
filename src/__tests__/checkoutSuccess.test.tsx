@@ -93,4 +93,20 @@ describe('CheckoutSuccess', () => {
     expect(await screen.findByRole('button', { name: 'Ga naar profiel' })).toBeInTheDocument()
     expect(mockInvoke).not.toHaveBeenCalled()
   })
+
+  it('shows a session-expired state (not the generic blocked dead end) with a login link on a 401 missing_user_jwt', async () => {
+    mockInvoke.mockResolvedValue({ data: null, error: httpError('missing_user_jwt') })
+    renderAt('/checkout/success?session_id=cs_test_123')
+
+    expect(await screen.findByRole('button', { name: 'Ga naar inloggen' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Probeer opnieuw' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Ga naar profiel' })).not.toBeInTheDocument()
+  })
+
+  it('shows the session-expired state on a 401 invalid_user_jwt too', async () => {
+    mockInvoke.mockResolvedValue({ data: null, error: httpError('invalid_user_jwt') })
+    renderAt('/checkout/success?session_id=cs_test_123')
+
+    expect(await screen.findByRole('button', { name: 'Ga naar inloggen' })).toBeInTheDocument()
+  })
 })

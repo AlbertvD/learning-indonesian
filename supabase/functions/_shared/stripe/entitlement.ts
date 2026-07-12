@@ -36,8 +36,27 @@ export async function upsertEntitlementFromSubscription(
 ): Promise<StripeEntitlementStatus> {
   const { supabaseUrl, serviceRoleKey, userId, stripeCustomerId, subscription } = params
   const status = deriveEntitlementStatus(subscription)
-  const currentPeriodEnd = typeof subscription.current_period_end === 'number'
-    ? new Date(subscription.current_period_end * 1000).toISOString()
+  // Stripe moved the billing-cycle fields onto each subscription ITEM
+  // (`subscription.items.data[].current_period_end`) in newer API versions
+  // — the top-level `subscription.current_period_end` reads `null` under
+  // the pinned client (client.ts) for any subscription created against that
+  // shape (CONFIRMED in integration review: null for every subscriber
+  // as-is). This design's subscriptions are single-item (§3 owner
+  // decision: one Stripe Product, two Prices, no multi-item carts), so the
+  // first item's period end is authoritative; the top-level field is kept
+  // only as a defensive fallback for whichever shape an older/newer API
+  // version happens to return it on. A future multi-item subscription would
+  // need max-across-items, not first-item, to represent "when does access
+  // next need renewing."
+  const itemPeriodEnd = subscription.items?.data?.[0]?.current_period_end
+  // Cast rather than a direct property read: `current_period_end` no longer
+  // exists on the top-level `Stripe.Subscription` type as of the pinned SDK
+  // (it moved to the item — see comment above), so this stays a genuine
+  // "if some other shape ever has it" fallback rather than a typed field.
+  const legacyPeriodEnd = (subscription as unknown as { current_period_end?: number }).current_period_end
+  const rawPeriodEnd = typeof itemPeriodEnd === 'number' ? itemPeriodEnd : legacyPeriodEnd
+  const currentPeriodEnd = typeof rawPeriodEnd === 'number'
+    ? new Date(rawPeriodEnd * 1000).toISOString()
     : null
 
   const response = await fetch(`${supabaseUrl}/rest/v1/entitlements?on_conflict=user_id`, {
@@ -71,6 +90,36 @@ export async function upsertEntitlementFromSubscription(
 
 interface EntitlementRow {
   user_id: string
+}
+
+/**
+ * Generic single-row entitlement column reader — replaces the three
+ * near-identical PostgREST fetch helpers that used to live one per function
+ * (create-checkout-session's fetchEntitlementRow, customer-portal's
+ * fetchStripeCustomerId, verify-checkout's fetchCurrentStatus, plus
+ * delete-account's Stripe-cleanup precheck). Callers pick their own columns
+ * and default the missing-row case themselves — this helper only knows how
+ * to fetch and return `T | null`.
+ */
+export async function fetchEntitlementColumns<T>(
+  supabaseUrl: string,
+  serviceRoleKey: string,
+  userId: string,
+  columns: string,
+): Promise<T | null> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/entitlements?user_id=eq.${encodeURIComponent(userId)}&select=${columns}&limit=1`,
+    {
+      headers: {
+        Authorization: `Bearer ${serviceRoleKey}`,
+        apikey: serviceRoleKey,
+        'Accept-Profile': 'indonesian',
+      },
+    },
+  )
+  if (!response.ok) throw new Error(`entitlement_lookup_failed:${response.status}`)
+  const rows = await response.json().catch(() => null)
+  return Array.isArray(rows) ? (rows[0] as T | undefined) ?? null : null
 }
 
 async function fetchEntitlementUserId(

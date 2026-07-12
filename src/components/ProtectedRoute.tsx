@@ -22,7 +22,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     try {
       useAuthStore.setState({
         user: { id: 'dev-user', email: 'dev@local' } as any,
-        profile: { id: 'dev-user', email: 'dev@local', fullName: 'Dev User', language: 'nl', isAdmin: true },
+        profile: { id: 'dev-user', email: 'dev@local', fullName: 'Dev User', language: 'nl', isAdmin: true, isEntitled: true },
         loading: false,
       } as any)
     } catch {

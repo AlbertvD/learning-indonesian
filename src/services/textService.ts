@@ -1,6 +1,5 @@
 // src/services/textService.ts
 import { supabase } from '@/lib/supabase'
-import { logError } from '@/lib/logger'
 import { SIGNED_URL_TTL_SECONDS } from '@/lib/signedAudioUrl'
 
 /**
@@ -162,10 +161,10 @@ export const textService = {
     const { data, error } = await supabase.storage
       .from('indonesian-podcasts')
       .createSignedUrl(audioPath, SIGNED_URL_TTL_SECONDS)
-    if (error) {
-      logError({ page: 'text-service', action: 'getSignedAudioUrl', error })
-      return null
-    }
+    // NOT logged — a non-entitled user or a missing object is an expected
+    // outcome, not a bug (cf. signStoredAudioUrl in lib/signedAudioUrl.ts).
+    // Callers already treat a null URL as the existing absent-audio state.
+    if (error) return null
     return data.signedUrl
   },
 }

@@ -67,7 +67,7 @@ export function Register() {
       notifications.show({
         color: 'red',
         title: T.register.registrationFailed,
-        message: T.login.oauthFailed,
+        message: T.register.oauthFailed,
       })
       logError({ page: 'Register', action: 'signInWithGoogle', error: err })
       setGoogleLoading(false)
