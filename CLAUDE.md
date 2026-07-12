@@ -294,7 +294,7 @@ Self-signup is gated behind a one-time-use invite code (pre-cloud-hardening item
 
 Two manual steps this depends on, neither automated by `make migrate`:
 
-1. **Close the public signup endpoint at the GoTrue level** — set `GOTRUE_DISABLE_SIGNUP=true` in `homelab-configs/services/supabase/docker-compose.yml` and restart the GoTrue container. Without this, `supabase.auth.signUp` still works for anyone who calls it directly (the app no longer does, but the endpoint itself stays open until this flag is set). `make check-supabase` has a WARNING-level check for this ("Public signup gate") — it does not fail the gate, so don't skip this step just because CI/`make pre-deploy` is green.
+1. **Close the public signup endpoint at the GoTrue level** — set `GOTRUE_DISABLE_SIGNUP=true` in `homelab-configs/services/supabase/docker-compose.yml` and apply via the compose route (`git pull` on the host + `docker compose ... up -d auth` — see "Supabase Infrastructure Fixes" § two-lane rule; never a bare `docker run` recreate). *Done 2026-07-02; flag verified live 2026-07-11.* Without this, `supabase.auth.signUp` still works for anyone who calls it directly (the app no longer does, but the endpoint itself stays open until this flag is set). `make check-supabase` has a WARNING-level check for this ("Public signup gate") — it does not fail the gate, so don't skip this step just because CI/`make pre-deploy` is green.
 2. **Seed invite codes** — as an admin, insert directly into `indonesian.signup_invite_codes` (service-role only, e.g. via Supabase Studio SQL editor or `psql`):
    ```sql
    insert into indonesian.signup_invite_codes (code, uses_remaining, note)
@@ -522,7 +522,9 @@ Instead, fix them by modifying the relevant config files in the `homelab-configs
 - **Kong CORS / routing issues** → edit `services/supabase/kong/kong.yml` and rebuild the Kong image
 - **PostgREST schema exposure** → edit `PGRST_DB_SCHEMAS` in `services/supabase/docker-compose.yml`
 
-After committing the fix to `homelab-configs`, apply it to the live container manually (e.g. `docker exec` + reload, or rebuild + redeploy) so it takes effect immediately without waiting for the next full redeploy.
+After committing the fix to `homelab-configs`, apply it via the **compose route only**: on the host, `cd ~/homelab-configs && git pull && sudo docker compose -f services/supabase/docker-compose.yml up -d <service>`. Never a bare `docker run` recreate, never env tweaks via Portainer/`docker exec` — that is how the 2026-07-11 three-source container drift happened.
+
+**The two-lane rule** (full text: `homelab-configs/services/supabase/README.md` § Making changes): **Lane 1, data plane** — anything inside Postgres (app schema/RLS/functions via `scripts/migration.sql` + `make migrate`, content publishes, seeds) and edge-function *code* (SCP to the bind-mount) is legitimately applied direct-to-host; its repo-sync lives in THIS repo. **Lane 2, infra plane** — the containers themselves (services added/removed, image version bumps, env/flags like `GOTRUE_*`/`PGRST_DB_SCHEMAS`, Kong, networks/mounts) go through homelab-configs compose + `up -d`, always, so that repo stays in sync with the deployed instance.
 
 ## Homelab Infrastructure
 

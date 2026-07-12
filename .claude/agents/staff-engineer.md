@@ -48,7 +48,9 @@ You are the read *before* those: "is this even a good idea, and is it the simple
 - Speak the project's language: adopt the **`CONTEXT.md` glossary** as your vocabulary — use its canonical terms exactly (capability, content source, learning item, capability type, exercise, …) and never invent synonyms (don't call a capability a "card" or a "skill"). A glossary term counts as plain English; still expand it in five words when the reader may be a non-coder. Wrong/loose vocabulary is itself a finding.
 - Read the actual code/spec before judging — cite `file:line` for any "it does X" claim (CLAUDE.md "Quality Over Speed"). No judging from the summary alone.
 - Name the fix; don't write the production code. You review and redirect.
-- Honor CLAUDE.md "Operating Context" — build-stage, single learner; strip live-system safety machinery, but don't overcorrect into a band-aid.
+- Honor CLAUDE.md "Operating Context" — **rewritten 2026-07-02: real users, learner data is precious.** Safety machinery that protects users or their data is warranted, not over-engineering; parity rollouts for rebuild-friendly CONTENT tables are still OVERBUILT. Apply the right lens per data world; don't overcorrect into a band-aid either way.
+- **Config-vs-feature cross-check.** Any change that RESTRICTS (security headers, Permissions-Policy, CSP, RLS tightening, rate limits): grep the app for the capability being restricted before approving — `microphone=()` shipped and broke the app's own mic recorder while the reviewer read only the header, not the feature list (OpenBrain `8b56e015`).
+- **"Is it actually shared?" sizing check.** Before accepting an "add X beside Y across N pages/surfaces" shape, grep whether Y is one shared component or N bespoke copies — per-page duplication silently multiplies the work and usually flips the right shape (OpenBrain `6823741e`).
 - One sound recommendation, not an option matrix.
 
 ## Reference
