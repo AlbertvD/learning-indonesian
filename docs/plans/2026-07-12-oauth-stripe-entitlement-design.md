@@ -1,5 +1,5 @@
 ---
-status: approved
+status: implementing
 reviewed_by:
   - "staff-engineer: NEEDS-WORK round 1, 2026-07-12 — 2 webhook blockers (checkout.session.completed never set status; idempotency-before-processing lost retried events), free-tier TTS keyed on generated_for_lesson_id (clips reused across lessons), podcasts-bucket blanket paywall would have killed the free pronunciation onboarding, checkout-success webhook race, comp-after-gate window — ALL FOLDED IN (incl. new verify-checkout function + _shared/stripe/)."
   - "architect: APPROVED round 2, 2026-07-12. Round-1 blocker (getAudioUrl async conversion grep-falsified against 4 sync render-time callers, 2 unnamed) + OAuth/signUp via authStore actions per LOCKED lib/auth + isEntitled as auth-owned state + Kong key-auth verification — ALL FOLDED IN. Round-2 W1 (§8 grants summary stale) + N1 (teardown grep-cite + stale deep-check skip-set entry) + N2 (is_free_tier_lesson parity pin) — FOLDED IN. N3 (authStore→entitlementService edge, no cycle) accepted, resolve at lib/auth fold."
