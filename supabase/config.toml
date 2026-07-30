@@ -1,0 +1,34 @@
+# Supabase CLI project config — added 2026-07-30 for the Supabase Cloud
+# migration. Until now this repo deployed edge functions ONLY to the
+# self-hosted stack, by SCP-ing them to a bind mount and restarting the
+# container, so no CLI config was ever needed (see CLAUDE.md § Edge function
+# deployment). On cloud the deploy path is `supabase functions deploy`, and
+# per-function settings live here.
+project_id = "wodpkxsmildtgndnbraa"
+
+[functions.stripe-webhook]
+# MUST stay false. Stripe authenticates its POST with a `stripe-signature`
+# header, never a Supabase JWT — with verify_jwt on (the CLOUD DEFAULT) the
+# platform gateway rejects the request before the function runs, so the
+# signature check inside stripe-webhook/index.ts would never execute and every
+# subscription event would be silently dropped.
+#
+# This was previously invisible: the self-hosted edge container set
+# VERIFY_JWT=false globally (homelab-configs services/supabase/docker-compose.yml),
+# so no per-function setting existed. Verification itself is NOT weakened — the
+# function verifies the Stripe signature itself and rejects unsigned bodies with
+# 400 `missing_signature`.
+verify_jwt = false
+
+# The remaining functions keep the default verify_jwt = true: every one of them
+# is called by a signed-in user through supabase.functions.invoke(), which
+# attaches the user's access token, and each ALSO verifies the caller itself via
+# GET /auth/v1/user. Platform verification is a redundant outer layer there, not
+# the only gate.
+#   commit-capability-answer-report · create-checkout-session
+#   customer-portal · delete-account · verify-checkout
+#
+# NOT deployed to cloud: `main`. It is a self-hosted router built on
+# EdgeRuntime.userWorkers.create(), an API that exists only in the self-hosted
+# edge runtime; on cloud each function is independently addressable at
+# /functions/v1/<name>, so the router is both unnecessary and non-functional.
