@@ -3297,15 +3297,28 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
       .limit(1)
     const tableGone = !!tableErr && /PGRST205|could not find the table|does not exist/i.test(tableErr.message ?? '')
 
+    // A MISSING FUNCTION and a missing table produce different PostgREST
+    // errors, and the substring 'does not exist' appears in NEITHER of the
+    // function ones. Verified against the cloud project 2026-07-30, where both
+    // RPCs are genuinely absent:
+    //   code PGRST202, message "Could not find the function
+    //   indonesian.redeem_invite_code(p_code) in the schema cache"
+    // The old `.includes('does not exist')` test therefore evaluated false for
+    // functions that were correctly gone, and HC58 reported
+    // `redeem_invite_code gone=false` as a FALSE POSITIVE on every fresh DB.
+    // Matched the same shape the tableGone probe above already used.
+    const fnGone = (msg: string | undefined) =>
+      /PGRST202|could not find the function|does not exist/i.test(msg ?? '')
+
     const { error: redeemErr } = await supabase
       .schema('indonesian')
       .rpc('redeem_invite_code', { p_code: '__hc58_probe__' })
-    const redeemGone = !!redeemErr && redeemErr.message.includes('does not exist')
+    const redeemGone = !!redeemErr && fnGone(redeemErr.message)
 
     const { error: restoreErr } = await supabase
       .schema('indonesian')
       .rpc('restore_invite_code', { p_code: '__hc58_probe__' })
-    const restoreGone = !!restoreErr && restoreErr.message.includes('does not exist')
+    const restoreGone = !!restoreErr && fnGone(restoreErr.message)
 
     if (tableGone && redeemGone && restoreGone) {
       pass(HC58)

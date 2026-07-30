@@ -32,14 +32,26 @@ function fail(label: string, detail: string) {
 // result-shape plumbing for a future WARNING-level check.
 
 // ── Check 1: API reachability ─────────────────────────────────────────────
+// REACHABILITY, not authorization. The old test required HTTP 200 from
+// `/rest/v1/`, which is a self-hosted assumption: our Kong lets an anon key
+// read the PostgREST OpenAPI root, but MANAGED Supabase returns 401 there
+// regardless of headers (verified 2026-07-30: 401 with apikey, and with
+// apikey + Authorization: Bearer). That made this check fail on cloud while
+// the API was demonstrably fine — every other check in this file was passing
+// against the same host.
+//
+// Any HTTP response below 500 proves the gateway is up and routing: a 401 is
+// the API answering, just declining. The failure modes actually worth
+// catching — DNS gone, Traefik/Kong down, stack not running — surface as a
+// connection error or a 5xx, both still caught below.
 try {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
-    headers: { apikey: ANON_KEY },
+    headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
   })
-  if (res.ok || res.status === 200) {
+  if (res.status < 500) {
     pass('API reachable')
   } else {
-    fail('API reachable', `HTTP ${res.status} — check Traefik routing and Supabase stack status`)
+    fail('API reachable', `HTTP ${res.status} — gateway up but erroring; check Supabase stack status`)
   }
 } catch (err) {
   fail('API reachable', `Connection failed: ${(err as Error).message} — check DNS and Traefik`)
@@ -88,15 +100,39 @@ try {
   } else if (res.ok || res.status === 200) {
     pass('Schema exposure (indonesian)')
   } else {
-    fail('Schema exposure (indonesian)', `HTTP ${res.status}: ${await res.text()}`)
+    // A permission-denied (PostgREST 42501) still PROVES the schema is
+    // exposed: PostgREST had to resolve indonesian.lessons in order to refuse
+    // access to it. An unexposed schema fails earlier, with the 406 handled
+    // above.
+    //
+    // This matters on managed Supabase, where `anon` holds no grants on the
+    // content tables at all, so this probe 401s where the homelab returns 200.
+    // The homelab difference is grant DRIFT, not design: it carries SELECT
+    // grants to `anon` on 7 indonesian tables that migration.sql never
+    // declares. Verified harmless there — RLS is enabled on all 7 and no
+    // policy admits anon or public, so anon receives an empty set either way —
+    // but CLOUD (zero anon grants) is the tighter, intended posture, and this
+    // check must not report the tighter configuration as a failure.
+    const body = await res.text()
+    if (/42501|permission denied/i.test(body)) {
+      pass('Schema exposure (indonesian) — exposed; anon correctly has no read grant')
+    } else {
+      fail('Schema exposure (indonesian)', `HTTP ${res.status}: ${body}`)
+    }
   }
 } catch (err) {
   fail('Schema exposure (indonesian)', `Request failed: ${(err as Error).message}`)
 }
 
 // ── Check 4: Auth endpoint ────────────────────────────────────────────────
+// The apikey header is REQUIRED on managed Supabase — /auth/v1/health returns
+// 401 without it there, while self-hosted Kong serves it unauthenticated
+// (verified both, 2026-07-30). Sending it satisfies both: homelab ignores the
+// header, cloud requires it.
 try {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/health`)
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/health`, {
+    headers: { apikey: ANON_KEY },
+  })
   const body = await res.json().catch(() => ({}))
   if (res.ok && (body as any).healthy !== false) {
     pass('Auth endpoint (GoTrue healthy)')
@@ -119,25 +155,44 @@ try {
 
 // ── Checks 5–7: Storage buckets are private (anon probe) ──────────────────
 // All 3 buckets flip public=false as part of the entitlement DB slice
-// (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §4). Storage's
-// /object/public/ route filters on bucket.public=true BEFORE attempting any
-// object lookup, so an unauthenticated fetch against a private bucket 400s/
-// 404s regardless of whether the path exists — this is the "buckets
-// actually private" functional signal from the anon key alone. The
-// structural service-key assertion (storage.buckets.public=false ×3) lives
+// (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §4).
+//
+// ⚠ FIXED 2026-07-30 — this probe used to request `__nonexistent__` and treat
+// 400/404 as proof of privacy. That reasoning only holds one way. A PUBLIC
+// bucket ALSO returns 400 for a missing object, so the check passed against
+// the homelab, whose buckets are `public=true` to this day — while the very
+// same path with a REAL object returned 200, i.e. world-readable. It reported
+// the paywall's storage gate as verified without testing it.
+//
+// The probe now requests a REAL object. If the bucket were public, this would
+// return 200; anything else means the /object/public/ route refused it, which
+// is what private actually looks like. Each path is a stable, long-lived
+// object present in both environments; if one is ever removed the check turns
+// into a false PASS again, so keep them in step with the seeded content.
+//
+// The structural service-key assertion (storage.buckets.public=false ×3) lives
 // in check-supabase-deep.ts per the spec's split-by-key rule (§8): a
 // service-key check here would carry BYPASSRLS and prove nothing about the
-// public flag either way.
-//
-// NOTE: this check fails against a not-yet-migrated DB (buckets are still
-// public until the coordinated rollout, spec §7) — expected until then.
+// public flag either way. That one is authoritative; this one is the
+// functional cross-check from the anon side.
+const PRIVACY_PROBE_PATHS: Record<string, string> = {
+  'indonesian-lessons': 'grammar/lesson-3-nl.mp3',
+  'indonesian-podcasts': 'podcasts/pronunciation-nl.mp3',
+  'indonesian-tts': 'tts/sulafat/apa-itu-fd336700.mp3',
+}
 for (const bucket of ['indonesian-lessons', 'indonesian-podcasts', 'indonesian-tts']) {
   try {
-    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/public/${bucket}/__nonexistent__`)
-    if (res.status === 400 || res.status === 404) {
-      pass(`Storage bucket private: ${bucket} (unauthenticated fetch → HTTP ${res.status})`)
+    const probePath = PRIVACY_PROBE_PATHS[bucket]
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/public/${bucket}/${probePath}`)
+    if (res.status === 200) {
+      fail(
+        `Storage bucket private: ${bucket}`,
+        `A REAL object (${probePath}) is readable unauthenticated (HTTP 200) — the bucket is public=true and the paywall's storage gate is open; run: make migrate SUPABASE_SERVICE_KEY=<key>`,
+      )
+    } else if (res.status === 400 || res.status === 404 || res.status === 401 || res.status === 403) {
+      pass(`Storage bucket private: ${bucket} (real object refused → HTTP ${res.status})`)
     } else {
-      fail(`Storage bucket private: ${bucket}`, `Unexpected HTTP ${res.status} on unauthenticated public-object probe — bucket may still be public=true; run: make migrate SUPABASE_SERVICE_KEY=<key>`)
+      fail(`Storage bucket private: ${bucket}`, `Unexpected HTTP ${res.status} on unauthenticated public-object probe`)
     }
   } catch (err) {
     fail(`Storage bucket private: ${bucket}`, `Request failed: ${(err as Error).message}`)
