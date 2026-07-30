@@ -529,7 +529,17 @@ RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian 
     'placement_activation_source_check_ok', (
       SELECT coalesce(pg_get_constraintdef(oid) LIKE '%placement%', false)
       FROM pg_constraint
-      WHERE conrelid = 'indonesian.learner_capability_state'::regclass
+      -- to_regclass(), not a '...'::regclass literal: a regclass CAST is
+      -- resolved when this `language sql` body is VALIDATED at CREATE time
+      -- (check_function_bodies=on), and learner_capability_state is created
+      -- further down this file -- so the literal form aborts a fresh-DB
+      -- replay with "relation does not exist" while working fine on an
+      -- already-populated DB (caught on the Supabase Cloud replay,
+      -- 2026-07-30). to_regclass resolves at CALL time and returns NULL for
+      -- a missing relation; `conrelid = NULL` matches no rows, which is the
+      -- same NULL this scalar subquery already returned when the constraint
+      -- was absent, so live behaviour is unchanged.
+      WHERE conrelid = to_regclass('indonesian.learner_capability_state')
         AND conname = 'learner_capability_state_activation_source_check'
     ),
     'apply_placement_result_anon_execute', has_function_privilege(
@@ -962,6 +972,40 @@ ALTER TABLE indonesian.content_flags
 ALTER TABLE indonesian.content_flags
   DROP CONSTRAINT IF EXISTS content_flags_flag_type_check;
 
+-- ── learning_capabilities, hoisted (2026-07-30) ──────────────────────────
+-- Physically created HERE, ahead of the content_flags anchor migration below
+-- whose `REFERENCES indonesian.learning_capabilities(id)` needs it to exist.
+-- Its indexes, constraint rewrites and RLS remain with the rest of the
+-- capability subsystem further down (see the note at that section). The table
+-- has no foreign keys of its own, so it can be created this early safely.
+create table if not exists indonesian.learning_capabilities (
+  id uuid primary key default gen_random_uuid(),
+  canonical_key text unique not null,
+  source_kind text not null check (source_kind in ('vocabulary_src','grammar_pattern_src','dialogue_line_src','podcast_segment_src','podcast_phrase_src','word_form_pair_src')),
+  source_ref text not null,
+  capability_type text not null,
+  direction text not null,
+  modality text not null,
+  learner_language text not null,
+  projection_version text not null,
+  readiness_status text not null check (readiness_status in ('ready','blocked','exposure_only','deprecated','unknown')),
+  publication_status text not null check (publication_status in ('draft','published','retired')),
+  source_fingerprint text,
+  -- artifact_fingerprint retired (Slice 4c #102, Decision A tail): dead readiness
+  -- column, 0 readers; dropped in the teardown section below. No column here.
+  metadata_json jsonb not null default '{}',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Hoisted with the table (2026-07-30): soft-retirement column. Kept as an
+-- ALTER rather than an inline column so the existing homelab DB — which
+-- already has it — stays a no-op. get_lessons_overview (created further down)
+-- filters `retired_at is null`, so this must precede that function's CREATE.
+-- Its partial index + column comment stay in the PR-1.5 section further down.
+alter table indonesian.learning_capabilities
+  add column if not exists retired_at timestamptz;
+
 -- content_flags: migrate to a single uniform capability_id anchor.
 -- The two-anchor model (learning_item_id / grammar_pattern_id) left two live
 -- exercise families — dialogue-line cloze and affixed-form-pair — unflaggable,
@@ -1213,26 +1257,16 @@ drop table if exists indonesian.learner_analytics_events cascade;
 -- below) and the learning_capabilities ALTER (add lesson_id) further down.
 -- ============================================================================
 
-create table if not exists indonesian.learning_capabilities (
-  id uuid primary key default gen_random_uuid(),
-  canonical_key text unique not null,
-  source_kind text not null check (source_kind in ('vocabulary_src','grammar_pattern_src','dialogue_line_src','podcast_segment_src','podcast_phrase_src','word_form_pair_src')),
-  source_ref text not null,
-  capability_type text not null,
-  direction text not null,
-  modality text not null,
-  learner_language text not null,
-  projection_version text not null,
-  readiness_status text not null check (readiness_status in ('ready','blocked','exposure_only','deprecated','unknown')),
-  publication_status text not null check (publication_status in ('draft','published','retired')),
-  source_fingerprint text,
-  -- artifact_fingerprint retired (Slice 4c #102, Decision A tail): dead readiness
-  -- column, 0 readers; dropped in the teardown section below. No column here.
-  metadata_json jsonb not null default '{}',
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
+-- NOTE: `create table indonesian.learning_capabilities` itself now lives
+-- EARLIER in this file, immediately above the content_flags capability_id
+-- anchor migration (~line 955). Reason: that migration adds a column with
+-- `REFERENCES indonesian.learning_capabilities(id)`, which needs the table to
+-- already exist -- a fresh-DB replay aborted there with "relation
+-- indonesian.learning_capabilities does not exist" (caught on the Supabase
+-- Cloud replay, 2026-07-30; invisible on an already-populated DB). The table
+-- has no FKs of its own, so hoisting it is safe; everything else in this
+-- section (indexes, constraint rewrites, RLS, the rest of the capability base
+-- tables) stays here.
 create index if not exists learning_capabilities_source_idx
   on indonesian.learning_capabilities(source_kind, source_ref);
 create index if not exists learning_capabilities_readiness_publication_idx
@@ -2520,12 +2554,16 @@ grant execute on function indonesian.mark_session_complete(uuid) to authenticate
 drop function if exists indonesian._capability_source_progress_met(uuid, jsonb, text, text) cascade;
 drop function if exists indonesian.record_source_progress_event(jsonb) cascade;
 
--- 9. D-R-O-P source-progress RLS policies (defensive — harmless if already gone)
-drop policy if exists "source progress events owner read" on indonesian.learner_source_progress_events;
-drop policy if exists "source progress events owner insert" on indonesian.learner_source_progress_events;
-drop policy if exists "source progress state owner read" on indonesian.learner_source_progress_state;
-drop policy if exists "source progress state owner update" on indonesian.learner_source_progress_state;
-drop policy if exists "source progress state owner insert" on indonesian.learner_source_progress_state;
+-- 9. (removed 2026-07-30) Five `drop policy if exists ... on
+-- indonesian.learner_source_progress_{events,state}` statements used to sit
+-- here, commented "defensive — harmless if already gone". They were not
+-- harmless: DROP POLICY's IF EXISTS guards the POLICY, not the TABLE, so on a
+-- fresh DB — where these retired tables are never created — each one aborts
+-- with "relation does not exist" (5 of the 7 errors in the first Supabase
+-- Cloud replay, 2026-07-30). They were also redundant: the table-drop
+-- statements immediately below use CASCADE, which removes a table's policies
+-- along with it. Deleted rather than guarded — a guard would only have
+-- protected mechanism that does nothing.
 
 -- 10. D-R-O-P source-progress tables (CASCADE picks up index learner_source_progress_state(user_id, source_ref))
 drop table if exists indonesian.learner_source_progress_state cascade;
@@ -3296,8 +3334,13 @@ comment on table indonesian.cloze_mcq_exercises is
 -- Validator (HC14 in scripts/check-supabase-deep.ts): no learner_capability_state
 -- row references a retired cap with next_due_at <= now() (scheduler-leak tripwire).
 
-alter table indonesian.learning_capabilities
-  add column if not exists retired_at timestamptz;
+-- NOTE: the `add column if not exists retired_at` statement itself was HOISTED
+-- (2026-07-30) to sit directly under the learning_capabilities CREATE TABLE
+-- earlier in this file. get_lessons_overview's body filters `c.retired_at is
+-- null` and is created well before this point, so on a fresh DB the function's
+-- CREATE aborted here with "column c.retired_at does not exist" (and took its
+-- GRANT down with it). The partial index and column comment below still belong
+-- with this section — only the column add had to move.
 
 -- Partial index: virtually every runtime query filters retired_at IS NULL;
 -- the index covers (lesson_id, source_kind) for the read patterns in
@@ -4684,21 +4727,33 @@ grant all on indonesian.capability_content_units to service_role;
 -- (check_function_bodies=on by default) -- on a fresh DB without the
 -- extension, `CREATE FUNCTION indonesian.immutable_unaccent` itself fails
 -- with "text search dictionary unaccent does not exist", not just a later
--- call. WITH SCHEMA storage is load-bearing for a fresh replay: the function
--- body calls storage.unaccent() schema-qualified, and the live DB has the
--- extension installed in the storage schema (verified via pg_extension,
--- 2026-07-12) -- an unqualified CREATE EXTENSION would land it in public on
--- a fresh DB and the function body would still fail to validate. Idempotent:
--- IF NOT EXISTS no-ops on the live homelab install regardless of schema.
-CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA storage;
+-- call.
+--
+-- SCHEMA CHOICE (revised 2026-07-30, Supabase Cloud replay): the extension
+-- goes in `extensions`, NOT `storage`. On managed Supabase the `storage`
+-- schema is owned by supabase_storage_admin and the `postgres` role has no
+-- CREATE there -- verified against the cloud project (PG 17.6):
+-- has_schema_privilege('storage','CREATE') = false, vs true for `extensions`
+-- -- so `WITH SCHEMA storage` fails outright with "permission denied for
+-- schema storage". `extensions` is postgres-owned on both cloud and
+-- self-hosted, and is already this file's convention (see `vector` above).
+--
+-- The function body then calls unaccent() UNQUALIFIED with BOTH schemas
+-- pinned in search_path, so one file replays against both instances with no
+-- manual step: on cloud it resolves in `extensions`; on the existing homelab
+-- -- where the extension physically lives in `storage` (verified via
+-- pg_extension, 2026-07-12) and IF NOT EXISTS makes this CREATE a no-op --
+-- it resolves in `storage`. The 'unaccent'::regdictionary cast resolves
+-- through the same search_path, so create-time validation passes on both.
+CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA extensions;
 
 CREATE OR REPLACE FUNCTION indonesian.immutable_unaccent(p_text text)
  RETURNS text
  LANGUAGE sql
  IMMUTABLE PARALLEL SAFE
- SET search_path TO 'storage', 'public', 'pg_catalog'
+ SET search_path TO 'extensions', 'storage', 'public', 'pg_catalog'
 AS $function$
-  SELECT storage.unaccent('unaccent'::regdictionary, p_text);
+  SELECT unaccent('unaccent'::regdictionary, p_text);
 $function$;
 
 CREATE OR REPLACE FUNCTION indonesian.stable_slug(p_text text)

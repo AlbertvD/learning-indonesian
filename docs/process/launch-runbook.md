@@ -12,17 +12,21 @@ drive it · **[joint]** = do it together in one sitting.
 
 ---
 
-## Phase 0 — current state (verified 2026-07-28)
+## Phase 0 — current state (updated 2026-07-28, after Phase 2)
 
-- App repo: integration branch **`feat/oauth-stripe-entitlement`** (local, NOT
-  pushed) — 6 build slices + high-effort review, 13 findings fixed. Gates green:
-  tsc / lint 0 errors / 3265 tests / build.
-- homelab-configs: branch **`feat/indonesian-oauth-stripe-env`** (local, NOT
-  pushed) — GoTrue Google env + `GOTRUE_URI_ALLOW_LIST` rename +
+- App repo: **PR #461** open from `feat/oauth-stripe-entitlement` — 6 build
+  slices + high-effort review, 13 findings fixed, then `main` merged in (the
+  two Renovate dep bumps). Gates re-run green on the merged tree: lint 0
+  errors / 3265 tests / build. Spec frontmatter now `status: implementing`,
+  `implementation: PR #461`.
+- homelab-configs: **PR #65** open from `feat/indonesian-oauth-stripe-env` —
+  GoTrue Google env + `GOTRUE_URI_ALLOW_LIST` rename +
   `GOTRUE_DISABLE_SIGNUP=false` + Stripe env on the functions container +
   supabase README (env table, account-reset runbook). Compose-validated.
 - Spec committed to main (`cf24c8ff`), CLAUDE.md § Signup gating rewritten.
-- NOT yet done: everything below.
+- **Blocking everything below: Phase 1 (owner).** Neither PR can be merged
+  into a working system until the Google client, the Stripe test-mode
+  product/prices, and the host env values exist.
 
 ## Phase 1 — owner prerequisites (no code dependencies; do anytime)
 
@@ -50,16 +54,26 @@ drive it · **[joint]** = do it together in one sitting.
       file as `POSTGRES_PASSWORD`; names in the supabase README § Required host
       environment variables). Do NOT apply compose yet — that's Phase 3.
 
-## Phase 2 — push + PR (agent-drivable, reversible)
+## Phase 2 — push + PR (agent-drivable, reversible) ✅ DONE 2026-07-28
 
-- [ ] **[agent]** Push `feat/oauth-stripe-entitlement`; open PR with the spec
+- [x] **[agent]** Push `feat/oauth-stripe-entitlement`; open PR with the spec
       linked; flip the spec frontmatter `status: approved → implementing` in
-      the same PR.
-- [ ] **[agent]** Push `feat/indonesian-oauth-stripe-env` in homelab-configs;
-      open PR there. ⚠ Do NOT merge homelab-configs main before the Phase-3
-      window if Portainer auto-applies anything — the compose apply must be
-      manual, inside the window.
+      the same PR. → **PR #461.** CI green.
+- [x] **[agent]** Push `feat/indonesian-oauth-stripe-env` in homelab-configs;
+      open PR there. → **PR #65.** ⚠ Do NOT merge homelab-configs main before
+      the Phase-3 window if Portainer auto-applies anything — the compose
+      apply must be manual, inside the window.
 - [ ] **[owner] review both PRs.**
+
+**Finish-gate note (why the pre-push gate passed with a deferral).** The
+`Dev-Workflow-DB-Verified` gate wants both legs of the PR-1 verification.
+Leg 1 (plan-vs-actual diff) ran and is clean — every object promised in spec
+§8 is present in `migration.sql`, nothing extra. Leg 2 (live-DB completeness)
+is **structurally impossible before the window**: running `make migrate` now
+would flip the buckets private and break audio for the live preview cohort.
+`check-supabase.ts` documents its own new checks as expected-to-fail against
+a not-yet-migrated DB. The trailer records the deferral rather than bypassing
+the gate with `SKIP_FINISH_GATE=1`; leg 2 discharges at Phase 3's verify step.
 - ⚠ **Do NOT run `make migrate-idempotent-check` / `make migrate` as a casual
   pre-merge gate for this PR.** Unlike normal migration PRs, this migration
   flips the storage buckets private — running it outside the window breaks all
