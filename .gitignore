@@ -3,6 +3,10 @@ dist/
 test-results/
 .env.local
 .env
+# Vite mode-scoped local env files (e.g. .env.cloud.local, which points the dev
+# server at Supabase Cloud). They carry URLs + API keys; the two patterns above
+# do not match them.
+.env*.local
 .DS_Store
 
 # Local audio source files — not committed, upload via seed scripts
