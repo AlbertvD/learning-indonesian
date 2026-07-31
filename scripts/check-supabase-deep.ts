@@ -3334,6 +3334,69 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
 }
 
+// ── HC59 (2026-07-31) — PostgREST must not silently truncate large reads.
+//    Managed Supabase ships `db-max-rows = 1000`; self-hosted PostgREST has NO
+//    cap. A read over the cap returns HTTP 200 with only the first 1000 rows —
+//    no error, no exception, nothing a caller would notice. Measured on the
+//    cloud project 2026-07-30: audio_clips returned `content-range: 0-999/5132`
+//    while the homelab returned all 5132.
+//
+//    Raised on cloud with:
+//      alter role authenticator set pgrst.db_max_rows = '100000';
+//      notify pgrst, 'reload config';
+//    but that was applied over SQL, and a write from the dashboard's
+//    Settings → API → Max rows can overwrite it. Nothing else would detect the
+//    reversion — the symptom is missing data, not an error.
+//
+//    Deliberately BEHAVIOURAL, not a config read. Checking
+//    pg_roles.rolconfig for `pgrst.db_max_rows` would confirm the setting we
+//    wrote while missing a platform-level override — and tonight produced two
+//    separate bugs (the bucket-privacy probe, HC58) where a check asserted a
+//    proxy instead of the invariant. So: actually ask for more than 1000 rows
+//    and count what comes back.
+{
+  const HC59 = 'HC59 PostgREST does not truncate reads at 1000 rows'
+  const PROBE_TABLE = 'audio_clips'
+  try {
+    const { count, error: countErr } = await supabase
+      .schema('indonesian')
+      .from(PROBE_TABLE)
+      .select('*', { count: 'exact', head: true })
+
+    if (countErr) {
+      fail(HC59, `could not count ${PROBE_TABLE}: ${countErr.message}`)
+    } else if ((count ?? 0) <= 1000) {
+      // Not a failure: below the cap there is nothing this probe can prove.
+      // Flagged so a shrinking fixture cannot turn the check into a vacuous
+      // pass without anyone noticing.
+      pass(`${HC59} (skipped — ${PROBE_TABLE} has ${count} rows, at or under the 1000 cap; probe cannot discriminate)`)
+    } else {
+      const want = Math.min(count ?? 0, 1500)
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from(PROBE_TABLE)
+        .select('id')
+        .limit(want)
+      if (error) {
+        fail(HC59, `probe read failed: ${error.message}`)
+      } else if ((data?.length ?? 0) > 1000) {
+        pass(`${HC59} (asked ${want}, got ${data?.length})`)
+      } else {
+        fail(
+          HC59,
+          `asked for ${want} rows from ${PROBE_TABLE} (which has ${count}) but got exactly ${data?.length} -- ` +
+            'PostgREST is capping reads. Large queries are being SILENTLY truncated: HTTP 200, partial data, no error. ' +
+            'Fix: alter role authenticator set pgrst.db_max_rows = \'100000\'; notify pgrst, \'reload config\'; ' +
+            'and check Settings → API → Max rows in the dashboard, which can override the role setting. ' +
+            'See docs/audits/2026-07-30-postgrest-row-cap-audit.md',
+        )
+      }
+    }
+  } catch (err) {
+    fail(HC59, err instanceof Error ? err.message : String(err))
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0
