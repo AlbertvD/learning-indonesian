@@ -1,0 +1,46 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // Cloudflare Workers (static assets) — the cloud deployment target.
+  //
+  // The homelab container is untouched: nginx.conf still serves it and this
+  // file is inert there. Pages was the original target (see public/_headers),
+  // but the dashboard now steers new projects to Workers, and Workers is the
+  // better fit anyway: unlike Pages, a Git repo CAN be connected to an existing
+  // Worker (Settings > Builds > Connect), so the "git integration cannot be
+  // retrofitted" trap that Pages has does not apply.
+  //
+  // ⚠ `name` MUST match the Worker name in the Cloudflare dashboard exactly, or
+  // every Workers Build fails. See
+  // developers.cloudflare.com/workers/ci-cd/builds/troubleshoot/#workers-name-requirement
+  "name": "kamoebisa",
+
+  "compatibility_date": "2026-07-31",
+
+  "assets": {
+    // `bun run build` (tsc -b && vite build) emits here, including _headers and
+    // _redirects, which Workers static assets supports natively — same file
+    // format as Pages, so the CSP ported from nginx.conf:50-64 carries over
+    // unchanged.
+    "directory": "./dist",
+
+    // Replaces nginx's `try_files $uri $uri/ /index.html` (nginx.conf:67).
+    // Without it every deep link (/leren, /lesson/<id>, /checkout/success)
+    // 404s on a hard refresh, because only "/" is a real file — React Router
+    // owns every other path.
+    //
+    // Pages inferred SPA behaviour from the presence of index.html; Workers
+    // makes it explicit and returns a bare 404 if unset, so this line is
+    // load-bearing rather than decorative.
+    //
+    // NOTE: public/_redirects also carries a `/* /index.html 200` rule, which
+    // is the Pages-portable form of the same thing. That overlap is deliberate
+    // for now — the first successful deploy should confirm which mechanism is
+    // actually serving deep links, and the redundant one then gets removed.
+    "not_found_handling": "single-page-application"
+  }
+
+  // No `main` and no `binding`: this Worker is assets-only, with no server-side
+  // script. The app talks to Supabase Cloud directly from the browser, exactly
+  // as it does on the homelab. `binding` is only valid alongside `main`.
+}
