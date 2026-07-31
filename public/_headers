@@ -1,0 +1,32 @@
+# Cloudflare Pages — security headers for the cloud deployment.
+#
+# Ported from nginx.conf:50-64, which still serves the homelab container. The
+# two must be kept in step: nginx is the homelab's copy, this is the cloud's.
+# The ONLY intentional difference is the Supabase origin in connect-src /
+# media-src — the homelab talks to api.supabase.duin.home, the cloud
+# deployment to the Supabase Cloud project.
+#
+# Provenance of the CSP itself (2026-07-11 security audit, PRs #447/#451):
+#  - script-src is 'self' with NO 'unsafe-inline' — the measured, tightened
+#    value. Do not loosen it to make a third-party snippet work.
+#  - style-src keeps 'unsafe-inline' because Mantine injects inline styles.
+#  - font-src is 'self' only: Plus Jakarta Sans is self-hosted precisely so no
+#    request reaches Google Fonts (that was a GDPR leak, closed in #447).
+#  - media-src needs the Supabase origin for SIGNED audio URLs — buckets are
+#    private on cloud, so every clip is fetched from that host.
+#  - Permissions-Policy microphone MUST be (self), not (). An empty allowlist
+#    denies the page's OWN getUserMedia and broke the shadowing recorder after
+#    #447; that regression is why the value is spelled out here.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://wodpkxsmildtgndnbraa.supabase.co; media-src 'self' blob: https://wodpkxsmildtgndnbraa.supabase.co; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none';
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=15552000
+  Permissions-Policy: camera=(), microphone=(self), geolocation=()
+
+# The service worker must never be served stale, or a client can pin itself to
+# an old build and stop receiving updates. vite-plugin-pwa emits sw.js at the
+# root; the precached assets it references are content-hashed and immutable.
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate

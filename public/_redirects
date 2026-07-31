@@ -1,0 +1,12 @@
+# Cloudflare Pages — SPA fallback.
+#
+# Replaces nginx's `try_files $uri $uri/ /index.html` (nginx.conf:67), which
+# still serves the homelab container. Without this, any deep link
+# (/leren, /lesson/<id>, /checkout/success) 404s on a hard refresh, because
+# only "/" exists as a real file — React Router owns every other path.
+#
+# Cloudflare serves a matching static file first and only falls through to this
+# rule when none exists, so assets, fonts and the service worker are unaffected.
+# Status 200 (not 302) so the URL the user sees is preserved and the router can
+# read it — a redirect would rewrite the address bar and lose the route.
+/*    /index.html   200

@@ -6,14 +6,22 @@ export const supabase = createBrowserClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY,
   {
     auth: { storageKey: 'sb-supabase-auth-token' },
-    // In dev (localhost), omit cookieOptions entirely — browsers reject cookies
-    // with domain=.duin.home when the page is at localhost, silently dropping auth.
-    cookieOptions: import.meta.env.DEV ? undefined : {
-      domain: '.duin.home',
-      path: '/',
-      sameSite: 'lax' as const,
-      secure: true,
-    },
+    // No explicit cookieOptions: the session cookie is HOST-ONLY, scoped to
+    // whatever origin the app is served from.
+    //
+    // Until 2026-07-31 this pinned `domain: '.duin.home'` so the cookie would
+    // be shared across homelab subdomains, for a future SSO with family-hub
+    // (CLAUDE.md § Supabase Connection). That never shipped — family-hub stayed
+    // on localStorage and is now unused — so the shared-domain cookie bought
+    // nothing and actively blocked hosting anywhere else: a browser silently
+    // DROPS a cookie whose Domain attribute doesn't match the page's origin, so
+    // the app would appear to log in and then instantly be logged out on any
+    // domain that isn't *.duin.home.
+    //
+    // Host-only is also simply correct now: the cloud deployment is a single
+    // origin, and it removes the DEV special-case that existed only because
+    // localhost rejected the .duin.home cookie. Works unchanged on localhost,
+    // *.pages.dev, a custom domain, and the existing homelab container.
   }
 )
 
