@@ -6,8 +6,8 @@ export const supabase = createBrowserClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY,
   {
     auth: { storageKey: 'sb-supabase-auth-token' },
-    // No explicit cookieOptions: the session cookie is HOST-ONLY, scoped to
-    // whatever origin the app is served from.
+    // The session cookie is HOST-ONLY — no `domain`, so it is scoped to
+    // whatever origin serves the app.
     //
     // Until 2026-07-31 this pinned `domain: '.duin.home'` so the cookie would
     // be shared across homelab subdomains, for a future SSO with family-hub
@@ -16,12 +16,26 @@ export const supabase = createBrowserClient(
     // nothing and actively blocked hosting anywhere else: a browser silently
     // DROPS a cookie whose Domain attribute doesn't match the page's origin, so
     // the app would appear to log in and then instantly be logged out on any
-    // domain that isn't *.duin.home.
+    // domain that isn't *.duin.home. Works unchanged on localhost, *.pages.dev,
+    // a custom domain, and the existing homelab container.
     //
-    // Host-only is also simply correct now: the cloud deployment is a single
-    // origin, and it removes the DEV special-case that existed only because
-    // localhost rejected the .duin.home cookie. Works unchanged on localhost,
-    // *.pages.dev, a custom domain, and the existing homelab container.
+    // All three keys are spelled out rather than left to @supabase/ssr's
+    // DEFAULT_COOKIE_OPTIONS, which supplies `path` and `sameSite` but NOT
+    // `secure` (@supabase/ssr/dist/main/utils/constants.js; merged at
+    // cookies.js:357 as `{...DEFAULT_COOKIE_OPTIONS, ...cookieOptions}`).
+    // Dropping the whole object to remove `domain` therefore also strips
+    // Secure from the session JWT cookie — briefly the case on 2026-07-31,
+    // and what supabaseClient.test.ts now pins. The GDPR audit's
+    // no-cookie-banner reasoning cites this flag
+    // (docs/audits/2026-07-02-gdpr-pii-audit.md:86).
+    //
+    // `secure: true` needs no dev carve-out: browsers treat http://localhost as
+    // a trustworthy origin and accept Secure cookies there.
+    cookieOptions: {
+      path: '/',
+      sameSite: 'lax' as const,
+      secure: true,
+    },
   }
 )
 

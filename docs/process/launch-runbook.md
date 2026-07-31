@@ -147,11 +147,20 @@ Once Phase 1's four Stripe values exist:
       automatically; no Let's Encrypt work, no homelab exposure.
 - [ ] Point the domain at it. **The homelab is never exposed**: public traffic
       terminates on the host + Supabase Cloud.
-- [ ] Residual decoupling (most of it already solved):
-  - [ ] `src/lib/supabase.ts:12` — `.duin.home` cookie domain. Drop it or make
-        it env-driven; a single cloud domain needs no cross-subdomain cookie.
-  - [ ] `nginx.conf:50` CSP `connect-src`/`media-src` origins → cloud URL, or
-        move to the host's headers config if not using the nginx container.
+- [ ] Residual decoupling (**done in code 2026-07-31**, commits `bfd4ce2c` +
+      follow-up):
+  - [x] `src/lib/supabase.ts` — `.duin.home` cookie domain dropped; the session
+        cookie is host-only, so it works on localhost, `*.pages.dev`, a custom
+        domain and the homelab alike. ⚠ Remove only `domain` — deleting the
+        whole `cookieOptions` object also strips `secure`, since
+        `@supabase/ssr`'s `DEFAULT_COOKIE_OPTIONS` has no `secure` key. That
+        regression shipped in `bfd4ce2c` and is now pinned by
+        `src/__tests__/supabaseClient.test.ts`.
+  - [x] CSP `connect-src`/`media-src` → moved to the host's headers config:
+        `public/_headers` (Cloudflare Pages format), ported from
+        `nginx.conf:50-64`. `nginx.conf` still serves the homelab and keeps the
+        `api.supabase.duin.home` origins — **the two must be kept in step**.
+        `public/_redirects` replaces nginx's `try_files` SPA fallback.
   - [x] The 2,822 absolute `api.supabase.duin.home` URLs baked into all 30
         `content.json` files need **no rewrite** — `signedAudioUrl.ts:57`
         parses out bucket+path and discards the host.

@@ -4,10 +4,15 @@ import { LessonGrammarAudioBand } from './LessonGrammarAudioBand'
 
 // Reader-page (content.json) variant of LessonGrammarAudioBand. The bespoke
 // lesson pages' meta.lesson_audio_url(_en) are RAW stored public-bucket URLs
-// baked into content.json at fetch-lesson-content.ts authoring time (audit
-// item #2 — .duin.home decoupling is still pending) — NOT yet signed, unlike
-// RuleCard's podcastNl/podcastEn, which RuleCard itself resolves via
-// lessonService.getSignedAudioUrl before ever reaching LessonGrammarAudioBand.
+// baked into content.json at fetch-lesson-content.ts authoring time — NOT yet
+// signed, unlike RuleCard's podcastNl/podcastEn, which RuleCard itself resolves
+// via lessonService.getSignedAudioUrl before ever reaching
+// LessonGrammarAudioBand.
+//
+// Those baked URLs still carry the `api.supabase.duin.home` host, which needs
+// no rewrite for the cloud deployment: parseStoredAudioUrl (signedAudioUrl.ts:56)
+// matches on `/storage/v1/object/public/<bucket>/<path>` and discards the host,
+// so signing re-resolves them against whatever VITE_SUPABASE_URL is configured.
 //
 // This wrapper resolves the raw content.json URLs through the shared signing
 // helper first, so LessonGrammarAudioBand's contract (always receives an
