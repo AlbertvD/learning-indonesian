@@ -13,7 +13,17 @@
   // ⚠ `name` MUST match the Worker name in the Cloudflare dashboard exactly, or
   // every Workers Build fails. See
   // developers.cloudflare.com/workers/ci-cd/builds/troubleshoot/#workers-name-requirement
-  "name": "kamoebisa",
+  //
+  // This says `learning-indonesian`, not the product name "kamoebisa", because
+  // the Workers Builds wizard auto-names the Worker after the GitHub repo and a
+  // Worker cannot be renamed after creation (you would delete and recreate it).
+  // The first build failed on exactly this mismatch, 2026-07-31.
+  //
+  // The name is cosmetic: it only surfaces in the temporary
+  // learning-indonesian.avduijn.workers.dev URL. The customer-facing hostname
+  // will be the kamoebisa.nl custom domain attached to this same Worker, after
+  // which the workers.dev subdomain can be disabled outright.
+  "name": "learning-indonesian",
 
   "compatibility_date": "2026-07-31",
 
