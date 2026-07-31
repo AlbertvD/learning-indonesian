@@ -135,12 +135,33 @@ Deno.serve(async (request) => {
     }
 
     // 3. Create the Checkout Session.
+    //
+    // customer_update.address = 'auto' is REQUIRED, not optional polish. The
+    // Customer is created above with email + metadata only -- no address -- and
+    // automatic_tax cannot pick a VAT rate without knowing where the buyer is.
+    // With an existing `customer` and no customer_update, Stripe rejects the
+    // call outright:
+    //   customer_tax_location_invalid -- "Automatic tax calculation in Checkout
+    //   requires a valid address on the Customer. Add a valid address to the
+    //   Customer or set `customer_update[address]` to 'auto' ..."
+    // i.e. EVERY checkout attempt 500s and no one can ever pay. Verified
+    // against the live Stripe API 2026-07-31 (test mode): the identical call
+    // fails without this line and returns a session URL with it.
+    //
+    // 'auto' has Checkout collect the billing address on its own hosted page
+    // and write it back to the Customer, so renewal invoices still tax
+    // correctly.
+    //
+    // Missed by three review rounds and 13 code-review findings because the
+    // Stripe client is mocked everywhere in-repo: a mock returns the shape we
+    // assumed, not the one Stripe enforces. Only a live call surfaces this.
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: stripeCustomerId,
       client_reference_id: userId,
       line_items: [{ price: priceId, quantity: 1 }],
       automatic_tax: { enabled: true },
+      customer_update: { address: 'auto' },
       allow_promotion_codes: true,
       success_url: `${appBaseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appBaseUrl}/checkout/cancel`,
