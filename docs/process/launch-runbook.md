@@ -183,6 +183,35 @@ public traffic terminates on Cloudflare + Supabase Cloud.
       — the service worker precaches 181 entries so `networkidle` never settles
       on a cold edge. Re-run once warm; ~12s.
 
+### Workers Builds — gotchas found 2026-08-01
+
+Git auto-deploy IS wired (repo connected, build token, both `VITE_*` set as
+BUILD variables — they must be build-scoped, since Vite bakes them in at
+compile time and runtime vars arrive too late).
+
+- ⚠ **The production branch must not be `main`** until PR #461 merges. `main`
+  has none of the signed-URL code and the cloud buckets are private, so a
+  SUCCESSFUL deploy from `main` breaks every audio clip on kamoebisa.nl.
+- ⚠ **"Retry build" replays the ORIGINAL commit**, not the current branch
+  setting. After changing the branch, trigger a fresh *push* — a retry will
+  keep rebuilding the old commit and fail identically, which reads as though
+  the setting did not save.
+- ⚠ **`bun install --frozen-lockfile` is how the build installs.** A Renovate
+  PR that bumps `package.json` without regenerating `bun.lock` therefore breaks
+  every build (`error: lockfile had changes, but lockfile is frozen`). This
+  happened on `main` via #463. Renovate maintains both `bun.lock` and the now
+  deleted `package-lock.json`, so watch for drift after dep PRs.
+- The build image pins **Bun 1.2.15** (override with a `BUN_VERSION` build
+  variable). Verified 2026-08-01 that 1.2.15 accepts a lockfile written by
+  1.3.10 — a `configVersion` field difference is NOT the cause of frozen
+  lockfile failures, so do not chase it.
+- `npx wrangler deploy` reports **"No targets deployed"**. Expected: the custom
+  domains are bound at account level, not declared as routes in
+  `wrangler.jsonc`. It is not a failed deployment.
+- The `builds/triggers` REST endpoints return EMPTY under the Cloudflare MCP
+  OAuth token, so build config is dashboard-only — the API being blind is not
+  evidence that builds are unconfigured.
+
 ### Email — added 2026-08-01 (was not in the original plan)
 
 - [x] **Inbound**: Cloudflare Email Routing — `support@` and `info@` forward to
