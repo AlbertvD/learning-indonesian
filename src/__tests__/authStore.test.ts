@@ -29,6 +29,7 @@ vi.mock('@/lib/supabase', () => ({
       onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
       signInWithPassword: vi.fn(),
       signUp: vi.fn(),
+      resend: vi.fn(),
       signInWithOAuth: vi.fn(),
       signOut: vi.fn(),
     },
@@ -74,14 +75,34 @@ describe('authStore', () => {
     const mockUser = { id: 'user-2', email: 'new@example.com' }
     vi.mocked(supabase.auth.signUp).mockResolvedValue({ data: { user: mockUser, session: {} as any }, error: null } as any)
 
-    await useAuthStore.getState().signUp('new@example.com', 'password123', 'Jan de Vries')
+    const result = await useAuthStore.getState().signUp('new@example.com', 'password123', 'Jan de Vries')
 
     expect(supabase.auth.signUp).toHaveBeenCalledWith({
       email: 'new@example.com',
       password: 'password123',
-      options: { data: { full_name: 'Jan de Vries' } },
+      options: {
+        data: { full_name: 'Jan de Vries' },
+        emailRedirectTo: expect.stringMatching(/\/login$/),
+      },
     })
+    expect(result).toEqual({ needsConfirmation: false })
     expect(useAuthStore.getState().user).toEqual(mockUser)
+  })
+
+  // The regression this guards: when a project requires email confirmation,
+  // GoTrue returns NO error — a user with session:null. Before 2026-08-01 the
+  // store treated that as success, so Register showed "Account created!" and
+  // then silently ejected the visitor, who was never signed in.
+  it('signUp reports needsConfirmation and does NOT set the user when GoTrue withholds the session', async () => {
+    const mockUser = { id: 'user-3', email: 'unconfirmed@example.com' }
+    vi.mocked(supabase.auth.signUp).mockResolvedValue({ data: { user: mockUser, session: null }, error: null } as any)
+
+    const result = await useAuthStore.getState().signUp('unconfirmed@example.com', 'password123', 'Jan')
+
+    expect(result).toEqual({ needsConfirmation: true })
+    // Critical: a user without a session would let ProtectedRoute admit them
+    // to pages whose queries then fail under RLS.
+    expect(useAuthStore.getState().user).toBeNull()
   })
 
   it('signUp throws on a GoTrue error and does not set the user', async () => {
@@ -90,6 +111,24 @@ describe('authStore', () => {
 
     await expect(useAuthStore.getState().signUp('taken@example.com', 'password123', 'Jan')).rejects.toThrow()
     expect(useAuthStore.getState().user).toBeNull()
+  })
+
+  it('resendConfirmation asks GoTrue to re-send the signup mail with a /login redirect', async () => {
+    vi.mocked(supabase.auth.resend).mockResolvedValue({ data: {} as any, error: null })
+
+    await useAuthStore.getState().resendConfirmation('unconfirmed@example.com')
+
+    expect(supabase.auth.resend).toHaveBeenCalledWith({
+      type: 'signup',
+      email: 'unconfirmed@example.com',
+      options: { emailRedirectTo: expect.stringMatching(/\/login$/) },
+    })
+  })
+
+  it('resendConfirmation throws on a GoTrue error so the caller can surface it', async () => {
+    vi.mocked(supabase.auth.resend).mockResolvedValue({ data: {} as any, error: new Error('over_email_send_rate_limit') as any })
+
+    await expect(useAuthStore.getState().resendConfirmation('x@example.com')).rejects.toThrow()
   })
 
   it('signInWithGoogle calls supabase.auth.signInWithOAuth with provider google and a /login redirect', async () => {

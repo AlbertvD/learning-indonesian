@@ -279,14 +279,36 @@ These two changes must be made in the `homelab-configs` repo before developing o
 
 ## Email
 
-Email is **not configured** on the self-hosted Supabase instance. GoTrue has `GOTRUE_MAILER_AUTOCONFIRM: true` — users are auto-confirmed on signup, no verification email is sent.
+**The two environments differ — check which one you are reasoning about.**
 
-**Do not implement:**
-- Email confirmation flows
-- Password reset via email
-- Any email notifications
+**Supabase Cloud (`wodpkxsmildtgndnbraa`, the customer-facing deployment at
+https://kamoebisa.nl):** `mailer_autoconfirm = false`. Signup requires the
+learner to click a confirmation link. `authStore.signUp` therefore resolves
+`{ needsConfirmation: boolean }` — GoTrue returns **no error** in this case, it
+returns a user with `session: null`, so a resolved promise does NOT mean
+"signed in". `Register.tsx` renders a check-your-inbox panel instead of
+navigating, and `Login.tsx` maps `email_not_confirmed` to its own copy rather
+than "incorrect password". Confirmation mail needs a real SMTP provider
+configured in the project's auth settings; Supabase's built-in sender is
+rate-limited to a handful per hour and is not for production.
 
-Password resets are handled by an admin via Supabase Studio. If email is needed in the future it's a GoTrue SMTP config change — no app code changes required.
+**Homelab (the personal instance):** `GOTRUE_MAILER_AUTOCONFIRM: true` — users
+are auto-confirmed, no verification mail is sent. The confirmation branch above
+is simply never taken there, so both environments run the same code.
+
+Inbound support mail is Cloudflare Email Routing:
+`support@kamoebisa.nl` / `info@kamoebisa.nl` forward to the owner's mailbox.
+Routing forwards but cannot **send** — replying as `support@` needs the same
+SMTP provider as the auth mail.
+
+**Still do not implement:** password reset via email (admin handles it via
+Supabase Studio), or any marketing/notification email.
+
+> Superseded 2026-08-01. This section previously read *"Do not implement: email
+> confirmation flows"*, which was correct while the homelab was the only target
+> and email genuinely did not exist. Supabase Cloud defaults
+> `mailer_autoconfirm` to false, and the old assumption made signup show
+> "Account created!" and then silently eject the visitor.
 
 ## Signup gating & entitlements
 

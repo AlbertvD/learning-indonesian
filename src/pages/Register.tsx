@@ -25,8 +25,14 @@ export function Register() {
   const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
+  // Set when GoTrue accepts the signup but withholds a session pending email
+  // confirmation. Swaps the form for the check-your-inbox panel rather than
+  // navigating, because there is no session to navigate with.
+  const [awaitingConfirmation, setAwaitingConfirmation] = useState(false)
+  const [resending, setResending] = useState(false)
   const navigate = useNavigate()
   const signUp = useAuthStore(s => s.signUp)
+  const resendConfirmation = useAuthStore(s => s.resendConfirmation)
   const signInWithGoogle = useAuthStore(s => s.signInWithGoogle)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,7 +40,14 @@ export function Register() {
     setLoading(true)
 
     try {
-      await signUp(email, password, fullName)
+      const { needsConfirmation } = await signUp(email, password, fullName)
+      if (needsConfirmation) {
+        // Deliberately no success notification here: the panel IS the message,
+        // and a green "Registration successful" toast next to "confirm your
+        // email" reads as though the account is already usable.
+        setAwaitingConfirmation(true)
+        return
+      }
       notifications.show({
         color: 'green',
         title: T.register.registrationSuccess,
@@ -72,6 +85,48 @@ export function Register() {
       logError({ page: 'Register', action: 'signInWithGoogle', error: err })
       setGoogleLoading(false)
     }
+  }
+
+  const handleResend = async () => {
+    setResending(true)
+    try {
+      await resendConfirmation(email)
+      notifications.show({
+        color: 'green',
+        title: T.register.resendSent,
+        message: T.register.resendSentBody,
+      })
+    } catch (err) {
+      notifications.show({
+        color: 'red',
+        title: T.register.resendFailed,
+        message: T.register.resendFailedBody,
+      })
+      logError({ page: 'Register', action: 'resendConfirmation', error: err })
+    } finally {
+      setResending(false)
+    }
+  }
+
+  if (awaitingConfirmation) {
+    return (
+      <PageFormLayout title={T.register.checkInboxTitle}>
+        <Stack gap="md">
+          <Text size="sm">
+            {T.register.checkInboxBody} <strong>{email}</strong>
+          </Text>
+          <Text size="sm" c="dimmed">
+            {T.register.checkInboxHint}
+          </Text>
+          <Button variant="default" fullWidth onClick={handleResend} loading={resending}>
+            {T.register.resendConfirmation}
+          </Button>
+          <Text size="sm" c="dimmed">
+            <a href="/login">{T.register.backToLogin}</a>
+          </Text>
+        </Stack>
+      </PageFormLayout>
+    )
   }
 
   return (

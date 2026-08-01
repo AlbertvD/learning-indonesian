@@ -74,9 +74,17 @@ export function Login() {
       // email/password combo is wrong" — a network/CORS/outage failure is a
       // different problem and must not be told to the learner as "wrong
       // password" (they'd keep retyping a correct password for nothing).
-      const message = err instanceof AuthApiError && err.code === 'invalid_credentials'
-        ? T.login.incorrectCredentials
-        : T.login.somethingWentWrong
+      //
+      // email_not_confirmed is the same trap in a sharper form: the password
+      // IS correct and the account DOES exist, it just has an unclicked
+      // confirmation link. Reporting that as "incorrect email or password"
+      // sends the learner to reset a password that was never wrong.
+      const code = err instanceof AuthApiError ? err.code : undefined
+      const message = code === 'email_not_confirmed'
+        ? T.login.emailNotConfirmed
+        : code === 'invalid_credentials'
+          ? T.login.incorrectCredentials
+          : T.login.somethingWentWrong
       notifications.show({
         color: 'red',
         title: T.login.loginFailed,

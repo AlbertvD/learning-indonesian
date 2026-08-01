@@ -276,6 +276,17 @@ export const nl = {
     continueWithGoogle: 'Doorgaan met Google',
     orDivider: 'of',
     oauthFailed: 'Registreren met Google is mislukt. Probeer het opnieuw.',
+    // Confirmation state — rendered instead of navigating onward when GoTrue
+    // withholds a session pending email verification.
+    checkInboxTitle: 'Bevestig je e-mailadres',
+    checkInboxBody: 'We hebben een bevestigingslink gestuurd naar',
+    checkInboxHint: 'Klik op de link om je account te activeren. Niets ontvangen? Kijk even in je spammap.',
+    resendConfirmation: 'Stuur de link opnieuw',
+    resendSent: 'Verstuurd',
+    resendSentBody: 'Als dit adres op bevestiging wacht, is de link onderweg.',
+    resendFailed: 'Versturen mislukt',
+    resendFailedBody: 'We konden de link nu niet versturen. Probeer het zo nog eens.',
+    backToLogin: 'Terug naar inloggen',
   },
   pwa: {
     updateTitle: 'Nieuwe versie beschikbaar',
@@ -292,6 +303,7 @@ export const nl = {
     logIn: 'Inloggen',
     loginFailed: 'Inloggen mislukt',
     incorrectCredentials: 'Onjuist e-mailadres of wachtwoord.',
+    emailNotConfirmed: 'Je e-mailadres is nog niet bevestigd. Klik op de link in de bevestigingsmail die we je hebben gestuurd.',
     somethingWentWrong: 'Er ging iets mis. Probeer het opnieuw.',
     continueWithGoogle: 'Doorgaan met Google',
     orDivider: 'of',
@@ -1102,6 +1114,17 @@ export const en: typeof nl = {
     continueWithGoogle: 'Continue with Google',
     orDivider: 'or',
     oauthFailed: 'Signing up with Google failed. Please try again.',
+    // Confirmation state — rendered instead of navigating onward when GoTrue
+    // withholds a session pending email verification.
+    checkInboxTitle: 'Confirm your email address',
+    checkInboxBody: 'We sent a confirmation link to',
+    checkInboxHint: 'Click the link to activate your account. Nothing arrived? Check your spam folder.',
+    resendConfirmation: 'Send the link again',
+    resendSent: 'Sent',
+    resendSentBody: 'If this address is awaiting confirmation, the link is on its way.',
+    resendFailed: 'Could not send',
+    resendFailedBody: 'We could not send the link just now. Please try again shortly.',
+    backToLogin: 'Back to log in',
   },
   pwa: {
     updateTitle: 'New version available',
@@ -1118,6 +1141,7 @@ export const en: typeof nl = {
     logIn: 'Log in',
     loginFailed: 'Login failed',
     incorrectCredentials: 'Incorrect email or password.',
+    emailNotConfirmed: 'Your email address is not confirmed yet. Click the link in the confirmation email we sent you.',
     somethingWentWrong: 'Something went wrong. Please try again.',
     continueWithGoogle: 'Continue with Google',
     orDivider: 'or',

@@ -128,6 +128,30 @@ describe('Login', () => {
     expect(logError).toHaveBeenCalledWith({ page: 'Login', action: 'signIn', error: authError })
   })
 
+  // An unconfirmed account has a CORRECT password — reporting it as "incorrect
+  // email or password" sends the learner off to reset a password that was
+  // never wrong, and never mentions the confirmation mail waiting for them.
+  it('distinguishes an unconfirmed email from wrong credentials', async () => {
+    const authError = new AuthApiError('Email not confirmed', 400, 'email_not_confirmed')
+    mockSignIn.mockRejectedValue(authError)
+    const user = userEvent.setup()
+    renderLogin('/login')
+
+    await fillAndSubmit(user)
+
+    const { notifications } = await import('@mantine/notifications')
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({
+        color: 'red',
+        message: 'Je e-mailadres is nog niet bevestigd. Klik op de link in de bevestigingsmail die we je hebben gestuurd.',
+      }),
+    )
+    expect(notifications.show).not.toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Onjuist e-mailadres of wachtwoord.' }),
+    )
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
+
   it('shows a generic failure message (not "incorrect credentials") for a network/outage error, and logs it', async () => {
     const networkError = new TypeError('Failed to fetch')
     mockSignIn.mockRejectedValue(networkError)

@@ -13,7 +13,14 @@ interface AuthState {
   loading: boolean
   initialize: () => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string, fullName: string) => Promise<void>
+  /**
+   * Resolves `{ needsConfirmation: true }` when GoTrue accepted the signup but
+   * withheld a session pending email confirmation. That is NOT an error — no
+   * exception is thrown — so callers MUST branch on it rather than treat a
+   * resolved promise as "signed in".
+   */
+  signUp: (email: string, password: string, fullName: string) => Promise<{ needsConfirmation: boolean }>
+  resendConfirmation: (email: string) => Promise<void>
   signInWithGoogle: (next?: string) => Promise<void>
   signOut: () => Promise<void>
   updateDisplayName: (name: string) => Promise<void>
@@ -132,20 +139,51 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signUp: async (email, password, fullName) => {
-    // MAILER_AUTOCONFIRM is on (no email verification), so a successful signUp
-    // returns an active session directly — GoTrue emits SIGNED_IN and the
-    // handler above upserts the profile / activates starter lessons the same
-    // way a password sign-in does. No separate signIn() call needed.
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName } },
+      options: {
+        data: { full_name: fullName },
+        // Where the confirmation link lands. /login is chosen because
+        // @supabase/ssr's PKCE client exchanges the `?code=` on arrival via
+        // detectSessionInUrl, which fires SIGNED_IN — the same path Google
+        // OAuth already uses. Must be inside the project's redirect allowlist
+        // or GoTrue silently substitutes site_url.
+        emailRedirectTo: `${window.location.origin}/login`,
+      },
     })
     if (error) throw error
+
+    // THE LOAD-BEARING BRANCH. When email confirmation is required, GoTrue
+    // returns NO error — it returns a user with `session: null`. Treating a
+    // resolved promise as success is what made signup show "Account created!"
+    // and then silently eject the visitor, because nothing was ever signed in
+    // (regression observed on Supabase Cloud, 2026-08-01, where
+    // mailer_autoconfirm is false; the homelab had it true).
+    //
+    // Do NOT set `user` here: a user without a session would let
+    // ProtectedRoute admit them to pages whose queries then fail under RLS.
+    if (!data.session) return { needsConfirmation: true }
+
     // Same race-avoidance as signIn: set the user immediately so Register's
     // post-await navigation isn't bounced by ProtectedRoute before the
     // SIGNED_IN handler's deferred profile fetch resolves.
     if (data.user) set({ user: data.user })
+    return { needsConfirmation: false }
+  },
+
+  // Re-sends the signup confirmation mail. GoTrue deliberately does not
+  // distinguish "unknown address" from "already confirmed" here, so the caller
+  // shows the same neutral copy either way — that is the intended behaviour,
+  // not missing error handling: a distinguishing message would turn this into
+  // an account-enumeration oracle.
+  resendConfirmation: async (email) => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/login` },
+    })
+    if (error) throw error
   },
 
   signInWithGoogle: async (next) => {

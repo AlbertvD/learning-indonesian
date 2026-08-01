@@ -21,10 +21,11 @@ vi.mock('@/lib/logger', () => ({
   logError: vi.fn(),
 }))
 
-const { mockNavigate, mockSignUp, mockSignInWithGoogle } = vi.hoisted(() => ({
+const { mockNavigate, mockSignUp, mockSignInWithGoogle, mockResendConfirmation } = vi.hoisted(() => ({
   mockNavigate: vi.fn(),
   mockSignUp: vi.fn(),
   mockSignInWithGoogle: vi.fn(),
+  mockResendConfirmation: vi.fn(),
 }))
 
 vi.mock('react-router-dom', async () => {
@@ -33,7 +34,11 @@ vi.mock('react-router-dom', async () => {
 })
 
 vi.mock('@/stores/authStore', () => ({
-  useAuthStore: vi.fn((selector: (s: any) => any) => selector({ signUp: mockSignUp, signInWithGoogle: mockSignInWithGoogle })),
+  useAuthStore: vi.fn((selector: (s: any) => any) => selector({
+    signUp: mockSignUp,
+    signInWithGoogle: mockSignInWithGoogle,
+    resendConfirmation: mockResendConfirmation,
+  })),
 }))
 
 function renderRegister() {
@@ -70,7 +75,7 @@ describe('Register', () => {
   })
 
   it('signs up via authStore.signUp and navigates to /welkom onboarding', async () => {
-    mockSignUp.mockResolvedValue(undefined)
+    mockSignUp.mockResolvedValue({ needsConfirmation: false })
     const user = userEvent.setup()
     renderRegister()
 
@@ -81,6 +86,74 @@ describe('Register', () => {
     expect(notifications.show).toHaveBeenCalledWith(expect.objectContaining({ color: 'green' }))
     // Bet-1 §3.4: post-signup lands on the loanword-bridge onboarding, not the dashboard.
     expect(mockNavigate).toHaveBeenCalledWith('/welkom')
+  })
+
+  // The silent-ejection regression: signUp resolves without error but withholds
+  // a session. Navigating to /welkom here would bounce the visitor straight back
+  // out, after telling them registration succeeded.
+  describe('when the project requires email confirmation', () => {
+    beforeEach(() => {
+      mockSignUp.mockResolvedValue({ needsConfirmation: true })
+    })
+
+    it('shows the check-your-inbox panel with the address, and does NOT navigate', async () => {
+      const user = userEvent.setup()
+      renderRegister()
+
+      await fillAndSubmit(user)
+
+      expect(await screen.findByText('Bevestig je e-mailadres')).toBeInTheDocument()
+      expect(screen.getByText('jan@example.com')).toBeInTheDocument()
+      expect(mockNavigate).not.toHaveBeenCalled()
+    })
+
+    it('does not show a green success toast that would imply the account is usable', async () => {
+      const user = userEvent.setup()
+      renderRegister()
+
+      await fillAndSubmit(user)
+
+      await screen.findByText('Bevestig je e-mailadres')
+      const { notifications } = await import('@mantine/notifications')
+      expect(notifications.show).not.toHaveBeenCalledWith(expect.objectContaining({ color: 'green' }))
+    })
+
+    it('resends the confirmation mail on request', async () => {
+      mockResendConfirmation.mockResolvedValue(undefined)
+      const user = userEvent.setup()
+      renderRegister()
+
+      await fillAndSubmit(user)
+      await user.click(await screen.findByRole('button', { name: 'Stuur de link opnieuw' }))
+
+      expect(mockResendConfirmation).toHaveBeenCalledWith('jan@example.com')
+      const { notifications } = await import('@mantine/notifications')
+      await waitFor(() => {
+        expect(notifications.show).toHaveBeenCalledWith(
+          expect.objectContaining({ color: 'green', title: 'Verstuurd' }),
+        )
+      })
+    })
+
+    it('surfaces a failure to resend rather than failing silently', async () => {
+      mockResendConfirmation.mockRejectedValue(new Error('over_email_send_rate_limit'))
+      const user = userEvent.setup()
+      renderRegister()
+
+      await fillAndSubmit(user)
+      await user.click(await screen.findByRole('button', { name: 'Stuur de link opnieuw' }))
+
+      const { notifications } = await import('@mantine/notifications')
+      const { logError } = await import('@/lib/logger')
+      await waitFor(() => {
+        expect(notifications.show).toHaveBeenCalledWith(
+          expect.objectContaining({ color: 'red', title: 'Versturen mislukt' }),
+        )
+      })
+      expect(logError).toHaveBeenCalledWith(
+        expect.objectContaining({ page: 'Register', action: 'resendConfirmation' }),
+      )
+    })
   })
 
   it('shows a friendly message when the email is already registered, and does not navigate', async () => {
