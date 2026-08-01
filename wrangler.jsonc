@@ -27,13 +27,19 @@
 
   "compatibility_date": "2026-07-31",
 
-  // Serve on learning-indonesian.avduijn.workers.dev. Explicit because the
-  // dashboard's template Worker left the subdomain DISABLED
-  // (`{enabled: false, previews_enabled: false}`), which is what produced
-  // Cloudflare's "There is nothing here yet" page instead of the app.
-  // Once kamoebisa.nl is attached as a custom domain this can flip to false to
-  // take the workers.dev hostname out of service.
-  "workers_dev": true,
+  // OFF since 2026-08-01: kamoebisa.nl (+ www) are attached as custom domains,
+  // so learning-indonesian.avduijn.workers.dev would be a SECOND public
+  // hostname serving the identical app — indexable by search engines, and
+  // undercutting the domain the product is actually sold under. It was briefly
+  // true to get a working URL before the domain existed; the app is unchanged.
+  "workers_dev": false,
+
+  // Preview URLs would publish every non-production version on its own public
+  // hostname. Workers — unlike Pages — cannot bind different resources per
+  // environment, so a preview would run against the LIVE Supabase project and
+  // LIVE Stripe wiring. Off until there is a separate preview backend to point
+  // it at.
+  "preview_urls": false,
 
   "assets": {
     // `bun run build` (tsc -b && vite build) emits here, including _headers and
