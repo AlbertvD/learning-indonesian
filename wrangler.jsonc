@@ -27,6 +27,14 @@
 
   "compatibility_date": "2026-07-31",
 
+  // Serve on learning-indonesian.avduijn.workers.dev. Explicit because the
+  // dashboard's template Worker left the subdomain DISABLED
+  // (`{enabled: false, previews_enabled: false}`), which is what produced
+  // Cloudflare's "There is nothing here yet" page instead of the app.
+  // Once kamoebisa.nl is attached as a custom domain this can flip to false to
+  // take the workers.dev hostname out of service.
+  "workers_dev": true,
+
   "assets": {
     // `bun run build` (tsc -b && vite build) emits here, including _headers and
     // _redirects, which Workers static assets supports natively — same file
