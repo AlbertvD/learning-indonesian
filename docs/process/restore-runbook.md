@@ -87,3 +87,73 @@ cannot drop them). Data is unaffected.
 | Date | Dump | Result | Duration | Surprises |
 |---|---|---|---|---|
 | 2026-07-02 | `postgres_2026-07-02_10-05.dump` (13.1 MB) | **PASS** — drill counts byte-identical to live: learner_capability_state 1531, capability_review_events 2242, learning_capabilities 13870, auth.users 10, storage.objects 4601, 56 `indonesian` RLS policies | restore 4s; whole drill ~3 min | The two §3 gotchas (custom image fails fresh-init; `postgres` role restores `indonesian` but silently zero-restores `auth`/`storage` — always assert auth.users > 0) |
+
+
+---
+
+## Cloud backups (Supabase Cloud, added 2026-08-02)
+
+Everything above covers the **homelab** Postgres. The cloud project
+(`wodpkxsmildtgndnbraa`) is a separate system that the homelab backup container
+never touches. Supabase *does* take daily backups on the Free plan, but they are
+only **accessible after upgrading to Pro** — so until then this script is the
+only restorable copy of cloud learner data.
+
+    make backup-cloud        # learner + auth data  (~0.12 MB, seconds)
+    make backup-cloud-full   # entire database incl. content
+
+Output: `~/kamoebisa-backups/postgres/cloud_<kind>_<iso>.dump`
+(override with `BACKUP_DIR`; retention via `KEEP_DUMPS`, default 30).
+
+### What it covers, and what it deliberately does not
+
+**Backed up** — the irreplaceable half: the whole `auth` schema (users AND
+identities) plus `learner_capability_state`, `capability_review_events`,
+`learning_sessions`, `learner_lesson_activation`, `profiles`, `entitlements`,
+`stripe_webhook_events`, `user_roles`, `error_logs`.
+
+**Not backed up, by design:**
+
+- **Lesson/reader content** — pipeline-is-writer (ADR 0011); staging files are
+  canonical and a re-publish regenerates every row.
+- **Storage bytes** (~462 MB) — masters live on the author Mac under `content/`,
+  TTS is regenerable. A nightly full pull would also be **13.9 GB/month against
+  the Free plan's 5 GB egress quota** — the backup would break the budget it
+  runs inside.
+- **Capability content** — regenerable by re-seeding. ⚠ Residual: ADR 0011 makes
+  it DB-authoritative *after* seeding, so post-publish corrections from the
+  flag→review loop live only in the DB and would need redoing after a restore.
+  Accepted: content is replaceable effort, learner history is not.
+
+### Two traps this script exists to avoid
+
+Both were found on 2026-08-02 by inspecting a dump's contents rather than
+trusting its exit code, and both are now asserted on every run:
+
+1. **`-n auth` does NOT work with `-t`.** pg_dump does not union schema and
+   table selectors — when both are given the `-t` filter wins and the schema
+   contributes nothing. `-n auth -t indonesian.x` produced a dump with **zero
+   auth tables**, at non-zero size, with a valid TOC and a clean exit. Restoring
+   it would have yielded learner rows keyed to user IDs that no longer exist.
+   The correct form is `-t 'auth.*'`. `auth.identities` is the load-bearing
+   table: without it every Google login is orphaned even if `auth.users`
+   survives.
+2. **A failed `pg_dump` leaves a 0-byte file.** pg_dump creates the output
+   before it can fail, so a bad credential leaves an artefact that a naive
+   retention sweep counts as a backup. The script now deletes the file on any
+   failure.
+
+The script asserts `auth.users`, `auth.identities`,
+`indonesian.learner_capability_state` and `indonesian.profiles` are present in
+the dump's manifest, and exits non-zero if any is missing.
+
+### Restoring
+
+    createdb kamoebisa_restore
+    pg_restore -d kamoebisa_restore --no-owner --no-privileges <dump>
+
+⚠ **Not yet drilled against a real target** — there is no local Postgres server
+on the author Mac. Per this runbook's own opening principle, *a backup that has
+never been restored is not a backup*: schedule a drill (a scratch Supabase
+branch, or a local `postgresql@17`) before relying on it. Structural and content
+verification pass on every run, which is necessary but not sufficient.

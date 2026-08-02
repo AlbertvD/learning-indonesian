@@ -90,6 +90,14 @@ migrate-idempotent-check: ## Apply migration.sql twice + assert schema-health ou
 		exit 1; \
 	fi
 
+.PHONY: backup-cloud
+backup-cloud: ## Local backup of cloud learner + auth data (pg_dump, content excluded — it is regenerable)
+	bun scripts/backup-cloud.ts
+
+.PHONY: backup-cloud-full
+backup-cloud-full: ## Local backup of the ENTIRE cloud database, including regenerable content
+	bun scripts/backup-cloud.ts --full
+
 .PHONY: seed-lessons
 seed-lessons: ## Seed lesson content (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
