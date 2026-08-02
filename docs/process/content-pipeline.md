@@ -248,3 +248,45 @@ make seed-all         SUPABASE_SERVICE_KEY=<key>   # legacy lessons + vocabulary
 | Quality philosophy + contract semantics | `docs/current-system/content-pipeline-and-quality-gates.md` |
 | Architectural rules | `docs/target-architecture.md` (§ Local pipeline) |
 | ADRs that shape this | `docs/adr/0001-0005` (capability core, stages derived, FSRS-on-capabilities, atomic review commits, lesson reader passivity) |
+
+
+## Audio compression (added 2026-08-02)
+
+Every RECORDED asset is re-encoded to **mono 64 kbps** immediately before
+upload, by `scripts/lib/compress-audio.ts`. Wired into the three seeders that
+push hand-produced audio:
+
+| Seeder | Bucket |
+|---|---|
+| `scripts/seed-lesson-audio.ts` | `indonesian-lessons/lessons/` |
+| `scripts/grammar-podcast/publish.ts` | `indonesian-lessons/grammar/` |
+| `scripts/seed-podcasts.ts`, `scripts/podcasts/seed.ts` | `indonesian-podcasts/podcasts/` |
+
+**Not** applied to TTS (`scripts/lib/pipeline/lesson-stage/audio.ts`): those
+objects average ~7 KB, and re-encoding synthesised speech is a second lossy
+generation for no gain.
+
+Why: sources were uniformly **257 kbps stereo** — music settings for one person
+talking (measured across `content/lessons/*.m4a`, 2026-08-02). Two consequences:
+
+- Files breached Supabase's **50 MB per-object cap**, which is why 26 of 30
+  lessons' grammar audio never reached the cloud project at all.
+- Buckets are private, so every play is a **signed fetch that cannot be
+  edge-cached** — a 50 MB lesson is 50 MB on every listen, not just the first.
+
+Measured on lesson 1: 26.6 MB → 6.9 MB, no audible difference. Across the 16
+local lesson files: 661 MB → 165 MB, largest file 50.7 MB → 12.6 MB.
+
+Notes:
+
+- **Local masters are never modified.** Only the uploaded copy is compressed, so
+  a future re-encode starts from full quality.
+- **Idempotent.** A source already at or below 1.2x the target passes through
+  untouched, so re-running a seeder does not stack lossy generations.
+- **Container preserved** — `.m4a` stays AAC, `.mp3` stays MP3, so `audio_path`
+  and every baked `content.json` URL remain valid.
+- Requires `ffmpeg` (`brew install ffmpeg`). `SKIP_AUDIO_COMPRESSION=1` bypasses
+  it, at the cost of the object cap.
+- `seed-lesson-audio.ts` and `seed-podcasts.ts` had the homelab URL hardcoded
+  and so could not seed cloud at all; both now read `SUPABASE_URL`, defaulting
+  to the homelab.

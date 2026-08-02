@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 import { createClient } from '@supabase/supabase-js'
-import { readFileSync, existsSync, readdirSync } from 'fs'
+import { existsSync, readdirSync } from 'fs'
 import { join } from 'path'
+import { compressAudioFile, describeCompression } from './lib/compress-audio'
 
 const serviceKey = process.env.SUPABASE_SERVICE_KEY
 if (!serviceKey) {
@@ -9,7 +10,12 @@ if (!serviceKey) {
   process.exit(1)
 }
 
-const supabase = createClient('https://api.supabase.duin.home', serviceKey)
+// The target instance was hardcoded to the homelab, which made this script
+// unable to seed Supabase Cloud at all — the reason 26 of 30 lessons' audio
+// never reached the cloud project. SUPABASE_URL now selects the target and
+// still defaults to the homelab, so existing invocations are unchanged.
+const supabaseUrl = process.env.SUPABASE_URL ?? 'https://api.supabase.duin.home'
+const supabase = createClient(supabaseUrl, serviceKey)
 const audioDir = 'content/lessons'
 
 if (!existsSync(audioDir)) {
@@ -41,10 +47,15 @@ for (const filename of files) {
   const ext = filename.split('.').pop()?.toLowerCase()
   const contentType = ext === 'm4a' ? 'audio/mp4' : 'audio/mpeg'
 
-  const buffer = readFileSync(localPath)
+  // Recorded narration ships at ~256 kbps stereo, which both breaks the 50 MB
+  // per-object cap and makes learners download ~50 MB per lesson over signed
+  // (uncacheable) URLs. Re-encode to mono speech bitrate first.
+  const compressed = await compressAudioFile(localPath)
+  console.log(' ', describeCompression(filename, compressed))
+
   const { error } = await supabase.storage
     .from('indonesian-lessons')
-    .upload(storagePath, buffer, { contentType })
+    .upload(storagePath, compressed.buffer, { contentType })
 
   if (error) {
     console.error('Upload failed:', filename, error.message)

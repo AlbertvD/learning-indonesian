@@ -11,6 +11,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { compressAudioFile, describeCompression } from '../lib/compress-audio'
 
 for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
   const m = line.match(/^([A-Z_]+)=(.*)$/)
@@ -36,10 +37,15 @@ const log = (m: string) => console.log(`[publish L${job.lesson} ${job.lang}] ${m
 // 1. upload to the indonesian-lessons bucket (deterministic path; overwrite on re-run)
 const storagePath = `grammar/lesson-${job.lesson}-${job.lang}.mp3`
 log(`uploading → indonesian-lessons/${storagePath}`)
-const body = readFileSync(audioPath)
+// NotebookLM returns ~256 kbps stereo. Uncompressed these hit Supabase's 50 MB
+// per-object cap — grammar/lesson-3-en.mp3 landed at exactly 50.0 MB and most
+// of the set never uploaded at all, leaving 26 of 30 lessons without grammar
+// audio on cloud. Mono speech bitrate fixes that and the learner's download.
+const compressed = await compressAudioFile(audioPath)
+log(describeCompression(storagePath, compressed))
 const { error: upErr } = await supabase.storage
   .from('indonesian-lessons')
-  .upload(storagePath, body, { upsert: true, contentType: 'audio/mpeg' })
+  .upload(storagePath, compressed.buffer, { upsert: true, contentType: 'audio/mpeg' })
 if (upErr) throw new Error(`upload failed: ${upErr.message}`)
 
 // 2. set the lesson's audio path column (NL = audio_path, EN = audio_path_en)
