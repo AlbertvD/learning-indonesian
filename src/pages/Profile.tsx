@@ -6,7 +6,6 @@ import {
   Button,
   Stack,
   Group,
-  SegmentedControl,
   Switch,
   Slider,
   Select,
@@ -28,7 +27,6 @@ import {
 import { PaywallPanel } from '@/components/paywall/PaywallPanel'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
-import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
 import { supabase } from '@/lib/supabase'
 import { engagement } from '@/lib/analytics/engagement'
@@ -67,7 +65,6 @@ export function Profile() {
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
   const updateDisplayName = useAuthStore((state) => state.updateDisplayName)
-  const updateLanguage = useAuthStore((state) => state.updateLanguage)
   const updatePreferredSessionSize = useAuthStore((state) => state.updatePreferredSessionSize)
   const updateTimezone = useAuthStore((state) => state.updateTimezone)
   const signOut = useAuthStore((state) => state.signOut)
@@ -80,7 +77,6 @@ export function Profile() {
   const [momentum, setMomentum] = useState<Momentum | null>(null)
   const [savingSessionSize, setSavingSessionSize] = useState(false)
   const [savingTimezone, setSavingTimezone] = useState(false)
-  const [savingLang, setSavingLang] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
   const [deletingAccount, setDeletingAccount] = useState(false)
@@ -166,28 +162,6 @@ export function Profile() {
         title: T.profile.failedToSave,
         message: T.profile.somethingWentWrong,
       })
-    }
-  }
-
-  async function handleLanguageChange(lang: 'nl' | 'en') {
-    setSavingLang(true)
-    try {
-      await updateLanguage(lang)
-      const newT = translations[lang]
-      notifications.show({
-        color: 'green',
-        title: newT.profile.profileUpdated,
-        message: newT.profile.languageSaved,
-      })
-    } catch (err) {
-      logError({ page: 'profile', action: 'updateLanguage', error: err })
-      notifications.show({
-        color: 'red',
-        title: T.profile.failedToSave,
-        message: T.profile.somethingWentWrong,
-      })
-    } finally {
-      setSavingLang(false)
     }
   }
 
@@ -417,22 +391,21 @@ export function Profile() {
                 />
               </div>
 
-              <div className={classes.row}>
-                <div className={classes.rowLabel}>
-                  <span className={classes.rowTitle}>{T.profile.language}</span>
-                </div>
-                <div className={classes.rowControl}>
-                  <SegmentedControl
-                    value={profile?.language ?? 'nl'}
-                    onChange={(val) => handleLanguageChange(val as 'nl' | 'en')}
-                    disabled={savingLang}
-                    data={[
-                      { label: T.profile.dutch, value: 'nl' },
-                      { label: T.profile.english, value: 'en' },
-                    ]}
-                  />
-                </div>
-              </div>
+              {/* NL/EN language switch REMOVED 2026-08-02 — launching Dutch-only.
+                  Not a code problem: the EN translations are complete (1,552
+                  i18n keys) and all 30 EN grammar episodes exist on disk. But
+                  they are not published, so an English learner would get a full
+                  UI with NO grammar audio on any lesson — the band renders
+                  nothing when its language's episode is missing
+                  (LessonGrammarAudioBand.tsx:36). Offering the switch would sell
+                  a degraded product.
+
+                  Everything needed to restore it is intact: `translations.en`,
+                  `authStore.updateLanguage`, and `profiles.language`. Bring back
+                  this row once the EN episodes are published — or not, if
+                  English ships as a separate product for a different audience
+                  (the loanword bridge, this app's real differentiator, is
+                  Dutch-specific and does not transfer). */}
 
               {/* Dark-mode toggle is mobile-only — desktop keeps it in the rail,
                   so surfacing it here would duplicate that control. */}
