@@ -16,6 +16,26 @@
 // 64 kbps mono AAC is transparent for spoken word. Re-encoding lesson 1 gave
 // 26.6 MB -> 6.9 MB with no audible difference in Indonesian narration.
 //
+// THE MONO DOWNMIX IS LOSSLESS HERE — measured, not assumed. Every file is
+// DUAL MONO: the L-R difference signal sits at -91.0 dB (digital silence, the
+// format's noise floor) against a -6.0 dB peak, across grammar podcasts, lesson
+// narration and story podcasts alike. The grammar episodes are two-host
+// conversations, but NotebookLM alternates the speakers in TIME rather than
+// panning them, so the second channel is a byte-for-byte duplicate.
+// `-ac 1` therefore discards pure redundancy and accounts for HALF the total
+// saving before bitrate is touched at all. Do not read it as a quality
+// compromise; re-measure with
+//   ffmpeg -i <f> -af "pan=mono|c0=0.5*c0-0.5*c1,volumedetect" -f null -
+// before changing it.
+//
+// 64 kbps (not lower) is deliberate. General podcast practice tolerates 48 kbps
+// for speech, but learners here are attending to PHONETIC detail — the /ŋ/,
+// glottal stops and affix boundaries the morphology module teaches. Consonant
+// releases and sibilants carry high-frequency energy, which is exactly what low
+// bitrates smear first. Owner decision 2026-08-02: keep the headroom; the ~40 MB
+// saved across the library is a poor trade against blurring what people pay to
+// learn. Also keep 44.1 kHz for the same reason.
+//
 // NOT used for TTS (scripts/lib/pipeline/lesson-stage/audio.ts). Those objects
 // average ~7 KB, and re-encoding already-synthesised speech is a second lossy
 // generation for no gain. See memory `project_audio_surfaces` for the full

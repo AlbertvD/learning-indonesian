@@ -75,6 +75,28 @@ const LEARNER_TABLES = [
 ]
 
 /**
+ * Content tables that must ALSO be captured — not for their content, but for
+ * their IDENTITY.
+ *
+ * `learning_capabilities.id` is `default gen_random_uuid()`. The capability
+ * stage upserts on the stable `canonical_key`, but the id itself is random, so
+ * reseeding content into a FRESH database mints entirely new UUIDs. Every
+ * learner_capability_state.capability_id and capability_review_events row in a
+ * backup would then reference ids that no longer exist, and the restore would
+ * fail every foreign key — losing exactly the FSRS history this script exists
+ * to protect. Same story for lessons.id via learner_lesson_activation.
+ *
+ * Proven by the restore drill on 2026-08-02: with these excluded, the drill hit
+ *   ERROR: insert or update on "learner_lesson_activation" violates foreign key
+ * and learner rows landed at 0.
+ *
+ * This is not a retreat from "content is regenerable" — the other 43 content
+ * tables stay out. It is only the two whose primary keys learner data points
+ * at. Cost: ~13 MB.
+ */
+const IDENTITY_TABLES = ['learning_capabilities', 'lessons']
+
+/**
  * Tables whose absence makes a restore useless. Asserted against the dump's own
  * manifest after every run — see the note at the verification step.
  *
@@ -86,6 +108,10 @@ const REQUIRED_IN_DUMP = [
   'auth.identities',
   'indonesian.learner_capability_state',
   'indonesian.profiles',
+  // Without these the FSRS rows above cannot be restored at all — see
+  // IDENTITY_TABLES.
+  'indonesian.learning_capabilities',
+  'indonesian.lessons',
 ]
 
 const need = (k: string) => {
@@ -118,7 +144,8 @@ const path = join(dir, `cloud_${kind}_${stamp}.dump`)
 // so losing it orphans every OAuth login even if auth.users survives.
 const scope = full
   ? []
-  : ["-t", "auth.*", ...LEARNER_TABLES.flatMap(t => ['-t', `indonesian.${t}`])]
+  : ["-t", "auth.*",
+     ...[...LEARNER_TABLES, ...IDENTITY_TABLES].flatMap(t => ['-t', `indonesian.${t}`])]
 
 console.log(`Backing up cloud (${kind}) → ${path}`)
 
@@ -173,5 +200,5 @@ for (const old of existing.slice(KEEP_DUMPS)) {
 
 console.log(`  ✓ ${mb(bytes)} MB, ${tocEntries} TOC entries, verified`)
 console.log(`  retained: ${Math.min(existing.length, KEEP_DUMPS)} ${kind} dumps (KEEP_DUMPS=${KEEP_DUMPS})`)
-if (!full) console.log('  scope: auth schema + ' + LEARNER_TABLES.length + ' learner tables (content excluded — regenerable)')
+if (!full) console.log(`  scope: auth schema + ${LEARNER_TABLES.length} learner tables + ${IDENTITY_TABLES.length} identity tables (${IDENTITY_TABLES.join(', ')})`)
 console.log('\nRestore: docs/process/restore-runbook.md § cloud')

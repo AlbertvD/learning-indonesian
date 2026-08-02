@@ -147,13 +147,49 @@ The script asserts `auth.users`, `auth.identities`,
 `indonesian.learner_capability_state` and `indonesian.profiles` are present in
 the dump's manifest, and exits non-zero if any is missing.
 
-### Restoring
+### Restoring — DRILLED 2026-08-02, procedure below is proven
 
-    createdb kamoebisa_restore
-    pg_restore -d kamoebisa_restore --no-owner --no-privileges <dump>
+Every row count matched the live source (31 lessons, 15,944 capabilities,
+auth.users + auth.identities, all learner tables). **The order matters and is
+not obvious** — five separate failures were hit getting here, each silent or
+misleading:
 
-⚠ **Not yet drilled against a real target** — there is no local Postgres server
-on the author Mac. Per this runbook's own opening principle, *a backup that has
-never been restored is not a backup*: schedule a drill (a scratch Supabase
-branch, or a local `postgresql@17`) before relying on it. Structural and content
-verification pass on every run, which is necessary but not sufficient.
+    # 1. Prerequisites. A fresh SUPABASE project already has all of these;
+    #    a bare Postgres does not, and migration.sql fails at line 59 without
+    #    the auth schema ("schema \"auth\" does not exist").
+    create schema if not exists auth;
+    create extension pgcrypto; create extension "uuid-ossp";
+    create role anon / authenticated / service_role / authenticator;
+    create function auth.uid() / auth.role() / auth.email();
+
+    # 2. Restore auth FIRST — migration.sql's FKs reference auth.users(id).
+    pg_restore ... --no-owner --no-privileges -n auth <dump>
+
+    # 3. Schema.
+    psql -f scripts/migration.sql
+
+    # 4. Clear migration.sql's OWN seed rows, or the data-only restore collides
+    #    with them: "duplicate key (module_id, order_index)=(common-words, 999)".
+    truncate indonesian.lessons, indonesian.learning_capabilities cascade;
+
+    # 5. Restore data. --disable-triggers is REQUIRED: pg_restore --data-only
+    #    does not guarantee FK-safe ordering, and without it
+    #    learning_capabilities loads before lessons and silently ends at 0 rows.
+    pg_restore ... --data-only --disable-triggers --no-owner --no-privileges \
+                   -n indonesian <dump>
+
+    # 6. Verify by COUNTING, against the source. Not by exit code.
+
+⚠ **Do NOT reseed content before restoring.** `learning_capabilities.id` is
+`default gen_random_uuid()`, so a fresh seed mints new UUIDs and every
+`learner_capability_state.capability_id` in the backup would reference rows that
+no longer exist. The backup carries `lessons` and `learning_capabilities`
+precisely to preserve those IDs. Reseed the *rest* of the content afterwards —
+the pipeline upserts on `canonical_key`, so it matches the restored IDs rather
+than replacing them.
+
+Drill target used: local `postgresql@17` on port 55432 (Homebrew). Note the keg
+installs unlinked when another major version is present — `share/postgresql@17`
+and `lib/postgresql@17` need symlinking into `/opt/homebrew` or initdb fails on
+a missing timezone directory. `pg_cron` and `vector` are unavailable locally;
+their migration.sql sections error harmlessly and do not affect learner data.
