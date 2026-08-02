@@ -546,6 +546,41 @@ Instead, fix them by modifying the relevant config files in the `homelab-configs
 
 After committing the fix to `homelab-configs`, apply it via the **compose route only**: on the host, `cd ~/homelab-configs && git pull && sudo docker compose -f services/supabase/docker-compose.yml up -d <service>`. Never a bare `docker run` recreate, never env tweaks via Portainer/`docker exec` — that is how the 2026-07-11 three-source container drift happened.
 
+## Where changes belong (cloud) — added 2026-08-02
+
+The two-lane rule below describes the HOMELAB. Supabase Cloud + Cloudflare added
+surfaces it does not name, and on 2026-08-02 every one of them was configured by
+hand with no repo representation at all. Two settings had been silently wrong for
+weeks as a result: `site_url` sat at Supabase's default `http://localhost:3000`,
+and `mailer_autoconfirm` differed from the homelab — which made cloud signup show
+"Account created!" and then silently eject the visitor.
+
+| Surface | Declared in | Applied by | Asserted by |
+|---|---|---|---|
+| DB schema, RLS, functions | `scripts/migration.sql` | `make migrate` | `make check-supabase-deep` (HC1–HC59) |
+| Supabase auth config | `supabase/config.toml` `[auth]` | `make config-push` | `make check-cloud-config` |
+| Edge function settings | `supabase/config.toml` `[functions.*]` | `supabase functions deploy` | — |
+| Worker + CSP + SPA routing | `wrangler.jsonc`, `public/_headers` | `bunx wrangler deploy` | `make check-cloud-config` (behaviour) |
+| DNS, Email Routing, custom domains, Google OAuth client | **nothing — by design** | Cloudflare / Google dashboards | `make check-cloud-config` (behaviour) |
+
+**The rule:** if a surface has a "declared in" cell, change it THERE and apply it
+with the named command. Never by dashboard click or ad-hoc `curl` — those work,
+and leave the repo lying about production.
+
+The last row is a deliberate exception, not an oversight. Six resources that are
+configured once and never change do not justify Terraform. For those the
+safeguard is different in kind: assert that they still WORK (the domain serves,
+the CSP is present, workers.dev stays off) rather than declaring how they are
+built.
+
+**And the discipline that machinery cannot enforce:** any change made to a live
+system that was not applied from the repo must, in the same session, either move
+into the repo or gain an assertion. Every item in the failure list above existed
+because that did not happen.
+
+`make pre-deploy` runs the drift check, so a repo/live disagreement blocks a
+merge rather than being discovered months later.
+
 **The two-lane rule** (full text: `homelab-configs/services/supabase/README.md` § Making changes): **Lane 1, data plane** — anything inside Postgres (app schema/RLS/functions via `scripts/migration.sql` + `make migrate`, content publishes, seeds) and edge-function *code* (SCP to the bind-mount) is legitimately applied direct-to-host; its repo-sync lives in THIS repo. **Lane 2, infra plane** — the containers themselves (services added/removed, image version bumps, env/flags like `GOTRUE_*`/`PGRST_DB_SCHEMAS`, Kong, networks/mounts) go through homelab-configs compose + `up -d`, always, so that repo stays in sync with the deployed instance.
 
 ## Homelab Infrastructure
