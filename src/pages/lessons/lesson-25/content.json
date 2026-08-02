@@ -7,8 +7,8 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Despina",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-25-nl.mp3",
-    "lesson_audio_url_en": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-25-en.mp3"
+    "lesson_audio_url": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-lessons/grammar/lesson-25-nl.mp3",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {
@@ -32,35 +32,35 @@
             "speaker": "Pegawai",
             "translation": "Ambon als eiland in het oosten van Indonesië is natuurlijk erg bekend in Nederland. Maar misschien is dit gebied minder aantrekkelijk voor toeristen, die meestal alleen informatie over Bali en Java horen. Ook is de reis van Jakarta naar Ambon behoorlijk duur, dus toeristen kunnen zich dat niet veroorloven. Nederlandse toeristen die naar Ambon komen, zijn natuurlijk Ambonezen zelf die daar al lang wonen. Als zij veel over ons eiland vertellen, zal het in de toekomst ook bekender worden.",
             "translation_en": "Ambon as an island in eastern Indonesia is of course very well known in the Netherlands. But perhaps this area is less attractive to tourists, who usually only hear information about Bali and Java. Also the journey from Jakarta to Ambon is quite expensive, so tourists cannot afford it. Dutch tourists who come to Ambon are of course Ambonese themselves who have lived there for a long time. If they tell many stories about our island, it will also become more famous in the future.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/ambon-sebagai-pulau-di-3aeb9f15.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/ambon-sebagai-pulau-di-3aeb9f15.mp3"
           },
           {
             "text": "Kalau mau ke Ambon, bagaimana caranya?",
             "speaker": "Wartawan",
             "translation": "Hoe kom je naar Ambon?",
             "translation_en": "How do you get to Ambon?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kalau-mau-ke-ambon-e082a7bd.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kalau-mau-ke-ambon-e082a7bd.mp3"
           },
           {
             "text": "Dari Jakarta ke Ambon ada beberapa cara. Bisa naik pesawat tetapi sebenarnya rugi juga. Naik kapal laut lebih baik, walaupun makan waktu agak lama. Pemandangan dari laut sangat bagus, dan untuk dapat berkenalan dengan orang Indonesia, cara ini juga lebih baik.",
             "speaker": "Pegawai",
             "translation": "Van Jakarta naar Ambon zijn er verschillende mogelijkheden. Je kunt vliegen, maar dat is eigenlijk niet rendabel. Met het schip is beter, hoewel het wel veel tijd kost. Het uitzicht van zee is erg mooi, en om kennis te maken met Indonesiërs is deze manier ook beter.",
             "translation_en": "From Jakarta to Ambon there are several options. You can fly, but that is actually not cost-effective. By ship is better, although it does take a long time. The view from the sea is very beautiful, and to get to know Indonesians this way is also better.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/dari-jakarta-ke-ambon-4776af06.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/dari-jakarta-ke-ambon-4776af06.mp3"
           },
           {
             "text": "Apakah menurut Anda gejala ekonomi dalam pariwisata juga akan berperan besar untuk pulau Ambon ini di kemudian hari?",
             "speaker": "Wartawan",
             "translation": "Denkt u dat economische factoren in het toerisme ook een grote rol voor het eiland Ambon in de toekomst zullen spelen?",
             "translation_en": "Do you think that economic factors in tourism will also play a major role for the island of Ambon in the future?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/apakah-menurut-anda-gejala-7e032f50.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/apakah-menurut-anda-gejala-7e032f50.mp3"
           },
           {
             "text": "Tentu saja. Walaupun di Ambon sekarang hasil perkebunan merupakan hasil utama, di samping hasil perikanan dan sebagainya, tetapi hasil yang diperoleh dari wisatawan juga akan penting sekali. Asal saja lingkungan dijaga supaya tetap indah dan menyenangkan. Itu yang dinamakan ekowisata. Dengan demikian perjalanan naik kole-kole untuk melihat taman cengkeh dari atas permukaan laut, akan tetap sangat menyenangkan. Apakah Anda pernah merokok rokok kretek? Untuk rokok itu kita juga memerlukan bunga cengkeh sebagai campuran.",
             "speaker": "Pegawai",
             "translation": "Zeker. Hoewel de opbrengst van plantages momenteel het belangrijkste is voor Ambon, naast visserij en dergelijke, zal de inkomsten van toeristen ook erg belangrijk zijn. Als maar gezorgd wordt dat de omgeving mooi en aangenaam blijft. Dat noemen we ecotoerisme. Op die manier zal een tochtje in een traditionele boot om de kruidnageltuinen vanaf zee te bekijken, erg aangenaam blijven. Rook je wel eens kretek-sigaretten? Voor die sigaretten hebben we namelijk kruidnagelbloemknoppen nodig als ingredient.",
             "translation_en": "Certainly. Although the yield from plantations is currently the most important for Ambon, alongside fishing and so on, income from tourists will also be very important. As long as the environment is kept beautiful and pleasant. That is what we call ecotourism. In this way, a trip in a traditional boat to see the clove gardens from the sea will remain very enjoyable. Do you ever smoke kretek cigarettes? For those cigarettes we also need clove flower buds as an ingredient.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tentu-saja-walaupun-di-96a71308.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/tentu-saja-walaupun-di-96a71308.mp3"
           }
         ]
       }
@@ -74,223 +74,223 @@
             "dutch": "bestaan",
             "english": "to exist",
             "indonesian": "ada, ~nya",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ada-nya-bb277d54.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ada-nya-bb277d54.mp3"
           },
           {
             "dutch": "deel / afdeling",
             "english": "part / section",
             "indonesian": "bagi, ~an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bagi-an-37d103b7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/bagi-an-37d103b7.mp3"
           },
           {
             "dutch": "mengsel",
             "english": "mixture",
             "indonesian": "campur, ~an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/campur-an-f506e8be.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/campur-an-f506e8be.mp3"
           },
           {
             "dutch": "kruidnagel",
             "english": "clove",
             "indonesian": "cengkeh",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/cengkeh-c9a0579d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/cengkeh-c9a0579d.mp3"
           },
           {
             "dutch": "zodoende",
             "english": "thus",
             "indonesian": "dengan demikian",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dengan-demikian-bf671c4f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/dengan-demikian-bf671c4f.mp3"
           },
           {
             "dutch": "in de toekomst",
             "english": "in the future",
             "indonesian": "di kemudian hari",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/di-kemudian-hari-235b6494.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/di-kemudian-hari-235b6494.mp3"
           },
           {
             "dutch": "verkregen",
             "english": "obtained",
             "indonesian": "diperoleh",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/diperoleh-10c11337.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/diperoleh-10c11337.mp3"
           },
           {
             "dutch": "naast",
             "english": "besides",
             "indonesian": "di samping",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/di-samping-823f6f03.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/di-samping-823f6f03.mp3"
           },
           {
             "dutch": "ecotoerisme",
             "english": "ecotourism",
             "indonesian": "ekowisata",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ekowisata-24117381.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ekowisata-24117381.mp3"
           },
           {
             "dutch": "verschijnsel",
             "english": "phenomenon",
             "indonesian": "gejala",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gejala-637af1d5.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/gejala-637af1d5.mp3"
           },
           {
             "dutch": "opbrengst / resultaat",
             "english": "yield / result",
             "indonesian": "hasil",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hasil-bf82c76a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/hasil-bf82c76a.mp3"
           },
           {
             "dutch": "visserij",
             "english": "fishing",
             "indonesian": "ikan, per~an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ikan-peran-55e15d53.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ikan-peran-55e15d53.mp3"
           },
           {
             "dutch": "informatie",
             "english": "information",
             "indonesian": "informasi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/informasi-eb2cbc95.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/informasi-eb2cbc95.mp3"
           },
           {
             "dutch": "beschermen / bewaken",
             "english": "to protect / to guard",
             "indonesian": "jaga, men~",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jaga-men-ef6463d5.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/jaga-men-ef6463d5.mp3"
           },
           {
             "dutch": "juist",
             "english": "just / precisely",
             "indonesian": "justru",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/justru-1f153022.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/justru-1f153022.mp3"
           },
           {
             "dutch": "tuinbouw / plantage",
             "english": "plantation",
             "indonesian": "kebun, per~an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kebun-peran-89a63c64.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kebun-peran-89a63c64.mp3"
           },
           {
             "dutch": "schoonheid",
             "english": "beauty",
             "indonesian": "keindahan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/keindahan-932eccab.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/keindahan-932eccab.mp3"
           },
           {
             "dutch": "kleine prauw",
             "english": "small traditional boat",
             "indonesian": "kole-kole",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kolekole-4abdd01d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kolekole-4abdd01d.mp3"
           },
           {
             "dutch": "omgeving / milieu",
             "english": "surroundings / environment",
             "indonesian": "lingkung, ~an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lingkung-an-6fd80eed.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/lingkung-an-6fd80eed.mp3"
           },
           {
             "dutch": "Molukken",
             "english": "Moluccas",
             "indonesian": "Maluku",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/maluku-3e1a462e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/maluku-3e1a462e.mp3"
           },
           {
             "dutch": "oppervlakte",
             "english": "surface",
             "indonesian": "muka, per~an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/muka-peran-96576181.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/muka-peran-96576181.mp3"
           },
           {
             "dutch": "noemen",
             "english": "to call / to name",
             "indonesian": "nama, me~kan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nama-mekan-f4b35424.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/nama-mekan-f4b35424.mp3"
           },
           {
             "dutch": "object",
             "english": "object",
             "indonesian": "obyek",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/obyek-01e55d21.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/obyek-01e55d21.mp3"
           },
           {
             "dutch": "in 't algemeen",
             "english": "in general",
             "indonesian": "pada umumnya",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pada-umumnya-86a00f04.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pada-umumnya-86a00f04.mp3"
           },
           {
             "dutch": "uitzicht / panorama",
             "english": "view / panorama",
             "indonesian": "pandang, pemandangan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pandang-pemandangan-858590f2.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pandang-pemandangan-858590f2.mp3"
           },
           {
             "dutch": "een rol spelen",
             "english": "role, play a ~",
             "indonesian": "peran, ber~",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/peran-ber-f53745a7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/peran-ber-f53745a7.mp3"
           },
           {
             "dutch": "in staat / bij machte",
             "english": "capable / able",
             "indonesian": "sanggup",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sanggup-de91679a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/sanggup-de91679a.mp3"
           },
           {
             "dutch": "aangenaam / aantrekkelijk",
             "english": "pleasant / attractive",
             "indonesian": "senang, menyenangkan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/senang-menyenangkan-d797b8cc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/senang-menyenangkan-d797b8cc.mp3"
           },
           {
             "dutch": "voetballen",
             "english": "football, play ~",
             "indonesian": "sepak bola, main ~",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sepak-bola-main-2df161e6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/sepak-bola-main-2df161e6.mp3"
           },
           {
             "dutch": "zeetuin",
             "english": "marine garden",
             "indonesian": "taman laut",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/taman-laut-54780124.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/taman-laut-54780124.mp3"
           },
           {
             "dutch": "duurzaam / vast",
             "english": "permanent / fixed",
             "indonesian": "tetap",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tetap-4aea1d54.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/tetap-4aea1d54.mp3"
           },
           {
             "dutch": "volgens",
             "english": "according to",
             "indonesian": "turut, menurut",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/turut-menurut-b237dfe3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/turut-menurut-b237dfe3.mp3"
           },
           {
             "dutch": "veranderen",
             "english": "change, alter",
             "indonesian": "ubah, meng~",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ubah-meng-7a1deac6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ubah-meng-7a1deac6.mp3"
           },
           {
             "dutch": "journalist",
             "english": "journalist",
             "indonesian": "wartawan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/wartawan-094d720f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/wartawan-094d720f.mp3"
           },
           {
             "dutch": "gebied",
             "english": "area",
             "indonesian": "wilayah",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/wilayah-5cf8112c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/wilayah-5cf8112c.mp3"
           },
           {
             "dutch": "toerist",
             "english": "tourist",
             "indonesian": "wisatawan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/wisatawan-65569243.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/wisatawan-65569243.mp3"
           },
           {
             "dutch": "alhoewel dat zo is",
             "english": "nevertheless",
             "indonesian": "walaupun demikian",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/walaupun-demikian-4dd5f781.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/walaupun-demikian-4dd5f781.mp3"
           }
         ]
       }
@@ -314,19 +314,19 @@
                 "dutch": "verkopen → de verkoop / het verkopen",
                 "english": "sell → selling → the sale / the selling",
                 "indonesian": "jual → menjual → penjualan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jual-menjual-penjualan-9d385e75.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/jual-menjual-penjualan-9d385e75.mp3"
               },
               {
                 "dutch": "zich ontwikkelen → de ontwikkeling",
                 "english": "develop → develop → development",
                 "indonesian": "kembang → berkembang → perkembangan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kembang-berkembang-perkembangan-144de2e5.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kembang-berkembang-perkembangan-144de2e5.mp3"
               },
               {
                 "dutch": "opvoeden → het onderwijs / de opvoeding",
                 "english": "educate → educating → education / upbringing",
                 "indonesian": "didik → mendidik → pendidikan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/didik-mendidik-pendidikan-e55c32c1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/didik-mendidik-pendidikan-e55c32c1.mp3"
               }
             ],
             "rules_en": [
@@ -349,31 +349,31 @@
                 "dutch": "verkopen → het verkopen van auto's",
                 "english": "selling → the selling of cars",
                 "indonesian": "menjual → penjualan mobil",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/menjual-penjualan-mobil-4d0f397b.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/menjual-penjualan-mobil-4d0f397b.mp3"
               },
               {
                 "dutch": "openen → het openen van een feest",
                 "english": "opening → the opening of a party",
                 "indonesian": "membuka → pembukaan pesta",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/membuka-pembukaan-pesta-8affba6b.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/membuka-pembukaan-pesta-8affba6b.mp3"
               },
               {
                 "dutch": "sturen → het verzenden van brieven",
                 "english": "sending → the sending of letters",
                 "indonesian": "mengirim → pengiriman surat",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mengirim-pengiriman-surat-b9e0c57c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/mengirim-pengiriman-surat-b9e0c57c.mp3"
               },
               {
                 "dutch": "Die autoverkoop is het proces van auto's verkopen",
                 "english": "That car sale is the process of selling cars",
                 "indonesian": "Penjualan mobil itu proses menjual mobil",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/penjualan-mobil-itu-proses-58a82ba8.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/penjualan-mobil-itu-proses-58a82ba8.mp3"
               },
               {
                 "dutch": "De opening van het feest is iets aangenaams",
                 "english": "The opening of the party is something pleasant",
                 "indonesian": "Pembukaan pesta merupakan hal yang menyenangkan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pembukaan-pesta-merupakan-hal-1af41736.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pembukaan-pesta-merupakan-hal-1af41736.mp3"
               }
             ],
             "rules_en": [
@@ -393,31 +393,31 @@
                 "dutch": "waarderen → de waardering / een onderscheiding",
                 "english": "esteem → esteem / an award",
                 "indonesian": "menghargai → penghargaan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/menghargai-penghargaan-c4aba956.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/menghargai-penghargaan-c4aba956.mp3"
               },
               {
                 "dutch": "registreren → de inschrijving",
                 "english": "register → the registration",
                 "indonesian": "mendaftarkan → pendaftaran",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mendaftarkan-pendaftaran-5f5485b0.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/mendaftarkan-pendaftaran-5f5485b0.mp3"
               },
               {
                 "dutch": "plannen → de planning",
                 "english": "plan → the planning",
                 "indonesian": "merencanakan → perencanaan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/merencanakan-perencanaan-05d526c1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/merencanakan-perencanaan-05d526c1.mp3"
               },
               {
                 "dutch": "De inschrijving van nieuwe studenten begint in juni",
                 "english": "Registration of new students begins in June.",
                 "indonesian": "Pendaftaran mahasiswa baru dimulai pada bulan Juni",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pendaftaran-mahasiswa-baru-dimulai-b8d266eb.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pendaftaran-mahasiswa-baru-dimulai-b8d266eb.mp3"
               },
               {
                 "dutch": "De ouders helpen met de planning van de bruiloft",
                 "english": "The parents help with the wedding planning.",
                 "indonesian": "Orang tua membantu dengan perencanaan perkawinan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/orang-tua-membantu-dengan-cbb3fe08.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/orang-tua-membantu-dengan-cbb3fe08.mp3"
               }
             ],
             "rules_en": [
@@ -437,31 +437,31 @@
                 "dutch": "verklaren → de uitleg / het verklaren",
                 "english": "explain → the explanation",
                 "indonesian": "menjelaskan → penjelasan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/menjelaskan-penjelasan-f495a245.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/menjelaskan-penjelasan-f495a245.mp3"
               },
               {
                 "dutch": "benaderen → de benadering / het benaderen",
                 "english": "approach → the approach",
                 "indonesian": "mendekati → pendekatan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mendekati-pendekatan-7c4242f1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/mendekati-pendekatan-7c4242f1.mp3"
               },
               {
                 "dutch": "bekendmaken → de bekendmaking / het bekendmaken",
                 "english": "announce → the announcement",
                 "indonesian": "mengumumkan → pengumuman",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mengumumkan-pengumuman-d88dca99.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/mengumumkan-pengumuman-d88dca99.mp3"
               },
               {
                 "dutch": "De uitleg van die leraar is niet duidelijk genoeg",
                 "english": "That teacher's explanation is not clear enough.",
                 "indonesian": "Penjelasan guru itu kurang jelas",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/penjelasan-guru-itu-kurang-8f0de933.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/penjelasan-guru-itu-kurang-8f0de933.mp3"
               },
               {
                 "dutch": "Morgen wordt de bekendmaking van de bedrijfsresultaten afgekondigd",
                 "english": "Tomorrow the announcement of the company results will be announced.",
                 "indonesian": "Besok pengumuman hasil perusahaan akan diumumkan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/besok-pengumuman-hasil-perusahaan-83d5b4f2.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/besok-pengumuman-hasil-perusahaan-83d5b4f2.mp3"
               }
             ],
             "rules_en": [
@@ -483,13 +483,13 @@
                 "dutch": "de kiezer / de verkiezing / de keuze",
                 "english": "voter / election / choice",
                 "indonesian": "pemilih / pemilihan / pilihan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pemilih-pemilihan-pilihan-80e144c0.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pemilih-pemilihan-pilihan-80e144c0.mp3"
               },
               {
                 "dutch": "de verkoper / de verkoop / de koopwaar",
                 "english": "seller / sale / goods",
                 "indonesian": "penjual / penjualan / jualan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/penjual-penjualan-jualan-36a320d3.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/penjual-penjualan-jualan-36a320d3.mp3"
               }
             ],
             "rules_en": [
@@ -524,247 +524,248 @@
             "dutch": "garnaal",
             "english": "shrimp",
             "indonesian": "udang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/udang-829e75a9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/udang-829e75a9.mp3"
           },
           {
             "dutch": "gekko",
             "english": "gecko",
             "indonesian": "tokeh",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tokeh-171697f6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/tokeh-171697f6.mp3"
           },
           {
             "dutch": "hond",
             "english": "dog",
             "indonesian": "anjing",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/anjing-e4f13a29.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/anjing-e4f13a29.mp3"
           },
           {
             "dutch": "huishagedis",
             "english": "house lizard",
             "indonesian": "cicak",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/cicak-66b73fe8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/cicak-66b73fe8.mp3"
           },
           {
             "dutch": "kakkerlak",
             "english": "cockroach",
             "indonesian": "kecoak",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kecoak-b9aab50b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kecoak-b9aab50b.mp3"
           },
           {
             "dutch": "kat",
             "english": "cat",
             "indonesian": "kucing",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kucing-883b2117.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kucing-883b2117.mp3"
           },
           {
             "dutch": "kikker",
             "english": "frog",
             "indonesian": "kodok",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kodok-c187d1d8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kodok-c187d1d8.mp3"
           },
           {
             "dutch": "kip",
             "english": "chicken",
             "indonesian": "ayam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ayam-9c94bf48.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ayam-9c94bf48.mp3"
           },
           {
             "dutch": "koe",
             "english": "cow",
             "indonesian": "sapi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sapi-1f62b971.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/sapi-1f62b971.mp3"
           },
           {
             "dutch": "konijn",
             "english": "rabbit",
             "indonesian": "kelinci",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kelinci-868ab458.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kelinci-868ab458.mp3"
           },
           {
             "dutch": "krab",
             "english": "crab",
             "indonesian": "kepiting",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kepiting-1c5d0151.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kepiting-1c5d0151.mp3"
           },
           {
             "dutch": "krekel",
             "english": "cricket",
             "indonesian": "jangkrik",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jangkrik-28125e92.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/jangkrik-28125e92.mp3"
           },
           {
             "dutch": "kwal",
             "english": "jellyfish",
             "indonesian": "ubur-ubur",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/uburubur-607da68b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/uburubur-607da68b.mp3"
           },
           {
             "dutch": "mier",
             "english": "ant",
             "indonesian": "semut",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/semut-7781f82c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/semut-7781f82c.mp3"
           },
           {
             "dutch": "mug",
             "english": "mosquito",
             "indonesian": "nyamuk",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nyamuk-0cd67ece.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/nyamuk-0cd67ece.mp3"
           },
           {
             "dutch": "muis",
             "english": "mouse",
             "indonesian": "tikus",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tikus-39683db3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/tikus-39683db3.mp3"
           },
           {
             "dutch": "neushoorn",
             "english": "rhinoceros",
             "indonesian": "badak",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/badak-66cd520c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/badak-66cd520c.mp3"
           },
           {
             "dutch": "olifant",
             "english": "elephant",
             "indonesian": "gajah",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gajah-d48aa212.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/gajah-d48aa212.mp3"
           },
           {
             "dutch": "paard",
             "english": "horse",
             "indonesian": "kuda",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kuda-c3a0e315.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kuda-c3a0e315.mp3"
           },
           {
             "dutch": "rund",
             "english": "cattle",
             "indonesian": "sapi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sapi-1f62b971.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/sapi-1f62b971.mp3"
           },
           {
             "dutch": "schaap",
             "english": "sheep",
             "indonesian": "domba",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/domba-33480fdb.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/domba-33480fdb.mp3"
           },
           {
             "dutch": "slang",
             "english": "snake",
             "indonesian": "ular",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ular-b64cd486.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ular-b64cd486.mp3"
           },
           {
             "dutch": "spin",
             "english": "spider",
             "indonesian": "laba-laba",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/labalaba-d52b13ae.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/labalaba-d52b13ae.mp3"
           },
           {
             "dutch": "tijger",
             "english": "tiger",
             "indonesian": "harimau",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/harimau-5637f3fc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/harimau-5637f3fc.mp3"
           },
           {
             "dutch": "varken",
             "english": "pig",
             "indonesian": "babi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/babi-02d74d39.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/babi-02d74d39.mp3"
           },
           {
             "dutch": "vis",
             "english": "fish",
             "indonesian": "ikan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ikan-8ad7ed05.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ikan-8ad7ed05.mp3"
           },
           {
             "dutch": "vlieg",
             "english": "fly",
             "indonesian": "lalat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lalat-a4e0fa00.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/lalat-a4e0fa00.mp3"
           },
           {
             "dutch": "vlinder",
             "english": "butterfly",
             "indonesian": "kupu-kupu",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kupukupu-0d5ca3a1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kupukupu-0d5ca3a1.mp3"
           },
           {
             "dutch": "vogel",
             "english": "bird",
             "indonesian": "burung",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/burung-5ded8548.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/burung-5ded8548.mp3"
           },
           {
             "dutch": "waterbuffel",
             "english": "water buffalo",
             "indonesian": "kerbau",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kerbau-029cf882.mp3"
+            "loanSourceNl": "karbouw",
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kerbau-029cf882.mp3"
           },
           {
             "dutch": "wilde buffel",
             "english": "wild buffalo",
             "indonesian": "banteng",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/banteng-41d59fa4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/banteng-41d59fa4.mp3"
           },
           {
             "dutch": "worm",
             "english": "worm",
             "indonesian": "cacing",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/cacing-fad97fa5.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/cacing-fad97fa5.mp3"
           },
           {
             "dutch": "anak ayam",
             "english": "chick",
             "indonesian": "kuiken",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kuiken-67a31712.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kuiken-67a31712.mp3"
           },
           {
             "dutch": "babi laut",
             "english": "sea urchin",
             "indonesian": "zeeëgel",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/zeegel-83fa3247.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/zeegel-83fa3247.mp3"
           },
           {
             "dutch": "burung dara",
             "english": "pigeon",
             "indonesian": "duif",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/duif-01a64121.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/duif-01a64121.mp3"
           },
           {
             "dutch": "burung gereja",
             "english": "sparrow",
             "indonesian": "mus",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mus-78bd1b54.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/mus-78bd1b54.mp3"
           },
           {
             "dutch": "burung kaka tua",
             "english": "cockatoo",
             "indonesian": "kaketoe",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kaketoe-8cae955c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kaketoe-8cae955c.mp3"
           },
           {
             "dutch": "ikan domba",
             "english": "dolphin",
             "indonesian": "dolfijn",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dolfijn-f4d93e30.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/dolfijn-f4d93e30.mp3"
           },
           {
             "dutch": "ikan hiu",
             "english": "shark",
             "indonesian": "haai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/haai-976612f7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/haai-976612f7.mp3"
           },
           {
             "dutch": "ikan laut",
             "english": "sea fish",
             "indonesian": "zeevis",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/zeevis-7be528a3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/zeevis-7be528a3.mp3"
           },
           {
             "dutch": "udang karang",
             "english": "lobster",
             "indonesian": "kreeft",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kreeft-68222139.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kreeft-68222139.mp3"
           }
         ]
       }

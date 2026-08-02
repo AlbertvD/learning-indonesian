@@ -7,8 +7,8 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Achird",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-24-nl.mp3",
-    "lesson_audio_url_en": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-24-en.mp3"
+    "lesson_audio_url": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-lessons/grammar/lesson-24-nl.mp3",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {
@@ -36,243 +36,243 @@
             "dutch": "dat",
             "english": "that",
             "indonesian": "bahwa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bahwa-b4949151.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/bahwa-b4949151.mp3"
           },
           {
             "dutch": "blouse",
             "english": "blouse",
             "indonesian": "baju",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/baju-fbe3e499.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/baju-fbe3e499.mp3"
           },
           {
             "dutch": "overstroming",
             "english": "flood",
             "indonesian": "banjir",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/banjir-3d0a5576.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/banjir-3d0a5576.mp3"
           },
           {
             "dutch": "zich voorstellen",
             "english": "imagine",
             "indonesian": "bayang, mem-kan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bayang-memkan-46d28d2b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/bayang-memkan-46d28d2b.mp3"
           },
           {
             "dutch": "meedelen / berichten",
             "english": "inform / report",
             "indonesian": "beri tahu, mem-kan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/beri-tahu-memkan-a1539b68.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/beri-tahu-memkan-a1539b68.mp3"
           },
           {
             "dutch": "dankzij",
             "english": "thanks to",
             "indonesian": "berkat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/berkat-f578878b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/berkat-f578878b.mp3"
           },
           {
             "dutch": "laat maar",
             "english": "let it be",
             "indonesian": "biar saja",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/biar-saja-138c74d1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/biar-saja-138c74d1.mp3"
           },
           {
             "dutch": "krokodil",
             "english": "crocodile",
             "indonesian": "buaya",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/buaya-4fe70cf0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/buaya-4fe70cf0.mp3"
           },
           {
             "dutch": "boetiek",
             "english": "boutique",
             "indonesian": "butik",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/butik-23b92840.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/butik-23b92840.mp3"
           },
           {
             "dutch": "liefde / genegenheid",
             "english": "love / affection",
             "indonesian": "cinta",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/cinta-7d9c6b8a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/cinta-7d9c6b8a.mp3"
           },
           {
             "dutch": "krimpen / gekrompen",
             "english": "shrink / shrunken",
             "indonesian": "ciut",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ciut-a5dc5800.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ciut-a5dc5800.mp3"
           },
           {
             "dutch": "meisje / jonge vrouw",
             "english": "girl / young woman",
             "indonesian": "gadis",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gadis-bb7d9fcc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/gadis-bb7d9fcc.mp3"
           },
           {
             "dutch": "opschudding",
             "english": "commotion",
             "indonesian": "gara-gara",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/garagara-0bbb10d6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/garagara-0bbb10d6.mp3"
           },
           {
             "dutch": "stommeling",
             "english": "fool",
             "indonesian": "goblok",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/goblok-08a29970.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/goblok-08a29970.mp3"
           },
           {
             "dutch": "hopen",
             "english": "hope",
             "indonesian": "harap",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/harap-8ac288da.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/harap-8ac288da.mp3"
           },
           {
             "dutch": "eerbied",
             "english": "respect",
             "indonesian": "hormat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/hormat-9f8287b0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/hormat-9f8287b0.mp3"
           },
           {
             "dutch": "industrie",
             "english": "industry",
             "indonesian": "industri",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/industri-bdfd9d28.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/industri-bdfd9d28.mp3"
           },
           {
             "dutch": "district",
             "english": "district",
             "indonesian": "kabupaten",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kabupaten-026f16b7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kabupaten-026f16b7.mp3"
           },
           {
             "dutch": "verbleekt / wazig",
             "english": "faded / blurred",
             "indonesian": "kabur",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kabur-fd8095b8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kabur-fd8095b8.mp3"
           },
           {
             "dutch": "toestand / situatie",
             "english": "condition / situation",
             "indonesian": "keadaan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/keadaan-5d532da0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/keadaan-5d532da0.mp3"
           },
           {
             "dutch": "klas",
             "english": "class",
             "indonesian": "kelas",
             "loanSourceNl": "klas",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kelas-3b35be85.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kelas-3b35be85.mp3"
           },
           {
             "dutch": "zichtbaar",
             "english": "visible",
             "indonesian": "kelihatan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kelihatan-7d24876d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kelihatan-7d24876d.mp3"
           },
           {
             "dutch": "treffen / raken",
             "english": "strike / hit",
             "indonesian": "landa, me-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/landa-me-500b634a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/landa-me-500b634a.mp3"
           },
           {
             "dutch": "overstromen",
             "english": "overflow",
             "indonesian": "luap, me-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/luap-me-ba3d7058.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/luap-me-ba3d7058.mp3"
           },
           {
             "dutch": "uitlenen (aan)",
             "english": "lend (to)",
             "indonesian": "pinjam, meminjamkan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pinjam-meminjamkan-89f6f9d7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pinjam-meminjamkan-89f6f9d7.mp3"
           },
           {
             "dutch": "paniek",
             "english": "panic",
             "indonesian": "panik",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/panik-6935b1ca.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/panik-6935b1ca.mp3"
           },
           {
             "dutch": "plattegrond / kaart",
             "english": "map / plan",
             "indonesian": "peta",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/peta-d9169c85.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/peta-d9169c85.mp3"
           },
           {
             "dutch": "knap / intelligent",
             "english": "smart / intelligent",
             "indonesian": "pintar",
             "loanSourceNl": "pienter",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pintar-8f4f58fc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pintar-8f4f58fc.mp3"
           },
           {
             "dutch": "plannen",
             "english": "plan",
             "indonesian": "rencana, me-kan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rencana-mekan-bc6f5b0e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/rencana-mekan-bc6f5b0e.mp3"
           },
           {
             "dutch": "eenvoudig",
             "english": "simple",
             "indonesian": "sederhana",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sederhana-d24294b5.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sederhana-d24294b5.mp3"
           },
           {
             "dutch": "gezond",
             "english": "healthy",
             "indonesian": "sehat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sehat-5c7fc67c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sehat-5c7fc67c.mp3"
           },
           {
             "dutch": "van dezelfde familie",
             "english": "of the same family",
             "indonesian": "sekeluarga",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sekeluarga-0901cc2c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sekeluarga-0901cc2c.mp3"
           },
           {
             "dutch": "voortdurend / steeds",
             "english": "continually / always",
             "indonesian": "senantiasa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/senantiasa-efb4af00.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/senantiasa-efb4af00.mp3"
           },
           {
             "dutch": "kort",
             "english": "short",
             "indonesian": "singkat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/singkat-ecbbd5b1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/singkat-ecbbd5b1.mp3"
           },
           {
             "dutch": "afkorting",
             "english": "abbreviation",
             "indonesian": "singkat, ~an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/singkat-an-a4f7f9c0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/singkat-an-a4f7f9c0.mp3"
           },
           {
             "dutch": "geliefd / dierbaar",
             "english": "beloved / dear",
             "indonesian": "tercinta",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tercinta-99f76678.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tercinta-99f76678.mp3"
           },
           {
             "dutch": "gedateerd / de dato",
             "english": "dated",
             "indonesian": "tertanggal",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tertanggal-de88add2.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tertanggal-de88add2.mp3"
           },
           {
             "dutch": "buur / buurman / buurvrouw",
             "english": "neighbor",
             "indonesian": "tetangga",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tetangga-3de1f2e8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tetangga-3de1f2e8.mp3"
           },
           {
             "dutch": "tulp",
             "english": "tulip",
             "indonesian": "tulip",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tulip-264f577d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tulip-264f577d.mp3"
           },
           {
             "dutch": "zeggen / uitspreken",
             "english": "say / pronounce",
             "indonesian": "ucap, meng-kan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ucap-mengkan-10ab0b6b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ucap-mengkan-10ab0b6b.mp3"
           },
           {
             "dutch": "zichtbaar, blijkbaar",
@@ -280,7 +280,7 @@
             "register": "informal",
             "indonesian": "keliatan",
             "registerCounterpart": "kelihatan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/keliatan-bc2ac089.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/keliatan-bc2ac089.mp3"
           },
           {
             "dutch": "slim",
@@ -288,7 +288,7 @@
             "register": "informal",
             "indonesian": "pinter",
             "registerCounterpart": "pintar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pinter-12c3c1b7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pinter-12c3c1b7.mp3"
           }
         ]
       }
@@ -327,61 +327,61 @@
                 "dutch": "springen",
                 "english": "jump",
                 "indonesian": "loncat",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/loncat-769d9c2a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/loncat-769d9c2a.mp3"
               },
               {
                 "dutch": "(iets / iemand) laten springen",
                 "english": "(something / someone) make jump",
                 "indonesian": "meloncatkan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meloncatkan-392ca932.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/meloncatkan-392ca932.mp3"
               },
               {
                 "dutch": "(iets) bespringen",
                 "english": "(something) jump on",
                 "indonesian": "meloncati",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meloncati-bf8cbb3f.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/meloncati-bf8cbb3f.mp3"
               },
               {
                 "dutch": "Hij laat de bal springen",
                 "english": "He makes the ball jump",
                 "indonesian": "Dia meloncatkan bola",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dia-meloncatkan-bola-2faaacdb.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dia-meloncatkan-bola-2faaacdb.mp3"
               },
               {
                 "dutch": "De tijger bespringt de buffel",
                 "english": "The tiger jumps on the buffalo",
                 "indonesian": "Harimau meloncati kerbau",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/harimau-meloncati-kerbau-9aed5d71.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/harimau-meloncati-kerbau-9aed5d71.mp3"
               },
               {
                 "dutch": "overkant",
                 "english": "opposite side",
                 "indonesian": "seberang",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/seberang-9c1d7846.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/seberang-9c1d7846.mp3"
               },
               {
                 "dutch": "(iets / iemand) overzetten",
                 "english": "(something / someone) ferry across",
                 "indonesian": "menyeberangkan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menyeberangkan-7e0d463a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/menyeberangkan-7e0d463a.mp3"
               },
               {
                 "dutch": "(iets) oversteken",
                 "english": "(something) cross over",
                 "indonesian": "menyeberangi",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menyeberangi-cdac4dd3.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/menyeberangi-cdac4dd3.mp3"
               },
               {
                 "dutch": "De onderwijzer zet de kinderen over",
                 "english": "The teacher ferries the children across",
                 "indonesian": "Guru menyeberangkan anak",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/guru-menyeberangkan-anak-9358cd2b.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/guru-menyeberangkan-anak-9358cd2b.mp3"
               },
               {
                 "dutch": "De jongeman steekt de rivier over",
                 "english": "The young man crosses the river",
                 "indonesian": "Pemuda menyeberangi sungai",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pemuda-menyeberangi-sungai-0df2e5fa.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pemuda-menyeberangi-sungai-0df2e5fa.mp3"
               }
             ],
             "rules_en": [
@@ -405,37 +405,37 @@
                 "dutch": "Moeder stuurt een brief",
                 "english": "Mother sends a letter",
                 "indonesian": "Ibu mengirim surat",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mengirim-surat-b50af72c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mengirim-surat-b50af72c.mp3"
               },
               {
                 "dutch": "Moeder stuurt een brief naar Adi",
                 "english": "Mother sends a letter to Adi",
                 "indonesian": "Ibu mengirimkan surat kepada Adi",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mengirimkan-surat-kepada-e18dd3b3.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mengirimkan-surat-kepada-e18dd3b3.mp3"
               },
               {
                 "dutch": "Moeder stuurt Adi een brief",
                 "english": "Mother sends Adi a letter",
                 "indonesian": "Ibu mengirimi Adi surat",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mengirimi-adi-surat-aa354519.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mengirimi-adi-surat-aa354519.mp3"
               },
               {
                 "dutch": "De brief wordt door moeder gestuurd",
                 "english": "The letter is sent by mother",
                 "indonesian": "Surat dikirim ibu",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-dikirim-ibu-37d1b028.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-dikirim-ibu-37d1b028.mp3"
               },
               {
                 "dutch": "De brief wordt door moeder naar Adi gestuurd",
                 "english": "The letter is sent by mother to Adi",
                 "indonesian": "Surat dikirimkan ibu kepada Adi",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-dikirimkan-ibu-kepada-a0ec2c69.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-dikirimkan-ibu-kepada-a0ec2c69.mp3"
               },
               {
                 "dutch": "Adi wordt door moeder een brief gestuurd",
                 "english": "Adi is sent a letter by mother",
                 "indonesian": "Adi dikirimi ibu surat",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/adi-dikirimi-ibu-surat-baa7e325.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/adi-dikirimi-ibu-surat-baa7e325.mp3"
               }
             ],
             "rules_en": [
@@ -459,109 +459,109 @@
                 "dutch": "blijven",
                 "english": "stay",
                 "indonesian": "tinggal",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tinggal-90397dc1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tinggal-90397dc1.mp3"
               },
               {
                 "dutch": "achterlaten",
                 "english": "abandon",
                 "indonesian": "meninggalkan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meninggalkan-3509053a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/meninggalkan-3509053a.mp3"
               },
               {
                 "dutch": "bewonen; nalaten (als erfenis)",
                 "english": "bequeath; leave",
                 "indonesian": "meninggali",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meninggali-306e708d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/meninggali-306e708d.mp3"
               },
               {
                 "dutch": "De vrouw heeft haar kind achtergelaten",
                 "english": "The woman abandoned her child",
                 "indonesian": "Perempuan meninggalkan anaknya",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/perempuan-meninggalkan-anaknya-857ef538.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/perempuan-meninggalkan-anaknya-857ef538.mp3"
               },
               {
                 "dutch": "Het kind is door de vrouw achtergelaten",
                 "english": "The child was abandoned by the woman",
                 "indonesian": "Anaknya ditinggalkan perempuan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anaknya-ditinggalkan-perempuan-b60d3129.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/anaknya-ditinggalkan-perempuan-b60d3129.mp3"
               },
               {
                 "dutch": "Die persoon heeft zijn kind geld nagelaten",
                 "english": "That person bequeathed money to his child",
                 "indonesian": "Orang itu meninggali anaknya uang",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/orang-itu-meninggali-anaknya-3a9f726b.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/orang-itu-meninggali-anaknya-3a9f726b.mp3"
               },
               {
                 "dutch": "Aan het kind is door die persoon geld nagelaten",
                 "english": "Money was bequeathed to the child by that person",
                 "indonesian": "Anaknya ditinggali uang oleh orang itu",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anaknya-ditinggali-uang-oleh-8a09c3c4.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/anaknya-ditinggali-uang-oleh-8a09c3c4.mp3"
               },
               {
                 "dutch": "Wie bewoont dat huis?",
                 "english": "Who inhabits that house?",
                 "indonesian": "Siapa meninggali rumah itu?",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/siapa-meninggali-rumah-itu-86a75a60.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/siapa-meninggali-rumah-itu-86a75a60.mp3"
               },
               {
                 "dutch": "zitten",
                 "english": "sit",
                 "indonesian": "duduk",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/duduk-ead8bff5.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/duduk-ead8bff5.mp3"
               },
               {
                 "dutch": "laten zitten",
                 "english": "make sit",
                 "indonesian": "mendudukkan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mendudukkan-a0853f94.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/mendudukkan-a0853f94.mp3"
               },
               {
                 "dutch": "bezetten",
                 "english": "occupy",
                 "indonesian": "menduduki",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menduduki-48eb69e1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/menduduki-48eb69e1.mp3"
               },
               {
                 "dutch": "De moeder laat het kind zitten",
                 "english": "The mother makes the child sit",
                 "indonesian": "Ibu mendudukkan anaknya",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mendudukkan-anaknya-53133f8a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mendudukkan-anaknya-53133f8a.mp3"
               },
               {
                 "dutch": "Het leger heeft die heuvel bezet",
                 "english": "The army occupied that hill",
                 "indonesian": "Tentara menduduki bukit itu",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tentara-menduduki-bukit-itu-5804f384.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tentara-menduduki-bukit-itu-5804f384.mp3"
               },
               {
                 "dutch": "illustratie, tekening",
                 "english": "illustration, drawing",
                 "indonesian": "gambar",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gambar-39b341d0.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/gambar-39b341d0.mp3"
               },
               {
                 "dutch": "afbeelden",
                 "english": "depict",
                 "indonesian": "menggambarkan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menggambarkan-44e38342.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/menggambarkan-44e38342.mp3"
               },
               {
                 "dutch": "illustreren, beschilderen",
                 "english": "illustrate, paint",
                 "indonesian": "menggambari",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menggambari-5dcb56a4.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/menggambari-5dcb56a4.mp3"
               },
               {
                 "dutch": "De schilder schildert een kat",
                 "english": "The painter depicts a cat",
                 "indonesian": "Pelukis menggambarkan kucing",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pelukis-menggambarkan-kucing-ebcfbb05.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pelukis-menggambarkan-kucing-ebcfbb05.mp3"
               },
               {
                 "dutch": "De schilder beschildert de muur / schildert op de muur",
                 "english": "The painter paints the wall / paints on the wall",
                 "indonesian": "Pelukis menggambari dinding",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pelukis-menggambari-dinding-36594216.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pelukis-menggambari-dinding-36594216.mp3"
               }
             ],
             "rules_en": [

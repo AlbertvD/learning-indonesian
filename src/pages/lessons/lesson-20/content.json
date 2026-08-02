@@ -7,8 +7,8 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Algenib",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-20-nl.mp3",
-    "lesson_audio_url_en": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-20-en.mp3"
+    "lesson_audio_url": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-lessons/grammar/lesson-20-nl.mp3",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {
@@ -29,265 +29,265 @@
             "dutch": "anijs",
             "english": "fennel (sweet)",
             "indonesian": "adas",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/adas-3309d1ed.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/adas-3309d1ed.mp3"
           },
           {
             "dutch": "tamarinde",
             "english": "tamarind",
             "indonesian": "asam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/asam-a326576c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/asam-a326576c.mp3"
           },
           {
             "dutch": "ui",
             "english": "onion",
             "indonesian": "bawang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bawang-f02b3301.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/bawang-f02b3301.mp3"
           },
           {
             "dutch": "rode ui",
             "english": "red onion",
             "indonesian": "bawang merah",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bawang-merah-39d8a07d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/bawang-merah-39d8a07d.mp3"
           },
           {
             "dutch": "knoflook",
             "english": "garlic",
             "indonesian": "bawang putih",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bawang-putih-8cdd8e17.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/bawang-putih-8cdd8e17.mp3"
           },
           {
             "dutch": "kruiden",
             "english": "spices",
             "indonesian": "bumbu",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bumbu-d0ad8640.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/bumbu-d0ad8640.mp3"
           },
           {
             "dutch": "kleine, hete pepers",
             "english": "small, hot peppers",
             "indonesian": "cabai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cabai-2d648f7d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/cabai-2d648f7d.mp3"
           },
           {
             "dutch": "kruidnagel",
             "english": "clove",
             "indonesian": "cengkeh",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cengkeh-040743f9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/cengkeh-040743f9.mp3"
           },
           {
             "dutch": "azijn",
             "english": "vinegar",
             "indonesian": "cuka",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/cuka-9a0c3a54.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/cuka-9a0c3a54.mp3"
           },
           {
             "dutch": "blad van bep. citrusboom",
             "english": "leaf of certain citrus tree",
             "indonesian": "daun jeruk purut",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/daun-jeruk-purut-1cb75396.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/daun-jeruk-purut-1cb75396.mp3"
           },
           {
             "dutch": "laurierachtig blad",
             "english": "laurel-like leaf",
             "indonesian": "daun salam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/daun-salam-2cf2c165.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/daun-salam-2cf2c165.mp3"
           },
           {
             "dutch": "zout",
             "english": "salt",
             "indonesian": "garam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/garam-c1ad5200.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/garam-c1ad5200.mp3"
           },
           {
             "dutch": "suiker",
             "english": "sugar",
             "indonesian": "gula",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gula-fb636711.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/gula-fb636711.mp3"
           },
           {
             "dutch": "palmsuiker",
             "english": "palm sugar",
             "indonesian": "gula Jawa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gula-jawa-58a31c00.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/gula-jawa-58a31c00.mp3"
           },
           {
             "dutch": "gember",
             "english": "ginger",
             "indonesian": "jahe",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jahe-281cd37e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/jahe-281cd37e.mp3"
           },
           {
             "dutch": "komijn",
             "english": "cumin",
             "indonesian": "jintan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jintan-e31bc498.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/jintan-e31bc498.mp3"
           },
           {
             "dutch": "kaneel",
             "english": "cinnamon",
             "indonesian": "kayu manis",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kayu-manis-744dd451.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kayu-manis-744dd451.mp3"
           },
           {
             "dutch": "ketjap (zoet; zout)",
             "english": "soy sauce (sweet; salty)",
             "indonesian": "kecap",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kecap-d1ad3db8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kecap-d1ad3db8.mp3"
           },
           {
             "dutch": "kokosnoot",
             "english": "coconut",
             "indonesian": "kelapa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kelapa-186ddb71.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kelapa-186ddb71.mp3"
           },
           {
             "dutch": "geurige bladsoort",
             "english": "fragrant leaf variety",
             "indonesian": "kemangi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kemangi-9b768ae0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kemangi-9b768ae0.mp3"
           },
           {
             "dutch": "kemirinoot",
             "english": "candlenut",
             "indonesian": "kemiri",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kemiri-6134e7c2.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kemiri-6134e7c2.mp3"
           },
           {
             "dutch": "foelie (vruchtvlees van nootmuskaat)",
             "english": "mace",
             "indonesian": "kembang pala",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kembang-pala-9a287258.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kembang-pala-9a287258.mp3"
           },
           {
             "dutch": "soort gemberwortel",
             "english": "lesser galangal",
             "indonesian": "kencur",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kencur-d63251b5.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kencur-d63251b5.mp3"
           },
           {
             "dutch": "kardemom",
             "english": "cardamom",
             "indonesian": "kepulaga",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kepulaga-68ee7d37.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kepulaga-68ee7d37.mp3"
           },
           {
             "dutch": "koriander",
             "english": "coriander",
             "indonesian": "ketumbar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ketumbar-d6d59071.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/ketumbar-d6d59071.mp3"
           },
           {
             "dutch": "geelwortel, curcuma",
             "english": "turmeric",
             "indonesian": "kunyit",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kunyit-56bf43ca.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kunyit-56bf43ca.mp3"
           },
           {
             "dutch": "peper",
             "english": "pepper",
             "indonesian": "lada",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lada-fc4e93b4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/lada-fc4e93b4.mp3"
           },
           {
             "dutch": "gemberachtige wortel",
             "english": "galangal",
             "indonesian": "laos",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/laos-760e3438.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/laos-760e3438.mp3"
           },
           {
             "dutch": "gemberachtige wortel",
             "english": "greater galangal",
             "indonesian": "lengkuas",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lengkuas-d1cb07fc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/lengkuas-d1cb07fc.mp3"
           },
           {
             "dutch": "Spaanse peper",
             "english": "chili pepper",
             "indonesian": "lombok",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lombok-329f1b7f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/lombok-329f1b7f.mp3"
           },
           {
             "dutch": "peper",
             "english": "pepper",
             "indonesian": "merica",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/merica-4defe9aa.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/merica-4defe9aa.mp3"
           },
           {
             "dutch": "nootmuskaat",
             "english": "nutmeg",
             "indonesian": "pala",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pala-a5f3fd05.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pala-a5f3fd05.mp3"
           },
           {
             "dutch": "vanille",
             "english": "vanilla",
             "indonesian": "panili",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/panili-782e363e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/panili-782e363e.mp3"
           },
           {
             "dutch": "geurige vruchten van de petaiboom (stinkboon)",
             "english": "fragrant pods of the petai tree (stinkbean)",
             "indonesian": "petai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/petai-f82890f7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/petai-f82890f7.mp3"
           },
           {
             "dutch": "kruiden",
             "english": "spices",
             "indonesian": "rempah-rempah",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rempahrempah-738f8c8b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/rempahrempah-738f8c8b.mp3"
           },
           {
             "dutch": "tot dikke pasta fijngewreven Spaanse pepers",
             "english": "chili peppers ground to a thick paste",
             "indonesian": "sambal",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sambal-4df8d8a6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/sambal-4df8d8a6.mp3"
           },
           {
             "dutch": "sap van uitgeperste kokospulp",
             "english": "juice of pressed coconut pulp",
             "indonesian": "santan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/santan-2b6935d1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/santan-2b6935d1.mp3"
           },
           {
             "dutch": "basilicumzaadjes",
             "english": "basil seeds",
             "indonesian": "selasih",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/selasih-88d8b566.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/selasih-88d8b566.mp3"
           },
           {
             "dutch": "citrusachtige grassoort",
             "english": "citrus-like grass",
             "indonesian": "serai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/serai-beb04179.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/serai-beb04179.mp3"
           },
           {
             "dutch": "geurig, aromatisch blad",
             "english": "aromatic, fragrant leaf",
             "indonesian": "temu kunci",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/temu-kunci-bf882d75.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/temu-kunci-bf882d75.mp3"
           },
           {
             "dutch": "curcuma, geelwortel",
             "english": "turmeric, yellow root",
             "indonesian": "temu kuning = kunyit",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/temu-kuning-kunyit-bfe19255.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/temu-kuning-kunyit-bfe19255.mp3"
           },
           {
             "dutch": "garnalen- of vispasta (gedroogd; gebakken)",
             "english": "shrimp or fish paste (dried; fried)",
             "indonesian": "terasi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/terasi-83371394.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/terasi-83371394.mp3"
           },
           {
             "dutch": "vanille",
             "english": "vanilla",
             "indonesian": "vanili",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/vanili-d3010245.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/vanili-d3010245.mp3"
           },
           {
             "dutch": "sesamzaadjes",
             "english": "sesame seeds",
             "indonesian": "wijen",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/wijen-89d70f59.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/wijen-89d70f59.mp3"
           }
         ]
       }
@@ -301,91 +301,91 @@
             "dutch": "zuur",
             "english": "sour",
             "indonesian": "asam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/asam-a326576c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/asam-a326576c.mp3"
           },
           {
             "dutch": "zout",
             "english": "salty",
             "indonesian": "asin",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/asin-5ea71683.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/asin-5ea71683.mp3"
           },
           {
             "dutch": "smaak",
             "english": "taste",
             "indonesian": "citarasa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/citarasa-a5c0d2a9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/citarasa-a5c0d2a9.mp3"
           },
           {
             "dutch": "lekker",
             "english": "delicious",
             "indonesian": "enak",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/enak-147aa769.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/enak-147aa769.mp3"
           },
           {
             "dutch": "smakelijk / lekker gekruid",
             "english": "savory / deliciously spiced",
             "indonesian": "gurih",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gurih-7fd7492a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/gurih-7fd7492a.mp3"
           },
           {
             "dutch": "niet (zo) lekker",
             "english": "not (so) delicious",
             "indonesian": "kurang enak",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kurang-enak-8083252f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kurang-enak-8083252f.mp3"
           },
           {
             "dutch": "te weinig ... (zoet) (niet zoet genoeg)",
             "english": "too little ... (sweet) (not sweet enough)",
             "indonesian": "kurang ...",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kurang-1b8bcd8d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kurang-1b8bcd8d.mp3"
           },
           {
             "dutch": "heerlijk",
             "english": "delightful",
             "indonesian": "lezat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lezat-c1af61cc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/lezat-c1af61cc.mp3"
           },
           {
             "dutch": "met smaak eten",
             "english": "eat with relish",
             "indonesian": "makan dengan selera",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/makan-dengan-selera-0de88b9c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/makan-dengan-selera-0de88b9c.mp3"
           },
           {
             "dutch": "zoet",
             "english": "sweet",
             "indonesian": "manis",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/manis-f93276ab.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/manis-f93276ab.mp3"
           },
           {
             "dutch": "bitter, zonder suiker",
             "english": "bitter, unsweetened",
             "indonesian": "pahit",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pahit-64487eaf.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pahit-64487eaf.mp3"
           },
           {
             "dutch": "heet / scherp",
             "english": "hot / spicy",
             "indonesian": "pedas",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pedas-a8c86dc3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pedas-a8c86dc3.mp3"
           },
           {
             "dutch": "smaak",
             "english": "taste",
             "indonesian": "rasa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rasa-aadd5574.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/rasa-aadd5574.mp3"
           },
           {
             "dutch": "heerlijk",
             "english": "delightful",
             "indonesian": "sedap",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sedap-9c2e08b8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/sedap-9c2e08b8.mp3"
           },
           {
             "dutch": "te ... (zuur)",
             "english": "too ... (sour)",
             "indonesian": "terlalu ...",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/terlalu-67aaf2d5.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/terlalu-67aaf2d5.mp3"
           }
         ]
       }
@@ -414,265 +414,265 @@
             "dutch": "richting",
             "english": "direction",
             "indonesian": "arah",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/arah-e428b15d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/arah-e428b15d.mp3"
           },
           {
             "dutch": "nachtbus",
             "english": "night bus",
             "indonesian": "bus malam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bus-malam-afeca11c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/bus-malam-afeca11c.mp3"
           },
           {
             "dutch": "handel",
             "english": "trade",
             "indonesian": "dagang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dagang-c3c3ea33.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/dagang-c3c3ea33.mp3"
           },
           {
             "dutch": "handelswaar",
             "english": "merchandise",
             "indonesian": "dagang, -an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dagang-an-5df5f6b9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/dagang-an-5df5f6b9.mp3"
           },
           {
             "dutch": "handelaar",
             "english": "trader",
             "indonesian": "dagang, pe-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dagang-pe-ca6d2dd9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/dagang-pe-ca6d2dd9.mp3"
           },
           {
             "dutch": "gegooid",
             "english": "thrown",
             "indonesian": "dilemparkan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dilemparkan-93e10e1f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/dilemparkan-93e10e1f.mp3"
           },
           {
             "dutch": "ingestopt",
             "english": "stuffed in",
             "indonesian": "dimasukkan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dimasukkan-c005b3f9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/dimasukkan-c005b3f9.mp3"
           },
           {
             "dutch": "gadegeslagen / waargenomen",
             "english": "observed",
             "indonesian": "diperhatikan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/diperhatikan-7e4762be.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/diperhatikan-7e4762be.mp3"
           },
           {
             "dutch": "binnenlands",
             "english": "domestic",
             "indonesian": "domestik",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/domestik-b8de6a22.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/domestik-b8de6a22.mp3"
           },
           {
             "dutch": "wereld",
             "english": "world",
             "indonesian": "dunia",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dunia-df8a9246.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/dunia-df8a9246.mp3"
           },
           {
             "dutch": "ijs",
             "english": "ice",
             "indonesian": "es",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/es-084f043d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/es-084f043d.mp3"
           },
           {
             "dutch": "dek (van schip)",
             "english": "deck (of ship)",
             "indonesian": "geladak",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/geladak-be0d7b4e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/geladak-be0d7b4e.mp3"
           },
           {
             "dutch": "golven",
             "english": "waves",
             "indonesian": "gelombang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gelombang-dfc19631.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/gelombang-dfc19631.mp3"
           },
           {
             "dutch": "beurt",
             "english": "turn",
             "indonesian": "gilir, -an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gilir-an-c7042362.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/gilir-an-c7042362.mp3"
           },
           {
             "dutch": "gitaar",
             "english": "guitar",
             "indonesian": "gitar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gitar-bf2f0e11.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/gitar-bf2f0e11.mp3"
           },
           {
             "dutch": "lang (van haar)",
             "english": "long (of hair)",
             "indonesian": "gondrong",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/gondrong-19f71595.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/gondrong-19f71595.mp3"
           },
           {
             "dutch": "bewaker",
             "english": "guard",
             "indonesian": "jaga, pen-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jaga-pen-a5a08103.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/jaga-pen-a5a08103.mp3"
           },
           {
             "dutch": "verkoop",
             "english": "sale",
             "indonesian": "jual, -an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jual-an-64d984f1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/jual-an-64d984f1.mp3"
           },
           {
             "dutch": "merendeel / meeste",
             "english": "most",
             "indonesian": "kebanyakan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kebanyakan-06fc3766.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kebanyakan-06fc3766.mp3"
           },
           {
             "dutch": "laat / vertraagd",
             "english": "late / delayed",
             "indonesian": "lambat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lambat-987fd1b2.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/lambat-987fd1b2.mp3"
           },
           {
             "dutch": "file / vastlopen",
             "english": "traffic jam / stuck",
             "indonesian": "macet",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/macet-8c29285d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/macet-8c29285d.mp3"
           },
           {
             "dutch": "verlegen",
             "english": "embarrassed",
             "indonesian": "malu",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/malu-e7a0df3e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/malu-e7a0df3e.mp3"
           },
           {
             "dutch": "toestaan / toelaten",
             "english": "allow",
             "indonesian": "membiarkan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/membiarkan-a66ad939.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/membiarkan-a66ad939.mp3"
           },
           {
             "dutch": "kort voor",
             "english": "shortly before",
             "indonesian": "menjelang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/menjelang-8baaf829.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/menjelang-8baaf829.mp3"
           },
           {
             "dutch": "jongeman",
             "english": "young man",
             "indonesian": "muda, pe-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/muda-pe-3a3869dd.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/muda-pe-3a3869dd.mp3"
           },
           {
             "dutch": "jonge vrouw",
             "english": "young woman",
             "indonesian": "mudi, pe-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/mudi-pe-71d957fe.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/mudi-pe-71d957fe.mp3"
           },
           {
             "dutch": "elkaar aankijken",
             "english": "look at each other",
             "indonesian": "pandang, ber- -an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pandang-ber-an-8aa1cc34.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pandang-ber-an-8aa1cc34.mp3"
           },
           {
             "dutch": "zich storen aan",
             "english": "care about",
             "indonesian": "peduli",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peduli-2574b203.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/peduli-2574b203.mp3"
           },
           {
             "dutch": "jongeren",
             "english": "young people",
             "indonesian": "pemuda-pemudi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pemudapemudi-f1cdd5f5.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pemudapemudi-f1cdd5f5.mp3"
           },
           {
             "dutch": "landing",
             "english": "landing",
             "indonesian": "pendaratan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pendaratan-c7fca227.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pendaratan-c7fca227.mp3"
           },
           {
             "dutch": "tjokvol",
             "english": "jam-packed",
             "indonesian": "penuh sesak",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penuh-sesak-af8ece2b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/penuh-sesak-af8ece2b.mp3"
           },
           {
             "dutch": "bevel",
             "english": "command",
             "indonesian": "perintah",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/perintah-dd3fef41.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/perintah-dd3fef41.mp3"
           },
           {
             "dutch": "tokkelen",
             "english": "pluck, pick",
             "indonesian": "petik, memetik",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/petik-memetik-d18e10e7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/petik-memetik-d18e10e7.mp3"
           },
           {
             "dutch": "plastic",
             "english": "plastic",
             "indonesian": "plastik",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/plastik-f45945a7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/plastik-f45945a7.mp3"
           },
           {
             "dutch": "kwartel",
             "english": "quail",
             "indonesian": "puyuh",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/puyuh-09637e7e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/puyuh-09637e7e.mp3"
           },
           {
             "dutch": "haar hebben",
             "english": "hair, have hair",
             "indonesian": "rambut, berambut",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rambut-berambut-49d7bd1a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/rambut-berambut-49d7bd1a.mp3"
           },
           {
             "dutch": "zwemmen",
             "english": "swim, swimming",
             "indonesian": "renang, berenang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/renang-berenang-eb92b0e1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/renang-berenang-eb92b0e1.mp3"
           },
           {
             "dutch": "geduld",
             "english": "patience",
             "indonesian": "sabar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sabar-ba60ffd7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/sabar-ba60ffd7.mp3"
           },
           {
             "dutch": "af en toe",
             "english": "now and then",
             "indonesian": "sekali-sekali",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sekalisekali-3bbd7f96.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/sekalisekali-3bbd7f96.mp3"
           },
           {
             "dutch": "doel / richting",
             "english": "goal, direction",
             "indonesian": "tuju, -an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tuju-an-ce4ab055.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/tuju-an-ce4ab055.mp3"
           },
           {
             "dutch": "passagier",
             "english": "passenger",
             "indonesian": "tumpang, penumpang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tumpang-penumpang-2687f89c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/tumpang-penumpang-2687f89c.mp3"
           },
           {
             "dutch": "binnenlandse toerist",
             "english": "domestic tourist",
             "indonesian": "turis domestik",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/turis-domestik-c0252a1b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/turis-domestik-c0252a1b.mp3"
           },
           {
             "dutch": "winst",
             "english": "profit",
             "indonesian": "untung",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/untung-d4627938.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/untung-d4627938.mp3"
           },
           {
             "dutch": "dat wil zeggen",
             "english": "that is to say",
             "indonesian": "yaitu",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yaitu-6f92a749.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/yaitu-6f92a749.mp3"
           }
         ]
       }
@@ -694,31 +694,31 @@
                 "dutch": "opener (alat untuk membuka)",
                 "english": "opener (tool for opening)",
                 "indonesian": "pembuka",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pembuka-4951df78.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pembuka-4951df78.mp3"
               },
               {
                 "dutch": "verkoper (seorang yang menjual)",
                 "english": "seller (someone who sells)",
                 "indonesian": "penjual",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penjual-c3c3144c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/penjual-c3c3144c.mp3"
               },
               {
                 "dutch": "hulp in de huishouding (seorang yang membantu)",
                 "english": "domestic helper (someone who helps)",
                 "indonesian": "pembantu",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pembantu-7730c6fb.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pembantu-7730c6fb.mp3"
               },
               {
                 "dutch": "ingezetene (van duduk)",
                 "english": "resident (from duduk)",
                 "indonesian": "penduduk",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penduduk-269161d7.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/penduduk-269161d7.mp3"
               },
               {
                 "dutch": "zeeman (van laut)",
                 "english": "sailor (from laut)",
                 "indonesian": "pelaut",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pelaut-960032ba.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pelaut-960032ba.mp3"
               }
             ],
             "rules_en": [
@@ -739,43 +739,43 @@
                 "dutch": "rapporteren → rapporteur",
                 "english": "lapor → pelapor | report → reporter",
                 "indonesian": "lapor → pelapor",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/lapor-pelapor-c1b2eaf7.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/lapor-pelapor-c1b2eaf7.mp3"
               },
               {
                 "dutch": "bezitten → eigenaar",
                 "english": "milik → pemilik | own → owner",
                 "indonesian": "milik → pemilik",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/milik-pemilik-8cb45a1e.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/milik-pemilik-8cb45a1e.mp3"
               },
               {
                 "dutch": "beoordelen → taxateur",
                 "english": "nilai → penilai | assess → assessor",
                 "indonesian": "nilai → penilai",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nilai-penilai-b72aaccc.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/nilai-penilai-b72aaccc.mp3"
               },
               {
                 "dutch": "zingen → zanger",
                 "english": "nyanyi → penyanyi | sing → singer",
                 "indonesian": "nyanyi → penyanyi",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nyanyi-penyanyi-41d0027e.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/nyanyi-penyanyi-41d0027e.mp3"
               },
               {
                 "dutch": "beroven → rover",
                 "english": "rampok → perampok | rob → robber",
                 "indonesian": "rampok → perampok",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/rampok-perampok-29ab31f1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/rampok-perampok-29ab31f1.mp3"
               },
               {
                 "dutch": "erven → erfgenaam",
                 "english": "heir → heir/inheritor",
                 "indonesian": "waris → pewaris",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/waris-pewaris-e4fe70e5.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/waris-pewaris-e4fe70e5.mp3"
               },
               {
                 "dutch": "judo → judoka",
                 "english": "judo → judoka",
                 "indonesian": "yudo → peyudo",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yudo-peyudo-2f68ec0e.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/yudo-peyudo-2f68ec0e.mp3"
               }
             ],
             "rules_en": [
@@ -794,13 +794,13 @@
                 "dutch": "lezen → lezer",
                 "english": "read → reader",
                 "indonesian": "baca → pembaca",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/baca-pembaca-674df9fd.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/baca-pembaca-674df9fd.mp3"
               },
               {
                 "dutch": "lasteren → lasteraar",
                 "english": "slander → slanderer",
                 "indonesian": "fitnah → pemfitnah",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/fitnah-pemfitnah-ef46020d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/fitnah-pemfitnah-ef46020d.mp3"
               }
             ],
             "rules_en": [
@@ -818,19 +818,19 @@
                 "dutch": "stelen → dief",
                 "english": "steal → thief",
                 "indonesian": "curi → pencuri",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/curi-pencuri-f77a3ed9.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/curi-pencuri-f77a3ed9.mp3"
               },
               {
                 "dutch": "horen → luisteraar",
                 "english": "hear → listener",
                 "indonesian": "dengar → pendengar",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dengar-pendengar-1a930575.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/dengar-pendengar-1a930575.mp3"
               },
               {
                 "dutch": "verkopen → verkoper",
                 "english": "sell → seller",
                 "indonesian": "jual → penjual",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jual-penjual-00393928.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/jual-penjual-00393928.mp3"
               }
             ],
             "rules_en": [
@@ -848,43 +848,43 @@
                 "dutch": "onderwijzen → onderwijzer",
                 "english": "teach → teacher",
                 "indonesian": "ajar → pengajar",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ajar-pengajar-db6798ab.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/ajar-pengajar-db6798ab.mp3"
               },
               {
                 "dutch": "zwerven → zwerver",
                 "english": "wander → wanderer",
                 "indonesian": "embara → pengembara",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/embara-pengembara-69be24e0.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/embara-pengembara-69be24e0.mp3"
               },
               {
                 "dutch": "volgen → volgeling",
                 "english": "follow → follower",
                 "indonesian": "ikut → pengikut",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ikut-pengikut-ccee7ae1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/ikut-pengikut-ccee7ae1.mp3"
               },
               {
                 "dutch": "bewerken → bewerker",
                 "english": "process → processor",
                 "indonesian": "olah → pengolah",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/olah-pengolah-e2086e0c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/olah-pengolah-e2086e0c.mp3"
               },
               {
                 "dutch": "regelen → bestuurder",
                 "english": "manage → manager",
                 "indonesian": "urus → pengurus",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/urus-pengurus-0f8765c7.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/urus-pengurus-0f8765c7.mp3"
               },
               {
                 "dutch": "vervangen → vervanger",
                 "english": "replace → replacement/substitute",
                 "indonesian": "ganti → pengganti",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ganti-pengganti-8240f80f.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/ganti-pengganti-8240f80f.mp3"
               },
               {
                 "dutch": "tellen → teller",
                 "english": "count → counter",
                 "indonesian": "hitung → penghitung",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/hitung-penghitung-5dd2dbbd.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/hitung-penghitung-5dd2dbbd.mp3"
               }
             ],
             "rules_en": [
@@ -904,25 +904,25 @@
                 "dutch": "besturen → bestuurder",
                 "english": "steer → driver",
                 "indonesian": "kemudi → pengemudi",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kemudi-pengemudi-62bec590.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kemudi-pengemudi-62bec590.mp3"
               },
               {
                 "dutch": "bestellen → opdrachtgever",
                 "english": "order → orderer",
                 "indonesian": "pesan → pemesan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pesan-pemesan-1fa41976.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pesan-pemesan-1fa41976.mp3"
               },
               {
                 "dutch": "huren → huurder",
                 "english": "rent → renter",
                 "indonesian": "sewa → penyewa",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sewa-penyewa-8c9b0575.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/sewa-penyewa-8c9b0575.mp3"
               },
               {
                 "dutch": "schrijven → schrijver",
                 "english": "write → writer",
                 "indonesian": "tulis → penulis",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tulis-penulis-b6ea316e.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/tulis-penulis-b6ea316e.mp3"
               }
             ],
             "rules_en": [
@@ -942,49 +942,49 @@
                 "dutch": "luilak",
                 "english": "lazy person",
                 "indonesian": "pemalas",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pemalas-1d3880ee.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pemalas-1d3880ee.mp3"
               },
               {
                 "dutch": "waaghals",
                 "english": "daredevil",
                 "indonesian": "pemberani",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pemberani-b5d4ea26.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pemberani-b5d4ea26.mp3"
               },
               {
                 "dutch": "dronkaard, zuiplap",
                 "english": "drunkard",
                 "indonesian": "peminum",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peminum-9d4d60f7.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/peminum-9d4d60f7.mp3"
               },
               {
                 "dutch": "huilebalk",
                 "english": "crybaby",
                 "indonesian": "penangis",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penangis-9979c154.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/penangis-9979c154.mp3"
               },
               {
                 "dutch": "zwijgzaam persoon",
                 "english": "taciturn person",
                 "indonesian": "pendiam",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pendiam-7cd3405d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pendiam-7cd3405d.mp3"
               },
               {
                 "dutch": "koffieleut",
                 "english": "coffee drinker",
                 "indonesian": "pengopi",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pengopi-8f13fada.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pengopi-8f13fada.mp3"
               },
               {
                 "dutch": "slaapkop",
                 "english": "sleepyhead",
                 "indonesian": "penidur",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/penidur-0e6f9b8a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/penidur-0e6f9b8a.mp3"
               },
               {
                 "dutch": "herrieschopper",
                 "english": "troublemaker",
                 "indonesian": "peribut",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peribut-63fa9282.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/peribut-63fa9282.mp3"
               }
             ],
             "rules_en": [
@@ -1003,25 +1003,25 @@
                 "dutch": "handelaar",
                 "english": "merchant",
                 "indonesian": "pedagang",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pedagang-6126acc6.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pedagang-6126acc6.mp3"
               },
               {
                 "dutch": "hoge ambtenaar",
                 "english": "high official",
                 "indonesian": "pejabat",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pejabat-77a61346.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pejabat-77a61346.mp3"
               },
               {
                 "dutch": "deelnemer",
                 "english": "participant",
                 "indonesian": "peserta",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peserta-e1d2d04d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/peserta-e1d2d04d.mp3"
               },
               {
                 "dutch": "landbouwer",
                 "english": "farmer",
                 "indonesian": "petani",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/petani-f57ae870.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/petani-f57ae870.mp3"
               }
             ],
             "rules_en": [
@@ -1041,49 +1041,49 @@
                 "dutch": "opener (van buka, openen)",
                 "english": "opener (from buka, to open)",
                 "indonesian": "alat pembuka",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/alat-pembuka-de40d2c2.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/alat-pembuka-de40d2c2.mp3"
               },
               {
                 "dutch": "wasvrouw (van cuci, wassen)",
                 "english": "washerwoman (from cuci, to wash)",
                 "indonesian": "wanita pencuci",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/wanita-pencuci-2dad0935.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/wanita-pencuci-2dad0935.mp3"
               },
               {
                 "dutch": "shampoo",
                 "english": "shampoo",
                 "indonesian": "pencuci rambut",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pencuci-rambut-a3310bf1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pencuci-rambut-a3310bf1.mp3"
               },
               {
                 "dutch": "luchtverfrisser (van harum, geur)",
                 "english": "air freshener (from harum, fragrance)",
                 "indonesian": "pengharum ruangan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pengharum-ruangan-4e05179a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pengharum-ruangan-4e05179a.mp3"
               },
               {
                 "dutch": "telmachine (van hitung, tellen)",
                 "english": "counting machine (from hitung, to count)",
                 "indonesian": "alat penghitung",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/alat-penghitung-7945b9a9.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/alat-penghitung-7945b9a9.mp3"
               },
               {
                 "dutch": "antwoordapparaat / geluidsrecorder (van rekam, opnemen)",
                 "english": "answering machine / voice recorder (from rekam, to record)",
                 "indonesian": "perekam suara",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/perekam-suara-1d27bff2.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/perekam-suara-1d27bff2.mp3"
               },
               {
                 "dutch": "kalmeringspil (van tenang, rustig)",
                 "english": "tranquilizer pill (from tenang, calm)",
                 "indonesian": "pil penenang",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pil-penenang-02545abb.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pil-penenang-02545abb.mp3"
               },
               {
                 "dutch": "de kiezer (memilih) / de keuze (dipilih)",
                 "english": "the voter (memilih) / the choice (dipilih)",
                 "indonesian": "pemilih / pilihan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/pemilih-pilihan-e4b903e9.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/pemilih-pilihan-e4b903e9.mp3"
               }
             ],
             "rules_en": [

@@ -21,7 +21,9 @@ import { lessonAudioUrl } from './lib/lessonAudioUrl'
 
 for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
   const m = line.match(/^([A-Z_]+)=(.*)$/)
-  if (m) process.env[m[1]] = m[2]
+  // Shell env WINS over the file, so this can be pointed at cloud without
+  // editing .env.local. Was unconditional, which made that impossible.
+  if (m && !process.env[m[1]]) process.env[m[1]] = m[2]
 }
 
 // Homelab uses an internal Step-CA certificate that Node/Bun does not trust by default.

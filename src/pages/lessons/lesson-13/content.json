@@ -7,8 +7,8 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Gacrux",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-13-nl.mp3",
-    "lesson_audio_url_en": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-13-en.mp3"
+    "lesson_audio_url": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-lessons/grammar/lesson-13-nl.mp3",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {
@@ -50,49 +50,49 @@
             "speaker": "Ibu Barends",
             "translation": "Meneer, ik wil mijn geld graag wisselen.",
             "translation_en": "Sir, I would like to exchange my money.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pak-saya-ingin-menukar-66874475.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pak-saya-ingin-menukar-66874475.mp3"
           },
           {
             "text": "Uang apa, Bu?",
             "speaker": "Pak Rachmat",
             "translation": "Welk geld, mevrouw?",
             "translation_en": "What money, madam?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/uang-apa-bu-910f224f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/uang-apa-bu-910f224f.mp3"
           },
           {
             "text": "Ini Pak, 200 euro dan cek dolar. Kalau mungkin uang kecil juga, Pak, karena saya selalu kekurangan uang kecil kalau mau membeli rokok.",
             "speaker": "Ibu Barends",
             "translation": "Dit meneer, 200 euro en een dollarcheque. En als het kan ook wat kleinere biljetten, meneer, want ik heb altijd gebrek aan kleingeld wanneer ik sigaretten wil kopen.",
             "translation_en": "This sir, 200 euros and a dollar cheque. And if possible also some smaller notes, sir, because I always lack small change when I want to buy cigarettes.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ini-pak-200-euro-14fd07af.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ini-pak-200-euro-14fd07af.mp3"
           },
           {
             "text": "Bisa, Bu. Ibu sudah lama di Indonesia? Ibu sudah bisa berbicara bahasa Indonesia baik sekali.",
             "speaker": "Pak Rachmat",
             "translation": "Prima, mevrouw. Bent u al lang in Indonesië? U spreekt Indonesisch al heel goed.",
             "translation_en": "Fine, madam. Have you been in Indonesia long? You speak Indonesian very well already.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bisa-bu-ibu-sudah-9133e11a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/bisa-bu-ibu-sudah-9133e11a.mp3"
           },
           {
             "text": "Belum, Pak, saya baru tiba di Indonesia kemarin dulu. Jadi bahasa Indonesia saya masih kurang.",
             "speaker": "Ibu Barends",
             "translation": "Nee meneer, ik ben gisteren pas in Indonesië aangekomen. Dus mijn Indonesisch is nog niet erg goed.",
             "translation_en": "No sir, I only arrived in Indonesia yesterday. So my Indonesian is still not very good.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/belum-pak-saya-baru-f73dea0e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/belum-pak-saya-baru-f73dea0e.mp3"
           },
           {
             "text": "Nah, ini uangnya, Bu. Awas, nanti di jalanan banyak pencopet, Bu!",
             "speaker": "Pak Rachmat",
             "translation": "Alstublieft, hier is uw geld, mevrouw. Pas op, op straat zijn veel zakkenrollers, mevrouw!",
             "translation_en": "Here is your money, madam. Be careful, there are many pickpockets on the street, madam!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/nah-ini-uangnya-bu-b7424484.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/nah-ini-uangnya-bu-b7424484.mp3"
           },
           {
             "text": "Jangan takut, Pak, saya sudah tahu sikon.",
             "speaker": "Ibu Barends",
             "translation": "Geen zorgen, meneer, ik ben al op de hoogte van de situatie.",
             "translation_en": "Don't worry, sir, I'm already aware of the situation.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jangan-takut-pak-saya-c958ae35.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/jangan-takut-pak-saya-c958ae35.mp3"
           }
         ]
       }
@@ -106,217 +106,217 @@
             "dutch": "wat (dan) ook",
             "english": "anything",
             "indonesian": "apa-apa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/apaapa-8394589f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/apaapa-8394589f.mp3"
           },
           {
             "dutch": "betekenis",
             "english": "meaning",
             "indonesian": "arti",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/arti-7f5a3491.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/arti-7f5a3491.mp3"
           },
           {
             "dutch": "vreemd",
             "english": "strange",
             "indonesian": "asing",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/asing-baefffb9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/asing-baefffb9.mp3"
           },
           {
             "dutch": "gevaar",
             "english": "danger",
             "indonesian": "bahaya",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bahaya-6dd22273.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/bahaya-6dd22273.mp3"
           },
           {
             "dutch": "bank",
             "english": "bank",
             "indonesian": "bank",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bank-931e70ed.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/bank-931e70ed.mp3"
           },
           {
             "dutch": "spreken",
             "english": "speak",
             "indonesian": "bicara",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bicara-0e7ca0a8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/bicara-0e7ca0a8.mp3"
           },
           {
             "dutch": "cheque",
             "english": "cheque",
             "indonesian": "cek",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/cek-ddda3c20.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/cek-ddda3c20.mp3"
           },
           {
             "dutch": "zakkenrollen",
             "english": "pickpocket",
             "indonesian": "copet",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/copet-bef67e86.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/copet-bef67e86.mp3"
           },
           {
             "dutch": "stelen",
             "english": "steal",
             "indonesian": "curi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/curi-718b5e53.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/curi-718b5e53.mp3"
           },
           {
             "dutch": "dollar",
             "english": "dollar",
             "indonesian": "dolar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/dolar-cbd4fc46.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/dolar-cbd4fc46.mp3"
           },
           {
             "dutch": "Engeland (Engels)",
             "english": "England (English)",
             "indonesian": "Inggeris",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/inggeris-257ad07e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/inggeris-257ad07e.mp3"
           },
           {
             "dutch": "ingenieur",
             "english": "engineer",
             "indonesian": "insinyur",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/insinyur-353b043a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/insinyur-353b043a.mp3"
           },
           {
             "dutch": "soort",
             "english": "kind",
             "indonesian": "jenis",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jenis-0b9cff9d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/jenis-0b9cff9d.mp3"
           },
           {
             "dutch": "aantal",
             "english": "number",
             "indonesian": "jumlah",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jumlah-caecaee6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/jumlah-caecaee6.mp3"
           },
           {
             "dutch": "kraan",
             "english": "tap",
             "indonesian": "keran",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/keran-cc4e588e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/keran-cc4e588e.mp3"
           },
           {
             "dutch": "omdat",
             "english": "because",
             "indonesian": "karena",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/karena-e6120d4d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/karena-e6120d4d.mp3"
           },
           {
             "dutch": "tekort / gebrek",
             "english": "shortage",
             "indonesian": "kekurangan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kekurangan-326ade1f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/kekurangan-326ade1f.mp3"
           },
           {
             "dutch": "papier",
             "english": "paper",
             "indonesian": "kertas",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kertas-53109cce.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/kertas-53109cce.mp3"
           },
           {
             "dutch": "konditie",
             "english": "condition",
             "indonesian": "kondisi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kondisi-d08bba44.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/kondisi-d08bba44.mp3"
           },
           {
             "dutch": "metaal",
             "english": "metal",
             "indonesian": "logam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/logam-da47ddef.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/logam-da47ddef.mp3"
           },
           {
             "dutch": "gebruiken",
             "english": "use",
             "indonesian": "memakai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/memakai-87454ec0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/memakai-87454ec0.mp3"
           },
           {
             "dutch": "wisselen",
             "english": "exchange",
             "indonesian": "menukar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/menukar-9a84bad4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/menukar-9a84bad4.mp3"
           },
           {
             "dutch": "mogelijk",
             "english": "possible",
             "indonesian": "mungkin",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mungkin-e7fd18f5.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/mungkin-e7fd18f5.mp3"
           },
           {
             "dutch": "buitenlander / vreemdeling",
             "english": "foreigner",
             "indonesian": "orang asing",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/orang-asing-e4473da3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/orang-asing-e4473da3.mp3"
           },
           {
             "dutch": "zakkenroller",
             "english": "pickpocket",
             "indonesian": "pencopet",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pencopet-3ddb6424.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/pencopet-3ddb6424.mp3"
           },
           {
             "dutch": "noemen",
             "english": "call / name",
             "indonesian": "sebut",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sebut-2ed6ba45.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/sebut-2ed6ba45.mp3"
           },
           {
             "dutch": "situatie en omstandigheden",
             "english": "situation and circumstances",
             "indonesian": "sikon",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sikon-703a2634.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/sikon-703a2634.mp3"
           },
           {
             "dutch": "situatie",
             "english": "situation",
             "indonesian": "situasi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/situasi-caf51b81.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/situasi-caf51b81.mp3"
           },
           {
             "dutch": "natuurlijk",
             "english": "of course",
             "indonesian": "tentu saja",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tentu-saja-83fb32da.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/tentu-saja-83fb32da.mp3"
           },
           {
             "dutch": "wisselen",
             "english": "exchange",
             "indonesian": "tukar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tukar-28ece301.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/tukar-28ece301.mp3"
           },
           {
             "dutch": "handwerksman",
             "english": "craftsman",
             "indonesian": "tukang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tukang-f377bbfa.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/tukang-f377bbfa.mp3"
           },
           {
             "dutch": "kleingeld",
             "english": "small change",
             "indonesian": "uang kecil",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/uang-kecil-68026327.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/uang-kecil-68026327.mp3"
           },
           {
             "dutch": "papiergeld",
             "english": "paper money",
             "indonesian": "uang kertas",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/uang-kertas-3beba9aa.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/uang-kertas-3beba9aa.mp3"
           },
           {
             "dutch": "munt",
             "english": "coin",
             "indonesian": "uang logam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/uang-logam-a87a764d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/uang-logam-a87a764d.mp3"
           },
           {
             "dutch": "lezen",
             "english": "read",
             "indonesian": "baca",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/baca-ccb3e582.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/baca-ccb3e582.mp3"
           },
           {
             "dutch": "kletsen",
             "english": "chat",
             "indonesian": "obrol",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/obrol-9619a924.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/obrol-9619a924.mp3"
           },
           {
             "dutch": "wisselen",
@@ -324,7 +324,7 @@
             "register": "informal",
             "indonesian": "tuker",
             "registerCounterpart": "tukar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tuker-499b93cd.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/tuker-499b93cd.mp3"
           }
         ]
       }
@@ -338,7 +338,7 @@
             "dutch": "of je wilt of niet",
             "english": "whether you like it or not",
             "indonesian": "mau tidak mau",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mau-tidak-mau-754e2142.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/mau-tidak-mau-754e2142.mp3"
           }
         ]
       }
@@ -373,31 +373,31 @@
                 "dutch": "zien",
                 "english": "see",
                 "indonesian": "lihat → melihat",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/lihat-melihat-a0447784.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/lihat-melihat-a0447784.mp3"
               },
               {
                 "dutch": "vragen om iets",
                 "english": "ask for something",
                 "indonesian": "minta → meminta",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/minta-meminta-b481df52.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/minta-meminta-b481df52.mp3"
               },
               {
                 "dutch": "wachten",
                 "english": "wait",
                 "indonesian": "nanti → menanti",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nanti-menanti-7a5a6db4.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/nanti-menanti-7a5a6db4.mp3"
               },
               {
                 "dutch": "zingen",
                 "english": "sing",
                 "indonesian": "nyanyi → menyanyi",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nyanyi-menyanyi-c6932c86.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/nyanyi-menyanyi-c6932c86.mp3"
               },
               {
                 "dutch": "voelen",
                 "english": "feel",
                 "indonesian": "rasa → merasa",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/rasa-merasa-3291c154.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/rasa-merasa-3291c154.mp3"
               }
             ],
             "rules_en": [
@@ -420,55 +420,55 @@
                 "dutch": "lezen",
                 "english": "read",
                 "indonesian": "baca → membaca",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/baca-membaca-87e13b18.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/baca-membaca-87e13b18.mp3"
               },
               {
                 "dutch": "zoeken",
                 "english": "search → search",
                 "indonesian": "cari → mencari",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/cari-mencari-af21252a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/cari-mencari-af21252a.mp3"
               },
               {
                 "dutch": "horen",
                 "english": "hear → hear",
                 "indonesian": "dengar → mendengar",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/dengar-mendengar-366afdd6.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/dengar-mendengar-366afdd6.mp3"
               },
               {
                 "dutch": "verkopen",
                 "english": "sell → sell",
                 "indonesian": "jual → menjual",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jual-menjual-9f173a76.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/jual-menjual-9f173a76.mp3"
               },
               {
                 "dutch": "pakken, nemen",
                 "english": "take → take",
                 "indonesian": "ambil → mengambil",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ambil-mengambil-27dc901e.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/ambil-mengambil-27dc901e.mp3"
               },
               {
                 "dutch": "kletsen",
                 "english": "chat → chat",
                 "indonesian": "obrol → mengobrol",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/obrol-mengobrol-bb6b2db6.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/obrol-mengobrol-bb6b2db6.mp3"
               },
               {
                 "dutch": "regelen",
                 "english": "handle → handle",
                 "indonesian": "urus → mengurus",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/urus-mengurus-7563b307.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/urus-mengurus-7563b307.mp3"
               },
               {
                 "dutch": "bakken",
                 "english": "fry → fry",
                 "indonesian": "goreng → menggoreng",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/goreng-menggoreng-d91dd70a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/goreng-menggoreng-d91dd70a.mp3"
               },
               {
                 "dutch": "tellen",
                 "english": "count → count",
                 "indonesian": "hitung → menghitung",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/hitung-menghitung-73cc7c16.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/hitung-menghitung-73cc7c16.mp3"
               }
             ],
             "rules_en": [
@@ -494,25 +494,25 @@
                 "dutch": "versturen",
                 "english": "send → send",
                 "indonesian": "kirim → mengirim",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kirim-mengirim-8fe2318c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/kirim-mengirim-8fe2318c.mp3"
               },
               {
                 "dutch": "snijden",
                 "english": "cut → cut",
                 "indonesian": "potong → memotong",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/potong-memotong-dcd5acac.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/potong-memotong-dcd5acac.mp3"
               },
               {
                 "dutch": "bewaren",
                 "english": "keep → keep",
                 "indonesian": "simpan → menyimpan",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/simpan-menyimpan-8dd40300.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/simpan-menyimpan-8dd40300.mp3"
               },
               {
                 "dutch": "wisselen",
                 "english": "exchange → exchange",
                 "indonesian": "tukar → menukar",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tukar-menukar-4338535e.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/tukar-menukar-4338535e.mp3"
               }
             ],
             "rules_en": [
@@ -535,31 +535,31 @@
                 "dutch": "Jan koopt een fiets. (met patiens)",
                 "english": "Jan buys a bicycle. (with object)",
                 "indonesian": "Jan membeli sepeda.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jan-membeli-sepeda-5199bc1f.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/jan-membeli-sepeda-5199bc1f.mp3"
               },
               {
                 "dutch": "Moeder schrijft een brief. (met patiens)",
                 "english": "Mother writes a letter. (with object)",
                 "indonesian": "Ibu menulis surat.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ibu-menulis-surat-309cb9c0.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/ibu-menulis-surat-309cb9c0.mp3"
               },
               {
                 "dutch": "Wie zoekt een kamer? (met patiens)",
                 "english": "Who is looking for a room? (with object)",
                 "indonesian": "Siapa mencari kamar?",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/siapa-mencari-kamar-5142af00.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/siapa-mencari-kamar-5142af00.mp3"
               },
               {
                 "dutch": "Het kind springt. (zonder patiens)",
                 "english": "The child jumps. (without object)",
                 "indonesian": "Anak meloncat.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/anak-meloncat-301a4090.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/anak-meloncat-301a4090.mp3"
               },
               {
                 "dutch": "De kat miauwt. (zonder patiens)",
                 "english": "The cat meows. (without object)",
                 "indonesian": "Kucing mengeong.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kucing-mengeong-c58aeb1c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/kucing-mengeong-c58aeb1c.mp3"
               }
             ],
             "rules_en": [

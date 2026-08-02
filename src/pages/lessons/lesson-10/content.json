@@ -7,8 +7,8 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Achird",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-10-nl.mp3",
-    "lesson_audio_url_en": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-10-en.mp3"
+    "lesson_audio_url": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-lessons/grammar/lesson-10-nl.mp3",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {
@@ -35,91 +35,91 @@
             "speaker": "Narti",
             "translation": "Meneer! Meneer!",
             "translation_en": "Sir! Sir!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pak-pak-b2e6f311.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pak-pak-b2e6f311.mp3"
           },
           {
             "text": "Ya, ada apa?",
             "speaker": "Pak",
             "translation": "Ja, wat is er?",
             "translation_en": "Yes, what is it?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ya-ada-apa-b06fe3cb.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/ya-ada-apa-b06fe3cb.mp3"
           },
           {
             "text": "Saya mau ke kantor pos, tapi di mana kantor pos, ya Pak?",
             "speaker": "Narti",
             "translation": "Ik wil naar het postkantoor, maar waar is het postkantoor, meneer?",
             "translation_en": "I want to go to the post office, but where is it, sir?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-mau-ke-kantor-d48397f6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/saya-mau-ke-kantor-d48397f6.mp3"
           },
           {
             "text": "O, kantor pos jauh sekali dari sini, Narti. Kamu naik becak dulu sampai ke Jalan Antara. Dari situ terus kamu jalan kaki. Di jalan pertama belok kiri sampai jembatan di ujung jalan itu. Dari jembatan itu kamu belok kanan dan menyeberang Jalan Kantor Pos. Tapi, awas lho!",
             "speaker": "Pak",
             "translation": "O, het postkantoor is heel ver van hier, Narti. Neem eerst een fietstaxi tot aan de Jalan Antara. Vanaf daar ga je verder te voet. Sla bij de eerste straat linksaf, tot aan de brug aan het eind van die straat. Vanaf die brug sla je rechtsaf en steek je de Jalan Kantor Pos over. Maar kijk uit, hoor!",
             "translation_en": "Oh, the post office is very far from here, Narti. First take a bicycle taxi to Jalan Antara. From there continue on foot. At the first street turn left until the bridge at the end of that street. From that bridge turn right and cross Jalan Kantor Pos. But watch out!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/o-kantor-pos-jauh-bc81fdf6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/o-kantor-pos-jauh-bc81fdf6.mp3"
           },
           {
             "text": "Awas kenapa, Pak?",
             "speaker": "Narti",
             "translation": "Uitkijken waarvoor, meneer?",
             "translation_en": "Watch out for what, sir?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/awas-kenapa-pak-9cb6acf6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/awas-kenapa-pak-9cb6acf6.mp3"
           },
           {
             "text": "Jalan Kantor Pos itu ramai sekali, terlalu banyak lalu-lintas. Nah, sebaiknya kamu lewat jembatan penyeberangan saja. Itu lebih aman. Jembatan penyeberangan itu ada di dekat Gedung Kesenian.",
             "speaker": "Pak",
             "translation": "Die Jalan Kantor Pos is heel druk, te veel verkeer. Nou, je kunt beter gewoon via de voetgangersbrug gaan. Dat is veiliger. Die voetgangersbrug is dichtbij het Gedung Kesenian (Kunstgebouw).",
             "translation_en": "That Jalan Kantor Pos is very busy, too much traffic. Well, you'd better just use the pedestrian bridge instead. That's safer. That pedestrian bridge is near the Gedung Kesenian.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jalan-kantor-pos-itu-b1b28e52.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/jalan-kantor-pos-itu-b1b28e52.mp3"
           },
           {
             "text": "O, ya Pak, sekarang saya ingat.",
             "speaker": "Narti",
             "translation": "O ja meneer, nu weet ik het weer.",
             "translation_en": "Oh yes sir, I remember now.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/o-ya-pak-sekarang-1d11ad7e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/o-ya-pak-sekarang-1d11ad7e.mp3"
           },
           {
             "text": "Kalau kamu sudah turun dari jembatan itu kemudian belok kiri. Kantor pos terletak di muka Pasar Baru. Tetapi mengapa mau ke sana?",
             "speaker": "Pak",
             "translation": "Als je eenmaal van die brug bent, sla je daarna linksaf. Het postkantoor ligt tegenover de Pasar Baru. Maar waarom wil je daarheen?",
             "translation_en": "Once you've come down from that bridge, then turn left. The post office is located opposite Pasar Baru. But why do you want to go there?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kalau-kamu-sudah-turun-7782442c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kalau-kamu-sudah-turun-7782442c.mp3"
           },
           {
             "text": "Saya mau beli prangko untuk kirim surat dan paket pos kepada kakak saya di Mesir. Dia baru diterima sebagai mahasiswa di Universitas Islam yang termasyhur namanya 'Al-Azhar' di Cairo.",
             "speaker": "Narti",
             "translation": "Ik wil postzegels kopen om een brief en een postpakket te sturen naar mijn oudere broer/zus in Egypte. Hij/zij is net aangenomen als student aan de beroemde Islamitische Universiteit genaamd 'Al-Azhar' in Caïro.",
             "translation_en": "I want to buy stamps to send a letter and a package to my older sibling in Egypt. He/she was just accepted as a student at the famous Islamic University called 'Al-Azhar' in Cairo.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-mau-beli-prangko-497241c2.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/saya-mau-beli-prangko-497241c2.mp3"
           },
           {
             "text": "Alhamdulillah! Pandai dia ya! Dia senang di sana?",
             "speaker": "Pak",
             "translation": "God zij geprezen! Wat knap van hem/haar! Heeft hij/zij het daar naar zijn/haar zin?",
             "translation_en": "God be praised! How clever of him/her! Is he/she happy there?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/alhamdulillah-pandai-dia-ya-12245b60.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/alhamdulillah-pandai-dia-ya-12245b60.mp3"
           },
           {
             "text": "Dia amat senang belajar di sana tapi kadang-kadang rindu. Dia minta kiriman rokok kretek, ikan asin dan krupuk udang! Permisi dulu, Pak...., saya ke kantor pos, ya.",
             "speaker": "Narti",
             "translation": "Hij/zij studeert daar heel graag, maar heeft soms heimwee. Hij/zij vraagt om een zending kretek-sigaretten, gezouten vis en garnalenkroepoek! Staat u mij toe, meneer..., ik ga naar het postkantoor, hè.",
             "translation_en": "He/she really enjoys studying there but sometimes gets homesick. He/she is asking for a shipment of kretek cigarettes, salted fish and prawn crackers! Excuse me, sir..., I'm going to the post office, okay.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dia-amat-senang-belajar-28644f46.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/dia-amat-senang-belajar-28644f46.mp3"
           },
           {
             "text": "Iya, mari. Kalau sudah selesai di kantor pos mampir saja ke rumah Paman Susman. Dia tinggal di Jalan Gajah Mada nomor 46.",
             "speaker": "Pak",
             "translation": "Ja, ga maar. Als je klaar bent op het postkantoor, ga dan gewoon even langs bij het huis van oom Susman. Hij woont in de Jalan Gajah Mada nummer 46.",
             "translation_en": "Yes, go ahead. Once you're done at the post office, just stop by Uncle Susman's house. He lives at Jalan Gajah Mada number 46.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/iya-mari-kalau-sudah-ef879be4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/iya-mari-kalau-sudah-ef879be4.mp3"
           },
           {
             "text": "O ya, itu saran baik!",
             "speaker": "Narti",
             "translation": "O ja, dat is een goed voorstel!",
             "translation_en": "Oh yes, that's a good idea!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/o-ya-itu-saran-3134472e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/o-ya-itu-saran-3134472e.mp3"
           }
         ]
       }
@@ -133,386 +133,386 @@
             "dutch": "God zij geprezen",
             "english": "God be praised",
             "indonesian": "Alhamdulillah",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/alhamdulillah-7e1619ba.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/alhamdulillah-7e1619ba.mp3"
           },
           {
             "dutch": "veilig",
             "english": "safe",
             "indonesian": "aman",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/aman-b001961c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/aman-b001961c.mp3"
           },
           {
             "dutch": "tillen",
             "english": "lift",
             "indonesian": "angkat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/angkat-ad18b459.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/angkat-ad18b459.mp3"
           },
           {
             "dutch": "tussen, middenin",
             "english": "between, in the middle of",
             "indonesian": "antara",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/antara-2c07e056.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/antara-2c07e056.mp3"
           },
           {
             "dutch": "zout / gezouten",
             "english": "salt / salted",
             "indonesian": "asin",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/asin-0aaa3f53.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/asin-0aaa3f53.mp3"
           },
           {
             "dutch": "opstaan",
             "english": "get up / rise",
             "indonesian": "bangun",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bangun-82d300fa.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/bangun-82d300fa.mp3"
           },
           {
             "dutch": "betalen",
             "english": "pay",
             "indonesian": "bayar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bayar-2b9f1e66.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/bayar-2b9f1e66.mp3"
           },
           {
             "dutch": "fietstaxi",
             "english": "bicycle taxi",
             "indonesian": "becak",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/becak-b558fa67.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/becak-b558fa67.mp3"
           },
           {
             "dutch": "afbuigen / afslaan",
             "english": "turn / turn off",
             "indonesian": "belok",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/belok-e923d45d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/belok-e923d45d.mp3"
           },
           {
             "dutch": "dichtbij",
             "english": "near",
             "indonesian": "dekat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dekat-9770bed7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dekat-9770bed7.mp3"
           },
           {
             "dutch": "aangenomen / ontvangen",
             "english": "accepted / received",
             "indonesian": "diterima",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/diterima-18b68f0a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/diterima-18b68f0a.mp3"
           },
           {
             "dutch": "gebouw",
             "english": "building",
             "indonesian": "gedung",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gedung-914aabdc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/gedung-914aabdc.mp3"
           },
           {
             "dutch": "vis",
             "english": "fish",
             "indonesian": "ikan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ikan-6f80ae5c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ikan-6f80ae5c.mp3"
           },
           {
             "dutch": "(zich) herinneren",
             "english": "remember / recall",
             "indonesian": "ingat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ingat-126cf95d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ingat-126cf95d.mp3"
           },
           {
             "dutch": "islam",
             "english": "Islam",
             "indonesian": "islam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/islam-aeddea86.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/islam-aeddea86.mp3"
           },
           {
             "dutch": "te voet gaan / lopen",
             "english": "walk / go on foot",
             "indonesian": "jalan kaki",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jalan-kaki-170d47c7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/jalan-kaki-170d47c7.mp3"
           },
           {
             "dutch": "brug",
             "english": "bridge",
             "indonesian": "jembatan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jembatan-c7e2fa03.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/jembatan-c7e2fa03.mp3"
           },
           {
             "dutch": "soms",
             "english": "sometimes",
             "indonesian": "kadang-kadang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kadangkadang-4877cc7f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kadangkadang-4877cc7f.mp3"
           },
           {
             "dutch": "postkantoor",
             "english": "post office",
             "indonesian": "kantor pos",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kantor-pos-dc761b36.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kantor-pos-dc761b36.mp3"
           },
           {
             "dutch": "tweede",
             "english": "second",
             "indonesian": "kedua",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kedua-71e70e45.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kedua-71e70e45.mp3"
           },
           {
             "dutch": "kunst / cultuur",
             "english": "art / culture",
             "indonesian": "kesenian",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kesenian-f5ad2376.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kesenian-f5ad2376.mp3"
           },
           {
             "dutch": "sturen / zenden",
             "english": "send",
             "indonesian": "kirim",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kirim-375108f5.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kirim-375108f5.mp3"
           },
           {
             "dutch": "zending",
             "english": "shipment",
             "indonesian": "kiriman",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kiriman-64590757.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kiriman-64590757.mp3"
           },
           {
             "dutch": "kat",
             "english": "cat",
             "indonesian": "kucing",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kucing-dab44728.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kucing-dab44728.mp3"
           },
           {
             "dutch": "verkeer",
             "english": "traffic",
             "indonesian": "lalu-lintas",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lalulintas-3e75d4f0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/lalulintas-3e75d4f0.mp3"
           },
           {
             "dutch": "hoor! (stopwoord)",
             "english": "hey! (filler word)",
             "indonesian": "lho!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lho-2432c446.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/lho-2432c446.mp3"
           },
           {
             "dutch": "student",
             "english": "student",
             "indonesian": "mahasiswa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mahasiswa-53e7326b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/mahasiswa-53e7326b.mp3"
           },
           {
             "dutch": "kort bezoek brengen",
             "english": "drop by",
             "indonesian": "mampir",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mampir-363b6bc4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/mampir-363b6bc4.mp3"
           },
           {
             "dutch": "oversteken",
             "english": "cross",
             "indonesian": "menyeberang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menyeberang-373b6c21.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/menyeberang-373b6c21.mp3"
           },
           {
             "dutch": "Egypte",
             "english": "Egypt",
             "indonesian": "Mesir",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mesir-51d3a215.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/mesir-51d3a215.mp3"
           },
           {
             "dutch": "museum",
             "english": "museum",
             "indonesian": "museum",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/museum-466f3a9d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/museum-466f3a9d.mp3"
           },
           {
             "dutch": "pakket",
             "english": "package",
             "indonesian": "paket",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/paket-16eacfee.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/paket-16eacfee.mp3"
           },
           {
             "dutch": "oom",
             "english": "uncle",
             "indonesian": "paman",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/paman-7822993d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/paman-7822993d.mp3"
           },
           {
             "dutch": "knap / intelligent",
             "english": "clever / intelligent",
             "indonesian": "pandai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pandai-a5f3d1a0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pandai-a5f3d1a0.mp3"
           },
           {
             "dutch": "oversteekplaats",
             "english": "crossing",
             "indonesian": "penyeberangan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/penyeberangan-77eca885.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/penyeberangan-77eca885.mp3"
           },
           {
             "dutch": "toestemming",
             "english": "permission",
             "indonesian": "permisi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/permisi-fe8b01fc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/permisi-fe8b01fc.mp3"
           },
           {
             "dutch": "eerste",
             "english": "first",
             "indonesian": "pertama",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pertama-16a805ca.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pertama-16a805ca.mp3"
           },
           {
             "dutch": "post",
             "english": "mail",
             "indonesian": "pos",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pos-11d1f6a4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pos-11d1f6a4.mp3"
           },
           {
             "dutch": "postzegel",
             "english": "stamp",
             "indonesian": "prangko",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/prangko-b6ab9f67.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/prangko-b6ab9f67.mp3"
           },
           {
             "dutch": "druk",
             "english": "busy",
             "indonesian": "ramai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ramai-5cb9325b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ramai-5cb9325b.mp3"
           },
           {
             "dutch": "heimwee",
             "english": "homesickness",
             "indonesian": "rindu",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rindu-bc56b70c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/rindu-bc56b70c.mp3"
           },
           {
             "dutch": "sigaret",
             "english": "cigarette",
             "indonesian": "rokok",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rokok-5a538a20.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/rokok-5a538a20.mp3"
           },
           {
             "dutch": "sigaret met kruidnagel",
             "english": "clove cigarette",
             "indonesian": "rokok kretek",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rokok-kretek-f5bcc127.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/rokok-kretek-f5bcc127.mp3"
           },
           {
             "dutch": "suggestie / voorstel",
             "english": "suggestion / proposal",
             "indonesian": "saran",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/saran-133ec86a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/saran-133ec86a.mp3"
           },
           {
             "dutch": "als / zoals",
             "english": "as / like",
             "indonesian": "sebagai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sebagai-886b5148.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sebagai-886b5148.mp3"
           },
           {
             "dutch": "'t is beter dat",
             "english": "it's better that",
             "indonesian": "sebaiknya",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sebaiknya-f25bd0ad.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sebaiknya-f25bd0ad.mp3"
           },
           {
             "dutch": "brief",
             "english": "letter",
             "indonesian": "surat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-c9c5d52b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-c9c5d52b.mp3"
           },
           {
             "dutch": "gesitueerd / liggen",
             "english": "situated / located",
             "indonesian": "terletak",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/terletak-511ae12c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/terletak-511ae12c.mp3"
           },
           {
             "dutch": "beroemdste / bekendste",
             "english": "most famous / most well-known",
             "indonesian": "termasyhur",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/termasyhur-06d696e0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/termasyhur-06d696e0.mp3"
           },
           {
             "dutch": "garnaal",
             "english": "shrimp",
             "indonesian": "udang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/udang-83f7ee90.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/udang-83f7ee90.mp3"
           },
           {
             "dutch": "top / eind",
             "english": "top / end",
             "indonesian": "ujung",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ujung-4480b571.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ujung-4480b571.mp3"
           },
           {
             "dutch": "universiteit",
             "english": "university",
             "indonesian": "universitas",
             "loanSourceNl": "universiteit",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/universitas-4357790b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/universitas-4357790b.mp3"
           },
           {
             "dutch": "bijvoorbeeld",
             "english": "for example",
             "indonesian": "misalnya",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/misalnya-0cfc6bd9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/misalnya-0cfc6bd9.mp3"
           },
           {
             "dutch": "indien",
             "english": "if",
             "indonesian": "jikalau",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jikalau-fe768390.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/jikalau-fe768390.mp3"
           },
           {
             "dutch": "ofschoon",
             "english": "although",
             "indonesian": "meskipun",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/meskipun-700f7d80.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/meskipun-700f7d80.mp3"
           },
           {
             "dutch": "ofschoon",
             "english": "although",
             "indonesian": "walaupun",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/walaupun-440474f7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/walaupun-440474f7.mp3"
           },
           {
             "dutch": "opdat",
             "english": "so that",
             "indonesian": "supaya",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/supaya-36cf7a7c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/supaya-36cf7a7c.mp3"
           },
           {
             "dutch": "opdat",
             "english": "so that",
             "indonesian": "agar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/agar-3abb90ac.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/agar-3abb90ac.mp3"
           },
           {
             "dutch": "terwijl",
             "english": "while",
             "indonesian": "sementara",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sementara-4c6230f0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sementara-4c6230f0.mp3"
           },
           {
             "dutch": "tevoren",
             "english": "beforehand",
             "indonesian": "sebelumnya",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sebelumnya-6c32ff8e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sebelumnya-6c32ff8e.mp3"
           },
           {
             "dutch": "voordat",
             "english": "before",
             "indonesian": "sebelum",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sebelum-78e87109.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sebelum-78e87109.mp3"
           },
           {
             "dutch": "keer/maal (×)",
             "english": "times/multiplied by (×)",
             "indonesian": "kali",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kali-e637a2bc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kali-e637a2bc.mp3"
           },
           {
             "dutch": "delen/voor (÷)",
             "english": "divided by/for (÷)",
             "indonesian": "bagi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bagi-1bb15922.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/bagi-1bb15922.mp3"
           },
           {
             "dutch": "laatste",
             "english": "last",
             "indonesian": "terakhir",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/terakhir-1d3e309e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/terakhir-1d3e309e.mp3"
           },
           {
             "dutch": "druk, levendig",
@@ -520,7 +520,7 @@
             "register": "informal",
             "indonesian": "rame",
             "registerCounterpart": "ramai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rame-def83861.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/rame-def83861.mp3"
           },
           {
             "dutch": "dichtbij",
@@ -528,7 +528,7 @@
             "register": "informal",
             "indonesian": "deket",
             "registerCounterpart": "dekat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/deket-e39dc12f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/deket-e39dc12f.mp3"
           },
           {
             "dutch": "onthouden",
@@ -536,7 +536,7 @@
             "register": "informal",
             "indonesian": "inget",
             "registerCounterpart": "ingat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/inget-e55ffc03.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/inget-e55ffc03.mp3"
           }
         ]
       }
@@ -550,7 +550,7 @@
             "dutch": "Staat u mij toe? (vaak bij afscheid; het antwoord luidt: Mari!)",
             "english": "Excuse me / May I take my leave? (often at parting; the response is: Go ahead!)",
             "indonesian": "Permisi dulu",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/permisi-dulu-af61f72d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/permisi-dulu-af61f72d.mp3"
           }
         ]
       }
@@ -750,31 +750,31 @@
                 "dutch": "De eerste kamer is mijn kamer.",
                 "english": "The first room is my room.",
                 "indonesian": "Kamar pertama adalah kamar saya.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kamar-pertama-adalah-kamar-43004fc7.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kamar-pertama-adalah-kamar-43004fc7.mp3"
               },
               {
                 "dutch": "De tweede kamer is nog niet schoon.",
                 "english": "The second room is not yet clean.",
                 "indonesian": "Kamar kedua belum bersih.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kamar-kedua-belum-bersih-0b8ee946.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kamar-kedua-belum-bersih-0b8ee946.mp3"
               },
               {
                 "dutch": "De deur van kamer (nr.) 2 is kapot.",
                 "english": "The door of room (no.) 2 is broken.",
                 "indonesian": "Kamar dua pintunya rusak.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kamar-dua-pintunya-rusak-a23d841d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kamar-dua-pintunya-rusak-a23d841d.mp3"
               },
               {
                 "dutch": "Die twee kamers zijn klein.",
                 "english": "Those two rooms are small.",
                 "indonesian": "Dua kamar itu kecil.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dua-kamar-itu-kecil-effb96bd.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dua-kamar-itu-kecil-effb96bd.mp3"
               },
               {
                 "dutch": "Beide kamers staan leeg.",
                 "english": "Both rooms are empty.",
                 "indonesian": "Kedua kamar itu kosong.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kedua-kamar-itu-kosong-62ad650d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kedua-kamar-itu-kosong-62ad650d.mp3"
               }
             ],
             "rules_en": [
@@ -831,19 +831,19 @@
                 "dutch": "Wie is de eerste?",
                 "english": "Who is first?",
                 "indonesian": "Siapa yang pertama?",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/siapa-yang-pertama-7abdcb2c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/siapa-yang-pertama-7abdcb2c.mp3"
               },
               {
                 "dutch": "Ik wil de middelste.",
                 "english": "I want the middle one.",
                 "indonesian": "Saya mau yang tengah.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/saya-mau-yang-tengah-6cc042f3.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/saya-mau-yang-tengah-6cc042f3.mp3"
               },
               {
                 "dutch": "Hij is altijd de laatste.",
                 "english": "He is always last.",
                 "indonesian": "Dia selalu yang terakhir.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dia-selalu-yang-terakhir-575e125b.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dia-selalu-yang-terakhir-575e125b.mp3"
               }
             ],
             "rules_en": [

@@ -7,8 +7,8 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Achird",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-16-nl.mp3",
-    "lesson_audio_url_en": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-16-en.mp3"
+    "lesson_audio_url": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-lessons/grammar/lesson-16-nl.mp3",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {
@@ -44,119 +44,119 @@
             "speaker": "Ibu Rusli",
             "translation": "Goedemiddag, meneer. Hoeveel postzegels heb ik nodig voor deze ansichtkaart en brief?",
             "translation_en": "Good afternoon, sir. How many stamps do I need for this postcard and letter?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selamat-siang-pak-berapa-a053bb93.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/selamat-siang-pak-berapa-a053bb93.mp3"
           },
           {
             "text": "Yang satu ini yang ke negeri Belanda dengan pos udara harganya Rp 550 dan surat kilat khusus yang ke Malang ini Rp 675. Saya kasih prangko yang bagus-bagus untuk surat Ibu ke negeri Belanda. Prangko Indonesia kadang-kadang tidak melekat Bu, sebaiknya kasih lem saja. Ibu sendiri saja kasih lem, ya?",
             "speaker": "Pak Bakri",
             "translation": "Deze ene, die naar Nederland gaat met luchtpost, kost Rp 550, en deze extra snelle expresse brief naar Malang kost Rp 675. Ik geef u mooie postzegels voor uw brief naar Nederland. Indonesische postzegels plakken soms niet, mevrouw, doet u er liever wat lijm op. Doet u zelf maar lijm erop, ja?",
             "translation_en": "This one, which is going to the Netherlands by airmail, costs Rp 550, and this express special delivery letter to Malang costs Rp 675. I'll give you nice stamps for your letter to the Netherlands. Indonesian stamps sometimes don't stick, madam, you'd better put some glue on them. You apply the glue yourself, okay?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/yang-satu-ini-yang-8854d9c8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/yang-satu-ini-yang-8854d9c8.mp3"
           },
           {
             "text": "Ya, tidak apa-apa.",
             "speaker": "Ibu Rusli",
             "translation": "Ja, geen probleem.",
             "translation_en": "Yes, no problem.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ya-tidak-apaapa-0913915d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ya-tidak-apaapa-0913915d.mp3"
           },
           {
             "text": "Jadi, harga keduanya Rp 1225, Bu.",
             "speaker": "Pak Bakri",
             "translation": "Dus, de prijs van allebei samen is Rp 1225, mevrouw.",
             "translation_en": "So, the price for both together is Rp 1225, madam.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jadi-harga-keduanya-rp-ba74aa92.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/jadi-harga-keduanya-rp-ba74aa92.mp3"
           },
           {
             "text": "Nah, ini uangnya. Ah, Pak, hampir saya lupa. Di mana loket untuk mengirim paket pos laut?",
             "speaker": "Ibu Rusli",
             "translation": "Kijk, hier is het geld. Ach, meneer, ik was het bijna vergeten. Waar is het loket om een zeepostpakket te versturen?",
             "translation_en": "Here's the money. Oh, sir, I almost forgot. Where is the counter for sending a sea mail package?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nah-ini-uangnya-ah-4322b5c1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/nah-ini-uangnya-ah-4322b5c1.mp3"
           },
           {
             "text": "Di situ, Bu, loket nomor enam.",
             "speaker": "Pak Bakri",
             "translation": "Daar, mevrouw, loket nummer zes.",
             "translation_en": "Over there, madam, counter number six.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/di-situ-bu-loket-68f2aca3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/di-situ-bu-loket-68f2aca3.mp3"
           },
           {
             "text": "Terima kasih, Pak.",
             "speaker": "Ibu Rusli",
             "translation": "Dank u wel, meneer.",
             "translation_en": "Thank you, sir.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/terima-kasih-pak-5ca3f24f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/terima-kasih-pak-5ca3f24f.mp3"
           },
           {
             "text": "Halo Dik, bisa saya mengirim paket pos laut ke negeri Belanda di sini?",
             "speaker": "Ibu Rusli",
             "translation": "Hallo, kan ik hier een zeepostpakket naar Nederland versturen?",
             "translation_en": "Hello, can I send a sea mail package to the Netherlands here?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/halo-dik-bisa-saya-8b3878dc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/halo-dik-bisa-saya-8b3878dc.mp3"
           },
           {
             "text": "Bisa, Bu. Formulir ini harus diisi dulu. Formulir ini keterangan untuk pabean. Jangan lupa tanda tangan, ya Bu. Ibu mau mengirim apa?",
             "speaker": "Dik Wiwi",
             "translation": "Dat kan, mevrouw. Dit formulier moet eerst ingevuld worden. Dit formulier is een verklaring voor de douane. Vergeet uw handtekening niet, mevrouw. Wat wilt u versturen?",
             "translation_en": "Yes, madam. This form needs to be filled out first. This form is a customs declaration. Don't forget to sign it, madam. What are you sending?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bisa-bu-formulir-ini-7e0e86d9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/bisa-bu-formulir-ini-7e0e86d9.mp3"
           },
           {
             "text": "Buku dan kain saja, Dik.",
             "speaker": "Ibu Rusli",
             "translation": "Alleen boeken en stof.",
             "translation_en": "Just books and fabric.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/buku-dan-kain-saja-2cf3214f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/buku-dan-kain-saja-2cf3214f.mp3"
           },
           {
             "text": "Oh, tentulah kiriman itu berat sekali. Harus ditimbang dulu. Oh, iya, 4 kilo, Bu.",
             "speaker": "Dik Wiwi",
             "translation": "Oh, die zending is vast heel zwaar. Hij moet eerst gewogen worden. Oh ja, 4 kilo, mevrouw.",
             "translation_en": "Oh, that shipment must be very heavy. It needs to be weighed first. Oh yes, 4 kilos, madam.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/oh-tentulah-kiriman-itu-1a18dbdc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/oh-tentulah-kiriman-itu-1a18dbdc.mp3"
           },
           {
             "text": "Paket ini, kapan sampai di negeri Belanda? Saya rasa makan waktu tiga bulan, bukan?",
             "speaker": "Ibu Rusli",
             "translation": "Dit pakket, wanneer komt het in Nederland aan? Ik denk dat het drie maanden duurt, nietwaar?",
             "translation_en": "This package, when will it arrive in the Netherlands? I think it takes three months, doesn't it?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/paket-ini-kapan-sampai-8fe17148.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/paket-ini-kapan-sampai-8fe17148.mp3"
           },
           {
             "text": "Betul Bu, makan waktu kira-kira tiga bulan tetapi mungkin sudah bisa diterima sedikit lebih cepat juga.",
             "speaker": "Dik Wiwi",
             "translation": "Klopt, mevrouw, het duurt ongeveer drie maanden, maar misschien kan het ook al iets sneller ontvangen worden.",
             "translation_en": "That's right, madam, it takes about three months, but it might possibly arrive a bit sooner too.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/betul-bu-makan-waktu-6071acb0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/betul-bu-makan-waktu-6071acb0.mp3"
           },
           {
             "text": "Ini harus dibayar di mana? Di loket ini atau bagaimana?",
             "speaker": "Ibu Rusli",
             "translation": "Waar moet dit betaald worden? Bij dit loket of hoe?",
             "translation_en": "Where does this need to be paid? At this counter or how?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ini-harus-dibayar-di-3f24282e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ini-harus-dibayar-di-3f24282e.mp3"
           },
           {
             "text": "Di sini saja, Bu.",
             "speaker": "Dik Wiwi",
             "translation": "Gewoon hier, mevrouw.",
             "translation_en": "Right here, madam.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/di-sini-saja-bu-53c606f4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/di-sini-saja-bu-53c606f4.mp3"
           },
           {
             "text": "Dik, anak saya mengumpulkan prangko. Apakah prangko yang terbaru dapat dibeli di sini? Apa ada loket filateli?",
             "speaker": "Ibu Rusli",
             "translation": "Mijn kind verzamelt postzegels. Kunnen de nieuwste postzegels hier gekocht worden? Is er een filatelieloket?",
             "translation_en": "Young man, my child collects stamps. Can the latest stamps be bought here? Is there a philately counter?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dik-anak-saya-mengumpulkan-86b3a3b7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/dik-anak-saya-mengumpulkan-86b3a3b7.mp3"
           },
           {
             "text": "Ada, tetapi baru buka jam 12.00. Sekarang baru jam 9.00. Kantor pos tutup jam 13.00 jadi kalau Ibu mau ke mari untuk membeli prangko yang terbaru jangan terlambat.",
             "speaker": "Dik Wiwi",
             "translation": "Ja, maar dat gaat pas om 12.00 uur open. Het is nu pas 9.00 uur. Het postkantoor sluit om 13.00 uur, dus als u hierheen wilt komen om de nieuwste postzegels te kopen, kom dan niet te laat.",
             "translation_en": "Yes, but it doesn't open until 12.00. It's only 9.00 now. The post office closes at 13.00, so if you want to come here to buy the latest stamps, don't be late.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/ada-tetapi-baru-buka-972b9632.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/ada-tetapi-baru-buka-972b9632.mp3"
           }
         ]
       }
@@ -170,217 +170,217 @@
             "dutch": "hond",
             "english": "dog",
             "indonesian": "anjing",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anjing-c1d40508.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/anjing-c1d40508.mp3"
           },
           {
             "dutch": "heel mooi",
             "english": "very beautiful",
             "indonesian": "bagus-bagus",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bagusbagus-99953220.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/bagusbagus-99953220.mp3"
           },
           {
             "dutch": "pas / zojuist",
             "english": "just",
             "indonesian": "baru",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/baru-222ead1c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/baru-222ead1c.mp3"
           },
           {
             "dutch": "voor / maken",
             "english": "for / to make",
             "indonesian": "buat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/buat-cd3c8b5e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/buat-cd3c8b5e.mp3"
           },
           {
             "dutch": "drankje met kokossap",
             "english": "drink with coconut milk",
             "indonesian": "cendol",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/cendol-788017c4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/cendol-788017c4.mp3"
           },
           {
             "dutch": "vlees",
             "english": "meat",
             "indonesian": "daging",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/daging-988786da.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/daging-988786da.mp3"
           },
           {
             "dutch": "keuken",
             "english": "kitchen",
             "indonesian": "dapur",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dapur-cec55a17.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dapur-cec55a17.mp3"
           },
           {
             "dutch": "betaald",
             "english": "paid",
             "indonesian": "dibayar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dibayar-a7ea8dd0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dibayar-a7ea8dd0.mp3"
           },
           {
             "dutch": "gevuld",
             "english": "filled",
             "indonesian": "diisi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/diisi-e3f8304b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/diisi-e3f8304b.mp3"
           },
           {
             "dutch": "aanspreektitel voor jongeman of jonge vrouw",
             "english": "form of address for a young man or young woman",
             "indonesian": "Dik",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dik-4faa72ed.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dik-4faa72ed.mp3"
           },
           {
             "dutch": "gewogen",
             "english": "weighed",
             "indonesian": "ditimbang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ditimbang-a3bb03d7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ditimbang-a3bb03d7.mp3"
           },
           {
             "dutch": "export",
             "english": "export",
             "indonesian": "ekspor",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ekspor-89726f34.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ekspor-89726f34.mp3"
           },
           {
             "dutch": "filatelie",
             "english": "philately",
             "indonesian": "filateli",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/filateli-88eaf89d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/filateli-88eaf89d.mp3"
           },
           {
             "dutch": "ansichtkaart",
             "english": "postcard",
             "indonesian": "kartu pos",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kartu-pos-7ab795d4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kartu-pos-7ab795d4.mp3"
           },
           {
             "dutch": "najagen / achterna zitten",
             "english": "chase / pursue",
             "indonesian": "kejar",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kejar-5dd63afe.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kejar-5dd63afe.mp3"
           },
           {
             "dutch": "hierheen",
             "english": "here / hither",
             "indonesian": "ke mari",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ke-mari-d1565455.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ke-mari-d1565455.mp3"
           },
           {
             "dutch": "mand",
             "english": "basket",
             "indonesian": "keranjang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/keranjang-00b1db00.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/keranjang-00b1db00.mp3"
           },
           {
             "dutch": "bliksemschicht",
             "english": "lightning",
             "indonesian": "kilat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kilat-03b5d9e1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kilat-03b5d9e1.mp3"
           },
           {
             "dutch": "kilo (gewicht) / kilometer",
             "english": "kilo (weight) / kilometer",
             "indonesian": "kilo",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kilo-ccf0d97f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kilo-ccf0d97f.mp3"
           },
           {
             "dutch": "kwaliteit",
             "english": "quality",
             "indonesian": "kualitas",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kualitas-ada9a514.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kualitas-ada9a514.mp3"
           },
           {
             "dutch": "kleven / plakken",
             "english": "stick / adhere",
             "indonesian": "lekat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lekat-1b610d3c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/lekat-1b610d3c.mp3"
           },
           {
             "dutch": "lijm",
             "english": "glue",
             "indonesian": "lem",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lem-db97816b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/lem-db97816b.mp3"
           },
           {
             "dutch": "loket",
             "english": "counter / window",
             "indonesian": "loket",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/loket-68810db7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/loket-68810db7.mp3"
           },
           {
             "dutch": "tijd kosten",
             "english": "take time",
             "indonesian": "makan waktu",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/makan-waktu-8058ca5f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/makan-waktu-8058ca5f.mp3"
           },
           {
             "dutch": "verzamelen",
             "english": "collect",
             "indonesian": "mengumpulkan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mengumpulkan-96057b37.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/mengumpulkan-96057b37.mp3"
           },
           {
             "dutch": "kiezen",
             "english": "choose",
             "indonesian": "pilih",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pilih-82fc9f16.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pilih-82fc9f16.mp3"
           },
           {
             "dutch": "lenen",
             "english": "borrow",
             "indonesian": "pinjam",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pinjam-8375578d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pinjam-8375578d.mp3"
           },
           {
             "dutch": "zeepost",
             "english": "sea mail",
             "indonesian": "pos laut",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pos-laut-8ee98280.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pos-laut-8ee98280.mp3"
           },
           {
             "dutch": "luchtpost",
             "english": "airmail",
             "indonesian": "pos udara",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pos-udara-afa9fd26.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pos-udara-afa9fd26.mp3"
           },
           {
             "dutch": "brief",
             "english": "letter",
             "indonesian": "surat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-c9c5d52b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-c9c5d52b.mp3"
           },
           {
             "dutch": "expresse brief",
             "english": "express letter",
             "indonesian": "surat kilat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-kilat-9d30b925.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-kilat-9d30b925.mp3"
           },
           {
             "dutch": "extra snelle expresse brief",
             "english": "special express letter",
             "indonesian": "surat kilat khusus",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-kilat-khusus-3cb3f79e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-kilat-khusus-3cb3f79e.mp3"
           },
           {
             "dutch": "teken",
             "english": "sign",
             "indonesian": "tanda",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tanda-9603f784.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tanda-9603f784.mp3"
           },
           {
             "dutch": "handtekening",
             "english": "signature",
             "indonesian": "tanda tangan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tanda-tangan-dc626f83.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tanda-tangan-dc626f83.mp3"
           },
           {
             "dutch": "vangen",
             "english": "catch",
             "indonesian": "tangkap",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tangkap-4d89db5d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tangkap-4d89db5d.mp3"
           },
           {
             "dutch": "wegen",
             "english": "weigh",
             "indonesian": "timbang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/timbang-5d2910ac.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/timbang-5d2910ac.mp3"
           }
         ]
       }
@@ -403,25 +403,25 @@
                 "dutch": "Zij stuurt een postpakket (actief — agens centraal)",
                 "english": "She sends a parcel (active — agent central)",
                 "indonesian": "Dia mengirim paket pos",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dia-mengirim-paket-pos-045317fd.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dia-mengirim-paket-pos-045317fd.mp3"
               },
               {
                 "dutch": "Het postpakket is door haar verzonden (passief — patiens centraal)",
                 "english": "The parcel is sent by her (passive — patient central)",
                 "indonesian": "Paket pos dikirimnya / Paket pos dikirim dia",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/paket-pos-dikirimnya-paket-c294eec1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/paket-pos-dikirimnya-paket-c294eec1.mp3"
               },
               {
                 "dutch": "Hij eet rijst (actief)",
                 "english": "He eats rice (active)",
                 "indonesian": "Dia makan nasi",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dia-makan-nasi-9e0b8561.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dia-makan-nasi-9e0b8561.mp3"
               },
               {
                 "dutch": "De rijst wordt door hem gegeten (passief)",
                 "english": "The rice is eaten by him (passive)",
                 "indonesian": "Nasi dimakannya / Nasi dimakan dia",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/nasi-dimakannya-nasi-dimakan-24687ebb.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/nasi-dimakannya-nasi-dimakan-24687ebb.mp3"
               }
             ],
             "rules_en": [
@@ -446,37 +446,37 @@
                 "dutch": "De hond wordt geslagen (alleen patiens)",
                 "english": "The dog is beaten (patient only)",
                 "indonesian": "Anjing dipukul",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anjing-dipukul-4ec18a05.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/anjing-dipukul-4ec18a05.mp3"
               },
               {
                 "dutch": "De boeken worden verstuurd (alleen patiens)",
                 "english": "The books are sent (patient only)",
                 "indonesian": "Buku dikirim",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/buku-dikirim-90cc1514.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/buku-dikirim-90cc1514.mp3"
               },
               {
                 "dutch": "De hond wordt door Ti geslagen (patiens + agens)",
                 "english": "The dog is beaten by Ti (patient + agent)",
                 "indonesian": "Anjing dipukul Ti",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anjing-dipukul-ti-a2b93eca.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/anjing-dipukul-ti-a2b93eca.mp3"
               },
               {
                 "dutch": "Dat boek is door vader gekocht (patiens + agens)",
                 "english": "That book was bought by father (patient + agent)",
                 "indonesian": "Buku itu dibeli bapak",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/buku-itu-dibeli-bapak-020382e6.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/buku-itu-dibeli-bapak-020382e6.mp3"
               },
               {
                 "dutch": "Moeder heeft de rijst al gekookt (patiens + agens)",
                 "english": "Mother has already cooked the rice (patient + agent)",
                 "indonesian": "Nasi sudah dimasak ibu",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/nasi-sudah-dimasak-ibu-62d02049.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/nasi-sudah-dimasak-ibu-62d02049.mp3"
               },
               {
                 "dutch": "Daar worden computers gebruikt door de leraren (plaatsbepaling + DI-vorm + patiens + agens)",
                 "english": "Computers are used by the teachers there (location + DI-form + patient + agent)",
                 "indonesian": "Di sana dipakai komputer oleh guru",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/di-sana-dipakai-komputer-b72cfffb.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/di-sana-dipakai-komputer-b72cfffb.mp3"
               }
             ],
             "rules_en": [
@@ -501,37 +501,37 @@
                 "dutch": "Vader heeft de deur op slot gedaan",
                 "english": "Father locked the door",
                 "indonesian": "Pintu dikunci (oleh) bapak",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pintu-dikunci-oleh-bapak-b8ba8231.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pintu-dikunci-oleh-bapak-b8ba8231.mp3"
               },
               {
                 "dutch": "Resti is opgebeld door Ina",
                 "english": "Resti was called by Ina",
                 "indonesian": "Resti ditelepon Ina",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/resti-ditelepon-ina-f18cb157.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/resti-ditelepon-ina-f18cb157.mp3"
               },
               {
                 "dutch": "Het overhemd wordt gewassen door deze mevrouw",
                 "english": "The shirt is washed by this lady",
                 "indonesian": "Kemeja dicuci (oleh) Ibu ini",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kemeja-dicuci-oleh-ibu-612abe9c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kemeja-dicuci-oleh-ibu-612abe9c.mp3"
               },
               {
                 "dutch": "Waar is de lijm? Oh, hij is geleend (door iemand)",
                 "english": "Where is the glue? Oh, it's been borrowed (by someone)",
                 "indonesian": "Di mana lem? Ooh, dipinjam",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/di-mana-lem-ooh-6226a147.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/di-mana-lem-ooh-6226a147.mp3"
               },
               {
                 "dutch": "Waar is jouw auto? Hij is verkocht! (door mij/iemand)",
                 "english": "Where is your car? It's been sold! (by me/someone)",
                 "indonesian": "Mobilmu di mana? Dijual!",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mobilmu-di-mana-dijual-f14d5316.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/mobilmu-di-mana-dijual-f14d5316.mp3"
               },
               {
                 "dutch": "Hier verkoopt men auto's (algemene uitspraak — afwijkende volgorde)",
                 "english": "Cars are sold here (general statement — inverted word order)",
                 "indonesian": "Di sini dijual mobil",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/di-sini-dijual-mobil-fdde3101.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/di-sini-dijual-mobil-fdde3101.mp3"
               }
             ],
             "rules_en": [
@@ -554,31 +554,31 @@
                 "dutch": "De hond eet vlees (transitief)",
                 "english": "The dog eats meat (transitive)",
                 "indonesian": "Anjing makan daging",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/anjing-makan-daging-a93f2a33.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/anjing-makan-daging-a93f2a33.mp3"
               },
               {
                 "dutch": "Moeder wast mijn kleding (transitief)",
                 "english": "Mother washes my clothes (transitive)",
                 "indonesian": "Ibu mencuci pakaianku",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mencuci-pakaianku-d716841a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ibu-mencuci-pakaianku-d716841a.mp3"
               },
               {
                 "dutch": "Hij huilt (intransitief)",
                 "english": "He cries (intransitive)",
                 "indonesian": "Dia menangis",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dia-menangis-8d598104.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dia-menangis-8d598104.mp3"
               },
               {
                 "dutch": "Ik zit op de stoel (intransitief)",
                 "english": "I sit on the chair (intransitive)",
                 "indonesian": "Saya duduk di kursi",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/saya-duduk-di-kursi-26650ddb.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/saya-duduk-di-kursi-26650ddb.mp3"
               },
               {
                 "dutch": "De kwaliteit van exportgoederen daalt (intransitief)",
                 "english": "The quality of export goods is declining (intransitive)",
                 "indonesian": "Kualitas barang ekspor menurun",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kualitas-barang-ekspor-menurun-bcf7fd7c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kualitas-barang-ekspor-menurun-bcf7fd7c.mp3"
               }
             ],
             "rules_en": [
@@ -600,19 +600,19 @@
                 "dutch": "Het vlees wordt door de hond gegeten (transitief → DI-vorm)",
                 "english": "The meat is eaten by the dog (transitive → DI-form)",
                 "indonesian": "Daging dimakan anjing",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/daging-dimakan-anjing-12191873.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/daging-dimakan-anjing-12191873.mp3"
               },
               {
                 "dutch": "Die deur wordt geopend (membuka → dibuka)",
                 "english": "That door is opened (membuka → dibuka)",
                 "indonesian": "Pintu itu dibuka",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pintu-itu-dibuka-7ea226cc.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/pintu-itu-dibuka-7ea226cc.mp3"
               },
               {
                 "dutch": "Hij slaapt (intransitief — geen DI-vorm mogelijk)",
                 "english": "He sleeps (intransitive — no DI-form possible)",
                 "indonesian": "Dia tidur",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dia-tidur-64dbd087.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/dia-tidur-64dbd087.mp3"
               }
             ],
             "rules_en": [

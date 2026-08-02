@@ -7,8 +7,8 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Despina",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-15-nl.mp3",
-    "lesson_audio_url_en": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-15-en.mp3"
+    "lesson_audio_url": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-lessons/grammar/lesson-15-nl.mp3",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {
@@ -53,44 +53,44 @@
             "dutch": "materiaal / instrument",
             "english": "tool / instrument",
             "indonesian": "alat",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/alat-bf4e836f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/alat-bf4e836f.mp3"
           },
           {
             "dutch": "pop",
             "english": "doll",
             "indonesian": "boneka",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/boneka-2a4234b8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/boneka-2a4234b8.mp3"
           },
           {
             "dutch": "vertoner (van wayang)",
             "english": "wayang performer",
             "indonesian": "dalang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dalang-95b5f55e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/dalang-95b5f55e.mp3"
           },
           {
             "dutch": "Javaans orkest",
             "english": "Javanese orchestra",
             "indonesian": "gamelan",
             "loanSourceNl": "gamelan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gamelan-a6862cb0.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/gamelan-a6862cb0.mp3"
           },
           {
             "dutch": "tellen",
             "english": "count",
             "indonesian": "hitung",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hitung-2492b094.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/hitung-2492b094.mp3"
           },
           {
             "dutch": "bos",
             "english": "forest",
             "indonesian": "hutan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hutan-4f8bbed7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/hutan-4f8bbed7.mp3"
           },
           {
             "dutch": "zijn / worden / dus",
             "english": "be / become / so",
             "indonesian": "jadi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jadi-d00e1b1f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/jadi-d00e1b1f.mp3"
           },
           {
             "dutch": "slecht / lelijk",
@@ -98,230 +98,230 @@
             "register": "informal",
             "indonesian": "jelek",
             "registerCounterpart": "buruk",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jelek-7547ca8d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/jelek-7547ca8d.mp3"
           },
           {
             "dutch": "woord",
             "english": "word",
             "indonesian": "kata",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kata-f3012038.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kata-f3012038.mp3"
           },
           {
             "dutch": "zielig",
             "english": "pitiful",
             "indonesian": "kasihan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kasihan-a992f4b3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kasihan-a992f4b3.mp3"
           },
           {
             "dutch": "scherm voor wayangspel",
             "english": "wayang screen",
             "indonesian": "kelir",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kelir-ac9ea824.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kelir-ac9ea824.mp3"
           },
           {
             "dutch": "titel voor wijze man",
             "english": "title for wise man",
             "indonesian": "Ki",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ki-9b23e078.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ki-9b23e078.mp3"
           },
           {
             "dutch": "koekje / taartje",
             "english": "cookie / cake",
             "indonesian": "kue",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kue-69aa3d69.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kue-69aa3d69.mp3"
           },
           {
             "dutch": "huid / leer",
             "english": "skin / leather",
             "indonesian": "kulit",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kulit-65c0d2f9.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/kulit-65c0d2f9.mp3"
           },
           {
             "dutch": "lied",
             "english": "song",
             "indonesian": "lagu",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lagu-61bb62f3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/lagu-61bb62f3.mp3"
           },
           {
             "dutch": "lamp",
             "english": "lamp",
             "indonesian": "lampu",
             "loanSourceNl": "lamp",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lampu-d51fc225.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/lampu-d51fc225.mp3"
           },
           {
             "dutch": "rennen",
             "english": "run",
             "indonesian": "lari",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lari-c554b68e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/lari-c554b68e.mp3"
           },
           {
             "dutch": "gewild",
             "english": "popular / in demand",
             "indonesian": "laris",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/laris-b61aeb08.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/laris-b61aeb08.mp3"
           },
           {
             "dutch": "zweven / vliegen",
             "english": "float / fly",
             "indonesian": "layang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/layang-f9074bb6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/layang-f9074bb6.mp3"
           },
           {
             "dutch": "spelen",
             "english": "play",
             "indonesian": "main",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/main-7a175fd1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/main-7a175fd1.mp3"
           },
           {
             "dutch": "winnen",
             "english": "win",
             "indonesian": "menang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/menang-40b8afb7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/menang-40b8afb7.mp3"
           },
           {
             "dutch": "zingen",
             "english": "sing",
             "indonesian": "nyanyi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nyanyi-8c823fe6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/nyanyi-8c823fe6.mp3"
           },
           {
             "dutch": "podium",
             "english": "stage",
             "indonesian": "panggung",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/panggung-78762602.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/panggung-78762602.mp3"
           },
           {
             "dutch": "de (meervoud)",
             "english": "the (plural)",
             "indonesian": "para",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/para-16abdc81.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/para-16abdc81.mp3"
           },
           {
             "dutch": "aansluiten",
             "english": "connect",
             "indonesian": "pasang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pasang-86ce464a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pasang-86ce464a.mp3"
           },
           {
             "dutch": "ambtenaar",
             "english": "civil servant",
             "indonesian": "pegawai",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pegawai-26b8ca42.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pegawai-26b8ca42.mp3"
           },
           {
             "dutch": "speler",
             "english": "player",
             "indonesian": "pemain",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pemain-71a95644.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pemain-71a95644.mp3"
           },
           {
             "dutch": "toeschouwer",
             "english": "spectator",
             "indonesian": "penonton",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/penonton-afdc2e1c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/penonton-afdc2e1c.mp3"
           },
           {
             "dutch": "zanger / zangeres",
             "english": "singer",
             "indonesian": "penyanyi",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/penyanyi-7d131f9b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/penyanyi-7d131f9b.mp3"
           },
           {
             "dutch": "strijden / oorlog",
             "english": "fight / war",
             "indonesian": "perang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/perang-335188fe.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/perang-335188fe.mp3"
           },
           {
             "dutch": "vertoning",
             "english": "performance",
             "indonesian": "pertunjukan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pertunjukan-08c3eeac.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pertunjukan-08c3eeac.mp3"
           },
           {
             "dutch": "Javaanse zangeres",
             "english": "Javanese singer",
             "indonesian": "pesinden",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pesinden-9b8a267d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pesinden-9b8a267d.mp3"
           },
           {
             "dutch": "kist",
             "english": "chest",
             "indonesian": "peti",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/peti-dc9fddff.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/peti-dc9fddff.mp3"
           },
           {
             "dutch": "klanknabootsend woord",
             "english": "onomatopoeia",
             "indonesian": "plak-plek",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/plakplek-0da57cae.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/plakplek-0da57cae.mp3"
           },
           {
             "dutch": "snijden",
             "english": "cut",
             "indonesian": "potong",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/potong-8218f99b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/potong-8218f99b.mp3"
           },
           {
             "dutch": "demon / reus",
             "english": "demon / giant",
             "indonesian": "raksasa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/raksasa-8fa5f069.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/raksasa-8fa5f069.mp3"
           },
           {
             "dutch": "verlengen",
             "english": "extend",
             "indonesian": "sambung",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sambung-29279670.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/sambung-29279670.mp3"
           },
           {
             "dutch": "gedurende / zolang als",
             "english": "during / as long as",
             "indonesian": "selama",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selama-9b7009ca.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/selama-9b7009ca.mp3"
           },
           {
             "dutch": "net als",
             "english": "just like",
             "indonesian": "seolah-olah",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/seolaholah-4702539e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/seolaholah-4702539e.mp3"
           },
           {
             "dutch": "gereed / klaar",
             "english": "ready",
             "indonesian": "siap",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/siap-2f92600f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/siap-2f92600f.mp3"
           },
           {
             "dutch": "dansen",
             "english": "dance",
             "indonesian": "tari",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tari-1e70f550.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/tari-1e70f550.mp3"
           },
           {
             "dutch": "schoppen",
             "english": "kick",
             "indonesian": "tendang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tendang-38028421.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/tendang-38028421.mp3"
           },
           {
             "dutch": "lachen",
             "english": "laugh",
             "indonesian": "tertawa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tertawa-82f82cee.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/tertawa-82f82cee.mp3"
           },
           {
             "dutch": "(gaan) kijken naar",
             "english": "watch",
             "indonesian": "tonton",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tonton-b1b44a61.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/tonton-b1b44a61.mp3"
           },
           {
             "dutch": "toneel / o.a. schimmenspel",
             "english": "theater / shadow puppet play",
             "indonesian": "wayang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/wayang-7d4cd1a2.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/wayang-7d4cd1a2.mp3"
           },
           {
             "dutch": "tellen",
@@ -329,7 +329,7 @@
             "register": "informal",
             "indonesian": "itung",
             "registerCounterpart": "hitung",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/itung-b0b3abcf.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/itung-b0b3abcf.mp3"
           }
         ]
       }
