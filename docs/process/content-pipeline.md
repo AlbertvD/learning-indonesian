@@ -258,7 +258,6 @@ push hand-produced audio:
 
 | Seeder | Bucket |
 |---|---|
-| `scripts/seed-lesson-audio.ts` | `indonesian-lessons/lessons/` |
 | `scripts/grammar-podcast/publish.ts` | `indonesian-lessons/grammar/` |
 | `scripts/seed-podcasts.ts`, `scripts/podcasts/seed.ts` | `indonesian-podcasts/podcasts/` |
 
@@ -287,6 +286,10 @@ Notes:
   and every baked `content.json` URL remain valid.
 - Requires `ffmpeg` (`brew install ffmpeg`). `SKIP_AUDIO_COMPRESSION=1` bypasses
   it, at the cost of the object cap.
-- `seed-lesson-audio.ts` and `seed-podcasts.ts` had the homelab URL hardcoded
-  and so could not seed cloud at all; both now read `SUPABASE_URL`, defaulting
-  to the homelab.
+- `seed-podcasts.ts` had the homelab URL hardcoded and so could not seed cloud
+  at all; it now reads `SUPABASE_URL`, defaulting to the homelab.
+- `seed-lesson-audio.ts` was RETIRED 2026-08-02 — a writer with no reader. The
+  grammar-podcast feature took over `lessons.audio_path` (94d86b91, 90bfff1b)
+  and the old coursebook `.m4a` uploads were never cleaned up; 175 MB of them
+  sat orphaned in cloud storage, referenced by no DB column, no content.json and
+  no component. The source recordings stay on disk under `content/lessons/`.

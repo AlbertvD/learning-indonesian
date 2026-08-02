@@ -318,7 +318,7 @@ if (authed) {
   if (lessonErr) {
     fail('Lesson audio URLs accessible', lessonErr.message)
   } else if (!lessons || lessons.length === 0) {
-    fail('Lesson audio URLs accessible', 'No lessons with audio found — run: make seed-lessons && make seed-lesson-audio SUPABASE_SERVICE_KEY=<key>')
+    fail('Lesson audio URLs accessible', 'No lessons with audio found — grammar audio is published by scripts/grammar-podcast/publish.ts')
   } else {
     for (const lesson of lessons as { title: string; audio_path: string }[]) {
       const { data } = supabase.storage.from('indonesian-lessons').getPublicUrl(lesson.audio_path)
@@ -327,7 +327,7 @@ if (authed) {
         if (res.ok) {
           pass(`Audio URL accessible: ${lesson.audio_path}`)
         } else {
-          fail(`Audio URL accessible: ${lesson.audio_path}`, `HTTP ${res.status} — run: make seed-lesson-audio SUPABASE_SERVICE_KEY=<key>`)
+          fail(`Audio URL accessible: ${lesson.audio_path}`, `HTTP ${res.status} — re-publish via scripts/grammar-podcast/publish.ts`)
         }
       } catch (err) {
         fail(`Audio URL accessible: ${lesson.audio_path}`, `Request failed: ${(err as Error).message}`)
