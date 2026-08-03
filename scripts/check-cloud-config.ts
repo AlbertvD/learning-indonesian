@@ -33,6 +33,7 @@
 // Needs:  SUPABASE_ACCESS_TOKEN in .env.local
 
 import { readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import config from '../supabase/config.toml'
 
 for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
@@ -111,6 +112,57 @@ else fail('smtp password set', 'live project has no SMTP password — confirmati
 expect('google provider enabled', cfg.auth?.external?.google?.enabled, live.external_google_enabled)
 if (live.external_google_client_id) pass('google client id set')
 else fail('google client id set', 'provider is enabled but no client_id — the sign-in button will error')
+
+// ── DECLARED: edge-function secrets ─────────────────────────────────────────
+// Function secrets are the one production surface that CANNOT live in the repo,
+// so they used to have no declaration and therefore no drift check. That gap
+// cost us APP_BASE_URL: it was set to `http://localhost:5174` on 2026-07-31 to
+// run the checkout E2E against a dev server, and stayed there. Every Checkout
+// Session the live function created carried
+// `success_url: http://localhost:5174/checkout/success` — so any buyer who was
+// not sitting at this laptop would have paid Stripe and then landed on a dead
+// URL, with verify-checkout never running to write their entitlement. Stripe
+// confirmed it on the three most recent sessions before the fix.
+//
+// The check is possible because /v1/projects/{ref}/secrets returns each value
+// as a **plain sha256 digest**, never the secret itself (verified 2026-08-03:
+// the digest for the old value equalled sha256("http://localhost:5174")). So a
+// secret whose correct value is public knowledge — the app's own origin — can
+// be compared exactly without this file ever holding or printing a secret.
+//
+// The STRIPE_* four have genuinely private values, so presence is all that can
+// be asserted here. Absence is still worth catching: create-checkout-session
+// returns `server_not_configured` and nobody can buy anything.
+console.log('\nDECLARED — edge-function secrets (compared by digest, never read)')
+
+const secretsRes = await fetch(`https://api.supabase.com/v1/projects/${PROJECT_REF}/secrets`, {
+  headers: { Authorization: `Bearer ${token}` },
+})
+if (!secretsRes.ok) {
+  fail('read function secrets', `HTTP ${secretsRes.status} from /v1/projects/${PROJECT_REF}/secrets`)
+} else {
+  const secrets = (await secretsRes.json()) as Array<{ name: string; value: string }>
+  const digestOf = new Map(secrets.map(s => [s.name, s.value]))
+
+  const wantDigest = createHash('sha256').update(APP_ORIGIN).digest('hex')
+  const liveDigest = digestOf.get('APP_BASE_URL')
+  if (!liveDigest) {
+    fail('APP_BASE_URL secret', 'not set — checkout and the customer portal both 500 with server_not_configured')
+  } else if (liveDigest === wantDigest) {
+    pass(`APP_BASE_URL is ${APP_ORIGIN}`)
+  } else {
+    fail(
+      'APP_BASE_URL secret',
+      `digest does not match sha256(${APP_ORIGIN}) — Stripe redirects point somewhere else (localhost, a preview URL, the homelab). ` +
+        `Fix: bunx supabase secrets set APP_BASE_URL=${APP_ORIGIN} --project-ref ${PROJECT_REF}`,
+    )
+  }
+
+  for (const name of ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'STRIPE_PRICE_MONTHLY', 'STRIPE_PRICE_ANNUAL']) {
+    if (digestOf.has(name)) pass(`${name} set (value not compared)`)
+    else fail(`${name} set`, 'missing — create-checkout-session returns server_not_configured, so no one can subscribe')
+  }
+}
 
 // ── BEHAVIOUR: Cloudflare-served app ────────────────────────────────────────
 // No repo declaration for DNS / custom domains / Email Routing. Assert that the

@@ -7,6 +7,26 @@ SUPABASE_URL = https://api.supabase.duin.home
 
 # Load .env.local if present
 -include .env.local
+
+# ── Which Supabase does a health check certify? ─────────────────────────────
+# PRODUCTION IS SUPABASE CLOUD. `.env.local` still points VITE_SUPABASE_URL at
+# the homelab — correctly, it is the dev/personal instance — so any check that
+# simply inherits the environment certifies the WRONG system. That is exactly
+# what `make pre-deploy` did until 2026-08-03: the gate standing between a
+# branch and a merge to a cloud-hosted production app was asserting the
+# homelab's health, where the buckets are still public and none of the
+# entitlement objects exist.
+#
+# `.env.cloud.local` already declares the cloud target for `vite --mode cloud`,
+# so reuse it rather than adding a second declaration of the same fact. A later
+# assignment wins in make, so these override the `.env.local` values above.
+# TARGET=homelab keeps the old behaviour for homelab work.
+TARGET ?= cloud
+ifeq ($(TARGET),cloud)
+-include .env.cloud.local
+SUPABASE_SERVICE_KEY = $(CLOUD_SUPABASE_SERVICE_KEY)
+endif
+
 export
 
 .PHONY: help
@@ -197,7 +217,7 @@ publish-lesson-content: ## Stage-A-only publish: lesson content + Lesson Gate, n
 # ============================================================================
 
 .PHONY: check-supabase
-check-supabase: ## Check Supabase connectivity, CORS, schema, auth, and storage (uses .env.local)
+check-supabase: ## Check Supabase connectivity, CORS, schema, auth, and storage (cloud by default; TARGET=homelab for the homelab)
 	NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/check-supabase.ts
 
 .PHONY: check-supabase-deep
