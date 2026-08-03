@@ -562,6 +562,7 @@ and `mailer_autoconfirm` differed from the homelab — which made cloud signup s
 | Edge function settings | `supabase/config.toml` `[functions.*]` | `supabase functions deploy` | — |
 | Worker + CSP + SPA routing | `wrangler.jsonc`, `public/_headers` | `bunx wrangler deploy` | `make check-cloud-config` (behaviour) |
 | DNS, Email Routing, custom domains, Google OAuth client | **nothing — by design** | Cloudflare / Google dashboards | `make check-cloud-config` (behaviour) |
+| Storage objects (audio) | reproducible from `content/` | `bun scripts/migrate-audio-to-cloud.ts` | `make check-cloud-config` (every `audio_path` resolves, nothing at the 50 MB cap) |
 
 **The rule:** if a surface has a "declared in" cell, change it THERE and apply it
 with the named command. Never by dashboard click or ad-hoc `curl` — those work,

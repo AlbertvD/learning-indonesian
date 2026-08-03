@@ -141,6 +141,63 @@ const wdev = await status('https://learning-indonesian.avduijn.workers.dev/')
 if (wdev === 404 || wdev === 0) pass('workers.dev hostname is disabled')
 else fail('workers.dev disabled', `HTTP ${wdev} — a second public hostname is serving the app (wrangler.jsonc declares workers_dev = false)`)
 
+// ── CONTENT: does every audio path the DB advertises actually resolve? ──────
+// The invariant that was broken for MONTHS without anyone noticing: 26 of 30
+// lessons had an audio_path pointing at an object that did not exist, because
+// the sources exceeded Supabase's 50 MB per-object cap and those uploads had
+// silently failed. It is invisible from the app — signStoredAudioUrl returns
+// null for a missing object and callers treat that as "no audio", so the player
+// simply does not render. No error, no log, no test.
+//
+// Expectations are derived from the DB rather than hardcoded to 30: the DB is
+// the declaration for content, and a lesson added later should be covered
+// automatically rather than needing this file edited.
+const serviceKey = process.env.CLOUD_SUPABASE_SERVICE_KEY
+console.log('\nCONTENT — storage objects backing lessons.audio_path')
+
+if (!serviceKey) {
+  console.log('  – skipped (CLOUD_SUPABASE_SERVICE_KEY not set)')
+} else {
+  const sbHeaders = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` }
+  const base = `https://${PROJECT_REF}.supabase.co`
+
+  const rowsRes = await fetch(
+    `${base}/rest/v1/lessons?select=order_index,audio_path&audio_path=not.is.null&order=order_index`,
+    { headers: { ...sbHeaders, 'Accept-Profile': 'indonesian' } },
+  )
+  const rows = rowsRes.ok ? ((await rowsRes.json()) as Array<{ order_index: number; audio_path: string }>) : []
+
+  const listRes = await fetch(`${base}/storage/v1/object/list/indonesian-lessons`, {
+    method: 'POST',
+    headers: { ...sbHeaders, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prefix: 'grammar/', limit: 1000 }),
+  })
+  const objects = listRes.ok
+    ? ((await listRes.json()) as Array<{ name: string; metadata: { size?: number } | null }>).filter(o => o.metadata)
+    : []
+  const sizes = new Map(objects.map(o => [`grammar/${o.name}`, o.metadata!.size ?? 0]))
+
+  const orphans = rows.filter(r => !sizes.has(r.audio_path))
+  if (rows.length === 0) {
+    fail('lessons advertise audio', 'no lesson has an audio_path — content may not be seeded')
+  } else if (orphans.length === 0) {
+    pass(`every advertised audio path resolves (${rows.length} lessons)`)
+  } else {
+    fail(
+      'every advertised audio path resolves',
+      `${orphans.length}/${rows.length} point at missing objects, e.g. lesson ${orphans[0].order_index} → ${orphans[0].audio_path}. ` +
+        'Re-run: bun scripts/migrate-audio-to-cloud.ts',
+    )
+  }
+
+  // An object at or over the cap means an UNCOMPRESSED upload slipped past the
+  // pipeline — the condition that caused the silent failures in the first place.
+  const CAP = 50_000_000
+  const oversized = [...sizes.entries()].filter(([, s]) => s >= CAP)
+  if (oversized.length === 0) pass(`no object at the 50 MB cap (largest ${Math.max(0, ...sizes.values()) / 1e6 | 0} MB)`)
+  else fail('no object at the 50 MB cap', `${oversized.length} at/over cap, e.g. ${oversized[0][0]} at ${(oversized[0][1] / 1e6).toFixed(1)} MB — it will fail to upload`)
+}
+
 // ── result ──────────────────────────────────────────────────────────────────
 console.log(`\n${passed} passed, ${failures.length} failed`)
 if (failures.length) {
