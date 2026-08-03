@@ -573,10 +573,23 @@ safeguard is different in kind: assert that they still WORK (the domain serves,
 the CSP is present, workers.dev stays off) rather than declaring how they are
 built.
 
-**And the discipline that machinery cannot enforce:** any change made to a live
-system that was not applied from the repo must, in the same session, either move
-into the repo or gain an assertion. Every item in the failure list above existed
-because that did not happen.
+**Enforced, not just asked for.** The PreToolUse hook
+(`.claude-hooks/pre-tool-use.ts` → `checkOutOfBandCloudConfig`) BLOCKS a mutating
+call to `api.supabase.com/v1/projects/*/config` — the exact thing that produced
+the drift above. Reads pass (the drift check itself needs them), and
+`config-drift-ok: <reason>` in the command is an explicit escape hatch, matching
+the `bespoke-css-ok` idiom: a justified one-off becomes a written decision rather
+than a silent one.
+
+**What the hook still cannot see:** dashboard clicks, and mutations through MCP
+tools rather than Bash. For those the backstop is `make check-cloud-config`
+inside `make pre-deploy` — it does not care HOW live diverged from the repo, only
+that it did. Hook catches it at the moment; drift check catches it before merge.
+
+**And the discipline neither can enforce:** any change made to a live system that
+was not applied from the repo must, in the same session, either move into the
+repo or gain an assertion. Every item in the failure list above existed because
+that did not happen.
 
 `make pre-deploy` runs the drift check, so a repo/live disagreement blocks a
 merge rather than being discovered months later.
