@@ -10,7 +10,7 @@
 
 import { useEffect, useState } from 'react'
 import { Stack, Text, Group, Anchor } from '@mantine/core'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { SettingsCard, StatusPill } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
 import type { AffixDetail } from '@/lib/morphology'

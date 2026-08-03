@@ -8,7 +8,7 @@
 // the theme toggle. The old footer ProfileMenu is deleted — language, profile
 // and sign-out all live on the Profiel page.
 import { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router'
 import { useMantineColorScheme } from '@mantine/core'
 import {
   IconHome, IconBook, IconCompass, IconChartBar, IconUser,

@@ -3,7 +3,7 @@
 // One mode (desktop program slice 2): the rail is always visible ≥769px. The
 // pin/unpin/hamburger machinery and the `sidebar-locked` localStorage key were
 // deleted with it — power users trade the full-width option for a stable frame.
-import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router'
 import { useMediaQuery } from '@mantine/hooks'
 import { Sidebar } from './Sidebar'
 import { MobileLayout } from './MobileLayout'

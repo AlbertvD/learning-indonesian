@@ -1,5 +1,5 @@
 // src/components/MobileLayout.tsx
-import { Outlet, NavLink } from 'react-router-dom'
+import { Outlet, NavLink } from 'react-router'
 import { useMantineColorScheme } from '@mantine/core'
 import { IconUser, IconUserFilled, IconHome, IconHomeFilled, IconBook, IconBookFilled, IconCompass, IconCompassFilled, IconChartBar, IconChartBarPopular } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'

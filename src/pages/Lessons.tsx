@@ -18,7 +18,7 @@ import {
   IconListCheck,
   IconChevronDown,
 } from '@tabler/icons-react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { useMediaQuery } from '@mantine/hooks'
 import {
   PageContainer,

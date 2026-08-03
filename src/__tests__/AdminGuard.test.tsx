@@ -9,7 +9,7 @@
 // test coverage (only exercised indirectly via each page's internal wrap).
 
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { AdminGuard } from '@/pages/admin/AdminGuard'

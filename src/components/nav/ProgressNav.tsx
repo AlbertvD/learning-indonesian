@@ -6,7 +6,7 @@
 // <SurfaceNav/>, which owns the desktop switcher row / mobile "back to
 // Voortgang" link, matching the Leren/Ontdek hub shape
 // (docs/plans/2026-07-09-voortgang-hub-redesign.md).
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { IconBook, IconLanguage, IconPuzzle, IconFlame } from '@tabler/icons-react'
 import { SurfaceNav } from './SurfaceNav'
 import { useT } from '@/hooks/useT'

@@ -10,7 +10,7 @@
 // to mobile so this exercises the hub itself.
 
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { Ontdek } from '@/pages/Ontdek'

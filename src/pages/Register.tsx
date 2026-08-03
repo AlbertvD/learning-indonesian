@@ -8,7 +8,7 @@
 import { useState } from 'react'
 import { PasswordInput, TextInput, Button, Stack, Text, Divider } from '@mantine/core'
 import { IconBrandGoogle } from '@tabler/icons-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { notifications } from '@mantine/notifications'
 import { AuthApiError } from '@supabase/supabase-js'
 import { PageFormLayout } from '@/components/page/primitives'

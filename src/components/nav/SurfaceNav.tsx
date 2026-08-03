@@ -12,7 +12,7 @@
 // supplies the hub's items + back target. LerenNav and OntdekNav are thin
 // wrappers that pin those per-hub specifics.
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { BackLink } from './BackLink'
 import classes from './SurfaceNav.module.css'
 

@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router'
 import { Button, Text } from '@mantine/core'
 import { IconAlertTriangle, IconArrowLeft } from '@tabler/icons-react'
 import {

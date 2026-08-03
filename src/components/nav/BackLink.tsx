@@ -2,7 +2,7 @@
 //
 // A small "← back" link, used by surfaces reached from a hub (the Affix and
 // Pronunciation trainers, reached from Leren) so the learner can return.
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { IconArrowLeft } from '@tabler/icons-react'
 import classes from './BackLink.module.css'
 

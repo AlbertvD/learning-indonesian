@@ -14,7 +14,7 @@ import {
 import { useMantineColorScheme } from '@mantine/core'
 import { IconMoon, IconSun, IconLogout, IconFlame, IconClock } from '@tabler/icons-react'
 import { useMediaQuery } from '@mantine/hooks'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { notifications } from '@mantine/notifications'
 import {
   PageContainer,

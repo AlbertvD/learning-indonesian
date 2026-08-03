@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button, Stack, Text } from '@mantine/core'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { IconPlayerPlay, IconRotateClockwise } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
 import {

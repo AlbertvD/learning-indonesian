@@ -7,7 +7,7 @@
 // removed from the rail — users start a session from Home.
 
 import { render, screen, waitFor } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Sidebar } from '@/components/Sidebar'

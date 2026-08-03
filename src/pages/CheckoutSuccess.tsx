@@ -25,7 +25,7 @@
 // session/index.ts) is handled as a route redirect in App.tsx — no new page.
 
 import { useCallback, useEffect, useState } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router'
 import { Button } from '@mantine/core'
 import { IconCircleCheck, IconAlertTriangle, IconClock } from '@tabler/icons-react'
 import {

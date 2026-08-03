@@ -9,7 +9,7 @@
 
 import type { ReactElement } from 'react'
 import { render as rtlRender, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { GrammarPodcasts } from '@/pages/GrammarPodcasts'

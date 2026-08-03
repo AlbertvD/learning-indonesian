@@ -5,7 +5,7 @@ import { MantineProvider, createTheme, localStorageColorSchemeManager, TextInput
 import type { CSSVariablesResolver } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { AppErrorBoundary } from '@/components/AppErrorBoundary'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router'
 import App from './App'
 import { useAuthStore } from '@/stores/authStore'
 import { AutoplayProvider } from '@/contexts/AutoplayContext'

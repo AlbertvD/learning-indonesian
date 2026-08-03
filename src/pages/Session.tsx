@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 import { Alert, Button } from '@mantine/core'
 import { IconAlertCircle, IconInfoCircle } from '@tabler/icons-react'
 import {

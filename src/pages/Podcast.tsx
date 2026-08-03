@@ -1,6 +1,6 @@
 // src/pages/Podcast.tsx
 import { useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { Text, Paper, Group, Stack, Tabs, Anchor } from '@mantine/core'
 import { IconMicrophone } from '@tabler/icons-react'
 import {

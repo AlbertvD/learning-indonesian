@@ -1,6 +1,6 @@
 // src/components/nav/__tests__/ProgressNav.test.tsx
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect } from 'vitest'
 import { ProgressNav } from '../ProgressNav'

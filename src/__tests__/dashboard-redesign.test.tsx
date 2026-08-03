@@ -16,7 +16,7 @@
 
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
@@ -54,8 +54,8 @@ import { buildSession } from '@/lib/session-builder'
 import { Dashboard } from '@/pages/Dashboard'
 
 const mockNavigate = vi.fn()
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<typeof import('react-router')>('react-router')
   return { ...actual, useNavigate: () => mockNavigate }
 })
 

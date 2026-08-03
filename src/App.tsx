@@ -1,6 +1,6 @@
 // src/App.tsx
 import { lazy, Suspense } from 'react'
-import { Routes, Route, Link, Navigate } from 'react-router-dom'
+import { Routes, Route, Link, Navigate } from 'react-router'
 import { Container, Title, Text, Button, Center, Loader } from '@mantine/core'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'

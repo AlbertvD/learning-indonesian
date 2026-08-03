@@ -13,7 +13,7 @@
 // a real feature, nowhere else.
 
 import { useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router'
 import type { Lang } from '@/lib/i18n'
 import { SunMark } from '@/components/SunMark'
 import { landingCopy } from './Landing.copy'

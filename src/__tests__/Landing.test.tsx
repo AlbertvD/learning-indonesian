@@ -8,7 +8,7 @@
 
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter, Outlet } from 'react-router-dom'
+import { MemoryRouter, Outlet } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Landing } from '@/pages/Landing'

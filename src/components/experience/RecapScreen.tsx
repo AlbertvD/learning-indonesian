@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { Stack, Button, Text, SimpleGrid } from '@mantine/core'
 import { HeroCard, StatCard, SectionHeading } from '@/components/page/primitives'
 import { capabilityDisplay } from '@/lib/session-builder'

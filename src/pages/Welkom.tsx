@@ -7,7 +7,7 @@
 // changes). Skippable at every step. The slice-2 "instaptoets" branch link is
 // intentionally ABSENT until the placement probe ships (§3.4), not stubbed.
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconArrowRight } from '@tabler/icons-react'
