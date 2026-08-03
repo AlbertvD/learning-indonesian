@@ -1,11 +1,29 @@
 ---
-status: draft
+status: shipped
+merged_at: 2026-08-03
+implementation_paths:
+  - src/lib/i18n.ts
+  - src/pages/Terms.tsx
+  - src/pages/Refunds.tsx
 ---
 
 # ToS + refund policy — draft copy for owner sign-off
 
 **Drafted 2026-07-30 by agent, per `launch-runbook.md` Phase 1
 ("An agent can draft; owner signs off").**
+
+> **Wired 2026-08-03.** Owner accepted this draft; the copy below is now live in
+> `src/lib/i18n.ts` (both NL and EN), the contact address resolved to
+> `support@kamoebisa.nl`, `lastUpdated` set to 3 August 2026, and the yellow
+> PLACEHOLDER alert removed from both pages. This file is now the changelog for
+> that copy, not forward work — edit `i18n.ts` for revisions.
+>
+> ⚠️ **One dependency is still open**: the §3 withdrawal-right waiver holds only
+> if Stripe Checkout actually collects the consent per purchase.
+> `consent_collection` was verified **null** on live sessions 2026-08-03, so as
+> shipped that clause is disclosure, not an enforceable waiver. Enabling it
+> needs a ToS URL in the Stripe Dashboard's public business information FIRST —
+> without it the API rejects the call and no one can pay.
 
 ⚠️ **This is a draft for review, not legal advice.** I am not qualified to
 give it, and one clause in particular (§3 of the refund policy, the withdrawal

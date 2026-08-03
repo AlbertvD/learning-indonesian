@@ -5,15 +5,17 @@
 // reachable, local nl/en toggle (NL default), copy from the `refunds` block
 // in src/lib/i18n.ts.
 //
-// PLACEHOLDER COPY — every section body is explicitly marked PLACEHOLDER.
+// Copy approved and wired 2026-08-03 from
+// docs/plans/2026-07-30-tos-refunds-draft-copy.md.
+//
 // Section 3 is the EU 14-day withdrawal-right disclosure required at
-// checkout (spec §3.4) — its heading and presence are load-bearing even
-// though the body text itself is still a placeholder; do not remove this
-// section when filling in real copy.
+// checkout (spec §3.4) — load-bearing, do not remove. ⚠ Its waiver only
+// holds if Stripe Checkout actually COLLECTS the consent per purchase
+// (consent_collection on the session). Verified null on live sessions
+// 2026-08-03; until that is enabled the clause is disclosure, not a waiver.
 
 import { useState } from 'react'
-import { Text, SegmentedControl, Stack, Alert } from '@mantine/core'
-import { IconInfoCircle } from '@tabler/icons-react'
+import { Text, SegmentedControl, Stack } from '@mantine/core'
 import {
   PageContainer,
   PageBody,
@@ -43,10 +45,6 @@ export function Refunds() {
             />
           }
         />
-
-        <Alert icon={<IconInfoCircle size={18} />} color="yellow" mb="lg">
-          {T.placeholderNotice}
-        </Alert>
 
         <Stack gap="xl">
           <div>
