@@ -35,6 +35,35 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY)
 
+// ── The E2E fixture account, resolved by EMAIL, never hardcoded ──────────────
+// Several checks (HC-lessons-overview, HC-weekly-movement, HC-mastery, HC53)
+// compare a direct service-role read against an RPC for one known learner. They
+// used to hardcode `55023eba-…`, which is testuser@duin.home's id ON THE
+// HOMELAB. Pointed at Supabase Cloud that UUID belongs to nobody, so:
+//
+//   - the parity checks compared empty against empty and passed VACUOUSLY —
+//     exactly the failure mode HC53's own comment warns about;
+//   - HC53, which refuses to pass on empty ≡ empty, failed instead with
+//     "zero capability_review_events — fixture unusable", pointing at a missing
+//     fixture when the real fault was a user id from the wrong environment.
+//
+// Resolving by email binds the checks to whichever project they are aimed at,
+// so the same suite is honest against homelab and cloud alike.
+const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL ?? 'testuser@duin.home'
+
+async function resolveTestUserId(): Promise<string | null> {
+  const res = await fetch(
+    `${SUPABASE_URL}/auth/v1/admin/users?filter=${encodeURIComponent(TEST_USER_EMAIL)}`,
+    { headers: { apikey: SERVICE_KEY!, Authorization: `Bearer ${SERVICE_KEY}` } },
+  )
+  if (!res.ok) return null
+  const body = (await res.json()) as { users?: Array<{ id: string; email: string }> }
+  const match = (body.users ?? []).find(u => u.email?.toLowerCase() === TEST_USER_EMAIL.toLowerCase())
+  return match?.id ?? null
+}
+
+const RESOLVED_TEST_USER_ID = await resolveTestUserId()
+
 const results: { label: string; ok: boolean; detail?: string }[] = []
 
 function pass(label: string) { results.push({ label, ok: true }) }
@@ -1899,8 +1928,9 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 // this validates the SQL predicate == the TS predicate on live data, catching
 // any behavioural divergence the structural literal test (layer a) can't.
 {
-  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  const TEST_USER_ID = RESOLVED_TEST_USER_ID ?? ''
   try {
+    if (!TEST_USER_ID) throw new Error('fixture account ' + TEST_USER_EMAIL + ' does not exist on this project — refusing to compare empty against empty')
     async function pageAll<T>(table: string, select: string, apply?: (q: any) => any): Promise<T[]> {
       const out: T[] = []
       for (let from = 0; ; from += 1000) {
@@ -1987,8 +2017,9 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
   const isMastered = (s: StateJson, now: Date) => rankOf(s, now) === 4 && (s.consecutiveFailureCount ?? 0) === 0
   const isAtRisk = (s: StateJson) => (s.consecutiveFailureCount ?? 0) > 0 && (s.lapseCount ?? 0) > 0
-  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  const TEST_USER_ID = RESOLVED_TEST_USER_ID ?? ''
   try {
+    if (!TEST_USER_ID) throw new Error('fixture account ' + TEST_USER_EMAIL + ' does not exist on this project — refusing to compare empty against empty')
     const now = new Date()
     const mondayOffset = (now.getUTCDay() + 6) % 7
     const weekStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - mondayOffset))
@@ -2146,8 +2177,9 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 //        the live-data closing of the sufficiency-predicate proof, following the
 //        same RPC-vs-TS-recompute pattern as HC27/HC28. Expects parity = 0 diffs.
 {
-  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  const TEST_USER_ID = RESOLVED_TEST_USER_ID ?? ''
   try {
+    if (!TEST_USER_ID) throw new Error('fixture account ' + TEST_USER_EMAIL + ' does not exist on this project — refusing to compare empty against empty')
     type CapRow = {
       id: string; canonical_key: string; source_kind: CapabilitySourceKind; source_ref: string
       capability_type: string; readiness_status: string; publication_status: string
@@ -3009,8 +3041,11 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 //    deriver over the FULL event history (12-week window).
 {
   const HC53 = 'HC53 mastery evidence RPC parity under real authenticated-role RLS (get_mastery_evidence / get_funnel_series_events)'
-  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
-  const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL ?? 'testuser@duin.home'
+  // Resolved by email (see RESOLVED_TEST_USER_ID at the top) — the hardcoded
+  // id that used to sit here was the homelab's, which is why this check
+  // reported "zero capability_review_events" when pointed at cloud: it was
+  // asking about a user that does not exist there.
+  const TEST_USER_ID = RESOLVED_TEST_USER_ID ?? ''
   const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD
   const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY
   const WEEKS = 12

@@ -78,7 +78,26 @@ written — both are done, see Phase 4.)
 
 ## Phase 1 — owner prerequisites
 
-- [ ] **[owner] Stripe, TEST MODE** (needs no KYC — start before activation):
+> **Re-verified against live systems 2026-08-03 — most of this phase was already
+> done and the file had not caught up.** Stripe test mode: all four secrets have
+> been set on the cloud project since 2026-07-31. Google OAuth client: created
+> and enabled (`make check-cloud-config` asserts both the provider flag and a
+> non-empty client id). Supabase Pro: no longer blocking — audio compression put
+> the largest object at 15 MB against the 50 MB cap and total storage at 378 MB
+> of 1000. ToS/refund copy: wired 2026-08-03.
+>
+> What that phase's verification MISSED, and what closed it:
+> **`APP_BASE_URL` was still `http://localhost:5174`** on the live functions —
+> set during the 2026-07-31 E2E and never changed back. Every Checkout Session
+> the live function created carried
+> `success_url: http://localhost:5174/checkout/success`, so any buyer who was
+> not at this laptop would have paid and landed nowhere, with `verify-checkout`
+> never running. Fixed 2026-08-03 and now asserted by `check-cloud-config`
+> (the secrets API returns plain sha256 digests, so a secret whose correct value
+> is public — the app's own origin — can be compared exactly without reading it).
+
+- [x] **[owner] Stripe, TEST MODE** — DONE 2026-07-31 (secrets set; checkout,
+      webhook and `current_period_end` all verified live, see Phase 3):
       Product "Kamoe Bisa"; two recurring Prices **€7/month + €56/year**, tax
       behaviour *inclusive*; enable Stripe Tax; Customer Portal with
       **cancel-at-period-end**; webhook endpoint
@@ -94,10 +113,15 @@ written — both are done, see Phase 4.)
       fallback and pins apiVersion `2026-06-24.dahlia`. Phase 3 asserts the
       renewal date renders; this is the bug that would otherwise show a blank
       date to **every** subscriber.
-- [ ] **[owner] Supabase Pro upgrade** — required for: the 5 grammar files over
-      the 50 MB per-file cap, and total storage (~4 GB for all 30 lessons vs
-      the 1 GB free limit). Not needed to test payments.
-- [ ] **[owner] Google OAuth client** — Google Cloud console → OAuth consent
+- [x] ~~**[owner] Supabase Pro upgrade**~~ — NO LONGER BLOCKING (2026-08-03).
+      It was required for the 5 grammar files over the 50 MB per-file cap and
+      for ~4 GB of total storage; compression removed both reasons (largest
+      object 15 MB, library 378 MB of the 1 GB free limit). Still worth buying
+      for daily backups and no idle-pause once real customers exist — but that
+      is a launch-quality decision now, not a blocker.
+- [x] **[owner] Google OAuth client** — DONE (provider enabled + client id set;
+      `make check-cloud-config` asserts both). Original instructions:
+      Google Cloud console → OAuth consent
       screen (External, production) → Credentials → Web application, authorized
       redirect URI **`https://wodpkxsmildtgndnbraa.supabase.co/auth/v1/callback`**
       (public TLD — the old `.duin.home` URI was *impossible*: Google requires
@@ -110,9 +134,19 @@ written — both are done, see Phase 4.)
       (add yourself as a test user) until the branding is worth publishing —
       Google's slow verification review only applies to sensitive scopes, and
       Supabase asks only for `email` + `profile`.
-- [ ] **[owner] ToS + refund text** — `/terms` and `/refunds` are placeholders.
-      EU 14-day withdrawal disclosure required. Draft prepared by agent; owner
-      signs off.
+- [x] **[owner] ToS + refund text** — DONE 2026-08-03. Approved draft wired into
+      `src/lib/i18n.ts` (NL + EN), contact `support@kamoebisa.nl`, placeholder
+      alert removed. See `docs/plans/2026-07-30-tos-refunds-draft-copy.md`.
+- [ ] **[owner] Stripe ToS URL + consent collection** — the refund policy's §3
+      withdrawal waiver only binds if Checkout COLLECTS the consent per
+      purchase. `consent_collection` verified **null** on live sessions
+      2026-08-03. Two parts, in order: (1) owner sets a Terms of Service URL
+      (`https://kamoebisa.nl/terms`) in the Stripe Dashboard's public business
+      information; (2) agent adds `consent_collection: { terms_of_service:
+      'required' }` to `create-checkout-session` and re-verifies with a test
+      session. ⚠ Order matters — without the Dashboard URL, Stripe rejects the
+      call outright and NO ONE CAN PAY, the same failure shape as the
+      `customer_update.address` bug.
 
 ## Phase 2 — agent-drivable now (no owner input)
 
@@ -136,6 +170,19 @@ written — both are done, see Phase 4.)
       homelab should also get Google login).
 
 ## Phase 3 — Stripe test-mode E2E [joint]
+
+> **Verified live 2026-08-03**: the entitlements table holds one `status=active`,
+> `source=stripe` row with `current_period_end = 2026-08-31` — so checkout, the
+> webhook, and the `current_period_end` fix are all proven end to end on cloud.
+> The `APP_BASE_URL` fix above means redirects now land on the real domain;
+> re-run a purchase to confirm the full loop on `kamoebisa.nl` rather than
+> localhost. Still unexercised: portal cancel, webhook replay no-op, a fresh
+> non-entitled account hitting the paywall, and the Google OAuth round trip.
+>
+> Also new: `e2e/cloud-session-fixture.spec.ts` drives a real practice session
+> as the test user and asserts the review lands in `capability_review_events` —
+> the first proof of the LEARNER WRITE path (commit_capability_review under real
+> authenticated-role RLS) on cloud. 13 real events written 2026-08-03.
 
 Once Phase 1's four Stripe values exist:
 
