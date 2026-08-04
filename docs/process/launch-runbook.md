@@ -104,8 +104,16 @@ written — both are done, see Phase 4.)
       `https://wodpkxsmildtgndnbraa.supabase.co/functions/v1/stripe-webhook`
       subscribed to exactly `checkout.session.completed`,
       `customer.subscription.updated`, `customer.subscription.deleted`.
-      Statement descriptor `KAMOE BISA`; payout schedule **monthly** (keeps the
-      bunq transaction allowance comfortable).
+      Statement descriptor **`KAMOEBISA.NL`**, shortened descriptor
+      **`KAMOEBISA`** (set 2026-08-04 — the domain satisfies both halves of
+      Stripe's "business name or URL" rule at once, and gives a customer who
+      does not recognise the charge somewhere to go. The highest-risk dispute
+      moment in this billing model is the ANNUAL renewal, twelve months after
+      the buyer last thought about it; the descriptor is the only defence
+      there. `KAMOEBISA.NL` is 12 chars — over the 10-char limit on the
+      shortened field, hence the two forms).
+      Payout schedule **monthly** (keeps the bunq transaction allowance
+      comfortable).
       Yields `STRIPE_SECRET_KEY` (`sk_test_…`), `STRIPE_PRICE_MONTHLY`,
       `STRIPE_PRICE_ANNUAL`, `STRIPE_WEBHOOK_SECRET` (`whsec_…`).
       ⚠ Check whether the account is on "Flexible Billing Mode" — the code
@@ -302,7 +310,22 @@ compile time and runtime vars arrive too late).
       endpoint (live `whsec_…`), Stripe Tax registration live.
 - [ ] `supabase secrets set` the live values; redeploy + verify sha changed.
 - [ ] Final E2E with a real card + a refund.
-- [ ] VAT: OSS registration (accountant).
+- [ ] VAT: OSS registration (accountant). **Settled 2026-08-04: the entity IS
+      VAT-registered** — van Duijn Data & Analytics holds an active
+      btw-identificatienummer (the `NL…B..` form; the BSN-derived
+      omzetbelastingnummer is Belastingdienst-only and must never appear on the
+      site, an invoice, or in Stripe). So VAT-inclusive pricing and Stripe Tax
+      are the CORRECT configuration, and the terms page's "prices include VAT"
+      line stands as written. What remains is remittance: Dutch VAT applies up
+      to €10,000 of EU-wide cross-border B2C digital sales, OSS registration
+      above it. Note the guesthouse dossier's dismissal of EU-KOR does NOT
+      carry over — it was dismissed there because NL accommodation is a
+      domestic supply, whereas digital subscriptions to EU consumers are
+      cross-border, so EU-KOR (€100k ceiling, new 1-1-2025) is potentially in
+      scope here. Accountant question, not an agent one.
+- [ ] Consider adding the btw-id to the terms page's trader identification —
+      EU distance-selling rules expect it alongside the entity name and KVK,
+      and `/terms` §1 and §7 currently carry only entity + KVK 88627950.
 - [ ] Spec frontmatter → `status: shipped` with `implementation_paths`.
 
 ## Deferred (not blocking launch)
