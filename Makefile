@@ -114,6 +114,10 @@ migrate-idempotent-check: ## Apply migration.sql twice + assert schema-health ou
 check-cloud-config: ## Assert the live Supabase Cloud project matches supabase/config.toml (drift check)
 	bun scripts/check-cloud-config.ts
 
+.PHONY: verify-stripe-lifecycle
+verify-stripe-lifecycle: ## Phase 3 subscription lifecycle against the Stripe SANDBOX: portal, cancel-at-period-end, webhook idempotency + signature, paywall from a fresh non-entitled account. MUTATES a subscription — refuses to run on sk_live_ keys, and deliberately NOT part of pre-deploy.
+	bun scripts/verify-stripe-lifecycle.ts
+
 .PHONY: config-push
 config-push: ## Apply supabase/config.toml to the linked cloud project (the ONLY sanctioned way to change auth config)
 	@echo "⚠  This applies the whole [auth] block. Run check-cloud-config first to see the diff."

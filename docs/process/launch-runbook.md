@@ -248,10 +248,32 @@ Once Phase 1's four Stripe values exist:
 - [ ] Full checkout with a Stripe test card → `/checkout/success` verifies →
       entitlement `active` → lesson 4 activates → audio signs →
       **renewal date renders on Profile** (the `current_period_end` check).
-- [ ] Cancel via portal → status flips at period end; webhook replay is a
-      no-op; a fresh non-entitled account gets free lessons 1–3 + the
-      pronunciation page, and a paywall on lesson 4.
-- [ ] Google OAuth round trip (after Phase 1).
+- [x] Cancel, webhook replay, and the paywall from a fresh account — DONE
+      2026-08-04, and now REPEATABLE rather than a one-off:
+      **`make verify-stripe-lifecycle`** (`scripts/verify-stripe-lifecycle.ts`),
+      15 assertions, all passing. It covers what mocks structurally cannot:
+      - customer portal returns a real `billing.stripe.com` session;
+      - `cancel_at_period_end` leaves the entitlement `active` with
+        `current_period_end` unchanged — i.e. access runs to the end of the paid
+        period, which is exactly what /voorwaarden §3 promises. (Stripe keeps
+        status `active` until the period actually ends, so `deriveEntitlementStatus`
+        correctly holds access open.)
+      - the webhook processed a delivery once and returned
+        `{received, idempotent:true}` on replay, and rejected an unsigned POST
+        with 400;
+      - a genuinely FRESH non-entitled user activated lesson 3, was refused
+        lesson 4 with `entitlement_required`, signed lesson-3 audio (200) and
+        was refused lesson-4 audio (400).
+      ⚠ Why a throwaway user: the E2E test account now HOLDS an entitlement, so
+      it can no longer prove any deny path. The script creates and deletes one.
+      ⚠ Why it is NOT in `make pre-deploy`: it MUTATES a subscription. It hard-
+      refuses (exit 1) on any key that is not `sk_test_`, because against live
+      that is a paying customer being cancelled and uncancelled.
+- [ ] **[owner] Google OAuth round trip** — the one Phase 3 item that cannot be
+      automated: it needs a human at a real Google consent screen. Everything
+      server-side is in place (provider enabled + client id set, both asserted
+      by `make check-cloud-config`); what is unproven is the actual redirect
+      round trip and first-login profile creation.
 
 ## Phase 4 — frontend hosting ✅ DONE 2026-08-01
 
