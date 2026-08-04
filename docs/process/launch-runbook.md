@@ -167,16 +167,30 @@ written — both are done, see Phase 4.)
 - [x] **[owner] ToS + refund text** — DONE 2026-08-03. Approved draft wired into
       `src/lib/i18n.ts` (NL + EN), contact `support@kamoebisa.nl`, placeholder
       alert removed. See `docs/plans/2026-07-30-tos-refunds-draft-copy.md`.
-- [ ] **[owner] Stripe ToS URL + consent collection** — the refund policy's §3
-      withdrawal waiver only binds if Checkout COLLECTS the consent per
-      purchase. `consent_collection` verified **null** on live sessions
-      2026-08-03. Two parts, in order: (1) owner sets a Terms of Service URL
-      (`https://kamoebisa.nl/terms`) in the Stripe Dashboard's public business
-      information; (2) agent adds `consent_collection: { terms_of_service:
-      'required' }` to `create-checkout-session` and re-verifies with a test
-      session. ⚠ Order matters — without the Dashboard URL, Stripe rejects the
-      call outright and NO ONE CAN PAY, the same failure shape as the
-      `customer_update.address` bug.
+- [x] **Stripe ToS URL + consent collection** — DONE 2026-08-04 (sandbox).
+      The refund policy's §3 withdrawal waiver only binds if Checkout COLLECTS
+      the consent per purchase; `consent_collection` was **null** on every live
+      session until now. Owner set the Terms of service URL in public business
+      details; `create-checkout-session` now sends `consent_collection:
+      { terms_of_service: 'required' }` plus a Dutch
+      `custom_text.terms_of_service_acceptance` carrying the second half of
+      art. 16(m) (express request for immediate supply + acknowledgement that
+      the right is lost). Function redeployed (version 5, sha changed) and
+      verified end-to-end: a session created through the DEPLOYED function
+      carries both fields.
+      ⚠ The Dashboard URL lives at `https://dashboard.stripe.com/settings/public`
+      ("public business details"), which is hard to find in the nav — use the
+      deep link. **Sandbox and live hold SEPARATE public details.** Only the
+      sandbox is verified. Stripe's own error message deep-links to the LIVE
+      page even when the failing call used a test key, which is an easy way to
+      set one and believe you set both.
+- [ ] **[owner] Confirm the Terms of service URL on the LIVE account** before
+      the Phase 5 secret flip. This fails CLOSED and takes the whole product
+      with it: with `terms_of_service: 'required'` and no URL, Stripe returns
+      HTTP 400 — "You cannot collect consent to your terms of service unless a
+      URL is set" — so NOBODY CAN SUBSCRIBE. Verified experimentally on
+      2026-08-04: identical call, 400 before the URL was set, session created
+      after. Add it to the flip checklist, not to memory.
 
 ## Phase 2 — agent-drivable now (no owner input)
 
