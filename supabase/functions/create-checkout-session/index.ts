@@ -155,6 +155,38 @@ Deno.serve(async (request) => {
     // Missed by three review rounds and 13 code-review findings because the
     // Stripe client is mocked everywhere in-repo: a mock returns the shape we
     // assumed, not the one Stripe enforces. Only a live call surfaces this.
+    // consent_collection + custom_text: what makes the refund policy's §3
+    // withdrawal waiver actually BIND, rather than merely be written down.
+    //
+    // EU law (Consumer Rights Directive art. 16(m)) only extinguishes the
+    // 14-day withdrawal right for immediately-supplied digital content if the
+    // consumer gave PRIOR EXPRESS CONSENT to immediate supply *and*
+    // ACKNOWLEDGED losing the right — and the trader must be able to evidence
+    // both. A clause sitting on /restitutie evidences nothing; a checkbox
+    // recorded per purchase does. After checkout the Session's
+    // `consent.terms_of_service` reads `accepted`, which is the record.
+    //
+    // Stripe's DEFAULT checkbox text only says "I agree to the Terms of
+    // Service" — one of the two halves. custom_text carries the other half in
+    // the customer's own language, mirroring /restitutie §3 word for word.
+    //
+    // ⚠ HARD DEPENDENCY on a Dashboard setting: with terms_of_service
+    // 'required' and no Terms-of-service URL in public business details,
+    // Stripe rejects the call with HTTP 400 —
+    //   "You cannot collect consent to your terms of service unless a URL is
+    //    set in the Stripe Dashboard"
+    // — i.e. NOBODY CAN SUBSCRIBE. Verified against the live API 2026-08-04
+    // (before: 400; after setting the URL: session created). Sandbox and live
+    // hold SEPARATE public details, so both must be set. Same failure shape as
+    // the customer_update.address bug: invisible to mocks, fatal in production.
+    //
+    // ⚠ Stripe's docs warn against customising this text without legal advice.
+    // This wording is the one clause the draft copy flags for a professional
+    // read (docs/plans/2026-07-30-tos-refunds-draft-copy.md).
+    //
+    // Links are built from appBaseUrl rather than hardcoded, so they cannot
+    // drift from the deployment the way APP_BASE_URL itself did — and
+    // check-cloud-config now asserts that value by digest.
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: stripeCustomerId,
@@ -163,6 +195,16 @@ Deno.serve(async (request) => {
       automatic_tax: { enabled: true },
       customer_update: { address: 'auto' },
       allow_promotion_codes: true,
+      consent_collection: { terms_of_service: 'required' },
+      custom_text: {
+        terms_of_service_acceptance: {
+          message:
+            `Ik ga akkoord met de [algemene voorwaarden](${appBaseUrl}/voorwaarden) en het ` +
+            `[restitutiebeleid](${appBaseUrl}/restitutie). Ik verzoek uitdrukkelijk om directe ` +
+            `toegang tot de lesstof en erken dat ik daarmee mijn herroepingsrecht verlies zodra ` +
+            `de levering is gestart.`,
+        },
+      },
       success_url: `${appBaseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appBaseUrl}/checkout/cancel`,
     })
