@@ -184,13 +184,22 @@ written — both are done, see Phase 4.)
       sandbox is verified. Stripe's own error message deep-links to the LIVE
       page even when the failing call used a test key, which is an easy way to
       set one and believe you set both.
-- [ ] **[owner] Confirm the Terms of service URL on the LIVE account** before
-      the Phase 5 secret flip. This fails CLOSED and takes the whole product
-      with it: with `terms_of_service: 'required'` and no URL, Stripe returns
-      HTTP 400 — "You cannot collect consent to your terms of service unless a
-      URL is set" — so NOBODY CAN SUBSCRIBE. Verified experimentally on
-      2026-08-04: identical call, 400 before the URL was set, session created
-      after. Add it to the flip checklist, not to memory.
+- [x] **Terms of service URL on the LIVE account** — set by owner 2026-08-04
+      (live first, then sandbox), owner-confirmed. NOT machine-verified: agent
+      Stripe access is the sandbox account only, so live rests on the owner's
+      word — recorded as asserted rather than proven, which is the honest
+      distinction.
+      It gets proven for free at the Phase 5 flip: the first
+      `create-checkout-session` call with the live key either returns a session
+      (URL is set) or HTTP 400 "You cannot collect consent to your terms of
+      service unless a URL is set" (it is not). Watch for that specific 400 at
+      the flip — this setting fails CLOSED and takes the whole product with it,
+      because with consent required and no URL NOBODY CAN SUBSCRIBE. Verified
+      experimentally 2026-08-04 on the sandbox: identical call, 400 before the
+      URL was set, session created after.
+      Deliberately NOT automated: asserting it on every `make pre-deploy` would
+      mean creating real Checkout Sessions against the live account, which is
+      worse than the problem it detects.
 
 ## Phase 2 — agent-drivable now (no owner input)
 
