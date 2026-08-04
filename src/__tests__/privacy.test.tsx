@@ -48,9 +48,33 @@ describe('Privacy page', () => {
     expect(document.body.textContent).not.toMatch(/export.*(knop|button)/i)
   })
 
-  it('keeps the <<USER TO FILL>> contact placeholders verbatim (spec-mandated, not launch-ready copy)', () => {
+  // Inverted 2026-08-04. This test used to ASSERT the <<USER TO FILL>>
+  // placeholders were still present — correct while the app was pre-launch and
+  // homelab-only, actively harmful once /privacy was publicly served and
+  // linkable from Stripe Checkout. It survived the paywall work because nobody
+  // re-read what it was pinning; the placeholders shipped to production and sat
+  // there. Now it pins the opposite.
+  it('identifies the controller and carries no placeholder contact', () => {
     renderPrivacy()
-    const placeholders = screen.getAllByText(/<<USER TO FILL>>/)
-    expect(placeholders.length).toBeGreaterThanOrEqual(2)
+    expect(document.body.textContent).not.toMatch(/USER TO FILL|PLACEHOLDER/i)
+    expect(screen.getAllByText(/support@kamoebisa\.nl/).length).toBeGreaterThanOrEqual(1)
+    // GDPR art. 13(1)(a): the controller must be IDENTIFIED, not described as
+    // "the developer". KVK number is the identification that makes it checkable.
+    expect(screen.getAllByText(/88627950/).length).toBeGreaterThanOrEqual(1)
+  })
+
+  // The sub-processor list was factually FALSE in production: it claimed there
+  // were none beyond self-hosted infrastructure, written when the homelab was
+  // the only target and left untouched through the entire cloud migration. A
+  // definite false statement is worse than an obvious gap, so pin the four that
+  // actually process data — a fifth one added without updating this list should
+  // break a test, not quietly mislead a reader.
+  it('names the real sub-processors rather than claiming there are none', () => {
+    renderPrivacy()
+    const body = document.body.textContent ?? ''
+    expect(body).not.toMatch(/geen sub-verwerkers|no sub-processors/i)
+    for (const processor of ['Supabase', 'Cloudflare', 'Resend', 'Stripe']) {
+      expect(body).toContain(processor)
+    }
   })
 })
