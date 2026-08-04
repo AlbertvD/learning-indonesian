@@ -1,6 +1,6 @@
 // src/__tests__/terms.test.tsx
 //
-// /terms (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §3.4).
+// /voorwaarden (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §3.4).
 // Mirrors privacy.test.tsx: public, pre-auth-reachable, no useT()/profile
 // dependency, NL default with an EN toggle.
 //

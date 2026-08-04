@@ -1,6 +1,6 @@
 // src/pages/Refunds.tsx
 //
-// Public /refunds route (docs/plans/2026-07-12-oauth-stripe-entitlement-
+// Public /restitutie route (docs/plans/2026-07-12-oauth-stripe-entitlement-
 // design.md §3.4). Mirrors Terms.tsx/Privacy.tsx exactly: pre-auth
 // reachable, local nl/en toggle (NL default), copy from the `refunds` block
 // in src/lib/i18n.ts.

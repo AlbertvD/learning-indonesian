@@ -62,9 +62,9 @@ describe('PaywallPanel', () => {
     expect(mockInvoke).toHaveBeenCalledWith('create-checkout-session', { body: { plan: 'annual' } })
   })
 
-  it('links to /terms and /refunds', () => {
+  it('links to /voorwaarden and /restitutie', () => {
     renderPanel()
-    expect(screen.getByRole('link', { name: 'Voorwaarden' })).toHaveAttribute('href', '/terms')
-    expect(screen.getByRole('link', { name: 'Restitutiebeleid' })).toHaveAttribute('href', '/refunds')
+    expect(screen.getByRole('link', { name: 'Voorwaarden' })).toHaveAttribute('href', '/voorwaarden')
+    expect(screen.getByRole('link', { name: 'Restitutiebeleid' })).toHaveAttribute('href', '/restitutie')
   })
 })

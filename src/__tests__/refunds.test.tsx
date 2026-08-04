@@ -1,6 +1,6 @@
 // src/__tests__/refunds.test.tsx
 //
-// /refunds (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §3.4).
+// /restitutie (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §3.4).
 // Mirrors terms.test.tsx / privacy.test.tsx. The EU 14-day withdrawal
 // disclosure (section 3) must be present — its heading is load-bearing.
 //

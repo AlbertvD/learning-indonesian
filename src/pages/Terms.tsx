@@ -1,6 +1,6 @@
 // src/pages/Terms.tsx
 //
-// Public /terms route (docs/plans/2026-07-12-oauth-stripe-entitlement-
+// Public /voorwaarden route (docs/plans/2026-07-12-oauth-stripe-entitlement-
 // design.md §3.4 — "ToS + refund/cancellation policy pages... EU consumer
 // law requires the 14-day withdrawal disclosure at checkout; Stripe
 // Checkout's consent-collection option points at our ToS URL"). Reachable

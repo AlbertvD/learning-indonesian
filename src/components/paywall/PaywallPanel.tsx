@@ -119,9 +119,9 @@ export function PaywallPanel() {
         </ul>
 
         <p className={classes.legal}>
-          <a href="/terms">{T.paywall.termsLink}</a>
+          <a href="/voorwaarden">{T.paywall.termsLink}</a>
           <span aria-hidden="true"> · </span>
-          <a href="/refunds">{T.paywall.refundsLink}</a>
+          <a href="/restitutie">{T.paywall.refundsLink}</a>
         </p>
       </HeroCard>
     </div>

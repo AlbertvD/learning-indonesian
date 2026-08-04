@@ -120,8 +120,8 @@ function App() {
       {/* Public — reachable pre-auth via Stripe Checkout's consent-collection
           link and PaywallPanel's footer, mirrors /privacy (docs/plans/
           2026-07-12-oauth-stripe-entitlement-design.md §3.4). */}
-      <Route path="/terms" element={<LazyPage><Terms /></LazyPage>} />
-      <Route path="/refunds" element={<LazyPage><Refunds /></LazyPage>} />
+      <Route path="/voorwaarden" element={<LazyPage><Terms /></LazyPage>} />
+      <Route path="/restitutie" element={<LazyPage><Refunds /></LazyPage>} />
 
       <Route element={<Layout />}>
         {!showLanding && (
