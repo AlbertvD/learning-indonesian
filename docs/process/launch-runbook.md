@@ -113,7 +113,29 @@ written — both are done, see Phase 4.)
       there. `KAMOEBISA.NL` is 12 chars — over the 10-char limit on the
       shortened field, hence the two forms).
       Payout schedule **monthly** (keeps the bunq transaction allowance
-      comfortable).
+      comfortable); payouts to the Kamoe Bisa IBAN under van Duijn Data &
+      Analytics — the holder name matches the Stripe legal entity, which is
+      what stops payouts bouncing at the first run.
+      Account-level choices made 2026-08-04, none of which have a repo
+      representation, so they live here:
+      - **Radar: Lite (free)**, not Standard. ⚠ COUPLED TO APP CODE: the
+        justification is that card testing cannot reach the checkout —
+        `create-checkout-session` requires a verified Supabase user JWT
+        (`index.ts:93-120`) and signup requires email confirmation
+        (`enable_confirmations`, asserted by `make check-cloud-config`), so a
+        card tester must complete a full registration loop per attempt.
+        **If signup is ever loosened — email confirmation dropped, a guest
+        checkout added — revisit Radar.** Standard buys custom rules and a
+        manual review queue, which a solo operator will not work.
+      - **Stripe Tax category: General – Electronically Supplied Services.**
+        Correct by law, not just by default: Implementing Regulation 282/2011
+        lists automated distance teaching with no or minimal human
+        intervention as an ESS. A live-instructor product would NOT be one.
+        Threshold monitoring is free and is what will flag the €10k EU
+        cross-border line that decides OSS.
+      - **Stripe Climate: skipped.** 1% of revenue is ~1.3% of what is
+        actually kept on a €7 sale. Revisit from surplus, not from zero
+        subscribers; changeable in the dashboard any time.
       Yields `STRIPE_SECRET_KEY` (`sk_test_…`), `STRIPE_PRICE_MONTHLY`,
       `STRIPE_PRICE_ANNUAL`, `STRIPE_WEBHOOK_SECRET` (`whsec_…`).
       ⚠ Check whether the account is on "Flexible Billing Mode" — the code
