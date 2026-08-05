@@ -388,9 +388,12 @@ compile time and runtime vars arrive too late).
       the keys. Sanity check that they are LIVE and not sandbox: Stripe embeds the
       account reference, so live IDs carry `FDKKKBKGTH` while every sandbox price
       on this project carries `FHQPtw4Bcl`. A mismatch means the wrong mode.
-      ⚠ Confirm **tax behaviour = inclusive** on both before the flip. If either
-      is *exclusive*, Stripe adds 21% at checkout and the customer pays €10.89
-      while /voorwaarden §2 promises €9 including VAT.
+      Tax behaviour: **owner-confirmed inclusive on both, 2026-08-05.** Asserted,
+      not machine-verified — agent Stripe access is sandbox-only. It is settled
+      for free at the flip: if either price were *exclusive*, Stripe would add 21%
+      and `amount_total` would come back **1089**, not 900. So the amount check
+      below is also the tax check; a €10.89 total means exclusive, and would mean
+      customers paying more than /voorwaarden §2 promises.
 - [ ] Live keys + dashboard webhook endpoint (live `whsec_…`), Stripe Tax
       registration live. After setting the four secrets, verify by creating a
       session through the deployed function and asserting `amount_total` comes
