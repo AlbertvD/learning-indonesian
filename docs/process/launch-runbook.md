@@ -98,7 +98,8 @@ written — both are done, see Phase 4.)
 
 - [x] **[owner] Stripe, TEST MODE** — DONE 2026-07-31 (secrets set; checkout,
       webhook and `current_period_end` all verified live, see Phase 3):
-      Product "Kamoe Bisa"; two recurring Prices **€7/month + €56/year**, tax
+      Product "Kamoe Bisa"; two recurring Prices — **€9/month + €79/year** since
+      2026-08-05 (was €7/€56; see docs/marketing/pricing.md for why), tax
       behaviour *inclusive*; enable Stripe Tax; Customer Portal with
       **cancel-at-period-end**; webhook endpoint
       `https://wodpkxsmildtgndnbraa.supabase.co/functions/v1/stripe-webhook`
@@ -373,8 +374,13 @@ compile time and runtime vars arrive too late).
 
 - [ ] Stripe activation (KYC): legal entity, ID, IBAN — the bunq Kamoe Bisa
       sub-account.
-- [ ] Live mode: recreate Product/Prices, live keys + dashboard webhook
-      endpoint (live `whsec_…`), Stripe Tax registration live.
+- [ ] Live mode: recreate Product/Prices **at €9/month and €79/year** — NOT the
+      €7/€56 the live account may already carry. The sandbox was repriced
+      2026-08-05 and every page now says €9/€79; if live keeps the old Prices,
+      checkout silently sells at a price no page advertises. Verify after the
+      secret flip by creating a session and asserting `amount_total` is 900/7900.
+      Plus live keys + dashboard webhook endpoint (live `whsec_…`) and Stripe Tax
+      registration live.
 - [ ] `supabase secrets set` the live values; redeploy + verify sha changed.
 - [ ] Final E2E with a real card + a refund.
 - [ ] VAT: OSS registration (accountant). **Settled 2026-08-04: the entity IS

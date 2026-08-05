@@ -88,8 +88,8 @@ describe('Landing', () => {
     // The two facts a buyer needs before signing up, and which the terms and
     // the server-side gate both independently commit to.
     expect(body).toMatch(/gratis/i)
-    expect(body).toMatch(/€7/)
-    expect(body).toMatch(/€56/)
+    expect(body).toMatch(/€9/)
+    expect(body).toMatch(/€79/)
   })
 
   // The loanword bridge is the primary persona's hook (heritage learner) and

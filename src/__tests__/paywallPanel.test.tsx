@@ -41,9 +41,9 @@ describe('PaywallPanel', () => {
 
   it('shows both prices with the annual plan marked as the better deal', () => {
     renderPanel()
-    expect(screen.getByText('€7')).toBeInTheDocument()
-    expect(screen.getByText('€56')).toBeInTheDocument()
-    expect(screen.getByText('Bespaar ~33%')).toBeInTheDocument()
+    expect(screen.getByText('€9')).toBeInTheDocument()
+    expect(screen.getByText('€79')).toBeInTheDocument()
+    expect(screen.getByText('Bespaar ~27%')).toBeInTheDocument()
   })
 
   it('the monthly button calls create-checkout-session with plan: "monthly"', async () => {

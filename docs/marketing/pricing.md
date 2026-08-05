@@ -1,8 +1,26 @@
 ---
-status: draft
-owner_decision_required: true
+status: decided
+decided: 2026-08-05
 last_verified: 2026-08-05
 ---
+
+> **DECIDED 2026-08-05 — €9/month, €79/year, applied.** Owner: *"yes use the new
+> price point, lets see how it goes"* and *"we can always go lower"* — which is
+> the strongest argument for the direction. A price cut reads as a promotion; a
+> price rise reads as a betrayal to whoever already subscribed. Starting at €9/€79
+> keeps a launch discount available and keeps grandfathering logic out of the
+> entitlement code.
+>
+> Applied in sandbox: new Stripe Prices created (never mutated — the old ones are
+> archived, and the existing test subscription continues on its original €7 price,
+> which is exactly why you create rather than edit), function secrets repointed,
+> and verified end to end — a session created through the DEPLOYED function now
+> returns 9.00 and 79.00 EUR. Copy, terms §2, the paywall, the savings badge
+> (33% → 27%, recomputed against €9×12) and the JSON-LD offer all moved together.
+>
+> ⚠️ **Live mode still has the OLD prices.** Phase 5 must create €9/€79 Prices in
+> the live account and set the live secrets. If that is missed, live checkout
+> sells at €7/€56 while every page says €9/€79.
 
 # Pricing — competitive scan and recommendation
 

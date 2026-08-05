@@ -14,6 +14,9 @@ import userEvent from '@testing-library/user-event'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { MantineProvider } from '@mantine/core'
 import { ActivationGate } from '../ActivationGate'
+// Prices come from i18n, never retyped here: a test with its own copy of the
+// price silently disagrees with the product the day the price moves.
+import { nl } from '@/lib/i18n'
 
 vi.mock('@/lib/supabase')
 vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
@@ -50,8 +53,8 @@ describe('ActivationGate — paywall mirror', () => {
     await user.click(screen.getByRole('button', { name: 'Bekijk abonnementen' }))
 
     expect(await screen.findByTestId('paywall-panel')).toBeInTheDocument()
-    expect(screen.getByText('€7')).toBeInTheDocument()
-    expect(screen.getByText('€56')).toBeInTheDocument()
+    expect(screen.getByText(nl.paywall.monthlyPrice)).toBeInTheDocument()
+    expect(screen.getByText(nl.paywall.annualPrice)).toBeInTheDocument()
   })
 
   it('entitled user on the same lesson sees the normal activation toggle, not the paywall', () => {
