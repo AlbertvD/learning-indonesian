@@ -12,6 +12,7 @@ import { MemoryRouter, Outlet } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Landing } from '@/pages/Landing'
+import { LOANWORD_REVEAL_PAIRS } from '@/lib/loanwords/revealPairs'
 import App from '@/App'
 
 const mockState = vi.hoisted(() => ({
@@ -89,6 +90,20 @@ describe('Landing', () => {
     expect(body).toMatch(/gratis/i)
     expect(body).toMatch(/€7/)
     expect(body).toMatch(/€56/)
+  })
+
+  // The loanword bridge is the primary persona's hook (heritage learner) and
+  // the one advantage that cannot be copied into another language pair. It must
+  // be on the PUBLIC page, not only behind signup, and it must show the SAME
+  // pairs the Welkom onboarding opens with — a visitor who signs up because of
+  // kantoor→kantor should meet kantoor→kantor.
+  it('shows the loanword bridge with the same pairs as the onboarding', () => {
+    renderLanding()
+    const body = document.body.textContent ?? ''
+    for (const pair of LOANWORD_REVEAL_PAIRS) {
+      expect(body).toContain(pair.nl)
+      expect(body).toContain(pair.id)
+    }
   })
 
   // EU distance selling expects terms and the withdrawal/refund policy to be

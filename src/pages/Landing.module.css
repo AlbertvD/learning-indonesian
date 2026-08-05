@@ -405,6 +405,69 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- loanword bridge ---------- */
+/* The recognition moment for the primary persona (heritage learner, owner
+   decision 2026-08-05). Styled as a wall of paired chips rather than prose: the
+   point is scanning it and thinking "I know that one", which happens through
+   shape and repetition, not sentences. Uses only existing --land-* tokens, so it
+   inherits the page's light/dark handling with no new colour vocabulary. */
+
+.bridgeBody {
+  margin: 14px 0 0;
+  max-width: 62ch;
+  color: var(--land-ink-2);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.bridgeWall {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.bridgePair {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 10px 16px;
+  background: var(--land-card);
+  border: 1px solid var(--land-line);
+  border-radius: 999px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.bridgeNl {
+  color: var(--land-muted);
+}
+.bridgeArrow {
+  color: var(--land-gold);
+  font-size: 13px;
+}
+/* The Indonesian form is the payoff, so it carries the weight. */
+.bridgeId {
+  color: var(--land-ink);
+  font-weight: 650;
+}
+.bridgeMore {
+  margin: 22px 0 0;
+  max-width: 62ch;
+  color: var(--land-muted);
+  font-size: 14.5px;
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .bridgeWall {
+    gap: 8px;
+  }
+  .bridgePair {
+    padding: 9px 13px;
+    font-size: 14px;
+  }
+}
+
 /* ---------- pricing band ---------- */
 
 .pricing {
