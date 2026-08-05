@@ -156,6 +156,12 @@ export function Landing() {
             ))}
           </ul>
           <p className={classes.bridgeMore}>{T.bridgeMore}</p>
+          {/* The category argument, and the single least copyable sentence
+              on the page (docs/marketing/positioning.md §1). Every large app
+              teaches this pair through English, which makes the Dutch
+              loanwords structurally unusable to them. */}
+          <p className={classes.bridgeEdge}>{T.bridgeEdge}</p>
+          <Link className={classes.bridgeLink} to="/leenwoorden">{T.bridgeLink}</Link>
         </section>
 
         <section className={`${classes.section} ${classes.sectionAiry}`}>

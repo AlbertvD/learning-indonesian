@@ -468,6 +468,28 @@
   }
 }
 
+.bridgeEdge {
+  margin: 18px 0 0;
+  max-width: 62ch;
+  padding-left: 16px;
+  border-left: 3px solid var(--land-accent);
+  color: var(--land-ink);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 550;
+}
+.bridgeLink {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--land-accent);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+}
+.bridgeLink:hover {
+  text-decoration: underline;
+}
+
 /* ---------- pricing band ---------- */
 
 .pricing {

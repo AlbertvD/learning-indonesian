@@ -46,6 +46,44 @@
     <meta name="twitter:title" content="Kamoe Bisa — Indonesisch leren voor Nederlandstaligen" />
     <meta name="twitter:description" content="Als Nederlandstalige ken je al ruim 170 Indonesische woorden. Begin daar. Les 1 t/m 3 gratis." />
     <meta name="twitter:image" content="https://kamoebisa.nl/og-image.jpg" />
+
+    <!-- Structured data. Kept minimal and TRUE: only the organisation and the
+         offer, both of which match /voorwaarden and the Stripe prices. Resist
+         adding aggregateRating or review markup — there are no reviews, and
+         fabricated ones are both a Google penalty and a lie. Update the prices
+         here in the same commit as i18n.ts and Stripe if they ever change. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "Indonesisch leren voor Nederlandstaligen",
+      "description": "Een doorlopende cursus Indonesisch van A1 tot B1 in het Nederlands: 30 lessen met grammatica, dialogen, uitspraak en spreektaal, plus dagelijkse oefening met slimme herhaling.",
+      "inLanguage": "nl",
+      "teaches": "Bahasa Indonesia",
+      "url": "https://kamoebisa.nl/",
+      "provider": {
+        "@type": "Organization",
+        "name": "Kamoe Bisa",
+        "legalName": "van Duijn Data & Analytics",
+        "url": "https://kamoebisa.nl/",
+        "email": "support@kamoebisa.nl",
+        "areaServed": "NL"
+      },
+      "offers": {
+        "@type": "Offer",
+        "category": "subscription",
+        "price": "7.00",
+        "priceCurrency": "EUR",
+        "url": "https://kamoebisa.nl/",
+        "availability": "https://schema.org/InStock"
+      },
+      "hasCourseInstance": {
+        "@type": "CourseInstance",
+        "courseMode": "online",
+        "courseWorkload": "PT10M"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

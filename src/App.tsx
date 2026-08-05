@@ -40,6 +40,10 @@ const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ de
 const DesignLab = lazy(() => import('@/pages/admin/DesignLab').then(m => ({ default: m.DesignLab })))
 const PageLab = lazy(() => import('@/pages/admin/PageLab').then(m => ({ default: m.PageLab })))
 const Privacy = lazy(() => import('@/pages/Privacy').then(m => ({ default: m.Privacy })))
+// Public reference page and the primary SEO asset (docs/marketing/channels.md).
+// Lazy like the other public pages, so its 173-entry dataset never reaches the
+// entry chunk.
+const Leenwoorden = lazy(() => import('@/pages/Leenwoorden').then(m => ({ default: m.Leenwoorden })))
 const Terms = lazy(() => import('@/pages/Terms').then(m => ({ default: m.Terms })))
 const Refunds = lazy(() => import('@/pages/Refunds').then(m => ({ default: m.Refunds })))
 const CheckoutSuccess = lazy(() => import('@/pages/CheckoutSuccess').then(m => ({ default: m.CheckoutSuccess })))
@@ -117,6 +121,7 @@ function App() {
       <Route path="/preview" element={<LazyPage><LocalPreviewIndex /></LazyPage>} />
       <Route path="/preview/lesson/:slug" element={<LazyPage><LocalPreviewLesson /></LazyPage>} />
       <Route path="/privacy" element={<LazyPage><Privacy /></LazyPage>} />
+      <Route path="/leenwoorden" element={<LazyPage><Leenwoorden /></LazyPage>} />
       {/* Public — reachable pre-auth via Stripe Checkout's consent-collection
           link and PaywallPanel's footer, mirrors /privacy (docs/plans/
           2026-07-12-oauth-stripe-entitlement-design.md §3.4). */}
