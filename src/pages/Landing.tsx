@@ -210,11 +210,11 @@ export function Landing() {
           </div>
         </section>
 
-        <section className={classes.invite}>
-          <div className={classes.inviteTxt}>
-            <div className={classes.inviteEyebrow}>{T.inviteEyebrow}</div>
-            <h2 className={classes.serif}>{T.inviteTitle}</h2>
-            <p>{T.inviteBody}</p>
+        <section className={classes.pricing}>
+          <div className={classes.pricingTxt}>
+            <div className={classes.pricingEyebrow}>{T.pricingEyebrow}</div>
+            <h2 className={classes.serif}>{T.pricingTitle}</h2>
+            <p>{T.pricingBody}</p>
           </div>
           <Link className={`${classes.btn} ${classes.btnFill} ${classes.btnLg}`} to="/register">
             {T.heroCta}
@@ -228,6 +228,8 @@ export function Landing() {
         </span>
         <span className={classes.footLinks}>
           <Link to="/privacy">{T.footerPrivacy}</Link>
+          <Link to="/voorwaarden">{T.footerTerms}</Link>
+          <Link to="/restitutie">{T.footerRefunds}</Link>
           <span className={classes.langSwitch}>
             <button type="button" aria-pressed={lang === 'nl'} onClick={() => switchLang('nl')}>
               NL

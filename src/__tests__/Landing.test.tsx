@@ -64,15 +64,39 @@ describe('Landing', () => {
     mockState.loading = false
   })
 
-  it('renders the invite-first marketing page with register CTAs and a plain /login link', () => {
+  it('renders the free-tier marketing page with register CTAs and a plain /login link', () => {
     renderLanding()
 
     expect(screen.getByText(/Leer Indonesisch dat/)).toBeInTheDocument()
-    const registerCtas = screen.getAllByRole('link', { name: 'Ik heb een uitnodigingscode' })
+    const registerCtas = screen.getAllByRole('link', { name: 'Gratis beginnen' })
     expect(registerCtas.length).toBeGreaterThanOrEqual(2)
     registerCtas.forEach(cta => expect(cta).toHaveAttribute('href', '/register'))
     expect(screen.getByRole('link', { name: 'Inloggen' })).toHaveAttribute('href', '/login')
     expect(screen.getByRole('link', { name: 'Privacy' })).toHaveAttribute('href', '/privacy')
+  })
+
+  // The invite system was retired 2026-07-12 and payment became the gate, but
+  // this page kept advertising "Alleen op uitnodiging" and "Ik heb een
+  // uitnodigingscode" — pointing at a /register that no longer takes a code.
+  // It survived because nothing asserted the page described the CURRENT
+  // business model. This test is that assertion.
+  it('advertises the real offer, with no trace of the retired invite system', () => {
+    renderLanding()
+    const body = document.body.textContent ?? ''
+    expect(body).not.toMatch(/uitnodiging|invite|code/i)
+    // The two facts a buyer needs before signing up, and which the terms and
+    // the server-side gate both independently commit to.
+    expect(body).toMatch(/gratis/i)
+    expect(body).toMatch(/€7/)
+    expect(body).toMatch(/€56/)
+  })
+
+  // EU distance selling expects terms and the withdrawal/refund policy to be
+  // reachable BEFORE purchase, not only from inside the paywall.
+  it('links terms and refunds from the public footer', () => {
+    renderLanding()
+    expect(screen.getByRole('link', { name: 'Voorwaarden' })).toHaveAttribute('href', '/voorwaarden')
+    expect(screen.getByRole('link', { name: 'Restitutie' })).toHaveAttribute('href', '/restitutie')
   })
 
   it('forwards a safe ?next= param to the login links (return-to-where-I-was)', () => {
