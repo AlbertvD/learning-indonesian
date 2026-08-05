@@ -59,10 +59,10 @@ export function Leenwoorden() {
         </h1>
         <p className={classes.intro}>
           Ruim drie eeuwen gedeelde geschiedenis liet honderden Nederlandse woorden
-          achter in het Indonesisch. Sommige zijn nauwelijks veranderd, andere kreeg
+          achter in het Indonesisch. Sommige zijn nauwelijks veranderd, andere kregen
           een Indonesisch jasje — maar je herkent ze bijna allemaal meteen. Dat is
-          een voorsprong die je alleen als Nederlandstalige hebt: wie Indonesisch
-          leert via het Engels, heeft er niets aan.
+          een voorsprong die je alleen als Nederlandstalige hebt: leer je Indonesisch
+          via het Engels, dan begin je bij nul. Met deze lijst begin je bij 173.
         </p>
         <p className={classes.intro}>
           Hieronder staan ze allemaal, met de Nederlandse bron en de betekenis.

@@ -123,8 +123,14 @@ The strategic choice, in ascending order of defensibility:
 
 The sentence the whole position hangs on:
 
-> **Elk ander programma leert je Indonesisch via het Engels — en gooit daarmee je
-> grootste voorsprong weg.**
+> **Elke grote app leert je Indonesisch via het Engels. Dat werkt prima — maar
+> daar begin je bij nul. Hier begin je bij 173 woorden die je al kent.**
+
+Framing note (owner correction, 2026-08-05): say this as a gain, never as a
+dismissal. "Wie het via het Engels leert heeft er niets aan" is both rude and
+false — plenty of Dutch speakers learn happily in English. The true and stronger
+claim is narrower: *the loanword head start is unavailable there*. Attack the
+gap, never the learner or the tool they chose.
 
 ## 6. Relevant trend (bonus, handle with care)
 
