@@ -135,8 +135,21 @@ written — both are done, see Phase 4.)
         Threshold monitoring is free and is what will flag the €10k EU
         cross-border line that decides OSS.
       - **Stripe Climate: skipped.** 1% of revenue is ~1.3% of what is
-        actually kept on a €7 sale. Revisit from surplus, not from zero
+        actually kept on a €9 sale. Revisit from surplus, not from zero
         subscribers; changeable in the dashboard any time.
+      - **Adaptive Pricing: ON** (kept, 2026-08-05, after considering turning it
+        off). It costs the BUSINESS nothing — Stripe charges 0% and the customer
+        pays a 2–4% FX markup — and a customer paying in a foreign currency would
+        usually be charged a similar foreign-transaction fee by their own card
+        issuer anyway, so forcing euros rarely saves them anything. The argument
+        for switching it off was price consistency (/voorwaarden §2 promises €9
+        including VAT, and a converted figure differs). Owner reasoning for
+        keeping it: *"more flexible for my end users. If they need to pay in
+        their currency then they won't be able to easily convert back to 9 euros
+        anyway"* — i.e. the consistency benefit is largely illusory for exactly
+        the customer it would apply to. Note it also unlocks local payment
+        methods that require local currency; iDEAL is unaffected either way,
+        since it requires EUR, which is already the price currency.
       Yields `STRIPE_SECRET_KEY` (`sk_test_…`), `STRIPE_PRICE_MONTHLY`,
       `STRIPE_PRICE_ANNUAL`, `STRIPE_WEBHOOK_SECRET` (`whsec_…`).
       ⚠ Check whether the account is on "Flexible Billing Mode" — the code
