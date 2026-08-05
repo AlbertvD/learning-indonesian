@@ -374,13 +374,28 @@ compile time and runtime vars arrive too late).
 
 - [ ] Stripe activation (KYC): legal entity, ID, IBAN — the bunq Kamoe Bisa
       sub-account.
-- [ ] Live mode: recreate Product/Prices **at €9/month and €79/year** — NOT the
-      €7/€56 the live account may already carry. The sandbox was repriced
-      2026-08-05 and every page now says €9/€79; if live keeps the old Prices,
-      checkout silently sells at a price no page advertises. Verify after the
-      secret flip by creating a session and asserting `amount_total` is 900/7900.
-      Plus live keys + dashboard webhook endpoint (live `whsec_…`) and Stripe Tax
-      registration live.
+- [x] **Live Product/Prices — DONE 2026-08-05, at €9/month and €79/year.** The
+      old €7/€56 pair (copied from the sandbox before the reprice) was removed,
+      so the live catalogue now matches what every page advertises.
+
+      | Plan | Live price ID |
+      |---|---|
+      | €9.00 / month | `price_1U17TLFDKKKBKGTHpkx0LM6J` |
+      | €79.00 / year | `price_1U17TbFDKKKBKGTHvjWlMInR` |
+
+      These are the values for `STRIPE_PRICE_MONTHLY` / `STRIPE_PRICE_ANNUAL` at
+      the flip. Price IDs are identifiers, not secrets — safe in the repo, unlike
+      the keys. Sanity check that they are LIVE and not sandbox: Stripe embeds the
+      account reference, so live IDs carry `FDKKKBKGTH` while every sandbox price
+      on this project carries `FHQPtw4Bcl`. A mismatch means the wrong mode.
+      ⚠ Confirm **tax behaviour = inclusive** on both before the flip. If either
+      is *exclusive*, Stripe adds 21% at checkout and the customer pays €10.89
+      while /voorwaarden §2 promises €9 including VAT.
+- [ ] Live keys + dashboard webhook endpoint (live `whsec_…`), Stripe Tax
+      registration live. After setting the four secrets, verify by creating a
+      session through the deployed function and asserting `amount_total` comes
+      back 900 and 7900 — the same check that caught nothing in the sandbox
+      because it was done, and would have caught everything if it had not been.
 - [ ] `supabase secrets set` the live values; redeploy + verify sha changed.
 - [ ] Final E2E with a real card + a refund.
 - [ ] VAT: OSS registration (accountant). **Settled 2026-08-04: the entity IS
