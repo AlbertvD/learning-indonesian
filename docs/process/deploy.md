@@ -17,11 +17,26 @@ The build is **fully automated**; the container recreate on the homelab is **man
 > Cloud (`docs/process/launch-runbook.md`). `indonesian.duin.home` is no longer
 > the product; it is where changes get rehearsed before they reach paying users.
 >
-> **Until the § 6 cutover runs, do NOT follow §§ 1–4.** `:latest` now contains
-> the entitlement build, which plays audio only through signed URLs, and the
+> **Until the § 6 cutover runs, treat §§ 1–4 as armed.** Once `:latest` contains
+> the entitlement build, it plays audio only through signed URLs, and the
 > homelab has no storage policy to authorize signing — so recreating the
-> container today makes every audio clip silently stop working. The image is
-> correct; the database it points at has not caught up.
+> container makes every audio clip silently stop working. The image is correct;
+> the database it points at has not caught up.
+>
+> **Timing, verified 2026-08-06:** `:latest` is still `sha-9b9b43c0` from
+> 2026-07-31 — the PRE-entitlement build — even though #461 merged on 08-06. CI
+> did not fire on `main` for the merge commit, and `deploy.yml` only runs on
+> `workflow_run` *after* CI succeeds there, so no new image was published. The
+> homelab is therefore safe **right now**, and stops being safe the moment CI
+> next runs on `main`. Check before you pull:
+>
+> ```bash
+> gh api users/AlbertvD/packages/container/learning-indonesian/versions?per_page=1 \
+>   --jq '.[] | .updated_at + "  " + (.metadata.container.tags | tostring)'
+> ```
+>
+> A `:latest` dated after 2026-08-06 is the entitlement build. Do the § 6
+> cutover before recreating with it.
 
 ---
 
