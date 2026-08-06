@@ -251,11 +251,31 @@ written — both are done, see Phase 4.)
 - [x] `bun run lint` — 0 errors (7 pre-existing warnings)
 - [x] `make check-cloud-config` — 32 passed, 0 failed (now includes the price
       parity block below)
-- [ ] `make check-supabase-deep` — 1 failure, **HC53 only**, and only because
-      `TEST_USER_PASSWORD` is absent from `.env.local`. Set it and re-run: a
-      documented gate that cannot go green is a gate nobody reads. Everything
+- [x] `make check-supabase-deep` — 1 failure, **HC53 only**. Everything
       structural (HC54–HC59) passes.
-- [ ] `make pre-deploy` end to end once HC53 can run.
+- [ ] **HC53 goes green on its own ~2026-08-10 — do NOT "fix" it.** It has
+      TWO stacked failure modes and the first was masking the second:
+      1. *(fixed 2026-08-06)* `TEST_USER_PASSWORD` was absent from
+         `.env.local`, so the check could not sign in at all. The fixture is
+         **`testuser@duin.home`** — HC53's own default, and the only account on
+         cloud holding review history. Note it is **not** `E2E_EMAIL`
+         (`e2e-test@duin.home`), which exists on the homelab but **not** on the
+         cloud project; their passwords differ, so do not substitute one for
+         the other.
+      2. *(open, self-healing)* `fixture too young` — the account's oldest
+         `capability_review_events` row is 2026-08-03, and the check needs a
+         window start that postdates it to prove the baseline `DISTINCT ON`
+         collapse. Green from ~2026-08-10.
+
+      The other repair the error message offers — "seed pre-window review
+      events" — means writing fabricated history into
+      `capability_review_events` on production. That is a LEARNER-DATA table
+      (CLAUDE.md Operating Context). Waiting four days is free; do that.
+- [ ] `make pre-deploy` end to end. ⚠ It will stay red until ~2026-08-10 for
+      the reason above. Either wait for a genuinely green gate, or merge with
+      HC53 as a **dated, understood** exemption — production already runs this
+      code, so merging does not expose anything the gate would have caught.
+      What is NOT acceptable is merging while treating HC53 as generic noise.
 
 **⚠ Two things the merge triggers. Decide both BEFORE clicking merge.**
 
