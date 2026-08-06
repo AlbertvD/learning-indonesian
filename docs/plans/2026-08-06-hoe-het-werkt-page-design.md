@@ -95,6 +95,42 @@ Open question 1 below matters more now, not less: marketed carelessly, "Producti
 reads as a promise that the learner can produce the word on demand, and the first
 person who finds they cannot will trust nothing else on the page.
 
+## 3c. The research grounding (owner, 2026-08-06)
+
+The pedagogy was built FROM research rather than retrofitted to it, and the repo
+can prove it. That makes this the rare case where citing science is honest rather
+than decorative.
+
+What is actually documented and citable:
+
+| Principle | Where it lives | What the product does about it |
+|---|---|---|
+| Receptive before productive | ADR 0007, citing Nation's Four Strands and Krashen | You are never asked to PRODUCE a word minutes after first meeting it — the four capability types are staged, not released together |
+| Spaced retrieval beats massed | ADR 0007, citing Karpicke (2009) on expanding retrieval | Same-word retrievals are separated by intervening items; two tests 30 seconds apart is working memory, not recall |
+| Scheduling by predicted forgetting | `docs/research/2026-04-06-fsrs-algorithm-research.md` — FSRS, the DSR model (Difficulty, Stability, Retrievability) | Reviews are scheduled from predicted retrievability, not fixed intervals |
+| Sequencing and skill rotation | `docs/research/2026-04-25-skill-rotation-and-pedagogical-sequencing.md` | — |
+| Audio and dual coding | memory `research_audio_sla.md` | — |
+
+**The most persuasive item is not a citation — it is an audit.** ADR 0007 records
+that a 36-hour review of live sessions found 30.1% of reviews were within-session
+repeats of the same word, worst case three tests on *apa kabar?* in 31 seconds.
+That was the product's own behaviour, and it was changed because the research said
+it was wrong. A competitor can cite Karpicke; almost none can show what they
+changed because of him. Say THAT.
+
+### The honesty rule for this section
+
+Non-negotiable, and it protects the primary persona whose blocker is confidence:
+
+- **Cite principles and our decisions. Never efficacy numbers.** No "learn 3×
+  faster", no "95% retention" — we have not measured it, nobody has measured it
+  for this product, and inventing it is misleading advertising as well as a lie.
+- **Never imply endorsement.** Karpicke has not heard of Kamoe Bisa.
+- **Every claim must be checkable** against a named ADR or research doc — the same
+  rule the marketing docs already apply to product counts.
+- Prefer "here is what we changed and why" over "science says". The first is
+  verifiable and specific; the second is what everyone says.
+
 ## 4. Linked from three places, forced from none
 
 - The first-run checklist (`FirstRunChecklist`) — where a confused learner is.
