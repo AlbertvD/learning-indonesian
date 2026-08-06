@@ -385,6 +385,40 @@ compile time and runtime vars arrive too late).
 
 ## Phase 5 — live-mode flip [owner]
 
+> ### ✅ THE FLIP IS DONE — 2026-08-05/06. Kamoe Bisa can take real money.
+>
+> Live account `acct_1TzEDpFDKKKBKGTH` — `charges_enabled=true`,
+> `payouts_enabled=true`, country NL. All four function secrets now point at
+> live; no redeploy was needed (secrets propagate to running functions).
+>
+> **Verified against the live API, not assumed.** Sessions created through the
+> DEPLOYED function: `cs_live_…` at **900** and **7900** EUR — the amounts
+> themselves prove the live prices are tax-INCLUSIVE, since exclusive pricing
+> would have returned 1089/9559. `automatic_tax` on, `livemode: true`, consent
+> collection `required` carrying the Dutch withdrawal-right text, redirects on
+> `https://kamoebisa.nl/`, and an unsigned POST to `stripe-webhook` rejected
+> with 400 (so the live signing secret is in force).
+>
+> **Stripe Tax: NL registration active** (standard, domestic). Proven with a Tax
+> Calculation rather than by charging a card:
+> `€9.00 total → €1.56 VAT (21% NL) → €7.44 net`. Registration answers recorded:
+> not an importer of goods, and cross-border EU B2C under €10,000 — so Dutch VAT
+> applies to other EU consumers too, and OSS is not yet needed. Stripe's free
+> threshold monitoring now watches that line.
+>
+> **One data fix the flip forced, and it would have bitten within minutes:** the
+> E2E test user held an entitlement row `status=active, source=stripe` pointing at
+> the SANDBOX customer `cus_UzDcdZp68ajflL`. `create-checkout-session` reuses an
+> existing `stripe_customer_id`, so with live keys Stripe would have answered
+> "No such customer" — and separately, that account had full paid access in
+> production without anyone paying. Converted to `source='comp', status='comped'`
+> with both Stripe IDs cleared. **Lesson for any future environment switch:
+> entitlement rows carry environment-specific Stripe IDs and do not survive one.**
+>
+> Still open in this phase: Stripe filing (manual reports are fine at this
+> volume), VAT/OSS with the accountant, and flipping the spec frontmatter to
+> `shipped`.
+
 - [ ] Stripe activation (KYC): legal entity, ID, IBAN — the bunq Kamoe Bisa
       sub-account.
 - [x] **Live Product/Prices — DONE 2026-08-05, at €9/month and €79/year.** The
