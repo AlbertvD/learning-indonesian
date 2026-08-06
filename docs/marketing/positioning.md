@@ -85,6 +85,17 @@ project 2026-08-05.
   self-taught learners hit.
 - **FSRS scheduling on capabilities**, not flashcards — recall is scheduled per
   skill, not per word.
+- **A VISIBLE, named mastery pipeline** — Inprenten → Oproepen → Productief →
+  Onderhoud, shown on the learner's own Voortgang page with their own words in
+  each stage. Distinct from the point above, and more useful in marketing:
+  every competitor hides the scheduler behind a streak counter, so "we bring a
+  word back just before you forget it" is a claim anyone can make, while a
+  learner watching their own words move through named stages is evidence.
+  Owner observation 2026-08-06; the page that carries it is
+  `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`.
+  ⚠️ Honesty limit: the stages describe SCHEDULING STATE, not guaranteed
+  competence. "Productief" must never be sold as "you can now produce this word
+  on demand" — the first learner who finds otherwise stops believing the rest.
 - **Dutch throughout** — instruction, glosses, grammar explanation.
 
 ## 3. Value themes
