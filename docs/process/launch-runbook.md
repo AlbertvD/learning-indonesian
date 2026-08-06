@@ -271,11 +271,22 @@ written — both are done, see Phase 4.)
       events" — means writing fabricated history into
       `capability_review_events` on production. That is a LEARNER-DATA table
       (CLAUDE.md Operating Context). Waiting four days is free; do that.
-- [ ] `make pre-deploy` end to end. ⚠ It will stay red until ~2026-08-10 for
-      the reason above. Either wait for a genuinely green gate, or merge with
-      HC53 as a **dated, understood** exemption — production already runs this
-      code, so merging does not expose anything the gate would have caught.
-      What is NOT acceptable is merging while treating HC53 as generic noise.
+- [x] `make pre-deploy` end to end. ⚠ Red until ~2026-08-10 for the reason
+      above. **Owner chose to merge with HC53 as a dated, understood
+      exemption** (2026-08-06) — defensible because production already ran this
+      code, so merging exposed nothing the gate would have caught. Re-run it
+      after 2026-08-10 to confirm it goes fully green; if it does not, the
+      exemption was wrong and HC53 is telling you something else.
+
+> ### ✅ MERGED 2026-08-06 — merge commit `e57022db`
+>
+> `main` is now the truth about the product for the first time since 2026-08-01.
+> Merge commit, not squash: the runbook and the entitlement spec cite individual
+> commit SHAs from the branch, which a squash would have orphaned. The branch was
+> deliberately **kept** — it is still Cloudflare's production build source until
+> the setting below is repointed.
+>
+> **Both items below are now LIVE consequences, not hypotheticals.**
 
 **⚠ Two things the merge triggers. Decide both BEFORE clicking merge.**
 
@@ -313,24 +324,45 @@ homelab** — and `docs/process/deploy.md` still says pull `:latest` and recreat
 Nothing breaks at merge (an image push is not a deploy); it breaks at whatever
 future moment someone follows the deploy doc.
 
-Pick one, in the same session as the merge:
-
-- [ ] **(recommended) Retire it.** Delete `.github/workflows/deploy.yml` and
-      mark the homelab deploy path frozen in `docs/process/deploy.md`. The
-      homelab is the personal instance now; a publish target that emits a
-      broken artifact is pure downside.
-- [ ] **Or repoint it.** Change the `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`
-      repo secrets to the cloud project, making `:latest` a cloud image. Keeps a
-      second deploy target alive that nothing currently uses.
-- [ ] **Or migrate the homelab.** Run `make migrate TARGET=homelab` so the
-      homelab gains the policy + private buckets and the image works there too.
-      Note this also flips the homelab's buckets private and takes its invite
-      system down — a real change to the personal instance, not a no-op.
+> ### ✅ DECIDED 2026-08-06 — keep `deploy.yml`, migrate the homelab instead.
+>
+> Retiring it was the original recommendation and it was **answering the wrong
+> question.** Owner: *"how can we easily test new functionality and content if we
+> do not have a local deploy target before it hits production where live
+> customers are?"*
+>
+> That reframes it. The image is not the problem — the *database behind it* is.
+> The homelab's schema has diverged from production, so there is currently
+> nowhere but production to rehearse the paywall, signed URLs, or activation
+> gating. Retiring the workflow would have tidied away a symptom and left the
+> staging gap wide open.
+>
+> So: **migrate the homelab** and keep `deploy.yml` as the way to refresh the
+> staging container. Full procedure, prerequisites, verification and rollback:
+> **`docs/process/deploy.md` § 6 — Homelab cutover.**
+>
+> Cheaper than it sounds: the only real learner on the homelab
+> (`albert@duin.home`) is an admin, and `has_active_entitlement()` grants admins
+> access, so nobody is locked out and no comp rows are needed.
+> `testuser@duin.home` is *not* an admin, which conveniently yields a
+> ready-made non-entitled account for testing the paywall.
+>
+> ⚠ Two corrections to the text above, found while writing that procedure:
+> - There is no `make migrate TARGET=homelab`. **`make migrate` targets the
+>   homelab unconditionally** — `scripts/migrate.ts` SSHes to `HOMELAB_SSH` and
+>   has no cloud path at all. Cloud schema changes do not go through it.
+> - `make migrate` chained its health check at the **cloud** default, so it
+>   would migrate the homelab and then certify the cloud — a green result for a
+>   system it never touched, which is the exact fault the `TARGET` block was
+>   introduced to fix. Fixed in the same PR as this note.
 
 **Post-merge:**
 
-- [ ] Correct `merged_at:` in the spec frontmatter if the merge slips past
-      2026-08-06 (it is pre-filled with the intended date).
+- [x] `merged_at:` in the spec frontmatter — merged 2026-08-06 as pre-filled,
+      no correction needed.
+- [ ] Run the homelab cutover (`docs/process/deploy.md` § 6) so there is a
+      faithful place to test entitlement-shaped changes before customers see
+      them.
 
 ## Phase 3 — Stripe test-mode E2E [joint]
 
