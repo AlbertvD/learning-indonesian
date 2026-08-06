@@ -1,6 +1,24 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #461
+merged_at: 2026-08-06
+implementation_paths:
+  - scripts/migration.sql                       # entitlements, stripe_webhook_events, has_active_entitlement, is_free_tier_lesson, can_read_media, indonesian_media_read, the set_lesson_activation gate, private buckets, invite teardown
+  - supabase/functions/_shared/stripe/          # client (pinned apiVersion), status derivation, convergent entitlement upsert
+  - supabase/functions/create-checkout-session/
+  - supabase/functions/stripe-webhook/
+  - supabase/functions/customer-portal/
+  - supabase/functions/verify-checkout/
+  - supabase/functions/delete-account/          # §6: cancels the Stripe subscription before erasure
+  - supabase/config.toml                        # stripe-webhook verify_jwt = false; the [auth] block
+  - src/services/entitlementService.ts          # FREE_TIER_MAX_LESSON parity twin
+  - src/stores/authStore.ts                     # signUp / signInWithGoogle / refreshEntitlement / isEntitled
+  - src/lib/signedAudioUrl.ts                   # §4 stored-URL → signed-URL + the batch signer
+  - src/components/paywall/PaywallPanel.tsx
+  - src/components/lessons/ActivationGate.tsx   # §5 client mirror of the activation gate
+  - src/pages/CheckoutSuccess.tsx
+  - scripts/check-supabase-deep.ts              # HC54–HC58
+  - scripts/check-cloud-config.ts               # function-secret + pricing drift
 reviewed_by:
   - "staff-engineer: NEEDS-WORK round 1, 2026-07-12 — 2 webhook blockers (checkout.session.completed never set status; idempotency-before-processing lost retried events), free-tier TTS keyed on generated_for_lesson_id (clips reused across lessons), podcasts-bucket blanket paywall would have killed the free pronunciation onboarding, checkout-success webhook race, comp-after-gate window — ALL FOLDED IN (incl. new verify-checkout function + _shared/stripe/)."
   - "architect: APPROVED round 2, 2026-07-12. Round-1 blocker (getAudioUrl async conversion grep-falsified against 4 sync render-time callers, 2 unnamed) + OAuth/signUp via authStore actions per LOCKED lib/auth + isEntitled as auth-owned state + Kong key-auth verification — ALL FOLDED IN. Round-2 W1 (§8 grants summary stale) + N1 (teardown grep-cite + stale deep-check skip-set entry) + N2 (is_free_tier_lesson parity pin) — FOLDED IN. N3 (authStore→entitlementService edge, no cycle) accepted, resolve at lib/auth fold."
@@ -24,10 +42,20 @@ together prevents three separate half-gates.
    invite-brute-force HIGH by removing the attack surface. Comp access =
    admin-inserted entitlement rows (source `comp`); discounts = Stripe
    promotion codes.
-3. **Pricing:** subscription. One Stripe Product, two Prices: **€7/month,
-   €56/year** (tax-inclusive, Stripe Tax on). Free tier = lessons 1–3 (the
-   already-auto-activated starter lessons) including their audio. No trials at
-   launch — trivially addable later via Stripe Checkout config.
+3. **Pricing:** subscription. One Stripe Product, two Prices: ~~**€7/month,
+   €56/year**~~ → **SUPERSEDED 2026-08-05: €9/month, €79/year** (tax-inclusive,
+   Stripe Tax on). Free tier = lessons 1–3 (the already-auto-activated starter
+   lessons) including their audio. No trials at launch — trivially addable
+   later via Stripe Checkout config.
+
+   > The reprice decision and its reasoning live in `docs/marketing/pricing.md`
+   > (Ramanujam & Tacke's *minivation* diagnosis); the live Price ids are in
+   > `docs/process/launch-runbook.md` Phase 5. Nothing in the design below
+   > depends on the amounts — `create-checkout-session` takes
+   > `{ plan: 'monthly' | 'annual' }` and maps it to a server-side env var
+   > precisely so a reprice is a Stripe + copy change, never a code change.
+   > Parity between the declared prices, the live function secrets, and every
+   > page that quotes a price is asserted by `make check-cloud-config`.
 4. **Cloud timing:** build + verify on the homelab in **Stripe test mode**;
    migrate to cloud Supabase before flipping to live mode. Everything below is
    cloud-portable: plain Postgres DDL, standard Deno edge functions, all
@@ -521,8 +549,30 @@ as an error message, not an access hole).
 
 - **Paywall panel** — shown on lesson pages beyond the free tier for
   non-entitled users and as the error state for gated audio: pricing
-  (€7/mo · €56/yr), the two checkout buttons → `create-checkout-session`,
-  links to `/terms` + `/refunds`.
+  (€9/mo · €79/yr — superseded, see owner decision 3), the two checkout
+  buttons → `create-checkout-session`, links to `/voorwaarden` +
+  `/restitutie` (routes renamed to Dutch in 99275027).
+
+  > ⚠ **SHIPPED WITH A KNOWN DEVIATION — "the error state for gated audio" was
+  > not built.** A signing rejection currently renders *nothing*, not the
+  > paywall:
+  > - `AudioPlayButton.tsx:44` always renders the button but only mounts
+  >   `<audio>` once a signed URL lands, so for a non-entitled user the click
+  >   handler hits `if (!ref.current) return` — a dead control with no feedback.
+  > - `GrammarPodcasts.tsx` drops unsigned episodes from the list entirely
+  >   (`setEpisodes(signed.filter(e => !!e.url))`), so a free user sees a short
+  >   hub rather than a locked one.
+  > - `lessonService`/`textService.getSignedAudioUrl` return `null` on purpose,
+  >   commented "callers already treat a null URL as the existing absent-audio
+  >   state".
+  >
+  > Reading lesson text is free by design, so a prospect on lesson 20 gets a
+  > page that looks **broken** rather than **locked** — on the exact surface
+  > meant to sell the subscription. It also collides with CLAUDE.md § Error
+  > Handling ("never `console.error` as the only error handling — always
+  > surface it to the user"). Recorded rather than quietly rewritten to match
+  > the code: either build the locked-audio affordance, or amend this bullet
+  > with the reasoning the way the TTS carve-out in §4 was amended.
 - **Profile page** — subscription block: current status (from the owner-read
   entitlement row), "Manage subscription" → `customer-portal` (hidden when
   no `stripe_customer_id`).

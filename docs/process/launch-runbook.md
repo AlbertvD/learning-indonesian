@@ -233,8 +233,84 @@ written — both are done, see Phase 4.)
       `alter role authenticator set pgrst.db_max_rows`, but shipping 15k–21k
       rows to the client contradicts CLAUDE.md's own
       *server-side RPC aggregation > ship rows to crunch client-side* rule.
-- [ ] **[owner] review PR #461** (and close homelab-configs PR #65 unless the
-      homelab should also get Google login).
+- [ ] **[owner] review PR #461** — see **Phase 2b** below for the merge-day
+      sequence (and close homelab-configs PR #65 unless the homelab should also
+      get Google login).
+
+## Phase 2b — merging PR #461 [joint]
+
+> **Merging is not shipping a change.** `main` is 0 ahead / 90 behind the
+> branch; production has run this code since 2026-08-01. Merging makes `main`
+> match reality. So the risk is not the payment code — it is what the merge
+> **triggers** (a Docker build, a Cloudflare build) and what it **ratifies**
+> unread (the branch carries the whole cloud migration, not just OAuth+Stripe).
+
+**Pre-merge gates** — all four verified green 2026-08-06 except where noted:
+
+- [x] `bun run test` — 3292 passed, 1 skipped
+- [x] `bun run lint` — 0 errors (7 pre-existing warnings)
+- [x] `make check-cloud-config` — 32 passed, 0 failed (now includes the price
+      parity block below)
+- [ ] `make check-supabase-deep` — 1 failure, **HC53 only**, and only because
+      `TEST_USER_PASSWORD` is absent from `.env.local`. Set it and re-run: a
+      documented gate that cannot go green is a gate nobody reads. Everything
+      structural (HC54–HC59) passes.
+- [ ] `make pre-deploy` end to end once HC53 can run.
+
+**⚠ Two things the merge triggers. Decide both BEFORE clicking merge.**
+
+**1. Cloudflare Workers production branch — merge stops deploys if you skip
+this.** The production branch is currently `feat/oauth-stripe-entitlement`
+(Phase 4 set it there deliberately: `main` had none of the signed-URL code).
+Nothing in the PR changes it, and the builds API is blind under the MCP OAuth
+token, so this is dashboard-only and easy to forget.
+
+- [ ] Merge PR #461.
+- [ ] Worker → Settings → Builds → set the production branch to **`main`**.
+- [ ] Push a **fresh commit** to `main` to trigger a build. Do NOT use
+      "Retry build" — it replays the ORIGINAL commit, so it will fail
+      identically and read as though the setting did not save (Phase 4 gotcha).
+- [ ] Confirm the deployed build serves from `main` before deleting the feature
+      branch. Deleting it first with the setting unchanged leaves production
+      with no build source.
+
+**2. `deploy.yml` publishes a Docker image that is broken by construction.**
+On CI success on `main` it builds `ghcr.io/albertvd/learning-indonesian:latest`
+with `secrets.VITE_SUPABASE_URL` — set 2026-03-17, i.e. **the homelab**. The
+homelab was probed 2026-08-06 and has none of the entitlement world:
+
+```
+indonesian-lessons|t   indonesian-podcasts|t   indonesian-tts|t   ← still public
+storage.objects: relrowsecurity = t, ZERO policies
+can_read_media / has_active_entitlement / is_free_tier_lesson: absent
+signup_invite_codes: still present
+```
+
+The merged app plays audio **only** via `createSignedUrl`, which the storage API
+authorizes through RLS on `storage.objects`. RLS on with no policy means every
+sign fails, so `:latest` is an image where **all audio is silently dead on the
+homelab** — and `docs/process/deploy.md` still says pull `:latest` and recreate.
+Nothing breaks at merge (an image push is not a deploy); it breaks at whatever
+future moment someone follows the deploy doc.
+
+Pick one, in the same session as the merge:
+
+- [ ] **(recommended) Retire it.** Delete `.github/workflows/deploy.yml` and
+      mark the homelab deploy path frozen in `docs/process/deploy.md`. The
+      homelab is the personal instance now; a publish target that emits a
+      broken artifact is pure downside.
+- [ ] **Or repoint it.** Change the `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`
+      repo secrets to the cloud project, making `:latest` a cloud image. Keeps a
+      second deploy target alive that nothing currently uses.
+- [ ] **Or migrate the homelab.** Run `make migrate TARGET=homelab` so the
+      homelab gains the policy + private buckets and the image works there too.
+      Note this also flips the homelab's buckets private and takes its invite
+      system down — a real change to the personal instance, not a no-op.
+
+**Post-merge:**
+
+- [ ] Correct `merged_at:` in the spec frontmatter if the merge slips past
+      2026-08-06 (it is pre-filled with the intended date).
 
 ## Phase 3 — Stripe test-mode E2E [joint]
 
@@ -419,8 +495,9 @@ compile time and runtime vars arrive too late).
 > volume), VAT/OSS with the accountant, and flipping the spec frontmatter to
 > `shipped`.
 
-- [ ] Stripe activation (KYC): legal entity, ID, IBAN — the bunq Kamoe Bisa
-      sub-account.
+- [x] Stripe activation (KYC): legal entity, ID, IBAN — the bunq Kamoe Bisa
+      sub-account. DONE — `acct_1TzEDpFDKKKBKGTH` reports `charges_enabled=true`
+      and `payouts_enabled=true`, which is what completed KYC looks like.
 - [x] **Live Product/Prices — DONE 2026-08-05, at €9/month and €79/year.** The
       old €7/€56 pair (copied from the sandbox before the reprice) was removed,
       so the live catalogue now matches what every page advertises.
@@ -441,13 +518,26 @@ compile time and runtime vars arrive too late).
       and `amount_total` would come back **1089**, not 900. So the amount check
       below is also the tax check; a €10.89 total means exclusive, and would mean
       customers paying more than /voorwaarden §2 promises.
-- [ ] Live keys + dashboard webhook endpoint (live `whsec_…`), Stripe Tax
-      registration live. After setting the four secrets, verify by creating a
-      session through the deployed function and asserting `amount_total` comes
-      back 900 and 7900 — the same check that caught nothing in the sandbox
-      because it was done, and would have caught everything if it had not been.
-- [ ] `supabase secrets set` the live values; redeploy + verify sha changed.
-- [ ] Final E2E with a real card + a refund.
+- [x] Live keys + dashboard webhook endpoint (live `whsec_…`), Stripe Tax
+      registration live — DONE 2026-08-05/06, verified as described in the
+      banner above: `cs_live_…` at `amount_total` **900** and **7900** through
+      the DEPLOYED function (which is simultaneously the tax check — exclusive
+      pricing would have returned 1089/9559), and an unsigned POST to
+      `stripe-webhook` rejected with 400, proving the live signing secret is in
+      force.
+- [x] `supabase secrets set` the live values — DONE. **No redeploy was needed**:
+      secrets propagate to running functions, so there is no sha to compare here
+      (unlike a code change, where `supabase functions list` must show version
+      and `ezbr_sha256` moving). Now additionally asserted every run:
+      `make check-cloud-config` compares `STRIPE_PRICE_MONTHLY`/`_ANNUAL`
+      against the declared live Price ids by sha256 digest, so a secret still
+      pointing at the archived €7/€56 pair fails the gate instead of quietly
+      undercharging.
+- [ ] Final E2E with a real card + a refund. **The last genuinely unexercised
+      money path.** Everything up to this point was proven with Checkout Session
+      creation and Tax Calculation rather than a settled charge, so what remains
+      unproven is: a real card completing, the webhook writing the entitlement
+      under live keys, and a refund going back out.
 - [ ] VAT: OSS registration (accountant). **Settled 2026-08-04: the entity IS
       VAT-registered** — van Duijn Data & Analytics holds an active
       btw-identificatienummer (the `NL…B..` form; the BSN-derived
@@ -464,7 +554,9 @@ compile time and runtime vars arrive too late).
 - [ ] Consider adding the btw-id to the terms page's trader identification —
       EU distance-selling rules expect it alongside the entity name and KVK,
       and `/terms` §1 and §7 currently carry only entity + KVK 88627950.
-- [ ] Spec frontmatter → `status: shipped` with `implementation_paths`.
+- [x] Spec frontmatter → `status: shipped` with `implementation_paths` — done in
+      the merge PR itself, per CLAUDE.md § Plan status awareness. ⚠ `merged_at`
+      is pre-filled **2026-08-06**; correct it if the merge slips.
 
 ## Deferred (not blocking launch)
 

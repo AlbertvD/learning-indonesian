@@ -18,14 +18,22 @@ last_verified: 2026-08-05
 > returns 9.00 and 79.00 EUR. Copy, terms §2, the paywall, the savings badge
 > (33% → 27%, recomputed against €9×12) and the JSON-LD offer all moved together.
 >
-> ⚠️ **Live mode still has the OLD prices.** Phase 5 must create €9/€79 Prices in
-> the live account and set the live secrets. If that is missed, live checkout
-> sells at €7/€56 while every page says €9/€79.
+> ~~⚠️ **Live mode still has the OLD prices.**~~ **CLOSED 2026-08-05/06.** Live
+> €9/€79 Prices created and the live secrets repointed (ids in
+> `docs/process/launch-runbook.md` Phase 5); sessions created through the
+> deployed function came back at 900 and 7900. The risk this warned about — live
+> checkout selling €7/€56 while every page says €9/€79 — is now **asserted, not
+> just fixed**: `make check-cloud-config` compares the live price secrets against
+> the declared ids by sha256 digest and checks every page that quotes a price.
+> See §4 below.
 
 # Pricing — competitive scan and recommendation
 
-Current: **€7/month, €56/year**, VAT included, free tier = lessons 1–3 plus the
-pronunciation podcast.
+> The scan below was written against the €7/€56 price and is preserved as the
+> reasoning that produced the change — the banner above is what is true now.
+
+Current at time of analysis: **€7/month, €56/year**, VAT included, free tier =
+lessons 1–3 plus the pronunciation podcast. **Now €9/€79.**
 
 Framework: Ramanujam & Tacke, *Monetizing Innovation*. The relevant failure mode
 they name is the **minivation** — *"products that tap neither a product
@@ -128,15 +136,28 @@ exactly the segment we care most about.
 
 ## 4. If the price changes, this is what it touches
 
+**Start at `scripts/check-cloud-config.ts` → the `PRICING` constant.** That is
+now the single declaration of what a plan costs and which Stripe Price sells it;
+every surface below is asserted against it by `make check-cloud-config` (which
+runs inside `make pre-deploy`), so a half-finished reprice fails the gate
+instead of reaching customers.
+
 - Stripe: create **new** Prices (never mutate live ones), update
-  `STRIPE_PRICE_MONTHLY` / `STRIPE_PRICE_ANNUAL` secrets, redeploy functions,
-  verify version + sha changed.
-- `src/lib/i18n.ts` — `/voorwaarden` §2 states €7 and €56 explicitly.
-- `src/pages/Landing.copy.ts` — pricing band.
-- `src/components/paywall/PaywallPanel.tsx` — the displayed prices.
-- `index.html` — no price in the meta description today; keep it that way so
-  copy changes do not require a rebuild of the social preview.
+  `STRIPE_PRICE_MONTHLY` / `STRIPE_PRICE_ANNUAL` secrets. No function redeploy
+  is needed — secrets propagate to running functions — so there is no sha to
+  compare; the digest assertion is what proves the new ids took.
+- `scripts/check-cloud-config.ts` — `PRICING`: the new ids **and** amounts.
+- `src/lib/i18n.ts` — `paywall.monthlyPrice`/`annualPrice`,
+  `paywall.annualBadge` + `annualHint` (the savings % is recomputed and
+  asserted), and `/voorwaarden` §2, in **both** `nl` and `en`.
+- `src/pages/Landing.copy.ts` — `pricingBody`, both languages.
+- `index.html` — the JSON-LD `Offer.price`. (Still no price in the meta
+  description; keep it that way so copy changes do not force a rebuild of the
+  social preview.)
 - `docs/process/launch-runbook.md` Phase 1 and 5.
 
-A price parity check (copy vs Stripe) does not exist. If prices change, that gap
-is worth closing the same way `FREE_TIER_MAX_LESSON` parity is enforced today.
+~~A price parity check (copy vs Stripe) does not exist.~~ **It does now**
+(2026-08-06), built the same way `FREE_TIER_MAX_LESSON` parity is: one
+declaration, everything else compared against it. Price ids are identifiers
+rather than secrets, so the live secrets can be compared exactly by sha256
+digest without this repo ever holding a key.
