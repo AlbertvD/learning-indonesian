@@ -554,25 +554,43 @@ as an error message, not an access hole).
   `/restitutie` (routes renamed to Dutch in 99275027).
 
   > ⚠ **SHIPPED WITH A KNOWN DEVIATION — "the error state for gated audio" was
-  > not built.** A signing rejection currently renders *nothing*, not the
-  > paywall:
-  > - `AudioPlayButton.tsx:44` always renders the button but only mounts
-  >   `<audio>` once a signed URL lands, so for a non-entitled user the click
-  >   handler hits `if (!ref.current) return` — a dead control with no feedback.
-  > - `GrammarPodcasts.tsx` drops unsigned episodes from the list entirely
-  >   (`setEpisodes(signed.filter(e => !!e.url))`), so a free user sees a short
-  >   hub rather than a locked one.
+  > not built.** Gated audio currently renders *nothing at all*: paid content is
+  > not shown as locked, it is shown as **absent**.
+  >
+  > - `LessonGrammarAudioBand.tsx` ends `if (!src) return null`, so on a paid
+  >   lesson the whole grammar-podcast band silently disappears. A free reader
+  >   has no way to know a paying reader sees a player there.
+  > - `GrammarPodcasts.tsx` drops unsignable episodes from the array
+  >   (`setEpisodes(signed.filter(e => !!e.url))`), so `/grammatica` renders a
+  >   tidy grid of **3 episodes out of 30** with nothing indicating the other 27
+  >   exist.
   > - `lessonService`/`textService.getSignedAudioUrl` return `null` on purpose,
   >   commented "callers already treat a null URL as the existing absent-audio
-  >   state".
+  >   state" — which is correct for genuinely missing audio (a lesson with no EN
+  >   episode yet) and wrong for gated audio. The code cannot currently tell the
+  >   two apart: both are `null`.
   >
-  > Reading lesson text is free by design, so a prospect on lesson 20 gets a
-  > page that looks **broken** rather than **locked** — on the exact surface
-  > meant to sell the subscription. It also collides with CLAUDE.md § Error
-  > Handling ("never `console.error` as the only error handling — always
-  > surface it to the user"). Recorded rather than quietly rewritten to match
-  > the code: either build the locked-audio affordance, or amend this bullet
-  > with the reasoning the way the TTS carve-out in §4 was amended.
+  > **CORRECTION 2026-08-06** — an earlier draft of this note claimed
+  > `AudioPlayButton` leaves a dead play button on paid lesson pages. **That is
+  > false and was retracted before merge.** Lesson pages' per-word audio comes
+  > from `indonesian-tts`, which §4's amendment frees for *every* authenticated
+  > user, so those buttons work without paying (lesson-20 `content.json`:
+  > 151 `indonesian-tts` references, 1 `indonesian-lessons`). Nothing routes a
+  > non-TTS source into `AudioPlayButton`, so its unsigned branch is
+  > unreachable in practice. The real defect is commercial, not functional.
+  >
+  > **OWNER DECISION 2026-08-06: show it locked, not hidden.** *"I think we
+  > should indeed show the free users all the content that can be unlocked
+  > through a paid subscription."* You cannot buy what you cannot see, and every
+  > hidden episode is a missed upsell at the exact moment of interest. Deferred
+  > out of PR #461 deliberately — the owner's call was to land the existing work
+  > first. Tracked as a follow-up issue; do NOT treat this bullet as done.
+  >
+  > Implementation note for whoever picks it up: derive "locked" from
+  > `isEntitled` + `FREE_TIER_MAX_LESSON` (the §5 mirrored-predicate pattern
+  > `ActivationGate` already uses), **not** from a failed signing call — a
+  > network blip would otherwise render "locked" to a paying subscriber. That
+  > also restores the locked-vs-absent distinction the `null` return collapsed.
 - **Profile page** — subscription block: current status (from the owner-read
   entitlement row), "Manage subscription" → `customer-portal` (hidden when
   no `stripe_customer_id`).
