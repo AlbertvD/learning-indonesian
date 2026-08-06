@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Anchor, Box, Button, Divider, Group, Popover, Text } from '@mantine/core'
 import { IconCheck } from '@tabler/icons-react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import type { GlossResult, MorphologyGloss, ReadableText, ReadingToken } from '@/lib/reading'
 import { useT } from '@/hooks/useT'
 import classes from './GlossableText.module.css'

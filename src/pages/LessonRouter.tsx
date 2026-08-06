@@ -7,7 +7,7 @@
 // synchronous (no DB query): each bespoke page's content.json statically
 // embeds its lesson UUID, so the registry keys are resolved at build time.
 
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router'
 import { Button } from '@mantine/core'
 import { IconAlertTriangle } from '@tabler/icons-react'
 import {

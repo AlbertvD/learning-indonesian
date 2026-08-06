@@ -1,6 +1,6 @@
 // src/pages/Podcast.tsx
 import { useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { Text, Paper, Group, Stack, Tabs, Anchor } from '@mantine/core'
 import { IconMicrophone } from '@tabler/icons-react'
 import {
@@ -96,27 +96,44 @@ export function Podcast() {
   const lang = useAuthStore((state) => state.profile?.language ?? 'nl')
 
   const [podcast, setPodcast] = useState<Podcast | null>(null)
+  const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
   const [currentTime, setCurrentTime] = useState(0)
 
   useEffect(() => {
+    let cancelled = false
     async function fetchData() {
       if (!podcastId || !user) return
       try {
         const podcastData = await textService.getText(podcastId)
+        // L1 routing (ADR 0025): a pronunciation podcast carries an English twin in
+        // audio_path_en — an English learner hears that; everyone else hears audio_path (NL).
+        // Story podcasts have no audio_path_en, so this is a no-op for them.
+        const audioSource =
+          lang === 'en' && podcastData.audio_path_en ? podcastData.audio_path_en : podcastData.audio_path
+        // Signing moves into this async load path (the bucket is private) —
+        // resolved before the player mounts, so <audio src=> never receives a
+        // raw storage path.
+        const url = audioSource ? await textService.getSignedAudioUrl(audioSource) : null
+        if (cancelled) return
         setPodcast(podcastData)
+        setAudioUrl(url)
       } catch (err) {
+        if (cancelled) return
         logError({ page: 'podcast', action: 'fetchData', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.podcast.failedToLoad })
         setError(true)
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     }
     fetchData()
-  }, [podcastId, user, T.common.error, T.podcast.failedToLoad])
+    return () => {
+      cancelled = true
+    }
+  }, [podcastId, user, lang, T.common.error, T.podcast.failedToLoad])
 
   if (loading) {
     return (
@@ -143,11 +160,6 @@ export function Podcast() {
 
   // This is the Listen face — reached only via the audio-filtered Podcasts list.
   // audio_path is nullable on the texts row (read-only texts have none); guard defensively.
-  // L1 routing (ADR 0025): a pronunciation podcast carries an English twin in
-  // audio_path_en — an English learner hears that; everyone else hears audio_path (NL).
-  // Story podcasts have no audio_path_en, so this is a no-op for them.
-  const audioSource = lang === 'en' && podcast.audio_path_en ? podcast.audio_path_en : podcast.audio_path
-  const audioUrl = audioSource ? textService.getAudioUrl(audioSource) : ''
   const segments = podcast.transcript_segments ?? null
   // Cheap (~150 words, ~4×/s); not a hook so it can live after the early returns.
   const active = segments ? findActiveWord(segments, currentTime) : null
@@ -179,7 +191,7 @@ export function Podcast() {
               ref={audioRef}
               controls
               style={{ width: '100%' }}
-              src={audioUrl}
+              src={audioUrl ?? undefined}
               onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
             />
 

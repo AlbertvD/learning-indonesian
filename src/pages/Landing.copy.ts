@@ -2,9 +2,12 @@
 //
 // Deliberately NOT in src/lib/i18n.ts: that module is entry-chunk-resident,
 // and the slice-1 bundle rule is "the app entry chunk must not grow"
-// (docs/plans/2026-07-03-desktop-program-design.md §Slice 1). Only Landing.tsx
-// imports this file, so the copy ships inside the lazy landing chunk. It
+// (docs/plans/2026-07-03-desktop-program-design.md §Slice 1). Landing.tsx is its
+// only RUNTIME importer, so the copy ships inside the lazy landing chunk. It
 // follows the same nl/en shape and Lang type as i18n.ts.
+// (scripts/check-cloud-config.ts also imports it — to assert the pricing band
+// quotes the declared price — but that is a build-time script outside the Vite
+// graph, so the chunking property is unaffected.)
 //
 // Copy-honesty rule (owner, 2026-07-03): all audio is TTS — never claim native
 // speakers or human narration; audio is mentioned neutrally where it describes
@@ -14,12 +17,12 @@ import type { Lang } from '@/lib/i18n'
 
 const nl = {
   login: 'Inloggen',
-  registerCta: 'Aanmelden met code',
-  heroEyebrow: 'Alleen op uitnodiging',
+  registerCta: 'Gratis beginnen',
+  heroEyebrow: 'Les 1 t/m 3 gratis',
   heroTitlePre: 'Leer Indonesisch dat',
   heroTitleEm: 'blijft hangen',
   heroSub: 'Echte lessen met grammatica, dialogen en audio — en een dagelijkse sessie die precies weet wanneer je een woord bijna vergeet, en het dán terugbrengt.',
-  heroCta: 'Ik heb een uitnodigingscode',
+  heroCta: 'Gratis beginnen',
   heroLogin: 'Al een account? Inloggen →',
   specAria: 'Een woordkaart uit de app: pasar betekent de markt',
   specTag: 'Woordenschat · markt',
@@ -29,6 +32,12 @@ const nl = {
   specExample: '“Saya pergi ke pasar.”',
   specExampleTr: 'Ik ga naar de markt.',
   specNext: 'Volgende herhaling over 3 dagen',
+  bridgeKicker: 'Je kent er al ruim 170',
+  bridgeTitle: 'Je spreekt meer Indonesisch dan je denkt.',
+  bridgeBody: 'Drie eeuwen gedeelde geschiedenis liet honderden Nederlandse woorden achter in het Indonesisch. Je herkent ze meteen — en dat zijn meteen je eerste woorden.',
+  bridgeMore: 'En andersom: pasar, ketjap, tahoe en nasi goreng kwamen mee terug naar het Nederlands.',
+  bridgeEdge: 'Dit is jouw voorsprong als Nederlandstalige. De grote apps leren Indonesisch via het Engels — ook prima te doen, maar daar begin je bij nul. Hier begin je bij 173.',
+  bridgeLink: 'Bekijk alle 173 leenwoorden →',
   howKicker: 'Zo werkt het',
   howTitle: 'Lezen, oefenen, onthouden — elke dag een beetje.',
   how1Title: 'Lees een les',
@@ -47,21 +56,23 @@ const nl = {
   feat4Title: 'Voortgang per woord',
   feat4Body: 'Zie hoeveel je kent van de 1000 meest gebruikte woorden.',
   feat4BarCap: '640 / 1000 gekend',
-  inviteEyebrow: 'Besloten preview',
-  inviteTitle: 'Kamoe Bisa is nu op uitnodiging',
-  inviteBody: 'We bouwen de app samen met een kleine groep leerders. Heb je een code gekregen? Dan kun je meteen aan de slag.',
+  pricingEyebrow: 'Abonnement',
+  pricingTitle: 'Begin gratis. Ga verder als het klikt.',
+  pricingBody: 'Les 1 tot en met 3 en de uitspraakpodcast zijn gratis — geen betaalgegevens nodig. Wil je de hele cursus, dan kost dat €9 per maand of €79 per jaar, inclusief btw. Je kunt op elk moment opzeggen; je houdt toegang tot het einde van de periode die je al betaald hebt.',
   footerMade: 'gemaakt in Nederland',
   footerPrivacy: 'Privacy',
+  footerTerms: 'Voorwaarden',
+  footerRefunds: 'Restitutie',
 }
 
 const en: typeof nl = {
   login: 'Log in',
-  registerCta: 'Sign up with code',
-  heroEyebrow: 'Invite only',
+  registerCta: 'Start free',
+  heroEyebrow: 'Lessons 1–3 free',
   heroTitlePre: 'Learn Indonesian that',
   heroTitleEm: 'sticks',
   heroSub: 'Real lessons with grammar, dialogues and audio — and a daily session that knows exactly when you are about to forget a word, and brings it back right then.',
-  heroCta: 'I have an invite code',
+  heroCta: 'Start free',
   heroLogin: 'Already have an account? Log in →',
   specAria: 'A word card from the app: pasar means the market',
   specTag: 'Vocabulary · market',
@@ -71,6 +82,12 @@ const en: typeof nl = {
   specExample: '“Saya pergi ke pasar.”',
   specExampleTr: 'I am going to the market.',
   specNext: 'Next review in 3 days',
+  bridgeKicker: 'You already know 170+',
+  bridgeTitle: 'You speak more Indonesian than you think.',
+  bridgeBody: 'Three centuries of shared history left hundreds of Dutch words behind in Indonesian. You recognise them instantly — and they become your first words.',
+  bridgeMore: 'And the other way round: pasar, ketjap, tahoe and nasi goreng travelled back into Dutch.',
+  bridgeEdge: 'This is your head start as a Dutch speaker. The big apps teach Indonesian through English — which works perfectly well, but there you start at zero. Here you start at 173.',
+  bridgeLink: 'See all 173 loanwords →',
   howKicker: 'How it works',
   howTitle: 'Read, practise, remember — a little every day.',
   how1Title: 'Read a lesson',
@@ -89,11 +106,13 @@ const en: typeof nl = {
   feat4Title: 'Progress per word',
   feat4Body: 'See how many of the 1000 most common words you know.',
   feat4BarCap: '640 / 1000 known',
-  inviteEyebrow: 'Private preview',
-  inviteTitle: 'Kamoe Bisa is currently invite-only',
-  inviteBody: 'We are building the app together with a small group of learners. Got a code? Then you can start right away.',
+  pricingEyebrow: 'Subscription',
+  pricingTitle: 'Start free. Continue if it clicks.',
+  pricingBody: 'Lessons 1 to 3 and the pronunciation podcast are free — no payment details needed. For the full course it is €9 per month or €79 per year, VAT included. Cancel any time; you keep access until the end of the period you have already paid for.',
   footerMade: 'made in the Netherlands',
   footerPrivacy: 'Privacy',
+  footerTerms: 'Terms',
+  footerRefunds: 'Refunds',
 }
 
 export const landingCopy: Record<Lang, typeof nl> = { nl, en }

@@ -15,6 +15,7 @@ import { createClient } from '@supabase/supabase-js'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import type { PodcastData } from '../data/podcasts'
+import { compressAudioFile, describeCompression } from '../lib/compress-audio'
 
 const SUPABASE_URL = 'https://api.supabase.duin.home'
 const GENERATED_SEED_DIR = resolve('scripts/data/generated-podcasts')
@@ -71,14 +72,22 @@ export async function seedEpisode(record: PodcastData, mp3: Buffer): Promise<voi
   if (!serviceKey) throw new Error('SUPABASE_SERVICE_KEY is required to seed')
   const supabase = createClient(SUPABASE_URL, serviceKey)
 
-  // Keep a local copy alongside the existing hand-produced episodes.
+  // Keep a local copy alongside the existing hand-produced episodes. This is
+  // the MASTER — it stays at full quality so a future re-encode can start from
+  // it rather than from an already-lossy upload.
   mkdirSync(LOCAL_AUDIO_DIR, { recursive: true })
-  writeFileSync(resolve(LOCAL_AUDIO_DIR, record.audio_filename), mp3)
+  const localPath = resolve(LOCAL_AUDIO_DIR, record.audio_filename)
+  writeFileSync(localPath, mp3)
+
+  // Only the UPLOADED copy is compressed. Buckets are private, so every play
+  // is a signed fetch that cannot be edge-cached.
+  const compressed = await compressAudioFile(localPath)
+  console.log(' ', describeCompression(record.audio_filename, compressed))
 
   const storagePath = `podcasts/${record.audio_filename}`
   const { error: uploadError } = await supabase.storage
     .from('indonesian-podcasts')
-    .upload(storagePath, mp3, { contentType: 'audio/mpeg', upsert: true })
+    .upload(storagePath, compressed.buffer, { contentType: 'audio/mpeg', upsert: true })
   if (uploadError) throw new Error(`audio upload failed: ${uploadError.message}`)
 
   await upsertTextRow(record, storagePath)

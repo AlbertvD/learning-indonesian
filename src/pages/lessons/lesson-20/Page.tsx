@@ -9,10 +9,10 @@
 // Re-roll by re-running:
 //   bun scripts/fetch-lesson-content.ts 20 --pretty > src/pages/lessons/lesson-20/content.json
 
-import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { AudioPlayButton } from '@/components/lessons/AudioPlayButton'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
-import { LessonGrammarAudioBand } from '@/components/lessons/LessonGrammarAudioBand'
+import { ReaderGrammarAudioBand } from '@/components/lessons/ReaderGrammarAudioBand'
 import { AffixTrainerLink } from '@/components/lessons/AffixTrainerLink'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import { ChapterExperience, type LessonChapter } from '@/components/lessons/ChapterExperience'
@@ -25,34 +25,6 @@ type GrammarCategory = { title: string; rules: string[]; examples?: Item[] }
 
 const meta = content.meta
 const sections = content.sections
-
-// ─── Inline play button ────────────────────────────────────────────────────
-
-function PlayButton({ src }: { src?: string }) {
-  const ref = useRef<HTMLAudioElement | null>(null)
-  const [playing, setPlaying] = useState(false)
-  if (!src) return null
-  return (
-    <>
-      <button
-        type="button"
-        className={classes.playButton}
-        data-playing={playing}
-        aria-label={playing ? 'Stop' : 'Speel uit'}
-        onClick={() => {
-          if (!ref.current) return
-          if (playing) { ref.current.pause(); ref.current.currentTime = 0; setPlaying(false); return }
-          void ref.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
-        }}
-      >
-        <svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-          {playing ? <><rect x="2" y="2" width="3" height="8" /><rect x="7" y="2" width="3" height="8" /></> : <polygon points="3,1 11,6 3,11" />}
-        </svg>
-      </button>
-      <audio ref={ref} src={src} preload="none" onEnded={() => setPlaying(false)} />
-    </>
-  )
-}
 
 // ─── Culture essay — Dutch prologue on Indonesian spice blends ─────────────
 
@@ -97,7 +69,7 @@ function VocabGrid({
       <div className={classes.vocabGrid}>
         {c.items.map((item, i) => (
           <div key={i} className={classes.vocabChip} data-tone={tone}>
-            <PlayButton src={item.audioUrl} />
+            <AudioPlayButton src={item.audioUrl} className={classes.playButton} />
             <span className={classes.vocabId}>{item.indonesian}</span>
             <span className={classes.vocabNl}>{item.dutch}</span>
           </div>
@@ -166,7 +138,7 @@ function GrammarExamples({ examples, mode }: { examples: Item[]; mode: 'transfor
             return (
               <div key={j} className={classes.transform}>
                 <span className={classes.transformDerived}>{ex.indonesian}</span>
-                <PlayButton src={ex.audioUrl} />
+                <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
                 <span className={classes.transformNl}>{ex.dutch}</span>
               </div>
             )
@@ -177,7 +149,7 @@ function GrammarExamples({ examples, mode }: { examples: Item[]; mode: 'transfor
               <span className={classes.transformBase}>{base}</span>
               <span className={classes.transformArrow}>→</span>
               <span className={classes.transformDerived}>{derived}</span>
-              <PlayButton src={ex.audioUrl} />
+              <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
               <span className={classes.transformNl}>{ex.dutch}</span>
             </div>
           )
@@ -191,7 +163,7 @@ function GrammarExamples({ examples, mode }: { examples: Item[]; mode: 'transfor
       {examples.map((ex, j) => (
         <div key={j} className={classes.derivedChip}>
           <span className={classes.derivedId}>{ex.indonesian}</span>
-          <PlayButton src={ex.audioUrl} />
+          <AudioPlayButton src={ex.audioUrl} className={classes.playButton} />
           <span className={classes.derivedNl}>{ex.dutch}</span>
         </div>
       ))}
@@ -355,7 +327,7 @@ function OefenenChapter({ activation }: { activation: ReturnType<typeof useLesso
           Activeer de les en de kruiden, smaakwoorden en PE-vormen verschijnen automatisch in je oefensessies.
         </p>
         <div className={classes.closingActivation}>
-          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} loadFailed={activation.loadFailed} onRetryLoad={activation.retryLoad} />
+          <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} loadFailed={activation.loadFailed} onRetryLoad={activation.retryLoad} orderIndex={meta.order_index} />
         </div>
         <div className={classes.closingActions}>
           <PracticeActions lessonId={meta.id} activated={activation.activated} />
@@ -405,9 +377,9 @@ export function buildChapters(activation: ReturnType<typeof useLessonActivation>
         <>
           {/* The grammar podcast audio lives WITH the grammar, not on the
               cover (established chapter-experience convention). */}
-          <LessonGrammarAudioBand
-            nl={meta.lesson_audio_url}
-            en={meta.lesson_audio_url_en}
+          <ReaderGrammarAudioBand
+            nlPath={meta.lesson_audio_url}
+            enPath={meta.lesson_audio_url_en}
             voice={meta.primary_voice ?? undefined}
             bandClassName={classes.audioBand}
             innerClassName={classes.audioInner}

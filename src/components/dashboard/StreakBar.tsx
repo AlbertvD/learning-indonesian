@@ -7,7 +7,7 @@
 // warm flame tones behind the consecutive active days), the per-day session
 // count along the bottom x-axis under each bar. The whole bar links to the Tijd
 // sub-page on voortgang.
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { IconFlame } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'

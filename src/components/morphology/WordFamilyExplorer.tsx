@@ -9,7 +9,7 @@
 // pattern of a token-only co-located CSS module instead of Mantine's <Card>.
 
 import { Stack, Group, Text, Tooltip } from '@mantine/core'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { IconAlertTriangle, IconAbc } from '@tabler/icons-react'
 import { EmptyState, StatusPill } from '@/components/page/primitives'
 import { cx } from '@/components/page/primitives/cx'

@@ -8,7 +8,7 @@
 
 import { render } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { buildChapters } from '../Page'
 import content from '../content.json'

@@ -1,0 +1,222 @@
+// supabase/functions/create-checkout-session/index.ts
+//
+// §3.1 of docs/plans/2026-07-12-oauth-stripe-entitlement-design.md.
+// User-JWT-required. Creates (or reuses) the caller's Stripe Customer, then
+// a subscription-mode Checkout Session for one of the two configured prices.
+//
+// Modeled on commit-capability-answer-report/index.ts — same
+// jsonResponse/publicReject/isRecord idioms, JWT verify via
+// GET /auth/v1/user, and service-role PostgREST fetch pattern.
+
+import { getStripeClient, fetchEntitlementColumns } from '../_shared/stripe/index.ts'
+
+function jsonResponse(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  })
+}
+
+function publicReject(status: number, error: string): Response {
+  return jsonResponse({ error }, status)
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+}
+
+interface EntitlementRow {
+  stripe_customer_id: string | null
+}
+
+// Persists a freshly-created Stripe customer id on the caller's entitlement
+// row. §3.1 step 2: an existing row (e.g. a comp user starting a checkout)
+// keeps its status/source untouched — this is a partial PATCH, never a full
+// upsert. A brand-new row is `source='stripe', status='canceled'` — both
+// required explicitly by the entitlements CHECK constraint (migration §1).
+async function persistStripeCustomerId(
+  supabaseUrl: string,
+  serviceRoleKey: string,
+  userId: string,
+  stripeCustomerId: string,
+  hadExistingRow: boolean,
+): Promise<void> {
+  const headers = {
+    Authorization: `Bearer ${serviceRoleKey}`,
+    apikey: serviceRoleKey,
+    'Content-Type': 'application/json',
+    'Accept-Profile': 'indonesian',
+    'Content-Profile': 'indonesian',
+    Prefer: 'return=minimal',
+  }
+
+  const response = hadExistingRow
+    ? await fetch(`${supabaseUrl}/rest/v1/entitlements?user_id=eq.${encodeURIComponent(userId)}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ stripe_customer_id: stripeCustomerId, updated_at: new Date().toISOString() }),
+      })
+    : await fetch(`${supabaseUrl}/rest/v1/entitlements`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify([{
+          user_id: userId,
+          status: 'canceled',
+          source: 'stripe',
+          stripe_customer_id: stripeCustomerId,
+        }]),
+      })
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '')
+    throw new Error(`entitlement_customer_persist_failed:${response.status}:${detail}`)
+  }
+}
+
+Deno.serve(async (request) => {
+  if (request.method === 'OPTIONS') {
+    return new Response('ok')
+  }
+  if (request.method !== 'POST') {
+    return publicReject(405, 'method_not_allowed')
+  }
+
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  const priceMonthly = Deno.env.get('STRIPE_PRICE_MONTHLY')
+  const priceAnnual = Deno.env.get('STRIPE_PRICE_ANNUAL')
+  const appBaseUrl = Deno.env.get('APP_BASE_URL')
+  if (!supabaseUrl || !serviceRoleKey || !priceMonthly || !priceAnnual || !appBaseUrl) {
+    return publicReject(500, 'server_not_configured')
+  }
+
+  const authorization = request.headers.get('Authorization')
+  if (!authorization?.startsWith('Bearer ')) {
+    return publicReject(401, 'missing_user_jwt')
+  }
+
+  // Wire shape is { plan: 'monthly' | 'annual' }, never a raw Stripe price id
+  // — the frontend must not carry Stripe price ids (that would add VITE_
+  // build envs for no benefit); prices stay server-side and are mapped here.
+  const body = await request.json().catch(() => null)
+  const plan = isRecord(body) && typeof body.plan === 'string' ? body.plan : null
+  const priceId = plan === 'monthly' ? priceMonthly : plan === 'annual' ? priceAnnual : null
+  if (!priceId) {
+    return publicReject(400, 'invalid_plan')
+  }
+
+  // 1. Verify the caller's JWT.
+  const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
+    headers: { Authorization: authorization, apikey: serviceRoleKey },
+  })
+  if (!userResponse.ok) {
+    return publicReject(401, 'invalid_user_jwt')
+  }
+  const user = await userResponse.json()
+  const userId = typeof user?.id === 'string' ? user.id : null
+  const userEmail = typeof user?.email === 'string' ? user.email : undefined
+  if (!userId) {
+    return publicReject(401, 'invalid_user_jwt')
+  }
+
+  try {
+    const stripe = getStripeClient()
+
+    // 2. Reuse or create the Stripe Customer.
+    const existingRow = await fetchEntitlementColumns<EntitlementRow>(supabaseUrl, serviceRoleKey, userId, 'stripe_customer_id')
+    let stripeCustomerId = existingRow?.stripe_customer_id ?? null
+    if (!stripeCustomerId) {
+      const customer = await stripe.customers.create({
+        email: userEmail,
+        metadata: { supabase_user_id: userId },
+      })
+      stripeCustomerId = customer.id
+      await persistStripeCustomerId(supabaseUrl, serviceRoleKey, userId, stripeCustomerId, existingRow !== null)
+    }
+
+    // 3. Create the Checkout Session.
+    //
+    // customer_update.address = 'auto' is REQUIRED, not optional polish. The
+    // Customer is created above with email + metadata only -- no address -- and
+    // automatic_tax cannot pick a VAT rate without knowing where the buyer is.
+    // With an existing `customer` and no customer_update, Stripe rejects the
+    // call outright:
+    //   customer_tax_location_invalid -- "Automatic tax calculation in Checkout
+    //   requires a valid address on the Customer. Add a valid address to the
+    //   Customer or set `customer_update[address]` to 'auto' ..."
+    // i.e. EVERY checkout attempt 500s and no one can ever pay. Verified
+    // against the live Stripe API 2026-07-31 (test mode): the identical call
+    // fails without this line and returns a session URL with it.
+    //
+    // 'auto' has Checkout collect the billing address on its own hosted page
+    // and write it back to the Customer, so renewal invoices still tax
+    // correctly.
+    //
+    // Missed by three review rounds and 13 code-review findings because the
+    // Stripe client is mocked everywhere in-repo: a mock returns the shape we
+    // assumed, not the one Stripe enforces. Only a live call surfaces this.
+    // consent_collection + custom_text: what makes the refund policy's §3
+    // withdrawal waiver actually BIND, rather than merely be written down.
+    //
+    // EU law (Consumer Rights Directive art. 16(m)) only extinguishes the
+    // 14-day withdrawal right for immediately-supplied digital content if the
+    // consumer gave PRIOR EXPRESS CONSENT to immediate supply *and*
+    // ACKNOWLEDGED losing the right — and the trader must be able to evidence
+    // both. A clause sitting on /restitutie evidences nothing; a checkbox
+    // recorded per purchase does. After checkout the Session's
+    // `consent.terms_of_service` reads `accepted`, which is the record.
+    //
+    // Stripe's DEFAULT checkbox text only says "I agree to the Terms of
+    // Service" — one of the two halves. custom_text carries the other half in
+    // the customer's own language, mirroring /restitutie §3 word for word.
+    //
+    // ⚠ HARD DEPENDENCY on a Dashboard setting: with terms_of_service
+    // 'required' and no Terms-of-service URL in public business details,
+    // Stripe rejects the call with HTTP 400 —
+    //   "You cannot collect consent to your terms of service unless a URL is
+    //    set in the Stripe Dashboard"
+    // — i.e. NOBODY CAN SUBSCRIBE. Verified against the live API 2026-08-04
+    // (before: 400; after setting the URL: session created). Sandbox and live
+    // hold SEPARATE public details, so both must be set. Same failure shape as
+    // the customer_update.address bug: invisible to mocks, fatal in production.
+    //
+    // ⚠ Stripe's docs warn against customising this text without legal advice.
+    // This wording is the one clause the draft copy flags for a professional
+    // read (docs/plans/2026-07-30-tos-refunds-draft-copy.md).
+    //
+    // Links are built from appBaseUrl rather than hardcoded, so they cannot
+    // drift from the deployment the way APP_BASE_URL itself did — and
+    // check-cloud-config now asserts that value by digest.
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      customer: stripeCustomerId,
+      client_reference_id: userId,
+      line_items: [{ price: priceId, quantity: 1 }],
+      automatic_tax: { enabled: true },
+      customer_update: { address: 'auto' },
+      allow_promotion_codes: true,
+      consent_collection: { terms_of_service: 'required' },
+      custom_text: {
+        terms_of_service_acceptance: {
+          message:
+            `Ik ga akkoord met de [algemene voorwaarden](${appBaseUrl}/voorwaarden) en het ` +
+            `[restitutiebeleid](${appBaseUrl}/restitutie). Ik verzoek uitdrukkelijk om directe ` +
+            `toegang tot de lesstof en erken dat ik daarmee mijn herroepingsrecht verlies zodra ` +
+            `de levering is gestart.`,
+        },
+      },
+      success_url: `${appBaseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appBaseUrl}/checkout/cancel`,
+    })
+
+    if (!session.url) {
+      throw new Error('checkout_session_missing_url')
+    }
+
+    // 4. Return the redirect URL.
+    return jsonResponse({ url: session.url })
+  } catch (error) {
+    console.error('create_checkout_session_failed', error)
+    return publicReject(500, 'checkout_session_failed')
+  }
+})

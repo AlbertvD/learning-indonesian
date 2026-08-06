@@ -13,7 +13,7 @@
 // row only materialises on a first answer). Exactly the Dashboard-preview use
 // docs/target-architecture.md:344 blesses.
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { Button, UnstyledButton } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconTrendingUp, IconTrendingDown, IconArrowUpRight, IconBook, IconBulb, IconSeeding, IconPuzzle } from '@tabler/icons-react'

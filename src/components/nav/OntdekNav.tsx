@@ -2,7 +2,7 @@
 // Verhalen lezen) — the Ontdek-side twin of LerenNav. A thin wrapper over
 // <SurfaceNav/> that pins the Ontdek items + active derivation; on desktop it's
 // the switcher row, on mobile a "back to Ontdek" link, matching the Leren hub.
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 import { IconHeadphones, IconBook2, IconLanguage } from '@tabler/icons-react'
 import { SurfaceNav } from './SurfaceNav'
 import { useT } from '@/hooks/useT'

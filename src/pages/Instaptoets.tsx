@@ -12,7 +12,7 @@
 // writes nothing (spec §4.1). Skippable at every step via a quiet "Overslaan"
 // link.
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import {

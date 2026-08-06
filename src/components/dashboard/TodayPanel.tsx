@@ -3,7 +3,7 @@
 // composition bar + legend, and the Start CTA with a rough duration estimate.
 // The counts come from the pure summarizer over a buildSession pure read
 // (sessionPreview.ts); rendering is presentational only.
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { IconPlayerPlayFilled } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
 import type { SessionPreviewCounts } from './sessionPreview'

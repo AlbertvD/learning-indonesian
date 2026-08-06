@@ -10,7 +10,7 @@
 // the persistent switcher — no separate hub screen, exactly like desktop
 // /leren lands on Lessen (Lessons.tsx:384-457).
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { useMediaQuery } from '@mantine/hooks'
 import { SimpleGrid } from '@mantine/core'
 import { IconBook, IconLanguage, IconPuzzle, IconFlame } from '@tabler/icons-react'

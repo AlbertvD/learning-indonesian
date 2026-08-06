@@ -1,0 +1,34 @@
+# Kamoe Bisa — https://kamoebisa.nl
+#
+# Only four surfaces are public: the landing page, the loanword reference, and
+# the three legal pages. Everything else requires a session and returns the SPA
+# shell to a crawler, so indexing it produces duplicate, contentless results.
+# Disallowing them is about index quality, not secrecy — the real access control
+# is RLS and the entitlement gate, never this file.
+
+User-agent: *
+Allow: /$
+Allow: /leenwoorden
+Allow: /privacy
+Allow: /voorwaarden
+Allow: /restitutie
+
+Disallow: /leren
+Disallow: /lesson/
+Disallow: /session
+Disallow: /progress
+Disallow: /profile
+Disallow: /ontdek
+Disallow: /lezen
+Disallow: /grammatica
+Disallow: /podcasts
+Disallow: /morphology
+Disallow: /instaptoets
+Disallow: /welkom
+Disallow: /checkout/
+Disallow: /admin/
+Disallow: /preview
+Disallow: /lesson-preview/
+Disallow: /content/
+
+Sitemap: https://kamoebisa.nl/sitemap.xml

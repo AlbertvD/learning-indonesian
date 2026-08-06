@@ -1,0 +1,184 @@
+/* Leenwoorden — public, shareable reference page.
+   Deliberately plain and document-like rather than app-like: this is a page
+   people land on from a search result or a shared link, skim, and hopefully
+   send to someone else. It borrows the landing page's paper/ink palette so it
+   still reads as Kamoe Bisa, but nothing here depends on app chrome. */
+
+.page {
+  --lw-paper: #fbf8f2;
+  --lw-ink: #1e2a25;
+  --lw-ink-2: #45534b;
+  --lw-muted: #77857b;
+  --lw-line: #e7dece;
+  --lw-card: #ffffff;
+  --lw-accent: #c64a26;
+  --lw-gold: #be8836;
+
+  /* No viewport-height math here: that belongs to the page-framework
+     primitives (enforced by the pre-commit seam check), and this page is a
+     document that always renders a header, 173 rows, a CTA and a footer. */
+  background: var(--lw-paper);
+  color: var(--lw-ink);
+  padding: 40px 24px 72px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.head {
+  max-width: 68ch;
+  margin: 0 auto;
+}
+.back {
+  display: inline-block;
+  color: var(--lw-muted);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 26px;
+}
+.back:hover {
+  color: var(--lw-ink);
+}
+.title {
+  font-size: clamp(27px, 4.4vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin: 0 0 20px;
+}
+.intro {
+  color: var(--lw-ink-2);
+  margin: 0 0 14px;
+}
+
+.tools {
+  max-width: 68ch;
+  margin: 30px auto 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.searchLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.search {
+  flex: 1 1 240px;
+  padding: 11px 15px;
+  border: 1px solid var(--lw-line);
+  border-radius: 10px;
+  background: var(--lw-card);
+  color: var(--lw-ink);
+  font: inherit;
+  font-size: 15px;
+}
+.search:focus-visible {
+  outline: 2px solid var(--lw-gold);
+  outline-offset: 1px;
+}
+.count {
+  color: var(--lw-muted);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.list {
+  max-width: 68ch;
+  margin: 22px auto 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--lw-line);
+}
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--lw-line);
+}
+.id {
+  font-weight: 650;
+  min-width: 9.5em;
+}
+.from {
+  color: var(--lw-muted);
+  font-size: 14.5px;
+}
+.from em {
+  font-style: normal;
+  color: var(--lw-accent);
+}
+.gloss {
+  color: var(--lw-ink-2);
+  font-size: 14.5px;
+  margin-left: auto;
+  text-align: right;
+}
+
+.empty {
+  max-width: 68ch;
+  margin: 26px auto;
+  color: var(--lw-muted);
+}
+
+.cta {
+  max-width: 68ch;
+  margin: 56px auto 0;
+  padding: 32px;
+  background: var(--lw-card);
+  border: 1px solid var(--lw-line);
+  border-radius: 16px;
+}
+.cta h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.cta p {
+  margin: 0 0 20px;
+  color: var(--lw-ink-2);
+}
+.ctaBtn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: var(--lw-accent);
+  color: #fcf3ed;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.ctaBtn:hover {
+  background: #a63b1c;
+}
+
+.foot {
+  max-width: 68ch;
+  margin: 44px auto 0;
+  display: flex;
+  gap: 18px;
+  font-size: 14px;
+}
+.foot a {
+  color: var(--lw-muted);
+  text-decoration: none;
+}
+.foot a:hover {
+  color: var(--lw-ink);
+}
+
+@media (max-width: 620px) {
+  .gloss {
+    margin-left: 0;
+    text-align: left;
+    width: 100%;
+  }
+  .id {
+    min-width: 0;
+  }
+}

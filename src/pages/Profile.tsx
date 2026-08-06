@@ -6,7 +6,6 @@ import {
   Button,
   Stack,
   Group,
-  SegmentedControl,
   Switch,
   Slider,
   Select,
@@ -15,40 +14,28 @@ import {
 import { useMantineColorScheme } from '@mantine/core'
 import { IconMoon, IconSun, IconLogout, IconFlame, IconClock } from '@tabler/icons-react'
 import { useMediaQuery } from '@mantine/hooks'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { notifications } from '@mantine/notifications'
-import { FunctionsHttpError } from '@supabase/supabase-js'
 import {
   PageContainer,
   PageBody,
   HeroCard,
   SettingsCard,
+  StatusPill,
   LoadingState,
 } from '@/components/page/primitives'
+import { PaywallPanel } from '@/components/paywall/PaywallPanel'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
-import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
 import { supabase } from '@/lib/supabase'
 import { engagement } from '@/lib/analytics/engagement'
 import { useAutoplay } from '@/contexts/AutoplayContext'
 import { useListening } from '@/contexts/ListeningContext'
 import { useSpreektaal } from '@/contexts/SpreektaalContext'
+import { entitlementService, isActiveStatus, type Entitlement } from '@/services/entitlementService'
+import { extractEdgeFunctionErrorCode } from '@/lib/edgeFunctionError'
 import classes from './Profile.module.css'
-
-// The edge function returns { error: <code> } on non-2xx. functions.invoke
-// never throws — it resolves { data: null, error: FunctionsHttpError } whose
-// .context is the raw Response. Best-effort parse; unknown/unparseable shapes
-// fall back to the generic message. Mirrors Register.tsx's extractErrorCode.
-async function extractErrorCode(error: unknown): Promise<string | undefined> {
-  if (!(error instanceof FunctionsHttpError)) return undefined
-  try {
-    const body = await error.context.json()
-    return typeof body?.error === 'string' ? body.error : undefined
-  } catch {
-    return undefined
-  }
-}
 
 // Avatar initials — first + last initial of the display name, or the email's
 // first letter when no name is set. Never empty (falls back to '?').
@@ -78,7 +65,6 @@ export function Profile() {
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
   const updateDisplayName = useAuthStore((state) => state.updateDisplayName)
-  const updateLanguage = useAuthStore((state) => state.updateLanguage)
   const updatePreferredSessionSize = useAuthStore((state) => state.updatePreferredSessionSize)
   const updateTimezone = useAuthStore((state) => state.updateTimezone)
   const signOut = useAuthStore((state) => state.signOut)
@@ -91,10 +77,12 @@ export function Profile() {
   const [momentum, setMomentum] = useState<Momentum | null>(null)
   const [savingSessionSize, setSavingSessionSize] = useState(false)
   const [savingTimezone, setSavingTimezone] = useState(false)
-  const [savingLang, setSavingLang] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
   const [deletingAccount, setDeletingAccount] = useState(false)
+  const [entitlement, setEntitlement] = useState<Entitlement | null>(null)
+  const [entitlementLoading, setEntitlementLoading] = useState(true)
+  const [portalLoading, setPortalLoading] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -116,6 +104,26 @@ export function Profile() {
     }
     fetchData()
   }, [user, profile, T])
+
+  // Subscription block's own data source — the owner-RLS-readable entitlement
+  // row (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §5). Kept
+  // separate from `profile.isEntitled` (a derived boolean) because this block
+  // needs the full row: `status` for the friendly label and
+  // `stripe_customer_id` to gate the Manage-subscription button.
+  useEffect(() => {
+    if (!user) return
+    let cancelled = false
+    setEntitlementLoading(true)
+    entitlementService.getEntitlement(user.id)
+      .then((row) => { if (!cancelled) setEntitlement(row) })
+      .catch((err) => {
+        if (cancelled) return
+        logError({ page: 'profile', action: 'fetchEntitlement', error: err })
+        notifications.show({ color: 'red', title: T.common.error, message: T.profile.entitlementLoadFailed })
+      })
+      .finally(() => { if (!cancelled) setEntitlementLoading(false) })
+    return () => { cancelled = true }
+  }, [user, T])
 
   // Momentum stats for the hero — streak + minutes this week. Best-effort:
   // a failure just hides the row (the hero still shows identity + member-since),
@@ -154,28 +162,6 @@ export function Profile() {
         title: T.profile.failedToSave,
         message: T.profile.somethingWentWrong,
       })
-    }
-  }
-
-  async function handleLanguageChange(lang: 'nl' | 'en') {
-    setSavingLang(true)
-    try {
-      await updateLanguage(lang)
-      const newT = translations[lang]
-      notifications.show({
-        color: 'green',
-        title: newT.profile.profileUpdated,
-        message: newT.profile.languageSaved,
-      })
-    } catch (err) {
-      logError({ page: 'profile', action: 'updateLanguage', error: err })
-      notifications.show({
-        color: 'red',
-        title: T.profile.failedToSave,
-        message: T.profile.somethingWentWrong,
-      })
-    } finally {
-      setSavingLang(false)
     }
   }
 
@@ -224,6 +210,30 @@ export function Profile() {
     }
   }
 
+  async function handleManageSubscription() {
+    setPortalLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('customer-portal')
+      if (error) throw error
+      const url = (data as { url?: string } | null)?.url
+      if (!url) throw new Error('customer-portal returned no url')
+      window.location.href = url
+      // Browser is navigating away — no further state update needed.
+    } catch (err) {
+      const code = await extractEdgeFunctionErrorCode(err)
+      const message = code === 'invalid_user_jwt' || code === 'missing_user_jwt'
+        ? T.paywall.sessionExpired
+        : T.profile.somethingWentWrong
+      notifications.show({
+        color: 'red',
+        title: T.profile.manageSubscriptionFailed,
+        message,
+      })
+      logError({ page: 'profile', action: 'manageSubscription', error: err })
+      setPortalLoading(false)
+    }
+  }
+
   async function handleDeleteAccount() {
     setDeletingAccount(true)
     try {
@@ -234,7 +244,7 @@ export function Profile() {
       await signOut()
       navigate('/login')
     } catch (err) {
-      const code = await extractErrorCode(err)
+      const code = await extractEdgeFunctionErrorCode(err)
       const message = code === 'invalid_user_jwt' || code === 'missing_user_jwt'
         ? T.profile.deleteAccountSessionExpired
         : T.profile.somethingWentWrong
@@ -269,6 +279,21 @@ export function Profile() {
         day: 'numeric',
       })
     : '—'
+
+  // Subscription block derived state (§5): a row exists but isn't in the
+  // active set (canceled) reads differently from never-having-subscribed —
+  // both get the PaywallPanel subscribe CTA, but the status label differs.
+  const isFreePlan = !entitlement || !isActiveStatus(entitlement.status)
+  const statusLabel = !entitlement
+    ? T.profile.subscriptionStatusFree
+    : entitlement.status === 'active' ? T.profile.subscriptionStatusActive
+    : entitlement.status === 'past_due' ? T.profile.subscriptionStatusPastDue
+    : entitlement.status === 'comped' ? T.profile.subscriptionStatusComped
+    : T.profile.subscriptionStatusCanceled
+  const statusTone = !entitlement ? 'neutral'
+    : entitlement.status === 'active' || entitlement.status === 'comped' ? 'success'
+    : entitlement.status === 'past_due' ? 'warning'
+    : 'neutral'
 
   return (
     <PageContainer size="sm">
@@ -322,6 +347,34 @@ export function Profile() {
             )}
           </HeroCard>
 
+          {/* ── Subscription ──────────────────────────────────────────────── */}
+          {!entitlementLoading && (
+            <SettingsCard
+              title={T.profile.subscriptionTitle}
+              aside={<StatusPill tone={statusTone}>{statusLabel}</StatusPill>}
+            >
+              <Stack gap="md">
+                <Text size="sm" c="dimmed">
+                  {!entitlement
+                    ? T.profile.subscriptionFreeIntro
+                    : entitlement.status === 'canceled'
+                    ? T.profile.subscriptionCanceledIntro
+                    : entitlement.current_period_end
+                    ? T.profile.subscriptionRenewsOn(new Date(entitlement.current_period_end).toLocaleDateString())
+                    : null}
+                </Text>
+                {entitlement?.stripe_customer_id && (
+                  <Group justify="flex-end">
+                    <Button variant="default" loading={portalLoading} onClick={handleManageSubscription}>
+                      {T.profile.manageSubscription}
+                    </Button>
+                  </Group>
+                )}
+                {isFreePlan && <PaywallPanel />}
+              </Stack>
+            </SettingsCard>
+          )}
+
           {/* ── Account & display ─────────────────────────────────────────── */}
           <SettingsCard title={T.profile.accountAndDisplay}>
             <div className={classes.rows}>
@@ -338,22 +391,21 @@ export function Profile() {
                 />
               </div>
 
-              <div className={classes.row}>
-                <div className={classes.rowLabel}>
-                  <span className={classes.rowTitle}>{T.profile.language}</span>
-                </div>
-                <div className={classes.rowControl}>
-                  <SegmentedControl
-                    value={profile?.language ?? 'nl'}
-                    onChange={(val) => handleLanguageChange(val as 'nl' | 'en')}
-                    disabled={savingLang}
-                    data={[
-                      { label: T.profile.dutch, value: 'nl' },
-                      { label: T.profile.english, value: 'en' },
-                    ]}
-                  />
-                </div>
-              </div>
+              {/* NL/EN language switch REMOVED 2026-08-02 — launching Dutch-only.
+                  Not a code problem: the EN translations are complete (1,552
+                  i18n keys) and all 30 EN grammar episodes exist on disk. But
+                  they are not published, so an English learner would get a full
+                  UI with NO grammar audio on any lesson — the band renders
+                  nothing when its language's episode is missing
+                  (LessonGrammarAudioBand.tsx:36). Offering the switch would sell
+                  a degraded product.
+
+                  Everything needed to restore it is intact: `translations.en`,
+                  `authStore.updateLanguage`, and `profiles.language`. Bring back
+                  this row once the EN episodes are published — or not, if
+                  English ships as a separate product for a different audience
+                  (the loanword bridge, this app's real differentiator, is
+                  Dutch-specific and does not transfer). */}
 
               {/* Dark-mode toggle is mobile-only — desktop keeps it in the rail,
                   so surfacing it here would duplicate that control. */}

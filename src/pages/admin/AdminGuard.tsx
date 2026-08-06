@@ -4,7 +4,7 @@
 // / once loading is done AND profile is confirmed non-admin.
 // See docs/plans/2026-04-23-exercise-framework-design.md §9.1
 
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import { Center, Loader } from '@mantine/core'
 import { useAuthStore } from '@/stores/authStore'
 import type { ReactNode } from 'react'

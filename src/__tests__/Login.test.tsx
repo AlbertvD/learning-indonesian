@@ -3,10 +3,13 @@
 // CRIT-1 companion test: Login.tsx must honour the `?next=` param
 // ProtectedRoute now attaches when it bounces a logged-out visitor here, so
 // the learner lands back where they were headed instead of always at `/`.
+// Also covers the Google OAuth round trip (docs/plans/2026-07-12-oauth-
+// stripe-entitlement-design.md §2): the button, the ?next= forwarding, and
+// the friendly error mapping for a failed OAuth return.
 
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { AuthApiError } from '@supabase/supabase-js'
@@ -21,18 +24,27 @@ vi.mock('@/lib/logger', () => ({
   logError: vi.fn(),
 }))
 
-const { mockNavigate, mockSignIn } = vi.hoisted(() => ({
+const { mockNavigate, mockSignIn, mockSignInWithGoogle } = vi.hoisted(() => ({
   mockNavigate: vi.fn(),
   mockSignIn: vi.fn(),
+  mockSignInWithGoogle: vi.fn(),
 }))
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<typeof import('react-router')>('react-router')
   return { ...actual, useNavigate: () => mockNavigate }
 })
 
+// mockUser is undefined by default (logged-out) — set it via mockUserRef for
+// the "already-signed-in after OAuth" test.
+const mockUserRef: { current: any } = { current: undefined }
+
 vi.mock('@/stores/authStore', () => ({
-  useAuthStore: vi.fn((selector: (s: any) => any) => selector({ signIn: mockSignIn })),
+  useAuthStore: vi.fn((selector: (s: any) => any) => selector({
+    signIn: mockSignIn,
+    signInWithGoogle: mockSignInWithGoogle,
+    get user() { return mockUserRef.current },
+  })),
 }))
 
 function renderLogin(initialEntry = '/login') {
@@ -54,6 +66,7 @@ async function fillAndSubmit(user: ReturnType<typeof userEvent.setup>) {
 describe('Login', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockUserRef.current = undefined
   })
 
   it('navigates to / after a successful login with no next param', async () => {
@@ -115,6 +128,30 @@ describe('Login', () => {
     expect(logError).toHaveBeenCalledWith({ page: 'Login', action: 'signIn', error: authError })
   })
 
+  // An unconfirmed account has a CORRECT password — reporting it as "incorrect
+  // email or password" sends the learner off to reset a password that was
+  // never wrong, and never mentions the confirmation mail waiting for them.
+  it('distinguishes an unconfirmed email from wrong credentials', async () => {
+    const authError = new AuthApiError('Email not confirmed', 400, 'email_not_confirmed')
+    mockSignIn.mockRejectedValue(authError)
+    const user = userEvent.setup()
+    renderLogin('/login')
+
+    await fillAndSubmit(user)
+
+    const { notifications } = await import('@mantine/notifications')
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({
+        color: 'red',
+        message: 'Je e-mailadres is nog niet bevestigd. Klik op de link in de bevestigingsmail die we je hebben gestuurd.',
+      }),
+    )
+    expect(notifications.show).not.toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Onjuist e-mailadres of wachtwoord.' }),
+    )
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
+
   it('shows a generic failure message (not "incorrect credentials") for a network/outage error, and logs it', async () => {
     const networkError = new TypeError('Failed to fetch')
     mockSignIn.mockRejectedValue(networkError)
@@ -131,5 +168,62 @@ describe('Login', () => {
       expect.objectContaining({ message: 'Onjuist e-mailadres of wachtwoord.' }),
     )
     expect(logError).toHaveBeenCalledWith({ page: 'Login', action: 'signIn', error: networkError })
+  })
+
+  it('shows a "Continue with Google" button', () => {
+    renderLogin('/login')
+    expect(screen.getByRole('button', { name: 'Doorgaan met Google' })).toBeInTheDocument()
+  })
+
+  it('calls signInWithGoogle with no next when there is none in the URL', async () => {
+    mockSignInWithGoogle.mockResolvedValue(undefined)
+    const user = userEvent.setup()
+    renderLogin('/login')
+
+    await user.click(screen.getByRole('button', { name: 'Doorgaan met Google' }))
+
+    expect(mockSignInWithGoogle).toHaveBeenCalledWith(undefined)
+  })
+
+  it('round-trips the ?next= param into signInWithGoogle', async () => {
+    mockSignInWithGoogle.mockResolvedValue(undefined)
+    const user = userEvent.setup()
+    renderLogin(`/login?next=${encodeURIComponent('/progress?tab=woordenschat')}`)
+
+    await user.click(screen.getByRole('button', { name: 'Doorgaan met Google' }))
+
+    expect(mockSignInWithGoogle).toHaveBeenCalledWith('/progress?tab=woordenschat')
+  })
+
+  it('shows a friendly error when signInWithGoogle itself throws (e.g. blocked popup)', async () => {
+    mockSignInWithGoogle.mockRejectedValue(new Error('oauth init failed'))
+    const user = userEvent.setup()
+    renderLogin('/login')
+
+    await user.click(screen.getByRole('button', { name: 'Doorgaan met Google' }))
+
+    const { notifications } = await import('@mantine/notifications')
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({ color: 'red', message: 'Aanmelden met Google is mislukt. Probeer het opnieuw.' }),
+    )
+  })
+
+  it('shows a friendly notification when GoTrue returns an OAuth error on redirect back to /login', async () => {
+    renderLogin('/login?error=access_denied&error_description=User+denied+access')
+
+    const { notifications } = await import('@mantine/notifications')
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({ color: 'red', message: 'Aanmelden met Google is mislukt. Probeer het opnieuw.' }),
+    )
+    expect(logError).toHaveBeenCalledWith(
+      expect.objectContaining({ page: 'Login', action: 'oauthCallback' }),
+    )
+  })
+
+  it('navigates away once a user appears in the store (post-OAuth round trip already signed in)', async () => {
+    mockUserRef.current = { id: 'user-1', email: 'jan@example.com' }
+    renderLogin(`/login?next=${encodeURIComponent('/progress')}`)
+
+    expect(mockNavigate).toHaveBeenCalledWith('/progress')
   })
 })

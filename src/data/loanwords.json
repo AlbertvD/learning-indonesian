@@ -1,0 +1,867 @@
+[
+{
+"id": "absen",
+"nl": "absent",
+"gloss": "absent"
+},
+{
+"id": "adat",
+"nl": "adat",
+"gloss": "zeden en gewoonten"
+},
+{
+"id": "agen",
+"nl": "agent",
+"gloss": "agent"
+},
+{
+"id": "agenda",
+"nl": "agenda",
+"gloss": "agenda"
+},
+{
+"id": "aki",
+"nl": "accu",
+"gloss": "accu"
+},
+{
+"id": "apotek",
+"nl": "apotheek",
+"gloss": "apotheek"
+},
+{
+"id": "apoteker",
+"nl": "apotheker",
+"gloss": "apotheker"
+},
+{
+"id": "arsip",
+"nl": "archief",
+"gloss": "archief"
+},
+{
+"id": "asbak",
+"nl": "asbak",
+"gloss": "asbak"
+},
+{
+"id": "bak",
+"nl": "bak",
+"gloss": "bak"
+},
+{
+"id": "balkon",
+"nl": "balkon",
+"gloss": "balkon"
+},
+{
+"id": "ban",
+"nl": "band",
+"gloss": "band (van wiel)"
+},
+{
+"id": "batik",
+"nl": "batik",
+"gloss": "kleurtechniek voor stof / batik"
+},
+{
+"id": "baut",
+"nl": "bout",
+"gloss": "bout"
+},
+{
+"id": "bengkel",
+"nl": "winkel",
+"gloss": "garage"
+},
+{
+"id": "berani",
+"nl": "branie",
+"gloss": "dapper / moedig"
+},
+{
+"id": "bir",
+"nl": "bier",
+"gloss": "bier"
+},
+{
+"id": "bit",
+"nl": "biet",
+"gloss": "biet"
+},
+{
+"id": "blus",
+"nl": "bloes",
+"gloss": "bloes"
+},
+{
+"id": "bor",
+"nl": "boor",
+"gloss": "boor"
+},
+{
+"id": "bruto",
+"nl": "bruto",
+"gloss": "bruto"
+},
+{
+"id": "bus",
+"nl": "bus",
+"gloss": "bus"
+},
+{
+"id": "busi",
+"nl": "bougie",
+"gloss": "bougie"
+},
+{
+"id": "cokelat",
+"nl": "chocolade",
+"gloss": "chocolade / bruin"
+},
+{
+"id": "dasi",
+"nl": "dasje / das",
+"gloss": "stropdas"
+},
+{
+"id": "dinamo",
+"nl": "dynamo",
+"gloss": "dynamo"
+},
+{
+"id": "direktur",
+"nl": "directeur",
+"gloss": "directeur"
+},
+{
+"id": "dokter",
+"nl": "dokter",
+"gloss": "dokter / arts"
+},
+{
+"id": "dop",
+"nl": "dop",
+"gloss": "dop"
+},
+{
+"id": "dosis",
+"nl": "dosis",
+"gloss": "dosis"
+},
+{
+"id": "faktur",
+"nl": "factuur",
+"gloss": "factuur"
+},
+{
+"id": "formulir",
+"nl": "formulier",
+"gloss": "formulier"
+},
+{
+"id": "gamelan",
+"nl": "gamelan",
+"gloss": "Javaans orkest"
+},
+{
+"id": "gang",
+"nl": "gang",
+"gloss": "gang"
+},
+{
+"id": "giro",
+"nl": "giro",
+"gloss": "giro"
+},
+{
+"id": "gong",
+"nl": "gong",
+"gloss": "gong"
+},
+{
+"id": "gorden",
+"nl": "gordijn",
+"gloss": "gordijn"
+},
+{
+"id": "gram",
+"nl": "gram",
+"gloss": "gram"
+},
+{
+"id": "granat",
+"nl": "granaat",
+"gloss": "granaat"
+},
+{
+"id": "gratis",
+"nl": "gratis",
+"gloss": "gratis"
+},
+{
+"id": "grendel",
+"nl": "grendel",
+"gloss": "grendel"
+},
+{
+"id": "gubernur",
+"nl": "gouverneur",
+"gloss": "gouverneur"
+},
+{
+"id": "gulden",
+"nl": "gulden",
+"gloss": "gulden"
+},
+{
+"id": "guru",
+"nl": "goeroe",
+"gloss": "onderwijzer / leraar"
+},
+{
+"id": "halte",
+"nl": "halte",
+"gloss": "halte"
+},
+{
+"id": "ham",
+"nl": "ham",
+"gloss": "ham"
+},
+{
+"id": "handuk",
+"nl": "handdoek",
+"gloss": "handdoek"
+},
+{
+"id": "hektar",
+"nl": "hectare",
+"gloss": "hectare"
+},
+{
+"id": "helm",
+"nl": "helm",
+"gloss": "helm"
+},
+{
+"id": "jas",
+"nl": "jas",
+"gloss": "jas / colbert"
+},
+{
+"id": "kabel",
+"nl": "kabel",
+"gloss": "kabel"
+},
+{
+"id": "kakatua",
+"nl": "kaketoe",
+"gloss": "kaketoe"
+},
+{
+"id": "kalender",
+"nl": "kalender",
+"gloss": "kalender"
+},
+{
+"id": "kamar",
+"nl": "kamer",
+"gloss": "kamer"
+},
+{
+"id": "kampung",
+"nl": "kampong",
+"gloss": "dorp / wijk"
+},
+{
+"id": "kans",
+"nl": "kans",
+"gloss": "kans"
+},
+{
+"id": "kantin",
+"nl": "kantine",
+"gloss": "kantine"
+},
+{
+"id": "kantor",
+"nl": "kantoor",
+"gloss": "kantoor"
+},
+{
+"id": "kapuk",
+"nl": "kapok",
+"gloss": "kapok"
+},
+{
+"id": "karcis",
+"nl": "kaartjes",
+"gloss": "kaartje"
+},
+{
+"id": "kartu",
+"nl": "kaart",
+"gloss": "kaart"
+},
+{
+"id": "kas",
+"nl": "kas",
+"gloss": "kas"
+},
+{
+"id": "kasir",
+"nl": "kassier",
+"gloss": "kassier"
+},
+{
+"id": "katrol",
+"nl": "katrol",
+"gloss": "katrol"
+},
+{
+"id": "katun",
+"nl": "katoen",
+"gloss": "katoen"
+},
+{
+"id": "kaus",
+"nl": "kous",
+"gloss": "(onder)hemd"
+},
+{
+"id": "kecap",
+"nl": "ketjap",
+"gloss": "sojasaus"
+},
+{
+"id": "kelambu",
+"nl": "klamboe",
+"gloss": "klamboe"
+},
+{
+"id": "kelas",
+"nl": "klas",
+"gloss": "klas / klasse"
+},
+{
+"id": "kerbau",
+"nl": "karbouw",
+"gloss": "waterbuffel"
+},
+{
+"id": "keris",
+"nl": "kris",
+"gloss": "Javaans steekwapen"
+},
+{
+"id": "kilo",
+"nl": "kilo",
+"gloss": "kilo (gewicht) / kilometer"
+},
+{
+"id": "klewang",
+"nl": "klewang",
+"gloss": "klewang"
+},
+{
+"id": "knalpot",
+"nl": "knalpot",
+"gloss": "uitlaat"
+},
+{
+"id": "kol",
+"nl": "kool",
+"gloss": "kool"
+},
+{
+"id": "kolonel",
+"nl": "kolonel",
+"gloss": "kolonel"
+},
+{
+"id": "komandan",
+"nl": "commandant",
+"gloss": "commandant"
+},
+{
+"id": "kompor",
+"nl": "komfoor",
+"gloss": "fornuis / kookplaat"
+},
+{
+"id": "kontrak",
+"nl": "contract",
+"gloss": "kontrakt"
+},
+{
+"id": "koper",
+"nl": "koffer",
+"gloss": "koffer"
+},
+{
+"id": "kopi",
+"nl": "koffie",
+"gloss": "koffie"
+},
+{
+"id": "koran",
+"nl": "krant",
+"gloss": "krant"
+},
+{
+"id": "korting",
+"nl": "korting",
+"gloss": "korting"
+},
+{
+"id": "kran",
+"nl": "kraan",
+"gloss": "kraan"
+},
+{
+"id": "kroket",
+"nl": "kroket",
+"gloss": "kroket"
+},
+{
+"id": "kuli",
+"nl": "koelie",
+"gloss": "koelie"
+},
+{
+"id": "kulkas",
+"nl": "koelkast",
+"gloss": "koelkast"
+},
+{
+"id": "kursus",
+"nl": "cursus",
+"gloss": "cursus"
+},
+{
+"id": "kwitansi",
+"nl": "kwitantie",
+"gloss": "kwitantie"
+},
+{
+"id": "lampu",
+"nl": "lamp",
+"gloss": "lamp"
+},
+{
+"id": "lem",
+"nl": "lijm",
+"gloss": "lijm"
+},
+{
+"id": "les",
+"nl": "les",
+"gloss": "les"
+},
+{
+"id": "liter",
+"nl": "liter",
+"gloss": "liter"
+},
+{
+"id": "loket",
+"nl": "loket",
+"gloss": "loket"
+},
+{
+"id": "lumpia",
+"nl": "loempia",
+"gloss": "loempia"
+},
+{
+"id": "mantel",
+"nl": "mantel",
+"gloss": "mantel"
+},
+{
+"id": "map",
+"nl": "map",
+"gloss": "map"
+},
+{
+"id": "mayor",
+"nl": "majoor",
+"gloss": "majoor"
+},
+{
+"id": "mobil",
+"nl": "automobiel",
+"gloss": "auto"
+},
+{
+"id": "motor",
+"nl": "motor",
+"gloss": "motor / motorfiets"
+},
+{
+"id": "mur",
+"nl": "moer",
+"gloss": "moer"
+},
+{
+"id": "nasi goreng",
+"nl": "nasi goreng",
+"gloss": "gekookte rijst, daarna met kruiden gebakken"
+},
+{
+"id": "netto",
+"nl": "netto",
+"gloss": "netto"
+},
+{
+"id": "nomor",
+"nl": "nummer",
+"gloss": "nummer"
+},
+{
+"id": "om",
+"nl": "oom",
+"gloss": "oom"
+},
+{
+"id": "oma",
+"nl": "oma",
+"gloss": "oma"
+},
+{
+"id": "ongkos",
+"nl": "onkosten",
+"gloss": "(on)kosten"
+},
+{
+"id": "ons",
+"nl": "ons",
+"gloss": "ons"
+},
+{
+"id": "opa",
+"nl": "opa",
+"gloss": "opa"
+},
+{
+"id": "orang hutan",
+"nl": "orang-oetan",
+"gloss": "orang-oetan"
+},
+{
+"id": "oven",
+"nl": "oven",
+"gloss": "oven"
+},
+{
+"id": "pasar",
+"nl": "pasar (malam)",
+"gloss": "markt"
+},
+{
+"id": "paspor",
+"nl": "paspoort",
+"gloss": "paspoort"
+},
+{
+"id": "pastor",
+"nl": "pastoor",
+"gloss": "pastoor"
+},
+{
+"id": "pelek",
+"nl": "velg",
+"gloss": "velg"
+},
+{
+"id": "pensiun",
+"nl": "pensioen",
+"gloss": "pensioen"
+},
+{
+"id": "per",
+"nl": "veer",
+"gloss": "per"
+},
+{
+"id": "pikir",
+"nl": "piekeren",
+"gloss": "denken / vinden"
+},
+{
+"id": "pil",
+"nl": "pil",
+"gloss": "pil"
+},
+{
+"id": "pilar",
+"nl": "pilaar",
+"gloss": "pilaar"
+},
+{
+"id": "pintar",
+"nl": "pienter",
+"gloss": "knap / intelligent"
+},
+{
+"id": "pisang",
+"nl": "pisang",
+"gloss": "banaan"
+},
+{
+"id": "pistol",
+"nl": "pistool",
+"gloss": "pistool"
+},
+{
+"id": "polisi",
+"nl": "politie",
+"gloss": "politie"
+},
+{
+"id": "pompa",
+"nl": "pomp",
+"gloss": "pomp"
+},
+{
+"id": "pon",
+"nl": "pond",
+"gloss": "pond"
+},
+{
+"id": "prei",
+"nl": "prei",
+"gloss": "prei"
+},
+{
+"id": "rekening",
+"nl": "rekening",
+"gloss": "rekening"
+},
+{
+"id": "rem",
+"nl": "rem",
+"gloss": "rem"
+},
+{
+"id": "resep",
+"nl": "recept",
+"gloss": "recept"
+},
+{
+"id": "riol",
+"nl": "riool",
+"gloss": "riool"
+},
+{
+"id": "rok",
+"nl": "rok",
+"gloss": "rok"
+},
+{
+"id": "rotan",
+"nl": "rotan",
+"gloss": "rotan"
+},
+{
+"id": "saldo",
+"nl": "saldo",
+"gloss": "saldo"
+},
+{
+"id": "salep",
+"nl": "zalf",
+"gloss": "zalf"
+},
+{
+"id": "sambal",
+"nl": "sambal",
+"gloss": "pasta van Spaanse pepers"
+},
+{
+"id": "sarung",
+"nl": "sarong",
+"gloss": "sarong"
+},
+{
+"id": "sate",
+"nl": "saté",
+"gloss": "sate"
+},
+{
+"id": "saus",
+"nl": "saus",
+"gloss": "saus"
+},
+{
+"id": "sekretaris",
+"nl": "secretaris",
+"gloss": "secretaris / secretaresse"
+},
+{
+"id": "selai",
+"nl": "gelei",
+"gloss": "jam"
+},
+{
+"id": "semen",
+"nl": "cement",
+"gloss": "cement"
+},
+{
+"id": "senang",
+"nl": "senang",
+"gloss": "zich prettig voelen / blij / leuk"
+},
+{
+"id": "sepeda",
+"nl": "velocipède",
+"gloss": "fiets"
+},
+{
+"id": "serbet",
+"nl": "servet",
+"gloss": "servet"
+},
+{
+"id": "setir",
+"nl": "stuur",
+"gloss": "stuur"
+},
+{
+"id": "setrika",
+"nl": "strijkijzer",
+"gloss": "strijkijzer"
+},
+{
+"id": "sigaret",
+"nl": "sigaret",
+"gloss": "sigaret"
+},
+{
+"id": "sirop",
+"nl": "siroop",
+"gloss": "siroop"
+},
+{
+"id": "spatbor",
+"nl": "spatbord",
+"gloss": "spatbord"
+},
+{
+"id": "standar",
+"nl": "standaard",
+"gloss": "standaard"
+},
+{
+"id": "stasiun",
+"nl": "station",
+"gloss": "station"
+},
+{
+"id": "steker",
+"nl": "stekker",
+"gloss": "stekker"
+},
+{
+"id": "stempel",
+"nl": "stempel",
+"gloss": "stempel"
+},
+{
+"id": "stopkontak",
+"nl": "stopcontact",
+"gloss": "stopcontact"
+},
+{
+"id": "sup",
+"nl": "soep",
+"gloss": "soep"
+},
+{
+"id": "suster",
+"nl": "zuster",
+"gloss": "zuster"
+},
+{
+"id": "tahu",
+"nl": "tahoe",
+"gloss": "weten"
+},
+{
+"id": "tang",
+"nl": "tang",
+"gloss": "tang"
+},
+{
+"id": "tante",
+"nl": "tante",
+"gloss": "tante"
+},
+{
+"id": "tas",
+"nl": "tas",
+"gloss": "tas"
+},
+{
+"id": "tauge",
+"nl": "taugé",
+"gloss": "taugé"
+},
+{
+"id": "tegel",
+"nl": "tegel",
+"gloss": "tegel"
+},
+{
+"id": "toko",
+"nl": "toko",
+"gloss": "winkel"
+},
+{
+"id": "ton",
+"nl": "ton",
+"gloss": "ton (gewicht)"
+},
+{
+"id": "trem",
+"nl": "tram",
+"gloss": "tram"
+},
+{
+"id": "universitas",
+"nl": "universiteit",
+"gloss": "universiteit"
+},
+{
+"id": "verban",
+"nl": "verband",
+"gloss": "verband"
+},
+{
+"id": "versneling",
+"nl": "versnelling",
+"gloss": "versnelling"
+},
+{
+"id": "wastafel",
+"nl": "wastafel",
+"gloss": "wastafel"
+},
+{
+"id": "waterpas",
+"nl": "waterpas",
+"gloss": "waterpas"
+},
+{
+"id": "wol",
+"nl": "wol",
+"gloss": "wol"
+},
+{
+"id": "wortel",
+"nl": "wortel",
+"gloss": "wortel (groente)"
+}
+]

@@ -13,9 +13,10 @@
 // a real feature, nowhere else.
 
 import { useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router'
 import type { Lang } from '@/lib/i18n'
 import { SunMark } from '@/components/SunMark'
+import { LOANWORD_REVEAL_PAIRS } from '@/lib/loanwords/revealPairs'
 import { landingCopy } from './Landing.copy'
 import classes from './Landing.module.css'
 
@@ -129,6 +130,40 @@ export function Landing() {
           </div>
         </section>
 
+        {/* The loanword bridge, placed FIRST after the hero on purpose.
+            Primary persona is the heritage learner (owner decision 2026-08-05):
+            Dutch, family ties to Indonesia, already knows ketjap and pasar malam
+            without ever having studied. For that reader this is not a feature
+            list, it is recognition — "you already speak more of this than you
+            think". It is also the one advantage no competitor can copy into
+            another language pair, and until now it was visible only AFTER
+            signup, which is backwards for the thing meant to cause signup.
+            Pairs are shared with the Welkom onboarding so the promise here and
+            the first screen inside the app are literally the same list. */}
+        <section className={`${classes.section} ${classes.sectionAiry}`}>
+          <div className={classes.lead}>
+            <span className={classes.leadKicker}>{T.bridgeKicker}</span>
+            <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.bridgeTitle}</h2>
+            <p className={classes.bridgeBody}>{T.bridgeBody}</p>
+          </div>
+          <ul className={classes.bridgeWall}>
+            {LOANWORD_REVEAL_PAIRS.map(pair => (
+              <li key={pair.id} className={classes.bridgePair}>
+                <span className={classes.bridgeNl}>{pair.nl}</span>
+                <span className={classes.bridgeArrow} aria-hidden="true">→</span>
+                <span className={classes.bridgeId}>{pair.id}</span>
+              </li>
+            ))}
+          </ul>
+          <p className={classes.bridgeMore}>{T.bridgeMore}</p>
+          {/* The category argument, and the single least copyable sentence
+              on the page (docs/marketing/positioning.md §1). Every large app
+              teaches this pair through English, which makes the Dutch
+              loanwords structurally unusable to them. */}
+          <p className={classes.bridgeEdge}>{T.bridgeEdge}</p>
+          <Link className={classes.bridgeLink} to="/leenwoorden">{T.bridgeLink}</Link>
+        </section>
+
         <section className={`${classes.section} ${classes.sectionAiry}`}>
           <div className={classes.lead}>
             <span className={classes.leadKicker}>{T.howKicker}</span>
@@ -210,11 +245,11 @@ export function Landing() {
           </div>
         </section>
 
-        <section className={classes.invite}>
-          <div className={classes.inviteTxt}>
-            <div className={classes.inviteEyebrow}>{T.inviteEyebrow}</div>
-            <h2 className={classes.serif}>{T.inviteTitle}</h2>
-            <p>{T.inviteBody}</p>
+        <section className={classes.pricing}>
+          <div className={classes.pricingTxt}>
+            <div className={classes.pricingEyebrow}>{T.pricingEyebrow}</div>
+            <h2 className={classes.serif}>{T.pricingTitle}</h2>
+            <p>{T.pricingBody}</p>
           </div>
           <Link className={`${classes.btn} ${classes.btnFill} ${classes.btnLg}`} to="/register">
             {T.heroCta}
@@ -228,6 +263,8 @@ export function Landing() {
         </span>
         <span className={classes.footLinks}>
           <Link to="/privacy">{T.footerPrivacy}</Link>
+          <Link to="/voorwaarden">{T.footerTerms}</Link>
+          <Link to="/restitutie">{T.footerRefunds}</Link>
           <span className={classes.langSwitch}>
             <button type="button" aria-pressed={lang === 'nl'} onClick={() => switchLang('nl')}>
               NL

@@ -7,34 +7,25 @@
 // changes). Skippable at every step. The slice-2 "instaptoets" branch link is
 // intentionally ABSENT until the placement probe ships (§3.4), not stubbed.
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconArrowRight } from '@tabler/icons-react'
 import { PageContainer, PageBody, HeroCard } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
 import { getCollectionsOverview, setCollectionActivated } from '@/lib/collections'
+import { LOANWORD_REVEAL_PAIRS } from '@/lib/loanwords/revealPairs'
 import { logError } from '@/lib/logger'
 import { nl as T } from '@/lib/i18n'
 import classes from './Welkom.module.css'
 
 const COLLECTION_SLUG = 'nl-leenwoorden'
 
-// Curated reveal wall — the most striking everyday pairs, a deliberate mix of
-// spelling-shifted "aha" loans (koelkast→kulkas) and near-identical ones
-// (gratis→gratis). Every pair is a confirmed member of nl-leenwoorden.
-const REVEAL: ReadonlyArray<{ nl: string; id: string }> = [
-  { nl: 'koelkast', id: 'kulkas' },
-  { nl: 'handdoek', id: 'handuk' },
-  { nl: 'kantoor', id: 'kantor' },
-  { nl: 'paspoort', id: 'paspor' },
-  { nl: 'politie', id: 'polisi' },
-  { nl: 'kantine', id: 'kantin' },
-  { nl: 'knalpot', id: 'knalpot' },
-  { nl: 'rekening', id: 'rekening' },
-  { nl: 'gratis', id: 'gratis' },
-  { nl: 'dokter', id: 'dokter' },
-]
+// The curated reveal wall moved to src/lib/loanwords/revealPairs.ts so the
+// PUBLIC landing band can show the same pairs — the promise a visitor sees
+// before signing up should be exactly the one this page opens with, and this is
+// the last list in the product you want drifting between two copies.
+const REVEAL = LOANWORD_REVEAL_PAIRS
 
 export function Welkom() {
   const navigate = useNavigate()

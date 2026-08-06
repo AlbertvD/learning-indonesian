@@ -20,7 +20,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
 import classes from './ChapterExperience.module.css'

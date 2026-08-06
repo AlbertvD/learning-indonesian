@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 import { createClient } from '@supabase/supabase-js'
-import { readFileSync, existsSync } from 'fs'
+import { existsSync } from 'fs'
 import { podcasts } from './data/podcasts'
+import { compressAudioFile, describeCompression } from './lib/compress-audio'
 
 const serviceKey = process.env.SUPABASE_SERVICE_KEY
 if (!serviceKey) {
@@ -9,7 +10,9 @@ if (!serviceKey) {
   process.exit(1)
 }
 
-const supabase = createClient('https://api.supabase.duin.home', serviceKey)
+// Was hardcoded to the homelab, so this could not seed Supabase Cloud.
+// SUPABASE_URL selects the target; the default keeps existing calls working.
+const supabase = createClient(process.env.SUPABASE_URL ?? 'https://api.supabase.duin.home', serviceKey)
 const audioDir = 'content/podcasts'
 
 for (const podcast of podcasts) {
@@ -21,12 +24,16 @@ for (const podcast of podcasts) {
   const storagePath = `podcasts/${podcast.audio_filename}`
 
   if (existsSync(localPath)) {
-    const buffer = readFileSync(localPath)
     const ext = podcast.audio_filename.split('.').pop()?.toLowerCase()
     const contentType = ext === 'm4a' ? 'audio/mp4' : 'audio/mpeg'
+    // Episodes ship at ~256 kbps stereo (26-30 MB each). Buckets are private,
+    // so every play is a signed fetch that cannot be edge-cached — download
+    // size is felt on every listen, not just the first.
+    const compressed = await compressAudioFile(localPath)
+    console.log(' ', describeCompression(podcast.audio_filename, compressed))
     const { error: uploadError } = await supabase.storage
       .from('indonesian-podcasts')
-      .upload(storagePath, buffer, { contentType, upsert: true })
+      .upload(storagePath, compressed.buffer, { contentType, upsert: true })
     if (uploadError) {
       console.error('Upload failed:', podcast.audio_filename, uploadError.message)
     } else {

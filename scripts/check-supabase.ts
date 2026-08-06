@@ -25,21 +25,33 @@ function fail(label: string, detail: string) {
   results.push({ label, ok: false, detail })
 }
 
-// Non-blocking: the check ran fine but surfaced something worth a human's
-// attention. Does NOT count toward `failures` / the non-zero exit code.
-function warn(label: string, detail: string) {
-  results.push({ label, ok: true, warn: true, detail })
-}
+// results[].warn is read by the output loop below for the non-blocking
+// warning display; no producer currently sets it (the one check that did,
+// the public-signup-gate probe, was deleted 2026-07-12 — open signup is now
+// the designed state, see Check 4b's removal note). Left as general-purpose
+// result-shape plumbing for a future WARNING-level check.
 
 // ── Check 1: API reachability ─────────────────────────────────────────────
+// REACHABILITY, not authorization. The old test required HTTP 200 from
+// `/rest/v1/`, which is a self-hosted assumption: our Kong lets an anon key
+// read the PostgREST OpenAPI root, but MANAGED Supabase returns 401 there
+// regardless of headers (verified 2026-07-30: 401 with apikey, and with
+// apikey + Authorization: Bearer). That made this check fail on cloud while
+// the API was demonstrably fine — every other check in this file was passing
+// against the same host.
+//
+// Any HTTP response below 500 proves the gateway is up and routing: a 401 is
+// the API answering, just declining. The failure modes actually worth
+// catching — DNS gone, Traefik/Kong down, stack not running — surface as a
+// connection error or a 5xx, both still caught below.
 try {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
-    headers: { apikey: ANON_KEY },
+    headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
   })
-  if (res.ok || res.status === 200) {
+  if (res.status < 500) {
     pass('API reachable')
   } else {
-    fail('API reachable', `HTTP ${res.status} — check Traefik routing and Supabase stack status`)
+    fail('API reachable', `HTTP ${res.status} — gateway up but erroring; check Supabase stack status`)
   }
 } catch (err) {
   fail('API reachable', `Connection failed: ${(err as Error).message} — check DNS and Traefik`)
@@ -88,15 +100,39 @@ try {
   } else if (res.ok || res.status === 200) {
     pass('Schema exposure (indonesian)')
   } else {
-    fail('Schema exposure (indonesian)', `HTTP ${res.status}: ${await res.text()}`)
+    // A permission-denied (PostgREST 42501) still PROVES the schema is
+    // exposed: PostgREST had to resolve indonesian.lessons in order to refuse
+    // access to it. An unexposed schema fails earlier, with the 406 handled
+    // above.
+    //
+    // This matters on managed Supabase, where `anon` holds no grants on the
+    // content tables at all, so this probe 401s where the homelab returns 200.
+    // The homelab difference is grant DRIFT, not design: it carries SELECT
+    // grants to `anon` on 7 indonesian tables that migration.sql never
+    // declares. Verified harmless there — RLS is enabled on all 7 and no
+    // policy admits anon or public, so anon receives an empty set either way —
+    // but CLOUD (zero anon grants) is the tighter, intended posture, and this
+    // check must not report the tighter configuration as a failure.
+    const body = await res.text()
+    if (/42501|permission denied/i.test(body)) {
+      pass('Schema exposure (indonesian) — exposed; anon correctly has no read grant')
+    } else {
+      fail('Schema exposure (indonesian)', `HTTP ${res.status}: ${body}`)
+    }
   }
 } catch (err) {
   fail('Schema exposure (indonesian)', `Request failed: ${(err as Error).message}`)
 }
 
 // ── Check 4: Auth endpoint ────────────────────────────────────────────────
+// The apikey header is REQUIRED on managed Supabase — /auth/v1/health returns
+// 401 without it there, while self-hosted Kong serves it unauthenticated
+// (verified both, 2026-07-30). Sending it satisfies both: homelab ignores the
+// header, cloud requires it.
 try {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/health`)
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/health`, {
+    headers: { apikey: ANON_KEY },
+  })
   const body = await res.json().catch(() => ({}))
   if (res.ok && (body as any).healthy !== false) {
     pass('Auth endpoint (GoTrue healthy)')
@@ -107,79 +143,83 @@ try {
   fail('Auth endpoint', `Request failed: ${(err as Error).message}`)
 }
 
-// ── Check 4b: public signup gate ───────────────────────────────────────────
-// Pre-cloud-hardening item 1 gates self-signup behind an invite code
-// (supabase/functions/signup-with-invite). The public auth.signUp endpoint
-// should be DISABLED at the GoTrue level (GOTRUE_DISABLE_SIGNUP) so nobody
-// can bypass the invite-code edge function. This is a WARNING, not a
-// failure, because it doesn't block local dev — but it must be closed
-// before any customer preview goes out.
-try {
-  const probeClient = createClient(SUPABASE_URL, ANON_KEY)
-  const probeSuffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`
-  const throwawayEmail = `signup-probe-${probeSuffix}@duin.home`
-  const { data, error } = await probeClient.auth.signUp({
-    email: throwawayEmail,
-    password: `Probe-${probeSuffix}!`,
-  })
-  if (!error && data.user) {
-    warn(
-      'Public signup gate',
-      `Public signup is still OPEN — supabase.auth.signUp succeeded and created a user ` +
-      `(id ${data.user.id}, email ${throwawayEmail}). Set GOTRUE_DISABLE_SIGNUP=true in ` +
-      `homelab-configs services/supabase/docker-compose.yml and restart GoTrue. Delete the ` +
-      `throwaway user first: DELETE FROM auth.users WHERE id = '${data.user.id}';`,
-    )
-  } else {
-    pass('Public signup gate (auth.signUp disabled)')
-  }
-} catch (err) {
-  warn('Public signup gate', `Could not determine signup gate state: ${(err as Error).message}`)
-}
+// ── Check 4b: (removed) ─────────────────────────────────────────────────
+// Open signup + payment-as-the-gate is the designed state since the
+// 2026-07-12 entitlement design (§2 "Invite gate: dropped entirely — payment
+// is the gate"; GOTRUE_DISABLE_SIGNUP=false). The old probe here predated
+// that flip, asserted the OPPOSITE of the current design (it warned when
+// supabase.auth.signUp succeeded), and minted a real throwaway auth.users
+// row on every run. Deleted rather than inverted — there is no invariant
+// left to probe: the public signup endpoint being open is correct, not a
+// misconfiguration to detect.
 
-// ── Checks 5–7: Storage buckets ───────────────────────────────────────────
-// Storage's bucket-metadata endpoint requires service_role even for buckets
-// that are publicly readable (anon role can read public OBJECTS via
-// /object/public/<bucket>/<key> but not bucket records). When SERVICE_KEY is
-// available, use it for the metadata read. Otherwise fall back to a public-
-// object reachability HEAD which works without auth — less precise but
-// validates the path the runtime app actually uses.
-const SERVICE_KEY_FOR_BUCKET_CHECK = process.env.SUPABASE_SERVICE_KEY
+// ── Checks 5–7: Storage buckets are private (anon probe) ──────────────────
+// All 3 buckets flip public=false as part of the entitlement DB slice
+// (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §4).
+//
+// ⚠ FIXED 2026-07-30 — this probe used to request `__nonexistent__` and treat
+// 400/404 as proof of privacy. That reasoning only holds one way. A PUBLIC
+// bucket ALSO returns 400 for a missing object, so the check passed against
+// the homelab, whose buckets are `public=true` to this day — while the very
+// same path with a REAL object returned 200, i.e. world-readable. It reported
+// the paywall's storage gate as verified without testing it.
+//
+// The probe now requests a REAL object. If the bucket were public, this would
+// return 200; anything else means the /object/public/ route refused it, which
+// is what private actually looks like. Each path is a stable, long-lived
+// object present in both environments; if one is ever removed the check turns
+// into a false PASS again, so keep them in step with the seeded content.
+//
+// The structural service-key assertion (storage.buckets.public=false ×3) lives
+// in check-supabase-deep.ts per the spec's split-by-key rule (§8): a
+// service-key check here would carry BYPASSRLS and prove nothing about the
+// public flag either way. That one is authoritative; this one is the
+// functional cross-check from the anon side.
+const PRIVACY_PROBE_PATHS: Record<string, string> = {
+  'indonesian-lessons': 'grammar/lesson-3-nl.mp3',
+  'indonesian-podcasts': 'podcasts/pronunciation-nl.mp3',
+  'indonesian-tts': 'tts/sulafat/apa-itu-fd336700.mp3',
+}
 for (const bucket of ['indonesian-lessons', 'indonesian-podcasts', 'indonesian-tts']) {
   try {
-    if (SERVICE_KEY_FOR_BUCKET_CHECK) {
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${bucket}`, {
-        headers: { apikey: SERVICE_KEY_FOR_BUCKET_CHECK, authorization: `Bearer ${SERVICE_KEY_FOR_BUCKET_CHECK}` },
-      })
-      if (res.ok) {
-        const data = await res.json()
-        if ((data as { public?: boolean }).public) {
-          pass(`Storage bucket: ${bucket} (public)`)
-        } else {
-          fail(`Storage bucket: ${bucket}`, `Bucket exists but is not public — make it public in Supabase Studio > Storage`)
-        }
-      } else if (res.status === 404) {
-        fail(`Storage bucket: ${bucket}`, `Bucket not found — create it in Supabase Studio > Storage, or check seed script`)
-      } else {
-        fail(`Storage bucket: ${bucket}`, `HTTP ${res.status}: ${await res.text()}`)
-      }
+    const probePath = PRIVACY_PROBE_PATHS[bucket]
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/public/${bucket}/${probePath}`)
+    if (res.status === 200) {
+      fail(
+        `Storage bucket private: ${bucket}`,
+        `A REAL object (${probePath}) is readable unauthenticated (HTTP 200) — the bucket is public=true and the paywall's storage gate is open; run: make migrate SUPABASE_SERVICE_KEY=<key>`,
+      )
+    } else if (res.status === 400 || res.status === 404 || res.status === 401 || res.status === 403) {
+      pass(`Storage bucket private: ${bucket} (real object refused → HTTP ${res.status})`)
     } else {
-      // Anon-only fallback: probe a known-public path. We don't know an exact
-      // file name, so HEAD the bucket's listing endpoint via a public OPTIONS
-      // preflight to confirm reachability.
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/public/${bucket}/__nonexistent__`)
-      // 404 with a Storage-shaped error means the bucket exists and is public
-      // (Storage routed our request and looked up the (missing) object). Any
-      // other status indicates a routing or auth failure.
-      if (res.status === 404 || res.status === 400) {
-        pass(`Storage bucket: ${bucket} (reachable; set SUPABASE_SERVICE_KEY for stricter check)`)
-      } else {
-        fail(`Storage bucket: ${bucket}`, `Unexpected HTTP ${res.status} on public-object probe — bucket may not exist or not be public`)
-      }
+      fail(`Storage bucket private: ${bucket}`, `Unexpected HTTP ${res.status} on unauthenticated public-object probe`)
     }
   } catch (err) {
-    fail(`Storage bucket: ${bucket}`, `Request failed: ${(err as Error).message}`)
+    fail(`Storage bucket private: ${bucket}`, `Request failed: ${(err as Error).message}`)
   }
+}
+
+// ── Check: stripe-webhook rejects unsigned requests ────────────────────────
+// Deployed via SCP + edge-functions container restart, not this DB slice
+// (docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §3.2/§7). An
+// unsigned POST (no stripe-signature header) must be rejected 400 by the
+// function's constructEventAsync verification step before reaching any
+// handler logic.
+try {
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/stripe-webhook`, {
+    method: 'POST',
+    headers: { apikey: ANON_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'probe.unsigned' }),
+  })
+  if (res.status === 400) {
+    pass('stripe-webhook rejects unsigned POST (HTTP 400)')
+  } else if (res.status === 404) {
+    fail('stripe-webhook rejects unsigned POST', 'HTTP 404 — function not deployed yet (expected until the entitlement rollout window, spec §7); SCP supabase/functions/stripe-webhook/index.ts to the homelab bind mount and restart supabase-edge-functions')
+  } else {
+    fail('stripe-webhook rejects unsigned POST', `Unexpected HTTP ${res.status} — signature verification may be missing or misconfigured`)
+  }
+} catch (err) {
+  fail('stripe-webhook rejects unsigned POST', `Request failed: ${(err as Error).message}`)
 }
 
 // ── Checks 7–9: Table reads (anon key via authenticated session) ──────────
@@ -278,7 +318,7 @@ if (authed) {
   if (lessonErr) {
     fail('Lesson audio URLs accessible', lessonErr.message)
   } else if (!lessons || lessons.length === 0) {
-    fail('Lesson audio URLs accessible', 'No lessons with audio found — run: make seed-lessons && make seed-lesson-audio SUPABASE_SERVICE_KEY=<key>')
+    fail('Lesson audio URLs accessible', 'No lessons with audio found — grammar audio is published by scripts/grammar-podcast/publish.ts')
   } else {
     for (const lesson of lessons as { title: string; audio_path: string }[]) {
       const { data } = supabase.storage.from('indonesian-lessons').getPublicUrl(lesson.audio_path)
@@ -287,10 +327,100 @@ if (authed) {
         if (res.ok) {
           pass(`Audio URL accessible: ${lesson.audio_path}`)
         } else {
-          fail(`Audio URL accessible: ${lesson.audio_path}`, `HTTP ${res.status} — run: make seed-lesson-audio SUPABASE_SERVICE_KEY=<key>`)
+          fail(`Audio URL accessible: ${lesson.audio_path}`, `HTTP ${res.status} — re-publish via scripts/grammar-podcast/publish.ts`)
         }
       } catch (err) {
         fail(`Audio URL accessible: ${lesson.audio_path}`, `Request failed: ${(err as Error).message}`)
+      }
+    }
+  }
+  // ── Entitlement RLS probes (2026-07-12 entitlement design §8, reworked
+  //    2026-07-12 for the TTS-free-for-authenticated amendment §4/§10)  ────
+  // Anon key + REAL signed-in test users — the service-key client in
+  // check-supabase-deep.ts carries BYPASSRLS and would sign ANY path
+  // regardless of the storage/RPC policy (the b38e467f false-green class).
+  // CHECK_TEST_EMAIL is comped via the §6 migration backfill (existing
+  // preview users → source='comp'), so the `supabase` client already signed
+  // in above IS the comped probe. A second, dedicated non-entitled account
+  // (never comped, no Stripe subscription) proves the DENY path.
+  //
+  // The entire indonesian-tts bucket is now free for any AUTHENTICATED user
+  // (spec §4 amendment), so the paid/free-TTS distinction this block used to
+  // probe no longer exists — a non-entitled probe is EXPECTED to sign any
+  // TTS clip. The load-bearing paid-audio deny probe moves to
+  // indonesian-lessons (a lesson beyond the free tier's audio_path); the TTS
+  // probe now asserts the free-for-authenticated grant instead of a deny.
+  //
+  // NOTE: this fails against a not-yet-migrated DB (entitlements/can_read_media/
+  // the set_lesson_activation gate don't exist yet) — expected until the
+  // coordinated rollout, spec §7.
+  const NONENTITLED_EMAIL = process.env.CHECK_TEST_NONENTITLED_EMAIL
+  const NONENTITLED_PASSWORD = process.env.CHECK_TEST_NONENTITLED_PASSWORD
+  if (!NONENTITLED_EMAIL || !NONENTITLED_PASSWORD) {
+    results.push({ label: 'Entitlement RLS probes (skipped — no CHECK_TEST_NONENTITLED_EMAIL/CHECK_TEST_NONENTITLED_PASSWORD set)', ok: true })
+  } else {
+    const nonentitled = createClient(SUPABASE_URL, ANON_KEY)
+    const { error: neSignInErr } = await nonentitled.auth.signInWithPassword({ email: NONENTITLED_EMAIL, password: NONENTITLED_PASSWORD })
+    if (neSignInErr) {
+      fail('Entitlement RLS probes — non-entitled sign-in', `${neSignInErr.message} — check CHECK_TEST_NONENTITLED_EMAIL/CHECK_TEST_NONENTITLED_PASSWORD`)
+    } else {
+      try {
+        // A paid (order_index>3) lesson with audio — the load-bearing
+        // paid-media probe now that TTS is free-for-authenticated — plus any
+        // TTS clip to prove the free-for-authenticated bucket grant.
+        const { data: lessonRows, error: lessonErr } = await supabase
+          .schema('indonesian').from('lessons').select('id, order_index, audio_path')
+          .not('audio_path', 'is', null)
+        if (lessonErr) throw new Error(`lessons lookup: ${lessonErr.message}`)
+        const allLessons = (lessonRows ?? []) as { id: string; order_index: number; audio_path: string }[]
+        const paidLesson = allLessons.find(l => l.order_index > 3)
+
+        const { data: anyClipRows, error: clipErr } = await supabase
+          .schema('indonesian').from('audio_clips').select('storage_path').limit(1)
+        if (clipErr) throw new Error(`TTS clip lookup: ${clipErr.message}`)
+        const anyClip = (anyClipRows ?? [])[0] as { storage_path: string } | undefined
+
+        if (!paidLesson || !anyClip) {
+          fail('Entitlement RLS probes — fixture', 'no paid (order_index>3) lesson with audio / TTS clip found to probe against')
+        } else {
+          const { data: compedSigned, error: compedErr } = await supabase.storage
+            .from('indonesian-lessons').createSignedUrl(paidLesson.audio_path, 60)
+          if (compedErr || !compedSigned?.signedUrl) {
+            fail('Comped test user can sign a paid lesson audio clip', compedErr?.message ?? 'no signedUrl returned')
+          } else {
+            pass('Comped test user can sign a paid lesson audio clip')
+          }
+
+          const { data: neDeniedSigned, error: neDeniedErr } = await nonentitled.storage
+            .from('indonesian-lessons').createSignedUrl(paidLesson.audio_path, 60)
+          if (!neDeniedErr && neDeniedSigned?.signedUrl) {
+            fail('Non-entitled probe cannot sign a paid lesson audio clip', 'signing succeeded — indonesian_media_read policy is not gating the indonesian-lessons bucket')
+          } else {
+            pass('Non-entitled probe cannot sign a paid lesson audio clip')
+          }
+
+          const { data: neTtsSigned, error: neTtsErr } = await nonentitled.storage
+            .from('indonesian-tts').createSignedUrl(anyClip.storage_path, 60)
+          if (neTtsErr || !neTtsSigned?.signedUrl) {
+            fail('Non-entitled probe can sign any TTS clip (bucket is free-for-authenticated)', neTtsErr?.message ?? 'no signedUrl returned')
+          } else {
+            pass('Non-entitled probe can sign any TTS clip (bucket is free-for-authenticated)')
+          }
+
+          const { data: neUser } = await nonentitled.auth.getUser()
+          const neUid = neUser.user?.id
+          const { error: activationErr } = await nonentitled
+            .schema('indonesian').rpc('set_lesson_activation', { p_user_id: neUid, p_lesson_id: paidLesson.id, p_activated: true })
+          if (!activationErr) {
+            fail('set_lesson_activation raises entitlement_required for non-entitled probe', 'RPC succeeded — the entitlement gate in set_lesson_activation is missing or misordered')
+          } else if (!activationErr.message.includes('entitlement_required')) {
+            fail('set_lesson_activation raises entitlement_required for non-entitled probe', `raised a different error: ${activationErr.message}`)
+          } else {
+            pass('set_lesson_activation raises entitlement_required for non-entitled probe')
+          }
+        }
+      } catch (err) {
+        fail('Entitlement RLS probes', (err as Error).message)
       }
     }
   }

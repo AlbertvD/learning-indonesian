@@ -1,0 +1,93 @@
+# Supabase CLI project config — added 2026-07-30 for the Supabase Cloud
+# migration. Until now this repo deployed edge functions ONLY to the
+# self-hosted stack, by SCP-ing them to a bind mount and restarting the
+# container, so no CLI config was ever needed (see CLAUDE.md § Edge function
+# deployment). On cloud the deploy path is `supabase functions deploy`, and
+# per-function settings live here.
+project_id = "wodpkxsmildtgndnbraa"
+
+[functions.stripe-webhook]
+# MUST stay false. Stripe authenticates its POST with a `stripe-signature`
+# header, never a Supabase JWT — with verify_jwt on (the CLOUD DEFAULT) the
+# platform gateway rejects the request before the function runs, so the
+# signature check inside stripe-webhook/index.ts would never execute and every
+# subscription event would be silently dropped.
+#
+# This was previously invisible: the self-hosted edge container set
+# VERIFY_JWT=false globally (homelab-configs services/supabase/docker-compose.yml),
+# so no per-function setting existed. Verification itself is NOT weakened — the
+# function verifies the Stripe signature itself and rejects unsigned bodies with
+# 400 `missing_signature`.
+verify_jwt = false
+
+# The remaining functions keep the default verify_jwt = true: every one of them
+# is called by a signed-in user through supabase.functions.invoke(), which
+# attaches the user's access token, and each ALSO verifies the caller itself via
+# GET /auth/v1/user. Platform verification is a redundant outer layer there, not
+# the only gate.
+#   commit-capability-answer-report · create-checkout-session
+#   customer-portal · delete-account · verify-checkout
+#
+# NOT deployed to cloud: `main`. It is a self-hosted router built on
+# EdgeRuntime.userWorkers.create(), an API that exists only in the self-hosted
+# edge runtime; on cloud each function is independently addressable at
+# /functions/v1/<name>, so the router is both unnecessary and non-functional.
+
+
+# ─── Auth ────────────────────────────────────────────────────────────────────
+# DECLARED HERE so the repo is the source of truth. Apply with:
+#     make config-push
+# and verify with `make check-cloud-config`, which fails if the live project
+# differs from this file. Every setting below was applied BY HAND on 2026-08-02
+# (raw PATCH to the Management API) and existed nowhere in the repo until now —
+# exactly the drift this section exists to end.
+#
+# ⚠ Secrets are env() references, never literals. This repo is PUBLIC.
+[auth]
+# Where GoTrue sends anyone when a flow does not supply its own target. This sat
+# at Supabase's default "http://localhost:3000" until 2026-08-02 — a machine
+# that is not yours — so every password-reset and OAuth return would have landed
+# nowhere. Nothing detected it; that is why check-cloud-config exists.
+site_url = "https://kamoebisa.nl"
+
+# Exact-match allowlist for redirect targets. authStore.signInWithGoogle sends
+# `${window.location.origin}/login`; if that is not listed here GoTrue silently
+# substitutes site_url instead of erroring, so a wrong entry is invisible.
+additional_redirect_urls = [
+  "https://kamoebisa.nl/**",
+  "https://www.kamoebisa.nl/**",
+  "http://localhost:5173/**",
+  "http://localhost:5174/**",
+]
+
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+# TRUE = signup requires a clicked confirmation link (equivalently,
+# mailer_autoconfirm is FALSE on the project). The homelab runs autoconfirm ON,
+# and that difference is what made cloud signup show "Account created!" and then
+# silently eject the visitor (fixed in 4677aa45) — GoTrue signals the withheld
+# session by OMISSION: a user with session: null and NO error.
+enable_confirmations = true
+
+[auth.email.smtp]
+# Resend, eu-west-1 (EU data residency). Without SMTP the confirmation mail
+# above is undeliverable and signup is broken end-to-end.
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+# NEVER a literal. Sourced from .env.local, which is gitignored.
+pass = "env(RESEND_API_KEY)"
+admin_email = "noreply@kamoebisa.nl"
+sender_name = "Kamoe Bisa"
+
+[auth.external.google]
+# Client created 2026-08-02. The redirect URI registered with Google is
+# Supabase's callback (https://<ref>.supabase.co/auth/v1/callback), NOT the app
+# domain — which is why moving the frontend never invalidates it.
+enabled = true
+client_id = "env(GOOGLE_OAUTH_CLIENT_ID)"
+secret = "env(GOOGLE_OAUTH_CLIENT_SECRET)"

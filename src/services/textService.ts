@@ -1,5 +1,6 @@
 // src/services/textService.ts
 import { supabase } from '@/lib/supabase'
+import { SIGNED_URL_TTL_SECONDS } from '@/lib/signedAudioUrl'
 
 /**
  * One sentence of a Story podcast, aligned across the three languages.
@@ -151,10 +152,19 @@ export const textService = {
     return data as Podcast
   },
 
-  getAudioUrl(audioPath: string): string {
-    const { data } = supabase.storage
+  // The `indonesian-podcasts` bucket is private (entitlement-gating cutover,
+  // docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §4) — a raw
+  // storage path is no longer playable on its own; every caller resolves
+  // through this signed URL. Null on a signing failure (non-entitled user,
+  // missing object) — callers already have an absent-audio state.
+  async getSignedAudioUrl(audioPath: string): Promise<string | null> {
+    const { data, error } = await supabase.storage
       .from('indonesian-podcasts')
-      .getPublicUrl(audioPath)
-    return data.publicUrl
+      .createSignedUrl(audioPath, SIGNED_URL_TTL_SECONDS)
+    // NOT logged — a non-entitled user or a missing object is an expected
+    // outcome, not a bug (cf. signStoredAudioUrl in lib/signedAudioUrl.ts).
+    // Callers already treat a null URL as the existing absent-audio state.
+    if (error) return null
+    return data.signedUrl
   },
 }

@@ -9,11 +9,12 @@
 
 import type { ReactElement } from 'react'
 import { render as rtlRender, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { GrammarPodcasts } from '@/pages/GrammarPodcasts'
 import { GRAMMAR_TOPIC_SUMMARIES } from '@/lib/lessons/grammarTopicSummaries'
+import { supabase } from '@/lib/supabase'
 
 const render = (ui: ReactElement) =>
   rtlRender(<MantineProvider><MemoryRouter>{ui}</MemoryRouter></MantineProvider>)
@@ -29,7 +30,6 @@ vi.mock('@/stores/authStore', () => ({
 
 vi.mock('@/services/lessonService', () => ({
   lessonService: {
-    getAudioUrl: (path: string) => `https://cdn.test/indonesian-lessons/${path}`,
     listGrammarPodcasts: vi.fn(async () => [
       { order_index: 1, audio_path: 'grammar/l1-nl.mp3', audio_path_en: 'grammar/l1-en.mp3' },
       { order_index: 2, audio_path: 'grammar/l2-nl.mp3', audio_path_en: null },
@@ -37,8 +37,20 @@ vi.mock('@/services/lessonService', () => ({
   },
 }))
 
+vi.mock('@/lib/supabase')
+
+// One batch createSignedUrls call echoes every requested path back inside a
+// fake signed URL (fix #12: GrammarPodcasts signs all episodes in ONE call
+// instead of one getSignedAudioUrl call per row).
+const createSignedUrls = vi.fn(async (paths: string[]) => ({
+  data: paths.map((path) => ({ path, signedUrl: `https://cdn.test/indonesian-lessons/${path}`, error: null })),
+  error: null,
+}))
+
 beforeEach(() => {
   authState.profile = { language: 'nl' }
+  createSignedUrls.mockClear()
+  vi.mocked(supabase.storage.from).mockReturnValue({ createSignedUrls } as any)
 })
 
 describe('GrammarPodcasts', () => {
@@ -55,6 +67,13 @@ describe('GrammarPodcasts', () => {
     expect(players).toHaveLength(2)
     expect(players[0]).toHaveAttribute('src', 'https://cdn.test/indonesian-lessons/grammar/l1-nl.mp3')
     expect(players[1]).toHaveAttribute('src', 'https://cdn.test/indonesian-lessons/grammar/l2-nl.mp3')
+    // Both episodes signed in ONE batch call, not one createSignedUrls per row.
+    expect(supabase.storage.from).toHaveBeenCalledWith('indonesian-lessons')
+    expect(createSignedUrls).toHaveBeenCalledTimes(1)
+    expect(createSignedUrls).toHaveBeenCalledWith(
+      ['grammar/l1-nl.mp3', 'grammar/l2-nl.mp3'],
+      21600,
+    )
   })
 
   it('plays the EN episode and drops a lesson without an EN twin (no fallback)', async () => {

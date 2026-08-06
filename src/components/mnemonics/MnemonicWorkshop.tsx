@@ -10,7 +10,7 @@
 // docs/current-system/modules/mnemonics.md).
 
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { Modal, Textarea, Button } from '@mantine/core'
 import { IconX } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'

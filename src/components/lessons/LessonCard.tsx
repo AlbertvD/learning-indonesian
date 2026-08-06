@@ -21,7 +21,7 @@
 // Even grid (every tile == tallest) is owned by the page grid, not this card.
 
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { StatusPill } from '@/components/page/primitives'
 import { cx } from '@/components/page/primitives/cx'
 import classes from './LessonCard.module.css'

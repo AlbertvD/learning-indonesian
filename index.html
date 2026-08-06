@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="en">
+<!-- lang="nl", not "en". The app is Dutch-only since 2e645619 (the NL/EN profile
+     switch was removed for launch), and every word a visitor reads here is Dutch.
+     This was "en" until 2026-08-05, which made screen readers pronounce Dutch copy
+     with English phonemes — an accessibility defect first, an SEO one second. -->
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -8,7 +12,78 @@
          no external Google Fonts network call. Preload the primary (normal-weight)
          face only; italic is used sparingly and can wait for the CSS parse. -->
     <link rel="preload" href="/fonts/plus-jakarta-sans-latin-400-800.woff2" as="font" type="font/woff2" crossorigin>
-    <title>Kamoe Bisa</title>
+
+    <!-- Discoverability baseline. This is a client-rendered SPA, so these static
+         tags are ALL that a crawler or a link unfurler sees before JavaScript
+         runs — and most unfurlers (WhatsApp, Signal, LinkedIn, Slack) never run
+         it at all. Until 2026-08-05 the page carried only <title>Kamoe Bisa</title>,
+         so a link shared in a family group rendered as a bare URL: no title, no
+         image, no description. For a product that spreads by word of mouth in the
+         Dutch-Indonesian community, that cost more than search rankings do. -->
+    <title>Kamoe Bisa — Indonesisch leren voor Nederlandstaligen</title>
+    <!-- Two claims here are load-bearing differentiators, and both are verified
+         against the live database rather than aspirational (2026-08-05):
+         173 items carry `loan_source_nl` (the Dutch-Indonesian loanword bridge)
+         and 66 carry register=informal (spreektaal). Most courses teach only
+         bahasa baku, and no competitor can copy the loanword angle for another
+         language pair — it exists only between Dutch and Indonesian. -->
+    <meta name="description" content="Indonesisch leren als Nederlandstalige: je kent al ruim 170 woorden — kantoor, kamer, formulier. 30 lessen met dialogen, uitspraak én spreektaal. Les 1 t/m 3 gratis." />
+    <link rel="canonical" href="https://kamoebisa.nl/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kamoe Bisa" />
+    <meta property="og:locale" content="nl_NL" />
+    <meta property="og:url" content="https://kamoebisa.nl/" />
+    <meta property="og:title" content="Kamoe Bisa — Indonesisch leren voor Nederlandstaligen" />
+    <meta property="og:description" content="Kantoor→kantor, kamer→kamar, formulier→formulir. Als Nederlandstalige ken je al ruim 170 Indonesische woorden. Begin daar. Les 1 t/m 3 gratis." />
+    <!-- Absolute URL required: relative og:image is ignored by most unfurlers. -->
+    <meta property="og:image" content="https://kamoebisa.nl/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Kamoe Bisa — Indonesisch leren" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kamoe Bisa — Indonesisch leren voor Nederlandstaligen" />
+    <meta name="twitter:description" content="Als Nederlandstalige ken je al ruim 170 Indonesische woorden. Begin daar. Les 1 t/m 3 gratis." />
+    <meta name="twitter:image" content="https://kamoebisa.nl/og-image.jpg" />
+
+    <!-- Structured data. Kept minimal and TRUE: only the organisation and the
+         offer, both of which match /voorwaarden and the Stripe prices. Resist
+         adding aggregateRating or review markup — there are no reviews, and
+         fabricated ones are both a Google penalty and a lie. Update the prices
+         here in the same commit as i18n.ts and Stripe if they ever change. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "Indonesisch leren voor Nederlandstaligen",
+      "description": "Een doorlopende cursus Indonesisch van A1 tot B1 in het Nederlands: 30 lessen met grammatica, dialogen, uitspraak en spreektaal, plus dagelijkse oefening met slimme herhaling.",
+      "inLanguage": "nl",
+      "teaches": "Bahasa Indonesia",
+      "url": "https://kamoebisa.nl/",
+      "provider": {
+        "@type": "Organization",
+        "name": "Kamoe Bisa",
+        "legalName": "van Duijn Data & Analytics",
+        "url": "https://kamoebisa.nl/",
+        "email": "support@kamoebisa.nl",
+        "areaServed": "NL"
+      },
+      "offers": {
+        "@type": "Offer",
+        "category": "subscription",
+        "price": "9.00",
+        "priceCurrency": "EUR",
+        "url": "https://kamoebisa.nl/",
+        "availability": "https://schema.org/InStock"
+      },
+      "hasCourseInstance": {
+        "@type": "CourseInstance",
+        "courseMode": "online",
+        "courseWorkload": "PT10M"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

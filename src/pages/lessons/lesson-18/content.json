@@ -7,8 +7,8 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Achird",
     "duration_seconds": null,
-    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-18-nl.mp3",
-    "lesson_audio_url_en": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/grammar/lesson-18-en.mp3"
+    "lesson_audio_url": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-lessons/grammar/lesson-18-nl.mp3",
+    "lesson_audio_url_en": null
   },
   "sections": [
     {
@@ -21,126 +21,126 @@
             "speaker": "narrator",
             "translation": "Joyce en Harry willen even bij hun vriendin Jumilah langsgaan. Ze staan nu voor haar huis en roepen haar. Maar er komt geen antwoord.",
             "translation_en": "Joyce and Harry want to stop by their friend Jumilah's house. They are now standing in front of Jumilah's house and calling her. But there is no answer.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/joyce-dan-harry-hendak-a06d6c6e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/joyce-dan-harry-hendak-a06d6c6e.mp3"
           },
           {
             "text": "Halo, Jumilah, Jumilah!",
             "speaker": "Joyce",
             "translation": "Hallo, Jumilah, Jumilah!",
             "translation_en": "Hello, Jumilah, Jumilah!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/halo-jumilah-jumilah-9beac659.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/halo-jumilah-jumilah-9beac659.mp3"
           },
           {
             "text": "Tidak ada jawaban, mungkin ia lagi tidur siang. Kita 'kan berjanji mau mampir jam empat sore dan sekarang baru jam tiga. Mari, kita jalan-jalan dulu sebentar.",
             "speaker": "Harry",
             "translation": "Er komt geen antwoord, misschien slaapt ze een middagdutje. We hadden afgesproken om vier uur langs te komen en het is nu pas drie uur. Laten we eerst nog even een rondje gaan lopen.",
             "translation_en": "There is no answer, maybe she is taking an afternoon nap. We agreed to come by at four o'clock and it is only three now. Let's go for a short walk first.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/tidak-ada-jawaban-mungkin-3dde749a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/tidak-ada-jawaban-mungkin-3dde749a.mp3"
           },
           {
             "text": "Tetapi sebenarnya Jumilah sudah mendengar mereka, dan dari dalam rumah berlari ke luar.",
             "speaker": "narrator",
             "translation": "Maar eigenlijk had Jumilah hen al gehoord en ze kwam uit het huis naar buiten gerend.",
             "translation_en": "But actually Jumilah had already heard them, and she came running out of the house.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tetapi-sebenarnya-jumilah-sudah-facbda98.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/tetapi-sebenarnya-jumilah-sudah-facbda98.mp3"
           },
           {
             "text": "Hai, dari mana? Saya mendengar suara di luar, jadi saya melihat saja dulu. Halo, apa kabar? Mari masuk.",
             "speaker": "Jumilah",
             "translation": "Hé, waar komen jullie vandaan? Ik hoorde iemand buiten, dus ik keek even. Hallo, hoe gaat het? Kom erin.",
             "translation_en": "Hey, where are you coming from? I heard someone outside, so I looked. Hello, how are you? Come in.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/hai-dari-mana-saya-3da54f26.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/hai-dari-mana-saya-3da54f26.mp3"
           },
           {
             "text": "Kami tidak mengganggu 'kan? Soalnya kami datang terlalu siang.",
             "speaker": "Harry",
             "translation": "We storen toch niet? Het punt is dat we nogal vroeg zijn gekomen.",
             "translation_en": "We're not bothering you, are we? The thing is we came rather early.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kami-tidak-mengganggu-kan-2e456259.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/kami-tidak-mengganggu-kan-2e456259.mp3"
           },
           {
             "text": "Oh, tidak apa-apa. Saya sudah menunggu kalian.",
             "speaker": "Jumilah",
             "translation": "Oh, dat geeft niet. Ik zat al op jullie te wachten.",
             "translation_en": "Oh, that's fine. I was already waiting for you.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/oh-tidak-apaapa-saya-e58ad72f.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/oh-tidak-apaapa-saya-e58ad72f.mp3"
           },
           {
             "text": "Pintu halaman dibukanya dan mereka bertiga masuk ke dalam rumah lalu duduk di ruang tamu. Minuman dan makanan baru saja ditaruh di meja oleh pembantu.",
             "speaker": "narrator",
             "translation": "Ze opende het tuinpoortje en samen gingen ze het huis in en zetten zich in de woonkamer neer. Drank en eten waren net door het dienstmeisje op tafel gezet.",
             "translation_en": "She opened the garden gate and the three of them went into the house and sat down in the living room. Drinks and food had just been put on the table by the maid.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pintu-halaman-dibukanya-dan-2e7a2f9a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/pintu-halaman-dibukanya-dan-2e7a2f9a.mp3"
           },
           {
             "text": "Mari, silakan. Kue ini saya buat sendiri. Resep ini paling enak. Awas, jangan bilang tak enak lho!",
             "speaker": "Jumilah",
             "translation": "Alsjeblieft, eet smakelijk. Deze cake heb ik zelf gemaakt. Dit recept is echt het lekkerste. Let op, zeg niet dat het niet lekker is, hè!",
             "translation_en": "Please, help yourselves. I made this cake myself. This recipe is the best. Be careful, don't say it's not good, okay!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mari-silakan-kue-ini-aabfe8b2.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/mari-silakan-kue-ini-aabfe8b2.mp3"
           },
           {
             "text": "Enak sekali. Nanti, jangan lupa kasih resepmu ya.",
             "speaker": "Joyce",
             "translation": "Heerlijk! Later, vergeet niet om je recept aan me te geven, ja?",
             "translation_en": "Delicious! Later, don't forget to give me your recipe, okay?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/enak-sekali-nanti-jangan-bfdb34c6.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/enak-sekali-nanti-jangan-bfdb34c6.mp3"
           },
           {
             "text": "Di mana orang tuamu? Saya ingin sekali bertemu dengan mereka.",
             "speaker": "Harry",
             "translation": "Waar zijn je ouders? Ik zou hen graag willen ontmoeten.",
             "translation_en": "Where are your parents? I would very much like to meet them.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/di-mana-orang-tuamu-bd14cc04.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/di-mana-orang-tuamu-bd14cc04.mp3"
           },
           {
             "text": "Saya mencari orang tua saya dulu. Tunggu sebentar, ya.",
             "speaker": "Jumilah",
             "translation": "Ik ga mijn ouders even halen. Wacht even, goed?",
             "translation_en": "I'll get my parents. Wait a moment, okay?",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saya-mencari-orang-tua-4ac92fcf.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/saya-mencari-orang-tua-4ac92fcf.mp3"
           },
           {
             "text": "Ayah dan ibu Jumilah sudah lama ingin berkenalan dengan teman anaknya. Tamu asing jarang berkunjung ke rumah mereka, jadi tentu saja mereka senang sekali.",
             "speaker": "narrator",
             "translation": "Jumilah's ouders willen al lang kennis maken met de vrienden van hun dochter. Buitenlandse gasten komen zelden op bezoek, dus ze waren natuurlijk erg blij.",
             "translation_en": "Jumilah's parents have long wanted to meet their daughter's friends. Foreign guests rarely visit their house, so they were of course very pleased.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ayah-dan-ibu-jumilah-220447c7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/despina/ayah-dan-ibu-jumilah-220447c7.mp3"
           },
           {
             "text": "Nah, akhirnya kita bertemu juga sebelum Anda pulang ke negeri Anda. Jumilah sudah sering bercerita tentang Anda.",
             "speaker": "Ayah",
             "translation": "Nou, eindelijk ontmoeten we elkaar nog voordat jullie naar je land terugkeren. Jumilah heeft ons al veel over jullie verteld.",
             "translation_en": "Well, we finally meet before you return to your country. Jumilah has told us a lot about you.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/nah-akhirnya-kita-bertemu-cb5c3ecd.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/orus/nah-akhirnya-kita-bertemu-cb5c3ecd.mp3"
           },
           {
             "text": "Saya juga senang sekali. Ayo kita bercakap-cakap sambil makan. Kue ini khas Jawa, coba saja.",
             "speaker": "Ibu",
             "translation": "Ik ben ook erg blij. Laten we dan nu praten terwijl we eten. Probeer eens deze taart, het is een Javaanse specialiteit.",
             "translation_en": "I'm very pleased too. Let's chat while we eat. Try this cake, it's a Javanese specialty.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/kore/saya-juga-senang-sekali-f998d103.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/kore/saya-juga-senang-sekali-f998d103.mp3"
           },
           {
             "text": "Jangan pakai tangan kiri, ya Harry, seperti dulu. 'Kan tidak sopan!",
             "speaker": "Joyce",
             "translation": "Niet met je linkerhand, hè Harry, zoals je gewend bent. Dat is niet netjes!",
             "translation_en": "Don't use your left hand, Harry, like you usually do. That's not polite!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/jangan-pakai-tangan-kiri-e0d48517.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/sulafat/jangan-pakai-tangan-kiri-e0d48517.mp3"
           },
           {
             "text": "O, ya, hampir lupa lagi. Saya tahu, soalnya saya kidal. Selalu memakai tangan kiri.",
             "speaker": "Harry",
             "translation": "O ja, ik was het bijna vergeten. Ik weet het, want ik ben linkshandig. Ik gebruik altijd mijn linkerhand.",
             "translation_en": "Oh yes, I almost forgot. I understand, because I'm left-handed. I always use my left hand.",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/o-ya-hampir-lupa-79bb4840.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/algenib/o-ya-hampir-lupa-79bb4840.mp3"
           },
           {
             "text": "Memang itu adat orang Indonesia, tetapi dengan orang asing kami sudah mengerti. Sama seperti: jangan minum sampai isi gelas betul-betul habis. Kalau begitu disangka mau minum lagi!",
             "speaker": "Jumilah",
             "translation": "Dat is inderdaad een Indonesische gewoonte, maar met buitenlanders begrijpen we dat al. Net als: drink het glas niet helemaal leeg. Dan zou je de indruk wekken dat je nog meer wilt drinken!",
             "translation_en": "That is indeed an Indonesian custom, but with foreigners we understand already. Just like: don't drink your glass completely empty. Then people would think you want more to drink!",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/memang-itu-adat-orang-3e31af39.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/gacrux/memang-itu-adat-orang-3e31af39.mp3"
           }
         ]
       }
@@ -154,217 +154,217 @@
             "dutch": "aldus / 't zit zo",
             "english": "thus",
             "indonesian": "begitu",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/begitu-f31e03aa.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/begitu-f31e03aa.mp3"
           },
           {
             "dutch": "écht / heus",
             "english": "truly",
             "indonesian": "betul-betul",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/betulbetul-952b6f87.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/betulbetul-952b6f87.mp3"
           },
           {
             "dutch": "maken / doen",
             "english": "to make",
             "indonesian": "buat, mem-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/buat-mem-61553e6a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/buat-mem-61553e6a.mp3"
           },
           {
             "dutch": "babbelen / kletsen",
             "english": "to chat",
             "indonesian": "cakap, ber- - -",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/cakap-ber-cbb57d10.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/cakap-ber-cbb57d10.mp3"
           },
           {
             "dutch": "staan",
             "english": "to stand",
             "indonesian": "diri, ber-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/diri-ber-a36dacc7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/diri-ber-a36dacc7.mp3"
           },
           {
             "dutch": "begrijpen",
             "english": "to understand",
             "indonesian": "erti, meng-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/erti-meng-a61288d3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/erti-meng-a61288d3.mp3"
           },
           {
             "dutch": "lastigvallen",
             "english": "to bother",
             "indonesian": "ganggu, meng-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ganggu-meng-13caa14b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ganggu-meng-13caa14b.mp3"
           },
           {
             "dutch": "erf",
             "english": "yard",
             "indonesian": "halaman",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/halaman-e5a67d0e.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/halaman-e5a67d0e.mp3"
           },
           {
             "dutch": "beloven",
             "english": "to promise",
             "indonesian": "janji, ber-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/janji-ber-82389a56.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/janji-ber-82389a56.mp3"
           },
           {
             "dutch": "zelden",
             "english": "seldom",
             "indonesian": "jarang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jarang-5c7a3924.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/jarang-5c7a3924.mp3"
           },
           {
             "dutch": "antwoord",
             "english": "answer",
             "indonesian": "jawab",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jawab-211d329c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/jawab-211d329c.mp3"
           },
           {
             "dutch": "antwoord",
             "english": "answer",
             "indonesian": "jawab, -an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jawab-an-32cf0905.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/jawab-an-32cf0905.mp3"
           },
           {
             "dutch": "beantwoorden",
             "english": "answer, to-",
             "indonesian": "jawab, men-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jawab-men-1b52d4d1.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/jawab-men-1b52d4d1.mp3"
           },
           {
             "dutch": "geven",
             "english": "give",
             "indonesian": "kasih, mengasih",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kasih-mengasih-f0d2b3c8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kasih-mengasih-f0d2b3c8.mp3"
           },
           {
             "dutch": "kennismaken",
             "english": "become acquainted, mutual",
             "indonesian": "kenal, ber- -an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kenal-ber-an-d5562856.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kenal-ber-an-d5562856.mp3"
           },
           {
             "dutch": "aandenken",
             "english": "remembrance, memory",
             "indonesian": "kenang, - - -an",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kenang-an-fabce910.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kenang-an-fabce910.mp3"
           },
           {
             "dutch": "speciaal",
             "english": "special",
             "indonesian": "khas",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/khas-3e9868e7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/khas-3e9868e7.mp3"
           },
           {
             "dutch": "linkshandig",
             "english": "left-handed",
             "indonesian": "kidal",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kidal-d7948063.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kidal-d7948063.mp3"
           },
           {
             "dutch": "bezoeken",
             "english": "visit",
             "indonesian": "kunjung, ber-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kunjung-ber-4b5ad90a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kunjung-ber-4b5ad90a.mp3"
           },
           {
             "dutch": "lang (tijd)",
             "english": "long (time)",
             "indonesian": "lama",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lama-9a8bf488.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/lama-9a8bf488.mp3"
           },
           {
             "dutch": "verbieden",
             "english": "forbid, to-",
             "indonesian": "larang, me-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/larang-me-f926fd64.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/larang-me-f926fd64.mp3"
           },
           {
             "dutch": "rennen",
             "english": "run",
             "indonesian": "lari, ber-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lari-ber-e7910ae3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/lari-ber-e7910ae3.mp3"
           },
           {
             "dutch": "inderdaad / trouwens",
             "english": "indeed / in fact",
             "indonesian": "memang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/memang-50639cb4.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/memang-50639cb4.mp3"
           },
           {
             "dutch": "ouders",
             "english": "parents",
             "indonesian": "orang tua",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/orang-tua-56f24c57.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/orang-tua-56f24c57.mp3"
           },
           {
             "dutch": "fotograferen",
             "english": "photograph, to-",
             "indonesian": "potret, memotret",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/potret-memotret-ece430bc.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/potret-memotret-ece430bc.mp3"
           },
           {
             "dutch": "recept",
             "english": "recipe",
             "indonesian": "resep",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/resep-1e117e0d.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/resep-1e117e0d.mp3"
           },
           {
             "dutch": "roken",
             "english": "smoke, to-",
             "indonesian": "rokok, me-",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rokok-me-ee4552db.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/rokok-me-ee4552db.mp3"
           },
           {
             "dutch": "vertrek / kamer",
             "english": "room / space",
             "indonesian": "ruang",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ruang-f6eaf0bb.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ruang-f6eaf0bb.mp3"
           },
           {
             "dutch": "terwijl / tijdens",
             "english": "while / during",
             "indonesian": "sambil",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sambil-23716d17.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sambil-23716d17.mp3"
           },
           {
             "dutch": "vermoeden",
             "english": "suspect",
             "indonesian": "sangka, menyangka",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sangka-menyangka-3d0598b3.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sangka-menyangka-3d0598b3.mp3"
           },
           {
             "dutch": "in feite / inderdaad",
             "english": "actually / in fact",
             "indonesian": "sebenarnya",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sebenarnya-e526b82c.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sebenarnya-e526b82c.mp3"
           },
           {
             "dutch": "vaak",
             "english": "often",
             "indonesian": "sering",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sering-baa7ee8a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sering-baa7ee8a.mp3"
           },
           {
             "dutch": "langsgaan bij",
             "english": "call in on / stop by",
             "indonesian": "singgah ke",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/singgah-ke-374c6f9b.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/singgah-ke-374c6f9b.mp3"
           },
           {
             "dutch": "beleefd / netjes",
             "english": "polite / well-mannered",
             "indonesian": "sopan",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sopan-60f9ecb8.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sopan-60f9ecb8.mp3"
           },
           {
             "dutch": "stem / klank / geluid",
             "english": "voice / sound / tone",
             "indonesian": "suara",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/suara-7353be03.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/suara-7353be03.mp3"
           },
           {
             "dutch": "plaatsen / leggen",
             "english": "place, to- / put",
             "indonesian": "taruh, menaruh",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/taruh-menaruh-7b6fb48a.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/taruh-menaruh-7b6fb48a.mp3"
           }
         ]
       }
@@ -378,7 +378,7 @@
             "dutch": "kletskoek / flauwekul",
             "english": "nonsense / rubbish",
             "indonesian": "omong kosong",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/omong-kosong-19f44af7.mp3"
+            "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/omong-kosong-19f44af7.mp3"
           }
         ]
       }
@@ -401,13 +401,13 @@
                 "dutch": "Goh, waar is die chocolade toch? — Ooh, die is opgegeten (door iemand).",
                 "english": "Gosh, where is that chocolate? — Ooh, it's been eaten.",
                 "indonesian": "Kok, di mana coklat itu? — Ooh, sudah dimakan.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kok-di-mana-coklat-0e33cc70.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kok-di-mana-coklat-0e33cc70.mp3"
               },
               {
                 "dutch": "De koek werd gesneden en verdeeld (iemand sneed de koek en verdeelde hem).",
                 "english": "The cake is cut and divided.",
                 "indonesian": "Kue dipotong dan dibagi.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kue-dipotong-dan-dibagi-65bdeb71.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kue-dipotong-dan-dibagi-65bdeb71.mp3"
               }
             ],
             "rules_en": [
@@ -431,37 +431,37 @@
                 "dutch": "Die brief heb ik gisteren al geschreven.",
                 "english": "That letter I already wrote yesterday.",
                 "indonesian": "Surat itu sudah saya tulis kemarin.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-saya-31345cb6.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-saya-31345cb6.mp3"
               },
               {
                 "dutch": "Die brief heb je gisteren al geschreven.",
                 "english": "That letter you already wrote yesterday.",
                 "indonesian": "Surat itu sudah kamu tulis kemarin.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-kamu-d047e524.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-kamu-d047e524.mp3"
               },
               {
                 "dutch": "Die brief hebben wij gisteren al geschreven.",
                 "english": "That letter we already wrote yesterday.",
                 "indonesian": "Surat itu sudah kami tulis kemarin.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-kami-de0bcc43.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-kami-de0bcc43.mp3"
               },
               {
                 "dutch": "Die brief hebben jullie gisteren al geschreven.",
                 "english": "That letter you all already wrote yesterday.",
                 "indonesian": "Surat itu sudah kalian tulis kemarin.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-kalian-6d05dc6a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-kalian-6d05dc6a.mp3"
               },
               {
                 "dutch": "De auto wordt door mij verkocht.",
                 "english": "That car I sell / I sell.",
                 "indonesian": "Mobil itu saya jual / kujual.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mobil-itu-saya-jual-bf10885d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/mobil-itu-saya-jual-bf10885d.mp3"
               },
               {
                 "dutch": "Het huis wordt door jou gekocht.",
                 "english": "That house you buy / you buy.",
                 "indonesian": "Rumah itu kamu beli / kaubeli.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rumah-itu-kamu-beli-897a7a33.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/rumah-itu-kamu-beli-897a7a33.mp3"
               }
             ],
             "rules_en": [
@@ -485,31 +485,31 @@
                 "dutch": "Die brief hebben zij gisteren al geschreven.",
                 "english": "That letter they already wrote yesterday.",
                 "indonesian": "Surat itu sudah mereka tulis kemarin.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-mereka-c4394342.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-mereka-c4394342.mp3"
               },
               {
                 "dutch": "Die brief heeft hij/zij gisteren al geschreven.",
                 "english": "That letter he/she already wrote yesterday.",
                 "indonesian": "Surat itu sudah ditulisnya kemarin.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-ditulisnya-2b6cd6f7.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/surat-itu-sudah-ditulisnya-2b6cd6f7.mp3"
               },
               {
                 "dutch": "De sleutel wordt gezocht / men zoekt de sleutel.",
                 "english": "The key is being sought / people are seeking the key.",
                 "indonesian": "Kunci itu dicari.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kunci-itu-dicari-f53e1aea.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kunci-itu-dicari-f53e1aea.mp3"
               },
               {
                 "dutch": "Het cadeau wordt door hem/haar gegeven.",
                 "english": "The gift is given by him/her.",
                 "indonesian": "Hadiah diberinya.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/hadiah-diberinya-72e9dbd9.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/hadiah-diberinya-72e9dbd9.mp3"
               },
               {
                 "dutch": "De vis wordt door hen / door hem gegeten.",
                 "english": "The fish is eaten by them / by him.",
                 "indonesian": "Ikan mereka makan. / Ikan dimakannya.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ikan-mereka-makan-ikan-1032319d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/ikan-mereka-makan-ikan-1032319d.mp3"
               }
             ],
             "rules_en": [
@@ -532,19 +532,19 @@
                 "dutch": "Is er nog een blauwe koffer? — Die is al verkocht / die heb ik al verkocht.",
                 "english": "Is there still a blue suitcase? — It's already sold / I've already sold it.",
                 "indonesian": "Masih ada koper biru? — Sudah dijual / Sudah saya jual.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/masih-ada-koper-biru-4bd1c43b.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/masih-ada-koper-biru-4bd1c43b.mp3"
               },
               {
                 "dutch": "Leest u dit weekblad graag? — Ja, maar het is nog niet gelezen / ik heb het nog niet gelezen.",
                 "english": "Do you like reading this magazine? — Yes, but I haven't read it yet / it hasn't been read yet.",
                 "indonesian": "Bapak suka membaca mingguan ini? — Suka, tetapi belum dibaca / belum saya baca.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bapak-suka-membaca-mingguan-dff53b15.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/bapak-suka-membaca-mingguan-dff53b15.mp3"
               },
               {
                 "dutch": "Waar zijn de koekjes? — Die zijn al op tafel gezet.",
                 "english": "Where are the cakes? — They're already been put on the table.",
                 "indonesian": "Di mana kue-kue? — Sudah ditaruh di meja.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/di-mana-kuekue-sudah-4ae9d3ee.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/di-mana-kuekue-sudah-4ae9d3ee.mp3"
               }
             ],
             "rules_en": [
@@ -567,19 +567,19 @@
                 "dutch": "Het boek dat ik lees, is mooi (het boek dat door mij gelezen wordt, is mooi).",
                 "english": "The book that I read is beautiful.",
                 "indonesian": "Buku yang saya baca bagus.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/buku-yang-saya-baca-0ace408f.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/buku-yang-saya-baca-0ace408f.mp3"
               },
               {
                 "dutch": "Dat is het boek dat ik lees (dat door mij gelezen wordt).",
                 "english": "That is the book that I read.",
                 "indonesian": "Itulah buku yang saya baca.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/itulah-buku-yang-saya-1f6dd97a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/itulah-buku-yang-saya-1f6dd97a.mp3"
               },
               {
                 "dutch": "Het boek dat hij heeft meegenomen, is weg.",
                 "english": "The book that he brought is missing.",
                 "indonesian": "Buku yang dibawanya hilang.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/buku-yang-dibawanya-hilang-9deb54c5.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/buku-yang-dibawanya-hilang-9deb54c5.mp3"
               }
             ],
             "rules_en": [
@@ -614,19 +614,19 @@
                 "dutch": "Ik heb al gegeten.",
                 "english": "I have already eaten.",
                 "indonesian": "Saya sudah makan.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/saya-sudah-makan-0316926a.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/saya-sudah-makan-0316926a.mp3"
               },
               {
                 "dutch": "Ik heb al gegeten.",
                 "english": "I have already eaten.",
                 "indonesian": "Saya telah makan.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/saya-telah-makan-2fa2abfd.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/saya-telah-makan-2fa2abfd.mp3"
               },
               {
                 "dutch": "Heb je al gegeten? — Ja.",
                 "english": "Have you eaten yet? — Yes.",
                 "indonesian": "Kamu sudah makan? — Sudah.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kamu-sudah-makan-sudah-83bff53d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/kamu-sudah-makan-sudah-83bff53d.mp3"
               }
             ],
             "rules_en": [
@@ -649,25 +649,25 @@
                 "dutch": "Daarna keek hij naar de televisie.",
                 "english": "After that he watched television.",
                 "indonesian": "Sesudah itu dia menonton tv.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sesudah-itu-dia-menonton-ba8bcdb1.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/sesudah-itu-dia-menonton-ba8bcdb1.mp3"
               },
               {
                 "dutch": "Na het eten waste hij de borden af.",
                 "english": "After eating he washed the dishes.",
                 "indonesian": "Setelah makan dia mencuci piring.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/setelah-makan-dia-mencuci-4537a2c4.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/setelah-makan-dia-mencuci-4537a2c4.mp3"
               },
               {
                 "dutch": "Na het baden ging hij weg.",
                 "english": "After bathing he left.",
                 "indonesian": "Setelah mandi dia pergi.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/setelah-mandi-dia-pergi-6e52286f.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/setelah-mandi-dia-pergi-6e52286f.mp3"
               },
               {
                 "dutch": "Nadat hij gebaad had, ging hij weg.",
                 "english": "After he had bathed, he left.",
                 "indonesian": "Setelah sudah mandi dia pergi.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/setelah-sudah-mandi-dia-8ccb3dc7.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/setelah-sudah-mandi-dia-8ccb3dc7.mp3"
               }
             ],
             "rules_en": [
@@ -706,67 +706,67 @@
                 "dutch": "Alle gasten waren aanwezig.",
                 "english": "All guests were present.",
                 "indonesian": "Semua tamu hadir.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/semua-tamu-hadir-2d66ef48.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/semua-tamu-hadir-2d66ef48.mp3"
               },
               {
                 "dutch": "Alle dagen regen.",
                 "english": "Rain every day.",
                 "indonesian": "Tiap hari hujan.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/tiap-hari-hujan-bc9fe81c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/tiap-hari-hujan-bc9fe81c.mp3"
               },
               {
                 "dutch": "Alles is op.",
                 "english": "Everything is gone.",
                 "indonesian": "Segalanya / semuanya habis.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/segalanya-semuanya-habis-ca5ccb0c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/segalanya-semuanya-habis-ca5ccb0c.mp3"
               },
               {
                 "dutch": "Van alles en nog wat.",
                 "english": "All sorts of things.",
                 "indonesian": "Segala sesuatu.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/segala-sesuatu-27265f5d.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/segala-sesuatu-27265f5d.mp3"
               },
               {
                 "dutch": "Warenhuis (winkel van Sinkel).",
                 "english": "Department store.",
                 "indonesian": "Toko serba ada.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/toko-serba-ada-4df4c642.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/toko-serba-ada-4df4c642.mp3"
               },
               {
                 "dutch": "Ze kwamen elke dag.",
                 "english": "They came every day.",
                 "indonesian": "Setiap hari mereka datang.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/setiap-hari-mereka-datang-e17fc001.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/setiap-hari-mereka-datang-e17fc001.mp3"
               },
               {
                 "dutch": "Het hele land.",
                 "english": "The entire country.",
                 "indonesian": "Segenap negeri.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/segenap-negeri-0c1d91c6.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/segenap-negeri-0c1d91c6.mp3"
               },
               {
                 "dutch": "De (ge)hele stad vierde feest.",
                 "english": "The whole city celebrated.",
                 "indonesian": "Seluruh isi kota berpesta.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/seluruh-isi-kota-berpesta-ddb312dd.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/seluruh-isi-kota-berpesta-ddb312dd.mp3"
               },
               {
                 "dutch": "In geheel Jakarta.",
                 "english": "Throughout all of Jakarta.",
                 "indonesian": "Seantero Jakarta.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/seantero-jakarta-f11d1f1c.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/seantero-jakarta-f11d1f1c.mp3"
               },
               {
                 "dutch": "Iedereen is aanwezig.",
                 "english": "Everyone is present.",
                 "indonesian": "Semua orang hadir.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/semua-orang-hadir-ad029509.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/semua-orang-hadir-ad029509.mp3"
               },
               {
                 "dutch": "Iedereen (wie dan ook) mag meegaan.",
                 "english": "Anyone may join.",
                 "indonesian": "Siapa saja boleh ikut.",
-                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/siapa-saja-boleh-ikut-d606c3fe.mp3"
+                "audioUrl": "https://wodpkxsmildtgndnbraa.supabase.co/storage/v1/object/public/indonesian-tts/tts/achird/siapa-saja-boleh-ikut-d606c3fe.mp3"
               }
             ],
             "rules_en": [

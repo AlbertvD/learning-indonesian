@@ -33,7 +33,7 @@
 // agnostic.
 
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { IconArrowRight } from '@tabler/icons-react'
 import { cx } from './cx'
 import classes from './MediaShowcaseCard.module.css'

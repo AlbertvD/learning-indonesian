@@ -8,7 +8,7 @@
 
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { vi, describe, it, expect } from 'vitest'
 import { FirstRunChecklist, type ChecklistSteps } from '../FirstRunChecklist'

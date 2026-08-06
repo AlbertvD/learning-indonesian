@@ -2,7 +2,7 @@
 // The one piece of logic worth pinning is active-surface derivation from the
 // location (pathname + ?v=), plus that all four surfaces are reachable links.
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect } from 'vitest'
 import { LerenNav } from '@/components/lessons/LerenNav'

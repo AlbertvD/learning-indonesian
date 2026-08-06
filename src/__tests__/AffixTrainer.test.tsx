@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AffixTrainer } from '@/pages/AffixTrainer'
@@ -38,7 +38,7 @@ vi.mock('@/services/audioService', async (importOriginal) => {
 // same fixture pattern as GrammarPodcasts.test.tsx.
 vi.mock('@/services/lessonService', () => ({
   lessonService: {
-    getAudioUrl: (path: string) => `https://cdn.test/indonesian-lessons/${path}`,
+    getSignedAudioUrl: async (path: string) => `https://cdn.test/indonesian-lessons/${path}`,
   },
 }))
 
@@ -164,7 +164,7 @@ describe('AffixTrainer page', () => {
     // Change 2: the rule card resolves the raw podcast path to a URL at the
     // UI edge and renders the inline player (app language mocked to 'en' →
     // podcastEn resolves; podcastNl is null so no NL src is used).
-    expect(screen.getByTestId('lesson-audio-player')).toHaveAttribute(
+    expect(await screen.findByTestId('lesson-audio-player')).toHaveAttribute(
       'src',
       'https://cdn.test/indonesian-lessons/lessons/9/grammar-en.mp3',
     )

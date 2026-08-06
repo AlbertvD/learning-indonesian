@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { IconAbc } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
 import classes from './AffixTrainerLink.module.css'

@@ -1,5 +1,24 @@
 ---
-status: approved
+status: shipped
+implementation: PR #461
+merged_at: 2026-08-06
+implementation_paths:
+  - scripts/migration.sql                       # entitlements, stripe_webhook_events, has_active_entitlement, is_free_tier_lesson, can_read_media, indonesian_media_read, the set_lesson_activation gate, private buckets, invite teardown
+  - supabase/functions/_shared/stripe/          # client (pinned apiVersion), status derivation, convergent entitlement upsert
+  - supabase/functions/create-checkout-session/
+  - supabase/functions/stripe-webhook/
+  - supabase/functions/customer-portal/
+  - supabase/functions/verify-checkout/
+  - supabase/functions/delete-account/          # §6: cancels the Stripe subscription before erasure
+  - supabase/config.toml                        # stripe-webhook verify_jwt = false; the [auth] block
+  - src/services/entitlementService.ts          # FREE_TIER_MAX_LESSON parity twin
+  - src/stores/authStore.ts                     # signUp / signInWithGoogle / refreshEntitlement / isEntitled
+  - src/lib/signedAudioUrl.ts                   # §4 stored-URL → signed-URL + the batch signer
+  - src/components/paywall/PaywallPanel.tsx
+  - src/components/lessons/ActivationGate.tsx   # §5 client mirror of the activation gate
+  - src/pages/CheckoutSuccess.tsx
+  - scripts/check-supabase-deep.ts              # HC54–HC58
+  - scripts/check-cloud-config.ts               # function-secret + pricing drift
 reviewed_by:
   - "staff-engineer: NEEDS-WORK round 1, 2026-07-12 — 2 webhook blockers (checkout.session.completed never set status; idempotency-before-processing lost retried events), free-tier TTS keyed on generated_for_lesson_id (clips reused across lessons), podcasts-bucket blanket paywall would have killed the free pronunciation onboarding, checkout-success webhook race, comp-after-gate window — ALL FOLDED IN (incl. new verify-checkout function + _shared/stripe/)."
   - "architect: APPROVED round 2, 2026-07-12. Round-1 blocker (getAudioUrl async conversion grep-falsified against 4 sync render-time callers, 2 unnamed) + OAuth/signUp via authStore actions per LOCKED lib/auth + isEntitled as auth-owned state + Kong key-auth verification — ALL FOLDED IN. Round-2 W1 (§8 grants summary stale) + N1 (teardown grep-cite + stale deep-check skip-set entry) + N2 (is_free_tier_lesson parity pin) — FOLDED IN. N3 (authStore→entitlementService edge, no cycle) accepted, resolve at lib/auth fold."
@@ -23,10 +42,20 @@ together prevents three separate half-gates.
    invite-brute-force HIGH by removing the attack surface. Comp access =
    admin-inserted entitlement rows (source `comp`); discounts = Stripe
    promotion codes.
-3. **Pricing:** subscription. One Stripe Product, two Prices: **€7/month,
-   €56/year** (tax-inclusive, Stripe Tax on). Free tier = lessons 1–3 (the
-   already-auto-activated starter lessons) including their audio. No trials at
-   launch — trivially addable later via Stripe Checkout config.
+3. **Pricing:** subscription. One Stripe Product, two Prices: ~~**€7/month,
+   €56/year**~~ → **SUPERSEDED 2026-08-05: €9/month, €79/year** (tax-inclusive,
+   Stripe Tax on). Free tier = lessons 1–3 (the already-auto-activated starter
+   lessons) including their audio. No trials at launch — trivially addable
+   later via Stripe Checkout config.
+
+   > The reprice decision and its reasoning live in `docs/marketing/pricing.md`
+   > (Ramanujam & Tacke's *minivation* diagnosis); the live Price ids are in
+   > `docs/process/launch-runbook.md` Phase 5. Nothing in the design below
+   > depends on the amounts — `create-checkout-session` takes
+   > `{ plan: 'monthly' | 'annual' }` and maps it to a server-side env var
+   > precisely so a reprice is a Stripe + copy change, never a code change.
+   > Parity between the declared prices, the live function secrets, and every
+   > page that quotes a price is asserted by `make check-cloud-config`.
 4. **Cloud timing:** build + verify on the homelab in **Stripe test mode**;
    migrate to cloud Supabase before flipping to live mode. Everything below is
    cloud-portable: plain Postgres DDL, standard Deno edge functions, all
@@ -239,11 +268,23 @@ JSX in pages); pages call store actions only):
 - **Error mapping:** OAuth failures land back on `/login` with an error query
   param — map to a friendly message per the CLAUDE.md error rules.
 
-**Known accepted risk:** open signup + autoconfirm (no email verification, no
-captcha) permits bot account creation. Bots get free-tier only; GoTrue
-supports hCaptcha (`GOTRUE_SECURITY_CAPTCHA_*`) if this becomes real at cloud
-exposure. Not built now (omission test: nothing breaks; paid content is
-gated).
+**Known accepted risks** (both revisited at cloud exposure, both mitigated
+by the same gateway rate limit):
+
+- Open signup + autoconfirm (no email verification, no captcha) permits bot
+  account creation. Bots get free-tier only; GoTrue supports hCaptcha
+  (`GOTRUE_SECURITY_CAPTCHA_*`) if this becomes real.
+- **Email enumeration is inherent to open GoTrue signup with autoconfirm**
+  (verified 2026-07-12 during integration review): the public
+  `/auth/v1/signup` endpoint returns a distinguishable `user_already_exists`
+  to any direct caller — GoTrue's obfuscated response only exists when email
+  confirmation is on. The 2026-07-11 audit's enumeration fix protected the
+  *edge-function* signup path, which this design deletes; no UI copy choice
+  can close an API-level oracle, so Register may show the friendlier
+  "already registered" message. Mitigation when it matters: per-IP rate
+  limiting at the gateway (Traefik/Kong middleware on `/auth/v1/signup`) —
+  also the successor to the deleted edge function's in-memory rate limit —
+  scheduled with the cloud-exposure work, not built on the homelab preview.
 
 ## 3. Stripe integration — four edge functions
 
@@ -363,18 +404,17 @@ set search_path = indonesian, public
 as $$
   select indonesian.has_active_entitlement(auth.uid())
   or (
-    -- Free tier: TTS whose text belongs to a free lesson. Clips are REUSED
-    -- across lessons (get_audio_clip_per_text earliest-lesson preference) and
-    -- generated_for_lesson_id is nullable/SET NULL — so key on the TEXT, not
-    -- the clip: a clip is free if any clip of the same normalized_text was
-    -- generated for a free lesson.
-    p_bucket = 'indonesian-tts' and exists (
-      select 1
-      from indonesian.audio_clips ac
-      join indonesian.audio_clips ac2 on ac2.normalized_text = ac.normalized_text
-      join indonesian.lessons l on l.id = ac2.generated_for_lesson_id
-      where ac.storage_path = p_name
-        and indonesian.is_free_tier_lesson(l.order_index))
+    -- AMENDED 2026-07-12 post-approval (integration review finding): the
+    -- entire indonesian-tts bucket is free for any AUTHENTICATED user (still
+    -- private to anon — no hotlinking). The original text-belongs-to-a-free-
+    -- lesson self-join silently broke the FREE pronunciation onboarding page,
+    -- whose pitfall/minimal-pair/dialogue-shadowing clips share no
+    -- normalized_text with lessons 1-3. Word-snippet TTS is not where the
+    -- product's paid value concentrates (lesson content + long-form audio
+    -- are), and free users cannot reach paid lessons' exercises anyway (the
+    -- activation gate is the load-bearing one). Deleting the self-join also
+    -- removes that predicate's per-signing join cost and its fragility.
+    p_bucket = 'indonesian-tts'
   ) or (
     p_bucket = 'indonesian-lessons' and exists (
       select 1 from indonesian.lessons l
@@ -404,11 +444,9 @@ create policy "indonesian_media_read" on storage.objects
 -- role needs EXECUTE on the policy's function:
 grant execute on function indonesian.can_read_media(text, text) to authenticated;
 
-create index if not exists idx_audio_clips_storage_path
-  on indonesian.audio_clips (storage_path);
--- No index needed for the normalized_text self-join: the existing
--- UNIQUE(normalized_text, voice_id) (migration.sql:1014) already serves
--- leftmost-column equality lookups.
+-- (AMENDED 2026-07-12: idx_audio_clips_storage_path and the normalized_text
+-- self-join note were removed with the TTS free-for-authenticated amendment
+-- above — the predicate no longer touches audio_clips at all.)
 ```
 
 **Bucket privatization lives IN migration.sql** (not a manual step). The two
@@ -439,7 +477,7 @@ keep-buckets-public transition phase.
 
 `security definer` because the policy runs as the storage API's role, which
 has no grants on `indonesian.*`; the function needs owner rights to read
-`entitlements`/`audio_clips`/`lessons`/`texts`. Execute granted to
+`entitlements`/`lessons`/`texts`. Execute granted to
 `authenticated`.
 
 **Client changes — every consumer enumerated (grep-verified 2026-07-12;
@@ -511,8 +549,48 @@ as an error message, not an access hole).
 
 - **Paywall panel** — shown on lesson pages beyond the free tier for
   non-entitled users and as the error state for gated audio: pricing
-  (€7/mo · €56/yr), the two checkout buttons → `create-checkout-session`,
-  links to `/terms` + `/refunds`.
+  (€9/mo · €79/yr — superseded, see owner decision 3), the two checkout
+  buttons → `create-checkout-session`, links to `/voorwaarden` +
+  `/restitutie` (routes renamed to Dutch in 99275027).
+
+  > ⚠ **SHIPPED WITH A KNOWN DEVIATION — "the error state for gated audio" was
+  > not built.** Gated audio currently renders *nothing at all*: paid content is
+  > not shown as locked, it is shown as **absent**.
+  >
+  > - `LessonGrammarAudioBand.tsx` ends `if (!src) return null`, so on a paid
+  >   lesson the whole grammar-podcast band silently disappears. A free reader
+  >   has no way to know a paying reader sees a player there.
+  > - `GrammarPodcasts.tsx` drops unsignable episodes from the array
+  >   (`setEpisodes(signed.filter(e => !!e.url))`), so `/grammatica` renders a
+  >   tidy grid of **3 episodes out of 30** with nothing indicating the other 27
+  >   exist.
+  > - `lessonService`/`textService.getSignedAudioUrl` return `null` on purpose,
+  >   commented "callers already treat a null URL as the existing absent-audio
+  >   state" — which is correct for genuinely missing audio (a lesson with no EN
+  >   episode yet) and wrong for gated audio. The code cannot currently tell the
+  >   two apart: both are `null`.
+  >
+  > **CORRECTION 2026-08-06** — an earlier draft of this note claimed
+  > `AudioPlayButton` leaves a dead play button on paid lesson pages. **That is
+  > false and was retracted before merge.** Lesson pages' per-word audio comes
+  > from `indonesian-tts`, which §4's amendment frees for *every* authenticated
+  > user, so those buttons work without paying (lesson-20 `content.json`:
+  > 151 `indonesian-tts` references, 1 `indonesian-lessons`). Nothing routes a
+  > non-TTS source into `AudioPlayButton`, so its unsigned branch is
+  > unreachable in practice. The real defect is commercial, not functional.
+  >
+  > **OWNER DECISION 2026-08-06: show it locked, not hidden.** *"I think we
+  > should indeed show the free users all the content that can be unlocked
+  > through a paid subscription."* You cannot buy what you cannot see, and every
+  > hidden episode is a missed upsell at the exact moment of interest. Deferred
+  > out of PR #461 deliberately — the owner's call was to land the existing work
+  > first. Tracked as a follow-up issue; do NOT treat this bullet as done.
+  >
+  > Implementation note for whoever picks it up: derive "locked" from
+  > `isEntitled` + `FREE_TIER_MAX_LESSON` (the §5 mirrored-predicate pattern
+  > `ActivationGate` already uses), **not** from a failed signing call — a
+  > network blip would otherwise render "locked" to a paying subscriber. That
+  > also restores the locked-vs-absent distinction the `null` return collapsed.
 - **Profile page** — subscription block: current status (from the owner-read
   entitlement row), "Manage subscription" → `customer-portal` (hidden when
   no `stripe_customer_id`).
@@ -599,8 +677,9 @@ fires). Minimize the window by preparing everything deployable first:
 
 ### Schema changes
 - New: `indonesian.entitlements`, `indonesian.stripe_webhook_events`,
-  `has_active_entitlement()`, `can_read_media()`, `is_free_tier_lesson()`,
-  `idx_audio_clips_storage_path` — all in `scripts/migration.sql`.
+  `has_active_entitlement()`, `can_read_media()`, `is_free_tier_lesson()` —
+  all in `scripts/migration.sql`. (idx_audio_clips_storage_path removed by
+  the 2026-07-12 TTS amendment.)
 - Changed: `set_lesson_activation` (entitlement check),
   `storage.buckets.public=false` ×3, new `storage.objects` policy.
 - Dropped: `signup_invite_codes`, `redeem_invite_code`,
@@ -679,13 +758,13 @@ regardless of the policy (the exact `b38e467f` failure class):
   Full content RLS would touch ~20 tables for marginal protection of text
   that's progressively being re-authored anyway. Revisit only with evidence
   of abuse.
-- **The free-tier TTS grant is text-level, not clip-level** (§4): a user who
-  hand-crafts the storage path of a *paid* lesson's clip whose
-  `normalized_text` also has a free-lesson clip (e.g. a different voice of
-  the same sentence) can sign it. Deliberate — clip reuse plus nullable
-  `generated_for_lesson_id` make exact clip-level gating unreliable, the
-  activation gate is the load-bearing one, and the exposure is single
-  shared sentences, not lesson content.
+- **The entire TTS bucket is free for authenticated users** (§4, amended
+  2026-07-12): any signed-in user can sign any word/sentence snippet in
+  `indonesian-tts`. Deliberate — the paid value concentrates in lesson
+  content and long-form audio, the activation gate is the load-bearing one,
+  and per-clip gating silently broke the free pronunciation onboarding (its
+  clips share no text with lessons 1–3). Anonymous access stays blocked
+  (bucket private).
 - No trials, no multi-product, no seat/team billing, no in-app invoice UI
   (portal owns it), no captcha, no Apple.
 - Data export, `.duin.home` decoupling, and the Traefik forward-auth removal

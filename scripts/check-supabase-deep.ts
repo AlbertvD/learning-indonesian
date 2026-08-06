@@ -35,6 +35,35 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY)
 
+// ── The E2E fixture account, resolved by EMAIL, never hardcoded ──────────────
+// Several checks (HC-lessons-overview, HC-weekly-movement, HC-mastery, HC53)
+// compare a direct service-role read against an RPC for one known learner. They
+// used to hardcode `55023eba-…`, which is testuser@duin.home's id ON THE
+// HOMELAB. Pointed at Supabase Cloud that UUID belongs to nobody, so:
+//
+//   - the parity checks compared empty against empty and passed VACUOUSLY —
+//     exactly the failure mode HC53's own comment warns about;
+//   - HC53, which refuses to pass on empty ≡ empty, failed instead with
+//     "zero capability_review_events — fixture unusable", pointing at a missing
+//     fixture when the real fault was a user id from the wrong environment.
+//
+// Resolving by email binds the checks to whichever project they are aimed at,
+// so the same suite is honest against homelab and cloud alike.
+const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL ?? 'testuser@duin.home'
+
+async function resolveTestUserId(): Promise<string | null> {
+  const res = await fetch(
+    `${SUPABASE_URL}/auth/v1/admin/users?filter=${encodeURIComponent(TEST_USER_EMAIL)}`,
+    { headers: { apikey: SERVICE_KEY!, Authorization: `Bearer ${SERVICE_KEY}` } },
+  )
+  if (!res.ok) return null
+  const body = (await res.json()) as { users?: Array<{ id: string; email: string }> }
+  const match = (body.users ?? []).find(u => u.email?.toLowerCase() === TEST_USER_EMAIL.toLowerCase())
+  return match?.id ?? null
+}
+
+const RESOLVED_TEST_USER_ID = await resolveTestUserId()
+
 const results: { label: string; ok: boolean; detail?: string }[] = []
 
 function pass(label: string) { results.push({ label, ok: true }) }
@@ -64,6 +93,10 @@ const EXPECTED_TABLES = [
   'learner_collection_activation',
   'learner_reading_harvest',     // reader Phase 2 §4: tapped-word harvest membership
   'learner_word_mnemonics',      // stubborn-word mnemonic workshop: one hook per (user, source_ref)
+  // signup_invite_codes: dropped 2026-07-12 (entitlement design §6) — asserted
+  // absent below, not listed here (mirrors the SM-2 teardown / HC38 style).
+  'entitlements',                 // entitlement design §1 — learner-data, owner-read only
+  'stripe_webhook_events',        // entitlement design §1 — service-role-only idempotency ledger
 ]
 
 // Expected grants: table → { role → privileges[] }
@@ -92,6 +125,10 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   learner_reading_harvest: { authenticated: ['SELECT', 'INSERT'] },
   // Word mnemonics: owner-RLS, fully owner-editable (create/edit/delete your own hook).
   learner_word_mnemonics: { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
+  // Entitlements: owner-read only, ALL writes are service-role (webhook / admin).
+  // stripe_webhook_events carries no authenticated grant at all — see
+  // intentionallyDenyAll below.
+  entitlements: { authenticated: ['SELECT'] },
 }
 
 // ── Fetch schema health report ─────────────────────────────────────────────
@@ -111,6 +148,8 @@ const report = health as {
   policies?: { table: string; policy: string; cmd: string; roles: string[] }[]
   placement_activation_source_check_ok?: boolean
   apply_placement_result_anon_execute?: boolean
+  has_active_entitlement_authenticated_execute?: boolean
+  indonesian_media_read_policy_exists?: boolean
 }
 
 const existingTables = new Set(report.tables.map((t) => t.name))
@@ -147,7 +186,10 @@ for (const p of report.policies ?? []) {
 // class: deny-all surfaces reached only via service_role (which bypasses RLS).
 // Each entry must say who the sole writer/reader is.
 const intentionallyDenyAll = new Set([
-  'signup_invite_codes', // service-role only — consumed by the signup-with-invite edge function
+  // signup_invite_codes removed 2026-07-12 (entitlement design §6) — the table
+  // itself is dropped, so it no longer appears in EXPECTED_TABLES; see the
+  // teardown HC near the end of this file for the "is gone" assertion.
+  'stripe_webhook_events', // service-role only — Stripe webhook idempotency ledger, no policies
 ])
 for (const t of report.tables) {
   if (!t.rls_enabled) continue
@@ -1886,8 +1928,9 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 // this validates the SQL predicate == the TS predicate on live data, catching
 // any behavioural divergence the structural literal test (layer a) can't.
 {
-  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  const TEST_USER_ID = RESOLVED_TEST_USER_ID ?? ''
   try {
+    if (!TEST_USER_ID) throw new Error('fixture account ' + TEST_USER_EMAIL + ' does not exist on this project — refusing to compare empty against empty')
     async function pageAll<T>(table: string, select: string, apply?: (q: any) => any): Promise<T[]> {
       const out: T[] = []
       for (let from = 0; ; from += 1000) {
@@ -1974,8 +2017,9 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
   }
   const isMastered = (s: StateJson, now: Date) => rankOf(s, now) === 4 && (s.consecutiveFailureCount ?? 0) === 0
   const isAtRisk = (s: StateJson) => (s.consecutiveFailureCount ?? 0) > 0 && (s.lapseCount ?? 0) > 0
-  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  const TEST_USER_ID = RESOLVED_TEST_USER_ID ?? ''
   try {
+    if (!TEST_USER_ID) throw new Error('fixture account ' + TEST_USER_EMAIL + ' does not exist on this project — refusing to compare empty against empty')
     const now = new Date()
     const mondayOffset = (now.getUTCDay() + 6) % 7
     const weekStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - mondayOffset))
@@ -2133,8 +2177,9 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 //        the live-data closing of the sufficiency-predicate proof, following the
 //        same RPC-vs-TS-recompute pattern as HC27/HC28. Expects parity = 0 diffs.
 {
-  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  const TEST_USER_ID = RESOLVED_TEST_USER_ID ?? ''
   try {
+    if (!TEST_USER_ID) throw new Error('fixture account ' + TEST_USER_EMAIL + ' does not exist on this project — refusing to compare empty against empty')
     type CapRow = {
       id: string; canonical_key: string; source_kind: CapabilitySourceKind; source_ref: string
       capability_type: string; readiness_status: string; publication_status: string
@@ -2996,8 +3041,11 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 //    deriver over the FULL event history (12-week window).
 {
   const HC53 = 'HC53 mastery evidence RPC parity under real authenticated-role RLS (get_mastery_evidence / get_funnel_series_events)'
-  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
-  const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL ?? 'testuser@duin.home'
+  // Resolved by email (see RESOLVED_TEST_USER_ID at the top) — the hardcoded
+  // id that used to sit here was the homelab's, which is why this check
+  // reported "zero capability_review_events" when pointed at cloud: it was
+  // asking about a user that does not exist there.
+  const TEST_USER_ID = RESOLVED_TEST_USER_ID ?? ''
   const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD
   const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY
   const WEEKS = 12
@@ -3168,6 +3216,219 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     } catch (err) {
       fail(HC53, err instanceof Error ? err.message : String(err))
     }
+  }
+}
+
+// ── HC54 (2026-07-12 entitlement design §1/§8) — has_active_entitlement
+//    carries NO authenticated EXECUTE grant. As SECURITY INVOKER it would
+//    silently return false for any p_user_id other than the caller (RLS
+//    hides other rows) -- a trap for a future caller assuming a general
+//    oracle. Its two consumers (can_read_media, set_lesson_activation) are
+//    SECURITY DEFINER, so they don't need the grant.
+{
+  const HC54 = 'HC54 has_active_entitlement has no authenticated EXECUTE grant'
+  if (report.has_active_entitlement_authenticated_execute === undefined) {
+    fail(HC54, 'schema_health() did not return has_active_entitlement_authenticated_execute -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
+  } else if (report.has_active_entitlement_authenticated_execute === true) {
+    fail(
+      HC54,
+      'authenticated has EXECUTE on indonesian.has_active_entitlement(uuid) -- revoke it (entitlement design §1): ' +
+        'as SECURITY INVOKER it silently returns false for any p_user_id other than the caller.',
+    )
+  } else {
+    pass(HC54)
+  }
+}
+
+// ── HC55 (2026-07-12 entitlement design §4/§8) — can_read_media and
+//    is_free_tier_lesson exist, and is_free_tier_lesson's boundary matches
+//    the client's FREE_TIER_MAX_LESSON=3 constant (entitlementService) --
+//    a boundary edit that missed one side shows up here, not as a silent
+//    paywall drift.
+{
+  const HC55 = 'HC55 can_read_media / is_free_tier_lesson exist + free-tier boundary parity'
+  try {
+    const { error: canReadErr } = await supabase
+      .schema('indonesian')
+      .rpc('can_read_media', { p_bucket: 'indonesian-tts', p_name: '__hc55_probe__' })
+    if (canReadErr && canReadErr.message.includes('does not exist')) {
+      fail(HC55, 'indonesian.can_read_media(text, text) not found -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
+    } else {
+      const { data: freeAt3, error: err3 } = await supabase.schema('indonesian').rpc('is_free_tier_lesson', { p_order_index: 3 })
+      const { data: freeAt4, error: err4 } = await supabase.schema('indonesian').rpc('is_free_tier_lesson', { p_order_index: 4 })
+      if (err3 || err4) {
+        if ((err3 ?? err4)!.message.includes('does not exist')) {
+          fail(HC55, 'indonesian.is_free_tier_lesson(int) not found -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
+        } else {
+          fail(HC55, `is_free_tier_lesson call failed: ${err3?.message ?? err4?.message}`)
+        }
+      } else if (freeAt3 !== true || freeAt4 !== false) {
+        fail(
+          HC55,
+          `is_free_tier_lesson(3)=${freeAt3}, is_free_tier_lesson(4)=${freeAt4} -- expected true/false. ` +
+            'Must match FREE_TIER_MAX_LESSON in src/services/entitlementService.ts -- a boundary edit missed one side.',
+        )
+      } else {
+        pass(HC55)
+      }
+    }
+  } catch (err) {
+    fail(HC55, err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC56 (2026-07-12 entitlement design §4/§8) — all 3 storage buckets are
+//    private. public=true bypasses storage RLS entirely on the
+//    /object/public/ path (the PR #450 fresh-DB-replay property) -- a
+//    rebuild that recreated the buckets public would silently disable the
+//    whole paywall while every other check stayed green.
+{
+  const HC56 = 'HC56 storage buckets public=false'
+  for (const bucket of ['indonesian-lessons', 'indonesian-podcasts', 'indonesian-tts']) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${bucket}`, {
+        headers: { apikey: SERVICE_KEY, authorization: `Bearer ${SERVICE_KEY}` },
+      })
+      if (!res.ok) {
+        fail(`${HC56}: ${bucket}`, `HTTP ${res.status} fetching bucket metadata`)
+        continue
+      }
+      const data = (await res.json()) as { public?: boolean }
+      if (data.public === false) {
+        pass(`${HC56}: ${bucket}`)
+      } else {
+        fail(`${HC56}: ${bucket}`, `public=${data.public} -- expected false; run: make migrate SUPABASE_SERVICE_KEY=<key>`)
+      }
+    } catch (err) {
+      fail(`${HC56}: ${bucket}`, err instanceof Error ? err.message : String(err))
+    }
+  }
+}
+
+// ── HC57 (2026-07-12 entitlement design §4/§8) — the indonesian_media_read
+//    policy exists on storage.objects. report.policies (the generic
+//    policyCount loop above) only covers schemaname='indonesian' --
+//    storage.objects lives in a different schema, hence the targeted
+//    schema_health() probe rather than the generic loop.
+{
+  const HC57 = 'HC57 indonesian_media_read policy present on storage.objects'
+  if (report.indonesian_media_read_policy_exists === true) {
+    pass(HC57)
+  } else {
+    fail(HC57, 'storage.objects has no indonesian_media_read policy -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
+  }
+}
+
+// ── HC58 (2026-07-12 entitlement design §6) — invite-gated signup is fully
+//    retired: table + both RPCs gone. Mirrors HC38's style (probe, expect a
+//    "does not exist" / "could not find the table" error).
+{
+  const HC58 = 'HC58 signup_invite_codes + redeem/restore_invite_code retired'
+  try {
+    const { error: tableErr } = await supabase
+      .schema('indonesian')
+      .from('signup_invite_codes')
+      .select('*')
+      .limit(1)
+    const tableGone = !!tableErr && /PGRST205|could not find the table|does not exist/i.test(tableErr.message ?? '')
+
+    // A MISSING FUNCTION and a missing table produce different PostgREST
+    // errors, and the substring 'does not exist' appears in NEITHER of the
+    // function ones. Verified against the cloud project 2026-07-30, where both
+    // RPCs are genuinely absent:
+    //   code PGRST202, message "Could not find the function
+    //   indonesian.redeem_invite_code(p_code) in the schema cache"
+    // The old `.includes('does not exist')` test therefore evaluated false for
+    // functions that were correctly gone, and HC58 reported
+    // `redeem_invite_code gone=false` as a FALSE POSITIVE on every fresh DB.
+    // Matched the same shape the tableGone probe above already used.
+    const fnGone = (msg: string | undefined) =>
+      /PGRST202|could not find the function|does not exist/i.test(msg ?? '')
+
+    const { error: redeemErr } = await supabase
+      .schema('indonesian')
+      .rpc('redeem_invite_code', { p_code: '__hc58_probe__' })
+    const redeemGone = !!redeemErr && fnGone(redeemErr.message)
+
+    const { error: restoreErr } = await supabase
+      .schema('indonesian')
+      .rpc('restore_invite_code', { p_code: '__hc58_probe__' })
+    const restoreGone = !!restoreErr && fnGone(restoreErr.message)
+
+    if (tableGone && redeemGone && restoreGone) {
+      pass(HC58)
+    } else {
+      fail(
+        HC58,
+        `table gone=${tableGone}, redeem_invite_code gone=${redeemGone}, restore_invite_code gone=${restoreGone} -- ` +
+          'the invite-gated-signup teardown (entitlement design §6) did not fully land; run: make migrate SUPABASE_SERVICE_KEY=<key>',
+      )
+    }
+  } catch (err) {
+    fail(HC58, err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC59 (2026-07-31) — PostgREST must not silently truncate large reads.
+//    Managed Supabase ships `db-max-rows = 1000`; self-hosted PostgREST has NO
+//    cap. A read over the cap returns HTTP 200 with only the first 1000 rows —
+//    no error, no exception, nothing a caller would notice. Measured on the
+//    cloud project 2026-07-30: audio_clips returned `content-range: 0-999/5132`
+//    while the homelab returned all 5132.
+//
+//    Raised on cloud with:
+//      alter role authenticator set pgrst.db_max_rows = '100000';
+//      notify pgrst, 'reload config';
+//    but that was applied over SQL, and a write from the dashboard's
+//    Settings → API → Max rows can overwrite it. Nothing else would detect the
+//    reversion — the symptom is missing data, not an error.
+//
+//    Deliberately BEHAVIOURAL, not a config read. Checking
+//    pg_roles.rolconfig for `pgrst.db_max_rows` would confirm the setting we
+//    wrote while missing a platform-level override — and tonight produced two
+//    separate bugs (the bucket-privacy probe, HC58) where a check asserted a
+//    proxy instead of the invariant. So: actually ask for more than 1000 rows
+//    and count what comes back.
+{
+  const HC59 = 'HC59 PostgREST does not truncate reads at 1000 rows'
+  const PROBE_TABLE = 'audio_clips'
+  try {
+    const { count, error: countErr } = await supabase
+      .schema('indonesian')
+      .from(PROBE_TABLE)
+      .select('*', { count: 'exact', head: true })
+
+    if (countErr) {
+      fail(HC59, `could not count ${PROBE_TABLE}: ${countErr.message}`)
+    } else if ((count ?? 0) <= 1000) {
+      // Not a failure: below the cap there is nothing this probe can prove.
+      // Flagged so a shrinking fixture cannot turn the check into a vacuous
+      // pass without anyone noticing.
+      pass(`${HC59} (skipped — ${PROBE_TABLE} has ${count} rows, at or under the 1000 cap; probe cannot discriminate)`)
+    } else {
+      const want = Math.min(count ?? 0, 1500)
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from(PROBE_TABLE)
+        .select('id')
+        .limit(want)
+      if (error) {
+        fail(HC59, `probe read failed: ${error.message}`)
+      } else if ((data?.length ?? 0) > 1000) {
+        pass(`${HC59} (asked ${want}, got ${data?.length})`)
+      } else {
+        fail(
+          HC59,
+          `asked for ${want} rows from ${PROBE_TABLE} (which has ${count}) but got exactly ${data?.length} -- ` +
+            'PostgREST is capping reads. Large queries are being SILENTLY truncated: HTTP 200, partial data, no error. ' +
+            'Fix: alter role authenticator set pgrst.db_max_rows = \'100000\'; notify pgrst, \'reload config\'; ' +
+            'and check Settings → API → Max rows in the dashboard, which can override the role setting. ' +
+            'See docs/audits/2026-07-30-postgrest-row-cap-audit.md',
+        )
+      }
+    }
+  } catch (err) {
+    fail(HC59, err instanceof Error ? err.message : String(err))
   }
 }
 

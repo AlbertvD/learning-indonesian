@@ -8,6 +8,7 @@
  * 4. Portainer API redeployments (wipes UI-managed env vars)
  * 5. Edit/Write/MultiEdit without a prior Read of the same file
  * 6. Bespoke card CSS in a page/component module (reuse page/primitives instead)
+ * 7. Hand-written Supabase Cloud project config (declare in config.toml instead)
  */
 
 import { readFile, realpath, stat } from "node:fs/promises";
@@ -219,6 +220,54 @@ export function checkInfraRedeploy(command: string): CheckResult {
 }
 
 /**
+ * Blocks writing Supabase Cloud PROJECT CONFIG by hand.
+ *
+ * `supabase/config.toml` is the declared source of truth for auth config
+ * (site_url, redirect allowlist, SMTP, external providers), applied with
+ * `make config-push` and asserted by `make check-cloud-config`, which runs
+ * inside `make pre-deploy`. A raw PATCH to the Management API changes the LIVE
+ * project without changing the file, so the repo starts lying about production
+ * and the drift check goes red at the next merge.
+ *
+ * Not hypothetical. On 2026-08-02 every auth setting was applied exactly this
+ * way, and two had been silently wrong for weeks as a result: site_url sat at
+ * Supabase's default "http://localhost:3000", and mailer_autoconfirm differed
+ * from the homelab — which made cloud signup show "Account created!" and then
+ * eject the visitor. Neither was a code bug; both were CONFIGURATION with no
+ * declaration to be checked against.
+ *
+ * READS are fine — the drift check itself GETs this endpoint. Only mutations
+ * are blocked. `supabase config push` is the sanctioned path and never matches.
+ *
+ * NOT a hard wall, matching the bespoke-css-ok idiom: adding
+ * `config-drift-ok: <reason>` to the command proceeds, so a genuinely justified
+ * one-off (an emergency, or a secret that cannot live in a public repo) is a
+ * conscious, written decision rather than a silent one.
+ */
+export function checkOutOfBandCloudConfig(command: string): CheckResult {
+	if (/config-drift-ok/i.test(command)) return ALLOWED;
+
+	const hitsProjectConfig = /api\.supabase\.com\/v1\/projects\/[^/\s"']+\/config/.test(command);
+	if (!hitsProjectConfig) return ALLOWED;
+
+	// A bare curl is a GET (a read). Only explicit mutations are blocked.
+	const mutates = /-X\s*(PATCH|POST|PUT|DELETE)\b|--request\s+(PATCH|POST|PUT|DELETE)\b/i.test(command);
+	if (!mutates) return ALLOWED;
+
+	return {
+		blocked: true,
+		message:
+			"Writing Supabase project config by hand is blocked — it changes the live " +
+			"project without changing the repo, so `make check-cloud-config` goes red " +
+			"and production drifts from what is declared. " +
+			"Instead: edit the [auth] block in supabase/config.toml, run `make config-push`, " +
+			"then `make check-cloud-config` to confirm. " +
+			"If this genuinely must be applied out-of-band, add `config-drift-ok: <reason>` " +
+			"to the command — and move it into the repo in the same session.",
+	};
+}
+
+/**
  * Blocks hand-rolled card chrome in a page/component CSS module. The page
  * framework (`src/components/page/primitives/`: ListCard, MediaShowcaseCard,
  * ActionCard, StatCard, HeroCard) owns card surface + tone tints + hover; a
@@ -321,6 +370,9 @@ async function main(): Promise<void> {
 
 		const dangerResult = checkDangerousCommand(command);
 		if (dangerResult.blocked) block(dangerResult.message);
+
+		const cloudConfigResult = checkOutOfBandCloudConfig(command);
+		if (cloudConfigResult.blocked) block(cloudConfigResult.message);
 	}
 
 	// IP check applies to all tools (Edit, Write, Bash)

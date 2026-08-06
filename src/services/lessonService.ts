@@ -1,19 +1,20 @@
 // src/services/lessonService.ts
 //
-// Thin transport service for the lessons-bucket public URL helper. Everything
+// Thin transport service for the lessons-bucket signed-URL helper. Everything
 // else folded into src/lib/lessons/adapter.ts as part of the lib/lessons/ fold
 // (docs/plans/2026-05-18-fold-lib-lessons.md).
 //
-// getAudioUrl stays in services/ as long-form lesson audio bucket transport (per
-// target arch §lib/lessons "Not part of this module").
+// getSignedAudioUrl stays in services/ as long-form lesson audio bucket transport
+// (per target arch §lib/lessons "Not part of this module").
 // (getUserLessonProgress removed 2026-07-01 with the lesson_progress table — #150.)
 
 import { supabase } from '@/lib/supabase'
+import { SIGNED_URL_TTL_SECONDS } from '@/lib/signedAudioUrl'
 
 // One lesson's grammar-podcast paths, for the Ontdek "Grammatica podcasts" hub.
 // `audio_path` = the NL "Kamoe Bisa" episode, `audio_path_en` = the EN twin;
 // either may be null (a lesson can have one language before the other). Both are
-// bucket paths — turn them into playable URLs with getAudioUrl(). The row is
+// bucket paths — turn them into playable URLs with getSignedAudioUrl(). The row is
 // keyed by `order_index`; the hub labels it with a friendly grammar summary from
 // GRAMMAR_TOPIC_SUMMARIES (src/lib/lessons/grammarTopicSummaries.ts).
 export interface GrammarPodcastRow {
@@ -23,11 +24,20 @@ export interface GrammarPodcastRow {
 }
 
 export const lessonService = {
-  getAudioUrl(audioPath: string): string {
-    const { data } = supabase.storage
+  // The `indonesian-lessons` bucket is private (entitlement-gating cutover,
+  // docs/plans/2026-07-12-oauth-stripe-entitlement-design.md §4) — a raw
+  // storage path is no longer playable on its own; every caller resolves
+  // through this signed URL. Null on a signing failure (non-entitled user,
+  // missing object) — callers already have an absent-audio state.
+  async getSignedAudioUrl(audioPath: string): Promise<string | null> {
+    const { data, error } = await supabase.storage
       .from('indonesian-lessons')
-      .getPublicUrl(audioPath)
-    return data.publicUrl
+      .createSignedUrl(audioPath, SIGNED_URL_TTL_SECONDS)
+    // NOT logged — a non-entitled user or a missing object is an expected
+    // outcome, not a bug (cf. signStoredAudioUrl in lib/signedAudioUrl.ts).
+    // Callers already treat a null URL as the existing absent-audio state.
+    if (error) return null
+    return data.signedUrl
   },
 
   // Every visible lesson that has a grammar podcast in at least one language,

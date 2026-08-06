@@ -279,35 +279,57 @@ These two changes must be made in the `homelab-configs` repo before developing o
 
 ## Email
 
-Email is **not configured** on the self-hosted Supabase instance. GoTrue has `GOTRUE_MAILER_AUTOCONFIRM: true` — users are auto-confirmed on signup, no verification email is sent.
+**The two environments differ — check which one you are reasoning about.**
 
-**Do not implement:**
-- Email confirmation flows
-- Password reset via email
-- Any email notifications
+**Supabase Cloud (`wodpkxsmildtgndnbraa`, the customer-facing deployment at
+https://kamoebisa.nl):** `mailer_autoconfirm = false`. Signup requires the
+learner to click a confirmation link. `authStore.signUp` therefore resolves
+`{ needsConfirmation: boolean }` — GoTrue returns **no error** in this case, it
+returns a user with `session: null`, so a resolved promise does NOT mean
+"signed in". `Register.tsx` renders a check-your-inbox panel instead of
+navigating, and `Login.tsx` maps `email_not_confirmed` to its own copy rather
+than "incorrect password". Confirmation mail needs a real SMTP provider
+configured in the project's auth settings; Supabase's built-in sender is
+rate-limited to a handful per hour and is not for production.
 
-Password resets are handled by an admin via Supabase Studio. If email is needed in the future it's a GoTrue SMTP config change — no app code changes required.
+**Homelab (the personal instance):** `GOTRUE_MAILER_AUTOCONFIRM: true` — users
+are auto-confirmed, no verification mail is sent. The confirmation branch above
+is simply never taken there, so both environments run the same code.
 
-## Signup gating
+Inbound support mail is Cloudflare Email Routing:
+`support@kamoebisa.nl` / `info@kamoebisa.nl` forward to the owner's mailbox.
+Routing forwards but cannot **send** — replying as `support@` needs the same
+SMTP provider as the auth mail.
 
-Self-signup is gated behind a one-time-use invite code (pre-cloud-hardening item 1). `Register.tsx` no longer calls `supabase.auth.signUp` directly — it invokes the `signup-with-invite` edge function (`supabase/functions/signup-with-invite/index.ts`), which redeems an `indonesian.signup_invite_codes` row via the `redeem_invite_code`/`restore_invite_code` RPCs (service-role-only, no anon/authenticated grants) and then creates the user via the GoTrue admin API (`/auth/v1/admin/users`), bypassing the public signup endpoint entirely. It also carries a basic per-IP in-memory rate limit (5/hour) — best-effort, per-instance; real rate limiting for a cloud-facing preview belongs at the gateway.
+**Still do not implement:** password reset via email (admin handles it via
+Supabase Studio), or any marketing/notification email.
 
-Two manual steps this depends on, neither automated by `make migrate`:
+> Superseded 2026-08-01. This section previously read *"Do not implement: email
+> confirmation flows"*, which was correct while the homelab was the only target
+> and email genuinely did not exist. Supabase Cloud defaults
+> `mailer_autoconfirm` to false, and the old assumption made signup show
+> "Account created!" and then silently eject the visitor.
 
-1. **Close the public signup endpoint at the GoTrue level** — set `GOTRUE_DISABLE_SIGNUP=true` in `homelab-configs/services/supabase/docker-compose.yml` and apply via the compose route (`git pull` on the host + `docker compose ... up -d auth` — see "Supabase Infrastructure Fixes" § two-lane rule; never a bare `docker run` recreate). *Done 2026-07-02; flag verified live 2026-07-11.* Without this, `supabase.auth.signUp` still works for anyone who calls it directly (the app no longer does, but the endpoint itself stays open until this flag is set). `make check-supabase` has a WARNING-level check for this ("Public signup gate") — it does not fail the gate, so don't skip this step just because CI/`make pre-deploy` is green.
-2. **Seed invite codes** — as an admin, insert directly into `indonesian.signup_invite_codes` (service-role only, e.g. via Supabase Studio SQL editor or `psql`):
-   ```sql
-   insert into indonesian.signup_invite_codes (code, uses_remaining, note)
-   values ('welcome-preview-1', 1, 'customer preview invite');
-   ```
+## Signup gating & entitlements
 
-**Edge function deployment.** `signup-with-invite` deploys the same way as `commit-capability-answer-report` (self-hosted edge functions are bind-mounted, not pushed via `supabase functions deploy`): SCP the file to the homelab bind-mount path, then restart the edge functions container.
+**The invite-code system is retired (2026-07-12) — payment is the gate.** See `docs/plans/2026-07-12-oauth-stripe-entitlement-design.md` (the authoritative spec). Signup is open: `Register.tsx` calls `supabase.auth.signUp` (via `authStore.signUp`) and offers Google OAuth (`authStore.signInWithGoogle`, GoTrue external provider). `GOTRUE_DISABLE_SIGNUP=false` in homelab-configs. The `signup-with-invite` edge function, `signup_invite_codes` table, and `redeem_invite_code`/`restore_invite_code` RPCs are deleted — do not reintroduce them.
+
+What gates access instead:
+
+- **`indonesian.entitlements`** — one row per paying/comped user; owner-read RLS, ALL writes service-role (Stripe webhook / `verify-checkout` / admin). LEARNER DATA — precious, gated migrations only.
+- **Free tier = lessons 1–3** (`indonesian.is_free_tier_lesson()` in SQL, `FREE_TIER_MAX_LESSON` in `src/services/entitlementService.ts` — change BOTH or the parity health check fails). Enforced server-side in `set_lesson_activation`; mirrored client-side as paywall UX.
+- **Storage buckets are private**; audio is consumed via signed URLs under the `indonesian_media_read` policy → `indonesian.can_read_media()`. TTS bucket is free for any authenticated user; `indonesian-lessons`/`indonesian-podcasts` need an entitlement (free carve-outs: lessons 1–3 audio, the pronunciation podcast).
+- **Comp access** = admin inserts an entitlement row (`status='comped', source='comp'`) via psql/Studio — there are no codes.
+
+Known accepted residuals (documented in the spec §2/§10): email enumeration is inherent to open GoTrue signup with autoconfirm (mitigation = gateway rate limiting at cloud exposure); no captcha; bot accounts get free tier only.
+
+**Edge function deployment** (self-hosted: bind-mounted, not `supabase functions deploy`): SCP the function directory (and `_shared/`) to the homelab bind-mount path, then restart the container.
 ```bash
-scp supabase/functions/signup-with-invite/index.ts \
-    mrblond@master-docker:/opt/docker/appdata/supabase/functions/signup-with-invite/index.ts
+scp -r supabase/functions/<name> \
+    mrblond@master-docker:/opt/docker/appdata/supabase/functions/<name>
 ssh mrblond@master-docker "sudo docker restart supabase-edge-functions"
 ```
-`docker` on the homelab requires `sudo` — a plain `docker restart` fails with "permission denied on /var/run/docker.sock".
+`docker` on the homelab requires `sudo` — a plain `docker restart` fails with "permission denied on /var/run/docker.sock". Stripe env vars for the functions container live in homelab-configs (infra lane, compose route).
 
 ## Key Conventions
 
@@ -523,6 +545,55 @@ Instead, fix them by modifying the relevant config files in the `homelab-configs
 - **PostgREST schema exposure** → edit `PGRST_DB_SCHEMAS` in `services/supabase/docker-compose.yml`
 
 After committing the fix to `homelab-configs`, apply it via the **compose route only**: on the host, `cd ~/homelab-configs && git pull && sudo docker compose -f services/supabase/docker-compose.yml up -d <service>`. Never a bare `docker run` recreate, never env tweaks via Portainer/`docker exec` — that is how the 2026-07-11 three-source container drift happened.
+
+## Where changes belong (cloud) — added 2026-08-02
+
+The two-lane rule below describes the HOMELAB. Supabase Cloud + Cloudflare added
+surfaces it does not name, and on 2026-08-02 every one of them was configured by
+hand with no repo representation at all. Two settings had been silently wrong for
+weeks as a result: `site_url` sat at Supabase's default `http://localhost:3000`,
+and `mailer_autoconfirm` differed from the homelab — which made cloud signup show
+"Account created!" and then silently eject the visitor.
+
+| Surface | Declared in | Applied by | Asserted by |
+|---|---|---|---|
+| DB schema, RLS, functions | `scripts/migration.sql` | `make migrate` | `make check-supabase-deep` (HC1–HC59) |
+| Supabase auth config | `supabase/config.toml` `[auth]` | `make config-push` | `make check-cloud-config` |
+| Edge function settings | `supabase/config.toml` `[functions.*]` | `supabase functions deploy` | — |
+| Worker + CSP + SPA routing | `wrangler.jsonc`, `public/_headers` | `bunx wrangler deploy` | `make check-cloud-config` (behaviour) |
+| DNS, Email Routing, custom domains, Google OAuth client | **nothing — by design** | Cloudflare / Google dashboards | `make check-cloud-config` (behaviour) |
+| Storage objects (audio) | reproducible from `content/` | `bun scripts/migrate-audio-to-cloud.ts` | `make check-cloud-config` (every `audio_path` resolves, nothing at the 50 MB cap) |
+
+**The rule:** if a surface has a "declared in" cell, change it THERE and apply it
+with the named command. Never by dashboard click or ad-hoc `curl` — those work,
+and leave the repo lying about production.
+
+The last row is a deliberate exception, not an oversight. Six resources that are
+configured once and never change do not justify Terraform. For those the
+safeguard is different in kind: assert that they still WORK (the domain serves,
+the CSP is present, workers.dev stays off) rather than declaring how they are
+built.
+
+**Enforced, not just asked for.** The PreToolUse hook
+(`.claude-hooks/pre-tool-use.ts` → `checkOutOfBandCloudConfig`) BLOCKS a mutating
+call to `api.supabase.com/v1/projects/*/config` — the exact thing that produced
+the drift above. Reads pass (the drift check itself needs them), and
+`config-drift-ok: <reason>` in the command is an explicit escape hatch, matching
+the `bespoke-css-ok` idiom: a justified one-off becomes a written decision rather
+than a silent one.
+
+**What the hook still cannot see:** dashboard clicks, and mutations through MCP
+tools rather than Bash. For those the backstop is `make check-cloud-config`
+inside `make pre-deploy` — it does not care HOW live diverged from the repo, only
+that it did. Hook catches it at the moment; drift check catches it before merge.
+
+**And the discipline neither can enforce:** any change made to a live system that
+was not applied from the repo must, in the same session, either move into the
+repo or gain an assertion. Every item in the failure list above existed because
+that did not happen.
+
+`make pre-deploy` runs the drift check, so a repo/live disagreement blocks a
+merge rather than being discovered months later.
 
 **The two-lane rule** (full text: `homelab-configs/services/supabase/README.md` § Making changes): **Lane 1, data plane** — anything inside Postgres (app schema/RLS/functions via `scripts/migration.sql` + `make migrate`, content publishes, seeds) and edge-function *code* (SCP to the bind-mount) is legitimately applied direct-to-host; its repo-sync lives in THIS repo. **Lane 2, infra plane** — the containers themselves (services added/removed, image version bumps, env/flags like `GOTRUE_*`/`PGRST_DB_SCHEMAS`, Kong, networks/mounts) go through homelab-configs compose + `up -d`, always, so that repo stays in sync with the deployed instance.
 

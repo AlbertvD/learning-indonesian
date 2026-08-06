@@ -16,7 +16,7 @@
 
 import { Stack, Text, Button, Tooltip } from '@mantine/core'
 import { IconPlayerPlay } from '@tabler/icons-react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { PageHeader, SectionHeading } from '@/components/page/primitives'
 import { BackLink } from '@/components/nav/BackLink'
 import { useT } from '@/hooks/useT'

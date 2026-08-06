@@ -1,17 +1,16 @@
 // src/__tests__/Register.test.tsx
 //
-// Invite-gated signup (pre-cloud-hardening item 1). Register.tsx no longer
-// calls supabase.auth.signUp directly — it invokes the signup-with-invite
-// edge function, then signs in on success. Mock at the
-// supabase.functions.invoke boundary and assert the friendly error mapping
-// for each edge-function error code.
+// Open signup (payment is the gate, not an invite code — docs/plans/
+// 2026-07-12-oauth-stripe-entitlement-design.md, owner decision #2).
+// Register.tsx calls authStore.signUp directly; the invite-code field and the
+// signup-with-invite edge function are retired.
 
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { FunctionsHttpError } from '@supabase/supabase-js'
+import { AuthApiError } from '@supabase/supabase-js'
 import { Register } from '@/pages/Register'
 
 vi.mock('@mantine/notifications', () => ({
@@ -22,23 +21,24 @@ vi.mock('@/lib/logger', () => ({
   logError: vi.fn(),
 }))
 
-const { mockNavigate, mockSignIn, mockInvoke } = vi.hoisted(() => ({
+const { mockNavigate, mockSignUp, mockSignInWithGoogle, mockResendConfirmation } = vi.hoisted(() => ({
   mockNavigate: vi.fn(),
-  mockSignIn: vi.fn(),
-  mockInvoke: vi.fn(),
+  mockSignUp: vi.fn(),
+  mockSignInWithGoogle: vi.fn(),
+  mockResendConfirmation: vi.fn(),
 }))
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<typeof import('react-router')>('react-router')
   return { ...actual, useNavigate: () => mockNavigate }
 })
 
 vi.mock('@/stores/authStore', () => ({
-  useAuthStore: vi.fn((selector: (s: any) => any) => selector({ signIn: mockSignIn })),
-}))
-
-vi.mock('@/lib/supabase', () => ({
-  supabase: { functions: { invoke: mockInvoke } },
+  useAuthStore: vi.fn((selector: (s: any) => any) => selector({
+    signUp: mockSignUp,
+    signInWithGoogle: mockSignInWithGoogle,
+    resendConfirmation: mockResendConfirmation,
+  })),
 }))
 
 function renderRegister() {
@@ -55,14 +55,7 @@ async function fillAndSubmit(user: ReturnType<typeof userEvent.setup>) {
   await user.type(screen.getByPlaceholderText('Jan de Vries'), 'Jan de Vries')
   await user.type(screen.getByPlaceholderText('jij@voorbeeld.com'), 'jan@example.com')
   await user.type(screen.getByPlaceholderText('Je wachtwoord'), 'password123')
-  await user.type(screen.getByPlaceholderText('Je uitnodigingscode'), 'welcome-1')
   await user.click(screen.getByRole('button', { name: 'Account aanmaken' }))
-}
-
-// Mirrors the shape FunctionsClient constructs for a non-2xx response:
-// error.context is the raw Response, read via error.context.json().
-function httpError(code: string): FunctionsHttpError {
-  return new FunctionsHttpError({ json: async () => ({ error: code }) })
 }
 
 describe('Register', () => {
@@ -70,31 +63,102 @@ describe('Register', () => {
     vi.clearAllMocks()
   })
 
-  it('signs up successfully, signs the user in, and navigates to /welkom onboarding', async () => {
-    mockInvoke.mockResolvedValue({ data: { ok: true }, error: null })
-    mockSignIn.mockResolvedValue(undefined)
+  it('has no invite-code field', () => {
+    renderRegister()
+    expect(screen.queryByPlaceholderText('Je uitnodigingscode')).not.toBeInTheDocument()
+    expect(screen.queryByText('Uitnodigingscode')).not.toBeInTheDocument()
+  })
+
+  it('shows a "Continue with Google" button', () => {
+    renderRegister()
+    expect(screen.getByRole('button', { name: 'Doorgaan met Google' })).toBeInTheDocument()
+  })
+
+  it('signs up via authStore.signUp and navigates to /welkom onboarding', async () => {
+    mockSignUp.mockResolvedValue({ needsConfirmation: false })
     const user = userEvent.setup()
     renderRegister()
 
     await fillAndSubmit(user)
 
-    await waitFor(() => expect(mockSignIn).toHaveBeenCalledWith('jan@example.com', 'password123'))
-    expect(mockInvoke).toHaveBeenCalledWith('signup-with-invite', {
-      body: {
-        email: 'jan@example.com',
-        password: 'password123',
-        fullName: 'Jan de Vries',
-        inviteCode: 'welcome-1',
-      },
-    })
+    await waitFor(() => expect(mockSignUp).toHaveBeenCalledWith('jan@example.com', 'password123', 'Jan de Vries'))
     const { notifications } = await import('@mantine/notifications')
     expect(notifications.show).toHaveBeenCalledWith(expect.objectContaining({ color: 'green' }))
     // Bet-1 §3.4: post-signup lands on the loanword-bridge onboarding, not the dashboard.
     expect(mockNavigate).toHaveBeenCalledWith('/welkom')
   })
 
-  it('shows a friendly message for an invalid or already-used invite code', async () => {
-    mockInvoke.mockResolvedValue({ data: null, error: httpError('invalid_invite_code') })
+  // The silent-ejection regression: signUp resolves without error but withholds
+  // a session. Navigating to /welkom here would bounce the visitor straight back
+  // out, after telling them registration succeeded.
+  describe('when the project requires email confirmation', () => {
+    beforeEach(() => {
+      mockSignUp.mockResolvedValue({ needsConfirmation: true })
+    })
+
+    it('shows the check-your-inbox panel with the address, and does NOT navigate', async () => {
+      const user = userEvent.setup()
+      renderRegister()
+
+      await fillAndSubmit(user)
+
+      expect(await screen.findByText('Bevestig je e-mailadres')).toBeInTheDocument()
+      expect(screen.getByText('jan@example.com')).toBeInTheDocument()
+      expect(mockNavigate).not.toHaveBeenCalled()
+    })
+
+    it('does not show a green success toast that would imply the account is usable', async () => {
+      const user = userEvent.setup()
+      renderRegister()
+
+      await fillAndSubmit(user)
+
+      await screen.findByText('Bevestig je e-mailadres')
+      const { notifications } = await import('@mantine/notifications')
+      expect(notifications.show).not.toHaveBeenCalledWith(expect.objectContaining({ color: 'green' }))
+    })
+
+    it('resends the confirmation mail on request', async () => {
+      mockResendConfirmation.mockResolvedValue(undefined)
+      const user = userEvent.setup()
+      renderRegister()
+
+      await fillAndSubmit(user)
+      await user.click(await screen.findByRole('button', { name: 'Stuur de link opnieuw' }))
+
+      expect(mockResendConfirmation).toHaveBeenCalledWith('jan@example.com')
+      const { notifications } = await import('@mantine/notifications')
+      await waitFor(() => {
+        expect(notifications.show).toHaveBeenCalledWith(
+          expect.objectContaining({ color: 'green', title: 'Verstuurd' }),
+        )
+      })
+    })
+
+    it('surfaces a failure to resend rather than failing silently', async () => {
+      mockResendConfirmation.mockRejectedValue(new Error('over_email_send_rate_limit'))
+      const user = userEvent.setup()
+      renderRegister()
+
+      await fillAndSubmit(user)
+      await user.click(await screen.findByRole('button', { name: 'Stuur de link opnieuw' }))
+
+      const { notifications } = await import('@mantine/notifications')
+      const { logError } = await import('@/lib/logger')
+      await waitFor(() => {
+        expect(notifications.show).toHaveBeenCalledWith(
+          expect.objectContaining({ color: 'red', title: 'Versturen mislukt' }),
+        )
+      })
+      expect(logError).toHaveBeenCalledWith(
+        expect.objectContaining({ page: 'Register', action: 'resendConfirmation' }),
+      )
+    })
+  })
+
+  it('shows a friendly message when the email is already registered, and does not navigate', async () => {
+    const authError = new AuthApiError('User already registered', 422, 'user_already_exists')
+    mockSignUp.mockRejectedValue(authError)
     const user = userEvent.setup()
     renderRegister()
 
@@ -105,29 +169,23 @@ describe('Register', () => {
       expect(notifications.show).toHaveBeenCalledWith(
         expect.objectContaining({
           color: 'red',
-          message: 'Deze uitnodigingscode is ongeldig of al gebruikt.',
+          message: 'Dit e-mailadres is al geregistreerd. Probeer in te loggen.',
         }),
       )
     })
-    expect(mockSignIn).not.toHaveBeenCalled()
     expect(mockNavigate).not.toHaveBeenCalled()
   })
 
-  // 2026-07-11 prod-ready audit ("SIGNUP ENUMERATION"): the edge function
-  // deliberately collapses "email already registered" and every other
-  // post-redeem failure into the same generic signup_failed/500 response —
-  // a distinct "that email is taken" message would let an attacker probe
-  // arbitrary addresses and learn which ones already have an account.
-  // invalid_invite_code (tested above) stays distinct on purpose: it reveals
-  // nothing about any particular email.
-  it('shows the same generic message for signup_failed as any other post-redeem error (no email-enumeration signal)', async () => {
-    mockInvoke.mockResolvedValue({ data: null, error: httpError('signup_failed') })
+  it('shows a generic failure message for an unrecognised error, and logs it', async () => {
+    const networkError = new TypeError('Failed to fetch')
+    mockSignUp.mockRejectedValue(networkError)
     const user = userEvent.setup()
     renderRegister()
 
     await fillAndSubmit(user)
 
     const { notifications } = await import('@mantine/notifications')
+    const { logError } = await import('@/lib/logger')
     await waitFor(() => {
       expect(notifications.show).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -136,23 +194,34 @@ describe('Register', () => {
         }),
       )
     })
-    expect(mockSignIn).not.toHaveBeenCalled()
+    expect(logError).toHaveBeenCalledWith({ page: 'Register', action: 'signUp', error: networkError })
     expect(mockNavigate).not.toHaveBeenCalled()
   })
 
-  it('shows a friendly message when rate limited', async () => {
-    mockInvoke.mockResolvedValue({ data: null, error: httpError('rate_limited') })
+  it('calls signInWithGoogle when "Continue with Google" is clicked', async () => {
+    mockSignInWithGoogle.mockResolvedValue(undefined)
     const user = userEvent.setup()
     renderRegister()
 
-    await fillAndSubmit(user)
+    await user.click(screen.getByRole('button', { name: 'Doorgaan met Google' }))
+
+    expect(mockSignInWithGoogle).toHaveBeenCalled()
+  })
+
+  it('shows registration-specific OAuth failure copy (not the login copy) when signInWithGoogle rejects', async () => {
+    mockSignInWithGoogle.mockRejectedValue(new Error('oauth_failed'))
+    const user = userEvent.setup()
+    renderRegister()
+
+    await user.click(screen.getByRole('button', { name: 'Doorgaan met Google' }))
 
     const { notifications } = await import('@mantine/notifications')
     await waitFor(() => {
       expect(notifications.show).toHaveBeenCalledWith(
         expect.objectContaining({
           color: 'red',
-          message: 'Te veel pogingen. Probeer het later opnieuw.',
+          title: 'Registratie mislukt',
+          message: 'Registreren met Google is mislukt. Probeer het opnieuw.',
         }),
       )
     })

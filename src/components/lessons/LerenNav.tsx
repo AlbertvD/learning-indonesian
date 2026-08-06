@@ -6,7 +6,7 @@
 // Active state is derived from the location, so every page renders <LerenNav/>
 // with no props. Routes are unchanged, so reader→/morphology?affix= deep links
 // keep working (and still show the row too).
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 import { IconBook, IconListCheck, IconAbc, IconVolume } from '@tabler/icons-react'
 import { SurfaceNav } from '@/components/nav/SurfaceNav'
 import { useT } from '@/hooks/useT'

@@ -4,7 +4,7 @@
 // session (it hosts no drills). Friendly loading/error/empty states per CLAUDE.md.
 
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { Alert } from '@mantine/core'
 import { IconAlertCircle, IconAbc, IconSearchOff } from '@tabler/icons-react'
 import { PageContainer, PageBody, PageHeader, LoadingState, EmptyState } from '@/components/page/primitives'

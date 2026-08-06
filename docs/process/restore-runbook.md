@@ -87,3 +87,109 @@ cannot drop them). Data is unaffected.
 | Date | Dump | Result | Duration | Surprises |
 |---|---|---|---|---|
 | 2026-07-02 | `postgres_2026-07-02_10-05.dump` (13.1 MB) | **PASS** — drill counts byte-identical to live: learner_capability_state 1531, capability_review_events 2242, learning_capabilities 13870, auth.users 10, storage.objects 4601, 56 `indonesian` RLS policies | restore 4s; whole drill ~3 min | The two §3 gotchas (custom image fails fresh-init; `postgres` role restores `indonesian` but silently zero-restores `auth`/`storage` — always assert auth.users > 0) |
+
+
+---
+
+## Cloud backups (Supabase Cloud, added 2026-08-02)
+
+Everything above covers the **homelab** Postgres. The cloud project
+(`wodpkxsmildtgndnbraa`) is a separate system that the homelab backup container
+never touches. Supabase *does* take daily backups on the Free plan, but they are
+only **accessible after upgrading to Pro** — so until then this script is the
+only restorable copy of cloud learner data.
+
+    make backup-cloud        # learner + auth data  (~0.12 MB, seconds)
+    make backup-cloud-full   # entire database incl. content
+
+Output: `~/kamoebisa-backups/postgres/cloud_<kind>_<iso>.dump`
+(override with `BACKUP_DIR`; retention via `KEEP_DUMPS`, default 30).
+
+### What it covers, and what it deliberately does not
+
+**Backed up** — the irreplaceable half: the whole `auth` schema (users AND
+identities) plus `learner_capability_state`, `capability_review_events`,
+`learning_sessions`, `learner_lesson_activation`, `profiles`, `entitlements`,
+`stripe_webhook_events`, `user_roles`, `error_logs`.
+
+**Not backed up, by design:**
+
+- **Lesson/reader content** — pipeline-is-writer (ADR 0011); staging files are
+  canonical and a re-publish regenerates every row.
+- **Storage bytes** (~462 MB) — masters live on the author Mac under `content/`,
+  TTS is regenerable. A nightly full pull would also be **13.9 GB/month against
+  the Free plan's 5 GB egress quota** — the backup would break the budget it
+  runs inside.
+- **Capability content** — regenerable by re-seeding. ⚠ Residual: ADR 0011 makes
+  it DB-authoritative *after* seeding, so post-publish corrections from the
+  flag→review loop live only in the DB and would need redoing after a restore.
+  Accepted: content is replaceable effort, learner history is not.
+
+### Two traps this script exists to avoid
+
+Both were found on 2026-08-02 by inspecting a dump's contents rather than
+trusting its exit code, and both are now asserted on every run:
+
+1. **`-n auth` does NOT work with `-t`.** pg_dump does not union schema and
+   table selectors — when both are given the `-t` filter wins and the schema
+   contributes nothing. `-n auth -t indonesian.x` produced a dump with **zero
+   auth tables**, at non-zero size, with a valid TOC and a clean exit. Restoring
+   it would have yielded learner rows keyed to user IDs that no longer exist.
+   The correct form is `-t 'auth.*'`. `auth.identities` is the load-bearing
+   table: without it every Google login is orphaned even if `auth.users`
+   survives.
+2. **A failed `pg_dump` leaves a 0-byte file.** pg_dump creates the output
+   before it can fail, so a bad credential leaves an artefact that a naive
+   retention sweep counts as a backup. The script now deletes the file on any
+   failure.
+
+The script asserts `auth.users`, `auth.identities`,
+`indonesian.learner_capability_state` and `indonesian.profiles` are present in
+the dump's manifest, and exits non-zero if any is missing.
+
+### Restoring — DRILLED 2026-08-02, procedure below is proven
+
+Every row count matched the live source (31 lessons, 15,944 capabilities,
+auth.users + auth.identities, all learner tables). **The order matters and is
+not obvious** — five separate failures were hit getting here, each silent or
+misleading:
+
+    # 1. Prerequisites. A fresh SUPABASE project already has all of these;
+    #    a bare Postgres does not, and migration.sql fails at line 59 without
+    #    the auth schema ("schema \"auth\" does not exist").
+    create schema if not exists auth;
+    create extension pgcrypto; create extension "uuid-ossp";
+    create role anon / authenticated / service_role / authenticator;
+    create function auth.uid() / auth.role() / auth.email();
+
+    # 2. Restore auth FIRST — migration.sql's FKs reference auth.users(id).
+    pg_restore ... --no-owner --no-privileges -n auth <dump>
+
+    # 3. Schema.
+    psql -f scripts/migration.sql
+
+    # 4. Clear migration.sql's OWN seed rows, or the data-only restore collides
+    #    with them: "duplicate key (module_id, order_index)=(common-words, 999)".
+    truncate indonesian.lessons, indonesian.learning_capabilities cascade;
+
+    # 5. Restore data. --disable-triggers is REQUIRED: pg_restore --data-only
+    #    does not guarantee FK-safe ordering, and without it
+    #    learning_capabilities loads before lessons and silently ends at 0 rows.
+    pg_restore ... --data-only --disable-triggers --no-owner --no-privileges \
+                   -n indonesian <dump>
+
+    # 6. Verify by COUNTING, against the source. Not by exit code.
+
+⚠ **Do NOT reseed content before restoring.** `learning_capabilities.id` is
+`default gen_random_uuid()`, so a fresh seed mints new UUIDs and every
+`learner_capability_state.capability_id` in the backup would reference rows that
+no longer exist. The backup carries `lessons` and `learning_capabilities`
+precisely to preserve those IDs. Reseed the *rest* of the content afterwards —
+the pipeline upserts on `canonical_key`, so it matches the restored IDs rather
+than replacing them.
+
+Drill target used: local `postgresql@17` on port 55432 (Homebrew). Note the keg
+installs unlinked when another major version is present — `share/postgresql@17`
+and `lib/postgresql@17` need symlinking into `/opt/homebrew` or initdb fails on
+a missing timezone directory. `pg_cron` and `vector` are unavailable locally;
+their migration.sql sections error harmlessly and do not affect learner data.

@@ -7,6 +7,26 @@ SUPABASE_URL = https://api.supabase.duin.home
 
 # Load .env.local if present
 -include .env.local
+
+# ── Which Supabase does a health check certify? ─────────────────────────────
+# PRODUCTION IS SUPABASE CLOUD. `.env.local` still points VITE_SUPABASE_URL at
+# the homelab — correctly, it is the dev/personal instance — so any check that
+# simply inherits the environment certifies the WRONG system. That is exactly
+# what `make pre-deploy` did until 2026-08-03: the gate standing between a
+# branch and a merge to a cloud-hosted production app was asserting the
+# homelab's health, where the buckets are still public and none of the
+# entitlement objects exist.
+#
+# `.env.cloud.local` already declares the cloud target for `vite --mode cloud`,
+# so reuse it rather than adding a second declaration of the same fact. A later
+# assignment wins in make, so these override the `.env.local` values above.
+# TARGET=homelab keeps the old behaviour for homelab work.
+TARGET ?= cloud
+ifeq ($(TARGET),cloud)
+-include .env.cloud.local
+SUPABASE_SERVICE_KEY = $(CLOUD_SUPABASE_SERVICE_KEY)
+endif
+
 export
 
 .PHONY: help
@@ -90,6 +110,27 @@ migrate-idempotent-check: ## Apply migration.sql twice + assert schema-health ou
 		exit 1; \
 	fi
 
+.PHONY: check-cloud-config
+check-cloud-config: ## Assert the live Supabase Cloud project matches supabase/config.toml (drift check)
+	bun scripts/check-cloud-config.ts
+
+.PHONY: verify-stripe-lifecycle
+verify-stripe-lifecycle: ## Phase 3 subscription lifecycle against the Stripe SANDBOX: portal, cancel-at-period-end, webhook idempotency + signature, paywall from a fresh non-entitled account. MUTATES a subscription — refuses to run on sk_live_ keys, and deliberately NOT part of pre-deploy.
+	bun scripts/verify-stripe-lifecycle.ts
+
+.PHONY: config-push
+config-push: ## Apply supabase/config.toml to the linked cloud project (the ONLY sanctioned way to change auth config)
+	@echo "⚠  This applies the whole [auth] block. Run check-cloud-config first to see the diff."
+	bunx supabase config push
+
+.PHONY: backup-cloud
+backup-cloud: ## Local backup of cloud learner + auth data (pg_dump, content excluded — it is regenerable)
+	bun scripts/backup-cloud.ts
+
+.PHONY: backup-cloud-full
+backup-cloud-full: ## Local backup of the ENTIRE cloud database, including regenerable content
+	bun scripts/backup-cloud.ts --full
+
 .PHONY: seed-lessons
 seed-lessons: ## Seed lesson content (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
@@ -99,11 +140,6 @@ seed-lessons: ## Seed lesson content (requires SUPABASE_SERVICE_KEY)
 seed-podcasts: ## Seed podcast metadata and upload audio from content/podcasts/ (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-podcasts.ts
-
-.PHONY: seed-lesson-audio
-seed-lesson-audio: ## Upload lesson audio files from content/lessons/ to indonesian-lessons storage (requires SUPABASE_SERVICE_KEY)
-	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
-	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-lesson-audio.ts
 
 .PHONY: seed-sentences
 seed-sentences: ## Seed sentence/cloze learning items (requires SUPABASE_SERVICE_KEY)
@@ -185,7 +221,7 @@ publish-lesson-content: ## Stage-A-only publish: lesson content + Lesson Gate, n
 # ============================================================================
 
 .PHONY: check-supabase
-check-supabase: ## Check Supabase connectivity, CORS, schema, auth, and storage (uses .env.local)
+check-supabase: ## Check Supabase connectivity, CORS, schema, auth, and storage (cloud by default; TARGET=homelab for the homelab)
 	NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/check-supabase.ts
 
 .PHONY: check-supabase-deep
@@ -203,7 +239,7 @@ verify-lessons-overview-rls: ## Slice 3 gate (PR-C extended to both pairs, four-
 	bun scripts/verify-lessons-overview-rls.ts
 
 .PHONY: pre-deploy
-pre-deploy: ## Run the full pre-deploy gauntlet: lint + tests + build + Supabase health checks
+pre-deploy: ## Run the full pre-deploy gauntlet: lint + tests + build + Supabase health checks + cloud-config drift
 	@echo "→ Lint..."
 	@$(MAKE) -s lint
 	@echo ""
@@ -222,6 +258,9 @@ pre-deploy: ## Run the full pre-deploy gauntlet: lint + tests + build + Supabase
 	@echo "→ Supabase deep schema health (RLS + policies + grants)..."
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "❌ SUPABASE_SERVICE_KEY required for deep check. Run: make pre-deploy SUPABASE_SERVICE_KEY=<key>"; exit 1; }
 	@$(MAKE) -s check-supabase-deep SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY)
+	@echo ""
+	@echo "→ Cloud config drift..."
+	@$(MAKE) -s check-cloud-config
 	@echo ""
 	@echo "✅ All pre-deploy checks passed."
 

@@ -3,7 +3,7 @@
 // position for accounts that haven't finished the first-run steps, on
 // desktop AND mobile. Step state derivation lives in Dashboard.tsx +
 // lib/firstRun.ts; this component is presentational.
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { IconCheck } from '@tabler/icons-react'
 import { useT } from '@/hooks/useT'
 import classes from './FirstRunChecklist.module.css'

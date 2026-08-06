@@ -21,7 +21,7 @@
 // See docs/plans/2026-04-24-page-framework-design.md §3 (item 6).
 
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { IconChevronRight } from '@tabler/icons-react'
 import { cx } from './cx'
 import classes from './ListCard.module.css'
