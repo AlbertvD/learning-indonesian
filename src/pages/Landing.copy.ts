@@ -2,9 +2,12 @@
 //
 // Deliberately NOT in src/lib/i18n.ts: that module is entry-chunk-resident,
 // and the slice-1 bundle rule is "the app entry chunk must not grow"
-// (docs/plans/2026-07-03-desktop-program-design.md §Slice 1). Only Landing.tsx
-// imports this file, so the copy ships inside the lazy landing chunk. It
+// (docs/plans/2026-07-03-desktop-program-design.md §Slice 1). Landing.tsx is its
+// only RUNTIME importer, so the copy ships inside the lazy landing chunk. It
 // follows the same nl/en shape and Lang type as i18n.ts.
+// (scripts/check-cloud-config.ts also imports it — to assert the pricing band
+// quotes the declared price — but that is a build-time script outside the Vite
+// graph, so the chunking property is unaffected.)
 //
 // Copy-honesty rule (owner, 2026-07-03): all audio is TTS — never claim native
 // speakers or human narration; audio is mentioned neutrally where it describes

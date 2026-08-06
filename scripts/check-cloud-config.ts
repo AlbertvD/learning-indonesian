@@ -35,6 +35,8 @@
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import config from '../supabase/config.toml'
+import { nl, en } from '../src/lib/i18n'
+import { landingCopy } from '../src/pages/Landing.copy'
 
 for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
   const m = line.match(/^([A-Z0-9_]+)=(.*)$/)
@@ -50,6 +52,38 @@ if (!token) {
 const cfg = config as any
 const PROJECT_REF: string = cfg.project_id
 const APP_ORIGIN = 'https://kamoebisa.nl'
+
+// ── The pricing declaration ─────────────────────────────────────────────────
+// ONE place in the repo that says what a plan costs and which Stripe Price
+// sells it. Everything else — the paywall, /voorwaarden §2, the landing page,
+// the JSON-LD offer, the live function secrets — is asserted against THIS.
+//
+// Why it exists: docs/marketing/pricing.md names the gap in its own words —
+// "A price parity check (copy vs Stripe) does not exist." The €7/€56 → €9/€79
+// reprice touched six surfaces by hand, and the runbook's Phase 5 warning
+// ("live checkout sells at €7/€56 while every page says €9/€79") describes
+// exactly the failure this closes. A page advertising €9 while Stripe charges
+// something else is a consumer-law problem, not just a bug — /voorwaarden §2
+// is a contract term.
+//
+// Price IDs are identifiers, not secrets (launch-runbook Phase 5), so they are
+// safe in a public repo — unlike the keys. Sanity: a LIVE id on this account
+// carries `FDKKKBKGTH`; every sandbox price carries `FHQPtw4Bcl`. The digest
+// comparison below would catch a sandbox id, but the eyeball check is free.
+const PRICING = {
+  monthly: {
+    secret: 'STRIPE_PRICE_MONTHLY',
+    priceId: 'price_1U17TLFDKKKBKGTHpkx0LM6J',
+    display: '€9',
+    jsonLd: '9.00',
+  },
+  annual: {
+    secret: 'STRIPE_PRICE_ANNUAL',
+    priceId: 'price_1U17TbFDKKKBKGTHvjWlMInR',
+    display: '€79',
+    jsonLd: null, // schema.org Offer carries a single price — the monthly one.
+  },
+} as const
 
 let passed = 0
 const failures: string[] = []
@@ -130,9 +164,16 @@ else fail('google client id set', 'provider is enabled but no client_id — the 
 // secret whose correct value is public knowledge — the app's own origin — can
 // be compared exactly without this file ever holding or printing a secret.
 //
-// The STRIPE_* four have genuinely private values, so presence is all that can
-// be asserted here. Absence is still worth catching: create-checkout-session
-// returns `server_not_configured` and nobody can buy anything.
+// The same digest trick extends to STRIPE_PRICE_MONTHLY / STRIPE_PRICE_ANNUAL:
+// a Stripe Price id is an identifier, not a secret, so its correct value can be
+// declared in PRICING above and compared exactly. That turns "a price secret is
+// set" into "the RIGHT price is set" — the difference between catching and
+// missing a live account still pointing at the archived €7/€56 pair.
+//
+// STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET have genuinely private values, so
+// presence is all that can be asserted for those two. Absence is still worth
+// catching: create-checkout-session returns `server_not_configured` and nobody
+// can buy anything.
 console.log('\nDECLARED — edge-function secrets (compared by digest, never read)')
 
 const secretsRes = await fetch(`https://api.supabase.com/v1/projects/${PROJECT_REF}/secrets`, {
@@ -158,11 +199,60 @@ if (!secretsRes.ok) {
     )
   }
 
-  for (const name of ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'STRIPE_PRICE_MONTHLY', 'STRIPE_PRICE_ANNUAL']) {
+  for (const name of ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET']) {
     if (digestOf.has(name)) pass(`${name} set (value not compared)`)
     else fail(`${name} set`, 'missing — create-checkout-session returns server_not_configured, so no one can subscribe')
   }
+
+  for (const [plan, p] of Object.entries(PRICING)) {
+    const liveDigest = digestOf.get(p.secret)
+    const wantDigest = createHash('sha256').update(p.priceId).digest('hex')
+    if (!liveDigest) {
+      fail(`${p.secret} set`, 'missing — create-checkout-session returns server_not_configured, so no one can subscribe')
+    } else if (liveDigest === wantDigest) {
+      pass(`${p.secret} is the declared ${plan} price (${p.display})`)
+    } else {
+      fail(
+        `${p.secret} matches the declared ${plan} price`,
+        `digest does not match sha256(${p.priceId}) — the live function is selling a DIFFERENT price than every page advertises ` +
+          `(an archived price, or a sandbox id). Fix: bunx supabase secrets set ${p.secret}=${p.priceId} --project-ref ${PROJECT_REF}`,
+      )
+    }
+  }
 }
+
+// ── DECLARED: pricing copy ↔ the declaration ────────────────────────────────
+// Every surface that quotes a price, checked against PRICING. These are cheap
+// string comparisons, but they are the half of price parity that a digest
+// cannot reach: the secrets could be perfect while /voorwaarden still promises
+// last month's price. §2 of the terms is a contract term, so this is the
+// surface where a mismatch costs more than embarrassment.
+console.log('\nDECLARED — pricing copy (every surface that quotes a price)')
+
+const priceSurfaces: Array<{ name: string; text: string; needs: string[] }> = [
+  { name: 'paywall panel (nl)', text: `${nl.paywall.monthlyPrice} ${nl.paywall.annualPrice}`, needs: [PRICING.monthly.display, PRICING.annual.display] },
+  { name: 'paywall panel (en)', text: `${en.paywall.monthlyPrice} ${en.paywall.annualPrice}`, needs: [PRICING.monthly.display, PRICING.annual.display] },
+  { name: '/voorwaarden §2 (nl)', text: nl.terms.section2Body, needs: [PRICING.monthly.display, PRICING.annual.display] },
+  { name: '/voorwaarden §2 (en)', text: en.terms.section2Body, needs: [PRICING.monthly.display, PRICING.annual.display] },
+  { name: 'landing pricing band (nl)', text: landingCopy.nl.pricingBody, needs: [PRICING.monthly.display, PRICING.annual.display] },
+  { name: 'landing pricing band (en)', text: landingCopy.en.pricingBody, needs: [PRICING.monthly.display, PRICING.annual.display] },
+  { name: 'index.html JSON-LD offer', text: readFileSync('index.html', 'utf8'), needs: [`"price": "${PRICING.monthly.jsonLd}"`] },
+]
+
+for (const s of priceSurfaces) {
+  const absent = s.needs.filter(n => !s.text.includes(n))
+  if (absent.length === 0) pass(`${s.name} quotes the declared price`)
+  else fail(`${s.name} quotes the declared price`, `does not mention ${absent.join(' / ')} — copy and the Stripe price have drifted apart`)
+}
+
+// The annual savings badge is derived, not independent: it must stay true
+// against the two declared prices or it is a false advertising claim.
+const monthlyNum = Number(PRICING.monthly.display.replace(/[^\d.]/g, ''))
+const annualNum = Number(PRICING.annual.display.replace(/[^\d.]/g, ''))
+const savingsPct = Math.round((1 - annualNum / (monthlyNum * 12)) * 100)
+const badgePct = Number((nl.paywall.annualBadge.match(/(\d+)\s*%/) ?? [])[1])
+if (badgePct === savingsPct) pass(`annual savings badge is true (${savingsPct}% against ${monthlyNum}×12)`)
+else fail('annual savings badge is true', `badge claims ${badgePct}%, the declared prices give ${savingsPct}% — recompute nl/en paywall.annualBadge and annualHint`)
 
 // ── BEHAVIOUR: Cloudflare-served app ────────────────────────────────────────
 // No repo declaration for DNS / custom domains / Email Routing. Assert that the
