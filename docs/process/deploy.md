@@ -156,7 +156,31 @@ A successful deploy ends with `Status: running` and a recent image digest.
 
 ---
 
-## 6. Homelab cutover — making staging faithful again (one-time, not yet run)
+## 6. Homelab cutover — making staging faithful again
+
+> ### ✅ RUN 2026-08-07. The homelab is a faithful staging environment again.
+>
+> Applied and machine-verified. Kept here as the record of what was done and as
+> the procedure if it ever has to be repeated (a rebuilt homelab, a restored
+> volume).
+>
+> - Backup gate: `postgres_2026-08-07_02-30.dump` (16.2 MB), TOC 1,214 entries.
+> - `make migrate-idempotent-check` — idempotent, second apply identical.
+>   `UPDATE 3` flipped the buckets private.
+> - **Learner data untouched**, counted before and after and byte-identical:
+>   `learner_capability_state` 2007 · `capability_review_events` 4128 ·
+>   `learning_sessions` 2260 · activations 46 · `auth.users` 11.
+> - Container recreated from `:latest`, revision `34cb916d` — running, both
+>   Traefik routers intact, `/sw.js` 200 cookieless and `/` 307 (§ 5 contract).
+> - `make check-supabase-deep TARGET=homelab` — **all structural checks pass**,
+>   HC54–HC59 included (they were all red before).
+> - The paywall PROVEN on the homelab, as `testuser@duin.home` (not an admin,
+>   no entitlement):
+>   - sign lesson-1 audio → **200**, sign lesson-4 audio → **400**
+>   - activate lesson 3 → OK, activate lesson 4 → **`entitlement_required`**
+>
+> Still owed: the two in-browser sign-in checks below. Everything above is
+> machine-verified; those two are what a human eye adds.
 
 **Why.** After the entitlement cutover (PR #461, merged 2026-08-06) production and
 the homelab run different schemas. The homelab has no `entitlements` table, no

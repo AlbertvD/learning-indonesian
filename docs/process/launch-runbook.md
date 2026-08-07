@@ -360,9 +360,23 @@ future moment someone follows the deploy doc.
 
 - [x] `merged_at:` in the spec frontmatter — merged 2026-08-06 as pre-filled,
       no correction needed.
-- [ ] Run the homelab cutover (`docs/process/deploy.md` § 6) so there is a
-      faithful place to test entitlement-shaped changes before customers see
-      them.
+- [x] Run the homelab cutover (`docs/process/deploy.md` § 6) — **DONE
+      2026-08-07.** The homelab now runs the same schema, permissions and app
+      revision as cloud, so entitlement-shaped changes finally have somewhere to
+      be rehearsed. Paywall proven there: lesson-1 audio signs, lesson-4 is
+      refused, lesson-4 activation raises `entitlement_required`. Learner data
+      verified unchanged across the migration. Two in-browser sign-in checks
+      remain (§ 6).
+- [x] Cloudflare production branch → `main` — **DONE 2026-08-07**, and the
+      "dashboard-only" claim was WRONG. The builds API works; it keys on the
+      Worker's SCRIPT TAG, not its name (querying by name returns an empty list
+      rather than a 404, which is what made it look unsupported). Flipped
+      `git_repository.branch` and the trigger's `branch_includes` via
+      `PATCH /accounts/{id}/builds/workers/{script_tag}` and
+      `PATCH /accounts/{id}/builds/triggers/{uuid}`. `POST .../triggers/{uuid}/builds`
+      also takes an explicit branch or commit, which sidesteps the "Retry build
+      replays the original commit" trap entirely. Confirmed by a later
+      `push_event` build from `main` deploying on its own.
 
 ## Phase 3 — Stripe test-mode E2E [joint]
 
