@@ -11,6 +11,33 @@ How a code change reaches `https://indonesian.duin.home`.
 
 The build is **fully automated**; the container recreate on the homelab is **manual** until further notice (Portainer or SSH). No CD pipeline pushes the new image into Docker.
 
+> ## ⚠ Read § 6 first — the homelab is now STAGING, and it needs a one-time cutover
+>
+> Customers are on Cloudflare Workers → `https://kamoebisa.nl`, backed by Supabase
+> Cloud (`docs/process/launch-runbook.md`). `indonesian.duin.home` is no longer
+> the product; it is where changes get rehearsed before they reach paying users.
+>
+> **Until the § 6 cutover runs, treat §§ 1–4 as armed.** Once `:latest` contains
+> the entitlement build, it plays audio only through signed URLs, and the
+> homelab has no storage policy to authorize signing — so recreating the
+> container makes every audio clip silently stop working. The image is correct;
+> the database it points at has not caught up.
+>
+> **Timing, verified 2026-08-06:** `:latest` is still `sha-9b9b43c0` from
+> 2026-07-31 — the PRE-entitlement build — even though #461 merged on 08-06. CI
+> did not fire on `main` for the merge commit, and `deploy.yml` only runs on
+> `workflow_run` *after* CI succeeds there, so no new image was published. The
+> homelab is therefore safe **right now**, and stops being safe the moment CI
+> next runs on `main`. Check before you pull:
+>
+> ```bash
+> gh api users/AlbertvD/packages/container/learning-indonesian/versions?per_page=1 \
+>   --jq '.[] | .updated_at + "  " + (.metadata.container.tags | tostring)'
+> ```
+>
+> A `:latest` dated after 2026-08-06 is the entitlement build. Do the § 6
+> cutover before recreating with it.
+
 ---
 
 ## 1. Build trigger
@@ -125,4 +152,92 @@ A successful deploy ends with `Status: running` and a recent image digest.
 - SSH to `mrblond@master-docker` remains available as the fallback when Portainer is offline.
 - The `docker-compose.yml` reference in `homelab-configs/services/learning-indonesian/` is kept for documentation. The container is managed directly via `docker run` as above — the compose file is not the source of truth.
 - **Two routers on purpose.** The main router carries `duinhuis-auth@docker` (the whole app is behind forward-auth). The `-static` router has **no** auth middleware and matches only the **public PWA plumbing** — `/manifest.webmanifest`, `/sw.js`, `/pwa-icon*`, `/workbox-*` — so the browser can fetch the manifest, install/**update** the service worker, and load its workbox chunk **without** a login cookie. This matters because a service-worker script fetch that gets *redirected* (307→auth on a stale cookie) fails per spec and silently kills the update — the "deploys invisible" symptom. Its longer rule gives it higher default priority, so it wins for those paths; everything else falls through to the auth'd main router. **Use `Path`/`PathPrefix`, NOT `PathRegexp`** — the homelab Traefik build rejects `PathRegexp` ("unsupported function"), which silently *disables* the router (the bug this replaced; found 2026-07-05). Verify after a recreate: cookieless `curl -k https://indonesian.duin.home/sw.js` must be `200`, and `curl -k https://indonesian.duin.home/` must be `307`.
-- Pre-deploy gauntlet: run `make pre-deploy` locally before merging anything that touches `scripts/migration.sql`. GitHub Actions cannot reach the homelab; the gauntlet runs locally.
+- Pre-deploy gauntlet: run `make pre-deploy` locally before merging anything that touches `scripts/migration.sql`. GitHub Actions cannot reach the homelab; the gauntlet runs locally. Note it targets **cloud** by default (`TARGET=homelab` for the old behaviour) — cloud is production.
+
+---
+
+## 6. Homelab cutover — making staging faithful again (one-time, not yet run)
+
+**Why.** After the entitlement cutover (PR #461, merged 2026-08-06) production and
+the homelab run different schemas. The homelab has no `entitlements` table, no
+`can_read_media`, public buckets, and the retired invite system still present.
+That makes it a *degraded* staging environment: you can rehearse content and most
+UI there, but **not** the paywall, signed URLs, or activation gating — the newest
+and riskiest surfaces in the app, which currently have nowhere to be tested but
+production.
+
+Proof, any time you want it:
+
+```bash
+make check-supabase-deep TARGET=homelab   # HC54–HC58 red
+make check-supabase-deep                  # same checks green on cloud
+```
+
+**Why it is cheap.** The homelab has 11 accounts but only three with learning
+data, and the only real learner (`albert@duin.home`) is an **admin**.
+`has_active_entitlement()` returns true for admins, so the migration locks nobody
+out and **no comp rows are needed**. `testuser@duin.home` is deliberately *not* an
+admin — after the cutover it becomes a ready-made non-entitled account for testing
+the paywall, so one instance gives you both views.
+
+**The one real constraint.** The migration flips the buckets private while the
+running container still builds public `/object/public/…` URLs, so audio is broken
+between the two steps. Keep them adjacent. This is spec §7's coordinated rollout
+window: the cloud pivot deleted it *for cloud* (a fresh project had no cohort),
+but it never stopped applying here — it just moved, and nobody wrote that down.
+
+### Order
+
+```bash
+# 0. Backup first — this touches learner data (4,127 review events live here).
+#    Homelab dumps are the nightly job; confirm one exists before proceeding.
+
+# 1. Rehearse. Applies migration.sql to the HOMELAB twice and diffs the health
+#    output. `migrate` targets the homelab unconditionally — scripts/migrate.ts
+#    SSHes to HOMELAB_SSH and has no cloud path.
+make migrate-idempotent-check
+
+# 2. Apply. Chains the deep check against the homelab (fixed 2026-08-06 — it
+#    used to migrate the homelab and then certify CLOUD).
+make migrate
+
+# 3. Immediately recreate the container from :latest (§§ 2–3 above). The image
+#    already contains the signed-URL build; it is the DB that was behind.
+
+# 4. Verify — HC54–HC58 should now be green on the homelab too.
+make check-supabase-deep TARGET=homelab
+```
+
+### Then verify by hand, as a human
+
+- Sign in as `albert@duin.home` (admin) → audio plays on any lesson, no paywall.
+- Sign in as `testuser@duin.home` (not an admin, not entitled) → lessons 1–3
+  work; lesson 4+ shows the paywall CTA; paid audio is gated. **This is the view
+  no environment could show you before.**
+
+### Rollback
+
+The migration is additive except the bucket flip. If audio must come back
+immediately without recreating the container:
+
+```sql
+update storage.buckets set public = true
+where id in ('indonesian-lessons','indonesian-podcasts','indonesian-tts');
+```
+
+That re-opens the `/object/public/` path and the old image works again. Note it
+also disables the paywall on the homelab — acceptable there, never on cloud.
+
+### What still cannot be rehearsed here
+
+**Stripe.** The homelab's edge-functions container has no Stripe keys, so
+checkout, the webhook and the portal cannot run against it. Those stay covered by
+`make verify-stripe-lifecycle` against the Stripe **sandbox**, which is the better
+test anyway — it exercises real Stripe rather than a local fake.
+
+### Why `deploy.yml` stays
+
+It was briefly a candidate for retirement, on the grounds that it publishes an
+image that breaks the homelab. That reasoning was backwards: the image is
+correct, and after this cutover it is exactly the image staging needs. The
+workflow is how you refresh the staging container. Keep it.

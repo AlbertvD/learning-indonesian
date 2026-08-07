@@ -21,6 +21,18 @@ SUPABASE_URL = https://api.supabase.duin.home
 # so reuse it rather than adding a second declaration of the same fact. A later
 # assignment wins in make, so these override the `.env.local` values above.
 # TARGET=homelab keeps the old behaviour for homelab work.
+#
+# Captured with `:=` BEFORE the override below, so it holds the HOMELAB key from
+# .env.local regardless of TARGET. `migrate` and `migrate-idempotent-check` need
+# it: scripts/migrate.ts SSHes to HOMELAB_SSH and has NO cloud path at all, so
+# those targets always write to the homelab — but the health check they chain
+# inherited the cloud default and certified the cloud instead. Migrating one
+# database and verifying another prints a green result for a system the command
+# never touched: the exact fault this TARGET block was added to fix, reproduced
+# one target over. Found 2026-08-06, while establishing the homelab as a real
+# staging environment (docs/process/deploy.md § Homelab cutover).
+HOMELAB_SERVICE_KEY := $(SUPABASE_SERVICE_KEY)
+
 TARGET ?= cloud
 ifeq ($(TARGET),cloud)
 -include .env.cloud.local
@@ -70,30 +82,30 @@ audit: ## Fail on any advisory in a PRODUCTION dependency (what ships / runs). d
 # ============================================================================
 
 .PHONY: migrate
-migrate: ## Apply Supabase schema migration via psql + run schema-health check (requires POSTGRES_PASSWORD in .env.local)
+migrate: ## Apply Supabase schema migration to the HOMELAB via psql + run schema-health check against the homelab (requires POSTGRES_PASSWORD in .env.local). Cloud schema changes do NOT go through here.
 	@test -n "$(POSTGRES_PASSWORD)" || { echo "Error: POSTGRES_PASSWORD is required (add to .env.local)"; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_DB_PASSWORD=$(POSTGRES_PASSWORD) bun scripts/migrate.ts
 	@echo ""
-	@echo "→ Running schema-health check to catch RLS / grant regressions..."
-	@if [ -n "$(SUPABASE_SERVICE_KEY)" ]; then \
-		$(MAKE) check-supabase-deep SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) || { echo ""; echo "❌ Migration applied but post-migration health check failed."; echo "   Review the output above and fix before deploying."; exit 1; }; \
+	@echo "→ Running schema-health check against the HOMELAB (the DB just migrated)..."
+	@if [ -n "$(HOMELAB_SERVICE_KEY)" ]; then \
+		$(MAKE) check-supabase-deep TARGET=homelab SUPABASE_SERVICE_KEY=$(HOMELAB_SERVICE_KEY) || { echo ""; echo "❌ Migration applied but post-migration health check failed."; echo "   Review the output above and fix before deploying."; exit 1; }; \
 	else \
-		echo "⚠  SUPABASE_SERVICE_KEY not set; skipping post-migration health check."; \
-		echo "   Run: make check-supabase-deep SUPABASE_SERVICE_KEY=<key>  to verify manually."; \
+		echo "⚠  SUPABASE_SERVICE_KEY not set in .env.local; skipping post-migration health check."; \
+		echo "   Run: make check-supabase-deep TARGET=homelab SUPABASE_SERVICE_KEY=<homelab key>  to verify manually."; \
 	fi
 
 .PHONY: migrate-idempotent-check
 migrate-idempotent-check: ## Apply migration.sql twice + assert schema-health output is identical between runs (catches bulk-drop-class bugs without false-positives from pre-existing data gaps)
 	@test -n "$(POSTGRES_PASSWORD)" || { echo "Error: POSTGRES_PASSWORD is required (add to .env.local)"; exit 1; }
-	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required (add to .env.local)"; exit 1; }
+	@test -n "$(HOMELAB_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY (homelab) is required in .env.local"; exit 1; }
 	@echo "→ First migrate.ts run..."
 	@NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_DB_PASSWORD=$(POSTGRES_PASSWORD) bun scripts/migrate.ts
 	@echo "→ Capturing schema-health snapshot after run 1..."
-	@$(MAKE) -s check-supabase-deep SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) > /tmp/migrate-idem-1.txt 2>&1 || true
+	@$(MAKE) -s check-supabase-deep TARGET=homelab SUPABASE_SERVICE_KEY=$(HOMELAB_SERVICE_KEY) > /tmp/migrate-idem-1.txt 2>&1 || true
 	@echo "→ Second migrate.ts run..."
 	@NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_DB_PASSWORD=$(POSTGRES_PASSWORD) bun scripts/migrate.ts
 	@echo "→ Capturing schema-health snapshot after run 2..."
-	@$(MAKE) -s check-supabase-deep SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) > /tmp/migrate-idem-2.txt 2>&1 || true
+	@$(MAKE) -s check-supabase-deep TARGET=homelab SUPABASE_SERVICE_KEY=$(HOMELAB_SERVICE_KEY) > /tmp/migrate-idem-2.txt 2>&1 || true
 	@echo "→ Comparing snapshots..."
 	@if diff -q /tmp/migrate-idem-1.txt /tmp/migrate-idem-2.txt > /dev/null; then \
 		echo ""; \
