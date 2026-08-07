@@ -6,7 +6,18 @@
 <html lang="nl">
   <head>
     <meta charset="UTF-8" />
+    <!-- Brand mark: "KB" in Plus Jakarta Sans wght 800 on tamarind[6] #C64A26,
+         the theme's primaryColor (src/main.tsx). Replaced a purple lightning-bolt
+         placeholder that had shipped since April and matched nothing in the app.
+         Provenance + regeneration notes live in the SVG's own comment.
+         The tamarind tile reads on both light and dark browser chrome, so no
+         prefers-color-scheme variant is needed. -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- iOS ignores the manifest icons for "add to home screen" and needs this
+         PNG; without it Safari uses a SCREENSHOT of the page. Deliberately NOT
+         pre-rounded — iOS applies its own squircle mask, so a rounded source
+         gets double-rounded and shows pale corner slivers. -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- 'Plus Jakarta Sans' is self-hosted (src/styles/fonts.css, public/fonts/) —
          no external Google Fonts network call. Preload the primary (normal-weight)
