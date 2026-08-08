@@ -4878,16 +4878,30 @@ grant execute on function indonesian.has_active_entitlement(uuid) to service_rol
 -- other rows) — a trap for a future caller assuming a general oracle. Its
 -- two consumers are SECURITY DEFINER functions, which don't need the grant.
 
--- Free-tier boundary — one canonical definition ("free = lessons 1–3"),
+-- Free-tier boundary — one canonical definition ("free = lesson 1"),
 -- consumed by the activation gate above, both can_read_media clauses below,
 -- and the client paywall mirror (FREE_TIER_MAX_LESSON in entitlementService).
 -- No explicit grant needed: pure computation on its own parameter (no table
 -- access), and its two callers are SECURITY DEFINER functions whose nested
 -- calls bypass EXECUTE checks via ownership; PUBLIC's default EXECUTE on
 -- functions is harmless here.
+--
+-- NARROWED 2026-08-08: lessons 1-3 -> lesson 1 only (owner decision). Changing
+-- this ONE line moves three gates at once, which is the point of having a
+-- single definition: new activations beyond it (set_lesson_activation),
+-- lesson-audio signing (can_read_media), and — via FREE_TIER_MAX_LESSON — the
+-- client paywall mirror and the starter-lesson auto-activation.
+--
+-- It does NOT revoke anything already granted. The gate only guards
+-- `p_activated = true`, so a learner who activated lessons 2-3 while they were
+-- free keeps them activated and keeps their FSRS history; only NEW activation
+-- is refused. That grandfathering is deliberate — silently yanking scheduled
+-- material out of someone's practice queue would corrupt their sense of the
+-- product far more than it would recover revenue. Their lesson 2-3 AUDIO does
+-- become paid, since can_read_media is evaluated per signing request.
 create or replace function indonesian.is_free_tier_lesson(p_order_index int)
 returns boolean language sql immutable
-as $$ select p_order_index <= 3 $$;
+as $$ select p_order_index <= 1 $$;
 
 -- ── Private buckets + signed URLs (spec §4) ──────────────────────────────
 -- can_read_media: the storage RLS predicate. security definer because the

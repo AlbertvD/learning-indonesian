@@ -34,8 +34,13 @@ describe('entitlementService', () => {
     })
   })
 
-  it('FREE_TIER_MAX_LESSON is 3 — the TS twin of indonesian.is_free_tier_lesson', () => {
-    expect(FREE_TIER_MAX_LESSON).toBe(3)
+  // A deliberate tripwire, not a tautology: changing the free tier must be a
+  // conscious act that makes someone come here and read why. The REAL parity
+  // (this constant vs indonesian.is_free_tier_lesson) is HC55 in
+  // check-supabase-deep.ts, which imports this constant and probes N / N+1
+  // against the live DB — a unit test cannot reach SQL.
+  it('FREE_TIER_MAX_LESSON is 1 — the TS twin of indonesian.is_free_tier_lesson', () => {
+    expect(FREE_TIER_MAX_LESSON).toBe(1)
   })
 
   describe('getEntitlement', () => {
