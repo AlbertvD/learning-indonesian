@@ -31,12 +31,14 @@ export function isActiveStatus(status: EntitlementStatus): boolean {
 }
 
 // TS twin of indonesian.is_free_tier_lesson(p_order_index) (scripts/migration.sql):
-// `select p_order_index <= 3`. Free tier = lessons 1-3, the lessons already
-// auto-activated for every new sign-in (authStore.ts activateStarterLessons).
+// `select p_order_index <= 1`. Free tier = lesson 1, which is also the set
+// auto-activated for every new sign-in (authStore.ts activateStarterLessons
+// derives its list from THIS constant — do not re-hardcode it there).
 // The SQL function is the load-bearing gate (set_lesson_activation,
-// can_read_media); this constant only drives the client paywall mirror. Change
-// both sites together — see the parity note in migration.sql.
-export const FREE_TIER_MAX_LESSON = 3
+// can_read_media); this constant only drives the client paywall mirror and the
+// starter activation. Change both sites together — HC55 fails the build if the
+// two disagree, and it reads this constant rather than hardcoding a boundary.
+export const FREE_TIER_MAX_LESSON = 1
 
 export const entitlementService = {
   // Returns the caller's own entitlement row, or null if they have never had

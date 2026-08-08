@@ -53,6 +53,12 @@ const Landing = lazy(() => import('@/pages/Landing').then(m => ({ default: m.Lan
 // /lesson/:lessonId resolves to the bespoke page when one is registered (see
 // pages/lessons/registry.ts and LessonRouter). These /lesson-preview/<N>
 // routes stay as stable explicit URLs for in-progress design work.
+//
+// ADMIN-GATED since 2026-08-08. They render a bespoke page DIRECTLY, bypassing
+// LessonRouter and therefore its free-tier read gate — so while the free tier
+// was narrowed to lesson 1, these 26 routes were an unguarded way to read every
+// paid lesson. Design-preview URLs are an admin tool anyway; AdminGuard is what
+// they should always have carried.
 const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
 const Lesson2Bespoke = lazy(() => import('@/pages/lessons/lesson-2/Page'))
 const Lesson3Bespoke = lazy(() => import('@/pages/lessons/lesson-3/Page'))
@@ -183,7 +189,7 @@ function App() {
           path="/lesson-preview/1"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson1Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson1Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -191,7 +197,7 @@ function App() {
           path="/lesson-preview/2"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson2Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson2Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -199,7 +205,7 @@ function App() {
           path="/lesson-preview/3"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson3Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson3Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -207,7 +213,7 @@ function App() {
           path="/lesson-preview/4"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson4Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson4Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -215,7 +221,7 @@ function App() {
           path="/lesson-preview/5"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson5Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson5Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -223,7 +229,7 @@ function App() {
           path="/lesson-preview/6"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson6Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson6Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -231,7 +237,7 @@ function App() {
           path="/lesson-preview/7"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson7Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson7Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -239,7 +245,7 @@ function App() {
           path="/lesson-preview/8"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson8Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson8Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -247,7 +253,7 @@ function App() {
           path="/lesson-preview/9"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson9Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson9Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -255,7 +261,7 @@ function App() {
           path="/lesson-preview/10"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson10Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson10Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -263,7 +269,7 @@ function App() {
           path="/lesson-preview/11"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson11Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson11Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -271,7 +277,7 @@ function App() {
           path="/lesson-preview/12"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson12Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson12Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -279,7 +285,7 @@ function App() {
           path="/lesson-preview/13"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson13Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson13Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -287,7 +293,7 @@ function App() {
           path="/lesson-preview/14"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson14Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson14Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -295,7 +301,7 @@ function App() {
           path="/lesson-preview/15"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson15Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson15Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -303,7 +309,7 @@ function App() {
           path="/lesson-preview/16"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson16Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson16Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -311,7 +317,7 @@ function App() {
           path="/lesson-preview/17"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson17Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson17Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -319,7 +325,7 @@ function App() {
           path="/lesson-preview/18"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson18Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson18Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -327,7 +333,7 @@ function App() {
           path="/lesson-preview/19"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson19Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson19Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -335,7 +341,7 @@ function App() {
           path="/lesson-preview/20"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson20Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson20Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -343,7 +349,7 @@ function App() {
           path="/lesson-preview/21"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson21Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson21Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -351,7 +357,7 @@ function App() {
           path="/lesson-preview/22"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson22Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson22Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -359,7 +365,7 @@ function App() {
           path="/lesson-preview/23"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson23Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson23Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -367,7 +373,7 @@ function App() {
           path="/lesson-preview/24"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson24Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson24Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -375,7 +381,7 @@ function App() {
           path="/lesson-preview/25"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson25Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson25Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />
@@ -383,7 +389,7 @@ function App() {
           path="/lesson-preview/26"
           element={
             <ProtectedRoute>
-              <LazyPage><Lesson26Bespoke /></LazyPage>
+              <AdminGuard><LazyPage><Lesson26Bespoke /></LazyPage></AdminGuard>
             </ProtectedRoute>
           }
         />

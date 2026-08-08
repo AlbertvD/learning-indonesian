@@ -10,6 +10,9 @@ import { findIneffectiveProduceReason } from '@/lib/answerNormalization'
 import type { CapabilitySourceKind } from '@/lib/capabilities'
 import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
 import { funnelBucket, weekEndsBackFrom, deriveFunnelSeries } from '@/lib/analytics/mastery/masteryModel'
+// HC55 imports the client's free-tier boundary rather than restating it, so the
+// check cannot drift from the constant it exists to police (see HC55 below).
+import { FREE_TIER_MAX_LESSON } from '@/services/entitlementService'
 import { chunkedIn } from '@/lib/chunkedQuery'
 import { findCapsMissingSatellite, type CapForSatelliteCheck } from './lib/pipeline/capability-stage/satellitePresence'
 import { isCatalogAffix, routesToMeaningUsage } from '@/lib/capabilities/affixCatalog'
@@ -3242,11 +3245,20 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
 
 // ── HC55 (2026-07-12 entitlement design §4/§8) — can_read_media and
 //    is_free_tier_lesson exist, and is_free_tier_lesson's boundary matches
-//    the client's FREE_TIER_MAX_LESSON=3 constant (entitlementService) --
-//    a boundary edit that missed one side shows up here, not as a silent
+//    the client's FREE_TIER_MAX_LESSON constant (entitlementService) -- a
+//    boundary edit that missed one side shows up here, not as a silent
 //    paywall drift.
+//
+//    FIXED 2026-08-08: this probed the LITERALS 3 and 4 while its own comment
+//    claimed it validated against FREE_TIER_MAX_LESSON. It therefore asserted
+//    "the boundary is 3", not "SQL agrees with TS" -- so narrowing the free
+//    tier to lesson 1 turned it red for the wrong reason, and, far worse,
+//    editing ONLY the TypeScript constant would have left it GREEN while the
+//    two sides silently disagreed. That is the exact drift it exists to catch.
+//    It now imports the constant and probes N / N+1.
 {
   const HC55 = 'HC55 can_read_media / is_free_tier_lesson exist + free-tier boundary parity'
+  const N = FREE_TIER_MAX_LESSON
   try {
     const { error: canReadErr } = await supabase
       .schema('indonesian')
@@ -3254,22 +3266,24 @@ for (const exerciseType of ['choose_meaning_from_audio_ex', 'type_form_from_audi
     if (canReadErr && canReadErr.message.includes('does not exist')) {
       fail(HC55, 'indonesian.can_read_media(text, text) not found -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
     } else {
-      const { data: freeAt3, error: err3 } = await supabase.schema('indonesian').rpc('is_free_tier_lesson', { p_order_index: 3 })
-      const { data: freeAt4, error: err4 } = await supabase.schema('indonesian').rpc('is_free_tier_lesson', { p_order_index: 4 })
-      if (err3 || err4) {
-        if ((err3 ?? err4)!.message.includes('does not exist')) {
+      const { data: freeAtN, error: errN } = await supabase.schema('indonesian').rpc('is_free_tier_lesson', { p_order_index: N })
+      const { data: freeAtNext, error: errNext } = await supabase.schema('indonesian').rpc('is_free_tier_lesson', { p_order_index: N + 1 })
+      if (errN || errNext) {
+        if ((errN ?? errNext)!.message.includes('does not exist')) {
           fail(HC55, 'indonesian.is_free_tier_lesson(int) not found -- run: make migrate SUPABASE_SERVICE_KEY=<key>')
         } else {
-          fail(HC55, `is_free_tier_lesson call failed: ${err3?.message ?? err4?.message}`)
+          fail(HC55, `is_free_tier_lesson call failed: ${errN?.message ?? errNext?.message}`)
         }
-      } else if (freeAt3 !== true || freeAt4 !== false) {
+      } else if (freeAtN !== true || freeAtNext !== false) {
         fail(
           HC55,
-          `is_free_tier_lesson(3)=${freeAt3}, is_free_tier_lesson(4)=${freeAt4} -- expected true/false. ` +
-            'Must match FREE_TIER_MAX_LESSON in src/services/entitlementService.ts -- a boundary edit missed one side.',
+          `FREE_TIER_MAX_LESSON=${N}, so the SQL boundary must be free at ${N} and paid at ${N + 1}, ` +
+            `but is_free_tier_lesson(${N})=${freeAtN} and is_free_tier_lesson(${N + 1})=${freeAtNext}. ` +
+            'A boundary edit missed one side: change scripts/migration.sql AND ' +
+            'src/services/entitlementService.ts together, then run make migrate.',
         )
       } else {
-        pass(HC55)
+        pass(`${HC55} (free<=${N}, paid at ${N + 1})`)
       }
     }
   } catch (err) {

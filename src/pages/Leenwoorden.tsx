@@ -107,7 +107,7 @@ export function Leenwoorden() {
         <p>
           Kamoe Bisa bouwt hierop verder: 30 lessen met grammatica, dialogen,
           uitspraak én spreektaal — de taal zoals er thuis gepraat wordt, niet
-          alleen de boekentaal. Les 1 t/m 3 zijn gratis.
+          alleen de boekentaal. Les 1 is gratis.
         </p>
         <Link className={classes.ctaBtn} to="/register">
           Gratis beginnen

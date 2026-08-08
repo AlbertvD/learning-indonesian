@@ -5,7 +5,7 @@ import type { User } from '@supabase/supabase-js'
 import type { UserProfile } from '@/types/auth'
 import { logError } from '@/lib/logger'
 import { setLessonActivated } from '@/lib/lessons'
-import { entitlementService, isActiveStatus, type EntitlementStatus } from '@/services/entitlementService'
+import { entitlementService, isActiveStatus, FREE_TIER_MAX_LESSON, type EntitlementStatus } from '@/services/entitlementService'
 
 interface AuthState {
   user: User | null
@@ -107,7 +107,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             }
           }, 0)
 
-          // Auto-activate the legacy starter lessons (1-3) for new sign-ins.
+          // Auto-activate the free-tier lessons for new sign-ins (the set is
+          // derived from FREE_TIER_MAX_LESSON — see activateStarterLessons).
           // Idempotent — set_lesson_activation uses ON CONFLICT DO NOTHING.
           // Deferred per the same auth-deadlock pattern as the profile load.
           setTimeout(() => {
@@ -261,13 +262,21 @@ async function updateProfile(
   }))
 }
 
+// Auto-activates the FREE-TIER lessons for a new sign-in. The list is DERIVED
+// from FREE_TIER_MAX_LESSON, never hardcoded: it was a literal [1, 2, 3], and
+// when the free tier narrowed to lesson 1 (2026-08-08) that literal would have
+// fired two RPCs per signup which set_lesson_activation now refuses with
+// `entitlement_required` — invisibly, because Promise.allSettled swallows the
+// rejections and the outer catch never sees them. Nothing would have surfaced
+// it; the only symptom would be wasted round trips on every registration.
 async function activateStarterLessons(userId: string): Promise<void> {
   try {
+    const freeTierOrderIndexes = Array.from({ length: FREE_TIER_MAX_LESSON }, (_, i) => i + 1)
     const { data: lessons } = await supabase
       .schema('indonesian')
       .from('lessons')
       .select('id, order_index')
-      .in('order_index', [1, 2, 3])
+      .in('order_index', freeTierOrderIndexes)
 
     const rows = (lessons ?? []) as Array<{ id: string; order_index: number }>
     if (rows.length === 0) return
