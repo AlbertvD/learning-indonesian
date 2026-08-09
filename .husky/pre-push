@@ -1,4 +1,31 @@
 #!/bin/sh
+# Delete-only pushes ship no code, so running the suite against them proves
+# nothing about anything. Skipping is a correctness point as much as a speed
+# one: a red suite would BLOCK a branch deletion for reasons unrelated to it.
+#
+# Found during the 2026-08-09 branch sweep (170 -> 8 branches), where every
+# batch paid ~40s for the full 3,300-test run before deleting refs, and the
+# sweep had to be split across several pushes to avoid timing out.
+#
+# git feeds pre-push one line per ref on stdin:
+#     <local ref> <local sha> <remote ref> <remote sha>
+# A deletion has local sha of 40 zeros (and local ref "(delete)"). We skip only
+# when EVERY ref in the push is a deletion — a mixed push still runs the gate.
+# An empty or malformed sha is treated as NOT a deletion, so the checks run:
+# this must fail safe toward running them, never toward skipping.
+_delete_only=1
+_saw_ref=0
+while read -r _local_ref _local_sha _remote_ref _remote_sha; do
+  _saw_ref=1
+  case "$_local_sha" in
+    ''|*[!0]*) _delete_only=0 ;;
+  esac
+done
+if [ "$_saw_ref" -eq 1 ] && [ "$_delete_only" -eq 1 ]; then
+  echo "→ Delete-only push (no commits) — skipping tests and finish gate."
+  exit 0
+fi
+
 echo "Running pre-push checks..."
 
 echo "→ Tests..."
