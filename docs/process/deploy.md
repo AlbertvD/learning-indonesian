@@ -156,7 +156,17 @@ A successful deploy ends with `Status: running` and a recent image digest.
 
 ---
 
-## 6. Homelab cutover — making staging faithful again (one-time, not yet run)
+## 6. Homelab cutover — making staging faithful again (✅ DONE)
+
+> **Completed and verified 2026-08-11.** `make check-supabase-deep TARGET=homelab`
+> returns "All structural checks passed" — HC54–HC58 (the entitlement objects,
+> private buckets, `indonesian_media_read`, invite system retired) are all green,
+> and HC55 reports the same `free<=1` boundary as cloud. **Staging is faithful:
+> the paywall, signed URLs and activation gating can now be rehearsed on the
+> homelab instead of on production.**
+>
+> The procedure below is kept as the record of what was run and as the template
+> for any future schema divergence. Do not re-run it as if pending.
 
 **Why.** After the entitlement cutover (PR #461, merged 2026-08-06) production and
 the homelab run different schemas. The homelab has no `entitlements` table, no
@@ -166,10 +176,11 @@ UI there, but **not** the paywall, signed URLs, or activation gating — the new
 and riskiest surfaces in the app, which currently have nowhere to be tested but
 production.
 
-Proof, any time you want it:
+Proof, any time you want it (both sides green since the 2026-08-11 cutover; the
+comment records what they showed *before* it):
 
 ```bash
-make check-supabase-deep TARGET=homelab   # HC54–HC58 red
+make check-supabase-deep TARGET=homelab   # was HC54–HC58 red, now green
 make check-supabase-deep                  # same checks green on cloud
 ```
 

@@ -171,6 +171,19 @@ deep-link check — cheap, and it catches the route being lost in a refactor.
 
 1. Does the four-stage explanation risk over-promising precision? The stages are
    real and displayed, but a learner may read them as guarantees of progress.
-2. Should it carry the free-tier boundary (lessons 1–3 free) or leave pricing to
-   the landing page? Repeating a price in a second place is a drift risk — the
-   €7→€9 change touched four surfaces already.
+2. Should it carry the free-tier boundary or leave pricing to the landing page?
+   Repeating a price in a second place is a drift risk — the €7→€9 change touched
+   four surfaces already.
+   ⚠️ Updated 2026-08-11: **the free tier is lesson 1, not lessons 1–3** (owner
+   decision, PR #470). This question's own example had already drifted, which is
+   itself the argument for answering it "leave it to the landing page".
+   The boundary is enforced in exactly two places —
+   `indonesian.is_free_tier_lesson` (`scripts/migration.sql:4904`) and
+   `FREE_TIER_MAX_LESSON` (`src/services/entitlementService.ts:41`) — and
+   HC55 asserts they agree.
+   ⚠️ **But the COPY is not pinned.** Verified 2026-08-11: the only guards are
+   `entitlementService.test.ts:42` (a hardcoded `toBe(1)`) and
+   `Landing.test.tsx:90` (asserts the body matches `/gratis/i`). No test derives
+   forbidden phrasings from the constant, so the surfaces that advertise the tier
+   can drift silently — adding a tenth one here would widen an existing gap, not
+   join a protected set.
