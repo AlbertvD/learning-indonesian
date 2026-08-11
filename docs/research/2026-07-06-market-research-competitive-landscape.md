@@ -1,7 +1,10 @@
 # Market research — competitive landscape & commercial viability (2026-07-06)
 
 > Web research, 2026-07-06. Sharpens (and in places corrects) the assumptions in the bold-bets
-> vision and program specs. Companion to `docs/plans/2026-07-06-product-ideas-master-index.md`.
+> vision and program specs. Companion to `docs/roadmap.md` § NEXT — product depth.
+> ⚠️ Until 2026-08-11 this pointed at `docs/plans/2026-07-06-product-ideas-master-index.md`,
+> which was folded into the roadmap and archived to
+> `learning-indonesian-archive/docs/plans/`.
 
 ## 1. Competitive landscape (corrected facts)
 
