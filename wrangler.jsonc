@@ -42,10 +42,9 @@
   "preview_urls": false,
 
   "assets": {
-    // `bun run build` (tsc -b && vite build) emits here, including _headers and
-    // _redirects, which Workers static assets supports natively — same file
-    // format as Pages, so the CSP ported from nginx.conf:50-64 carries over
-    // unchanged.
+    // `bun run build` (tsc -b && vite build) emits here, including _headers,
+    // which Workers static assets supports natively — same file format as
+    // Pages, so the CSP ported from nginx.conf:50-64 carries over unchanged.
     "directory": "./dist",
 
     // Replaces nginx's `try_files $uri $uri/ /index.html` (nginx.conf:67).
@@ -57,10 +56,10 @@
     // makes it explicit and returns a bare 404 if unset, so this line is
     // load-bearing rather than decorative.
     //
-    // NOTE: public/_redirects also carries a `/* /index.html 200` rule, which
-    // is the Pages-portable form of the same thing. That overlap is deliberate
-    // for now — the first successful deploy should confirm which mechanism is
-    // actually serving deep links, and the redundant one then gets removed.
+    // RESOLVED 2026-08-11: this is the ONLY SPA mechanism. `public/_redirects`
+    // does not exist — Workers rejects `/* /index.html 200` as an infinite
+    // loop, so the Pages-portable form was dropped rather than kept as a
+    // fallback. Do not re-add it; this line alone serves every deep link.
     "not_found_handling": "single-page-application"
   }
 

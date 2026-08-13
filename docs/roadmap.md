@@ -1,102 +1,239 @@
 # Product Roadmap
 
-> **Status:** living document — the single source of truth for forward product direction.
-> **Last updated:** 2026-06-30
-> **Companion:** strategic context in `memory/project_monetization_direction.md`. Build-stage operating rules in `CLAUDE.md` (Operating Context).
+> **Status:** living document — the single forward view of what is next and in what order.
+> **Last updated:** 2026-08-11
+> **Rewritten 2026-08-11.** The previous version (last touched 2026-06-30) is archived at
+> `learning-indonesian-archive/docs/roadmap.md`. It described entitlements, Stripe billing,
+> standalone auth and the cloud instance as *future* Phase-2 work; all four shipped between
+> 2026-07-12 and 2026-08-06, so it had become actively misleading rather than merely stale.
+> The product-ideas master index is folded in here and archived alongside it, at
+> `learning-indonesian-archive/docs/plans/2026-07-06-product-ideas-master-index.md`.
+> The eight program specs it indexed all remain in `docs/plans/`.
 
-## North star
+## How to read this
 
-Build out the **core learning features** fully **before** monetizing. Then add the monetization layer (it's additive). Two environments at that point: the **homelab stays** the author's personal/dev instance (disposable-data regime persists); a **new cloud instance** serves paying customers (precious-data, live-safety regime). Content flows homelab→cloud by **re-publishing from git staging**, never by data migration; learner data never crosses.
+Before this rewrite the answer to "what's on the roadmap?" lived in four places — a stale
+`roadmap.md`, the launch runbook, the product-ideas master index, and GitHub issues — and
+no single one was complete. Two approved specs were referenced by nothing at all.
 
-**Product thesis (research-backed):** comprehensible *input* + spaced repetition beats drilling. We already have the SRS (FSRS) and one input channel (podcasts); the roadmap deepens input (reading) and the Indonesian-specific differentiator (affixes).
+**This file now owns direction.** It says what is next, why, and who can do it. It does not
+carry operational detail; that stays where it is, indexed at the bottom.
 
----
+One companion is deliberately NOT folded in: **`docs/process/launch-runbook.md`**. It is an
+operational record, not a roadmap — it holds the Stripe dashboard deep links, the
+fail-closed traps, the platform gotchas and the *why* behind account-level choices. Its open
+items appear below; its knowledge stays there. **Read it before touching Stripe, Cloudflare,
+or email.**
 
-## Status snapshot (2026-06-30)
-
-**Phase-1 pedagogic *functionality* is essentially complete.** Shipped: collections + top-1000 vocab + themepacks (§A), the Lezen graded-reading reader incl. morphological glossing + vocab→FSRS harvest (§B.5), the story-podcast pipeline with 8 leveled A1–B2 episodes live (§B.4), the morphology/affix-trainer moat (§D), two-axis analytics (§E.7) + goal widget (§E.8), and — reframed out of "Deferred" — **pronunciation** (primer + perception drills + shadowing + 2 L1 podcasts, ADR 0025, no ASR/server).
-
-**The last open pedagogic *feature* — grammar exposure (§C) — SHIPPED** as the grammar due-floor (Part A, PR #375, deployed 2026-07-06; spec `docs/plans/2026-07-05-grammar-exposure-session-quota-design.md`). Part B (new-grammar introduction reserve) is deferred under review saturation. **The core pedagogic build is now done.** Everything else outstanding is **content authoring** (more reading stories #304, more/better story episodes #294/#298 — never "done") or **optional pipeline polish** (story-podcast Gemini-TTS bake-off #295–#297). The project is at the **content + Phase-2 monetization** stage.
-
----
-
-## Phase 1 — Core learning (build before ship)
-
-### Priority order
-1. **Top-1000 vocabulary** is the declared first target — the coverage inflection point (~78–86% text coverage for ~365 authored words; the 1000→2000 tail is ~600 words for only ~+6%, so it's deferred).
-2. **Collections** is the keystone build — it unblocks bands, thematic packs, and the monetization paywall seam.
-3. First gate before authoring: **choose the source word-list/corpus** (PBWL — lemma-aware, CEFR-leveled — recommended over OpenSubtitles). It determines *which* ~1000 words and *which* ~365 to author.
-
-### Execution sequence (set 2026-06-14)
-1. **Finish ALL vocab first**, in this order:
-   - **(a) Lesson-internal gaps** — the ~98 words the coursebook teaches in *grammar/reference tables* but the harvest never captured (it only reads vocabulary/expressions/numbers sections). Full per-lesson list + glosses in `docs/audits/2026-06-14-grammar-table-vocab-inventory.md`; root cause in `docs/plans/2026-06-14-grammar-table-vocab-harvest.md`. Includes the **chapter-15 re-ingest** (2 unphotographed pages, now captured).
-   - **(b) Frequency bands** — author + seed **top-100 → 300 → 500 → 1000** (the original gap-closure program).
-2. **THEN revisit grammar & morphology depth** — only after vocab is complete: **§C grammar-pattern deepening** (exposure + variety) and **§D morphology / affix trainer** (the moat, its own topic). The findings justify dedicated tracks; do **not** interleave them with the vocab work.
-
-### A. Content & selection
-- **1. Collections feature** 🔑 *keystone* — one unified `collections` / `collection_items` model (build once). Carries **top-X frequency bands** and **thematic packs**. Frequency-band membership is a **generated projection** of `learning_items.frequency_rank ≤ cutoff`; thematic membership is **authored** rows in the same table. Per-user selection via `learner_collection_activation` (mirrors `learner_lesson_activation`). Eligibility gate gains one clause: *lesson activated OR word in an activated collection*. Gap-words (not in any lesson) get a synthetic "Common Words" home-lesson to satisfy the ADR 0006 invariant. **Monetization-ready by design** (collections = SKUs).
-- **2. Vocabulary gap-closure** — two distinct sources, do **(a) before (b)**:
-  - **(a) Lesson-internal gaps (~98 words) — the cheap, high-value half.** The coursebook already *teaches* these (pronouns dia/ia/anda/kalian, place words, question words, antonyms, the time/calendar system, complex conjunctions, compass directions…) in grammar/reference tables, but they were never harvested into `learning_items`. Glosses already exist in the source tables. Fix = add each to its lesson's **vocabulary section** + republish. Per-lesson inventory: `docs/audits/2026-06-14-grammar-table-vocab-inventory.md`. *Also surfaced a **source-capture gap** (ch15 under-photographed) — distinct, now resolved at source.*
-  - **(b) Frequency bands (~365 for top-1000).** Author the missing high-frequency words. A phased *program*: **top-100 → 300 → 500 → 1000** (top-500 ≈ 113, top-1000 ≈ 365, top-2000 ≈ 969 cumulative). Uses the vocab pipeline + gap-word ingestion (resolve-or-create on `normalized_text`, the lesson pipeline's normalization key, so *baca/membaca* don't duplicate).
-- **3. Thematic packs** (holiday, food, …) — small, bounded, authored decks; the better *early* monetization unit. Word-lists sourced by editorial curation **or** harvested from input transcripts (see #4/#5).
-
-### B. Comprehensible input (the product thesis)
-- **4. Podcast listening experience** — **✅ pipeline + 8 leveled A1–B2 story episodes SHIPPED (ADR 0022, `story-podcast-pipeline` module).** Remaining = *content* (#294/#298 more & better episodes) + optional TTS bake-off polish (#295–#297) + the transcript→vocab harvest "PLUS" (still deferred). Original scope: browse / play / try to understand spoken Indonesian. **Listening only — NOT wired into capabilities/FSRS.** The listen pages, `podcasts` table, bucket, and service already exist; remaining work is content + comprehension aids (transcript / NL translation / playback speed). **PLUS:** podcast transcripts are a **vocab source** — break a transcript into core vocab → normal vocab `learning_items` → normal vocab **capabilities** (recognition/recall/cloze — *practiced* like any vocab) → grouped into a theme deck. The only new sub-step is transcript→core-vocab **extraction** (LLM-assisted + review). *Cleanup:* the unused podcast-*capability* scaffolding (`podcast-stage`, `podcast_segment/phrase/gist` types) is dead — keep suppressed or remove.
-- **5. Graded reading / comprehensible-input texts** — the **reading twin of podcasts**. Short leveled passages (A1→B1, reuse CEFR), tap-to-gloss, with core vocab harvested into capabilities + a theme deck (same loop as #4). Highest evidence base of any new idea; no per-use AI cost (LLM only at authoring time); reuses the content pipeline + collections.
-  - **✅ PHASE 1 SHIPPED 2026-06-28** (PR/issue #299): the "Lezen" mode — silent, per-learner-coverage-ordered, tap-to-gloss reader over the existing story transcripts, schema-free except a read-only coverage RPC. Design + gate trail in `docs/research/2026-06-28-graded-reading-reader-evidence.md`. **Phase 2** (its own spec): vocab→FSRS harvest, **morphological glossing** (tap → base word + affix + word family + Affix Trainer link — the reader × morphology-moat cross, see §6), new/longer authored content + `texts`/`reading_texts` storage, bundled dictionary, optional read-along player.
-  - **✅ PHASE 2 SHIPPED (2026-06-28→30), slices 1–3:** texts entity (#305), morphological glossing (#306), vocab→FSRS harvest (#309/#310). The reader *feature* is built. **Remaining = #304 (author new read-only content) — content, not functionality** (+ an optional read-along player).
-  - **We already have a starting corpus** — the existing lesson content is Indonesian text at known CEFR levels with NL/EN translations: lesson **dialogues** (`lesson_dialogue_lines`) and whatever **reading/narrative sections** the lessons carry. Plus simple-story material was already **sourced** for the podcast track (the Wikibooks *dongeng*/folktale candidates in OpenBrain notes) — those double as graded-reading source. So #5 starts well below zero-content.
-  - **Two sub-cases:** (a) *existing lesson text* → re-present as a reader with the glossing/translation you already have; its vocab is already captured as capabilities (no harvest needed). (b) *new reading content* (folktales, authored passages) → the harvest-to-vocab-theme loop applies, exactly like podcasts. → The real work is the **reader/glossing UX + leveling/curation**, not authoring a corpus from scratch.
-
-### C. Grammar-pattern depth (post-vocab track)
-> **Status 2026-07-06 (updated):** all three problems are SHIPPED (exposure = Part A; Part B deferred).
-> **(ii) variety ✅** — 169 patterns now carry 3–5 exercises/type (constrained_translation ~5.0, sentence_transformation ~4.0, contrast_pair ~3.1, cloze_mcq ~3.0). **wiring ✅** — grammar moved off generic `exercise_variants` onto typed per-pattern tables, so the old `grammar_pattern_id = NULL` bug class is gone.
-> **(i) exposure ✅ Part A SHIPPED (PR #375, deployed 2026-07-06)** — the session builder now enforces a grammar **due-floor**: a guaranteed minimum share of due-card slots (floor % is a single tunable constant in `src/lib/session-builder/`, no schema change). Spec: **`docs/plans/2026-07-05-grammar-exposure-session-quota-design.md`** (`shipped`); the older `2026-06-30-grammar-exposure.md` is superseded. **Part B (new-grammar introduction reserve) is DEFERRED** — inert under review saturation (`openSlots ≈ 0`); it unblocks once the frozen frontier / backlog clears (separate thread).
-
-- **Grammar-pattern deepening — deepen, don't rebuild.** 262 schedulable `pattern` caps render as 4 exercise types (constrained_translation / sentence_transformation / cloze_mcq / contrast_pair). Two real problems: **(i) exposure** — grammar is only **~4% of schedulable caps** (drowned ~24:1 by vocab; adding §A vocab worsens it) → a **grammar practice mode** or planner re-weighting; **(ii) variety** — only **~1 exercise per type per pattern**, so the learner memorises the sentence not the rule → generate **3–5 varied variants per type**. Also: **all grammar `exercise_variants` have `grammar_pattern_id = NULL`** — trace whether that's a generation gap or a variant→pattern wiring bug.
-
-### D. Morphology — the affix trainer (THE MOAT · the Indonesian differentiator)
-> **✅ SHIPPED (2026-06).** Built out since the 2026-06-14 "essentially unbuilt" note below: the `lib/morphology/` module + Affix Trainer surface, the deterministic derivation/decomposition engine (ADRs 0018–0021), form-regularity exercise routing, bilingual derived-form glosses, and the "Morfologie" Voortgang axis. **837 `word_form_pair_src` caps live** (6.0% of the pool). Residual = **content rollout** (more affix pairs L9–16 + book-2) to fill empty Affix-Trainer tiles — *content, not functionality*.
-> _(historical)_ Its **own** topic, not folded into grammar — distinct skill (word-*building* via affixes vs word-*combining*), distinct capability family (`affixed_form_pair`), distinct Voortgang axis, and the headline differentiator. Evidence (2026-06-14): essentially **unbuilt** — only **4 `affixed_form_pair` caps** (lesson 9, 2 verbs: baca, tulis); `allomorph_rules`/`morphology_patterns` tables **don't exist**; **0 ever practiced**. Post-vocab track.
-
-- **6. Affix / morphology trainer.** Affixes (meN-/ber-/peN-, k/s/t/p elision, -kan/-i, ke-…-an) are *the* hardest part of Indonesian and where generic apps fail. The ME-/DI-/ber- content *is* in L11/13/14/16, but the morphology projector reads a hand-authored `morphology-patterns.ts` that exists **only for L9** — so it never generated. **Build = author `morphology-patterns.ts` per affix lesson** (from the tables already in those lessons) → the existing projector + `root_derived_recognition/recall` types mint the caps. **No new capability types needed** — richer drills (build-the-word, find-the-root) are exercise *variants*; a new `allomorph_selection` type only if the sound-change schema needs it. **Own "Morfologie" Voortgang axis**: split `funnelBucket` 2-way → 3-way (vocab / grammar / morphology), drop `affixed_form_pair` from `GRAMMAR_SOURCE_KINDS` (`masteryModel.ts:388,400`), parity-tested. **Own module** `lib/morphology/` + Study-tab surface: word-family explorer, build-the-word / find-the-root drills, affix-rule mini-lessons. Deterministic (no AI cost).
-
-### E. Insight
-- **7. Analytics expansion (A + B)** —
-  - **Learner-facing** (self-insight: their journey + where to improve) — extends the *already-shipped* two-axis Voortgang read-model. Pure phase 1.
-  - **Admin-facing** (cross-learner monitoring so the author can see how to improve the app) — a **new surface**: current learner tables are owner-only RLS, so admin cross-user reads + aggregation are new work. ⚠️ Only meaningful with multiple learners → sits at the **phase 1 / phase 2 boundary** (build in 1, pays off with customers in 2).
-- **8. Study-plan / progress-to-goal surfacing** — "you're 720/1000 toward your Top-1000 goal, ~N weeks at your pace." Turns FSRS + collection data into motivation. Cheap; pairs with the bands.
-
-### Minor / later
-- Temporal analytics sparklines & trends (weekly movement already shipped).
-- Daily/weekly goals. PWA reminders/notifications. Step-CA cert lesson; PWA auto-update hardening.
+Legend: **[owner]** = only Albert can do it · **[agent]** = any Claude session · **[joint]**.
 
 ---
 
-## Deferred — NOT in phase 1
+## Where the product is (2026-08-11)
 
-- **✅ Speaking / pronunciation — SHIPPED 2026-06-30 (reframed, ADR 0025), NOT as the ASR grader below.** Pulled forward and built as a **pronunciation primer + perception minimal-pairs + shadowing (client-only record/A-B compare) + 2 L1-specific podcasts** — *no ASR, no FSRS, no server-side compute*. The grill concluded an ASR grader is the wrong call for phonetic Indonesian (it would false-reject intelligible speech for near-zero gain). The original deferred analysis is kept below for context:
-  - **Speaking / pronunciation** — the only feature that breaks the zero-marginal-cost, frontend-only model: real feedback needs **server-side ASR** (per-use COGS + the first backend; can't expose keys client-side). For Indonesian, only **intelligibility grading** (ASR transcription-match via Google STT `id-ID` / Whisper — Indonesian is phonetic, no tones, so this works) is realistic; **phoneme-level accent scoring** (Azure/Speechace) is English-centric and ~unavailable for Indonesian. → **Monetization-era premium SKU** (the per-use cost justifies charging). Zero-cost stopgaps if ever wanted earlier: self-assessed shadowing, or browser Web Speech API.
-- **AI conversation chatbot** — same AI-cost/backend profile → premium, later.
-- **Community native-speaker feedback** — needs a community + moderation; heavy ops for a solo build.
-- **AR/VR; leaderboards** — off-strategy (leaderboards were deliberately decommissioned).
+**Kamoe Bisa is live at https://kamoebisa.nl and can take real money.** Stripe live account
+`acct_1TzEDpFDKKKBKGTH`, €9/month + €79/year tax-inclusive, NL VAT registration active.
+Supabase Cloud (`wodpkxsmildtgndnbraa`, eu-west-1, PG 17.6) serves customers; the homelab is
+staging and, since the 2026-08-11 cutover, runs the same schema.
 
----
+Verified green today: `make check-supabase-deep` on **both** cloud and homelab (all
+structural checks, HC53 included), and `make check-cloud-config` at **32/32**.
 
-## Phase 2 — Monetization (only after Phase 1 is complete)
+**Zero paying customers.** That is the single most useful fact for planning: access-model and
+data-shape changes are still free to make, and that window closes with the first subscriber.
 
-- **Entitlements** — gate *activation* by subscription state inside the existing `SECURITY DEFINER` activation RPCs (`set_lesson_activation`, `set_collection_activation`). Collections are the SKUs. Never enforce a paywall client-side.
-- **Billing** — Stripe subscriptions + webhooks + customer portal; a `subscriptions`/`entitlements` table the activation RPCs read.
-- **Standalone auth** — migrate off the shared family-hub `.duin.home` cookie SSO to public auth (email + OAuth).
-- **Cloud instance** — self-hosted Supabase → Supabase Cloud (low-rewrite path); backups/PITR, monitoring. Homelab remains personal/dev.
-- **Premium-tier candidates** (need AI/backend or customers): speaking/ASR, AI conversation, admin analytics.
-
-### Scaling notes (worked out 2026-06-13)
-Comfortable to ~10k learners as-is (with the named indexes); ops-tuning zone 10k–100k (PgBouncer, partition the event log, server-side RPCs); structural change (API tier + partitioning + caching) approaching 100k–1M. The binding constraint is the single-Postgres / frontend-direct **deployment**, not the capability schema or collections design.
+The core pedagogic build is done — vocabulary + collections, the Lezen reader, story
+podcasts, the morphology/affix moat, two-axis analytics, pronunciation, grammar exposure.
+What remains is **finishing the launch**, then **product depth**, then **content** (never
+"done").
 
 ---
 
-## Already shipped (do NOT re-add as future work)
-Two-axis learner-progress analytics (#213/#215/#218), Vaardigheden skill-mode (48950fc), two-source lesson status (458c017, `overviewStatus.ts` retired), weekly movement, streak, study tips, at-risk/moeilijk, listening-toggle session filter (PR #244), CEFR rubric (#198/#199), FSRS short-term + sibling-bury fixes (#184/#185).
+## NOW — finish the launch
 
-**Added 2026-06-30 reconciliation:** Collections + top-1000 vocab bands + 7 themepacks (§A, #245–#247), Lezen graded-reading reader Phase 1 + Phase-2 slices 1–3 (§B.5, #299/#305/#306/#309/#310), story-podcast pipeline + 8 A1–B2 episodes (§B.4, ADR 0022), morphology/affix-trainer moat (§D, ADRs 0018–0021), grammar **variety + wiring** (§C — typed per-pattern exercise tables, 3–5/type; ADR 0010/0017), **pronunciation** primer + perception + shadowing + 2 L1 podcasts (ADR 0025, #316/#317/#318), grammar-podcast EN audio (#319). Stale issues closed 2026-06-30: #301, #303, #208–#211, #167.
+Four blockers. Two need you, two are agent work.
+
+### 1. Real card E2E + refund **[owner]**
+The last unexercised money path. Everything to date was proven with Checkout Session creation
+and Tax Calculation, never a settled charge. Buy a subscription yourself, confirm the
+entitlement row writes and **lesson 2** unlocks (lesson 2, not 4 — free tier is lesson 1),
+then refund through the portal to rehearse that path.
+⚠ Watch for HTTP 400 *"You cannot collect consent to your terms of service unless a URL is
+set"* — that setting fails **closed** and takes the whole product with it. Runbook Phase 1.
+
+### 2. Explain the product **[agent, owner reviews copy]** — runbook Phase 6
+The activation model is the one genuinely non-obvious thing about Kamoe Bisa, and it fails
+silently in both directions: a buyer cannot tell what they would be paying for, and a new
+learner who activates nothing opens an empty session and reads it as broken.
+
+The capability is already shipped — `set_lesson_activation` and `set_collection_activation`
+(`src/components/collections/Woordenlijsten.tsx`). This is an explanation gap, no schema.
+
+- **Landing page** — `Landing.copy.ts:41-48` (NL) / `:91-98` (EN). `how2Body` already gestures
+  at the scheduler; **nothing says the learner chooses what enters it.** That is the gap.
+- **In-app** — day one and again day three. `FirstRunChecklist` is the surface. Not a modal,
+  not a forced tour.
+- **`/hoe-het-werkt`** — draft exists and is unbuilt:
+  `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`. Needs `staff-engineer` → `architect`.
+
+### 3. Show locked content — issue #466 **[agent]**
+Owner-decided 2026-08-06, deferred out of PR #461. Paid content renders as *absent*, not
+locked: `/grammatica` shows **1 of 30** episodes (verified against cloud 2026-08-11 — 30
+lessons carry `audio_path`, exactly 1 is free) and `LessonGrammarAudioBand` returns `null`
+on paid lessons. A free user cannot tell there is anything to buy.
+
+⚠ **The trap:** derive "locked" from `isEntitled` + `FREE_TIER_MAX_LESSON`, never from a
+failed signing call — `null` currently means entitled-no / object-missing / network-blip
+alike, so inferring from it shows "locked" to a paying subscriber on a transient failure.
+
+**Build #2 and #3 together.** They are the same problem from two sides; explaining a
+scheduler while the shelf renders empty wastes both.
+
+### 4. VAT / OSS + trader identification **[owner + accountant]**
+Dutch VAT applies up to €10,000 of EU-wide cross-border B2C digital sales; OSS registration
+above it. Stripe's free threshold monitoring watches the line. Separately, `/voorwaarden` §1
+and §7 carry only entity + KVK — EU distance-selling rules expect the **btw-id** alongside.
+That last part is a copy change and agent-able.
+
+### Newly promoted out of "Deferred": GDPR data-export path **[agent]**
+Filed as *"obligation at paid launch — schedule it."* You are at paid launch. Verified
+2026-08-11: `supabase/functions/delete-account/` exists, **no export path does**. Erasure is
+built, portability is not.
+
+---
+
+## NEXT — product depth
+
+Two unfair advantages drive everything here: the per-learner capability model at word/pattern
+granularity, and the NL→ID pair. Verified 2026-08-05: Duolingo offers Dutch speakers ten
+courses and Indonesian is not among them, while English speakers get it with 1.21M learners.
+Routing through English destroys the loanword advantage, because the loanwords are Dutch. So
+the bridge is a *category* advantage, not a feature.
+
+Bets 1 (loanword bridge + placement) and 6 (Spreektaal) have shipped. Order from here:
+
+| # | Item | Why now | Spec |
+|---|---|---|---|
+| 1 | **I1 Voortgang hero** | The felt-progress unlock; read-model only, no schema | `docs/research/2026-07-06-voortgang-analytics-review.md` |
+| 2 | **G1 grammar practice mode** | Spends 2,885 exercises that already exist — exposure, not variety, is the constraint (~1 review/pattern/month) | `docs/research/2026-07-06-grammar-teaching-review.md` |
+| 3 | **Bet 2 Weekverhaal** | i+1 stories from the learner's own FSRS state. **Blocked on one decision: the per-learner content regime** | `docs/plans/2026-07-06-weekverhaal-program.md` |
+| 4 | **B1 public loanword quiz** | No-account viral quiz; growth-layer leg 0. Needs a funnel endpoint | `docs/plans/2026-07-06-growth-layer-program.md` |
+| 5 | **Bet 3 Percakapan** | AI chat constrained to known words; Phase-2 premium SKU | `docs/plans/2026-07-06-percakapan-program.md` |
+
+Also live as programs, unsequenced: **Bet 4 growth layer** (SEO-from-data, heritage
+positioning) and **Bet 5 EN audience** (one app, two front doors; NL name is Kamoe Bisa, EN
+name still open). Round-2 ideas worth promoting when a slot opens: **A1 Onderweg-modus**
+(hands-free audio) and **A3 De stem van je familie** (family voice recordings replace TTS) —
+`docs/plans/2026-07-06-experience-and-growth-ideas.md`.
+
+---
+
+## CONTENT — never "done"
+
+Functionality is built; these are authoring tracks.
+
+- **Story podcasts** — slices 2–6 open (#294 authoring quality, #295 Gemini TTS arm, #296
+  quality gate + resumable batch, #297 A2 bake-off [HITL], #298 live theme-cluster batch
+  [HITL]). Slices 3–5 are *optional pipeline polish*, not blockers.
+- **Affix pairs** — more L9–16 + book-2 pairs to fill empty Affix-Trainer tiles.
+- **Corpus hygiene** — #363 verify hand-authored lesson 11 against its archived source
+  photos; #362 L12/L13 culture-essay overlap.
+- **Lesson 6/14 content drift** — open, noted in the Cloudflare hosting memory.
+
+Reader Phase-2 slice 4 (#304, new read-only content) is **closed** — the old roadmap listed
+it as remaining.
+
+---
+
+## ENGINEERING — backlog
+
+- **Pagination audit follow-up** `[agent]` — the 1000-row PostgREST cap is mitigated by
+  `alter role authenticator set pgrst.db_max_rows`, but shipping 15k–21k rows to the client
+  contradicts CLAUDE.md's own *server-side RPC aggregation > crunch client-side* rule.
+  `docs/audits/2026-07-30-postgrest-row-cap-audit.md`.
+- **Free-tier copy is not machine-pinned** `[agent]` — the boundary is enforced in two places
+  and HC55 asserts they agree, but the **prose** advertising it is guarded only by
+  `entitlementService.test.ts:42` (a hardcoded `toBe(1)`) and `Landing.test.tsx:90` (matches
+  `/gratis/i`). Nine surfaces can drift silently the next time the tier moves.
+- **Teardown issues, all HITL-gated** — #98, #102, #151, #153, #212.
+- **#471 withhold paid lesson text** — filed deliberately as a *decision*, not a task. The
+  read gate is client-side; prose is in the JS bundle and the SW precaches 69 lesson chunks.
+- **#409** unordered `.range()` pagination in `check-supabase-deep.ts`.
+- **Renovate** — 9 open PRs. Watch `bun.lock` drift: a `package.json` bump without a
+  regenerated lockfile breaks every Cloudflare build (`--frozen-lockfile`).
+- **Infra hardening** — #238 PWA auto-update, #237 Step-CA 24h leaf cert renewal.
+
+---
+
+## UNCLAIMED — specs nobody can find
+
+Found 2026-08-11 by checking which plans are referenced by no other document. The `approved`
+ones are the concerning class: reviewed, safe to build, and invisible.
+
+| Status | Spec | Read |
+|---|---|---|
+| `approved` | `2026-06-26-grammar-podcast-pipeline-design.md` | Real open work — app side built, pipeline pending NotebookLM login |
+| `approved` | `2026-06-24-vocab-annotation-cleanup-and-tts-contamination.md` | Approved, never built, referenced nowhere |
+| `draft` | `2026-06-20-morphology-affix-pool-proposer.md` | Unreviewed |
+| `draft` | `2026-08-06-onboarding-goals-design.md` | Needs `architect` + `data-architect` — touches `profiles` |
+
+**Frontmatter drift** `[agent]`: `2026-07-09-uitspraak-round2.md` and
+`2026-07-10-uitspraak-harmonization-and-podcast.md` are `implementing` but shipped in PR #435.
+Umbrella PRDs #300 and #311 are open while their implementation slices shipped — verify and
+close.
+
+---
+
+## DEFERRED / NOT DOING
+
+- **Gateway rate limit on `/auth/v1/signup`** — accepted residual (spec §2/§10). Email
+  enumeration is inherent to open GoTrue signup with autoconfirm.
+- **Re-encoding oversized grammar audio** — bitrate never reliably measured; needs `ffprobe`
+  before deciding. Optional since compression put the largest object at 15 MB of the 50 MB cap.
+- **Off-site backup leg** and **data-export tooling beyond GDPR** — explicitly deferred.
+- **ASR pronunciation grading** — declined in ADR 0025. Phonetic Indonesian means an
+  intelligibility grader would false-reject intelligible speech for near-zero gain.
+- **Community feedback, AR/VR, leaderboards** — off-strategy; leaderboards were deliberately
+  decommissioned.
+
+---
+
+## Standing decisions — do not re-litigate
+
+- **Free tier is lesson 1** (owner, PR #470). Enforced in exactly two places:
+  `indonesian.is_free_tier_lesson` (`scripts/migration.sql:4904`) and `FREE_TIER_MAX_LESSON`
+  (`src/services/entitlementService.ts:41`). Change both or HC55 fails.
+- **Payment is the gate; the invite system is deleted.** Comp access = an admin-inserted
+  entitlement row. Do not reintroduce invite codes.
+- **Placement seeds FSRS state** via the ADR-0004 carve-out.
+- **Bilingual brand:** one app, two names. NL = Kamoe Bisa; EN name open.
+- **Public pages get static exports, never anon DB reads** — anon has no read grant on the
+  `indonesian` schema, and that schema holds learner tables.
+- **No analytics, no third-party cookies** — stated in the privacy policy and pinned by a
+  test. Any attribution must be first-party, or the policy changes first.
+- **Never invent reviews, ratings, testimonials or learner counts.** There are no customers.
+- **Copy honesty:** all audio is TTS; never imply human narration. Cite research principles
+  and our own decisions, never efficacy numbers.
+- Every item in NEXT needs its own execution spec + review gauntlet before building —
+  `staff-engineer` first, then `architect`, plus `data-architect` when data is touched.
+
+---
+
+## Where the detail lives
+
+| Question | File |
+|---|---|
+| Launch mechanics, Stripe/Cloudflare/email gotchas, the *why* behind account choices | `docs/process/launch-runbook.md` |
+| Deploy + the homelab staging cutover | `docs/process/deploy.md` |
+| Backup + restore drill | `docs/process/restore-runbook.md` |
+| Positioning, personas, pricing, channels, content plan | `docs/marketing/` |
+| The five bold bets, in full | `docs/plans/2026-07-06-bold-bets-high-level-specs.md` |
+| Competitive landscape | `docs/research/2026-07-06-market-research-competitive-landscape.md` |
+| Why the capability system is shaped this way | `docs/adr/` |
+| How a module actually works today | `docs/current-system/modules/<name>.md` |
+| Content authoring + the 2-stage publish | `docs/process/content-pipeline.md` |
+
+**Maintenance rule:** when the track moves, update this file and
+`docs/process/launch-runbook.md` together — the runbook is the source of truth for launch
+*sequence*, this file for *direction*. A plan reaching `shipped` should be reflected here in
+the same PR.

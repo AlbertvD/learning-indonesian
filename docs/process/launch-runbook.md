@@ -233,9 +233,10 @@ written — both are done, see Phase 4.)
       `alter role authenticator set pgrst.db_max_rows`, but shipping 15k–21k
       rows to the client contradicts CLAUDE.md's own
       *server-side RPC aggregation > ship rows to crunch client-side* rule.
-- [ ] **[owner] review PR #461** — see **Phase 2b** below for the merge-day
-      sequence (and close homelab-configs PR #65 unless the homelab should also
-      get Google login).
+- [x] **[owner] review PR #461** — reviewed and **merged 2026-08-06**
+      (`e57022db`); see **Phase 2b** for the merge-day sequence. Still worth
+      closing homelab-configs PR #65 unless the homelab should also get Google
+      login.
 
 ## Phase 2b — merging PR #461 [joint]
 
@@ -253,8 +254,10 @@ written — both are done, see Phase 4.)
       parity block below)
 - [x] `make check-supabase-deep` — 1 failure, **HC53 only**. Everything
       structural (HC54–HC59) passes.
-- [ ] **HC53 goes green on its own ~2026-08-10 — do NOT "fix" it.** It has
-      TWO stacked failure modes and the first was masking the second:
+- [x] **HC53 went green on its own, confirmed 2026-08-11** (`states=13
+      capabilities=13 baseline=13`, adaptive window 1 week). The prediction held
+      and the merge-day exemption was correct. It had TWO stacked failure modes
+      and the first was masking the second:
       1. *(fixed 2026-08-06)* `TEST_USER_PASSWORD` was absent from
          `.env.local`, so the check could not sign in at all. The fixture is
          **`testuser@duin.home`** — HC53's own default, and the only account on
@@ -293,17 +296,35 @@ written — both are done, see Phase 4.)
 **1. Cloudflare Workers production branch — merge stops deploys if you skip
 this.** The production branch is currently `feat/oauth-stripe-entitlement`
 (Phase 4 set it there deliberately: `main` had none of the signed-URL code).
-Nothing in the PR changes it, and the builds API is blind under the MCP OAuth
-token, so this is dashboard-only and easy to forget.
+Nothing in the PR changes it, so it is easy to forget.
+⚠️ This paragraph used to add "and the builds API is blind under the MCP OAuth
+token, so this is dashboard-only". **That was wrong** — see the Post-merge entry
+below: the API works, it just keys on the Worker's SCRIPT TAG rather than its
+name.
 
-- [ ] Merge PR #461.
-- [ ] Worker → Settings → Builds → set the production branch to **`main`**.
-- [ ] Push a **fresh commit** to `main` to trigger a build. Do NOT use
+- [x] Merge PR #461.
+- [x] Worker → Settings → Builds → set the production branch to **`main`**.
+- [x] Push a **fresh commit** to `main` to trigger a build. Do NOT use
       "Retry build" — it replays the ORIGINAL commit, so it will fail
       identically and read as though the setting did not save (Phase 4 gotcha).
-- [ ] Confirm the deployed build serves from `main` before deleting the feature
+- [x] Confirm the deployed build serves from `main` before deleting the feature
       branch. Deleting it first with the setting unchanged leaves production
       with no build source.
+
+> **✅ All four done — verified by behaviour 2026-08-11.** The feature branch is
+> gone from the remote, and the live bundle
+> (`https://kamoebisa.nl` → `assets/i18n-BFMFRdDi.js`) contains
+> `gratis versie — les 1`, a string that only exists after PR #470 (2026-08-08).
+> A post-#470 string being served proves the Worker builds from `main`, which is
+> the check that mattered before the branch was deleted.
+>
+> ⚠️ This note originally justified the check by claiming the builds API is blind
+> under the MCP OAuth token. **That premise was wrong** (see Post-merge above —
+> the endpoints key on the script tag, not the name). The *method* still earns its
+> place, just for a different reason: fetching the deployed bundle and grepping
+> for a string whose introduction date you know proves what is actually SERVED,
+> which the build config alone cannot — a build can be configured correctly and
+> still not be the deployment in front of users.
 
 **2. `deploy.yml` publishes a Docker image that is broken by construction.**
 On CI success on `main` it builds `ghcr.io/albertvd/learning-indonesian:latest`
@@ -395,15 +416,26 @@ future moment someone follows the deploy doc.
 
 Once Phase 1's four Stripe values exist:
 
-- [ ] **[agent]** `supabase secrets set` the four values + `APP_BASE_URL`;
-      redeploy the functions.
+- [x] **[agent]** `supabase secrets set` the four values + `APP_BASE_URL`;
+      redeploy the functions. **DONE, and superseded by the Phase 5 live flip.**
+      All five are now asserted every run by `make check-cloud-config`
+      (verified 32/32 on 2026-08-11): `APP_BASE_URL is https://kamoebisa.nl`,
+      `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` present, and both price
+      secrets compared to the declared live Price ids by sha256 digest.
       ⚠ **Verify the redeploy actually took**: `supabase functions list` and
       confirm `version` incremented AND `ezbr_sha256` changed. Supabase had an
       active advisory (2026-07-30) that updates to existing functions could
       silently no-op.
-- [ ] Full checkout with a Stripe test card → `/checkout/success` verifies →
-      entitlement `active` → lesson 4 activates → audio signs →
-      **renewal date renders on Profile** (the `current_period_end` check).
+- [x] ~~Full checkout with a Stripe **test** card~~ — **no longer runnable, and
+      folded into the Phase 5 real-card item.** The account is in live mode, so
+      a test card cannot transact against it; the surviving obligation is the
+      real-card E2E in Phase 5. What this item wanted was proven on 2026-08-03
+      (entitlement row `status=active, source=stripe`,
+      `current_period_end = 2026-08-31`), so checkout, the webhook and the
+      `current_period_end` fix are all evidenced.
+      ⚠ Its original text said "lesson 4 activates" — that was the lessons-1–3
+      era. **The first paid lesson is lesson 2** (free tier = lesson 1 since
+      PR #470).
 - [x] Cancel, webhook replay, and the paywall from a fresh account — DONE
       2026-08-04, and now REPEATABLE rather than a one-off:
       **`make verify-stripe-lifecycle`** (`scripts/verify-stripe-lifecycle.ts`),
@@ -425,7 +457,12 @@ Once Phase 1's four Stripe values exist:
       ⚠ Why it is NOT in `make pre-deploy`: it MUTATES a subscription. It hard-
       refuses (exit 1) on any key that is not `sk_test_`, because against live
       that is a paying customer being cancelled and uncancelled.
-- [ ] **[owner] Google OAuth round trip** — the one Phase 3 item that cannot be
+- [x] **[owner] Google OAuth round trip — owner-confirmed working.** ⚠ Recorded
+      as *asserted*, not machine-proven: `make check-cloud-config` verifies the
+      server side only (`google provider enabled`, `google client id set`, both
+      green 2026-08-11). The consent-screen redirect itself needs a human, so
+      this rests on the owner's word — the same honest distinction drawn for the
+      live ToS URL above. Original text: the one Phase 3 item that cannot be
       automated: it needs a human at a real Google consent screen. Everything
       server-side is in place (provider enabled + client id set, both asserted
       by `make check-cloud-config`); what is unproven is the actual redirect
@@ -486,9 +523,17 @@ compile time and runtime vars arrive too late).
 - `npx wrangler deploy` reports **"No targets deployed"**. Expected: the custom
   domains are bound at account level, not declared as routes in
   `wrangler.jsonc`. It is not a failed deployment.
-- The `builds/triggers` REST endpoints return EMPTY under the Cloudflare MCP
-  OAuth token, so build config is dashboard-only — the API being blind is not
-  evidence that builds are unconfigured.
+- ⚠️ **CORRECTED 2026-08-07 (PR #469) — this bullet was wrong.** It read: "the
+  `builds/triggers` REST endpoints return EMPTY under the Cloudflare MCP OAuth
+  token, so build config is dashboard-only." They do not. They key on the
+  Worker's **script tag**, not its name, and querying by name returns an **empty
+  list rather than a 404** — which is precisely how a wrong identifier gets
+  written down as an unsupported feature. `PATCH /builds/workers/{script_tag}`
+  and `PATCH /builds/triggers/{uuid}` both work, and
+  `POST /builds/triggers/{uuid}/builds` takes an explicit branch or commit, so
+  the "Retry build replays the ORIGINAL commit" trap above does not apply to the
+  API path at all. **Generalise: an empty result is not evidence of an
+  unsupported endpoint — check the identifier first.**
 
 ### Email — added 2026-08-01 (was not in the original plan)
 
@@ -507,8 +552,12 @@ compile time and runtime vars arrive too late).
       no error), so the old code showed "Account created!" and then silently
       ejected the visitor. Confirmed live: signup withholds the session and the
       confirmation mail is `delivered`.
-- [ ] Residual decoupling (**done in code 2026-07-31**, commits `bfd4ce2c` +
-      follow-up):
+- [x] Residual decoupling (**done in code 2026-07-31**, commits `bfd4ce2c` +
+      follow-up). Parent box closed 2026-08-11 — all three sub-items were
+      already `[x]` and were verified against the files:
+      `src/lib/supabase.ts` keeps `cookieOptions` with `secure: true` and no
+      `domain`; `public/_headers` exists (2,138 bytes);
+      `parseStoredAudioUrl` in `src/lib/signedAudioUrl.ts` discards the host:
   - [x] `src/lib/supabase.ts` — `.duin.home` cookie domain dropped; the session
         cookie is host-only, so it works on localhost, `*.pages.dev`, a custom
         domain and the homelab alike. ⚠ Remove only `domain` — deleting the
@@ -520,7 +569,11 @@ compile time and runtime vars arrive too late).
         `public/_headers` (Cloudflare Pages format), ported from
         `nginx.conf:50-64`. `nginx.conf` still serves the homelab and keeps the
         `api.supabase.duin.home` origins — **the two must be kept in step**.
-        `public/_redirects` replaces nginx's `try_files` SPA fallback.
+        ⚠️ Corrected 2026-08-11: the SPA fallback is **not** `public/_redirects`
+        — that file does not exist, and Workers rejects its `/* /index.html 200`
+        rule as an infinite loop (see the warning in Phase 4 above). nginx's
+        `try_files` is replaced by `wrangler.jsonc`'s
+        `assets.not_found_handling: "single-page-application"`.
   - [x] The 2,822 absolute `api.supabase.duin.home` URLs baked into all 30
         `content.json` files need **no rewrite** — `signedAudioUrl.ts:57`
         parses out bucket+path and discards the host.
@@ -623,6 +676,53 @@ compile time and runtime vars arrive too late).
 - [x] Spec frontmatter → `status: shipped` with `implementation_paths` — done in
       the merge PR itself, per CLAUDE.md § Plan status awareness. ⚠ `merged_at`
       is pre-filled **2026-08-06**; correct it if the merge slips.
+
+## Phase 6 — explaining the product (owner-added 2026-08-11) [agent, owner reviews copy]
+
+> **Why this is a launch item and not polish.** The activation model is the one
+> genuinely non-obvious thing about Kamoe Bisa, and it is load-bearing for
+> revenue in two directions at once. A prospective buyer cannot tell what they
+> would be paying for; a new learner who activates nothing opens an empty
+> session and reads it as broken. Both failures are silent.
+>
+> **The capability is already built** — this is an explanation gap, not missing
+> function. Verified live 2026-08-11: lessons activate via `set_lesson_activation`
+> (`src/hooks/useLessonActivation.ts`, `src/components/lessons/ActivationGate.tsx`)
+> and word lists via `set_collection_activation`
+> (`src/components/collections/Woordenlijsten.tsx`, `src/lib/collections/adapter.ts`).
+> Nothing new needs to be scheduled, stored, or migrated.
+
+What has to be explained, on every surface below:
+
+1. **You choose what enters your practice.** Lessons and word lists are activated
+   by the learner; nothing is scheduled until they are. This is the part nobody
+   expects, so it leads.
+2. **How the scheduler works.** Everything active flows into one daily session,
+   and a word returns just before you would have forgotten it — that is the
+   product working, not a fault.
+3. **It stays yours to steer.** Activation is reversible and mixable, so the
+   queue can be tuned to what the learner actually wants to learn.
+
+- [ ] **Landing page** — deepen the existing `howKicker` band
+      (`src/pages/Landing.copy.ts:41-48` NL / `:91-98` EN). `how2Body` already
+      gestures at the scheduler; **nothing on the landing page mentions that the
+      learner chooses what enters it at all.** That omission is the gap.
+- [ ] **In-app** — the explanation a learner needs on day one and again on day
+      three. `FirstRunChecklist` is the existing surface; per the
+      `/hoe-het-werkt` draft §4 this must NOT become a forced modal or tour.
+- [ ] **`/hoe-het-werkt` public page** — ⚠ **a design draft already exists and is
+      unbuilt**: `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`
+      (`status: draft`, `reviewed_by: []`). It covers item 1–3 above plus the
+      four-stage pipeline and the research grounding, and it argues the mechanic
+      is a *differentiator*, not support content. It needs the `staff-engineer`
+      → `architect` gate before building; no `data-architect` (no data-model
+      surface). Its sibling `2026-08-06-onboarding-goals-design.md` DOES touch
+      `profiles` and needs both.
+
+**Sequencing note.** This phase and **issue #466** (show locked content instead
+of hiding it) are the same problem seen from two sides — a free visitor can
+neither see what exists nor understand how it would work. Build them together;
+explaining a scheduler while the shelf looks empty wastes both.
 
 ## Deferred (not blocking launch)
 

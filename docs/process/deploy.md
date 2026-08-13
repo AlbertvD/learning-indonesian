@@ -190,10 +190,11 @@ UI there, but **not** the paywall, signed URLs, or activation gating — the new
 and riskiest surfaces in the app, which currently have nowhere to be tested but
 production.
 
-Proof, any time you want it:
+Proof, any time you want it (both sides green since the 2026-08-11 cutover; the
+comment records what they showed *before* it):
 
 ```bash
-make check-supabase-deep TARGET=homelab   # HC54–HC58 red
+make check-supabase-deep TARGET=homelab   # was HC54–HC58 red, now green
 make check-supabase-deep                  # same checks green on cloud
 ```
 
