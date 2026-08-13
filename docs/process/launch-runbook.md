@@ -296,8 +296,11 @@ written — both are done, see Phase 4.)
 **1. Cloudflare Workers production branch — merge stops deploys if you skip
 this.** The production branch is currently `feat/oauth-stripe-entitlement`
 (Phase 4 set it there deliberately: `main` had none of the signed-URL code).
-Nothing in the PR changes it, and the builds API is blind under the MCP OAuth
-token, so this is dashboard-only and easy to forget.
+Nothing in the PR changes it, so it is easy to forget.
+⚠️ This paragraph used to add "and the builds API is blind under the MCP OAuth
+token, so this is dashboard-only". **That was wrong** — see the Post-merge entry
+below: the API works, it just keys on the Worker's SCRIPT TAG rather than its
+name.
 
 - [x] Merge PR #461.
 - [x] Worker → Settings → Builds → set the production branch to **`main`**.
@@ -315,10 +318,13 @@ token, so this is dashboard-only and easy to forget.
 > A post-#470 string being served proves the Worker builds from `main`, which is
 > the check that mattered before the branch was deleted.
 >
-> Worth keeping as the method: the builds API is blind under the MCP OAuth token,
-> so "which branch is production" is not directly readable. Fetch the deployed
-> bundle and grep for a string whose introduction date you know — that answers it
-> without dashboard access.
+> ⚠️ This note originally justified the check by claiming the builds API is blind
+> under the MCP OAuth token. **That premise was wrong** (see Post-merge above —
+> the endpoints key on the script tag, not the name). The *method* still earns its
+> place, just for a different reason: fetching the deployed bundle and grepping
+> for a string whose introduction date you know proves what is actually SERVED,
+> which the build config alone cannot — a build can be configured correctly and
+> still not be the deployment in front of users.
 
 **2. `deploy.yml` publishes a Docker image that is broken by construction.**
 On CI success on `main` it builds `ghcr.io/albertvd/learning-indonesian:latest`
@@ -375,11 +381,23 @@ future moment someone follows the deploy doc.
 
 - [x] `merged_at:` in the spec frontmatter — merged 2026-08-06 as pre-filled,
       no correction needed.
-- [x] Run the homelab cutover (`docs/process/deploy.md` § 6) so there is a
-      faithful place to test entitlement-shaped changes before customers see
-      them. **DONE — verified 2026-08-11**: `make check-supabase-deep
-      TARGET=homelab` passes every structural check, HC54–HC58 included, with
-      HC55's free-tier boundary matching cloud at `free<=1`.
+- [x] Run the homelab cutover (`docs/process/deploy.md` § 6) — **DONE
+      2026-08-07.** The homelab now runs the same schema, permissions and app
+      revision as cloud, so entitlement-shaped changes finally have somewhere to
+      be rehearsed. Paywall proven there: lesson-1 audio signs, lesson-4 is
+      refused, lesson-4 activation raises `entitlement_required`. Learner data
+      verified unchanged across the migration. Two in-browser sign-in checks
+      remain (§ 6).
+- [x] Cloudflare production branch → `main` — **DONE 2026-08-07**, and the
+      "dashboard-only" claim was WRONG. The builds API works; it keys on the
+      Worker's SCRIPT TAG, not its name (querying by name returns an empty list
+      rather than a 404, which is what made it look unsupported). Flipped
+      `git_repository.branch` and the trigger's `branch_includes` via
+      `PATCH /accounts/{id}/builds/workers/{script_tag}` and
+      `PATCH /accounts/{id}/builds/triggers/{uuid}`. `POST .../triggers/{uuid}/builds`
+      also takes an explicit branch or commit, which sidesteps the "Retry build
+      replays the original commit" trap entirely. Confirmed by a later
+      `push_event` build from `main` deploying on its own.
 
 ## Phase 3 — Stripe test-mode E2E [joint]
 
@@ -505,9 +523,17 @@ compile time and runtime vars arrive too late).
 - `npx wrangler deploy` reports **"No targets deployed"**. Expected: the custom
   domains are bound at account level, not declared as routes in
   `wrangler.jsonc`. It is not a failed deployment.
-- The `builds/triggers` REST endpoints return EMPTY under the Cloudflare MCP
-  OAuth token, so build config is dashboard-only — the API being blind is not
-  evidence that builds are unconfigured.
+- ⚠️ **CORRECTED 2026-08-07 (PR #469) — this bullet was wrong.** It read: "the
+  `builds/triggers` REST endpoints return EMPTY under the Cloudflare MCP OAuth
+  token, so build config is dashboard-only." They do not. They key on the
+  Worker's **script tag**, not its name, and querying by name returns an **empty
+  list rather than a 404** — which is precisely how a wrong identifier gets
+  written down as an unsupported feature. `PATCH /builds/workers/{script_tag}`
+  and `PATCH /builds/triggers/{uuid}` both work, and
+  `POST /builds/triggers/{uuid}/builds` takes an explicit branch or commit, so
+  the "Retry build replays the ORIGINAL commit" trap above does not apply to the
+  API path at all. **Generalise: an empty result is not evidence of an
+  unsupported endpoint — check the identifier first.**
 
 ### Email — added 2026-08-01 (was not in the original plan)
 
