@@ -92,6 +92,50 @@ describe('Profile — subscription block', () => {
     expect(screen.queryByRole('button', { name: 'Abonnement beheren' })).not.toBeInTheDocument()
   })
 
+  // ── Admins (2026-08-16) ───────────────────────────────────────────────────
+  // indonesian.has_active_entitlement() grants access on an admin role with no
+  // entitlements row, and authStore's isEntitledFrom() mirrors that — so an
+  // admin already has full access everywhere in the app. This block read the
+  // entitlements row directly and ignored isAdmin, which made the page that
+  // REPORTS your status the one place that disagreed with the rest of the
+  // product: an admin was shown "Gratis niveau" plus a subscribe CTA for
+  // access they already had. Reported by the owner account 2026-08-16; the
+  // cloud owner account relies on the same admin arm.
+  it('shows admin access, not the free plan, for an admin with no entitlement row', async () => {
+    mockState.profile = { ...mockState.profile, isAdmin: true, isEntitled: true }
+    mockChain.maybeSingle.mockResolvedValue({ data: null, error: null })
+
+    renderProfile()
+
+    expect(await screen.findByText('Volledige toegang (beheerder)')).toBeInTheDocument()
+    expect(screen.queryByTestId('paywall-panel')).not.toBeInTheDocument()
+    // The status pill was fixed first and the body copy was NOT, so the card
+    // read "Volledige toegang (beheerder)" directly above "Je gebruikt de
+    // gratis versie — les 1." Assert the whole card agrees, not just the pill.
+    expect(screen.queryByText(/gratis versie/i)).not.toBeInTheDocument()
+    mockState.profile = { ...mockState.profile, isAdmin: false }
+  })
+
+  // A real paid row still wins the label — admin must not mask what someone is
+  // actually paying for, or the page stops being a truthful account statement.
+  it('still reports a real active subscription for an admin who also has one', async () => {
+    mockState.profile = { ...mockState.profile, isAdmin: true, isEntitled: true }
+    mockChain.maybeSingle.mockResolvedValue({
+      data: {
+        user_id: 'user-1', status: 'active', source: 'stripe',
+        stripe_customer_id: 'cus_1', stripe_subscription_id: 'sub_1',
+        current_period_end: '2026-09-01T00:00:00Z',
+      },
+      error: null,
+    })
+
+    renderProfile()
+
+    expect(await screen.findByText('Actief')).toBeInTheDocument()
+    expect(screen.queryByTestId('paywall-panel')).not.toBeInTheDocument()
+    mockState.profile = { ...mockState.profile, isAdmin: false }
+  })
+
   it('hides "Manage subscription" for a comped row with no stripe_customer_id (active-set, but not Stripe-backed)', async () => {
     mockChain.maybeSingle.mockResolvedValue({
       data: {

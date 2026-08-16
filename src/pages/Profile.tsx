@@ -283,14 +283,29 @@ export function Profile() {
   // Subscription block derived state (§5): a row exists but isn't in the
   // active set (canceled) reads differently from never-having-subscribed —
   // both get the PaywallPanel subscribe CTA, but the status label differs.
-  const isFreePlan = !entitlement || !isActiveStatus(entitlement.status)
-  const statusLabel = !entitlement
+  // Admins reach every lesson through has_active_entitlement()'s admin arm with
+  // no entitlements row, and authStore's isEntitledFrom() mirrors that for the
+  // rest of the app. Without this, the page that REPORTS your status was the
+  // one surface contradicting the product — an admin saw "Gratis niveau" and a
+  // subscribe CTA for access they already had (2026-08-16).
+  //
+  // A real paid row still wins the label: admin access is additional, and
+  // masking a subscription someone is actually paying for would stop this being
+  // a truthful account statement.
+  const rowGrantsAccess = !!entitlement && isActiveStatus(entitlement.status)
+  const adminOnlyAccess = profile?.isAdmin === true && !rowGrantsAccess
+
+  const isFreePlan = !rowGrantsAccess && !adminOnlyAccess
+  const statusLabel = adminOnlyAccess
+    ? T.profile.subscriptionStatusAdmin
+    : !entitlement
     ? T.profile.subscriptionStatusFree
     : entitlement.status === 'active' ? T.profile.subscriptionStatusActive
     : entitlement.status === 'past_due' ? T.profile.subscriptionStatusPastDue
     : entitlement.status === 'comped' ? T.profile.subscriptionStatusComped
     : T.profile.subscriptionStatusCanceled
-  const statusTone = !entitlement ? 'neutral'
+  const statusTone = adminOnlyAccess ? 'success'
+    : !entitlement ? 'neutral'
     : entitlement.status === 'active' || entitlement.status === 'comped' ? 'success'
     : entitlement.status === 'past_due' ? 'warning'
     : 'neutral'
@@ -355,7 +370,9 @@ export function Profile() {
             >
               <Stack gap="md">
                 <Text size="sm" c="dimmed">
-                  {!entitlement
+                  {adminOnlyAccess
+                    ? T.profile.subscriptionAdminIntro
+                    : !entitlement
                     ? T.profile.subscriptionFreeIntro
                     : entitlement.status === 'canceled'
                     ? T.profile.subscriptionCanceledIntro
