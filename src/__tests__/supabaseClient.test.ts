@@ -24,7 +24,14 @@ const createBrowserClient = vi.fn(clientStub)
 vi.mock('@supabase/ssr', () => ({ createBrowserClient }))
 
 /** Re-evaluates the module and returns the third arg passed to createBrowserClient. */
-async function loadClientOptions(): Promise<Record<string, any>> {
+async function loadClientOptions(origin?: string): Promise<Record<string, any>> {
+  if (origin) {
+    const url = new URL(origin)
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { ...window.location, protocol: url.protocol, hostname: url.hostname, origin: url.origin, href: url.href },
+    })
+  }
   vi.resetModules()
   createBrowserClient.mockClear()
   await import('@/lib/supabase')
@@ -37,12 +44,38 @@ describe('supabase browser client cookie options', () => {
     vi.clearAllMocks()
   })
 
-  it('marks the session cookie Secure', async () => {
-    const { cookieOptions } = await loadClientOptions()
+  it('marks the session cookie Secure on an https origin', async () => {
+    const { cookieOptions } = await loadClientOptions('https://kamoebisa.nl/')
 
     // The regression guard. Without this the auth JWT is sent over plaintext
     // HTTP to the same host — and HSTS only protects visitors who have already
     // completed one HTTPS visit.
+    expect(cookieOptions?.secure).toBe(true)
+  })
+
+  // ── The Safari dev carve-out (2026-08-16) ─────────────────────────────────
+  // This module used to pin `secure: true` unconditionally, on the stated
+  // grounds that "browsers treat http://localhost as a trustworthy origin and
+  // accept Secure cookies there". Chrome (89+) and Firefox do. WebKit never
+  // implemented that exception, so Safari SILENTLY DISCARDS the cookie — and
+  // because @supabase/ssr stores the whole session in it, sign-in appeared to
+  // succeed while every later request went out as `anon`: zero rows from
+  // content tables, "permission denied for table error_logs" from the logger
+  // itself, and a UI that showed you as logged in because the profile panel
+  // renders off the in-memory token. Diagnosed live from a dev-server console
+  // capture: `engine=Safari origin=http://localhost:5173 cookieNames=(none)`.
+  it('drops Secure on a plaintext localhost origin so Safari can hold the session', async () => {
+    const { cookieOptions } = await loadClientOptions('http://localhost:5173/')
+
+    expect(cookieOptions?.secure).toBe(false)
+  })
+
+  // Fails CLOSED: the carve-out is for localhost only. A plaintext deployment
+  // on a real hostname keeps Secure, so the cookie is withheld (a visible
+  // breakage) rather than the JWT going out over the wire (a silent leak).
+  it('keeps Secure on a plaintext NON-localhost origin', async () => {
+    const { cookieOptions } = await loadClientOptions('http://indonesian.duin.home/')
+
     expect(cookieOptions?.secure).toBe(true)
   })
 
