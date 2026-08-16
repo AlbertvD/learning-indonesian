@@ -104,11 +104,21 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     // Warm-editorial brand constants (desktop program, docs/plans/
     // 2026-07-03-desktop-program-design.md §Token discipline). Theme-agnostic
     // by design: the deep batik-green rail is the brand constant, identical in
-    // light and dark. The display serif is a system stack — no webfont (CSP +
-    // bundle discipline). Tamarind/gold are theme-VARYING and land as the
+    // light and dark. Tamarind/gold are theme-VARYING and land as the
     // --accent-primary retune in slice 2; until then the landing page (light-
     // only marketing surface) carries its own scoped light values.
-    '--font-display': "'Iowan Old Style', 'Palatino Linotype', Palatino, Charter, Georgia, 'Times New Roman', serif",
+    //
+    // --font-display: SELF-HOSTED Newsreader since 2026-08-16 (src/styles/
+    // fonts.css has the full rationale + the axis/size measurements). It was a
+    // system stack until then, which meant 16 files — including the PageHeader
+    // and ListCard primitives — inherited a face that resolved to Iowan Old
+    // Style on macOS, Palatino Linotype on Windows and Noto Serif on Android.
+    // The desktop plan (§Type, line 70) picked the editorial-serif DIRECTION
+    // and explicitly left "system stack vs a self-hosted webfont" to
+    // implementation; the placeholder shipped instead. Still no CDN — the file
+    // is same-origin, so `font-src 'self'` and the GDPR position are unchanged.
+    // The system faces stay as the swap-period fallback, not as the answer.
+    '--font-display': "'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Palatino, Charter, Georgia, 'Times New Roman', serif",
     '--rail-surface':        '#1F3D36',
     '--rail-surface-raised': '#274A41',
     '--rail-ink':            '#EDE7D7',
