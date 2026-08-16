@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { AuthApiError, AuthRetryableFetchError } from '@supabase/supabase-js'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
 import { logError } from '@/lib/logger'
@@ -26,6 +27,7 @@ vi.mock('@/lib/supabase', () => ({
   supabase: {
     auth: {
       getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
+      getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }),
       onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
       signInWithPassword: vi.fn(),
       signUp: vi.fn(),
@@ -173,6 +175,9 @@ describe('authStore', () => {
   it('initialize sets user if session exists', async () => {
     const mockUser = { id: 'user-1', email: 'test@example.com', user_metadata: { full_name: 'Test User' } }
     vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: { user: mockUser } } } as any)
+    // getSession() only reads storage; initialize() re-checks with getUser(),
+    // which is the call that actually validates the token server-side.
+    vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as any)
 
     queueProfileAdminEntitlement(BASE_PROFILE_ROW, { data: null }, { data: null, error: null })
 
@@ -191,6 +196,53 @@ describe('authStore', () => {
       isEntitled: false,
       timezone: null,
     })
+    expect(useAuthStore.getState().loading).toBe(false)
+  })
+
+  // ── Stored session the backend rejects ────────────────────────────────────
+  // getSession() reads storage and does NOT validate. A session minted by a
+  // different backend (dev pointed at cloud, then at the homelab) or surviving
+  // a JWT-secret rotation still yields session.user, so the app rendered as
+  // logged in while every PostgREST call silently degraded to `anon` — the
+  // 2026-08-16 "Sessiefout / Kon de affix-trainer niet laden / Er ging iets
+  // mis" report, where even logError's own insert was refused with
+  // "permission denied for table error_logs" (anon lacks INSERT).
+  it('initialize signs out when the stored session is rejected by the server', async () => {
+    const staleUser = { id: 'user-1', email: 'test@example.com', user_metadata: {} }
+    vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: { user: staleUser } } } as any)
+    vi.mocked(supabase.auth.getUser).mockResolvedValue({
+      data: { user: null },
+      error: new AuthApiError('Invalid JWT', 401, 'bad_jwt'),
+    } as any)
+    vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null } as any)
+
+    await useAuthStore.getState().initialize()
+
+    expect(supabase.auth.signOut).toHaveBeenCalled()
+    expect(useAuthStore.getState().user).toBeNull()
+    expect(useAuthStore.getState().profile).toBeNull()
+    expect(useAuthStore.getState().loading).toBe(false)
+  })
+
+  // The guard on the guard: a network failure must NOT eject the user. Offline
+  // is a supported state (OfflineBanner / useOnlineStatus), and signing out a
+  // learner because their train went into a tunnel would be a worse bug than
+  // the one above. AuthRetryableFetchError is a sibling of AuthApiError, not a
+  // subclass, so `instanceof AuthApiError` distinguishes them.
+  it('initialize keeps the session when getUser fails for a network reason', async () => {
+    const mockUser = { id: 'user-1', email: 'test@example.com', user_metadata: { full_name: 'Test User' } }
+    vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: { user: mockUser } } } as any)
+    vi.mocked(supabase.auth.getUser).mockResolvedValue({
+      data: { user: null },
+      error: new AuthRetryableFetchError('Failed to fetch', 0),
+    } as any)
+
+    queueProfileAdminEntitlement(BASE_PROFILE_ROW, { data: null }, { data: null, error: null })
+
+    await useAuthStore.getState().initialize()
+
+    expect(supabase.auth.signOut).not.toHaveBeenCalled()
+    expect(useAuthStore.getState().user).toEqual(mockUser)
     expect(useAuthStore.getState().loading).toBe(false)
   })
 

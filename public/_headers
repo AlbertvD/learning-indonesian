@@ -10,8 +10,10 @@
 #  - script-src is 'self' with NO 'unsafe-inline' — the measured, tightened
 #    value. Do not loosen it to make a third-party snippet work.
 #  - style-src keeps 'unsafe-inline' because Mantine injects inline styles.
-#  - font-src is 'self' only: Plus Jakarta Sans is self-hosted precisely so no
-#    request reaches Google Fonts (that was a GDPR leak, closed in #447).
+#  - font-src is 'self' only: Plus Jakarta Sans (body) and Newsreader (display,
+#    vendored 2026-08-16) are BOTH self-hosted precisely so no request reaches
+#    Google Fonts (that was a GDPR leak, closed in #447). Any new face must be
+#    vendored into public/fonts/ too — this header will block a CDN link.
 #  - media-src needs the Supabase origin for SIGNED audio URLs — buckets are
 #    private on cloud, so every clip is fetched from that host.
 #  - Permissions-Policy microphone MUST be (self), not (). An empty allowlist

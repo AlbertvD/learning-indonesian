@@ -1,6 +1,19 @@
 // src/lib/supabase.ts
 import { createBrowserClient } from '@supabase/ssr'
 
+/**
+ * Is the app being served from a plaintext localhost origin (i.e. `bun run dev`)?
+ * The ONLY case where the session cookie drops its Secure attribute — see the
+ * cookieOptions comment below for why Safari makes that necessary, and why the
+ * check is scoped to localhost rather than to "http" in general.
+ */
+function isPlaintextLocalhost(): boolean {
+  if (typeof window === 'undefined') return false // SSR/build: assume secure
+  const { protocol, hostname } = window.location
+  if (protocol !== 'http:') return false
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]' || hostname === '::1'
+}
+
 export const supabase = createBrowserClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,
@@ -29,12 +42,32 @@ export const supabase = createBrowserClient(
     // no-cookie-banner reasoning cites this flag
     // (docs/audits/2026-07-02-gdpr-pii-audit.md:86).
     //
-    // `secure: true` needs no dev carve-out: browsers treat http://localhost as
-    // a trustworthy origin and accept Secure cookies there.
+    // `secure` is TRUE everywhere except a plaintext localhost origin.
+    //
+    // This used to be an unconditional `true`, justified in a comment claiming
+    // "browsers treat http://localhost as a trustworthy origin and accept
+    // Secure cookies there". Chrome (89+) and Firefox do. **WebKit does not** —
+    // Safari never implemented that exception and silently DISCARDS a Secure
+    // cookie set over http. Since @supabase/ssr keeps the entire session in
+    // that cookie, the effect was that signing in on Safari at
+    // http://localhost:5173 appeared to work and then wasn't stored at all:
+    // every subsequent request went out as `anon`, content tables returned
+    // zero rows with no error, and even logError's own insert was refused
+    // ("permission denied for table error_logs"). The UI still showed the user
+    // as logged in, because the profile panel reads the in-memory token rather
+    // than the server. Diagnosed 2026-08-16 from a dev-console capture:
+    // `engine=Safari origin=http://localhost:5173 cookieNames=(none)`.
+    //
+    // The carve-out FAILS CLOSED — it is scoped to localhost, not to "http".
+    // A plaintext deployment on a real hostname keeps Secure, so the cookie is
+    // withheld (visible breakage) instead of the JWT crossing a network in the
+    // clear (silent leak). Production is https and unaffected; the GDPR audit's
+    // no-cookie-banner reasoning (docs/audits/2026-07-02-gdpr-pii-audit.md:86)
+    // rests on the production flag, which is unchanged.
     cookieOptions: {
       path: '/',
       sameSite: 'lax' as const,
-      secure: true,
+      secure: !isPlaintextLocalhost(),
     },
   }
 )

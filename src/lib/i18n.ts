@@ -239,8 +239,13 @@ export const nl = {
     subscriptionStatusCanceled: 'Opgezegd',
     subscriptionStatusComped: 'Gratis toegang (cadeau)',
     subscriptionStatusFree: 'Gratis niveau',
+    // Admins reach every lesson through has_active_entitlement()'s admin arm
+    // without an entitlements row. Named distinctly from 'comped' so the page
+    // stays a truthful account statement: this is staff access, not a gift.
+    subscriptionStatusAdmin: 'Volledige toegang (beheerder)',
     subscriptionRenewsOn: (date: string) => `Verlengt op ${date}`,
     subscriptionFreeIntro: 'Je gebruikt de gratis versie — les 1.',
+    subscriptionAdminIntro: 'Je hebt als beheerder toegang tot alle lessen. Hiervoor is geen abonnement nodig.',
     subscriptionCanceledIntro: 'Je abonnement is opgezegd. Je behoudt toegang tot je al geactiveerde lessen, maar kunt geen nieuwe lessen meer activeren.',
     manageSubscription: 'Abonnement beheren',
     manageSubscriptionFailed: 'Abonnement beheren mislukt',
@@ -1088,8 +1093,10 @@ export const en: typeof nl = {
     subscriptionStatusCanceled: 'Canceled',
     subscriptionStatusComped: 'Complimentary access',
     subscriptionStatusFree: 'Free plan',
+    subscriptionStatusAdmin: 'Full access (admin)',
     subscriptionRenewsOn: (date: string) => `Renews on ${date}`,
     subscriptionFreeIntro: "You're on the free plan — lesson 1.",
+    subscriptionAdminIntro: 'You have access to every lesson as an admin. No subscription is needed.',
     subscriptionCanceledIntro: 'Your subscription has been canceled. You keep access to the lessons you already activated, but cannot activate new lessons.',
     manageSubscription: 'Manage subscription',
     manageSubscriptionFailed: 'Failed to open subscription management',

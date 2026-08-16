@@ -1,7 +1,7 @@
 // src/stores/authStore.ts
 import { create } from 'zustand'
 import { supabase } from '@/lib/supabase'
-import type { User } from '@supabase/supabase-js'
+import { AuthApiError, type User } from '@supabase/supabase-js'
 import type { UserProfile } from '@/types/auth'
 import { logError } from '@/lib/logger'
 import { setLessonActivated } from '@/lib/lessons'
@@ -45,17 +45,29 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     try {
       const { data: { session } } = await supabase.auth.getSession()
+
       if (session?.user) {
-        const [{ displayName, language, preferredSessionSize, timezone }, isAdmin, entitlementStatus] = await Promise.all([
-          loadProfileData(session.user.id),
-          checkAdmin(session.user.id),
-          loadEntitlementStatus(session.user.id),
-        ])
-        set({
-          user: session.user,
-          profile: toProfile(session.user, isAdmin, displayName, language, preferredSessionSize, timezone, isEntitledFrom(isAdmin, entitlementStatus)),
-          loading: false,
-        })
+        // getSession() reads the stored session and does NOT validate it with
+        // the server. getUser() does — it is the platform's own answer to "is
+        // this token actually accepted". Without this check a session the
+        // backend rejects still yields session.user, so the app renders as
+        // signed in while every PostgREST call quietly runs as `anon`.
+        const { data: verified, error: verifyError } = await supabase.auth.getUser()
+        if (isRejectedSession(verifyError, verified?.user ?? null)) {
+          await supabase.auth.signOut()
+          set({ user: null, profile: null, loading: false })
+        } else {
+          const [{ displayName, language, preferredSessionSize, timezone }, isAdmin, entitlementStatus] = await Promise.all([
+            loadProfileData(session.user.id),
+            checkAdmin(session.user.id),
+            loadEntitlementStatus(session.user.id),
+          ])
+          set({
+            user: session.user,
+            profile: toProfile(session.user, isAdmin, displayName, language, preferredSessionSize, timezone, isEntitledFrom(isAdmin, entitlementStatus)),
+            loading: false,
+          })
+        }
       } else {
         set({ loading: false })
       }
@@ -333,6 +345,30 @@ async function loadEntitlementStatus(userId: string): Promise<EntitlementStatus 
 
 function isEntitledFrom(isAdmin: boolean, entitlementStatus: EntitlementStatus | null): boolean {
   return isAdmin || (entitlementStatus !== null && isActiveStatus(entitlementStatus))
+}
+
+// Is a stored session one the server has REFUSED, as opposed to one we merely
+// couldn't reach the server to check?
+//
+// The distinction is the whole point. A refused session must be cleared — left
+// in place it produces the 2026-08-16 failure mode: the UI renders as signed in
+// (email and "Lid sinds …" come straight off the stored JWT, needing no server
+// call) while every data read runs as `anon`, so Session, the affix trainer and
+// even logError's own insert fail with retry buttons that can never succeed.
+//
+// But an UNREACHABLE server must NOT clear it. Offline is a supported state
+// here (OfflineBanner / useOnlineStatus), and ejecting a learner because their
+// train entered a tunnel would be a worse bug than the one this fixes.
+// AuthApiError (the server answered, and said no) and AuthRetryableFetchError
+// (we never got an answer) are SIBLING classes in auth-js, not parent/child, so
+// `instanceof AuthApiError` cleanly separates them. Anything unrecognised is
+// treated as "couldn't check" — the conservative direction.
+function isRejectedSession(error: unknown, verifiedUser: User | null): boolean {
+  if (error instanceof AuthApiError) return true
+  // No error and no user should not happen, but if it does the stored session
+  // is definitively unusable — don't fall through and trust it.
+  if (!error && !verifiedUser) return true
+  return false
 }
 
 function toProfile(user: User, isAdmin: boolean, displayName: string | null, language: 'nl' | 'en', preferredSessionSize: number, timezone: string | null, isEntitled: boolean): UserProfile {
