@@ -62,19 +62,32 @@ then refund through the portal to rehearse that path.
 set"* — that setting fails **closed** and takes the whole product with it. Runbook Phase 1.
 
 ### 2. Explain the product **[agent, owner reviews copy]** — runbook Phase 6
-The activation model is the one genuinely non-obvious thing about Kamoe Bisa, and it fails
-silently in both directions: a buyer cannot tell what they would be paying for, and a new
-learner who activates nothing opens an empty session and reads it as broken.
+⭐ **START HERE: `docs/plans/2026-08-16-landing-page-redesign.md`.** Scoped up on 2026-08-16
+from "add an explanation band" to a landing-page rewrite, after the owner's verdict that the
+current page *"looks AI generated and a bit clunky, does not really describe the app, how it
+works, why we think it works better than Duolingo, and how it compares to a dedicated word
+app like Anki."* That file holds seven settled decisions, the proposed spine, and four open
+questions — read it before re-deriving any of them.
 
-The capability is already shipped — `set_lesson_activation` and `set_collection_activation`
+**The primary persona changed with it** (2026-08-16): from Marijke the heritage learner to
+Robin, the person with an Indonesian partner. `personas.md` §1 and `positioning.md` §4 are
+both updated; every landing decision traces back to them.
+
+The activation model remains the non-obvious thing, and it fails silently in both directions:
+a buyer cannot tell what they would be paying for, and a new learner who activates nothing
+opens an empty session and reads it as broken. The capability is already shipped —
+`set_lesson_activation` and `set_collection_activation`
 (`src/components/collections/Woordenlijsten.tsx`). This is an explanation gap, no schema.
 
-- **Landing page** — `Landing.copy.ts:41-48` (NL) / `:91-98` (EN). `how2Body` already gestures
-  at the scheduler; **nothing says the learner chooses what enters it.** That is the gap.
+- **Landing page** — the rewrite above. `Landing.copy.ts:41-48` (NL) / `:91-98` (EN) is what
+  exists now; `how2Body` gestures at the scheduler, but **nothing says the learner chooses
+  what enters it.**
 - **In-app** — day one and again day three. `FirstRunChecklist` is the surface. Not a modal,
-  not a forced tour.
+  not a forced tour. Deliberately sliced second.
 - **`/hoe-het-werkt`** — draft exists and is unbuilt:
   `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`. Needs `staff-engineer` → `architect`.
+  Its two open questions were answered on 2026-08-16 and the answers are recorded in the
+  redesign doc (D6, D7).
 
 ### 3. Show locked content — issue #466 **[agent]**
 Owner-decided 2026-08-06, deferred out of PR #461. Paid content renders as *absent*, not
