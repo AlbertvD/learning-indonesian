@@ -29,10 +29,42 @@ not exist:
 | **Asking their partner / in-laws** | Intimate relationships make poor classrooms. Correction feels like criticism; both sides give up. |
 | **A phrasebook before a holiday** | Survives the airport, collapses at the first real conversation. |
 | **Evening class or private tutor** | Too slow, too far, too expensive, fixed schedule. |
+| **Anki + a textbook + a reader + a podcast app** | The serious self-learner's answer, and it genuinely works. It is also a second hobby: you author every card yourself, and you cannot build a card for a word you do not yet know exists. Added 2026-08-16 — see below. |
 | **Nothing at all** | The most common alternative by far — intending to learn, for years. |
 
 The last row is the real competitor. Dunford's point: the yardstick is what the
 customer would actually do, not what we think we compete with.
+
+### The DIY stack, and why "all-round" is the wrong way to say it (2026-08-16)
+
+Owner observation: the product covers what a learner would otherwise assemble
+from many tools — grammar, culture through stories, an FSRS scheduler, exercises
+across several skills, stories to listen to and to read, an affix trainer, and a
+workshop for words that keep failing. All verified live: 191 grammar patterns ·
+953 affix capabilities · 13 texts (9 with audio) · `MnemonicWorkshop` shipped ·
+2,573 items on FSRS.
+
+Checked against the market 2026-08-16. For Indonesian, nothing comparable exists
+— the finding in §1 holds. Across languages generally, apps do *parts*:
+Taalhammer is the closest integrated one (SRS + generated stories + audio),
+Beelinguapp does parallel-text stories, LingQ does reading and listening with a
+word tracker, Anki does scheduling and nothing else. Nothing found pairs a
+morphology trainer with a stubborn-word workshop; those only matter past the
+beginner plateau, which is where mass-market apps stop.
+
+**But do not sell it as "all-round".** A feature list is a non-position in
+Dunford's terms: it invites comparison on every axis against a specialist who
+beats you on that one axis, and it says nothing about who it is for. The same
+truth positions properly as **assembly**:
+
+> Serious learners already build this stack by hand — Anki for scheduling, a
+> textbook for grammar, a reader for input, a podcast for listening. It works,
+> and it is a second hobby. This is that stack, already assembled, for a
+> language pair nobody serves.
+
+Completeness then reads as *work you do not have to do*, and it answers Anki in
+one line: Anki is one component of that stack, and the component that costs the
+most manual labour.
 
 ### Evidence — the Duolingo asymmetry (checked 2026-08-05)
 
@@ -110,17 +142,31 @@ project 2026-08-05.
 
 ## 4. Target market characteristics — who cares a lot
 
-**Primary: the heritage learner** (owner decision, 2026-08-05).
-Dutch-speaking adult with a family tie to Indonesia — a grandparent from the
-Indies, an Indonesian partner, in-laws. Already knows *ketjap*, *pasar malam*,
-*toko* without ever having studied. Motivated by a relationship, not a
-certificate. Usually has tried an app and stalled.
+**Primary: the person with an Indonesian partner** (owner decision, 2026-08-16 —
+this REPLACES "the heritage learner", which held from 2026-08-05).
+Dutch-speaking adult, 30s–40s, partner is Indonesian, in-laws alive and present.
+At family gatherings everyone switches to Dutch or English out of politeness,
+and they can feel the gap that creates. Motivated by belonging, not a
+certificate. Full portrait: `personas.md` §1 (Robin).
+
+Why the change: the heritage learner's motive is retrospective — reconnecting
+with a family past — while this one recurs every time the family visits, and a
+live-in native speaker changes which features matter (spreektaal becomes
+central, not a later track). It is also the owner's own path, which is what lets
+the landing page tell it in the first person rather than performing empathy.
 
 Secondary, served but not led with:
+- **The heritage learner** — grandparent from the Indies, knows *ketjap* and
+  *pasar malam* without having studied. The loanword wall is her hook, and it
+  still opens the page for both her and the primary. `personas.md` §2.
 - **The traveller / expat** — months in Indonesia, wants to be understood at a
   warung. Spreektaal is their hook. Likeliest to pay soonest.
 - **The stalled app-hopper** — finished what Duolingo offers (in English),
   wants grammar. The placement test is their hook.
+
+⚠️ Least-tested claim in this file. Inferred from the owner's own experience,
+which makes the *motive* credible and says nothing about the *size*. The
+heritage segment is sized (~1.5–2M, market research §2); this one is not.
 
 ## 5. Market category
 
