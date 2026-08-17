@@ -39,8 +39,23 @@
   flex-direction: column;
   gap: 64px;
 }
+/* The step number sits in a left rail rather than above the heading. Prose
+   wants a ~68ch measure, which on a wide screen left the whole right half of
+   the page empty and made the layout read as unfinished; the rail spends that
+   space on structure instead, and the result reads as a spec document — which
+   is what this page is. The measure itself is unchanged. */
 .step {
-  max-width: 68ch;
+  display: grid;
+  grid-template-columns: 130px minmax(0, 68ch);
+  column-gap: 36px;
+}
+.step > :first-child {
+  grid-column: 1;
+  grid-row: 1;
+  padding-top: 10px;
+}
+.step > :not(:first-child) {
+  grid-column: 2;
 }
 .h2 {
   font-size: clamp(22px, 2.8vw, 28px);
@@ -186,6 +201,18 @@
   }
   .steps {
     gap: 48px;
+  }
+  /* The rail collapses back to a stacked kicker — there is no spare width to
+     spend on structure at this size. */
+  .step {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .step > :first-child {
+    grid-column: 1;
+    padding-top: 0;
+  }
+  .step > :not(:first-child) {
+    grid-column: 1;
   }
   .stage {
     grid-template-columns: 26px 1fr;
