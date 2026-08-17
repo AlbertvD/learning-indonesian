@@ -70,7 +70,7 @@ Volksuniversiteit is three or more course levels: **€760+**.
 | Duolingo Max | €14.99/mo | No |
 | Babbel | ~€9/mo on annual (~€100/yr) | No Indonesian |
 | Busuu Premium Plus | ~€13/mo | No |
-| **Kamoe Bisa** | **€7/mo · €56/yr** | Yes — the only one |
+| **Kamoe Bisa** | ~~€7/mo · €56/yr~~ → **€9/mo · €79/yr** | Yes — the only one |
 
 ## 2. The diagnosis
 

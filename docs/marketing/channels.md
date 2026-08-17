@@ -108,7 +108,7 @@ sales, affiliate programs, trade shows, offline events, unconventional PR.
 
 Email is worth flagging as **deferred, not dismissed**: once there are a few
 hundred learners, it is usually one of the strongest retention channels, and
-retention is where a €7–9/month business actually lives.
+retention is where a €9/month business actually lives.
 
 ## Why the ordering runs against instinct — and why that changed
 

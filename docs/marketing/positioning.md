@@ -1,7 +1,7 @@
 ---
 status: draft
 owner_confirmed: partial
-last_verified_against_product: 2026-08-05
+last_verified_against_product: 2026-08-17
 ---
 
 # Positioning — Kamoe Bisa
@@ -209,8 +209,9 @@ the reader — never as the lead.
 - **Dunford's step 2 is "form a positioning team"** — precisely because a single
   person's view of their own product is unreliable. This was done by the owner
   and an agent, which is not the same thing.
-- Willingness to pay at €7/€56 is untested; the prices were chosen, not
-  researched (see *Monetizing Innovation*).
+- Willingness to pay at **€9/€79** is untested; the prices were chosen, not
+  researched (see *Monetizing Innovation*). Still zero paying subscribers, so
+  this remains the least-evidenced number in the whole marketing set.
 
 ## 8. Copy rules that follow from this
 
