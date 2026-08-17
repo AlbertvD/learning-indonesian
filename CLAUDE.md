@@ -131,6 +131,15 @@ status: stable                            # stable | in-flight | partial
 
 A spec with `last_verified_against_code` older than ~30 days should be re-verified before trusting any specific cite. The date is the spec's freshness signal.
 
+### Two rules that keep facts from going stale in five places at once
+
+Added 2026-08-17, after the free tier changed from lessons 1–3 to lesson 1 in PR #470 and **four documents kept the old number** — including this file, and including the shipped plan this file named "the authoritative spec".
+
+- **⭐ A live rule may cite a shipped plan for PROVENANCE, never for AUTHORITY.** "The design that produced this is at `plans/X`" is good and should stay. "See `plans/X`, the authoritative spec" is the bug: shipped plans are changelogs frozen at merge date, so anything downstream of them inherits their staleness. Authority lives in `docs/current-system/`, in an ADR, or in the code.
+- **⭐ Never restate a value that a constant owns — cite the constant.** The free tier is `FREE_TIER_MAX_LESSON` (`src/services/entitlementService.ts:41`) and `indonesian.is_free_tier_lesson`; prices are `PRICING` in `scripts/check-cloud-config.ts`. Writing the number into prose creates a copy that can drift, and four of them did. If a fact is machine-checkable, the doc's job is to say *where the check lives*, not to repeat the answer.
+
+The same reasoning is why `docs/plans/` is culled: a shipped plan nothing points at is 3,000 words of greppable, quotable, stale-by-design prose. See `ARCHIVE.md` and the archive's own `README.md` cull log.
+
 Indonesian language tutor app — React frontend connecting directly to a shared self-hosted Supabase instance.
 
 ## Architecture
@@ -312,7 +321,7 @@ Supabase Studio), or any marketing/notification email.
 
 ## Signup gating & entitlements
 
-**The invite-code system is retired (2026-07-12) — payment is the gate.** See `docs/plans/2026-07-12-oauth-stripe-entitlement-design.md` (the authoritative spec). Signup is open: `Register.tsx` calls `supabase.auth.signUp` (via `authStore.signUp`) and offers Google OAuth (`authStore.signInWithGoogle`, GoTrue external provider). `GOTRUE_DISABLE_SIGNUP=false` in homelab-configs. The `signup-with-invite` edge function, `signup_invite_codes` table, and `redeem_invite_code`/`restore_invite_code` RPCs are deleted — do not reintroduce them.
+**The invite-code system is retired (2026-07-12) — payment is the gate.** Authority for the CURRENT shape is `docs/current-system/data-model.md` plus `scripts/migration.sql` and `src/services/entitlementService.ts`; `docs/plans/2026-07-12-oauth-stripe-entitlement-design.md` is the **design record** (shipped PR #461) — read it for *why*, never for current values. It said "lessons 1–3" until 2026-08-17, and this line calling it "the authoritative spec" is how that reached this file. Signup is open: `Register.tsx` calls `supabase.auth.signUp` (via `authStore.signUp`) and offers Google OAuth (`authStore.signInWithGoogle`, GoTrue external provider). `GOTRUE_DISABLE_SIGNUP=false` in homelab-configs. The `signup-with-invite` edge function, `signup_invite_codes` table, and `redeem_invite_code`/`restore_invite_code` RPCs are deleted — do not reintroduce them.
 
 What gates access instead:
 
