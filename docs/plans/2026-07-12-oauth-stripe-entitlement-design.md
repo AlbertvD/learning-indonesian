@@ -44,9 +44,18 @@ together prevents three separate half-gates.
    promotion codes.
 3. **Pricing:** subscription. One Stripe Product, two Prices: ~~**€7/month,
    €56/year**~~ → **SUPERSEDED 2026-08-05: €9/month, €79/year** (tax-inclusive,
-   Stripe Tax on). Free tier = lessons 1–3 (the already-auto-activated starter
-   lessons) including their audio. No trials at launch — trivially addable
-   later via Stripe Checkout config.
+   Stripe Tax on). Free tier = ~~lessons 1–3~~ → **SUPERSEDED 2026-08-11 by
+   PR #470: lesson 1** (the auto-activated starter lesson) including its audio.
+   No trials at launch — trivially addable later via Stripe Checkout config.
+
+   ⚠️ CLAUDE.md § "Signup gating & entitlements" names this file the
+   authoritative spec, so a stale number here propagates outward — it already
+   did, and CLAUDE.md itself said "lessons 1–3" until 2026-08-17. **Neither
+   figure above is the source of truth.** The live values are `PRICING` in
+   `scripts/check-cloud-config.ts`, `indonesian.is_free_tier_lesson` in
+   `scripts/migration.sql`, and `FREE_TIER_MAX_LESSON` in
+   `src/services/entitlementService.ts:41` — HC55 asserts the last two agree.
+   Cite those.
 
    > The reprice decision and its reasoning live in `docs/marketing/pricing.md`
    > (Ramanujam & Tacke's *minivation* diagnosis); the live Price ids are in

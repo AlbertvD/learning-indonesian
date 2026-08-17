@@ -61,33 +61,41 @@ then refund through the portal to rehearse that path.
 ⚠ Watch for HTTP 400 *"You cannot collect consent to your terms of service unless a URL is
 set"* — that setting fails **closed** and takes the whole product with it. Runbook Phase 1.
 
-### 2. Explain the product **[agent, owner reviews copy]** — runbook Phase 6
-⭐ **START HERE: `docs/plans/2026-08-16-landing-page-redesign.md`.** Scoped up on 2026-08-16
-from "add an explanation band" to a landing-page rewrite, after the owner's verdict that the
-current page *"looks AI generated and a bit clunky, does not really describe the app, how it
-works, why we think it works better than Duolingo, and how it compares to a dedicated word
-app like Anki."* That file holds seven settled decisions, the proposed spine, and four open
-questions — read it before re-deriving any of them.
+### 2. Explain the product **[owner reviews copy]** — runbook Phase 6
+**Two of the three slices are BUILT (2026-08-17, branch `landing-page-rewrite`, not yet
+merged).** What remains here is the owner's copy review and the in-app slice.
 
-**The primary persona changed with it** (2026-08-16): from Marijke the heritage learner to
+**The primary persona changed first** (2026-08-16): from Marijke the heritage learner to
 Robin, the person with an Indonesian partner. `personas.md` §1 and `positioning.md` §4 are
 both updated; every landing decision traces back to them.
 
-The activation model remains the non-obvious thing, and it fails silently in both directions:
-a buyer cannot tell what they would be paying for, and a new learner who activates nothing
-opens an empty session and reads it as broken. The capability is already shipped —
+The activation model was the non-obvious thing, and it failed silently in both directions:
+a buyer could not tell what they would be paying for, and a new learner who activates nothing
+opens an empty session and reads it as broken. The capability was already shipped —
 `set_lesson_activation` and `set_collection_activation`
-(`src/components/collections/Woordenlijsten.tsx`). This is an explanation gap, no schema.
+(`src/components/collections/Woordenlijsten.tsx`). It was an explanation gap, no schema.
 
-- **Landing page** — the rewrite above. `Landing.copy.ts:41-48` (NL) / `:91-98` (EN) is what
-  exists now; `how2Body` gestures at the scheduler, but **nothing says the learner chooses
-  what enters it.**
-- **In-app** — day one and again day three. `FirstRunChecklist` is the surface. Not a modal,
-  not a forced tour. Deliberately sliced second.
-- **`/hoe-het-werkt`** — draft exists and is unbuilt:
-  `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`. Needs `staff-engineer` → `architect`.
-  Its two open questions were answered on 2026-08-16 and the answers are recorded in the
-  redesign doc (D6, D7).
+- ✅ **Landing page — rewritten.** `docs/plans/2026-08-16-landing-page-redesign.md`
+  (`status: implementing`; its §12 records the three deltas between spec and code). The
+  batik green now carries the hero, the science band and the close instead of appearing
+  once at the bottom; the hero is the owner's own story; completeness is sold as assembly;
+  a new "pair" band (`lelah → capek`) carries the Duolingo and Anki arguments.
+- ✅ **`/hoe-het-werkt` — built and public.**
+  `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`. Both its open questions were
+  answered (D6 stages stay with the scheduling-state framing sentence; D7 no price here).
+  In `sitemap.xml`, `robots.txt`, and asserted by `make check-cloud-config`.
+- ⬜ **In-app** — day one and again day three. `FirstRunChecklist` is the surface. Not a
+  modal, not a forced tour. Deliberately sliced last, and still open.
+- ⬜ **Owner copy review.** The Dutch is a draft. Three things were shipped at their
+  default and are one `Landing.copy.ts` edit away from changing: no portrait (the slot is
+  designed and empty), the exact hero sentence, and whether the doors name the personas
+  out loud.
+
+**New tooling that came out of this:** `.claude/skills/marketing` — the honesty gate
+(no invented proof, no efficacy numbers, TTS-not-narration, DB-verified counts, the
+register limit) plus the method from the four books already applied in `docs/marketing/`.
+Use it before writing any customer-facing sentence. The honesty rules are also now
+asserted by tests, so copy drift fails a build rather than going unnoticed.
 
 ### 3. Show locked content — issue #466 **[agent]**
 Owner-decided 2026-08-06, deferred out of PR #461. Paid content renders as *absent*, not

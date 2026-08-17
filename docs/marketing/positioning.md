@@ -123,11 +123,14 @@ project 2026-08-05.
   every competitor hides the scheduler behind a streak counter, so "we bring a
   word back just before you forget it" is a claim anyone can make, while a
   learner watching their own words move through named stages is evidence.
-  Owner observation 2026-08-06; the page that carries it is
-  `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`.
+  Owner observation 2026-08-06; **now live at `/hoe-het-werkt`** (built
+  2026-08-17, spec `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`).
   ⚠️ Honesty limit: the stages describe SCHEDULING STATE, not guaranteed
   competence. "Productief" must never be sold as "you can now produce this word
   on demand" — the first learner who finds otherwise stops believing the rest.
+  The page ships that disclaimer in the same band as the stages, and a test
+  pins it (`HoeHetWerkt.test.tsx`), because showing the stages without it is
+  what turns a true thing into an over-promise.
 - **Dutch throughout** — instruction, glosses, grammar explanation.
 
 ## 3. Value themes
@@ -211,11 +214,34 @@ the reader — never as the lead.
 
 ## 8. Copy rules that follow from this
 
+> **These are now packaged as a skill: `.claude/skills/marketing`.** It carries
+> the honesty gate, a pre-flight checklist, and the method from the four books
+> already applied across these docs (Dunford here, Sheridan in
+> `content-plan.md`, Weinberg & Mares in `channels.md`, Ramanujam in
+> `pricing.md`) — so a new surface does not have to reassemble the rules from
+> six files, which is how they got skipped. Written 2026-08-17, in answer to
+> this file's own line 12: *"any future marketing skill should trace back to a
+> line in here"*. Read the skill before writing copy; keep editing THIS file
+> when a rule changes.
+
 - Lead with recognition, not features. The first thing a heritage learner should
   meet is the loanword wall (implemented: `Landing.tsx`, shared pairs in
   `src/lib/loanwords/revealPairs.ts`).
 - Never claim native speakers or human narration — all audio is TTS. Pre-existing
   owner rule, `Landing.copy.ts`.
+- Never invent reviews, ratings, testimonials or learner counts. There are zero
+  paying customers, so any such claim is fabricated — and the replacement that
+  does the same job honestly is the owner's own story (`personas.md` §1), which
+  is what the landing hero now uses.
+- Cite principles and our own decisions, never efficacy numbers, and never in a
+  way that implies a researcher endorses the product.
 - Quote only counts that are verified against the database, and say where the
   check lives. Marketing numbers drift silently; product numbers do not.
+- Respect the register limit (`personas.md` §1): promise *the register they
+  actually use*, never conversational fluency by a given week.
 - Dutch first. English copy exists but the product and the audience are Dutch.
+
+**Six of these are now asserted by tests** (`Landing.test.tsx`,
+`HoeHetWerkt.test.tsx`) rather than only written down — a doc cannot fail a
+build, and copy is exactly the kind of thing that drifts without anyone
+noticing.

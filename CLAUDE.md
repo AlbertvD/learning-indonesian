@@ -317,8 +317,8 @@ Supabase Studio), or any marketing/notification email.
 What gates access instead:
 
 - **`indonesian.entitlements`** — one row per paying/comped user; owner-read RLS, ALL writes service-role (Stripe webhook / `verify-checkout` / admin). LEARNER DATA — precious, gated migrations only.
-- **Free tier = lessons 1–3** (`indonesian.is_free_tier_lesson()` in SQL, `FREE_TIER_MAX_LESSON` in `src/services/entitlementService.ts` — change BOTH or the parity health check fails). Enforced server-side in `set_lesson_activation`; mirrored client-side as paywall UX.
-- **Storage buckets are private**; audio is consumed via signed URLs under the `indonesian_media_read` policy → `indonesian.can_read_media()`. TTS bucket is free for any authenticated user; `indonesian-lessons`/`indonesian-podcasts` need an entitlement (free carve-outs: lessons 1–3 audio, the pronunciation podcast).
+- **Free tier = lesson 1** (`indonesian.is_free_tier_lesson()` in SQL — currently `p_order_index <= 1`, `scripts/migration.sql:4904` — and `FREE_TIER_MAX_LESSON` in `src/services/entitlementService.ts:41` — change BOTH or HC55 fails). Enforced server-side in `set_lesson_activation`; mirrored client-side as paywall UX. ⚠️ Narrowed from lessons 1–3 by owner decision in PR #470; this file said "1–3" until 2026-08-17. **The copy that advertises the tier is NOT machine-pinned** — before writing "lesson 1 free" on a new surface, read the constant, and prefer not to add another unpinned surface (see `docs/roadmap.md` § ENGINEERING).
+- **Storage buckets are private**; audio is consumed via signed URLs under the `indonesian_media_read` policy → `indonesian.can_read_media()`. TTS bucket is free for any authenticated user; `indonesian-lessons`/`indonesian-podcasts` need an entitlement (free carve-outs: free-tier lesson audio per `is_free_tier_lesson`, the pronunciation podcast).
 - **Comp access** = admin inserts an entitlement row (`status='comped', source='comp'`) via psql/Studio — there are no codes.
 
 Known accepted residuals (documented in the spec §2/§10): email enumeration is inherent to open GoTrue signup with autoconfirm (mitigation = gateway rate limiting at cloud exposure); no captcha; bot accounts get free tier only.
@@ -610,6 +610,30 @@ Key facts relevant to this app:
 - **Internal networking:** Services communicate over internal Docker networks via HTTP. Only external-facing URLs use HTTPS via Traefik
 
 ## Agent skills
+
+### Marketing copy — use the skill, do not re-derive the rules
+
+**`.claude/skills/marketing` is mandatory reading before writing any sentence a
+prospective customer will read** — landing page, `/hoe-het-werkt`, meta
+descriptions, ad copy, store listings, launch posts, comparison pages — and
+before reviewing existing copy for drift.
+
+It exists because the rules that bind customer-facing copy were spread across
+six files and got reassembled from memory each time. The failure mode is not a
+style slip: there are **zero paying customers**, so any review, rating,
+testimonial or learner count is fabricated; **all audio is TTS**, so any claim
+of human narration is false; and **no efficacy figure has ever been measured**
+for this product. Those are misleading-advertising problems, not tone problems.
+
+The skill carries the honesty gate, a pre-flight checklist, and the method from
+the four books already applied in `docs/marketing/` — Dunford (positioning),
+Sheridan (what to publish, and disarmament), Weinberg & Mares (channels),
+Ramanujam (value and price). `docs/marketing/*` stays the source of truth; the
+skill points at it rather than copying it.
+
+Several of these rules are also asserted by tests (`Landing.test.tsx`,
+`HoeHetWerkt.test.tsx`), so copy drift fails a build rather than shipping
+quietly.
 
 ### Issue tracker
 

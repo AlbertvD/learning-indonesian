@@ -1,7 +1,29 @@
 ---
-status: draft
+status: implementing
+implementation: branch `landing-page-rewrite` (no PR yet)
 reviewed_by: []
+implementation_paths:
+  - src/pages/HoeHetWerkt.tsx
+  - src/pages/HoeHetWerkt.copy.ts
+  - src/pages/HoeHetWerkt.module.css
+  - src/__tests__/HoeHetWerkt.test.tsx
+  - src/App.tsx
 ---
+
+> **Built 2026-08-17 on branch `landing-page-rewrite`**, together with the
+> landing-page rewrite that links to it. Flip to `shipped` with a `merged_at`
+> when it lands on main.
+>
+> Built as specified, with two additions worth knowing: the honesty rules in
+> §3c are now asserted by tests rather than only described (no price, no
+> invented proof, no efficacy claim, the ADR 0007 figures, and the endorsement
+> disclaimer), and the step numbers sit in a left rail because the prose measure
+> left a wide screen half empty. §5's "no screenshots in v1" was honoured — the
+> model is described in words, so the page does not rot with the UI.
+>
+> Reviewer sign-off was deliberately skipped (owner call): this is a static
+> marketing page sharing the landing page's chrome under the page-framework
+> exception, with no schema and no module seam. See the sibling spec's §12.
 
 # `/hoe-het-werkt` — explaining the model
 

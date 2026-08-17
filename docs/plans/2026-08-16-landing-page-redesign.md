@@ -1,8 +1,27 @@
 ---
-status: draft
+status: implementing
+implementation: branch `landing-page-rewrite` (no PR yet)
 reviewed_by: []
 supersedes: []
+implementation_paths:
+  - src/pages/Landing.tsx
+  - src/pages/Landing.copy.ts
+  - src/pages/Landing.module.css
+  - src/__tests__/Landing.test.tsx
 ---
+
+> **Built 2026-08-17 on branch `landing-page-rewrite`.** Flip to `shipped` with a
+> `merged_at` when it lands on main. Every decision below was implemented as
+> written except where §12 says otherwise — read that section before treating
+> any part of this file as forward work.
+>
+> Reviewer sign-off was **deliberately skipped** (owner call, 2026-08-17). The
+> `staff-engineer` → `architect` chain is the gate for architecture and schema
+> work; this is marketing copy and CSS in the one file that is explicitly exempt
+> from the page framework, so the architect lens had almost nothing to review.
+> `reviewed_by` stays empty on purpose rather than by omission. The honesty
+> constraints that DO bind this surface are enforced instead by tests
+> (`Landing.test.tsx`) and by the `marketing` skill.
 
 # Landing page — rewrite and redesign
 
@@ -338,11 +357,50 @@ bands independently, not because a parity rollout is intended.
 
 ## 11. Open for the owner at copy review
 
-Not blocking the build; each has a designed slot and a default.
+Not blocking the build; each has a designed slot and a default. **All three
+shipped at their default** — change them by editing `Landing.copy.ts`, no
+structural work needed.
 
-1. **The portrait** (§6). Default: no photo, name and signature line only.
-2. **The exact hero sentence.** D2 fixes the story and the voice; the final
-   40 words are a copy decision, and the owner reviews copy per
-   `docs/roadmap.md` §NOW item 2.
-3. **Whether the doors band names the personas out loud** ("Je oma kwam uit
-   Indië") or stays oblique. Default: name them — recognition is the mechanism.
+1. **The portrait** (§6). Shipped with no photo: name and an italic signature
+   line under the story. `.heroSignature` is sized so a portrait can be added
+   beside it without a reflow.
+2. **The exact hero sentence.** Shipped as *"Aan tafel schakelt iedereen over op
+   Nederlands. Uit beleefdheid. En jij zit erbij en volgt het net niet."*
+3. **Whether the doors band names the personas out loud.** Shipped naming them
+   ("Je oma kwam uit Indië" / "Je gaat er wonen of werken" / "Je hebt al een app
+   uitgespeeld") — recognition is the mechanism.
+
+## 12. What was built differently, and what the build learned
+
+Three deltas between this spec and the code. Nothing was dropped.
+
+**The marketing-figures module (§7) was NOT built.** The spec proposed
+`src/lib/marketing/facts.ts` and left the call to a reviewer. Resolved without
+one: a test in `Landing.test.tsx` asserts the page quotes 173 and 66, which
+closes the same drift at a fraction of the mechanism. A constants module would
+have added an indirection whose only consumer is two copy strings. If a third
+surface starts quoting counts, revisit — that is the point where the module
+earns its keep.
+
+**The honesty rules became tests rather than prose.** `Landing.test.tsx` and
+`HoeHetWerkt.test.tsx` now assert what the copy may not say: no invented
+reviews/ratings/learner counts, no human-narration claim, no efficacy figure, no
+timebound fluency promise, and — on the explainer — no price and no missing
+scheduling-state disclaimer. This was not in the spec. It is here because copy
+drifts silently and a doc cannot fail a build.
+
+**The step-number rail on `/hoe-het-werkt`** was added after looking at the
+rendered page: a ~68ch measure left the right half of a 1440px screen empty. Not
+a spec miss — the sort of thing only visible in a browser, which is the argument
+for rendering early rather than reviewing prose.
+
+### The process note worth keeping
+
+This spec was written under the full architecture gate chain, and most of that
+chain did not fit the work. The page is marketing copy and CSS in the one file
+explicitly exempt from the page framework; there is no schema, no module seam,
+no data flow. What DID pay off was reading the code first — it found the
+`check-cloud-config.ts` pricing gate that a literal D7 would have turned red,
+and the `ProtectedRoute` / `Register.tsx` routing facts that reduced the doors
+band from a link menu to recognition copy. **Ground marketing work in the code;
+route it through the marketing skill, not the architect.**
