@@ -1,9 +1,21 @@
 ---
 name: marketing
-description: Write or review any customer-facing marketing copy and marketing decision for Kamoe Bisa — landing page, /hoe-het-werkt, meta descriptions and page titles, app-store or Play-Store text, ad copy, launch posts, emails to prospects, social posts, comparison pages, pricing copy, onboarding copy that makes a promise, or the choice of which channel to spend effort on. Use this whenever you are about to write a sentence a prospective customer will read, or asked "how should we describe/position/sell this", "write the copy for X", "is this claim OK", "which channel should we use", "how do we compare ourselves to Duolingo/Anki", "what should the landing page say". Also use it when REVIEWING existing copy for honesty or drift. The honesty rules here are not style preferences — there are zero customers, all audio is TTS, and inventing social proof or efficacy numbers is misleading advertising. Reach for this before writing, not after.
+description: Decide WHAT to say about Kamoe Bisa and whether a claim is allowed — positioning, personas, which channel to spend effort on, pricing framing, what content to publish, and the honesty gate that binds every customer-facing surface. Use this before writing any marketing copy (landing page, /hoe-het-werkt, meta descriptions, ad copy, launch posts, store listings, emails, comparison pages), and whenever asked "how should we position this", "is this claim OK", "which channel", "how do we compare ourselves to Duolingo/Anki", "who is this for". Also use it to REVIEW existing copy for honesty or drift. The honesty rules are not style preferences — there are zero customers, all audio is TTS, and inventing social proof or efficacy numbers is misleading advertising. This is the STRATEGY skill; its sibling `marketing-copy` is the CRAFT skill that writes the actual sentences. Load this one first, then that one.
 ---
 
-# Marketing — Kamoe Bisa
+# Marketing strategy — Kamoe Bisa
+
+> **This skill decides what is true and worth saying. It does not write sentences.**
+> For headlines, hero copy, rewriting something flat, or "make this catchier",
+> load **`marketing-copy`** — the craft sibling, built from Miller, Heath,
+> Sugarman, Schwartz and Ogilvy.
+>
+> **You almost always want both, in this order.** Craft without this skill's
+> honesty gate produces persuasive lies. This skill without craft produces the
+> correct argument, flatly stated — which is exactly what happened on 2026-08-17,
+> when the landing copy passed every rule here and the owner's verdict was *"not
+> really catchy."* That gap is why the split exists: the four books behind THIS
+> skill are all about strategy, and not one of them is about writing a sentence.
 
 Four books are already applied to this product, by the owner, in four repo docs.
 This skill exists so that every marketing surface traces back to those decisions
@@ -95,6 +107,10 @@ Books live at `~/Downloads/*.epub` if you need the full text; the references
 carry the working method, not a summary of the book.
 
 ## Writing copy: what good looks like here
+
+> These are **strategy** constraints on the copy — what it must argue. For HOW to
+> write it well (the reader must be in it, concreteness, the slippery slide,
+> matching the reader's awareness state), load **`marketing-copy`**.
 
 **Lead with recognition, not features.** The first thing a visitor meets should
 be something they already know is true about themselves — the loanword wall, the

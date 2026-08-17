@@ -620,12 +620,22 @@ Key facts relevant to this app:
 
 ## Agent skills
 
-### Marketing copy — use the skill, do not re-derive the rules
+### Marketing — two skills, load both, strategy first
 
-**`.claude/skills/marketing` is mandatory reading before writing any sentence a
-prospective customer will read** — landing page, `/hoe-het-werkt`, meta
-descriptions, ad copy, store listings, launch posts, comparison pages — and
-before reviewing existing copy for drift.
+**Before writing any sentence a prospective customer will read** — landing page,
+`/hoe-het-werkt`, meta descriptions, ad copy, store listings, launch posts,
+comparison pages — and before reviewing existing copy for drift:
+
+| Skill | Decides | Built from |
+|---|---|---|
+| **`.claude/skills/marketing`** | **What** to say, to whom, at what price, on which channel — and whether a claim is allowed at all | Dunford, Sheridan, Weinberg & Mares, Ramanujam |
+| **`.claude/skills/marketing-copy`** | **How** it gets written — headlines, whose story it is, concreteness, flow, the reader's awareness state | Miller, Heath, Sugarman, Schwartz, Ogilvy |
+
+Split 2026-08-17, after the strategy-only version produced copy that obeyed every
+rule and read flat (owner: *"not really catchy"*). The four strategy books contain
+nothing about writing a sentence, so a skill built from them could not.
+**Craft without the honesty gate produces persuasive lies; strategy without craft
+produces the correct argument, flatly stated.**
 
 It exists because the rules that bind customer-facing copy were spread across
 six files and got reassembled from memory each time. The failure mode is not a
