@@ -271,6 +271,15 @@ const deep = await status(APP_ORIGIN + '/leren')
 if (deep === 200) pass('SPA deep link resolves (not_found_handling)')
 else fail('SPA deep link resolves', `HTTP ${deep} on /leren — assets.not_found_handling may have been lost`)
 
+// The public explainer for the activation model. It is linked from the landing
+// page's "hoe het werkt" band AND its footer, and it is listed in sitemap.xml
+// and robots.txt — so losing the route in a refactor breaks a link a
+// prospective buyer follows mid-argument, and leaves a submitted URL 404ing.
+// Cheap to assert, and the failure is otherwise silent.
+const explainer = await status(APP_ORIGIN + '/hoe-het-werkt')
+if (explainer === 200) pass('/hoe-het-werkt serves (public explainer)')
+else fail('/hoe-het-werkt serves', `HTTP ${explainer} — the route may have been dropped from App.tsx, but the landing page and sitemap.xml still point at it`)
+
 const headers = (await fetch(APP_ORIGIN + '/')).headers
 const csp = headers.get('content-security-policy') ?? ''
 if (csp.includes(`${PROJECT_REF}.supabase.co`)) pass('CSP served and names the cloud project')

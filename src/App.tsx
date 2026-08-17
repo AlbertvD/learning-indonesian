@@ -48,6 +48,12 @@ const Terms = lazy(() => import('@/pages/Terms').then(m => ({ default: m.Terms }
 const Refunds = lazy(() => import('@/pages/Refunds').then(m => ({ default: m.Refunds })))
 const CheckoutSuccess = lazy(() => import('@/pages/CheckoutSuccess').then(m => ({ default: m.CheckoutSuccess })))
 const Landing = lazy(() => import('@/pages/Landing').then(m => ({ default: m.Landing })))
+// Public explainer for the activation model, linked from the landing page's
+// "hoe het werkt" band and its footer. Public on purpose: it answers a question
+// a prospective buyer has BEFORE signing up, and gating the explanation of how
+// the product works behind the product is backwards
+// (docs/plans/2026-08-06-hoe-het-werkt-page-design.md §3).
+const HoeHetWerkt = lazy(() => import('@/pages/HoeHetWerkt').then(m => ({ default: m.HoeHetWerkt })))
 
 // ─── Bespoke lesson pages — preview routes ────────────────────────────────────
 // /lesson/:lessonId resolves to the bespoke page when one is registered (see
@@ -128,6 +134,7 @@ function App() {
       <Route path="/preview/lesson/:slug" element={<LazyPage><LocalPreviewLesson /></LazyPage>} />
       <Route path="/privacy" element={<LazyPage><Privacy /></LazyPage>} />
       <Route path="/leenwoorden" element={<LazyPage><Leenwoorden /></LazyPage>} />
+      <Route path="/hoe-het-werkt" element={<LazyPage><HoeHetWerkt /></LazyPage>} />
       {/* Public — reachable pre-auth via Stripe Checkout's consent-collection
           link and PaywallPanel's footer, mirrors /privacy (docs/plans/
           2026-07-12-oauth-stripe-entitlement-design.md §3.4). */}
