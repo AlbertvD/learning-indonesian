@@ -8,9 +8,18 @@
 // visitor has no profile yet, so the language choice lives in localStorage
 // instead of the profile like everywhere else in the app.
 //
-// Copy-honesty rule (owner, 2026-07-03): all audio is TTS — never claim native
-// speakers or human narration; audio is mentioned neutrally where it describes
-// a real feature, nowhere else.
+// Rewritten 2026-08-17 per docs/plans/2026-08-16-landing-page-redesign.md.
+// The structural move is D8, "invert the ground": the batik green #1F3D36 is a
+// documented brand constant (--rail-* in main.tsx) that this page previously
+// used ONCE, in the closing band — so the brand arrived after four bands of
+// cream, once the visitor had already decided what the page looked like. It now
+// carries the hero, the science band and the close, and cream is the reading
+// ground between them. That alternation is also the fix for "every band has the
+// same rhythm", which was the diagnosed cause of the page reading as clunky.
+//
+// All copy rules live in Landing.copy.ts's header and in the `marketing` skill
+// (.claude/skills/marketing). The one that most often bites: all audio is TTS,
+// so nothing here may imply human narration.
 
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
@@ -21,6 +30,17 @@ import { landingCopy } from './Landing.copy'
 import classes from './Landing.module.css'
 
 const LANDING_LANG_KEY = 'landing-lang'
+
+// The register pairs shown in the signature band. Verified against the live DB
+// 2026-08-16: 66 items carry register='informal' with a register_counterpart.
+// Static rather than queried because anon has no read grant on the `indonesian`
+// schema — public pages get committed exports, never live reads.
+const REGISTER_PAIRS = [
+  { formal: 'lelah', real: 'capek', nl: 'moe', en: 'tired' },
+  { formal: 'uang', real: 'duit', nl: 'geld', en: 'money' },
+  { formal: 'sebentar', real: 'bentar', nl: 'even', en: 'a moment' },
+  { formal: 'sedikit', real: 'dikit', nl: 'een beetje', en: 'a little' },
+] as const
 
 function readStoredLang(): Lang {
   try {
@@ -53,35 +73,52 @@ export function Landing() {
     }
   }
 
+  const stack = [
+    [T.stack1Tool, T.stack1Body],
+    [T.stack2Tool, T.stack2Body],
+    [T.stack3Tool, T.stack3Body],
+    [T.stack4Tool, T.stack4Body],
+    [T.stack5Tool, T.stack5Body],
+  ] as const
+
   return (
     <div className={classes.landing}>
-      <header className={classes.head}>
-        <span className={`${classes.wordmark} ${classes.serif}`}>
-          <span className={classes.mark}>
-            <SunMark />
+      {/* The header sits ON the hero's dark ground, so it carries the dark
+          treatment rather than the page's default cream one. */}
+      <div className={classes.bandDark}>
+        <header className={`${classes.head} ${classes.headOnDark}`}>
+          <span className={`${classes.wordmark} ${classes.serif}`}>
+            <span className={classes.mark}>
+              <SunMark />
+            </span>
+            <span className={classes.name}>Kamoe Bisa</span>
           </span>
-          <span className={classes.name}>Kamoe Bisa</span>
-        </span>
-        <span className={classes.headActions}>
-          <Link className={classes.linkQuiet} to={loginTo}>
-            {T.login}
-          </Link>
-          <Link className={`${classes.btn} ${classes.btnFill}`} to="/register">
-            {T.registerCta}
-          </Link>
-        </span>
-      </header>
+          <span className={classes.headActions}>
+            <Link className={classes.linkQuiet} to={loginTo}>
+              {T.login}
+            </Link>
+            <Link className={`${classes.btn} ${classes.btnFill}`} to="/register">
+              {T.registerCta}
+            </Link>
+          </span>
+        </header>
 
-      <main>
+        {/* The hero is the owner's own story, in the first person (design D2).
+            It replaces a retention claim ("Leer Indonesisch dat blijft hangen")
+            that was aimed at a lapsed app-hopper — not at the primary persona,
+            who is the partner of an Indonesian speaker (personas.md §1). The
+            story also does the job social proof would normally do, which this
+            product cannot use: there are zero customers, and inventing any is
+            forbidden. */}
         <section className={classes.hero}>
           <div>
             <span className={classes.heroEyebrow}>{T.heroEyebrow}</span>
             <h1 className={classes.serif}>
-              {T.heroTitlePre}
-              <br />
-              <em>{T.heroTitleEm}</em>.
+              {T.heroTitlePre} <em>{T.heroTitleEm}</em>.
             </h1>
-            <p className={classes.heroSub}>{T.heroSub}</p>
+            <p className={classes.heroLede}>{T.heroLede}</p>
+            <p className={classes.heroStory}>{T.heroStory}</p>
+            <p className={`${classes.heroSignature} ${classes.serif}`}>{T.heroSignature}</p>
             <div className={classes.heroCtas}>
               <Link className={`${classes.btn} ${classes.btnFill} ${classes.btnLg}`} to="/register">
                 {T.heroCta}
@@ -129,22 +166,76 @@ export function Landing() {
             </div>
           </div>
         </section>
+      </div>
 
-        {/* The loanword bridge, placed FIRST after the hero on purpose.
-            Primary persona is the heritage learner (owner decision 2026-08-05):
-            Dutch, family ties to Indonesia, already knows ketjap and pasar malam
-            without ever having studied. For that reader this is not a feature
-            list, it is recognition — "you already speak more of this than you
-            think". It is also the one advantage no competitor can copy into
-            another language pair, and until now it was visible only AFTER
-            signup, which is backwards for the thing meant to cause signup.
+      <main>
+        {/* Completeness sold as ASSEMBLY, never as a feature list (design D4,
+            positioning.md §1). A feature list invites comparison on every axis
+            against a specialist who wins on that axis, and says nothing about
+            who it is for. Naming what each tool COSTS in upkeep is what makes
+            "already assembled" land as work the reader does not have to do. */}
+        <section className={`${classes.section} ${classes.sectionAiry}`}>
+          <div className={classes.lead}>
+            <span className={classes.leadKicker}>{T.stackKicker}</span>
+            <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.stackTitle}</h2>
+            <p className={classes.leadBody}>{T.stackIntro}</p>
+          </div>
+          <ul className={classes.stack}>
+            {stack.map(([tool, body]) => (
+              <li key={tool} className={classes.stackRow}>
+                <span className={`${classes.stackTool} ${classes.serif}`}>{tool}</span>
+                <span className={classes.stackBody}>{body}</span>
+              </li>
+            ))}
+          </ul>
+          <p className={classes.stackClose}>{T.stackClose}</p>
+        </section>
+
+        {/* "The pair" — the page's signature. Both uncopyable assets have the
+            same shape: two words and a relationship between them. It lets the
+            Duolingo argument be SHOWN rather than claimed, and answers Anki in
+            the same breath. Both paragraphs disarm before they compare
+            (Sheridan's technique, see .claude/skills/marketing) because
+            positioning.md §5 requires the contrast be stated as a gain, never
+            as a dismissal — plenty of Dutch speakers learn happily in English.
+            ⚠️ The register limit binds this band: it may promise the register
+            they actually use, never conversational fluency by a given week. */}
+        <section className={`${classes.section} ${classes.sectionAiry}`}>
+          <div className={classes.lead}>
+            <span className={classes.leadKicker}>{T.pairKicker}</span>
+            <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.pairTitle}</h2>
+          </div>
+          <ul className={classes.pairWall}>
+            {REGISTER_PAIRS.map(pair => (
+              <li key={pair.formal} className={classes.pairRow}>
+                <span className={classes.pairCol}>
+                  <span className={classes.pairLabel}>{T.pairFormal}</span>
+                  <span className={`${classes.pairFormal} ${classes.serif}`}>{pair.formal}</span>
+                </span>
+                <span className={classes.pairArrow} aria-hidden="true">→</span>
+                <span className={classes.pairCol}>
+                  <span className={classes.pairLabel}>{T.pairReal}</span>
+                  <span className={`${classes.pairReal} ${classes.serif}`}>{pair.real}</span>
+                </span>
+                <span className={classes.pairGloss}>{lang === 'nl' ? pair.nl : pair.en}</span>
+              </li>
+            ))}
+          </ul>
+          <p className={classes.pairDisarm}>{T.pairDisarm}</p>
+          <p className={classes.pairAnki}>{T.pairAnki}</p>
+          <p className={classes.pairNote}>{T.pairNote}</p>
+        </section>
+
+        {/* The loanword bridge. Recognition, not instruction — and the one
+            advantage no competitor can copy into another language pair, since
+            the loanwords are Dutch and every large app routes through English.
             Pairs are shared with the Welkom onboarding so the promise here and
             the first screen inside the app are literally the same list. */}
         <section className={`${classes.section} ${classes.sectionAiry}`}>
           <div className={classes.lead}>
             <span className={classes.leadKicker}>{T.bridgeKicker}</span>
             <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.bridgeTitle}</h2>
-            <p className={classes.bridgeBody}>{T.bridgeBody}</p>
+            <p className={classes.leadBody}>{T.bridgeBody}</p>
           </div>
           <ul className={classes.bridgeWall}>
             {LOANWORD_REVEAL_PAIRS.map(pair => (
@@ -156,14 +247,15 @@ export function Landing() {
             ))}
           </ul>
           <p className={classes.bridgeMore}>{T.bridgeMore}</p>
-          {/* The category argument, and the single least copyable sentence
-              on the page (docs/marketing/positioning.md §1). Every large app
-              teaches this pair through English, which makes the Dutch
-              loanwords structurally unusable to them. */}
           <p className={classes.bridgeEdge}>{T.bridgeEdge}</p>
           <Link className={classes.bridgeLink} to="/leenwoorden">{T.bridgeLink}</Link>
         </section>
 
+        {/* The activation model, which is the likeliest source of "this app is
+            broken": nothing is practised until the learner activates it, so a
+            new learner who activates nothing opens an empty session and reads
+            it as a fault. This band replaces a decorative 01/02/03 sequence
+            that numbered three things nobody does in order. */}
         <section className={`${classes.section} ${classes.sectionAiry}`}>
           <div className={classes.lead}>
             <span className={classes.leadKicker}>{T.howKicker}</span>
@@ -172,79 +264,80 @@ export function Landing() {
           <div className={classes.flow}>
             {(
               [
-                ['01', T.how1Title, T.how1Body],
-                ['02', T.how2Title, T.how2Body],
-                ['03', T.how3Title, T.how3Body],
+                [T.how1Title, T.how1Body],
+                [T.how2Title, T.how2Body],
+                [T.how3Title, T.how3Body],
               ] as const
-            ).map(([idx, title, body]) => (
-              <div key={idx} className={classes.flowCol}>
-                <span className={`${classes.flowIdx} ${classes.serif}`}>{idx}</span>
+            ).map(([title, body]) => (
+              <div key={title} className={classes.flowCol}>
                 <h3>{title}</h3>
                 <p>{body}</p>
               </div>
             ))}
           </div>
+          <Link className={classes.bridgeLink} to="/hoe-het-werkt">{T.howLink}</Link>
         </section>
+      </main>
 
-        <section className={classes.section}>
-          <div className={classes.lead} style={{ marginBottom: 28 }}>
-            <span className={classes.leadKicker}>{T.featKicker}</span>
+      {/* The research grounding, on the dark ground because it is the second
+          heaviest argument on the page. The lead item is deliberately an AUDIT
+          rather than a citation: anyone can cite Karpicke, almost nobody can
+          show what they changed because of him. Quoted from ADR 0007 —
+          simplifying `source_ref` to "hetzelfde" is permitted, inflating the
+          number or dropping the 36-hour window is not.
+          The closing line refuses efficacy numbers ON the page, which turns an
+          honesty constraint into the most trustworthy sentence in the band. */}
+      <div className={classes.bandDark}>
+        <section className={`${classes.section} ${classes.sectionAiry} ${classes.sci}`}>
+          <div className={classes.lead}>
+            <span className={classes.leadKicker}>{T.sciKicker}</span>
+            <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.sciTitle}</h2>
           </div>
-          <div className={classes.grid4}>
-            <div className={classes.g4}>
-              <span className={classes.g4Ic}>
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H6a2 2 0 0 0-2 2z" />
-                  <path d="M4 20.5A1.5 1.5 0 0 1 5.5 19H19" />
-                </svg>
-              </span>
-              <h3>{T.feat1Title}</h3>
-              <p>{T.feat1Body}</p>
+          <div className={classes.sciGrid}>
+            <p className={classes.sciAudit}>{T.sciAudit}</p>
+            <div>
+              <p className={classes.sciPrinciples}>{T.sciPrinciples}</p>
+              <p className={classes.sciHonest}>{T.sciHonest}</p>
             </div>
-            <div className={classes.g4}>
-              <span className={classes.g4Ic}>
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
-                  <rect x="3" y="14" width="4" height="6" rx="1.5" />
-                  <rect x="17" y="14" width="4" height="6" rx="1.5" />
-                </svg>
-              </span>
-              <h3>{T.feat2Title}</h3>
-              <p>{T.feat2Body}</p>
+          </div>
+        </section>
+      </div>
+
+      {/* Doors for the three secondary personas (design D11). Recognition copy,
+          not a link menu — only /leenwoorden is a public route, so the other
+          two would bounce a logged-out visitor straight back here via
+          ProtectedRoute, and Register.tsx ignores ?next= outright. Making all
+          three clickable would mean two real features in service of a marketing
+          affordance; if door click-through ever proves to matter, that is the
+          moment to build them. */}
+      <main>
+        <section className={`${classes.section} ${classes.sectionAiry}`}>
+          <div className={classes.lead}>
+            <span className={classes.leadKicker}>{T.doorsKicker}</span>
+            <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.doorsTitle}</h2>
+          </div>
+          <div className={classes.doors}>
+            <div className={classes.door}>
+              <h3>{T.door1Title}</h3>
+              <p>{T.door1Body}</p>
+              <Link className={classes.doorLink} to="/leenwoorden">{T.door1Link}</Link>
             </div>
-            <div className={classes.g4}>
-              <span className={classes.g4Ic}>
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M12 4v16" />
-                  <path d="M6 8h12" />
-                  <circle cx="7" cy="15" r="2.4" />
-                  <circle cx="17" cy="15" r="2.4" />
-                </svg>
-              </span>
-              <h3>{T.feat3Title}</h3>
-              <p>{T.feat3Body}</p>
+            <div className={classes.door}>
+              <h3>{T.door2Title}</h3>
+              <p>{T.door2Body}</p>
             </div>
-            <div className={classes.g4}>
-              <span className={classes.g4Ic}>
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M4 20V13" />
-                  <path d="M10 20V6" />
-                  <path d="M16 20v-9" />
-                  <path d="M22 20H2" />
-                </svg>
-              </span>
-              <h3>{T.feat4Title}</h3>
-              <p>{T.feat4Body}</p>
-              <div className={classes.g4Bar} aria-hidden="true">
-                <i />
-              </div>
-              <div className={classes.g4BarCap} aria-hidden="true">
-                {T.feat4BarCap}
-              </div>
+            <div className={classes.door}>
+              <h3>{T.door3Title}</h3>
+              <p>{T.door3Body}</p>
             </div>
           </div>
         </section>
 
+        {/* D7 keeps the ARGUMENT off pricing; this band still states the facts a
+            buyer is entitled to before signing up. check-cloud-config.ts asserts
+            pricingBody quotes the declared price, and Landing.test.tsx asserts
+            €9/€79 reach the page — EU distance selling expects terms and the
+            refund policy to be reachable pre-purchase. */}
         <section className={classes.pricing}>
           <div className={classes.pricingTxt}>
             <div className={classes.pricingEyebrow}>{T.pricingEyebrow}</div>
@@ -262,6 +355,7 @@ export function Landing() {
           © {new Date().getFullYear()} Kamoe Bisa · {T.footerMade}
         </span>
         <span className={classes.footLinks}>
+          <Link to="/hoe-het-werkt">{T.footerHow}</Link>
           <Link to="/privacy">{T.footerPrivacy}</Link>
           <Link to="/voorwaarden">{T.footerTerms}</Link>
           <Link to="/restitutie">{T.footerRefunds}</Link>

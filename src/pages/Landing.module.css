@@ -7,6 +7,15 @@
  * constants (--rail-*, --font-display) come from main.tsx. When slice 2/3
  * retune the app themes to the warm direction, these locals collapse into the
  * global tokens.
+ *
+ * 2026-08-17 — "invert the ground" (design D8,
+ * docs/plans/2026-08-16-landing-page-redesign.md §5). The batik green
+ * --rail-surface used to appear exactly once, in the closing pricing band, so
+ * the brand constant arrived after four bands of cream. It now carries the
+ * hero, the science band and the close via `.bandDark`, with cream as the
+ * reading ground between. The on-dark variants below exist because elements
+ * styled for cream (kickers, headings, buttons, the specimen card) need a
+ * second treatment rather than a second component.
  */
 
 .landing {
@@ -40,6 +49,23 @@
 .serif {
   font-family: var(--font-display);
   font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+/* ---------- the dark ground ----------
+ * Full-bleed batik green. Everything inside inherits the on-dark treatment by
+ * re-pointing the same local tokens the cream sections use, so child rules do
+ * not need dark-mode variants of their own — only the handful of elements
+ * whose contrast cannot be expressed as a token swap are restated below. */
+
+.bandDark {
+  background: var(--rail-surface);
+  color: var(--rail-ink);
+
+  --land-ink: var(--rail-ink);
+  --land-ink-2: var(--rail-ink-muted);
+  --land-muted: var(--rail-ink-muted);
+  --land-line: var(--rail-hairline);
+  --land-line-soft: var(--rail-hairline);
 }
 
 /* ---------- buttons & links ---------- */
@@ -80,6 +106,11 @@
   padding: 14px 26px;
   font-size: 15px;
 }
+/* Tamarind on green is the brand's own pairing and holds contrast, but the
+   focus ring must not be the same family as the ground it sits on. */
+.bandDark .btn:focus-visible {
+  outline-color: var(--rail-ink);
+}
 .linkQuiet {
   color: var(--land-ink);
   text-decoration: none;
@@ -107,6 +138,11 @@
   flex: none;
   color: var(--land-accent);
 }
+/* The sun mark is the brand's warm note; on green it reads better in the
+   paper ink than in tamarind, which vibrates against the dark ground. */
+.bandDark .wordmark .mark {
+  color: var(--land-gold);
+}
 .wordmark .mark svg {
   display: block;
 }
@@ -127,6 +163,9 @@
   padding: 22px 56px;
   border-bottom: 1px solid var(--land-line-soft);
 }
+.headOnDark {
+  border-bottom-color: var(--rail-hairline);
+}
 .headActions {
   display: flex;
   gap: 20px;
@@ -139,7 +178,7 @@
   display: grid;
   grid-template-columns: 1.08fr 0.92fr;
   gap: 64px;
-  padding: 84px 56px 76px;
+  padding: 84px 56px 92px;
   align-items: center;
 }
 .heroEyebrow {
@@ -147,7 +186,7 @@
   letter-spacing: 0.16em;
   font-size: 12px;
   font-weight: 700;
-  color: var(--land-accent-deep);
+  color: var(--land-gold);
   display: inline-flex;
   align-items: center;
   gap: 11px;
@@ -157,25 +196,49 @@
   content: '';
   width: 26px;
   height: 1px;
-  background: var(--land-accent);
+  background: var(--land-gold);
 }
 .hero h1 {
-  font-size: clamp(38px, 5.5vw, 62px);
-  line-height: 1.02;
-  margin: 0 0 24px;
+  font-size: clamp(36px, 5.2vw, 58px);
+  line-height: 1.06;
+  margin: 0 0 20px;
   font-weight: 600;
   letter-spacing: -0.025em;
+  max-width: 15ch;
 }
 .hero h1 em {
   font-style: italic;
-  color: var(--land-accent-deep);
+  color: var(--land-gold);
 }
-.heroSub {
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--land-ink-2);
-  max-width: 42ch;
-  margin: 0 0 36px;
+/* The lede is the recognition line — the sentence the primary persona should
+   feel before reading anything about the product. It carries more weight than
+   the story paragraph that follows it. */
+.heroLede {
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--rail-ink);
+  max-width: 34ch;
+  margin: 0 0 26px;
+  font-weight: 500;
+}
+.heroStory {
+  font-size: 16px;
+  line-height: 1.68;
+  color: var(--rail-ink-muted);
+  max-width: 46ch;
+  margin: 0 0 14px;
+}
+/* Design §6 leaves a portrait slot deliberately empty in v1 — the layout must
+   work with a name alone and gain a photo later without reflowing. */
+.heroSignature {
+  font-size: 16px;
+  font-style: italic;
+  color: var(--rail-ink);
+  margin: 0 0 34px;
+}
+.heroSignature::before {
+  content: '— ';
+  color: var(--rail-ink-muted);
 }
 .heroCtas {
   display: flex;
@@ -206,6 +269,9 @@
   transform: translate(26px, 34px) rotate(4.5deg);
   opacity: 0.3;
 }
+/* The specimen card stays paper-white on the dark ground: it is a artifact
+   from inside the product, and floating it on green is what makes it read as
+   lifted out rather than drawn on. */
 .spec {
   position: relative;
   background: var(--land-card);
@@ -213,13 +279,14 @@
   border-radius: 18px;
   padding: 30px 32px 26px;
   box-shadow: var(--land-shadow-lift);
+  color: #1e2a25;
 }
 .specTop {
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
-  color: var(--land-muted);
+  color: #77857b;
 }
 .specTag {
   display: inline-flex;
@@ -247,12 +314,12 @@
 }
 .specPhon {
   font-size: 14px;
-  color: var(--land-muted);
+  color: #77857b;
   font-style: italic;
 }
 .specRule {
   height: 1px;
-  background: var(--land-line);
+  background: #e7dece;
   margin: 22px 0;
 }
 .specGloss {
@@ -263,21 +330,21 @@
 }
 .specEx {
   font-size: 14px;
-  color: var(--land-ink-2);
+  color: #45534b;
   line-height: 1.5;
 }
 .specEx .id {
   font-style: italic;
-  color: var(--land-ink);
+  color: #1e2a25;
 }
 .specEx .tr {
   display: block;
-  color: var(--land-muted);
+  color: #77857b;
 }
 .specFoot {
   margin-top: 22px;
   padding-top: 16px;
-  border-top: 1px solid var(--land-line);
+  border-top: 1px solid #e7dece;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -292,7 +359,7 @@
   padding: 0 56px;
 }
 .sectionAiry {
-  padding-top: 8px;
+  padding-top: 76px;
   padding-bottom: 76px;
 }
 .lead {
@@ -313,115 +380,136 @@
   letter-spacing: -0.02em;
   margin: 12px 0 0;
 }
-
-/* ---------- how it works — editorial numbered columns ---------- */
-
-.flow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 44px;
-  border-top: 1px solid var(--land-ink);
-  padding-top: 8px;
-}
-.flowCol {
-  padding-top: 24px;
-}
-.flowIdx {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--land-accent-deep);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.06em;
-}
-.flowCol h3 {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: 14px 0 8px;
-}
-.flowCol p {
-  font-size: 15px;
-  color: var(--land-ink-2);
-  margin: 0;
-  line-height: 1.6;
-}
-
-/* ---------- feature grid — hairline-divided spec table ---------- */
-
-.grid4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--land-line);
-}
-.g4 {
-  padding: 30px 26px 30px 0;
-  border-left: 1px solid var(--land-line);
-}
-.g4:first-child {
-  border-left: none;
-}
-.g4:not(:first-child) {
-  padding-left: 26px;
-}
-.g4Ic {
-  width: 34px;
-  height: 34px;
-  color: var(--rail-surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 18px;
-}
-.g4 h3 {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 5px;
-  letter-spacing: -0.005em;
-}
-.g4 p {
-  font-size: 14px;
-  color: var(--land-ink-2);
-  margin: 0;
-  line-height: 1.55;
-}
-.g4Bar {
-  margin-top: 12px;
-  height: 5px;
-  border-radius: 3px;
-  background: var(--land-paper-2);
-  overflow: hidden;
-}
-.g4Bar > i {
-  display: block;
-  height: 100%;
-  width: 64%;
-  background: var(--land-gold);
-  border-radius: 3px;
-}
-.g4BarCap {
-  font-size: 12px;
-  color: var(--land-muted);
-  margin-top: 6px;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ---------- loanword bridge ---------- */
-/* The recognition moment for the primary persona (heritage learner, owner
-   decision 2026-08-05). Styled as a wall of paired chips rather than prose: the
-   point is scanning it and thinking "I know that one", which happens through
-   shape and repetition, not sentences. Uses only existing --land-* tokens, so it
-   inherits the page's light/dark handling with no new colour vocabulary. */
-
-.bridgeBody {
-  margin: 14px 0 0;
-  max-width: 62ch;
+.leadBody {
+  margin: 16px 0 0;
+  max-width: 58ch;
   color: var(--land-ink-2);
   font-size: 16px;
   line-height: 1.65;
 }
+
+/* ---------- the stack you would otherwise assemble ---------- */
+/* A ledger, not cards: the point is that the list is LONG and each line costs
+   something. Cards would make five tools look like five features, which is the
+   exact reading the assembly argument exists to prevent. */
+
+.stack {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--land-line);
+}
+.stackRow {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 32px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--land-line-soft);
+  align-items: baseline;
+}
+.stackTool {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.stackBody {
+  color: var(--land-ink-2);
+  font-size: 15px;
+  line-height: 1.62;
+  max-width: 62ch;
+}
+.stackClose {
+  margin: 30px 0 0;
+  max-width: 64ch;
+  font-size: 17px;
+  line-height: 1.62;
+  font-weight: 550;
+  padding-left: 18px;
+  border-left: 3px solid var(--land-accent);
+}
+
+/* ---------- the pair — the page signature ---------- */
+/* Two words and a relationship, at a larger scale than the loanword chips so
+   the same shape reads as a theme rather than a repeat. */
+
+.pairWall {
+  list-style: none;
+  margin: 0 0 34px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.pairRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 18px 22px;
+  background: var(--land-card);
+  border: 1px solid var(--land-line);
+  border-radius: 14px;
+}
+.pairCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.pairLabel {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: var(--land-muted);
+}
+.pairFormal {
+  font-size: 24px;
+  color: var(--land-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--land-line);
+}
+/* The spoken form is the payoff, so it carries the weight and the accent. */
+.pairReal {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--land-accent-deep);
+}
+.pairArrow {
+  color: var(--land-gold);
+  font-size: 15px;
+  padding-bottom: 4px;
+}
+.pairGloss {
+  margin-left: auto;
+  font-size: 13.5px;
+  color: var(--land-muted);
+  font-style: italic;
+  padding-bottom: 4px;
+}
+.pairDisarm,
+.pairAnki {
+  margin: 0 0 16px;
+  max-width: 64ch;
+  color: var(--land-ink-2);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.pairNote {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--land-muted);
+  font-size: 14.5px;
+  font-style: italic;
+}
+
+/* ---------- loanword bridge ---------- */
+/* Styled as a wall of paired chips rather than prose: the point is scanning it
+   and thinking "I know that one", which happens through shape and repetition,
+   not sentences. */
+
 .bridgeWall {
   list-style: none;
-  margin: 32px 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
@@ -445,7 +533,6 @@
   color: var(--land-gold);
   font-size: 13px;
 }
-/* The Indonesian form is the payoff, so it carries the weight. */
 .bridgeId {
   color: var(--land-ink);
   font-weight: 650;
@@ -457,17 +544,6 @@
   font-size: 14.5px;
   font-style: italic;
 }
-
-@media (max-width: 640px) {
-  .bridgeWall {
-    gap: 8px;
-  }
-  .bridgePair {
-    padding: 9px 13px;
-    font-size: 14px;
-  }
-}
-
 .bridgeEdge {
   margin: 18px 0 0;
   max-width: 62ch;
@@ -490,11 +566,115 @@
   text-decoration: underline;
 }
 
+/* ---------- how it works ---------- */
+
+.flow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 44px;
+  border-top: 1px solid var(--land-ink);
+  padding-top: 8px;
+}
+.flowCol {
+  padding-top: 26px;
+}
+.flowCol h3 {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+.flowCol p {
+  font-size: 15px;
+  color: var(--land-ink-2);
+  margin: 0;
+  line-height: 1.62;
+}
+
+/* ---------- the science band ---------- */
+
+.sci .leadTitle {
+  max-width: 20ch;
+}
+.sciGrid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 52px;
+  align-items: start;
+}
+/* The audit is the strongest item on the page — a specific, checkable thing
+   the product got wrong and changed — so it gets the pull-quote treatment
+   rather than sitting in a column of equals. */
+.sciAudit {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--rail-ink);
+  padding-left: 20px;
+  border-left: 3px solid var(--land-gold);
+}
+.sciPrinciples {
+  margin: 0 0 20px;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--rail-ink-muted);
+}
+.sciHonest {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--rail-ink);
+  padding-top: 20px;
+  border-top: 1px solid var(--rail-hairline);
+}
+
+/* ---------- the doors ---------- */
+
+.doors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--land-line);
+}
+.door {
+  padding: 28px 26px 8px 0;
+  border-left: 1px solid var(--land-line);
+}
+.door:first-child {
+  border-left: none;
+}
+.door:not(:first-child) {
+  padding-left: 26px;
+}
+.door h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  letter-spacing: -0.005em;
+}
+.door p {
+  font-size: 14.5px;
+  color: var(--land-ink-2);
+  margin: 0;
+  line-height: 1.6;
+}
+.doorLink {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--land-accent);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}
+.doorLink:hover {
+  text-decoration: underline;
+}
+
 /* ---------- pricing band ---------- */
 
 .pricing {
   position: relative;
-  margin: 84px 56px 0;
+  margin: 20px 56px 0;
   background: var(--rail-surface);
   color: var(--rail-ink);
   border-radius: 20px;
@@ -563,6 +743,7 @@
   display: flex;
   gap: 26px;
   align-items: center;
+  flex-wrap: wrap;
 }
 .footLinks a {
   color: var(--land-ink-2);
@@ -611,27 +792,45 @@
   .hero {
     grid-template-columns: 1fr;
     gap: 48px;
-    padding: 56px 24px 56px;
+    padding: 56px 24px 64px;
   }
   .deck {
     margin: 0 auto;
   }
-  .flow {
+  .sectionAiry {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+  .stackRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .pairWall {
+    grid-template-columns: 1fr;
+  }
+  .flow,
+  .doors {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  .grid4 {
-    grid-template-columns: 1fr 1fr;
+  .doors {
+    gap: 0;
   }
-  .g4:nth-child(odd) {
+  .door {
     border-left: none;
     padding-left: 0;
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--land-line-soft);
   }
-  .g4:nth-child(even) {
-    padding-left: 26px;
+  .door:not(:first-child) {
+    padding-left: 0;
+  }
+  .sciGrid {
+    grid-template-columns: 1fr;
+    gap: 32px;
   }
   .pricing {
-    margin: 64px 24px 0;
+    margin: 20px 24px 0;
     padding: 36px 28px;
     flex-direction: column;
     align-items: flex-start;
@@ -639,22 +838,22 @@
 }
 
 @media (max-width: 560px) {
-  .grid4 {
-    grid-template-columns: 1fr;
-  }
-  .g4 {
-    border-left: none;
-    padding-left: 0;
-  }
-  .g4:not(:first-child) {
-    padding-left: 0;
-    border-top: 1px solid var(--land-line-soft);
-  }
   .headActions .linkQuiet {
     display: none;
   }
   .specWord {
     font-size: 44px;
+  }
+  .hero h1 {
+    max-width: none;
+  }
+  .pairRow {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .pairGloss {
+    margin-left: 0;
+    width: 100%;
   }
 }
 
