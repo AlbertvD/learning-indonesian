@@ -141,6 +141,23 @@ a sentence about any other product.
 
 ---
 
+## Confidence is not the enemy of honesty
+
+The most common failure in this project's copy has not been overclaiming — it has
+been **hedging**. Disclaimers accumulated on the landing page (an efficacy
+disclaimer, an endorsement disclaimer, a library hedge, an "eerlijk:"
+parenthetical) and three were deleted, each time improving the page.
+
+The distinction that matters: **do not make false claims** is a rule about
+content. **Do not keep announcing that you are not making them** is a rule about
+voice. A confident marketer simply does not write the false sentence; they do not
+append a note explaining that they did not.
+
+So: write the strongest true sentence available. Be directive. Concede to
+competitors and then narrow — that reads as authority. Cite the science by name.
+Reserve the caveats for places where a reader would otherwise be genuinely
+misled, and put them in the body rather than the headline.
+
 ## Where craft must yield
 
 This skill makes copy persuasive. Persuasion is exactly what makes a false claim

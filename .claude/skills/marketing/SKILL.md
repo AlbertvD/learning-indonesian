@@ -1,6 +1,6 @@
 ---
 name: marketing
-description: Decide WHAT to say about Kamoe Bisa and whether a claim is allowed — positioning, personas, which channel to spend effort on, pricing framing, what content to publish, and the honesty gate that binds every customer-facing surface. Use this before writing any marketing copy (landing page, /hoe-het-werkt, meta descriptions, ad copy, launch posts, store listings, emails, comparison pages), and whenever asked "how should we position this", "is this claim OK", "which channel", "how do we compare ourselves to Duolingo/Anki", "who is this for". Also use it to REVIEW existing copy for honesty or drift. The honesty rules are not style preferences — there are zero customers, all audio is TTS, and inventing social proof or efficacy numbers is misleading advertising. This is the STRATEGY skill; its sibling `marketing-copy` is the CRAFT skill that writes the actual sentences. Load this one first, then that one.
+description: Decide WHAT to say about Kamoe Bisa and whether a claim is allowed — positioning, personas, which channel to spend effort on, pricing framing, what content to publish, and the honesty gate that binds every customer-facing surface. Use this before writing any marketing copy (landing page, /hoe-het-werkt, meta descriptions, ad copy, launch posts, store listings, emails, comparison pages), and whenever asked "how should we position this", "is this claim OK", "which channel", "how do we compare ourselves to Duolingo/Anki", "who is this for". Also use it to REVIEW existing copy for honesty or drift. Leads with what makes the copy STRONG — say what no competitor structurally can, be specific enough to be checkable, concede then narrow, end in the reader's life. It also carries a short list of things that are simply false here (zero customers, all audio is TTS, no efficacy figures), but that is a floor to clear once, not a voice to write in: not claiming something is the default, and announcing that you are not claiming it is throat-clearing. This is the STRATEGY skill; its sibling `marketing-copy` is the CRAFT skill that writes the actual sentences. Load this one first, then that one.
 ---
 
 # Marketing strategy — Kamoe Bisa
@@ -19,73 +19,80 @@ description: Decide WHAT to say about Kamoe Bisa and whether a claim is allowed 
 
 Four books are already applied to this product, by the owner, in four repo docs.
 This skill exists so that every marketing surface traces back to those decisions
-instead of re-deriving a position per page — and so that the honesty constraints,
-which are scattered across six files, get applied every time rather than
-whenever someone remembers them.
+instead of re-deriving a position per page.
 
-## Read this first: the honesty gate
+**Its job is to make the copy strong, not safe.** An earlier version led with the
+prohibitions and produced exactly what you would expect: correct, hedged, and
+dull. The owner's verdict on it was that it read like someone "who insists on
+telling the truth about everything". The truth requirement never moved; the
+emphasis did.
 
-These are not tone preferences. Breaking them is misleading advertising, and the
-product's primary persona is someone whose blocker is *confidence that this will
-work this time*. One discovered exaggeration and they disbelieve everything else
-on the page.
+## Write the strongest true thing
 
-**Check the pending-claims register before writing anything about users,
-results or scale** — `positioning.md` §7. It lists the claims that are blocked
-today, why, and the exact trigger that unlocks each. Two of them have already
-been written by accident, so treat it as a checklist rather than background
-reading. And a claim that *keeps* reappearing across drafts is not carelessness —
-it is one the product wants to make, which is when it most needs a written block.
+Not the safest true thing. The gate further down is a **floor, not a voice** — it
+tells you what cannot be said, and says nothing about how to say the rest. Copy
+that spends its energy demonstrating its own honesty is worse than copy that is
+simply honest and confident. Four separate hedges once accumulated on the landing
+page; the owner deleted three, and the page improved every time.
 
-**There are zero paying customers.** Never invent, imply or imitate reviews,
-ratings, testimonials, learner counts, "join thousands of learners", "loved by",
-star ratings, or a founding-customer story that did not happen. If a surface
-feels like it needs social proof, the replacement is the owner's own story
-(`personas.md` §1) — it does the same job and is true.
+**The rule of thumb: not claiming something is the default. Announcing that you
+are not claiming it is throat-clearing.** No efficacy figure appears on the page
+— that requirement is met by silence, not by a paragraph explaining the silence.
 
-**All audio is TTS.** Never claim native speakers, human narration, voice actors,
-or "recorded by". Audio may be described neutrally as a feature that exists.
-This rule predates the marketing docs and is restated at `src/pages/Landing.copy.ts:12-14`.
+What actually wins here, in order:
 
-**Never cite efficacy numbers.** No "learn 3× faster", no "95% retention", no
-"most learners reach A2 in N weeks". Nobody has measured it for this product.
-Principles and *our own decisions* are citable; outcomes are not.
+**1. Say the thing nobody else can say.** Every competitor sells travel, culture
+or fluency (`competitive-messaging.md` §7). Not one leads with the family table.
+Not one can use the Dutch loanwords. Not one teaches spreektaal in this pair. Lead
+with what is structurally unavailable to them, not with what is merely true of us.
 
-**Never imply endorsement.** Karpicke, Nation and Krashen have not heard of
-Kamoe Bisa. Citing a principle is fine; implying the researcher approves is not.
+**2. Be specific enough to be checkable.** `kantoor → kantor`. *"Duolingo leert je
+lelah. Je schoonmoeder zegt capek."* Eighteen culture pieces, named: Borobudur,
+batik, Garuda. Specificity IS the credibility — it does the work a testimonial
+would do, and we have no testimonials.
 
-**⚠️ A NEGATIVE claim needs a stronger check than a positive one.** "We have X"
-fails loudly when wrong — someone looks for X and does not find it. "We do NOT
-have X" fails silently, and it quietly deletes a real feature from the page.
+**3. Be directive about the method.** "In die volgorde, nooit andersom" reads as
+expertise. "Oefeningen die door de fases heen loodsen" reads as documentation.
+Same fact. State what the method *does* as a rule it follows.
 
-This has gone wrong twice, both times with a query that looked authoritative:
+**4. Concede, then narrow.** Sheridan's disarmament — the strongest paragraphs on
+the page all start by granting the competitor something real. *"Duolingo is een
+goede app, en wie via het Engels leert komt er ver mee. Alleen:"* Conceding is a
+power move, not a weakness; it buys the sentence that follows.
 
-| Claimed | Actually | The bad check |
-|---|---|---|
-| "there are no culture lessons" | 18 culture sections across 17 lessons | queried `section_kind`; the lessons are `text` sections titled "Cultuur — …" |
-| "the reading library is just 13 rows" | true, but stated after reading only the table DDL | read the schema, not the rows |
+**5. End in the reader's life.** *"Voor het moment dat je schoonmoeder je iets
+vraagt en jij gewoon antwoordt."* Every band should be able to answer "so what,
+for me?"
 
-**Before writing that the product lacks something, search the CONTENT, not just
-the schema** — titles, text bodies, component names — and say which check you
-ran. If you cannot name a check that would have found it had it existed, you have
-not verified an absence; you have failed to find it.
+**6. Cite the science with confidence.** "Gegrond in bewezen wetenschap" is fully
+earned — the principles ARE established and named (`positioning.md` §2b). Quote
+them. What is forbidden is a number about *our* learners, which is a narrow rule,
+not a reason to be timid about the derivation.
 
-**Every count must be DB-verified, and say where the check lives.** Product
-numbers drift silently. `positioning.md` §8 already requires this. Public pages
-cannot read the database — anon has no grant on the `indonesian` schema — so any
-figure on a public page is a committed static export, as `/leenwoorden` does.
+## The gate — a floor, not a voice
 
-**The register limit binds every promise about family conversation.** The
-coursebook dialogues are formal and touristy — lesson 2 is a businessman checking
-into a hotel. Spreektaal rides alongside; it is not a family-conversation course.
-You may promise *you will understand the register they actually use* (true, 66
-pairs shipped). You may not promise *chat with your in-laws by week two*.
-`personas.md` §1 marks this ⚠️ and it is the easiest rule here to break by
-accident, because the true version and the false version sound similar.
+Six things that are simply false if written. Check the draft against them, fix
+what fails, and then stop thinking about them: none of these requires a
+disclaimer, only an absence.
 
-**Attack the gap, never the learner or the tool they chose.** Plenty of Dutch
-speakers learn happily through English. The true and stronger claim is narrower:
-*the loanword head start is unavailable there*. `positioning.md` §5.
+| Never | Because |
+|---|---|
+| Reviews, ratings, testimonials, learner counts, "duizenden" | Zero paying customers. The founder's own story does the same job and is true |
+| Native speakers, narration, "ingesproken" | All audio is TTS |
+| Any efficacy figure — "X× sneller", "in N weken", "bewezen effectief" | Never measured, by us or anyone. The METHOD is untested; the SCIENCE it derives from is not — `positioning.md` §2b |
+| Implied endorsement by a named researcher | They have not heard of this product. Frame names as sources of a finding |
+| A count not in `facts.md` | Numbers drift silently. `facts.md` holds the query and the list of surfaces quoting each one |
+| Conversational fluency by any date | The coursebook is formal and touristy. Promise the register they actually use — `personas.md` §1 |
+
+⚠️ **Before writing about users, results or scale, read `positioning.md` §7** —
+the pending-claims register, with the trigger that unlocks each. One of those
+claims has regenerated three times in this project.
+
+⚠️ **A NEGATIVE claim needs a stronger check than a positive one.** "We have X"
+fails loudly; "we do NOT have X" fails silently and deletes a real feature. It has
+happened twice — most recently "there are no culture lessons" when eighteen exist,
+because the check queried `section_kind` and they live in `text` sections titled
+"Cultuur — …". Search the CONTENT, and name the check you ran.
 
 ## Where the truth lives — trace, do not invent
 
