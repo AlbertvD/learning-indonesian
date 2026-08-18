@@ -104,7 +104,7 @@ const nl = {
   storyP1:
     'Uit aardigheid, dat wel. Maar je partner vertaalt een grap die dan niet meer grappig is, je schoonmoeder glimlacht even naar je, en het gesprek loopt verder zonder je. Je hoort erbij en je staat er tegelijk buiten.',
   storyP2:
-    'Daar wilde ik weg. Niet vloeiend worden — gewoon iets terug kunnen zeggen. Maar je leert honderden woorden en struikelt nog steeds over elke zin, en dat ligt niet aan je discipline: om een gesprek te volgen moet je zo’n 95% van de woorden al kennen, en na een beginnerscursus zit je rond de 80%.',
+    'Daar wilde ik weg. Niet vloeiend worden — gewoon iets terug kunnen zeggen. Ik heb Duolingo geprobeerd en ik heb flashcards geprobeerd; daarmee kom je een eind, maar niet ver genoeg. Je leert honderden woorden en struikelt nog steeds over elke zin. Dat ligt niet aan je discipline: om een gesprek te volgen moet je zo’n 95% van de woorden al kennen, en na een beginnerscursus zit je rond de 80%.',
   storyP3:
     'Dat gat dicht je door veel te lezen op jouw niveau, en door elk woord dat je opzoekt te laten terugkomen tot het blijft zitten. Ik heb jaren geprobeerd dat zelf bij elkaar te sprokkelen, met losse apps naast elkaar. Uiteindelijk heb ik het maar gebouwd — voor het moment dat je schoonmoeder je iets vraagt en jij gewoon antwoordt.',
   storySignature: 'Albert van Duijn',
@@ -243,7 +243,7 @@ const en: typeof nl = {
   storyP1:
     'Out of kindness, yes. But your partner translates a joke that is no longer funny by then, your mother-in-law smiles at you, and the conversation moves on without you. You belong there and you are outside it at the same time.',
   storyP2:
-    'I wanted out of that. Not fluent — just able to say something back. But you learn hundreds of words and still trip over every sentence, and that is not a discipline problem: to follow a conversation you need to know roughly 95% of the words already, and after a beginner course you are at about 80%.',
+    'I wanted out of that. Not fluent — just able to say something back. I tried Duolingo and I tried flashcards; they get you part of the way, but not far enough. You learn hundreds of words and still trip over every sentence. That is not a discipline problem: to follow a conversation you need to know roughly 95% of the words already, and after a beginner course you are at about 80%.',
   storyP3:
     'You close that gap by reading a lot at your own level, and by having every word you look up come back until it sticks. I spent years trying to piece that together myself, with separate apps side by side. In the end I just built it — for the moment your mother-in-law asks you something and you simply answer.',
   storySignature: 'Albert van Duijn',

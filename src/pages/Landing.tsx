@@ -210,7 +210,7 @@ export function Landing() {
             Teman Indonesia (the closest Dutch peer) leads with a named teacher,
             which is why the personal voice stays rather than being cut. */}
         <section className={`${classes.section} ${classes.sectionAiry}`}>
-          <div className={classes.lead}>
+          <div className={`${classes.lead} ${classes.storyLead}`}>
             <span className={classes.leadKicker}>{T.storyKicker}</span>
             <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.storyTitle}</h2>
           </div>

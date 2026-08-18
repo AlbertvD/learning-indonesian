@@ -176,8 +176,8 @@
 
 .hero {
   display: grid;
-  grid-template-columns: 1.08fr 0.92fr;
-  gap: 64px;
+  grid-template-columns: 1.42fr 0.84fr;
+  gap: 52px;
   padding: 84px 56px 92px;
   align-items: center;
 }
@@ -199,12 +199,13 @@
   background: var(--land-gold);
 }
 .hero h1 {
-  font-size: clamp(30px, 4.1vw, 46px);
-  line-height: 1.12;
+  font-size: clamp(29px, 3.5vw, 42px);
+  line-height: 1.14;
   margin: 0 0 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  max-width: 26ch;
+  max-width: 40ch;
+  text-wrap: balance;
 }
 .hero h1 em {
   font-style: italic;
@@ -214,10 +215,9 @@
    headline's story, not a separate claim, so it carries more weight than the
    paragraph below it. */
 .heroLede {
-  font-size: 20px;
-  line-height: 1.5;
+  font-size: 19px;
+  line-height: 1.55;
   color: var(--rail-ink);
-  max-width: 34ch;
   margin: 0 0 26px;
   font-weight: 500;
 }
@@ -875,11 +875,14 @@
  * deviation. It just belongs after the reader knows what this is. */
 
 .story {
-  max-width: 62ch;
+  max-width: 802px;
+}
+.storyLead {
+  max-width: 802px;
 }
 .story p {
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 17px;
+  line-height: 1.68;
   color: var(--land-ink-2);
   margin: 0 0 18px;
 }
@@ -986,11 +989,11 @@
   font-style: italic;
 }
 .sciQuote blockquote::before {
-  content: 'C';
+  content: open-quote;
   color: var(--land-gold);
 }
 .sciQuote blockquote::after {
-  content: 'D';
+  content: close-quote;
   color: var(--land-gold);
 }
 .sciQuote figcaption {
