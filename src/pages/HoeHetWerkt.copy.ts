@@ -70,7 +70,7 @@ const nl = {
   whyKicker: 'Waarom zo',
   whyTitle: 'Gebouwd vanuit onderzoek — en verbouwd toen dat onderzoek ons ongelijk gaf.',
   whyAudit:
-    'In mei 2026 hebben we 36 uur aan echte sessies nagelopen. 30,1% van alle herhalingen bleek binnen dezelfde sessie nóg een keer over hetzelfde te gaan; in het ergste geval kreeg iemand drie toetsen op apa kabar? binnen 31 seconden. Twee keer hetzelfde ophalen binnen een halve minuut is geen ophalen — het antwoord staat dan nog in je werkgeheugen. Het is veranderd.',
+    'In mei 2026 ben ik 36 uur van mijn eigen sessiedata gaan nalopen. 30,1% van alle herhalingen bleek binnen dezelfde sessie nóg een keer over hetzelfde te gaan; in het ergste geval kreeg iemand drie toetsen op apa kabar? binnen 31 seconden. Twee keer hetzelfde ophalen binnen een halve minuut is geen ophalen — het antwoord staat dan nog in je werkgeheugen. Het is veranderd.',
   whyPrinciple1Title: 'Eerst herkennen, dan pas produceren',
   whyPrinciple1Body:
     'Je wordt niet gevraagd een woord zelf te produceren een paar minuten nadat je het voor het eerst zag. De vier oefentypes komen na elkaar vrij, niet tegelijk. (Nation, Krashen.)',
@@ -141,7 +141,7 @@ const en: typeof nl = {
   whyKicker: 'Why this way',
   whyTitle: 'Built from research — and rebuilt when that research proved us wrong.',
   whyAudit:
-    'In May 2026 we went through 36 hours of real sessions. 30.1% of all reviews turned out to repeat the same item within the same session; worst case, someone got three tests on apa kabar? within 31 seconds. Retrieving the same thing twice within half a minute is not retrieval — the answer is still in working memory. It was changed.',
+    'In May 2026 I went back through 36 hours of my own session data. 30.1% of all reviews turned out to repeat the same item within the same session; worst case, someone got three tests on apa kabar? within 31 seconds. Retrieving the same thing twice within half a minute is not retrieval — the answer is still in working memory. It was changed.',
   whyPrinciple1Title: 'Recognise first, produce later',
   whyPrinciple1Body:
     'You are not asked to produce a word yourself minutes after first seeing it. The four exercise types unlock in sequence, not all at once. (Nation, Krashen.)',

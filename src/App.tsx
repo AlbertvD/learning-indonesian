@@ -120,7 +120,14 @@ function App() {
   // Same dev bypass as ProtectedRoute so `/?bypassAuth=1` still previews Home.
   const devBypass = import.meta.env.DEV
     && new URL(window.location.href).searchParams.get('bypassAuth') === '1'
-  const showLanding = !user && !loading && !devBypass
+  // ...and the mirror of it. Without this the landing page is unreachable for
+  // anyone with a session, so reviewing marketing copy meant logging out or
+  // opening a private window every time — which is most of the people most
+  // likely to be reviewing it. DEV-only, and it grants nothing: the landing
+  // page is public, so this reveals a surface a logged-out visitor already sees.
+  const devForceLanding = import.meta.env.DEV
+    && new URL(window.location.href).searchParams.get('forceLanding') === '1'
+  const showLanding = devForceLanding || (!user && !loading && !devBypass)
 
   return (
     <>
