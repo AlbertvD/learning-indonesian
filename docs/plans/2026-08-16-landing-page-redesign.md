@@ -1,6 +1,6 @@
 ---
 status: implementing
-implementation: branch `landing-page-rewrite` (no PR yet)
+implementation: PR #477
 reviewed_by: []
 supersedes: []
 implementation_paths:
