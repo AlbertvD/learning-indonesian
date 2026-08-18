@@ -187,9 +187,26 @@ nothing. That objection is answered **only** by the way it is used:
   weken", not "bewezen". This is precisely the door efficacy claims come back
   through: Babbel's method name is a container for "92% in 2 months", and we have
   measured nothing.
-- **Never call it proven or scientifically validated.** We may cite the
-  principles it is built on (Nation, Krashen, Karpicke) and our own decisions
-  (ADR 0007). We may not claim the *method* has been tested — it has not.
+- **Distinguish the principles from the method. The principles are proven; the
+  method is not tested.** This line is finer than "never mention science", and
+  getting it right is worth real credibility:
+
+  | ✅ Say | ❌ Do not say |
+  |---|---|
+  | "opgebouwd uit onderzoek dat al decennia overeind staat" | "onze methode is bewezen" |
+  | "eerst herkennen, dan produceren (Nation, Krashen)" | "wetenschappelijk bewezen effectief" |
+  | "lezen gaat pas lopen rond 95% (Laufer; Schmitt e.a.)" | any number about *our* learners |
+  | "dit hebben we veranderd toen het onderzoek ons ongelijk gaf" (ADR 0007) | "X% leert sneller" |
+
+  The established findings are citable and should be cited **by name** — that is
+  what makes the derivation checkable rather than decorative. What may never be
+  claimed is that *this product* or *this method* has been measured, because it
+  has not. Note the competitive contrast this buys (`competitive-messaging.md`
+  §1): Duolingo says "scientifically proven to work" about itself; Babbel quotes
+  an efficacy study it commissioned about itself. Citing published work and
+  naming what we changed because of it is a *different and more honest* claim
+  than either, and it is available to us precisely because we are not claiming
+  our own results.
 - **Capitalise and hyphenate as `Kamoe Bisa-methode`** (Dutch orthography), and
   `Kamoe Bisa method` in English.
 
@@ -288,6 +305,28 @@ the reader — never as the lead.
 - Willingness to pay at **€9/€79** is untested; the prices were chosen, not
   researched (see *Monetizing Innovation*). Still zero paying subscribers, so
   this remains the least-evidenced number in the whole marketing set.
+
+### Claims that become TRUE later — the pending register
+
+The honesty gate produces a lot of "cannot say yet", and without a register those
+claims either get forgotten when they finally become available, or — worse —
+someone writes them early because they *feel* true. Both happened today. Each
+entry below names the claim, why it is blocked, and **the specific trigger that
+unlocks it.**
+
+| Claim | Blocked because | Unlock when |
+|---|---|---|
+| *"We optimaliseren de leermethode op basis van hoe onze gebruikers leren."* (owner's own words, 2026-08-18 — he intends to do exactly this) | **Zero users.** The May 2026 audit was on the owner's OWN session data. Present tense claims a practice that cannot yet exist | There is a real cohort and at least one change has actually been made from aggregate learner data — not from one person's |
+| Reviews, ratings, testimonials, learner counts | Zero paying customers | First customers exist AND have given permission. Quote them verbatim; never write them |
+| Any efficacy figure ("X% leert sneller", "in N weken") | Never measured, by us or anyone | A real study exists. Commissioning one about ourselves is what Babbel does; if we ever do, say who paid for it |
+| *"De verhalenbibliotheek is groot"* / dropping the A1–A2 hedge | 13 texts, only 3 above A2 | The library covers B1/B2 with enough breadth that a B1 learner has real choice |
+| "Nobody serves this pair" (unqualified) | False — NHA, Teman Indonesia, Talendomein, 50languages all do | Never. Use "no modern, app-native course" instead — see §1 ⚠️ |
+
+⚠️ **The first row is the dangerous one**, because it regenerated twice in a
+single day — once written by the agent, once by the owner — in the same band of
+the same page. A claim that keeps reappearing is not a slip; it is a claim the
+product *wants* to make, which is exactly when it needs a written block rather
+than a memory of one.
 
 ## 8. Copy rules that follow from this
 

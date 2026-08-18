@@ -30,6 +30,13 @@ product's primary persona is someone whose blocker is *confidence that this will
 work this time*. One discovered exaggeration and they disbelieve everything else
 on the page.
 
+**Check the pending-claims register before writing anything about users,
+results or scale** — `positioning.md` §7. It lists the claims that are blocked
+today, why, and the exact trigger that unlocks each. Two of them have already
+been written by accident, so treat it as a checklist rather than background
+reading. And a claim that *keeps* reappearing across drafts is not carelessness —
+it is one the product wants to make, which is when it most needs a written block.
+
 **There are zero paying customers.** Never invent, imply or imitate reviews,
 ratings, testimonials, learner counts, "join thousands of learners", "loved by",
 star ratings, or a founding-customer story that did not happen. If a surface

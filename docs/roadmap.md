@@ -97,6 +97,28 @@ register limit) plus the method from the four books already applied in `docs/mar
 Use it before writing any customer-facing sentence. The honesty rules are also now
 asserted by tests, so copy drift fails a build rather than going unnoticed.
 
+### ⭐ Sequencing decision (owner, 2026-08-17): presentation before content
+
+**Make the product attractive and findable first; add content after.** More texts and
+podcasts come *later*, once the landing pages look and feel right. The reasoning is
+sound — there is no point deepening a library nobody arrives at — and it has two
+consequences worth writing down:
+
+- **The landing copy must not promise a library that isn't there yet.** Verified against
+  the live cloud DB 2026-08-17: **13 texts** (9 with audio) — A1×4, A2×5, **B1×2, B2×1**,
+  one with no level at all — against **30 lessons** with grammar audio and 2,573 items on
+  FSRS. So the *course* is deep and the *reading/listening library is thin above A2*.
+  `stackClose` now states the real numbers and says the library is small and growing.
+  Re-check those figures whenever content lands; they are quoted verbatim on the page.
+- **"Findable" has exactly one real blocker left, and it is not meta tags.** Title,
+  description and OG/Twitter cards are done (`index.html:34-51`, 2026-08-05). The gap is
+  that the app is a **pure client-rendered SPA** — no prerendering in `vite.config.ts`. So
+  non-JS crawlers, social unfurlers and LLM crawlers see only the meta description, never
+  the founder story or the loanword argument. `content-plan.md` § "The rendering
+  constraint" already names this for future content pages; it applies to the landing page
+  today. Prerendering the ~6 public routes to static HTML is the highest-leverage
+  findability work, and it should land *before* the content push, not after.
+
 ### 3. Show locked content — issue #466 **[agent]**
 Owner-decided 2026-08-06, deferred out of PR #461. Paid content renders as *absent*, not
 locked: `/grammatica` shows **1 of 30** episodes (verified against cloud 2026-08-11 — 30
