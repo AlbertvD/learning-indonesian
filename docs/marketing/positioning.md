@@ -60,7 +60,7 @@ truth positions properly as **assembly**:
 > Serious learners already build this stack by hand — Anki for scheduling, a
 > textbook for grammar, a reader for input, a podcast for listening. It works,
 > and it is a second hobby. This is that stack, already assembled, for a
-> language pair nobody serves.
+> language pair no modern course serves.
 
 Completeness then reads as *work you do not have to do*, and it answers Anki in
 one line: Anki is one component of that stack, and the component that costs the
@@ -82,10 +82,21 @@ Three conclusions, and they are the backbone of the position:
 
 1. **Demand is proven.** 1.21M people are learning Indonesian on one platform
    alone. This is not a market that has to be created.
-2. **Supply to Dutch speakers is zero.** Duolingo serves Dutch speakers only the
-   mass-market majors. Anything outside that top nine must be learned through
-   English. Kamoe Bisa is not competing in a category Duolingo serves badly — it
-   is in one Duolingo structurally does not serve.
+2. **Supply to Dutch speakers is zero *on Duolingo*.** Duolingo serves Dutch
+   speakers only the mass-market majors. Anything outside that top nine must be
+   learned through English. Kamoe Bisa is not competing in a category Duolingo
+   serves badly — it is in one Duolingo structurally does not serve.
+
+   ⚠️ **Corrected 2026-08-18. Do NOT generalise this to the whole market.** Five
+   Dutch→Indonesian offerings were found and reviewed
+   (`competitive-messaging.md` §9): NHA sells a full B1 distance course in Dutch
+   for €269 with a diploma, Teman Indonesia teaches it 1:1, Talendomein resells
+   Dutch self-study on CD and USB, and 50languages/Loecsen give phrase courses
+   away. **The defensible claim is narrower and still strong: no modern,
+   app-native course serves this pair.** The competitive set is a distance
+   course, a private teacher and phrasebooks on a USB stick — which is a better
+   story than "nobody", because a visitor can verify it in one search and
+   "nobody" collapses the moment they find NHA.
 3. **Routing through English destroys the loanword advantage.** The loanwords
    are *Dutch*: `kantoor→kantor`, `handdoek→handuk`, `koelkast→kulkas`. An
    English-based course cannot use a single one. The biggest head start a Dutch
@@ -133,6 +144,65 @@ project 2026-08-05.
   what turns a true thing into an over-promise.
 - **Dutch throughout** — instruction, glosses, grammar explanation.
 
+## 2b. The Kamoe Bisa-methode — named 2026-08-18
+
+**Owner decision, taken while writing the landing hero.** Every serious
+competitor names its mechanism — the Babbel Method, the Pimsleur Method™,
+Duolingo's gamification, LingQ's comprehensible input — because a market this
+sophisticated buys a *how* rather than a *what* (`competitive-messaging.md` §2).
+We had a distinctive mechanism and no name for it; now we do.
+
+**What it names — the loop, not an outcome:**
+
+> Je dompelt jezelf onder in de taal — woorden leren, verhalen lezen en
+> luisteren, op jouw tempo — en alles wat je tegenkomt of opzoekt komt terug tot
+> je het kent, begrijpt en kan toepassen.
+
+The parts, all verified shipped:
+
+1. **Jij kiest wat meedoet.** Lessons and word lists are activated by the
+   learner; nothing is scheduled until they switch it on.
+2. **Lezen en luisteren op niveau.** 13 texts carrying a CEFR `level`
+   (`migration.sql:144`), 9 with audio.
+3. **Opzoeken = oefenen.** Tapping an unknown word while reading harvests it
+   into the learner's review set — `LezenReader.tsx:33-38` → `harvestWord()`.
+   This is the load-bearing step and the one no mass-market competitor has.
+4. **Eén sessie per dag**, assembled from everything active, scheduled by
+   predicted forgetting (FSRS).
+5. **Kennen → begrijpen → toepassen.** The capability ladder the app already
+   runs on, which is why that phrasing in the hero is descriptive rather than a
+   promise.
+6. **Affixen en register** — decode unseen words; learn what is actually said.
+
+### Rules for using the name
+
+The reason `competitive-messaging.md` §6 originally rated this candidate poorly
+was that a brand-shaped name ("the X method") is a *label*, and a label says
+nothing. That objection is answered **only** by the way it is used:
+
+- **Always pair the name with the mechanism on first use.** The landing hero does
+  this in one sentence. A bare "de Kamoe Bisa-methode" with no explanation is the
+  failure mode.
+- **Never attach an outcome or a timeline to it.** Not "leer sneller", not "in X
+  weken", not "bewezen". This is precisely the door efficacy claims come back
+  through: Babbel's method name is a container for "92% in 2 months", and we have
+  measured nothing.
+- **Never call it proven or scientifically validated.** We may cite the
+  principles it is built on (Nation, Krashen, Karpicke) and our own decisions
+  (ADR 0007). We may not claim the *method* has been tested — it has not.
+- **Capitalise and hyphenate as `Kamoe Bisa-methode`** (Dutch orthography), and
+  `Kamoe Bisa method` in English.
+
+### Where it belongs
+
+| Surface | Use it? |
+|---|---|
+| Landing hero | ✅ live since 2026-08-18, paired with the mechanism |
+| `/hoe-het-werkt` | ✅ should introduce it properly — that page IS the mechanism, and currently never names it |
+| Meta description, ad and social copy | ✅ once, with the mechanism |
+| Inside the app | ❌ learners do not need brand language; they need the thing to work |
+| Anywhere near a number | ❌ see the rules above |
+
 ## 3. Value themes
 
 1. **Begin bij wat je al kent.** The loanword bridge turns "I know nothing" into
@@ -178,7 +248,7 @@ The strategic choice, in ascending order of defensibility:
 | Frame | Verdict |
 |---|---|
 | "Indonesian language course" | Competes with Duolingo on brand and price. Loses. |
-| "Indonesisch leren voor Nederlandstaligen" | Defensible — nobody else serves this pair in Dutch. |
+| "Indonesisch leren voor Nederlandstaligen" | Defensible — but see the ⚠️ in §1: others DO serve this pair in Dutch, just not with a modern course. |
 | **"De app voor Nederlanders met een Indonesische band"** | Nearly uncontested, and it makes the loanword bridge the centre of the product rather than a nice touch. |
 
 The sentence the whole position hangs on:

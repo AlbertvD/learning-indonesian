@@ -92,7 +92,7 @@ percentages over hoeveel sneller je leert"* is a differentiator no competitor ca
 copy without repudiating their own homepage. It reads as confidence, and it is
 also simply true.
 
-## 6. The gap: we have no named method
+## 6. The named method — was a gap, now decided
 
 The one industry-standard move we are missing **and could make honestly.**
 
@@ -110,42 +110,112 @@ parts across three bands:
 Steps 2–4 are a **ratchet**: each pass raises your coverage, so the next text is
 readable. That is the product's actual thesis and it has no name.
 
-### Candidate names — owner's call
+### ✅ DECIDED 2026-08-18: **de Kamoe Bisa-methode**
 
-| Name | Reads as | Risk |
-|---|---|---|
-| **Lezen & oogsten** | Describes exactly what happens; matches the code's own word (`harvestWord`); warm, concrete, unmistakably Dutch | Slightly agricultural — though the pasar/Indonesia register makes that a feature |
-| **De leesoogst** | Tighter, one word, ownable | Less self-explanatory on first read |
-| **De 95%-route** | Grounded in the actual research; nobody else names a coverage target | ⚠️ **Probably unusable** — implies we get you to 95%. We do not: ~1,926 single words against the 4,000–5,000 families that 95% needs. Naming a destination we do not reach breaks the honesty gate |
-| **De Kamoe Bisa-methode** | Industry-standard shape (Babbel/Pimsleur) | Says nothing; a label rather than a mechanism |
+Owner's call, taken while writing the landing hero. Full definition and the rules
+for using it: `positioning.md` §2b.
 
-**Recommendation: "Lezen & oogsten."** It names the loop rather than a
-destination, so it promises nothing we cannot deliver; it is concrete in Heath's
-sense; and it is the one thing in the method that no mass-market competitor has
-(Duolingo, Babbel, Busuu and Pimsleur have no reading-to-review pipeline at all,
-and LingQ has the loop but not the content).
+This file originally rated that candidate *poorly* — "says nothing; a label rather
+than a mechanism" — and recommended "Lezen & oogsten" instead. **The objection was
+answered by usage rather than by the name.** The hero introduces the name and the
+mechanism in the same breath:
 
-⚠️ Whatever it is called, the name must describe the **mechanism**, never an
-outcome. "Method" naming is where efficacy claims sneak back in through the door
-marked branding.
+> Met de Kamoe Bisa-methode dompel je jezelf onder in de taal — woorden leren,
+> verhalen lezen en luisteren, op jouw tempo.
 
-## 7. What this changes in the copy
+Which is exactly what Babbel does, and it turns a label into a handle. The
+brand-shaped name also has one advantage the descriptive candidates lacked: it is
+**ownable**. "Lezen & oogsten" describes a technique anyone could adopt; the
+Kamoe Bisa-methode can only be ours.
+
+⚠️ The original warning stands and is now recorded as a rule in
+`positioning.md` §2b: the name must never carry an outcome or a timeline.
+Babbel's method name is the container their "92% in 2 months" claim travels in.
+Ours has nothing to put in it, and must stay empty of numbers.
+
+Rejected, with reasons kept: **"De 95%-route"** — grounded in real research and
+nobody else names a coverage target, but it implies we deliver 95% coverage and
+we do not (~1,926 single words against the 4,000–5,000 families that needs).
+**"Lezen & oogsten" / "De leesoogst"** — accurate and concrete, but describe a
+technique rather than a product, and are not ownable.
+
+## 7. The Dutch→Indonesian set — the competitors that actually matter
+
+Reviewed 2026-08-18, in Dutch. **This is the real competitive field**; §1's
+international players are the field we are measured against by analogy, not the
+one a Dutch buyer chooses from.
+
+| | Headline | Price | Angle |
+|---|---|---|---|
+| **NHA** | *"Cursus Indonesisch"* — *"Ben je klaar om de rijke cultuur en taal van Indonesië te ontdekken?"* | **€269** (12×€25), ERK B1, 12 months | Culture and adventure — "Gordel van Smaragd" |
+| **Teman Indonesia** | *"LEER BAHASA MET MIJ"* | on request | **A named teacher, Fithri.** "Kamu dan saya" — warm, personal, explicitly for people with Indonesian ties |
+| **Talendomein** | *"Cursussen Indonesisch — Leer de Indonesische taal"* | €12.95–€89.95 | Convenience. Resells uTalk/EuroTalk **on CD and USB** |
+| **50languages / Loecsen** | *"Leer gratis Indonesisch"* | free | Phrase lists |
+| **Mondly** | Dutch-interface Indonesian app | subscription | Generic multi-language platform |
+
+**Three findings, and they change the strategy:**
+
+**1. The market is old.** A distance course, a private teacher, and phrasebooks on
+a USB stick. Nothing app-native, nothing with a scheduler, nothing with levelled
+reading. That is a far better story than "nobody serves this pair" — it is
+checkable, and it survives a visitor finding NHA.
+
+**2. The personal voice is the NORM here, not a deviation.** Teman Indonesia
+leads with a named human being. When the landing page was worried about being
+too founder-led, it was measuring against Duolingo — but the actual neighbours
+are a teacher in Nederland and a distance-learning institute. **Keep the personal
+voice.**
+
+**3. The partner persona is completely unoccupied.** Every Dutch seller frames
+Indonesian as *travel, culture, adventure* — NHA's "rijke cultuur", Talendomein's
+holiday learners. **Not one leads with the family table.** Robin is unserved in
+Dutch by anybody, which is a stronger and more specific claim than the loanword
+bridge, and it is why the hero now says *"Voor als je het thuis wilt spreken."*
+
+⚠️ NHA also confirms the price anchor independently: €269 for a B1 course, next
+to Volksuniversiteit's €254.50 per level (`pricing.md` §1). Our €79/year sits an
+order of magnitude below the serious Dutch options, which `pricing.md` already
+calls a minivation.
+
+**Credibility note.** NHA leans on diplomas, accreditation (Cedeo, NRTO, CRKBO,
+ISO) and a money-back guarantee; Teman Indonesia on testimonials and a named
+teacher; both on social proof we do not have. Our substitutes are the founder's
+own path and the ADR 0007 audit — see `positioning.md` §2b and the honesty gate.
+
+## 8. What this changes in the copy
 
 - **Keep** the failure-arithmetic opening. It is the most differentiated thing on
   the page and the category-wide evidence supports it.
 - **Keep** the refusal of efficacy numbers, and consider making it louder — it is
   a position, not just a constraint.
-- **Add** a named method, once chosen, so the "how" has a handle a reader can
-  repeat. This is also the missing **proverb** (`marketing-copy`,
-  `references/stickiness.md`).
+- ✅ **Named method — done.** "De Kamoe Bisa-methode", live in the hero since
+  2026-08-18, always paired with the mechanism. Still missing from
+  `/hoe-het-werkt`, which is the page that actually explains it.
+- **Keep the personal, founder-led voice.** §7 shows it is the norm in this
+  niche, not a deviation — the closest Dutch peer leads with a named teacher.
+- **Lead with the family table, not with culture or travel.** Every Dutch seller
+  occupies the travel/culture framing; nobody occupies the partner. §7.
 - **Do not** add social proof, testimonials, learner counts or a proficiency
   timeline, however standard they look in this table.
 
-## 8. Sources
+## 9. Sources
 
-Read 2026-08-18: [LingQ](https://www.lingq.com) · [Babbel](https://www.babbel.com/) ·
-[Busuu](https://www.busuu.com/en) · [Pimsleur](https://www.pimsleur.com/) ·
+International, read 2026-08-18: [LingQ](https://www.lingq.com) ·
+[Babbel](https://www.babbel.com/) · [Busuu](https://www.busuu.com/en) ·
+[Pimsleur](https://www.pimsleur.com/) ·
 Duolingo via secondary source ([tagline archive](https://logotaglines.com/duolingo-slogan-tagline-and-logo-global-icon-little-green-owl)),
 homepage not directly fetchable.
+Dutch→Indonesian, read 2026-08-18: [NHA](https://www.nha.nl/taalcursussen/indonesisch) ·
+[Teman Indonesia](https://www.temanindonesia.nl/) ·
+[Talendomein](https://www.talendomein.nl/talen-leren-cursussen-a-z/indonesisch/) ·
+[50languages](https://www.50languages.com/leer-indonesisch-gratis) (403 to fetch;
+listing verified via search) · [Mondly NL](https://play.google.com/store/apps/details?id=com.atistudios.mondly.id) ·
+[Leren.nl overview](https://www.leren.nl/rubriek/talen/indonesisch/)
+
+Indonesian-specific, international: [IndonesianPod101](https://www.indonesianpod101.com/) ·
+[Talk In Indonesian](https://talkinindonesian.com/) · [Ling](https://ling-app.com/learn-indonesian/) ·
+[Taalhammer](https://www.taalhammer.com/which-language-learning-app-should-i-use-for-indonesian-in-2026-taalhammer-vs-anki-and-4-more-apps/)
+
 Duolingo course-catalogue evidence for the NL→ID gap is in `positioning.md` §1
-(checked 2026-08-05).
+(checked 2026-08-05), and §1's market-wide generalisation was **corrected
+2026-08-18** on the strength of the Dutch set above.

@@ -80,6 +80,13 @@ belongs in the source doc first, or it is drift.
 | What do competitors claim, and where do we stand? | `docs/marketing/competitive-messaging.md` |
 | Is this capability actually shipped? | the live DB, or the code — never memory |
 
+**The method has a name: "de Kamoe Bisa-methode"** (decided 2026-08-18,
+`positioning.md` §2b). Use it — but **always paired with the mechanism in the
+same breath**, and **never attached to an outcome, a timeline or a number.** A
+bare method name is an empty label, and a method name with a figure beside it is
+how efficacy claims re-enter through the door marked branding. Babbel's method
+name is the container their "92% in 2 months" travels in; ours must stay empty.
+
 **Primary persona is Robin, the partner** — changed 2026-08-16 from Marijke, the
 heritage learner. `personas.md` §1. Marijke, Thijs and Sanne are still served;
 they are doors, not the hero. If a piece of copy seems to want a different
