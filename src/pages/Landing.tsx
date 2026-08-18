@@ -168,6 +168,45 @@ export function Landing() {
       </div>
 
       <main>
+        {/* What the method is made of — sits directly under the hero because the
+            hero opens the gap ("de Kamoe Bisa-methode") and this closes it,
+            which is Sugarman's slippery slide at band level.
+            This is NOT the forbidden feature list (positioning.md §1 / D4): a
+            feature list invites axis-by-axis comparison and says nothing about
+            who it is for. These six are the DEFINITION of a named method, which
+            is exactly what stops a method name being an empty label — the same
+            move Babbel and Pimsleur make.
+            ⚠️ All six verified against the live DB 2026-08-18. The owner's
+            original sixth item was "culture lessons"; no such module exists
+            (there is no culture section_kind), so the culture is claimed where
+            it actually lives — by naming the folktales. */}
+        <section className={`${classes.section} ${classes.sectionAiry}`}>
+          <div className={classes.lead}>
+            <span className={classes.leadKicker}>{T.methodKicker}</span>
+            <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.methodTitle}</h2>
+          </div>
+          <div className={classes.method}>
+            {(
+              [
+                [T.methodG1, [[T.method3Title, T.method3Body], [T.method6Title, T.method6Body], [T.method4Title, T.method4Body]]],
+                [T.methodG2, [[T.method1Title, T.method1Body], [T.method2Title, T.method2Body]]],
+                [T.methodG3, [[T.method5Title, T.method5Body], [T.method7Title, T.method7Body]]],
+              ] as const
+            ).map(([group, items]) => (
+              <div key={group} className={classes.methodGroup}>
+                <h3 className={`${classes.methodGroupName} ${classes.serif}`}>{group}</h3>
+                {items.map(([title, body]) => (
+                  <div key={title} className={classes.methodItem}>
+                    <h4>{title}</h4>
+                    <p>{body}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <p className={`${classes.methodClose} ${classes.serif}`}>{T.methodClose}</p>
+        </section>
+
         {/* The founder story, as its own band rather than as the hero.
             Restructured 2026-08-18 after reviewing five Dutch->Indonesian
             sellers (docs/marketing/competitive-messaging.md): every one names

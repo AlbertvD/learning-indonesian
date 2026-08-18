@@ -57,6 +57,45 @@ const nl = {
   heroCta: 'Gratis beginnen',
   heroLogin: 'Al een account? Inloggen →',
 
+  // ── What the method is made of. Owner-listed 2026-08-18. This is NOT a
+  //    feature list in the forbidden sense (positioning.md §1 / D4) — it is the
+  //    DEFINITION of the named method, which is what keeps a method name from
+  //    being an empty label. It sits directly under the hero to close the
+  //    curiosity gap the hero opens ("de Kamoe Bisa-methode" — what is that?).
+  //    ⚠️ Every line verified against the live DB 2026-08-18. The owner's sixth
+  //    item, "culture lessons", does NOT exist as a module — there is no culture
+  //    section_kind. The culture is real but it lives in the STORIES, so it is
+  //    claimed by naming the actual folktales instead, which is truer and more
+  //    concrete. Counts: 191 grammar patterns · 30 lessons · 13 texts (9 with
+  //    audio) · 953 affix capabilities · 2,573 items on FSRS.
+  methodKicker: 'Waar de methode uit bestaat',
+  methodTitle: 'Uitgelegd, geoefend, gebruikt.',
+  methodG1: 'Je krijgt het uitgelegd',
+  methodG2: 'Je oefent tot het blijft zitten',
+  methodG3: 'Je gebruikt het echt',
+  method1Title: 'Van herkennen naar begrijpen naar toepassen',
+  method1Body:
+    'De methode leidt je door alle fasen van het leren van een taal. Elk woord en elk stuk grammatica gaat dezelfde weg: eerst herken je het, dan begrijp je het zonder hulp, uiteindelijk gebruik je het zelf. In die volgorde, nooit andersom.',
+  method2Title: 'Een planner die weet wanneer je iets bijna vergeet',
+  method2Body:
+    'Per woord, niet per les. Je tijd gaat naar wat begint te wankelen, niet naar wat allang vastzit.',
+  method3Title: 'Echte grammaticalessen',
+  method3Body:
+    'Dertig lessen die de logica van het Indonesisch uitleggen, met audio erbij. Zodat je patronen begrijpt in plaats van ze te raden.',
+  method4Title: 'Cultuurlessen door de cursus heen',
+  method4Body:
+    'Borobudur, batik, de zonnevogel Garuda, dukun en jamu, Majapahit en Gajah Mada. Achttien stukken om te lezen, verspreid over de lessen — je leert het land erbij, niet alleen de taal.',
+  method5Title: 'Verhalen om te lezen én te beluisteren',
+  method5Body:
+    'Van A1 tot B2, met de audio ernaast — Kancil en de krokodil, Timun Mas, het verhaal achter de naam Surabaya. Tik een woord aan dat je niet kent en het schuift je herhalingen in.',
+  method6Title: 'Een affixtrainer',
+  method6Body:
+    'Indonesisch bouwt woorden met voor- en achtervoegsels: ajar, belajar, pelajaran, mengajar. Snap je die machine, dan lees je woorden die je nooit geleerd hebt.',
+  method7Title: 'Spreektaal naast boekentaal',
+  method7Body:
+    'Wat in het leerboek staat is niet wat er aan tafel gezegd wordt. 66 woordparen zitten er dubbel in — lelah én capek, uang én duit — met een schakelaar ertussen, zodat je allebei leert herkennen.',
+  methodClose: 'Samen is dat de Kamoe Bisa-methode.',
+
   // ── Why this exists — the founder story as its own band (Miller: the guide
   //    appears AFTER the reader's problem is established). Carries the emotional
   //    core, the coverage arithmetic, and the turn back to the reader.
@@ -67,7 +106,7 @@ const nl = {
   storyP2:
     'Daar wilde ik weg. Niet vloeiend worden — gewoon iets terug kunnen zeggen. Maar je leert honderden woorden en struikelt nog steeds over elke zin, en dat ligt niet aan je discipline: om een gesprek te volgen moet je zo’n 95% van de woorden al kennen, en na een beginnerscursus zit je rond de 80%.',
   storyP3:
-    'Dat gat dicht je door veel te lezen op jouw niveau, en door elk woord dat je opzoekt te laten terugkomen tot het blijft zitten. Ik heb jaren geprobeerd dat zelf in elkaar te zetten, met losse apps op een eigen server. Uiteindelijk heb ik het maar gebouwd — voor het moment dat je schoonmoeder je iets vraagt en jij gewoon antwoordt.',
+    'Dat gat dicht je door veel te lezen op jouw niveau, en door elk woord dat je opzoekt te laten terugkomen tot het blijft zitten. Ik heb jaren geprobeerd dat zelf bij elkaar te sprokkelen, met losse apps naast elkaar. Uiteindelijk heb ik het maar gebouwd — voor het moment dat je schoonmoeder je iets vraagt en jij gewoon antwoordt.',
   storySignature: 'Albert van Duijn',
 
   specAria: 'Een woordkaart uit de app: pasar betekent de markt',
@@ -86,15 +125,15 @@ const nl = {
   stack1Tool: 'Anki',
   stack1Body:
     'De beste planner die er is, en gratis. Alleen maak je elke kaart zelf — en je maakt geen kaart voor een woord waarvan je niet weet dat het bestaat.',
-  stack2Tool: 'Lute & LinguaCafe',
+  stack2Tool: 'Een leesapp',
   stack2Body:
-    'Uitstekend lezen-met-woordregistratie. Werkt zodra je teksten hebt die op jouw niveau liggen. Die had ik niet, en ze zoeken kostte meer avonden dan het lezen zelf.',
-  stack3Tool: 'Audiobookshelf',
+    'Lezen met een woordenlijst die meegroeit. Werkt zodra je teksten hebt die op jouw niveau liggen — en die zoeken kost meer avonden dan het lezen zelf.',
+  stack3Tool: 'Een luisterapp',
   stack3Body:
-    'Klaar voor de luisteruren. Er is alleen nooit Indonesische audio in gekomen waar ik al genoeg van verstond om er iets aan te hebben.',
-  stack4Tool: 'LibreTranslate',
+    'Voor de luisteruren. Als je tenminste Indonesische audio kunt vinden waar je al genoeg van verstaat om er iets aan te hebben.',
+  stack4Tool: 'Een vertaalapp',
   stack4Body:
-    'Vertaalt alles, meteen, zonder internet. Een vertaling is alleen geen uitleg — je weet daarna wát het betekent, niet waaróm.',
+    'Vertaalt alles, meteen. Een vertaling is alleen geen uitleg — je weet daarna wát het betekent, niet waaróm.',
   stack5Tool: 'Duolingo',
   stack5Body: 'Prima app, en makkelijk vol te houden. Alleen niet in het Nederlands voor deze taal — en niet met de woorden die je thuis hoort.',
   stackClose:
@@ -138,12 +177,12 @@ const nl = {
   howLink: 'Lees uitgebreid hoe het werkt →',
 
   // ── Grounded in the science — the audit, not the citation
-  sciKicker: 'Waar het op gebaseerd is',
-  sciTitle: 'Gebouwd op onderzoek — en verbouwd toen dat onderzoek mij ongelijk gaf.',
+  sciKicker: 'Gegrond in bewezen wetenschap',
+  sciTitle: 'En hij verandert zodra de data zegt dat het beter kan.',
   sciAudit:
-    'In mei 2026 ben ik 36 uur van mijn eigen sessiedata gaan nalopen. 30,1% van alle herhalingen bleek binnen dezelfde sessie nóg een keer over hetzelfde woord te gaan; in het ergste geval drie toetsen op apa kabar? binnen 31 seconden. Dat is geen ophalen — het antwoord staat dan nog in je werkgeheugen. Ik heb het veranderd.',
+    'Een voorbeeld. In mei 2026 liep ik 36 uur van mijn eigen sessiedata na. 30,1% van alle herhalingen bleek binnen dezelfde sessie nóg een keer over hetzelfde woord te gaan; in het ergste geval drie toetsen op apa kabar? binnen 31 seconden. Dat is geen ophalen — het antwoord staat dan nog in je werkgeheugen. Dus is dat aangepast.',
   sciPrinciples:
-    'De principes zijn niet van mij. Eerst herkennen, dan pas zelf produceren (Nation, Krashen). En herhalingen die uit elkaar liggen werken beter dan herhalingen op een rij (Karpicke). De onderzoekers die ik noem kennen dit product niet.',
+    'De principes zijn niet van mij — ze komen uit taalverwervingsonderzoek dat al decennia overeind staat. Eerst herkennen, dan pas zelf produceren (Nation, Krashen). Herhalingen die uit elkaar liggen werken beter dan herhalingen op een rij (Karpicke). En lezen gaat pas lopen als je zo’n 95% van de woorden al kent (Laufer; Schmitt e.a.). Dáár is deze methode uit opgebouwd. De onderzoekers zelf kennen dit product niet.',
   sciHonest:
     'Wat je hier niet vindt: percentages over hoeveel sneller je leert. Dat is voor dit product nooit gemeten — door mij niet en door niemand anders.',
 
@@ -187,6 +226,34 @@ const en: typeof nl = {
   heroCta: 'Start free',
   heroLogin: 'Already have an account? Log in →',
 
+  methodKicker: 'What the method is made of',
+  methodTitle: 'Explained, practised, used.',
+  methodG1: 'It gets explained to you',
+  methodG2: 'You practise until it sticks',
+  methodG3: 'You actually use it',
+  method1Title: 'From recognising to understanding to using',
+  method1Body:
+    'The method takes you through every phase of learning a language. Every word and every piece of grammar travels the same road: first you recognise it, then you understand it unaided, and finally you use it yourself. In that order, never the other way round.',
+  method2Title: 'Reviews timed for when you are about to forget',
+  method2Body:
+    'Per word, not per lesson. Your time goes to what is starting to wobble, not to what has long since stuck.',
+  method3Title: 'Real grammar lessons',
+  method3Body:
+    'Thirty lessons explaining the logic of Indonesian, with audio. So you understand the patterns instead of guessing them.',
+  method4Title: 'Culture lessons throughout the course',
+  method4Body:
+    'Borobudur, batik, the sunbird Garuda, dukun and jamu, Majapahit and Gajah Mada. Eighteen pieces to read, spread across the lessons — you learn the country alongside the language.',
+  method5Title: 'Stories to read and to listen to',
+  method5Body:
+    'A1 to B2, with the audio alongside — Kancil and the crocodile, Timun Mas, the story behind the name Surabaya. Tap a word you do not know and it slides into your reviews.',
+  method6Title: 'An affix trainer',
+  method6Body:
+    'Indonesian builds words with prefixes and suffixes: ajar, belajar, pelajaran, mengajar. Understand that machine and you can read words you never learned.',
+  method7Title: 'Everyday speech alongside textbook Indonesian',
+  method7Body:
+    'What the textbook says is not what gets said at the table. 66 word pairs are in there twice — lelah and capek, uang and duit — with a toggle between them, so you learn to recognise both.',
+  methodClose: 'Together, that is the Kamoe Bisa method.',
+
   storyKicker: 'Why this exists',
   storyTitle: 'At the table, everyone switched to English. For me.',
   storyP1:
@@ -194,7 +261,7 @@ const en: typeof nl = {
   storyP2:
     'I wanted out of that. Not fluent — just able to say something back. But you learn hundreds of words and still trip over every sentence, and that is not a discipline problem: to follow a conversation you need to know roughly 95% of the words already, and after a beginner course you are at about 80%.',
   storyP3:
-    'You close that gap by reading a lot at your own level, and by having every word you look up come back until it sticks. I spent years trying to assemble that myself, with separate apps on my own server. In the end I just built it — for the moment your mother-in-law asks you something and you simply answer.',
+    'You close that gap by reading a lot at your own level, and by having every word you look up come back until it sticks. I spent years trying to piece that together myself, with separate apps side by side. In the end I just built it — for the moment your mother-in-law asks you something and you simply answer.',
   storySignature: 'Albert van Duijn',
 
   specAria: 'A word card from the app: pasar means the market',
@@ -212,16 +279,16 @@ const en: typeof nl = {
   stack1Tool: 'Anki',
   stack1Body:
     'The best scheduler there is, and free. You just build every card yourself — and you cannot build a card for a word you do not yet know exists.',
-  stack2Tool: 'Lute & LinguaCafe',
+  stack2Tool: 'Een leesapp',
   stack2Body: 'Reading with word tracking attached. Works beautifully — once you have found texts that sit at your level.',
-  stack3Tool: 'Audiobookshelf',
+  stack3Tool: 'Een luisterapp',
   stack3Body: 'For the listening hours. If you can find Indonesian audio you already understand enough of to benefit from.',
-  stack4Tool: 'LibreTranslate',
+  stack4Tool: 'Een vertaalapp',
   stack4Body: 'For when you got stuck. A translation is not an explanation though — afterwards you know what it meant, not why.',
   stack5Tool: 'Duolingo',
   stack5Body: 'A good app, and easy to keep up. Just not in Dutch for this language — and not with the words you hear at home.',
   stackClose:
-    'Here it is one thing, and it arrives filled. Thirty lessons with grammar and audio. Thirteen levelled stories, nine of them with audio. And a scheduler that tracks, word by word, what you are about to forget. Nothing to source, nothing to set up — start tonight. (Honestly: the story library is still small and sits mostly at A1 and A2. That one is being worked on.)',
+    'Here it is one thing, and it arrives filled. Thirty lessons with grammar and audio. Thirteen levelled stories, nine of them with audio. And something that tracks, word by word, what you are about to forget. Nothing to source, nothing to set up — start tonight. (Honestly: the story library is still small and sits mostly at A1 and A2. That one is being worked on.)',
 
   pairKicker: 'The pair',
   pairTitle: 'Duolingo teaches you lelah. Your mother-in-law says capek.',
@@ -257,12 +324,12 @@ const en: typeof nl = {
     'Tap a word you do not know while reading and it slides into your reviews. After that it returns just before you would forget it again — a word you “already knew” reappearing days later is not a fault, it is exactly the point.',
   howLink: 'Read how it works in full →',
 
-  sciKicker: 'What it is built on',
-  sciTitle: 'Built on research — and rebuilt when that research proved me wrong.',
+  sciKicker: 'Grounded in proven science',
+  sciTitle: 'And it changes the moment the data says it can be better.',
   sciAudit:
-    'In May 2026 I went back through 36 hours of my own session data. 30.1% of all reviews turned out to test the same word twice inside one session; worst case, three tests on apa kabar? within 31 seconds. That is not retrieval — the answer is still in working memory. I changed it.',
+    'One example. In May 2026 I went back through 36 hours of my own session data. 30.1% of all reviews turned out to test the same word twice inside one session; worst case, three tests on apa kabar? within 31 seconds. That is not retrieval — the answer is still in working memory. So that was changed.',
   sciPrinciples:
-    'The principles are not mine. Recognise first, produce later (Nation, Krashen). And reviews spaced apart beat reviews back to back (Karpicke). The researchers I name do not know this product exists.',
+    'The principles are not mine — they come from language-acquisition research that has held up for decades. Recognise first, produce later (Nation, Krashen). Reviews spaced apart beat reviews back to back (Karpicke). And reading only starts working once you know roughly 95% of the words (Laufer; Schmitt et al.). That is what this method is built out of. The researchers themselves do not know this product exists.',
   sciHonest:
     'What you will not find here: percentages about how much faster you learn. That has never been measured for this product — not by me and not by anyone else.',
 
