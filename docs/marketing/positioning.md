@@ -192,6 +192,12 @@ false — plenty of Dutch speakers learn happily in English. The true and strong
 claim is narrower: *the loanword head start is unavailable there*. Attack the
 gap, never the learner or the tool they chose.
 
+> **Competitor messaging is tracked separately** in
+> `docs/marketing/competitive-messaging.md` (homepages read 2026-08-18): what
+> each of them actually claims, the three axes we cannot compete on (social
+> proof, efficacy numbers, content volume), and the one industry-standard move
+> we are missing — a named method.
+
 ## 6. Relevant trend (bonus, handle with care)
 
 Renewed interest in Indisch/Moluccan family history among second and third

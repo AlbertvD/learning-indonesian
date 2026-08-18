@@ -77,6 +77,7 @@ belongs in the source doc first, or it is drift.
 | What do we publish, and about what? | `docs/marketing/content-plan.md` |
 | What does it cost and why? | `docs/marketing/pricing.md` |
 | Where do we reach people? | `docs/marketing/channels.md` |
+| What do competitors claim, and where do we stand? | `docs/marketing/competitive-messaging.md` |
 | Is this capability actually shipped? | the live DB, or the code — never memory |
 
 **Primary persona is Robin, the partner** — changed 2026-08-16 from Marijke, the
