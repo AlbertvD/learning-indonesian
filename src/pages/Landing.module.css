@@ -199,20 +199,20 @@
   background: var(--land-gold);
 }
 .hero h1 {
-  font-size: clamp(36px, 5.2vw, 58px);
-  line-height: 1.06;
-  margin: 0 0 20px;
+  font-size: clamp(30px, 4.1vw, 46px);
+  line-height: 1.12;
+  margin: 0 0 22px;
   font-weight: 600;
-  letter-spacing: -0.025em;
-  max-width: 15ch;
+  letter-spacing: -0.02em;
+  max-width: 26ch;
 }
 .hero h1 em {
   font-style: italic;
   color: var(--land-gold);
 }
-/* The lede is the recognition line — the sentence the primary persona should
-   feel before reading anything about the product. It carries more weight than
-   the story paragraph that follows it. */
+/* The lede names the stack being replaced — it is the second beat of the
+   headline's story, not a separate claim, so it carries more weight than the
+   paragraph below it. */
 .heroLede {
   font-size: 20px;
   line-height: 1.5;
@@ -864,4 +864,38 @@
   .btnFill:hover {
     transform: none;
   }
+}
+
+/* ---------- the founder-story band ----------
+ * Was the hero until 2026-08-18. Moved down after the Dutch->Indonesian
+ * competitor review: every seller in this niche names the language in the
+ * headline, and a 120-word story above the offer failed the grunt test. The
+ * story keeps its length here — Teman Indonesia, the closest Dutch peer, leads
+ * with a named teacher, so the personal voice is the category norm, not a
+ * deviation. It just belongs after the reader knows what this is. */
+
+.story {
+  max-width: 62ch;
+}
+.story p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--land-ink-2);
+  margin: 0 0 18px;
+}
+/* The first paragraph carries the emotional beat, so it gets the weight. */
+.storyLede {
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  color: var(--land-ink) !important;
+  font-weight: 500;
+}
+.storySignature {
+  font-size: 16px;
+  font-style: italic;
+  color: var(--land-muted) !important;
+  margin: 22px 0 0 !important;
+}
+.storySignature::before {
+  content: '— ';
 }

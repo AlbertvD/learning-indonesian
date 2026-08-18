@@ -40,21 +40,38 @@ const nl = {
   login: 'Inloggen',
   registerCta: 'Gratis beginnen',
 
-  // ── Hero: the story, on the batik-green ground (D8). No tier claim here —
-  //    D7 keeps the argument off pricing; the closing band carries the facts.
-  heroEyebrow: 'Indonesisch voor Nederlandstaligen',
-  heroTitlePre: 'Aan tafel schakelt iedereen over op',
-  heroTitleEm: 'Nederlands',
-  heroLede: 'Uit beleefdheid. En jij zit erbij en volgt het net niet.',
-  heroStory:
-    'Ik wilde de taal van mijn partner echt leren. Ik eindigde met Anki, een tekstboek, een reader, een luister-app en een grammaticasite tegelijk open — dat werkt, maar het is een tweede hobby. Kamoe Bisa is die stapel, al in elkaar gezet.',
-  heroSignature: 'Albert van Duijn',
+  // ── Hero: the FOUNDING STORY leads, and it names the apps being replaced in
+  //    the headline itself (owner steer 2026-08-17: "its more about the founding
+  //    story, why the app was created, all the different apps its meant to
+  //    replace as a single learner experience"). The family-table moment — the
+  //    primary persona's recognition — moves down to become the WHY rather than
+  //    the opener, because the page's pull should come from the story and the
+  //    assembly argument, not from a pain headline.
+  //    No tier claim here: D7 keeps the argument off pricing; the closing band
+  //    carries the facts.
+  heroEyebrow: 'Voor Nederlanders met een Indonesische band',
+  heroTitlePre: 'Indonesisch leren, in het Nederlands.',
+  heroTitleEm: 'Voor als je het thuis wilt spreken.',
+  heroLede:
+    'Eén cursus met grammatica, verhalen om te lezen én te luisteren, en dagelijkse herhaling om te zorgen dat je steeds meer woorden kent, begrijpt en kan toepassen. Met de Kamoe Bisa-methode dompel je jezelf onder in de taal — woorden leren, verhalen lezen en luisteren, op jouw tempo. Durf jij het gesprek aan te gaan?',
   heroCta: 'Gratis beginnen',
   heroLogin: 'Al een account? Inloggen →',
 
+  // ── Why this exists — the founder story as its own band (Miller: the guide
+  //    appears AFTER the reader's problem is established). Carries the emotional
+  //    core, the coverage arithmetic, and the turn back to the reader.
+  storyKicker: 'Waarom dit bestaat',
+  storyTitle: 'Aan tafel schakelde iedereen over op Engels. Voor mij.',
+  storyP1:
+    'Uit aardigheid, dat wel. Maar je partner vertaalt een grap die dan niet meer grappig is, je schoonmoeder glimlacht even naar je, en het gesprek loopt verder zonder je. Je hoort erbij en je staat er tegelijk buiten.',
+  storyP2:
+    'Daar wilde ik weg. Niet vloeiend worden — gewoon iets terug kunnen zeggen. Maar je leert honderden woorden en struikelt nog steeds over elke zin, en dat ligt niet aan je discipline: om een gesprek te volgen moet je zo’n 95% van de woorden al kennen, en na een beginnerscursus zit je rond de 80%.',
+  storyP3:
+    'Dat gat dicht je door veel te lezen op jouw niveau, en door elk woord dat je opzoekt te laten terugkomen tot het blijft zitten. Ik heb jaren geprobeerd dat zelf in elkaar te zetten, met losse apps op een eigen server. Uiteindelijk heb ik het maar gebouwd — voor het moment dat je schoonmoeder je iets vraagt en jij gewoon antwoordt.',
+  storySignature: 'Albert van Duijn',
+
   specAria: 'Een woordkaart uit de app: pasar betekent de markt',
   specTag: 'Woordenschat · markt',
-  specNr: 'nr. 412',
   specPhon: '/ˈpa.sar/ · zelfstandig naamwoord',
   specGloss: 'de markt',
   specExample: '“Saya pergi ke pasar.”',
@@ -62,23 +79,26 @@ const nl = {
   specNext: 'Volgende herhaling over 3 dagen',
 
   // ── The stack you would otherwise assemble (D4 — assembly, not features)
-  stackKicker: 'Wat je anders zelf bij elkaar zoekt',
-  stackTitle: 'Vijf dingen tegelijk open. Of één.',
+  stackKicker: 'Wat “meer doen” in de praktijk betekent',
+  stackTitle: 'Stuk voor stuk goed gereedschap. Samen een project.',
   stackIntro:
-    'Wie het serieus aanpakt bouwt deze stapel zelf. Het werkt ook. Het kost alleen elke week onderhoud.',
+    'Zodra je verder wilt dan losse woorden heb je dit nodig: iets om op niveau te lezen, iets om te luisteren, iets dat je herhalingen plant. Het bestaat allemaal en het is grotendeels gratis — ik heb het zelf draaien gehad. Alleen zijn ze leeg tot jij ze vult, en niet met wat dan ook: met iets dat net boven je zit.',
   stack1Tool: 'Anki',
   stack1Body:
-    'Plant je herhalingen perfect — maar je maakt elke kaart zelf. En je maakt geen kaart voor een woord waarvan je niet weet dat het bestaat.',
-  stack2Tool: 'Een tekstboek',
-  stack2Body: 'Grammatica die klopt, in een tempo dat niet het jouwe is.',
-  stack3Tool: 'Een reader',
-  stack3Body: 'Teksten op jouw niveau — als je ze kunt vinden.',
-  stack4Tool: 'Een luister-app',
-  stack4Body: 'Luisteren zonder tekst ernaast, en zonder dat het meetelt.',
-  stack5Tool: 'Een grammaticasite',
-  stack5Body: 'Antwoorden op vragen die je nog niet kon stellen.',
+    'De beste planner die er is, en gratis. Alleen maak je elke kaart zelf — en je maakt geen kaart voor een woord waarvan je niet weet dat het bestaat.',
+  stack2Tool: 'Lute & LinguaCafe',
+  stack2Body:
+    'Uitstekend lezen-met-woordregistratie. Werkt zodra je teksten hebt die op jouw niveau liggen. Die had ik niet, en ze zoeken kostte meer avonden dan het lezen zelf.',
+  stack3Tool: 'Audiobookshelf',
+  stack3Body:
+    'Klaar voor de luisteruren. Er is alleen nooit Indonesische audio in gekomen waar ik al genoeg van verstond om er iets aan te hebben.',
+  stack4Tool: 'LibreTranslate',
+  stack4Body:
+    'Vertaalt alles, meteen, zonder internet. Een vertaling is alleen geen uitleg — je weet daarna wát het betekent, niet waaróm.',
+  stack5Tool: 'Duolingo',
+  stack5Body: 'Prima app, en makkelijk vol te houden. Alleen niet in het Nederlands voor deze taal — en niet met de woorden die je thuis hoort.',
   stackClose:
-    'Hier zit dat in één sessie per dag: grammatica, verhalen om te lezen én te luisteren, een affixtrainer, een werkplaats voor woorden die maar niet blijven plakken — en een planner die bijhoudt wanneer je iets bijna vergeet.',
+    'Hier is het één ding, en het komt gevuld. Dertig lessen met grammatica en audio. Dertien verhalen op niveau, negen ervan met audio. En een planner die per woord bijhoudt wat je bijna vergeet. Niets zoeken, niets opzetten — vanavond beginnen. (Eerlijk: de verhalenbibliotheek is nog klein en ligt vooral op A1 en A2. Daar wordt aan gewerkt.)',
 
   // ── The signature: two words and a relationship (spec §4)
   pairKicker: 'Het paar',
@@ -96,7 +116,7 @@ const nl = {
   bridgeKicker: 'Je kent er al ruim 170',
   bridgeTitle: 'Je spreekt meer Indonesisch dan je denkt.',
   bridgeBody:
-    'Drie eeuwen gedeelde geschiedenis liet honderden Nederlandse woorden achter in het Indonesisch. Je herkent ze meteen — en dat zijn meteen je eerste woorden.',
+    'Driehonderd jaar samen levert honderden Nederlandse woorden op die nog gewoon in het Indonesisch zitten. Je herkent ze meteen. Dat zijn je eerste woorden, en je kende ze al.',
   bridgeMore:
     'En andersom: pasar, ketjap, tahoe en nasi goreng kwamen mee terug naar het Nederlands.',
   bridgeEdge:
@@ -108,31 +128,31 @@ const nl = {
   howTitle: 'Jij kiest wat je oefent. De rest is één sessie per dag.',
   how1Title: 'Jij zet aan wat je wilt leren',
   how1Body:
-    'Lessen en woordenlijsten activeer je zelf. Wat je niet aanzet, komt niet in je sessie. Dat is het stuk dat niemand verwacht — en het is met opzet zo.',
+    'Lessen en woordenlijsten activeer je zelf. Wat je niet aanzet, komt niet in je sessie. Dat is het stuk dat niemand verwacht — en dat is expres.',
   how2Title: 'Alles komt samen in één sessie',
   how2Body:
     'Geen aparte rij per les. Eén sessie, samengesteld uit alles wat aanstaat, met wat vandaag aan de beurt is. Tien minuten is de hele afspraak.',
-  how3Title: 'Woorden komen terug vlak voordat je ze vergeet',
+  how3Title: 'Wat je opzoekt, komt terug',
   how3Body:
-    'Dat een woord dat je “al kende” dagen later terugkomt is geen fout. Dat is precies het punt.',
+    'Tik tijdens het lezen een woord aan dat je niet kent en het schuift je herhalingen in. Daarna komt het terug vlak voordat je het weer vergeet — dat een woord dat je “al kende” dagen later langskomt is geen fout, dat is precies het punt.',
   howLink: 'Lees uitgebreid hoe het werkt →',
 
   // ── Grounded in the science — the audit, not the citation
   sciKicker: 'Waar het op gebaseerd is',
-  sciTitle: 'Gebouwd vanuit onderzoek — en verbouwd toen dat onderzoek ons ongelijk gaf.',
+  sciTitle: 'Gebouwd op onderzoek — en verbouwd toen dat onderzoek mij ongelijk gaf.',
   sciAudit:
-    'In mei 2026 hebben we 36 uur aan echte sessies nagelopen. 30,1% van alle herhalingen bleek binnen dezelfde sessie nóg een keer over hetzelfde te gaan; in het ergste geval drie toetsen op apa kabar? binnen 31 seconden. Dat is geen ophalen uit je geheugen — dat antwoord staat er dan nog. Het is veranderd.',
+    'In mei 2026 ben ik 36 uur van mijn eigen sessiedata gaan nalopen. 30,1% van alle herhalingen bleek binnen dezelfde sessie nóg een keer over hetzelfde woord te gaan; in het ergste geval drie toetsen op apa kabar? binnen 31 seconden. Dat is geen ophalen — het antwoord staat dan nog in je werkgeheugen. Ik heb het veranderd.',
   sciPrinciples:
-    'De principes zijn niet van ons. Eerst herkennen, dan pas zelf produceren (Nation, Krashen). En herhalingen die uit elkaar liggen werken beter dan herhalingen op een rij (Karpicke).',
+    'De principes zijn niet van mij. Eerst herkennen, dan pas zelf produceren (Nation, Krashen). En herhalingen die uit elkaar liggen werken beter dan herhalingen op een rij (Karpicke). De onderzoekers die ik noem kennen dit product niet.',
   sciHonest:
-    'Wat je hier niet vindt: percentages over hoeveel sneller je leert. Dat is voor dit product nooit gemeten — door ons niet en door niemand anders.',
+    'Wat je hier niet vindt: percentages over hoeveel sneller je leert. Dat is voor dit product nooit gemeten — door mij niet en door niemand anders.',
 
   // ── The doors, for the three secondary personas (D11)
   doorsKicker: 'Misschien ben jij dit',
-  doorsTitle: 'Niet iedereen komt hier om dezelfde reden binnen.',
+  doorsTitle: 'Niet iedereen komt binnen via dezelfde deur.',
   door1Title: 'Je oma kwam uit Indië',
   door1Body:
-    'Ketjap op tafel, pasar malam elke zomer, en een taal die niemand vertaalde. Je begint niet bij nul — je herkent er al honderd.',
+    'Ketjap op tafel, pasar malam elke zomer, en een taal die niemand vertaalde. Je begint niet bij nul — je herkent er al ruim 170.',
   door1Link: 'Bekijk de leenwoorden →',
   door2Title: 'Je gaat er wonen of werken',
   door2Body:
@@ -159,42 +179,49 @@ const en: typeof nl = {
   login: 'Log in',
   registerCta: 'Start free',
 
-  heroEyebrow: 'Indonesian for Dutch speakers',
-  heroTitlePre: 'At the table everyone switches to',
-  heroTitleEm: 'Dutch',
-  heroLede: 'Out of politeness. And you sit there not quite following.',
-  heroStory:
-    'I wanted to properly learn my partner’s language. I ended up with Anki, a textbook, a reader, a listening app and a grammar site all open at once — it works, but it is a second hobby. Kamoe Bisa is that stack, already assembled.',
-  heroSignature: 'Albert van Duijn',
+  heroEyebrow: 'For Dutch speakers with an Indonesian tie',
+  heroTitlePre: 'Learn Indonesian, in Dutch.',
+  heroTitleEm: 'For when you want to speak it at home.',
+  heroLede:
+    'One course with grammar, stories to read and to listen to, and daily review, so that you know, understand and can use more and more words. The Kamoe Bisa method immerses you in the language — learning words, reading stories, listening, at your own pace. Ready to join the conversation?',
   heroCta: 'Start free',
   heroLogin: 'Already have an account? Log in →',
 
+  storyKicker: 'Why this exists',
+  storyTitle: 'At the table, everyone switched to English. For me.',
+  storyP1:
+    'Out of kindness, yes. But your partner translates a joke that is no longer funny by then, your mother-in-law smiles at you, and the conversation moves on without you. You belong there and you are outside it at the same time.',
+  storyP2:
+    'I wanted out of that. Not fluent — just able to say something back. But you learn hundreds of words and still trip over every sentence, and that is not a discipline problem: to follow a conversation you need to know roughly 95% of the words already, and after a beginner course you are at about 80%.',
+  storyP3:
+    'You close that gap by reading a lot at your own level, and by having every word you look up come back until it sticks. I spent years trying to assemble that myself, with separate apps on my own server. In the end I just built it — for the moment your mother-in-law asks you something and you simply answer.',
+  storySignature: 'Albert van Duijn',
+
   specAria: 'A word card from the app: pasar means the market',
   specTag: 'Vocabulary · market',
-  specNr: 'no. 412',
   specPhon: '/ˈpa.sar/ · noun',
   specGloss: 'the market',
   specExample: '“Saya pergi ke pasar.”',
   specExampleTr: 'I am going to the market.',
   specNext: 'Next review in 3 days',
 
-  stackKicker: 'What you would otherwise assemble yourself',
-  stackTitle: 'Five things open at once. Or one.',
+  stackKicker: 'What “doing more” actually takes',
+  stackTitle: 'Good tools, every one. Together, a project.',
   stackIntro:
-    'Anyone serious about this builds the stack by hand. It works, too. It just needs maintaining every week.',
+    'The moment you want more than loose words, this is what you need: something to read at your level, something to listen to, something to schedule the reviews. It all exists and most of it is free — I ran it myself. They are just empty until you fill them, and not with anything: with something pitched a little above where you are.',
   stack1Tool: 'Anki',
   stack1Body:
-    'Schedules your reviews perfectly — but you build every card yourself. And you cannot build a card for a word you do not yet know exists.',
-  stack2Tool: 'A textbook',
-  stack2Body: 'Grammar that is correct, at a pace that is not yours.',
-  stack3Tool: 'A reader',
-  stack3Body: 'Texts at your level — if you can find them.',
-  stack4Tool: 'A listening app',
-  stack4Body: 'Listening with no text alongside, and nothing that counts towards anything.',
-  stack5Tool: 'A grammar site',
-  stack5Body: 'Answers to questions you could not yet ask.',
+    'The best scheduler there is, and free. You just build every card yourself — and you cannot build a card for a word you do not yet know exists.',
+  stack2Tool: 'Lute & LinguaCafe',
+  stack2Body: 'Reading with word tracking attached. Works beautifully — once you have found texts that sit at your level.',
+  stack3Tool: 'Audiobookshelf',
+  stack3Body: 'For the listening hours. If you can find Indonesian audio you already understand enough of to benefit from.',
+  stack4Tool: 'LibreTranslate',
+  stack4Body: 'For when you got stuck. A translation is not an explanation though — afterwards you know what it meant, not why.',
+  stack5Tool: 'Duolingo',
+  stack5Body: 'A good app, and easy to keep up. Just not in Dutch for this language — and not with the words you hear at home.',
   stackClose:
-    'Here that sits in one session a day: grammar, stories to read and to listen to, an affix trainer, a workshop for words that refuse to stick — and a scheduler that tracks when you are about to forget something.',
+    'Here it is one thing, and it arrives filled. Thirty lessons with grammar and audio. Thirteen levelled stories, nine of them with audio. And a scheduler that tracks, word by word, what you are about to forget. Nothing to source, nothing to set up — start tonight. (Honestly: the story library is still small and sits mostly at A1 and A2. That one is being worked on.)',
 
   pairKicker: 'The pair',
   pairTitle: 'Duolingo teaches you lelah. Your mother-in-law says capek.',
@@ -210,7 +237,7 @@ const en: typeof nl = {
   bridgeKicker: 'You already know 170+',
   bridgeTitle: 'You speak more Indonesian than you think.',
   bridgeBody:
-    'Three centuries of shared history left hundreds of Dutch words behind in Indonesian. You recognise them instantly — and they become your first words.',
+    'Three hundred years together left hundreds of Dutch words sitting inside Indonesian. You recognise them instantly. They are your first words, and you already knew them.',
   bridgeMore:
     'And the other way round: pasar, ketjap, tahoe and nasi goreng travelled back into Dutch.',
   bridgeEdge:
@@ -221,29 +248,29 @@ const en: typeof nl = {
   howTitle: 'You choose what you practise. The rest is one session a day.',
   how1Title: 'You switch on what you want to learn',
   how1Body:
-    'You activate lessons and word lists yourself. What you do not switch on does not enter your session. That is the part nobody expects — and it is deliberate.',
+    'You activate lessons and word lists yourself. What you do not switch on does not enter your session. That is the part nobody expects — and it is on purpose.',
   how2Title: 'Everything lands in one session',
   how2Body:
     'Not a queue per lesson. One session, assembled from everything active, with whatever is due today. Ten minutes is the whole commitment.',
-  how3Title: 'Words come back just before you forget them',
+  how3Title: 'What you look up comes back',
   how3Body:
-    'A word you “already knew” reappearing days later is not a fault. That is exactly the point.',
+    'Tap a word you do not know while reading and it slides into your reviews. After that it returns just before you would forget it again — a word you “already knew” reappearing days later is not a fault, it is exactly the point.',
   howLink: 'Read how it works in full →',
 
   sciKicker: 'What it is built on',
-  sciTitle: 'Built from research — and rebuilt when that research proved us wrong.',
+  sciTitle: 'Built on research — and rebuilt when that research proved me wrong.',
   sciAudit:
-    'In May 2026 we went through 36 hours of real sessions. 30.1% of all reviews turned out to repeat the same item within the same session; worst case, three tests on apa kabar? within 31 seconds. That is not retrieval from memory — the answer is still sitting there. It was changed.',
+    'In May 2026 I went back through 36 hours of my own session data. 30.1% of all reviews turned out to test the same word twice inside one session; worst case, three tests on apa kabar? within 31 seconds. That is not retrieval — the answer is still in working memory. I changed it.',
   sciPrinciples:
-    'The principles are not ours. Recognise first, produce later (Nation, Krashen). And reviews spaced apart beat reviews back to back (Karpicke).',
+    'The principles are not mine. Recognise first, produce later (Nation, Krashen). And reviews spaced apart beat reviews back to back (Karpicke). The researchers I name do not know this product exists.',
   sciHonest:
-    'What you will not find here: percentages about how much faster you learn. That has never been measured for this product — not by us and not by anyone else.',
+    'What you will not find here: percentages about how much faster you learn. That has never been measured for this product — not by me and not by anyone else.',
 
   doorsKicker: 'Perhaps this is you',
-  doorsTitle: 'Not everyone arrives here for the same reason.',
+  doorsTitle: 'Not everyone comes in through the same door.',
   door1Title: 'Your grandmother came from the Indies',
   door1Body:
-    'Ketjap on the table, pasar malam every summer, and a language nobody translated. You are not starting at zero — you already recognise a hundred of them.',
+    'Ketjap on the table, pasar malam every summer, and a language nobody translated. You are not starting at zero — you already recognise over 170 of them.',
   door1Link: 'See the loanwords →',
   door2Title: 'You are moving there, or working there',
   door2Body:

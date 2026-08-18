@@ -114,11 +114,11 @@ export function Landing() {
           <div>
             <span className={classes.heroEyebrow}>{T.heroEyebrow}</span>
             <h1 className={classes.serif}>
-              {T.heroTitlePre} <em>{T.heroTitleEm}</em>.
+              {T.heroTitlePre}
+              <br />
+              <em>{T.heroTitleEm}</em>
             </h1>
             <p className={classes.heroLede}>{T.heroLede}</p>
-            <p className={classes.heroStory}>{T.heroStory}</p>
-            <p className={`${classes.heroSignature} ${classes.serif}`}>{T.heroSignature}</p>
             <div className={classes.heroCtas}>
               <Link className={`${classes.btn} ${classes.btnFill} ${classes.btnLg}`} to="/register">
                 {T.heroCta}
@@ -137,7 +137,6 @@ export function Landing() {
                 <span className={classes.specTag}>
                   <i /> {T.specTag}
                 </span>
-                <span className={classes.specCount}>{T.specNr}</span>
               </div>
               <div className={`${classes.specWord} ${classes.serif}`}>pasar</div>
               <div className={classes.specPhon}>{T.specPhon}</div>
@@ -169,6 +168,29 @@ export function Landing() {
       </div>
 
       <main>
+        {/* The founder story, as its own band rather than as the hero.
+            Restructured 2026-08-18 after reviewing five Dutch->Indonesian
+            sellers (docs/marketing/competitive-messaging.md): every one names
+            the language in the headline, and ours ran ~120 words of story
+            before the reader learned what the product was — failing Miller's
+            own grunt test. He puts the GUIDE after the hero's problem is
+            established, not in the doorway. So the story keeps its full length
+            and emotional weight; it just no longer blocks the entrance.
+            Teman Indonesia (the closest Dutch peer) leads with a named teacher,
+            which is why the personal voice stays rather than being cut. */}
+        <section className={`${classes.section} ${classes.sectionAiry}`}>
+          <div className={classes.lead}>
+            <span className={classes.leadKicker}>{T.storyKicker}</span>
+            <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.storyTitle}</h2>
+          </div>
+          <div className={classes.story}>
+            <p className={classes.storyLede}>{T.storyP1}</p>
+            <p>{T.storyP2}</p>
+            <p>{T.storyP3}</p>
+            <p className={`${classes.storySignature} ${classes.serif}`}>{T.storySignature}</p>
+          </div>
+        </section>
+
         {/* Completeness sold as ASSEMBLY, never as a feature list (design D4,
             positioning.md §1). A feature list invites comparison on every axis
             against a specialist who wins on that axis, and says nothing about

@@ -68,7 +68,7 @@ describe('Landing', () => {
   it('renders the free-tier marketing page with register CTAs and a plain /login link', () => {
     renderLanding()
 
-    expect(screen.getByText(/Aan tafel schakelt iedereen/)).toBeInTheDocument()
+    expect(screen.getByText(/Indonesisch leren, in het Nederlands/)).toBeInTheDocument()
     const registerCtas = screen.getAllByRole('link', { name: 'Gratis beginnen' })
     expect(registerCtas.length).toBeGreaterThanOrEqual(2)
     registerCtas.forEach(cta => expect(cta).toHaveAttribute('href', '/register'))
@@ -187,7 +187,7 @@ describe('Landing', () => {
 
     await user.click(screen.getByRole('button', { name: 'EN' }))
 
-    expect(screen.getByText(/At the table everyone switches/)).toBeInTheDocument()
+    expect(screen.getByText(/Learn Indonesian, in Dutch/)).toBeInTheDocument()
     expect(localStorage.getItem('landing-lang')).toBe('en')
   })
 })
@@ -204,7 +204,7 @@ describe('App route gate at /', () => {
   it('renders the landing page for a logged-out visitor', async () => {
     renderApp('/')
 
-    expect(await screen.findByText(/Aan tafel schakelt iedereen/)).toBeInTheDocument()
+    expect(await screen.findByText(/Indonesisch leren, in het Nederlands/)).toBeInTheDocument()
     expect(screen.queryByText('dashboard-stub')).not.toBeInTheDocument()
   })
 
@@ -213,14 +213,14 @@ describe('App route gate at /', () => {
     renderApp('/')
 
     expect(await screen.findByText('dashboard-stub')).toBeInTheDocument()
-    expect(screen.queryByText(/Aan tafel schakelt iedereen/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Indonesisch leren, in het Nederlands/)).not.toBeInTheDocument()
   })
 
   it('never flashes the landing page while auth state is still resolving', () => {
     mockState.loading = true
     renderApp('/')
 
-    expect(screen.queryByText(/Aan tafel schakelt iedereen/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Indonesisch leren, in het Nederlands/)).not.toBeInTheDocument()
     expect(screen.queryByText('dashboard-stub')).not.toBeInTheDocument()
   })
 })
