@@ -101,6 +101,7 @@ belongs in the source doc first, or it is drift.
 | What does it cost and why? | `docs/marketing/pricing.md` |
 | Where do we reach people? | `docs/marketing/channels.md` |
 | What do competitors claim, and where do we stand? | `docs/marketing/competitive-messaging.md` |
+| What is the number, and who else quotes it? | `docs/marketing/facts.md` — every figure with its query and a reverse index of the surfaces using it |
 | Is this capability actually shipped? | the live DB, or the code — never memory |
 
 **The method has a name: "de Kamoe Bisa-methode"** (decided 2026-08-18,

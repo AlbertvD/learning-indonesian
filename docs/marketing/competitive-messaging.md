@@ -54,7 +54,7 @@ nobody has made it.
 - **Efficacy numbers.** Babbel commissioned a study and quotes 92%. LingQ claims
   a level in 90 days. Pimsleur, weeks. We have measured nothing and say so.
 - **Content volume.** LingQ imports anything the learner finds. We have 13 texts
-  (verified live 2026-08-17: A1×4, A2×5, B1×2, B2×1, one unlevelled).
+  (`facts.md` — A1×4, A2×5, B1×2, B2×1, one unlevelled; re-run the query there rather than trusting this line).
 
 Matching any of these means either lying or losing. The copy should concede the
 ground and win elsewhere.

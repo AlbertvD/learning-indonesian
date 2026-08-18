@@ -114,8 +114,13 @@ still a good one, but it must be made honestly.
 
 ## 2. Unique attributes
 
-Capabilities the alternatives lack. Counts verified against the live cloud
-project 2026-08-05.
+Capabilities the alternatives lack.
+
+> **Every count below lives in `docs/marketing/facts.md`, with the query that
+> produced it and the list of surfaces that quote it.** Do not restate a number
+> here without updating that file — "verified on <date>" is a claim about
+> someone's process that nobody can re-check, which is how four documents came to
+> carry the wrong free tier for weeks.
 
 - **The Dutch→Indonesian loanword bridge** — 173 items carry `loan_source_nl`.
   *Structurally uncopyable*: the loanwords are Dutch, so any course routing
