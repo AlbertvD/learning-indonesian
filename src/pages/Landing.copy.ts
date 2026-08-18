@@ -1,10 +1,19 @@
-// src/pages/Landing.copy.ts — landing-page copy, NL-primary with EN.
+// src/pages/Landing.copy.ts — landing-page copy. Dutch only.
 //
 // Deliberately NOT in src/lib/i18n.ts: that module is entry-chunk-resident,
 // and the slice-1 bundle rule is "the app entry chunk must not grow"
 // (docs/plans/2026-07-03-desktop-program-design.md §Slice 1). Landing.tsx is its
-// only RUNTIME importer, so the copy ships inside the lazy landing chunk. It
-// follows the same nl/en shape and Lang type as i18n.ts.
+// only RUNTIME importer, so the copy ships inside the lazy landing chunk.
+//
+// ⚠️ NO ENGLISH. The EN half was removed 2026-08-18: the profile's bilingual
+// toggle was already gone, so the public pages were the last surface offering a
+// language this product cannot serve — it teaches Indonesian THROUGH Dutch, so
+// an English reader cannot use what the page sells. It also cost the copy: every
+// line had to be written twice, in parallel, which is precisely the machine that
+// turns Dutch into a translation of an English thought (see the `marketing-copy`
+// skill, "Writing in a language that is not the default"). Do not reintroduce a
+// second locale here; an EN audience is a separate front door with its own brand
+// (docs/roadmap.md, Bet 5), not a toggle on this one.
 // (scripts/check-cloud-config.ts also imports it — to assert the pricing band
 // quotes the declared price — but that is a build-time script outside the Vite
 // graph, so the chunking property is unaffected.)
@@ -34,7 +43,6 @@
 // Simplifying source_ref to "hetzelfde woord" is fine; inflating the number or
 // dropping the 36-hour window is not.
 
-import type { Lang } from '@/lib/i18n'
 
 const nl = {
   login: 'Inloggen',
@@ -106,7 +114,7 @@ const nl = {
   storyP2:
     'Daar wilde ik weg. Niet vloeiend worden — gewoon iets terug kunnen zeggen. Ik heb Duolingo geprobeerd en ik heb flashcards geprobeerd; daarmee kom je een eind, maar niet ver genoeg. Je leert honderden woorden en struikelt nog steeds over elke zin. Dat ligt niet aan je discipline: om een gesprek te volgen moet je zo’n 95% van de woorden al kennen, en na een beginnerscursus zit je rond de 80%.',
   storyP3:
-    'Dat gat dicht je door veel te lezen op jouw niveau, en door elk woord dat je opzoekt te laten terugkomen tot het blijft zitten. Ik heb jaren geprobeerd dat zelf bij elkaar te sprokkelen, met losse apps naast elkaar. Uiteindelijk heb ik het maar gebouwd — voor het moment dat je schoonmoeder je iets vraagt en jij gewoon antwoordt.',
+    'Dat gat dicht je door veel te lezen op jouw niveau, en door elk woord dat je opzoekt te laten terugkomen tot het blijft zitten. Ik heb geprobeerd dat zelf bij elkaar te sprokkelen, met losse apps naast elkaar. Uiteindelijk heb ik het maar gebouwd — voor het moment dat je schoonmoeder je iets vraagt en jij gewoon antwoordt.',
   storySignature: 'Albert van Duijn',
 
   specAria: 'Een woordkaart uit de app: pasar betekent de markt',
@@ -121,9 +129,9 @@ const nl = {
   pairKicker: 'Het paar',
   pairTitle: 'Duolingo leert je lelah. Je schoonmoeder zegt capek.',
   pairDisarm:
-    'Duolingo is een goede app, en wie via het Engels leert komt er ver mee. Alleen: Indonesisch wordt aan Nederlandstaligen helemaal niet aangeboden. Je leert de taal van je partner dan via je tweede taal — en je leert het register uit het leerboek, niet dat van de keukentafel.',
-  pairAnki:
-    'En Anki? Dat zou lelah prima voor je inplannen. Alleen had jij die kaart moeten maken. Die voor capek was nooit in je opgekomen.',
+    'Duolingo is een goede app, en wie via het Engels leert komt er ver mee. Alleen: Indonesisch wordt aan Nederlandstaligen helemaal niet aangeboden. Je leert de taal van je partner dan via je tweede taal, en je leert bahasa baku — de nette versie die in het boek staat. Aan tafel praat niemand zo.',
+  pairFlashcards:
+    'En flashcards dan? Die plannen lelah keurig voor je in. Alleen moest jij de woorden zelf vinden en de kaarten zelf maken. Die voor capek was nooit in je opgekomen.',
   pairNote:
     '66 van die paren zitten in de cursus, met een schakelaar tussen formeel en spreektaal.',
   pairFormal: 'in het boek',
@@ -157,8 +165,6 @@ const nl = {
   // ── Grounded in the science — the audit, not the citation
   sciKicker: 'Gegrond in bewezen wetenschap',
   sciTitle: 'En altijd op zoek naar manieren om je leerervaring te verbeteren.',
-  sciAudit:
-    'In mei 2026 ben ik 36 uur van mijn eigen sessiedata gaan nalopen. Bij 30,1% van de herhalingen kwam hetzelfde woord binnen één sessie nog een keer langs. In het ergste geval drie keer apa kabar? in 31 seconden. Dat is geen ophalen; het antwoord staat dan nog vers in je hoofd. Dat heb ik veranderd.',
   sciPrinciples:
     'De principes zijn niet van mij. Ze komen uit taalverwervingsonderzoek dat al decennia overeind staat, en elk ervan zit ergens in de app.',
   sciQ1: 'Eerst herkennen. Pas daarna zelf produceren.',
@@ -198,136 +204,4 @@ const nl = {
   footerHow: 'Hoe het werkt',
 }
 
-const en: typeof nl = {
-  login: 'Log in',
-  registerCta: 'Start free',
-
-  heroEyebrow: 'For Dutch speakers with an Indonesian tie',
-  heroTitlePre: 'Learn Indonesian, in Dutch.',
-  heroTitleEm: 'For when you want to speak it at home.',
-  heroLede:
-    'One course with grammar, stories to read and to listen to, and daily review, so that you know, understand and can use more and more words. The Kamoe Bisa method immerses you in the language — learning words, reading stories, listening, at your own pace. Ready to join the conversation?',
-  heroCta: 'Start free',
-  heroLogin: 'Already have an account? Log in →',
-
-  methodKicker: 'What the method is made of',
-  methodTitle: 'Explained, practised, used.',
-  methodG1: 'It gets explained to you',
-  methodG2: 'You practise until it sticks',
-  methodG3: 'You actually use it',
-  method1Title: 'From recognising to understanding to using',
-  method1Body:
-    'The method takes you through every phase of learning a language. Every word and every piece of grammar travels the same road: first you recognise it, then you understand it unaided, and finally you use it yourself. In that order, never the other way round.',
-  method2Title: 'Reviews timed for when you are about to forget',
-  method2Body:
-    'Per word, not per lesson. Your time goes to what is starting to wobble, not to what has long since stuck.',
-  method3Title: 'Real grammar lessons',
-  method3Body:
-    'Thirty lessons explaining the logic of Indonesian, with audio. So you understand the patterns instead of guessing them.',
-  method4Title: 'Culture lessons throughout the course',
-  method4Body:
-    'Borobudur, batik, the sunbird Garuda, dukun and jamu, Majapahit and Gajah Mada. Eighteen pieces to read, spread across the lessons — you learn the country alongside the language.',
-  method5Title: 'Stories to read and to listen to',
-  method5Body:
-    'A1 to B2, with the audio alongside — Kancil and the crocodile, Timun Mas, the story behind the name Surabaya. Tap a word you do not know and it slides into your reviews. Thirteen stories so far, mostly A1 and A2; the library is still growing.',
-  method6Title: 'An affix trainer',
-  method6Body:
-    'Indonesian builds words with prefixes and suffixes: ajar, belajar, pelajaran, mengajar. Understand that machine and you can read words you never learned.',
-  method7Title: 'Everyday speech alongside textbook Indonesian',
-  method7Body:
-    'What the textbook says is not what gets said at the table. 66 word pairs are in there twice — lelah and capek, uang and duit — with a toggle between them, so you learn to recognise both.',
-  methodClose: 'Together, that is the Kamoe Bisa method.',
-
-  storyKicker: 'Why this exists',
-  storyTitle: 'At the table, everyone switched to English. For me.',
-  storyP1:
-    'Out of kindness, yes. But your partner translates a joke that is no longer funny by then, your mother-in-law smiles at you, and the conversation moves on without you. You belong there and you are outside it at the same time.',
-  storyP2:
-    'I wanted out of that. Not fluent — just able to say something back. I tried Duolingo and I tried flashcards; they get you part of the way, but not far enough. You learn hundreds of words and still trip over every sentence. That is not a discipline problem: to follow a conversation you need to know roughly 95% of the words already, and after a beginner course you are at about 80%.',
-  storyP3:
-    'You close that gap by reading a lot at your own level, and by having every word you look up come back until it sticks. I spent years trying to piece that together myself, with separate apps side by side. In the end I just built it — for the moment your mother-in-law asks you something and you simply answer.',
-  storySignature: 'Albert van Duijn',
-
-  specAria: 'A word card from the app: pasar means the market',
-  specTag: 'Vocabulary · market',
-  specPhon: '/ˈpa.sar/ · noun',
-  specGloss: 'the market',
-  specExample: '“Saya pergi ke pasar.”',
-  specExampleTr: 'I am going to the market.',
-  specNext: 'Next review in 3 days',
-
-  pairKicker: 'The pair',
-  pairTitle: 'Duolingo teaches you lelah. Your mother-in-law says capek.',
-  pairDisarm:
-    'Duolingo is a good app, and learning through English will take you a long way. Except: Indonesian is not offered to Dutch speakers at all. So you learn your partner’s language through your second language — and you learn the textbook register, not the kitchen-table one.',
-  pairAnki:
-    'And Anki? It would schedule lelah perfectly well. Except you would have had to build that card. The capek one would never have occurred to you.',
-  pairNote:
-    '66 of those pairs are in the course, with a toggle between formal and everyday speech.',
-  pairFormal: 'in the book',
-  pairReal: 'at the table',
-
-  bridgeKicker: 'You already know 170+',
-  bridgeTitle: 'You speak more Indonesian than you think.',
-  bridgeBody:
-    'Three hundred years together left hundreds of Dutch words sitting inside Indonesian. You recognise them instantly. They are your first words, and you already knew them.',
-  bridgeMore:
-    'And the other way round: pasar, ketjap, tahoe and nasi goreng travelled back into Dutch.',
-  bridgeEdge:
-    'This is your head start as a Dutch speaker. The big apps teach Indonesian through English — which works perfectly well, but there you start at zero. Here you start at 173.',
-  bridgeLink: 'See all 173 loanwords →',
-
-  howKicker: 'How it works',
-  howTitle: 'You choose what you practise. The rest is one session a day.',
-  how1Title: 'You switch on what you want to learn',
-  how1Body:
-    'You activate lessons and word lists yourself. What you do not switch on does not enter your session. That is the part nobody expects — and it is on purpose.',
-  how2Title: 'Everything lands in one session',
-  how2Body:
-    'Not a queue per lesson. One session, assembled from everything active, with whatever is due today. Ten minutes is the whole commitment.',
-  how3Title: 'What you look up comes back',
-  how3Body:
-    'Tap a word you do not know while reading and it slides into your reviews. After that it returns just before you would forget it again — a word you “already knew” reappearing days later is not a fault, it is exactly the point.',
-  howLink: 'Read how it works in full →',
-
-  sciKicker: 'Grounded in proven science',
-  sciTitle: 'And always looking for ways to improve how you learn.',
-  sciAudit:
-    'In May 2026 I went back through 36 hours of my own session data. In 30.1% of reviews the same word came round again inside a single session. Worst case, apa kabar? three times in 31 seconds. That is not retrieval; the answer is still fresh in your head. So I changed it.',
-  sciPrinciples:
-    'The principles are not mine. They come from language-acquisition research that has held up for decades, and each one is somewhere in the app.',
-  sciQ1: 'Recognise first. Only then produce.',
-  sciQ1Src: 'Nation · Krashen',
-  sciQ2: 'Reviews spaced apart stick; reviews back to back do not.',
-  sciQ2Src: 'Karpicke · Cepeda',
-  sciQ3: 'Reading only starts working once you know roughly 95% of the words.',
-  sciQ3Src: 'Laufer · Schmitt',
-  sciQ4: 'What is just too hard is what you remember best.',
-  sciQ4Src: 'Bjork',
-
-  doorsKicker: 'Perhaps this is you',
-  doorsTitle: 'Not everyone comes in through the same door.',
-  door1Title: 'Your grandmother came from the Indies',
-  door1Body:
-    'Ketjap on the table, pasar malam every summer, and a language nobody translated. You are not starting at zero — you already recognise over 170 of them.',
-  door1Link: 'See the loanwords →',
-  door2Title: 'You are moving there, or working there',
-  door2Body:
-    'Then you want to understand what is actually said, not what the textbook says. Everyday speech runs alongside from the start.',
-  door3Title: 'You have finished an app already',
-  door3Body:
-    'Then you do not need to start at “hello” again. A placement test works out where you are, and the affix trainer takes on exactly the wall you hit.',
-
-  pricingEyebrow: 'Subscription',
-  pricingTitle: 'Start free. Continue if it clicks.',
-  pricingBody:
-    'Lesson 1 and the pronunciation podcast are free — no payment details needed. For the full course it is €9 per month or €79 per year, VAT included. Cancel any time; you keep access until the end of the period you have already paid for.',
-
-  footerMade: 'made in the Netherlands',
-  footerPrivacy: 'Privacy',
-  footerTerms: 'Terms',
-  footerRefunds: 'Refunds',
-  footerHow: 'How it works',
-}
-
-export const landingCopy: Record<Lang, typeof nl> = { nl, en }
+export const landingCopy = nl

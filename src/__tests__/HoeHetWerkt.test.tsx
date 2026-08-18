@@ -14,7 +14,6 @@
 //        went stale across four surfaces.
 
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, beforeEach } from 'vitest'
@@ -91,15 +90,10 @@ describe('HoeHetWerkt', () => {
     expect(screen.getByRole('link', { name: 'Restitutie' })).toHaveAttribute('href', '/restitutie')
   })
 
-  // Shares the landing page's storage key on purpose: a visitor who switched to
-  // English there should not have to switch again after following the link.
-  it('reuses the landing page language choice', async () => {
-    const user = userEvent.setup()
+  // Dutch only since 2026-08-18, same reasoning as Landing.test.tsx.
+  it('offers no language toggle — the page is Dutch only', () => {
     renderPage()
 
-    await user.click(screen.getByRole('button', { name: 'EN' }))
-
-    expect(screen.getByText(/You choose what you learn/)).toBeInTheDocument()
-    expect(localStorage.getItem('landing-lang')).toBe('en')
+    expect(screen.queryByRole('button', { name: 'EN' })).not.toBeInTheDocument()
   })
 })

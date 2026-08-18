@@ -35,6 +35,26 @@
   --land-shadow-lift:
     0 2px 4px rgba(30, 42, 37, 0.05), 0 30px 60px -30px rgba(30, 42, 37, 0.4);
 
+  /* ── the layout system (2026-08-18) ──────────────────────────────
+   * Every band on this page is one, two or three columns, and before
+   * this there were nine different one-column measures (40/46/54/58/
+   * 60/62/64/20ch and a hardcoded 802px), four two-column ratios and
+   * no outer measure at all — so each band found a different width at
+   * every viewport and the page stepped in and out as you scrolled.
+   *
+   * All four shapes now resolve from these values, which is what makes
+   * the column edges line up from the header rule to the footer rule:
+   *   1 column  → --measure
+   *   2 columns → .hero (text + object) or repeat(2, 1fr)
+   *   3 columns → repeat(3, 1fr)
+   * The hero's text column IS --measure, so the headline and every
+   * paragraph below it share one left-to-right span by construction
+   * rather than by two numbers that happen to agree at 1440px. */
+  --band-max: 1280px; /* content span, excluding --band-pad */
+  --band-pad: 56px;
+  --col-gap: 44px; /* the one gutter, every multi-column grid */
+  --measure: 800px; /* the one reading measure, every single column */
+
   min-height: 100vh; /* skip-check: landing is the sanctioned outside-the-page-framework marketing surface (design plan §Grounding) — it owns its own full-height ground */
   min-height: 100dvh; /* skip-check: dvh refinement of the line above */
   background: var(--land-paper);
@@ -160,7 +180,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 22px 56px;
+  max-width: calc(var(--band-max) + var(--band-pad) * 2);
+  margin-inline: auto;
+  padding: 22px var(--band-pad);
   border-bottom: 1px solid var(--land-line-soft);
 }
 .headOnDark {
@@ -176,9 +198,15 @@
 
 .hero {
   display: grid;
-  grid-template-columns: 1.42fr 0.84fr;
-  gap: 52px;
-  padding: 84px 56px 92px;
+  /* The card's track is max-content-floored, not 1fr: the headline reflows
+     gracefully when the band narrows and the specimen card does not, so the
+     text column is the one that gives way. Above ~1330px there is room for
+     both and the card returns to the band's right edge. */
+  grid-template-columns: minmax(0, var(--measure)) minmax(max-content, 1fr);
+  gap: var(--col-gap);
+  max-width: calc(var(--band-max) + var(--band-pad) * 2);
+  margin-inline: auto;
+  padding: 84px var(--band-pad) 92px;
   align-items: center;
 }
 .heroEyebrow {
@@ -204,8 +232,6 @@
   margin: 0 0 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  max-width: 40ch;
-  text-wrap: balance;
 }
 .hero h1 em {
   font-style: italic;
@@ -220,25 +246,6 @@
   color: var(--rail-ink);
   margin: 0 0 26px;
   font-weight: 500;
-}
-.heroStory {
-  font-size: 16px;
-  line-height: 1.68;
-  color: var(--rail-ink-muted);
-  max-width: 46ch;
-  margin: 0 0 14px;
-}
-/* Design §6 leaves a portrait slot deliberately empty in v1 — the layout must
-   work with a name alone and gain a photo later without reflowing. */
-.heroSignature {
-  font-size: 16px;
-  font-style: italic;
-  color: var(--rail-ink);
-  margin: 0 0 34px;
-}
-.heroSignature::before {
-  content: '— ';
-  color: var(--rail-ink-muted);
 }
 .heroCtas {
   display: flex;
@@ -302,9 +309,6 @@
   background: var(--land-accent);
   display: inline-block;
 }
-.specCount {
-  font-variant-numeric: tabular-nums;
-}
 .specWord {
   font-size: 58px;
   font-weight: 600;
@@ -356,14 +360,16 @@
 /* ---------- section chrome ---------- */
 
 .section {
-  padding: 0 56px;
+  max-width: calc(var(--band-max) + var(--band-pad) * 2);
+  margin-inline: auto;
+  padding: 0 var(--band-pad);
 }
 .sectionAiry {
   padding-top: 76px;
   padding-bottom: 76px;
 }
 .lead {
-  max-width: 60ch;
+  max-width: var(--measure);
   margin-bottom: 40px;
 }
 .leadKicker {
@@ -382,50 +388,10 @@
 }
 .leadBody {
   margin: 16px 0 0;
-  max-width: 58ch;
+  max-width: var(--measure);
   color: var(--land-ink-2);
   font-size: 16px;
   line-height: 1.65;
-}
-
-/* ---------- the stack you would otherwise assemble ---------- */
-/* A ledger, not cards: the point is that the list is LONG and each line costs
-   something. Cards would make five tools look like five features, which is the
-   exact reading the assembly argument exists to prevent. */
-
-.stack {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid var(--land-line);
-}
-.stackRow {
-  display: grid;
-  grid-template-columns: 190px 1fr;
-  gap: 32px;
-  padding: 20px 0;
-  border-bottom: 1px solid var(--land-line-soft);
-  align-items: baseline;
-}
-.stackTool {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-.stackBody {
-  color: var(--land-ink-2);
-  font-size: 15px;
-  line-height: 1.62;
-  max-width: 62ch;
-}
-.stackClose {
-  margin: 30px 0 0;
-  max-width: 64ch;
-  font-size: 17px;
-  line-height: 1.62;
-  font-weight: 550;
-  padding-left: 18px;
-  border-left: 3px solid var(--land-accent);
 }
 
 /* ---------- the pair — the page signature ---------- */
@@ -438,7 +404,7 @@
   padding: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: var(--col-gap);
 }
 .pairRow {
   display: flex;
@@ -487,16 +453,16 @@
   padding-bottom: 4px;
 }
 .pairDisarm,
-.pairAnki {
+.pairFlashcards {
   margin: 0 0 16px;
-  max-width: 64ch;
+  max-width: var(--measure);
   color: var(--land-ink-2);
   font-size: 16px;
   line-height: 1.65;
 }
 .pairNote {
   margin: 0;
-  max-width: 62ch;
+  max-width: var(--measure);
   color: var(--land-muted);
   font-size: 14.5px;
   font-style: italic;
@@ -539,14 +505,14 @@
 }
 .bridgeMore {
   margin: 22px 0 0;
-  max-width: 62ch;
+  max-width: var(--measure);
   color: var(--land-muted);
   font-size: 14.5px;
   font-style: italic;
 }
 .bridgeEdge {
   margin: 18px 0 0;
-  max-width: 62ch;
+  max-width: var(--measure);
   padding-left: 16px;
   border-left: 3px solid var(--land-accent);
   color: var(--land-ink);
@@ -570,13 +536,10 @@
 
 .flow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 44px;
-  border-top: 1px solid var(--land-ink);
-  padding-top: 8px;
-}
-.flowCol {
-  padding-top: 26px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
+  border-top: 1px solid var(--land-line);
+  padding-top: 34px;
 }
 .flowCol h3 {
   font-size: 19px;
@@ -594,20 +557,12 @@
 
 /* ---------- the science band ---------- */
 
-.sci .leadTitle {
-  max-width: 20ch;
-}
-.sciGrid {
-  display: grid;
-  grid-template-columns: 0.95fr 1.15fr;
-  gap: 56px;
-  align-items: start;
-}
 /* The audit is the strongest item on the page — a specific, checkable thing
    the product got wrong and changed — so it gets the pull-quote treatment
    rather than sitting in a column of equals. */
 .sciAudit {
   margin: 0;
+  max-width: var(--measure);
   font-size: 18px;
   line-height: 1.6;
   color: var(--rail-ink);
@@ -615,36 +570,20 @@
   border-left: 3px solid var(--land-gold);
 }
 .sciPrinciples {
-  margin: 0 0 20px;
+  margin: 0;
+  max-width: var(--measure);
   font-size: 15.5px;
   line-height: 1.65;
   color: var(--rail-ink-muted);
 }
-.sciHonest {
-  margin: 0;
-  font-size: 15.5px;
-  line-height: 1.65;
-  color: var(--rail-ink);
-  padding-top: 20px;
-  border-top: 1px solid var(--rail-hairline);
-}
-
 /* ---------- the doors ---------- */
 
 .doors {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
   border-top: 1px solid var(--land-line);
-}
-.door {
-  padding: 28px 26px 8px 0;
-  border-left: 1px solid var(--land-line);
-}
-.door:first-child {
-  border-left: none;
-}
-.door:not(:first-child) {
-  padding-left: 26px;
+  padding-top: 34px;
 }
 .door h3 {
   font-size: 17px;
@@ -674,7 +613,8 @@
 
 .pricing {
   position: relative;
-  margin: 20px 56px 0;
+  margin: 20px auto 0;
+  max-width: min(var(--band-max), 100% - var(--band-pad) * 2);
   background: var(--rail-surface);
   color: var(--rail-ink);
   border-radius: 20px;
@@ -698,7 +638,7 @@
 }
 .pricingTxt {
   position: relative;
-  max-width: 54ch;
+  max-width: var(--measure);
 }
 .pricingEyebrow {
   text-transform: uppercase;
@@ -733,7 +673,9 @@
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  padding: 28px 56px;
+  max-width: calc(var(--band-max) + var(--band-pad) * 2);
+  margin-inline: auto;
+  padding: 28px var(--band-pad);
   margin-top: 40px;
   border-top: 1px solid var(--land-line);
   font-size: 13.5px;
@@ -752,47 +694,21 @@
 .footLinks a:hover {
   color: var(--land-ink);
 }
-.langSwitch {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: 1px solid var(--land-line);
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-.langSwitch button {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  font: inherit;
-  color: var(--land-muted);
-}
-.langSwitch button[aria-pressed='true'] {
-  color: var(--land-ink);
-  font-weight: 700;
-}
-.langSwitch button:focus-visible {
-  outline: 2px solid var(--land-accent-deep);
-  outline-offset: 2px;
-}
-
 /* ---------- responsive (the mockup framed desktop only; a logged-out
    phone visit lands here too, so collapse gracefully) ---------- */
 
+/* One breakpoint, and it mostly just retunes the tokens: because the frame,
+   the gutters and every measure read from them, narrowing the page is four
+   declarations rather than a per-rule repeat of the whole layout. */
 @media (max-width: 900px) {
-  .head,
-  .section,
-  .foot {
-    padding-left: 24px;
-    padding-right: 24px;
+  .landing {
+    --band-pad: 24px;
+    --col-gap: 32px;
   }
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 48px;
-    padding: 56px 24px 64px;
+    padding: 56px var(--band-pad) 64px;
   }
   .deck {
     margin: 0 auto;
@@ -801,36 +717,13 @@
     padding-top: 56px;
     padding-bottom: 56px;
   }
-  .stackRow {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-  .pairWall {
-    grid-template-columns: 1fr;
-  }
+  .pairWall,
+  .method,
   .flow,
   .doors {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-  .doors {
-    gap: 0;
-  }
-  .door {
-    border-left: none;
-    padding-left: 0;
-    padding-bottom: 26px;
-    border-bottom: 1px solid var(--land-line-soft);
-  }
-  .door:not(:first-child) {
-    padding-left: 0;
-  }
-  .sciGrid {
-    grid-template-columns: 1fr;
-    gap: 32px;
+    grid-template-columns: minmax(0, 1fr);
   }
   .pricing {
-    margin: 20px 24px 0;
     padding: 36px 28px;
     flex-direction: column;
     align-items: flex-start;
@@ -843,9 +736,6 @@
   }
   .specWord {
     font-size: 44px;
-  }
-  .hero h1 {
-    max-width: none;
   }
   .pairRow {
     flex-wrap: wrap;
@@ -875,10 +765,7 @@
  * deviation. It just belongs after the reader knows what this is. */
 
 .story {
-  max-width: 802px;
-}
-.storyLead {
-  max-width: 802px;
+  max-width: var(--measure);
 }
 .story p {
   font-size: 17px;
@@ -911,17 +798,10 @@
 
 .method {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 44px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
   border-top: 1px solid var(--land-line);
   padding-top: 34px;
-}
-.methodNr {
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--land-gold);
-  font-variant-numeric: tabular-nums;
 }
 /* Three clusters, each holding two or three parts. Grouping is the whole point:
    seven equal cards is a feature list, three named groups is a shape a reader
@@ -953,6 +833,7 @@
    point of the band, so it gets display type rather than body type. */
 .methodClose {
   margin: 44px 0 0;
+  max-width: var(--measure);
   font-size: clamp(20px, 2.4vw, 26px);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -961,19 +842,12 @@
   border-left: 3px solid var(--land-accent);
 }
 
-@media (max-width: 900px) {
-  .method {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-}
-
 /* ---------- the principles, as quotes ---------- */
 
 .sciQuotes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 26px 32px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--col-gap);
   margin-top: 26px;
 }
 .sciQuote {
@@ -1005,6 +879,6 @@
 
 @media (max-width: 900px) {
   .sciQuotes {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }

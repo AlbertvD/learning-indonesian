@@ -3,10 +3,12 @@
 //
 // Deliberately outside the page framework and Mantine components: a light-only
 // marketing surface with its own layout, shipped as an isolated lazy chunk so
-// the app entry bundle does not grow. Copy is NL-primary with EN, chunk-local
+// the app entry bundle does not grow. Copy is Dutch-only, chunk-local
 // in Landing.copy.ts (i18n.ts is entry-resident — see that file's header); the
-// visitor has no profile yet, so the language choice lives in localStorage
-// instead of the profile like everywhere else in the app.
+// visitor has no profile yet, so there is no profile to read anything from.
+//
+// ⚠️ Dutch only since 2026-08-18 — see Landing.copy.ts's header for why the EN
+// half was removed and why it must not come back as a toggle.
 //
 // Rewritten 2026-08-17 per docs/plans/2026-08-16-landing-page-redesign.md.
 // The structural move is D8, "invert the ground": the batik green #1F3D36 is a
@@ -21,15 +23,11 @@
 // (.claude/skills/marketing). The one that most often bites: all audio is TTS,
 // so nothing here may imply human narration.
 
-import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import type { Lang } from '@/lib/i18n'
 import { SunMark } from '@/components/SunMark'
 import { LOANWORD_REVEAL_PAIRS } from '@/lib/loanwords/revealPairs'
 import { landingCopy } from './Landing.copy'
 import classes from './Landing.module.css'
-
-const LANDING_LANG_KEY = 'landing-lang'
 
 // The register pairs shown in the signature band. Verified against the live DB
 // 2026-08-16: 66 items carry register='informal' with a register_counterpart.
@@ -42,19 +40,9 @@ const REGISTER_PAIRS = [
   { formal: 'sedikit', real: 'dikit', nl: 'een beetje', en: 'a little' },
 ] as const
 
-function readStoredLang(): Lang {
-  try {
-    const stored = localStorage.getItem(LANDING_LANG_KEY)
-    return stored === 'en' ? 'en' : 'nl'
-  } catch {
-    return 'nl'
-  }
-}
-
 export function Landing() {
-  const [lang, setLang] = useState<Lang>(readStoredLang)
   const [searchParams] = useSearchParams()
-  const T = landingCopy[lang]
+  const T = landingCopy
 
   // ProtectedRoute bounces logged-out visits here carrying `?next=`; forward it
   // to /login so the learner still lands where they were headed after signing in.
@@ -63,15 +51,6 @@ export function Landing() {
     next && next.startsWith('/') && !next.startsWith('//')
       ? `/login?next=${encodeURIComponent(next)}`
       : '/login'
-
-  const switchLang = (value: Lang) => {
-    setLang(value)
-    try {
-      localStorage.setItem(LANDING_LANG_KEY, value)
-    } catch {
-      // private-mode storage failures just lose the preference
-    }
-  }
 
   return (
     <div className={classes.landing}>
@@ -210,7 +189,7 @@ export function Landing() {
             Teman Indonesia (the closest Dutch peer) leads with a named teacher,
             which is why the personal voice stays rather than being cut. */}
         <section className={`${classes.section} ${classes.sectionAiry}`}>
-          <div className={`${classes.lead} ${classes.storyLead}`}>
+          <div className={classes.lead}>
             <span className={classes.leadKicker}>{T.storyKicker}</span>
             <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.storyTitle}</h2>
           </div>
@@ -224,7 +203,7 @@ export function Landing() {
 
         {/* "The pair" — the page's signature. Both uncopyable assets have the
             same shape: two words and a relationship between them. It lets the
-            Duolingo argument be SHOWN rather than claimed, and answers Anki in
+            Duolingo argument be SHOWN rather than claimed, and answers flashcards in
             the same breath. Both paragraphs disarm before they compare
             (Sheridan's technique, see .claude/skills/marketing) because
             positioning.md §5 requires the contrast be stated as a gain, never
@@ -248,12 +227,12 @@ export function Landing() {
                   <span className={classes.pairLabel}>{T.pairReal}</span>
                   <span className={`${classes.pairReal} ${classes.serif}`}>{pair.real}</span>
                 </span>
-                <span className={classes.pairGloss}>{lang === 'nl' ? pair.nl : pair.en}</span>
+                <span className={classes.pairGloss}>{pair.nl}</span>
               </li>
             ))}
           </ul>
           <p className={classes.pairDisarm}>{T.pairDisarm}</p>
-          <p className={classes.pairAnki}>{T.pairAnki}</p>
+          <p className={classes.pairFlashcards}>{T.pairFlashcards}</p>
           <p className={classes.pairNote}>{T.pairNote}</p>
         </section>
 
@@ -311,37 +290,32 @@ export function Landing() {
       </main>
 
       {/* The research grounding, on the dark ground because it is the second
-          heaviest argument on the page. The lead item is deliberately an AUDIT
-          rather than a citation: anyone can cite Karpicke, almost nobody can
-          show what they changed because of him. Quoted from ADR 0007 —
-          simplifying `source_ref` to "hetzelfde" is permitted, inflating the
-          number or dropping the 36-hour window is not.
-          The closing line refuses efficacy numbers ON the page, which turns an
-          honesty constraint into the most trustworthy sentence in the band. */}
+          heaviest argument on the page.
+          ⚠️ This band led with the ADR 0007 self-audit (36 hours of session
+          data, 30.1% within-session repeats) until 2026-08-18. The owner
+          removed it THREE times; it kept coming back because the `marketing`
+          skill named it "the most persuasive item in the whole product" and
+          every copy pass reinstated it. The skill no longer says that. Do not
+          reintroduce it here — the principles carry the band on their own. */}
       <div className={classes.bandDark}>
         <section className={`${classes.section} ${classes.sectionAiry} ${classes.sci}`}>
           <div className={classes.lead}>
             <span className={classes.leadKicker}>{T.sciKicker}</span>
             <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.sciTitle}</h2>
           </div>
-          <div className={classes.sciGrid}>
-            <p className={classes.sciAudit}>{T.sciAudit}</p>
-            <div>
-              <p className={classes.sciPrinciples}>{T.sciPrinciples}</p>
-              <div className={classes.sciQuotes}>
-                {(
-                  [
-                    [T.sciQ1, T.sciQ1Src], [T.sciQ2, T.sciQ2Src],
-                    [T.sciQ3, T.sciQ3Src], [T.sciQ4, T.sciQ4Src],
-                  ] as const
-                ).map(([quote, src]) => (
-                  <figure key={quote} className={classes.sciQuote}>
-                    <blockquote className={classes.serif}>{quote}</blockquote>
-                    <figcaption>{src}</figcaption>
-                  </figure>
-                ))}
-              </div>
-            </div>
+          <p className={classes.sciPrinciples}>{T.sciPrinciples}</p>
+          <div className={classes.sciQuotes}>
+            {(
+              [
+                [T.sciQ1, T.sciQ1Src], [T.sciQ2, T.sciQ2Src],
+                [T.sciQ3, T.sciQ3Src], [T.sciQ4, T.sciQ4Src],
+              ] as const
+            ).map(([quote, src]) => (
+              <figure key={quote} className={classes.sciQuote}>
+                <blockquote className={classes.serif}>{quote}</blockquote>
+                <figcaption>{src}</figcaption>
+              </figure>
+            ))}
           </div>
         </section>
       </div>
@@ -402,15 +376,6 @@ export function Landing() {
           <Link to="/privacy">{T.footerPrivacy}</Link>
           <Link to="/voorwaarden">{T.footerTerms}</Link>
           <Link to="/restitutie">{T.footerRefunds}</Link>
-          <span className={classes.langSwitch}>
-            <button type="button" aria-pressed={lang === 'nl'} onClick={() => switchLang('nl')}>
-              NL
-            </button>
-            <span aria-hidden="true">·</span>
-            <button type="button" aria-pressed={lang === 'en'} onClick={() => switchLang('en')}>
-              EN
-            </button>
-          </span>
         </span>
       </footer>
     </div>

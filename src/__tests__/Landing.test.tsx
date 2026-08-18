@@ -7,7 +7,6 @@
 // NL/EN copy without a profile to read the language from.
 
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Outlet } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
@@ -181,14 +180,17 @@ describe('Landing', () => {
     expect(screen.getByRole('link', { name: 'Inloggen' })).toHaveAttribute('href', '/login')
   })
 
-  it('switches copy to English and persists the choice for the next visit', async () => {
-    const user = userEvent.setup()
+  // The EN half of the copy and the NL/EN toggle were removed 2026-08-18: the
+  // product teaches Indonesian THROUGH Dutch, so an English reader cannot use
+  // what this page sells, and maintaining a parallel English string for every
+  // line is what turned the Dutch into a translation. An EN audience is a
+  // separate front door with its own brand (docs/roadmap.md, Bet 5), never a
+  // toggle here — so this asserts the toggle STAYS gone.
+  it('offers no language toggle — the page is Dutch only', () => {
     renderLanding()
 
-    await user.click(screen.getByRole('button', { name: 'EN' }))
-
-    expect(screen.getByText(/Learn Indonesian, in Dutch/)).toBeInTheDocument()
-    expect(localStorage.getItem('landing-lang')).toBe('en')
+    expect(screen.queryByRole('button', { name: 'EN' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'NL' })).not.toBeInTheDocument()
   })
 })
 

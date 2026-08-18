@@ -18,39 +18,14 @@
 // bespoke marketing idiom would be exactly the drift that exception is
 // narrowly scoped to avoid.
 
-import { useState } from 'react'
 import { Link } from 'react-router'
-import type { Lang } from '@/lib/i18n'
 import { SunMark } from '@/components/SunMark'
 import { hoeHetWerktCopy } from './HoeHetWerkt.copy'
 import landing from './Landing.module.css'
 import classes from './HoeHetWerkt.module.css'
 
-const LANDING_LANG_KEY = 'landing-lang'
-
-function readStoredLang(): Lang {
-  try {
-    const stored = localStorage.getItem(LANDING_LANG_KEY)
-    return stored === 'en' ? 'en' : 'nl'
-  } catch {
-    return 'nl'
-  }
-}
-
 export function HoeHetWerkt() {
-  // Shares the landing page's storage key on purpose: a visitor who switched to
-  // English there should not have to switch again after following the link.
-  const [lang, setLang] = useState<Lang>(readStoredLang)
-  const T = hoeHetWerktCopy[lang]
-
-  const switchLang = (value: Lang) => {
-    setLang(value)
-    try {
-      localStorage.setItem(LANDING_LANG_KEY, value)
-    } catch {
-      // private-mode storage failures just lose the preference
-    }
-  }
+  const T = hoeHetWerktCopy
 
   const stages = [
     [T.stage1, T.stage1Body],
@@ -201,15 +176,6 @@ export function HoeHetWerkt() {
           <Link to="/privacy">{T.footerPrivacy}</Link>
           <Link to="/voorwaarden">{T.footerTerms}</Link>
           <Link to="/restitutie">{T.footerRefunds}</Link>
-          <span className={landing.langSwitch}>
-            <button type="button" aria-pressed={lang === 'nl'} onClick={() => switchLang('nl')}>
-              NL
-            </button>
-            <span aria-hidden="true">·</span>
-            <button type="button" aria-pressed={lang === 'en'} onClick={() => switchLang('en')}>
-              EN
-            </button>
-          </span>
         </span>
       </footer>
     </div>

@@ -18,7 +18,6 @@
 // principles and our own decisions may be cited but never efficacy numbers,
 // and never in a way that implies a researcher endorses this product.
 
-import type { Lang } from '@/lib/i18n'
 
 const nl = {
   back: '← Terug',
@@ -92,75 +91,4 @@ const nl = {
   footerRefunds: 'Restitutie',
 }
 
-const en: typeof nl = {
-  back: '← Back',
-  login: 'Log in',
-  registerCta: 'Start free',
-
-  eyebrow: 'How it works',
-  title: 'You choose what you learn. The app chooses when.',
-  intro:
-    'Most language apps give you one path and push you along it. This works differently, and that difference is exactly the part that is confusing when nobody explains it. So it is here, before you make an account.',
-
-  oneKicker: 'One',
-  oneTitle: 'Nothing enters your session until you switch it on.',
-  oneBody:
-    'You activate lessons and word lists yourself. That is deliberate: you decide what you are working on, rather than a fixed path that is the same for everyone. It has one side effect that looks like a malfunction — switch nothing on and your session is empty. That is not a fault; there is simply nothing queued yet.',
-
-  twoKicker: 'Two',
-  twoTitle: 'Everything active lands in one session a day.',
-  twoBody:
-    'Not a queue per lesson. One session, assembled from everything you switched on, in which the app picks what is due today. So things arrive mixed together — a word from lesson 3, a grammar pattern from lesson 9, a story you read yesterday. That is intended: interleaved practice beats working through blocks.',
-
-  threeKicker: 'Three',
-  threeTitle: 'Every word moves through four stages.',
-  threeBody:
-    'On your Voortgang page you see your own words sitting in each stage. They move up when you get them right, and back when you lose them.',
-  stage1: 'Inprenten',
-  stage1Body: 'You have just met it. You recognise it when it is put in front of you.',
-  stage2: 'Oproepen',
-  stage2Body: 'You can retrieve the meaning without seeing it alongside.',
-  stage3: 'Productief',
-  stage3Body: 'You can produce the Indonesian form yourself, from the Dutch.',
-  stage4: 'Onderhoud',
-  stage4Body: 'It has stuck. It still comes back, just less and less often.',
-  stagesHonest:
-    'Important: these stages describe what the scheduler knows about you, not what you can do. “Productief” means you have got this exercise type right often enough for it to space them further apart — not that the word will always arrive in conversation. Those two do not move in lockstep, and we are not going to pretend otherwise.',
-
-  fourKicker: 'Four',
-  fourTitle: 'Where everything lives.',
-  four1: 'Leren',
-  four1Body: 'The lessons. This is where you switch on what you want to practise.',
-  four2: 'Ontdek',
-  four2Body: 'Word lists and themes, independent of the lesson order.',
-  four3: 'Lezen',
-  four3Body: 'Stories at your level, to read and to listen along with.',
-  four4: 'Voortgang',
-  four4Body: 'Your own words, by stage, and what is due today.',
-
-  whyKicker: 'Why this way',
-  whyTitle: 'Built from research — and rebuilt when that research proved us wrong.',
-  whyAudit:
-    'In May 2026 I went back through 36 hours of my own session data. 30.1% of all reviews turned out to repeat the same item within the same session; worst case, someone got three tests on apa kabar? within 31 seconds. Retrieving the same thing twice within half a minute is not retrieval — the answer is still in working memory. It was changed.',
-  whyPrinciple1Title: 'Recognise first, produce later',
-  whyPrinciple1Body:
-    'You are not asked to produce a word yourself minutes after first seeing it. The four exercise types unlock in sequence, not all at once. (Nation, Krashen.)',
-  whyPrinciple2Title: 'Reviews that are spaced apart',
-  whyPrinciple2Body:
-    'Other material sits between two turns on the same word. That makes it harder, which is precisely why it works. (Karpicke, on expanding retrieval.)',
-  whyPrinciple3Title: 'Scheduling on forgetting, not fixed intervals',
-  whyPrinciple3Body:
-    'The scheduler estimates, per word, how likely you are to still know it, and puts the next turn just before that point. Not “in three days” for everybody.',
-  whyHonest:
-    'What you will not find here: figures on how much faster or better you learn with this. That has never been measured for this product — not by us and not by anyone else. What is above are principles from the literature and decisions we made. The researchers named do not know this product exists.',
-
-  ctaTitle: 'Ready to start?',
-  ctaBody: 'You can try it without payment details.',
-
-  footerMade: 'made in the Netherlands',
-  footerPrivacy: 'Privacy',
-  footerTerms: 'Terms',
-  footerRefunds: 'Refunds',
-}
-
-export const hoeHetWerktCopy: Record<Lang, typeof nl> = { nl, en }
+export const hoeHetWerktCopy = nl

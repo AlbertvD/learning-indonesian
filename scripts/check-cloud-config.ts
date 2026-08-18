@@ -234,8 +234,7 @@ const priceSurfaces: Array<{ name: string; text: string; needs: string[] }> = [
   { name: 'paywall panel (en)', text: `${en.paywall.monthlyPrice} ${en.paywall.annualPrice}`, needs: [PRICING.monthly.display, PRICING.annual.display] },
   { name: '/voorwaarden §2 (nl)', text: nl.terms.section2Body, needs: [PRICING.monthly.display, PRICING.annual.display] },
   { name: '/voorwaarden §2 (en)', text: en.terms.section2Body, needs: [PRICING.monthly.display, PRICING.annual.display] },
-  { name: 'landing pricing band (nl)', text: landingCopy.nl.pricingBody, needs: [PRICING.monthly.display, PRICING.annual.display] },
-  { name: 'landing pricing band (en)', text: landingCopy.en.pricingBody, needs: [PRICING.monthly.display, PRICING.annual.display] },
+  { name: 'landing pricing band', text: landingCopy.pricingBody, needs: [PRICING.monthly.display, PRICING.annual.display] },
   { name: 'index.html JSON-LD offer', text: readFileSync('index.html', 'utf8'), needs: [`"price": "${PRICING.monthly.jsonLd}"`] },
 ]
 
