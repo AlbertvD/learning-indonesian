@@ -73,14 +73,6 @@ export function Landing() {
     }
   }
 
-  const stack = [
-    [T.stack1Tool, T.stack1Body],
-    [T.stack2Tool, T.stack2Body],
-    [T.stack3Tool, T.stack3Body],
-    [T.stack4Tool, T.stack4Body],
-    [T.stack5Tool, T.stack5Body],
-  ] as const
-
   return (
     <div className={classes.landing}>
       {/* The header sits ON the hero's dark ground, so it carries the dark
@@ -230,28 +222,6 @@ export function Landing() {
           </div>
         </section>
 
-        {/* Completeness sold as ASSEMBLY, never as a feature list (design D4,
-            positioning.md §1). A feature list invites comparison on every axis
-            against a specialist who wins on that axis, and says nothing about
-            who it is for. Naming what each tool COSTS in upkeep is what makes
-            "already assembled" land as work the reader does not have to do. */}
-        <section className={`${classes.section} ${classes.sectionAiry}`}>
-          <div className={classes.lead}>
-            <span className={classes.leadKicker}>{T.stackKicker}</span>
-            <h2 className={`${classes.leadTitle} ${classes.serif}`}>{T.stackTitle}</h2>
-            <p className={classes.leadBody}>{T.stackIntro}</p>
-          </div>
-          <ul className={classes.stack}>
-            {stack.map(([tool, body]) => (
-              <li key={tool} className={classes.stackRow}>
-                <span className={`${classes.stackTool} ${classes.serif}`}>{tool}</span>
-                <span className={classes.stackBody}>{body}</span>
-              </li>
-            ))}
-          </ul>
-          <p className={classes.stackClose}>{T.stackClose}</p>
-        </section>
-
         {/* "The pair" — the page's signature. Both uncopyable assets have the
             same shape: two words and a relationship between them. It lets the
             Duolingo argument be SHOWN rather than claimed, and answers Anki in
@@ -358,7 +328,19 @@ export function Landing() {
             <p className={classes.sciAudit}>{T.sciAudit}</p>
             <div>
               <p className={classes.sciPrinciples}>{T.sciPrinciples}</p>
-              <p className={classes.sciHonest}>{T.sciHonest}</p>
+              <div className={classes.sciQuotes}>
+                {(
+                  [
+                    [T.sciQ1, T.sciQ1Src], [T.sciQ2, T.sciQ2Src],
+                    [T.sciQ3, T.sciQ3Src], [T.sciQ4, T.sciQ4Src],
+                  ] as const
+                ).map(([quote, src]) => (
+                  <figure key={quote} className={classes.sciQuote}>
+                    <blockquote className={classes.serif}>{quote}</blockquote>
+                    <figcaption>{src}</figcaption>
+                  </figure>
+                ))}
+              </div>
             </div>
           </div>
         </section>

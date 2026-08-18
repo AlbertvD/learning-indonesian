@@ -599,8 +599,8 @@
 }
 .sciGrid {
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 52px;
+  grid-template-columns: 0.95fr 1.15fr;
+  gap: 56px;
   align-items: start;
 }
 /* The audit is the strongest item on the page — a specific, checkable thing
@@ -962,5 +962,46 @@
   .method {
     grid-template-columns: 1fr;
     gap: 30px;
+  }
+}
+
+/* ---------- the principles, as quotes ---------- */
+
+.sciQuotes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px 32px;
+  margin-top: 26px;
+}
+.sciQuote {
+  margin: 0;
+}
+.sciQuote blockquote {
+  margin: 0 0 8px;
+  quotes: '“' '”';
+  font-size: 17.5px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--rail-ink);
+  font-style: italic;
+}
+.sciQuote blockquote::before {
+  content: 'C';
+  color: var(--land-gold);
+}
+.sciQuote blockquote::after {
+  content: 'D';
+  color: var(--land-gold);
+}
+.sciQuote figcaption {
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rail-ink-muted);
+}
+
+@media (max-width: 900px) {
+  .sciQuotes {
+    grid-template-columns: 1fr;
   }
 }
