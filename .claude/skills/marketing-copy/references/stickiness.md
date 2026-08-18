@@ -81,7 +81,7 @@ page as written.
 | **Simple** | Weakest. The argument is good but arrives in eight bands. There is no proverb — no single line a reader could repeat in a pub |
 | **Unexpected** | Strong where it is present: *"Ik heb ze opgezet. Ik heb ze nooit gevuld."* and *"Duolingo leert je lelah. Je schoonmoeder zegt capek."* |
 | **Concrete** | Good after rewriting — the empty reader, the five named services, two words at a kitchen table. Was abstract before |
-| **Credible** | Unusually strong, and by an honest route: the ADR 0007 audit is a *testable* credential in Reagan's sense — a specific admitted mistake, checkable, not a statistic asking for trust |
+| **Credible** | Carried by specificity rather than proof — `kantoor → kantor`, *lelah*/*capek*, named researchers. (This row used to praise the ADR 0007 self-audit as the exemplar; the owner has removed that paragraph from the page three times. See the ⛔ note in the `marketing` skill: a credential the reader has to care about the builder's QA to feel is the wrong kind.) |
 | **Emotional** | Present but underplayed. The strongest emotional beat — the table — is in paragraph three of the hero |
 | **Story** | Present, but see `storybrand.md`: it is the *founder's* story and it does not turn to the reader |
 
