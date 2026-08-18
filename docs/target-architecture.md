@@ -1357,7 +1357,7 @@ create table indonesian.learner_lesson_activation (
 );
 ```
 
-Owned by `lib/lessons/`. The session-builder's eligibility filter is now `capability.lessonId == null || activatedLessons.has(capability.lessonId)`. The mastery model's `'introduced'` label depends on `lessonActivated` instead of source-progress state. The lesson reader is purely informational. New users get lessons 1–3 auto-activated on first sign-in via `authStore.activateStarterLessons` (idempotent, gated on the `SIGNED_IN` auth event). Existing users have the same activation backfilled by master `migration.sql`.
+Owned by `lib/lessons/`. The session-builder's eligibility filter is now `capability.lessonId == null || activatedLessons.has(capability.lessonId)`. The mastery model's `'introduced'` label depends on `lessonActivated` instead of source-progress state. The lesson reader is purely informational. New users get the **free-tier lessons** auto-activated on first sign-in via `authStore.activateStarterLessons` (idempotent, gated on the `SIGNED_IN` auth event). Existing users have the same activation backfilled by master `migration.sql`. ⚠️ The count is **derived from `FREE_TIER_MAX_LESSON`** (`authStore.ts:284` builds the `order_index` list from it), not hardcoded — so it is currently **lesson 1**, not lessons 1–3 as this line said until 2026-08-17. Do not restate a number here; cite the constant.
 
 `learning_capabilities` gained a nullable `lesson_id` column — NULL for cross-lesson capabilities (podcast, etc.); otherwise the capability is owned by that lesson and gated by activation.
 

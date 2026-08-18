@@ -48,6 +48,12 @@ const Terms = lazy(() => import('@/pages/Terms').then(m => ({ default: m.Terms }
 const Refunds = lazy(() => import('@/pages/Refunds').then(m => ({ default: m.Refunds })))
 const CheckoutSuccess = lazy(() => import('@/pages/CheckoutSuccess').then(m => ({ default: m.CheckoutSuccess })))
 const Landing = lazy(() => import('@/pages/Landing').then(m => ({ default: m.Landing })))
+// Public explainer for the activation model, linked from the landing page's
+// "hoe het werkt" band and its footer. Public on purpose: it answers a question
+// a prospective buyer has BEFORE signing up, and gating the explanation of how
+// the product works behind the product is backwards
+// (docs/plans/2026-08-06-hoe-het-werkt-page-design.md §3).
+const HoeHetWerkt = lazy(() => import('@/pages/HoeHetWerkt').then(m => ({ default: m.HoeHetWerkt })))
 
 // ─── Bespoke lesson pages — preview routes ────────────────────────────────────
 // /lesson/:lessonId resolves to the bespoke page when one is registered (see
@@ -114,7 +120,14 @@ function App() {
   // Same dev bypass as ProtectedRoute so `/?bypassAuth=1` still previews Home.
   const devBypass = import.meta.env.DEV
     && new URL(window.location.href).searchParams.get('bypassAuth') === '1'
-  const showLanding = !user && !loading && !devBypass
+  // ...and the mirror of it. Without this the landing page is unreachable for
+  // anyone with a session, so reviewing marketing copy meant logging out or
+  // opening a private window every time — which is most of the people most
+  // likely to be reviewing it. DEV-only, and it grants nothing: the landing
+  // page is public, so this reveals a surface a logged-out visitor already sees.
+  const devForceLanding = import.meta.env.DEV
+    && new URL(window.location.href).searchParams.get('forceLanding') === '1'
+  const showLanding = devForceLanding || (!user && !loading && !devBypass)
 
   return (
     <>
@@ -128,6 +141,7 @@ function App() {
       <Route path="/preview/lesson/:slug" element={<LazyPage><LocalPreviewLesson /></LazyPage>} />
       <Route path="/privacy" element={<LazyPage><Privacy /></LazyPage>} />
       <Route path="/leenwoorden" element={<LazyPage><Leenwoorden /></LazyPage>} />
+      <Route path="/hoe-het-werkt" element={<LazyPage><HoeHetWerkt /></LazyPage>} />
       {/* Public — reachable pre-auth via Stripe Checkout's consent-collection
           link and PaywallPanel's footer, mirrors /privacy (docs/plans/
           2026-07-12-oauth-stripe-entitlement-design.md §3.4). */}

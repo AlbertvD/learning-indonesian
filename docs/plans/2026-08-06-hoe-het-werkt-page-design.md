@@ -1,7 +1,29 @@
 ---
-status: draft
+status: implementing
+implementation: PR #477
 reviewed_by: []
+implementation_paths:
+  - src/pages/HoeHetWerkt.tsx
+  - src/pages/HoeHetWerkt.copy.ts
+  - src/pages/HoeHetWerkt.module.css
+  - src/__tests__/HoeHetWerkt.test.tsx
+  - src/App.tsx
 ---
+
+> **Built 2026-08-17 on branch `landing-page-rewrite`**, together with the
+> landing-page rewrite that links to it. Flip to `shipped` with a `merged_at`
+> when it lands on main.
+>
+> Built as specified, with two additions worth knowing: the honesty rules in
+> §3c are now asserted by tests rather than only described (no price, no
+> invented proof, no efficacy claim, the ADR 0007 figures, and the endorsement
+> disclaimer), and the step numbers sit in a left rail because the prose measure
+> left a wide screen half empty. §5's "no screenshots in v1" was honoured — the
+> model is described in words, so the page does not rot with the UI.
+>
+> Reviewer sign-off was deliberately skipped (owner call): this is a static
+> marketing page sharing the landing page's chrome under the page-framework
+> exception, with no schema and no module seam. See the sibling spec's §12.
 
 # `/hoe-het-werkt` — explaining the model
 
@@ -12,6 +34,19 @@ into one daily session, and each item advances through four named stages.
 Sibling of `2026-08-06-onboarding-goals-design.md`. That one asks the learner
 questions; this one answers theirs. No data-model impact, so it does not need the
 `data-architect` gate.
+
+> **⭐ No longer deferred (owner decision 2026-08-17).** This page ships
+> *together with* the landing-page rewrite, which links to it prominently
+> (`docs/plans/2026-08-16-landing-page-redesign.md` D10, spine band 5). Both
+> open questions in §7 are now answered — see the box there. Read the landing
+> spec first: it owns the shared visual direction (D8, the batik-green ground),
+> the shared band chrome, and the honesty constraints both pages inherit.
+>
+> Two constraints this page inherits and must not re-derive:
+> **(a)** it joins the landing page under the sanctioned page-framework
+> exception, *sharing its chrome* rather than inventing a third layout idiom;
+> **(b)** its copy is chunk-local, like `Landing.copy.ts` — never added to
+> `src/lib/i18n.ts`, which is entry-chunk-resident and must not grow.
 
 ---
 
@@ -167,7 +202,27 @@ None in `check-supabase*`. One addition to `scripts/check-cloud-config.ts`
 behaviour section: `/hoe-het-werkt` returns 200, alongside the existing SPA
 deep-link check — cheap, and it catches the route being lost in a refactor.
 
-## 7. Open questions for review
+## 7. Open questions — ANSWERED 2026-08-16/17
+
+> **Both are closed.** Recorded as D6 and D7 in
+> `docs/plans/2026-08-16-landing-page-redesign.md`; restated here so this file
+> can be read on its own.
+>
+> **Q1 — over-promising precision: answered by D6.** The four stages **stay**,
+> and they ship with a framing sentence stating explicitly that they describe
+> *scheduling state, not competence*. The framing sentence is not optional
+> decoration — it is the thing that makes displaying the stages honest, so it
+> ships in the same band, not in a footnote. §3b's ⚠️ stands as written.
+>
+> **Q2 — the free-tier boundary: answered by D7/D9.** **Leave it to the landing
+> page.** This page carries no price and no tier claim. Rationale is the one
+> Q2 gives itself below: the boundary already drifted once inside this very
+> question, the copy is not machine-pinned, and adding a tenth advertising
+> surface widens an existing gap rather than joining a protected set. The
+> landing page states it once, in the closing band, where
+> `check-cloud-config.ts:237-238` already pins the price it quotes.
+
+### The original questions, retained for the reasoning
 
 1. Does the four-stage explanation risk over-promising precision? The stages are
    real and displayed, but a learner may read them as guarantees of progress.

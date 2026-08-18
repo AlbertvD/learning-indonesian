@@ -33,7 +33,11 @@ last_verified: 2026-08-05
 > reasoning that produced the change — the banner above is what is true now.
 
 Current at time of analysis: **€7/month, €56/year**, VAT included, free tier =
-lessons 1–3 plus the pronunciation podcast. **Now €9/€79.**
+lessons 1–3 plus the pronunciation podcast. **Now €9/€79, and the free tier is
+lesson 1** — narrowed in PR #470, after this scan was written. Both figures in
+that first sentence are historical. The live values are `PRICING` in
+`scripts/check-cloud-config.ts` and `FREE_TIER_MAX_LESSON` in
+`src/services/entitlementService.ts:41`; cite those, never this line.
 
 Framework: Ramanujam & Tacke, *Monetizing Innovation*. The relevant failure mode
 they name is the **minivation** — *"products that tap neither a product
@@ -66,7 +70,7 @@ Volksuniversiteit is three or more course levels: **€760+**.
 | Duolingo Max | €14.99/mo | No |
 | Babbel | ~€9/mo on annual (~€100/yr) | No Indonesian |
 | Busuu Premium Plus | ~€13/mo | No |
-| **Kamoe Bisa** | **€7/mo · €56/yr** | Yes — the only one |
+| **Kamoe Bisa** | ~~€7/mo · €56/yr~~ → **€9/mo · €79/yr** | Yes — the only one |
 
 ## 2. The diagnosis
 

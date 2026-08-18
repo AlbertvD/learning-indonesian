@@ -703,21 +703,35 @@ What has to be explained, on every surface below:
 3. **It stays yours to steer.** Activation is reversible and mixable, so the
    queue can be tuned to what the learner actually wants to learn.
 
-- [ ] **Landing page** — deepen the existing `howKicker` band
-      (`src/pages/Landing.copy.ts:41-48` NL / `:91-98` EN). `how2Body` already
-      gestures at the scheduler; **nothing on the landing page mentions that the
-      learner chooses what enters it at all.** That omission is the gap.
+- [x] **Landing page** — **rewritten 2026-08-17** (branch `landing-page-rewrite`,
+      not yet merged). The scope grew from "deepen the `howKicker` band" to a
+      full rewrite after the owner's verdict that the page *"looks AI generated
+      and a bit clunky"*. The gap named here — nothing said the learner chooses
+      what enters the session — is closed by the new "hoe het werkt" band, which
+      leads with *"Jij zet aan wat je wilt leren"* and links to the page below.
+      Spec: `docs/plans/2026-08-16-landing-page-redesign.md`.
 - [ ] **In-app** — the explanation a learner needs on day one and again on day
       three. `FirstRunChecklist` is the existing surface; per the
-      `/hoe-het-werkt` draft §4 this must NOT become a forced modal or tour.
-- [ ] **`/hoe-het-werkt` public page** — ⚠ **a design draft already exists and is
-      unbuilt**: `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`
-      (`status: draft`, `reviewed_by: []`). It covers item 1–3 above plus the
-      four-stage pipeline and the research grounding, and it argues the mechanic
-      is a *differentiator*, not support content. It needs the `staff-engineer`
-      → `architect` gate before building; no `data-architect` (no data-model
-      surface). Its sibling `2026-08-06-onboarding-goals-design.md` DOES touch
-      `profiles` and needs both.
+      `/hoe-het-werkt` spec §4 this must NOT become a forced modal or tour.
+      **Still open, and now the only unbuilt slice of this phase.**
+- [x] **`/hoe-het-werkt` public page** — **built 2026-08-17**, same branch.
+      `docs/plans/2026-08-06-hoe-het-werkt-page-design.md` is now
+      `status: implementing`. Covers items 1–3 above plus the four-stage
+      pipeline and the research grounding. Both of its open questions were
+      answered: the stages stay and ship with the sentence saying they describe
+      scheduling state and not competence, and the page carries no price.
+      Reviewer gates were deliberately skipped (owner call) — it is a static
+      marketing page with no schema and no module seam, sharing the landing
+      page's chrome under the page-framework exception. Its sibling
+      `2026-08-06-onboarding-goals-design.md` DOES touch `profiles` and still
+      needs both `architect` and `data-architect`.
+
+> **Copy for any of these goes through `.claude/skills/marketing`** — the
+> honesty gate (no invented reviews or learner counts, no efficacy numbers, all
+> audio is TTS, DB-verified counts only, and the register limit) plus the method
+> from the four books in `docs/marketing/`. Those rules are now also asserted by
+> tests in `Landing.test.tsx` / `HoeHetWerkt.test.tsx`, so copy drift fails a
+> build instead of shipping quietly.
 
 **Sequencing note.** This phase and **issue #466** (show locked content instead
 of hiding it) are the same problem seen from two sides — a free visitor can

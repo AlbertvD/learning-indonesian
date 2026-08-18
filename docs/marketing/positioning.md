@@ -1,7 +1,7 @@
 ---
 status: draft
 owner_confirmed: partial
-last_verified_against_product: 2026-08-05
+last_verified_against_product: 2026-08-17
 ---
 
 # Positioning — Kamoe Bisa
@@ -60,7 +60,7 @@ truth positions properly as **assembly**:
 > Serious learners already build this stack by hand — Anki for scheduling, a
 > textbook for grammar, a reader for input, a podcast for listening. It works,
 > and it is a second hobby. This is that stack, already assembled, for a
-> language pair nobody serves.
+> language pair no modern course serves.
 
 Completeness then reads as *work you do not have to do*, and it answers Anki in
 one line: Anki is one component of that stack, and the component that costs the
@@ -82,10 +82,21 @@ Three conclusions, and they are the backbone of the position:
 
 1. **Demand is proven.** 1.21M people are learning Indonesian on one platform
    alone. This is not a market that has to be created.
-2. **Supply to Dutch speakers is zero.** Duolingo serves Dutch speakers only the
-   mass-market majors. Anything outside that top nine must be learned through
-   English. Kamoe Bisa is not competing in a category Duolingo serves badly — it
-   is in one Duolingo structurally does not serve.
+2. **Supply to Dutch speakers is zero *on Duolingo*.** Duolingo serves Dutch
+   speakers only the mass-market majors. Anything outside that top nine must be
+   learned through English. Kamoe Bisa is not competing in a category Duolingo
+   serves badly — it is in one Duolingo structurally does not serve.
+
+   ⚠️ **Corrected 2026-08-18. Do NOT generalise this to the whole market.** Five
+   Dutch→Indonesian offerings were found and reviewed
+   (`competitive-messaging.md` §9): NHA sells a full B1 distance course in Dutch
+   for €269 with a diploma, Teman Indonesia teaches it 1:1, Talendomein resells
+   Dutch self-study on CD and USB, and 50languages/Loecsen give phrase courses
+   away. **The defensible claim is narrower and still strong: no modern,
+   app-native course serves this pair.** The competitive set is a distance
+   course, a private teacher and phrasebooks on a USB stick — which is a better
+   story than "nobody", because a visitor can verify it in one search and
+   "nobody" collapses the moment they find NHA.
 3. **Routing through English destroys the loanword advantage.** The loanwords
    are *Dutch*: `kantoor→kantor`, `handdoek→handuk`, `koelkast→kulkas`. An
    English-based course cannot use a single one. The biggest head start a Dutch
@@ -103,8 +114,13 @@ still a good one, but it must be made honestly.
 
 ## 2. Unique attributes
 
-Capabilities the alternatives lack. Counts verified against the live cloud
-project 2026-08-05.
+Capabilities the alternatives lack.
+
+> **Every count below lives in `docs/marketing/facts.md`, with the query that
+> produced it and the list of surfaces that quote it.** Do not restate a number
+> here without updating that file — "verified on <date>" is a claim about
+> someone's process that nobody can re-check, which is how four documents came to
+> carry the wrong free tier for weeks.
 
 - **The Dutch→Indonesian loanword bridge** — 173 items carry `loan_source_nl`.
   *Structurally uncopyable*: the loanwords are Dutch, so any course routing
@@ -123,12 +139,91 @@ project 2026-08-05.
   every competitor hides the scheduler behind a streak counter, so "we bring a
   word back just before you forget it" is a claim anyone can make, while a
   learner watching their own words move through named stages is evidence.
-  Owner observation 2026-08-06; the page that carries it is
-  `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`.
+  Owner observation 2026-08-06; **now live at `/hoe-het-werkt`** (built
+  2026-08-17, spec `docs/plans/2026-08-06-hoe-het-werkt-page-design.md`).
   ⚠️ Honesty limit: the stages describe SCHEDULING STATE, not guaranteed
   competence. "Productief" must never be sold as "you can now produce this word
   on demand" — the first learner who finds otherwise stops believing the rest.
+  The page ships that disclaimer in the same band as the stages, and a test
+  pins it (`HoeHetWerkt.test.tsx`), because showing the stages without it is
+  what turns a true thing into an over-promise.
 - **Dutch throughout** — instruction, glosses, grammar explanation.
+
+## 2b. The Kamoe Bisa-methode — named 2026-08-18
+
+**Owner decision, taken while writing the landing hero.** Every serious
+competitor names its mechanism — the Babbel Method, the Pimsleur Method™,
+Duolingo's gamification, LingQ's comprehensible input — because a market this
+sophisticated buys a *how* rather than a *what* (`competitive-messaging.md` §2).
+We had a distinctive mechanism and no name for it; now we do.
+
+**What it names — the loop, not an outcome:**
+
+> Je dompelt jezelf onder in de taal — woorden leren, verhalen lezen en
+> luisteren, op jouw tempo — en alles wat je tegenkomt of opzoekt komt terug tot
+> je het kent, begrijpt en kan toepassen.
+
+The parts, all verified shipped:
+
+1. **Jij kiest wat meedoet.** Lessons and word lists are activated by the
+   learner; nothing is scheduled until they switch it on.
+2. **Lezen en luisteren op niveau.** 13 texts carrying a CEFR `level`
+   (`migration.sql:144`), 9 with audio.
+3. **Opzoeken = oefenen.** Tapping an unknown word while reading harvests it
+   into the learner's review set — `LezenReader.tsx:33-38` → `harvestWord()`.
+   This is the load-bearing step and the one no mass-market competitor has.
+4. **Eén sessie per dag**, assembled from everything active, scheduled by
+   predicted forgetting (FSRS).
+5. **Kennen → begrijpen → toepassen.** The capability ladder the app already
+   runs on, which is why that phrasing in the hero is descriptive rather than a
+   promise.
+6. **Affixen en register** — decode unseen words; learn what is actually said.
+
+### Rules for using the name
+
+The reason `competitive-messaging.md` §6 originally rated this candidate poorly
+was that a brand-shaped name ("the X method") is a *label*, and a label says
+nothing. That objection is answered **only** by the way it is used:
+
+- **Always pair the name with the mechanism on first use.** The landing hero does
+  this in one sentence. A bare "de Kamoe Bisa-methode" with no explanation is the
+  failure mode.
+- **Never attach an outcome or a timeline to it.** Not "leer sneller", not "in X
+  weken", not "bewezen". This is precisely the door efficacy claims come back
+  through: Babbel's method name is a container for "92% in 2 months", and we have
+  measured nothing.
+- **Distinguish the principles from the method. The principles are proven; the
+  method is not tested.** This line is finer than "never mention science", and
+  getting it right is worth real credibility:
+
+  | ✅ Say | ❌ Do not say |
+  |---|---|
+  | "opgebouwd uit onderzoek dat al decennia overeind staat" | "onze methode is bewezen" |
+  | "eerst herkennen, dan produceren (Nation, Krashen)" | "wetenschappelijk bewezen effectief" |
+  | "lezen gaat pas lopen rond 95% (Laufer; Schmitt e.a.)" | any number about *our* learners |
+  | "dit hebben we veranderd toen het onderzoek ons ongelijk gaf" (ADR 0007) | "X% leert sneller" |
+
+  The established findings are citable and should be cited **by name** — that is
+  what makes the derivation checkable rather than decorative. What may never be
+  claimed is that *this product* or *this method* has been measured, because it
+  has not. Note the competitive contrast this buys (`competitive-messaging.md`
+  §1): Duolingo says "scientifically proven to work" about itself; Babbel quotes
+  an efficacy study it commissioned about itself. Citing published work and
+  naming what we changed because of it is a *different and more honest* claim
+  than either, and it is available to us precisely because we are not claiming
+  our own results.
+- **Capitalise and hyphenate as `Kamoe Bisa-methode`** (Dutch orthography), and
+  `Kamoe Bisa method` in English.
+
+### Where it belongs
+
+| Surface | Use it? |
+|---|---|
+| Landing hero | ✅ live since 2026-08-18, paired with the mechanism |
+| `/hoe-het-werkt` | ✅ should introduce it properly — that page IS the mechanism, and currently never names it |
+| Meta description, ad and social copy | ✅ once, with the mechanism |
+| Inside the app | ❌ learners do not need brand language; they need the thing to work |
+| Anywhere near a number | ❌ see the rules above |
 
 ## 3. Value themes
 
@@ -175,7 +270,7 @@ The strategic choice, in ascending order of defensibility:
 | Frame | Verdict |
 |---|---|
 | "Indonesian language course" | Competes with Duolingo on brand and price. Loses. |
-| "Indonesisch leren voor Nederlandstaligen" | Defensible — nobody else serves this pair in Dutch. |
+| "Indonesisch leren voor Nederlandstaligen" | Defensible — but see the ⚠️ in §1: others DO serve this pair in Dutch, just not with a modern course. |
 | **"De app voor Nederlanders met een Indonesische band"** | Nearly uncontested, and it makes the loanword bridge the centre of the product rather than a nice touch. |
 
 The sentence the whole position hangs on:
@@ -188,6 +283,12 @@ dismissal. "Wie het via het Engels leert heeft er niets aan" is both rude and
 false — plenty of Dutch speakers learn happily in English. The true and stronger
 claim is narrower: *the loanword head start is unavailable there*. Attack the
 gap, never the learner or the tool they chose.
+
+> **Competitor messaging is tracked separately** in
+> `docs/marketing/competitive-messaging.md` (homepages read 2026-08-18): what
+> each of them actually claims, the three axes we cannot compete on (social
+> proof, efficacy numbers, content volume), and the one industry-standard move
+> we are missing — a named method.
 
 ## 6. Relevant trend (bonus, handle with care)
 
@@ -206,16 +307,62 @@ the reader — never as the lead.
 - **Dunford's step 2 is "form a positioning team"** — precisely because a single
   person's view of their own product is unreliable. This was done by the owner
   and an agent, which is not the same thing.
-- Willingness to pay at €7/€56 is untested; the prices were chosen, not
-  researched (see *Monetizing Innovation*).
+- Willingness to pay at **€9/€79** is untested; the prices were chosen, not
+  researched (see *Monetizing Innovation*). Still zero paying subscribers, so
+  this remains the least-evidenced number in the whole marketing set.
+
+### Claims that become TRUE later — the pending register
+
+The honesty gate produces a lot of "cannot say yet", and without a register those
+claims either get forgotten when they finally become available, or — worse —
+someone writes them early because they *feel* true. Both happened today. Each
+entry below names the claim, why it is blocked, and **the specific trigger that
+unlocks it.**
+
+| Claim | Blocked because | Unlock when |
+|---|---|---|
+| *"We optimaliseren de leermethode op basis van hoe onze gebruikers leren."* (owner's own words, 2026-08-18 — he intends to do exactly this) | **Zero users.** The May 2026 audit was on the owner's OWN session data. Present tense claims a practice that cannot yet exist | There is a real cohort and at least one change has actually been made from aggregate learner data — not from one person's |
+| Reviews, ratings, testimonials, learner counts | Zero paying customers | First customers exist AND have given permission. Quote them verbatim; never write them |
+| Any efficacy figure ("X% leert sneller", "in N weken") | Never measured, by us or anyone | A real study exists. Commissioning one about ourselves is what Babbel does; if we ever do, say who paid for it |
+| *"De verhalenbibliotheek is groot"* / dropping the A1–A2 hedge | 13 texts, only 3 above A2 | The library covers B1/B2 with enough breadth that a B1 learner has real choice |
+| "Nobody serves this pair" (unqualified) | False — NHA, Teman Indonesia, Talendomein, 50languages all do | Never. Use "no modern, app-native course" instead — see §1 ⚠️ |
+
+⚠️ **The first row is the dangerous one**, because it regenerated twice in a
+single day — once written by the agent, once by the owner — in the same band of
+the same page. A claim that keeps reappearing is not a slip; it is a claim the
+product *wants* to make, which is exactly when it needs a written block rather
+than a memory of one.
 
 ## 8. Copy rules that follow from this
+
+> **These are now packaged as a skill: `.claude/skills/marketing`.** It carries
+> the honesty gate, a pre-flight checklist, and the method from the four books
+> already applied across these docs (Dunford here, Sheridan in
+> `content-plan.md`, Weinberg & Mares in `channels.md`, Ramanujam in
+> `pricing.md`) — so a new surface does not have to reassemble the rules from
+> six files, which is how they got skipped. Written 2026-08-17, in answer to
+> this file's own line 12: *"any future marketing skill should trace back to a
+> line in here"*. Read the skill before writing copy; keep editing THIS file
+> when a rule changes.
 
 - Lead with recognition, not features. The first thing a heritage learner should
   meet is the loanword wall (implemented: `Landing.tsx`, shared pairs in
   `src/lib/loanwords/revealPairs.ts`).
 - Never claim native speakers or human narration — all audio is TTS. Pre-existing
   owner rule, `Landing.copy.ts`.
+- Never invent reviews, ratings, testimonials or learner counts. There are zero
+  paying customers, so any such claim is fabricated — and the replacement that
+  does the same job honestly is the owner's own story (`personas.md` §1), which
+  is what the landing hero now uses.
+- Cite principles and our own decisions, never efficacy numbers, and never in a
+  way that implies a researcher endorses the product.
 - Quote only counts that are verified against the database, and say where the
   check lives. Marketing numbers drift silently; product numbers do not.
+- Respect the register limit (`personas.md` §1): promise *the register they
+  actually use*, never conversational fluency by a given week.
 - Dutch first. English copy exists but the product and the audience are Dutch.
+
+**Six of these are now asserted by tests** (`Landing.test.tsx`,
+`HoeHetWerkt.test.tsx`) rather than only written down — a doc cannot fail a
+build, and copy is exactly the kind of thing that drifts without anyone
+noticing.

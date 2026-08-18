@@ -131,6 +131,15 @@ status: stable                            # stable | in-flight | partial
 
 A spec with `last_verified_against_code` older than ~30 days should be re-verified before trusting any specific cite. The date is the spec's freshness signal.
 
+### Two rules that keep facts from going stale in five places at once
+
+Added 2026-08-17, after the free tier changed from lessons 1–3 to lesson 1 in PR #470 and **four documents kept the old number** — including this file, and including the shipped plan this file named "the authoritative spec".
+
+- **⭐ A live rule may cite a shipped plan for PROVENANCE, never for AUTHORITY.** "The design that produced this is at `plans/X`" is good and should stay. "See `plans/X`, the authoritative spec" is the bug: shipped plans are changelogs frozen at merge date, so anything downstream of them inherits their staleness. Authority lives in `docs/current-system/`, in an ADR, or in the code.
+- **⭐ Never restate a value that a constant owns — cite the constant.** The free tier is `FREE_TIER_MAX_LESSON` (`src/services/entitlementService.ts:41`) and `indonesian.is_free_tier_lesson`; prices are `PRICING` in `scripts/check-cloud-config.ts`. Writing the number into prose creates a copy that can drift, and four of them did. If a fact is machine-checkable, the doc's job is to say *where the check lives*, not to repeat the answer.
+
+The same reasoning is why `docs/plans/` is culled: a shipped plan nothing points at is 3,000 words of greppable, quotable, stale-by-design prose. See `ARCHIVE.md` and the archive's own `README.md` cull log.
+
 Indonesian language tutor app — React frontend connecting directly to a shared self-hosted Supabase instance.
 
 ## Architecture
@@ -312,13 +321,13 @@ Supabase Studio), or any marketing/notification email.
 
 ## Signup gating & entitlements
 
-**The invite-code system is retired (2026-07-12) — payment is the gate.** See `docs/plans/2026-07-12-oauth-stripe-entitlement-design.md` (the authoritative spec). Signup is open: `Register.tsx` calls `supabase.auth.signUp` (via `authStore.signUp`) and offers Google OAuth (`authStore.signInWithGoogle`, GoTrue external provider). `GOTRUE_DISABLE_SIGNUP=false` in homelab-configs. The `signup-with-invite` edge function, `signup_invite_codes` table, and `redeem_invite_code`/`restore_invite_code` RPCs are deleted — do not reintroduce them.
+**The invite-code system is retired (2026-07-12) — payment is the gate.** Authority for the CURRENT shape is `docs/current-system/data-model.md` plus `scripts/migration.sql` and `src/services/entitlementService.ts`; `docs/plans/2026-07-12-oauth-stripe-entitlement-design.md` is the **design record** (shipped PR #461) — read it for *why*, never for current values. It said "lessons 1–3" until 2026-08-17, and this line calling it "the authoritative spec" is how that reached this file. Signup is open: `Register.tsx` calls `supabase.auth.signUp` (via `authStore.signUp`) and offers Google OAuth (`authStore.signInWithGoogle`, GoTrue external provider). `GOTRUE_DISABLE_SIGNUP=false` in homelab-configs. The `signup-with-invite` edge function, `signup_invite_codes` table, and `redeem_invite_code`/`restore_invite_code` RPCs are deleted — do not reintroduce them.
 
 What gates access instead:
 
 - **`indonesian.entitlements`** — one row per paying/comped user; owner-read RLS, ALL writes service-role (Stripe webhook / `verify-checkout` / admin). LEARNER DATA — precious, gated migrations only.
-- **Free tier = lessons 1–3** (`indonesian.is_free_tier_lesson()` in SQL, `FREE_TIER_MAX_LESSON` in `src/services/entitlementService.ts` — change BOTH or the parity health check fails). Enforced server-side in `set_lesson_activation`; mirrored client-side as paywall UX.
-- **Storage buckets are private**; audio is consumed via signed URLs under the `indonesian_media_read` policy → `indonesian.can_read_media()`. TTS bucket is free for any authenticated user; `indonesian-lessons`/`indonesian-podcasts` need an entitlement (free carve-outs: lessons 1–3 audio, the pronunciation podcast).
+- **Free tier = lesson 1** (`indonesian.is_free_tier_lesson()` in SQL — currently `p_order_index <= 1`, `scripts/migration.sql:4904` — and `FREE_TIER_MAX_LESSON` in `src/services/entitlementService.ts:41` — change BOTH or HC55 fails). Enforced server-side in `set_lesson_activation`; mirrored client-side as paywall UX. ⚠️ Narrowed from lessons 1–3 by owner decision in PR #470; this file said "1–3" until 2026-08-17. **The copy that advertises the tier is NOT machine-pinned** — before writing "lesson 1 free" on a new surface, read the constant, and prefer not to add another unpinned surface (see `docs/roadmap.md` § ENGINEERING).
+- **Storage buckets are private**; audio is consumed via signed URLs under the `indonesian_media_read` policy → `indonesian.can_read_media()`. TTS bucket is free for any authenticated user; `indonesian-lessons`/`indonesian-podcasts` need an entitlement (free carve-outs: free-tier lesson audio per `is_free_tier_lesson`, the pronunciation podcast).
 - **Comp access** = admin inserts an entitlement row (`status='comped', source='comp'`) via psql/Studio — there are no codes.
 
 Known accepted residuals (documented in the spec §2/§10): email enumeration is inherent to open GoTrue signup with autoconfirm (mitigation = gateway rate limiting at cloud exposure); no captcha; bot accounts get free tier only.
@@ -610,6 +619,40 @@ Key facts relevant to this app:
 - **Internal networking:** Services communicate over internal Docker networks via HTTP. Only external-facing URLs use HTTPS via Traefik
 
 ## Agent skills
+
+### Marketing — two skills, load both, strategy first
+
+**Before writing any sentence a prospective customer will read** — landing page,
+`/hoe-het-werkt`, meta descriptions, ad copy, store listings, launch posts,
+comparison pages — and before reviewing existing copy for drift:
+
+| Skill | Decides | Built from |
+|---|---|---|
+| **`.claude/skills/marketing`** | **What** to say, to whom, at what price, on which channel — and whether a claim is allowed at all | Dunford, Sheridan, Weinberg & Mares, Ramanujam |
+| **`.claude/skills/marketing-copy`** | **How** it gets written — headlines, whose story it is, concreteness, flow, the reader's awareness state | Miller, Heath, Sugarman, Schwartz, Ogilvy |
+
+Split 2026-08-17, after the strategy-only version produced copy that obeyed every
+rule and read flat (owner: *"not really catchy"*). The four strategy books contain
+nothing about writing a sentence, so a skill built from them could not.
+**Craft without the honesty gate produces persuasive lies; strategy without craft
+produces the correct argument, flatly stated.**
+
+It exists because the rules that bind customer-facing copy were spread across
+six files and got reassembled from memory each time. The failure mode is not a
+style slip: there are **zero paying customers**, so any review, rating,
+testimonial or learner count is fabricated; **all audio is TTS**, so any claim
+of human narration is false; and **no efficacy figure has ever been measured**
+for this product. Those are misleading-advertising problems, not tone problems.
+
+The skill carries the honesty gate, a pre-flight checklist, and the method from
+the four books already applied in `docs/marketing/` — Dunford (positioning),
+Sheridan (what to publish, and disarmament), Weinberg & Mares (channels),
+Ramanujam (value and price). `docs/marketing/*` stays the source of truth; the
+skill points at it rather than copying it.
+
+Several of these rules are also asserted by tests (`Landing.test.tsx`,
+`HoeHetWerkt.test.tsx`), so copy drift fails a build rather than shipping
+quietly.
 
 ### Issue tracker
 

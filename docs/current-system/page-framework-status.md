@@ -52,8 +52,25 @@ Located at `src/components/page/primitives/`. 14 primitives, each with its own C
 | `/admin/page-lab` | ✅ — framework's own demo route | n/a |
 | `/admin/design-lab` | ⚪ exercise-framework demo (not page-framework target) | n/a |
 | `AdminGuard` | ⚪ wrapper component with no chrome to migrate | n/a |
+| `/` (Landing) | 🟠 **sanctioned exception** — light-only marketing surface, own layout, lazy chunk | 2026-08-17 (landing rewrite) |
+| `/hoe-het-werkt` (HoeHetWerkt) | 🟠 **sanctioned exception** — shares Landing's chrome, adds only what is its own | 2026-08-17 (built) |
 
-**16 of 18 user-facing surfaces are on the framework**, plus `/admin/page-lab` and the LessonReader internals. The remaining two (`AdminGuard`, `DesignLab`) are intentionally excluded.
+**16 of 18 in-app user-facing surfaces are on the framework**, plus `/admin/page-lab` and the LessonReader internals. The remaining two (`AdminGuard`, `DesignLab`) are intentionally excluded.
+
+### The marketing exception, enumerated
+
+The public marketing surfaces are **deliberately outside the framework** and are the only place bespoke CSS is legitimate. The framework encodes the *app's* chrome — dark/light theming, Mantine components, the viewport-math fit contract — and a light-only marketing page whose whole job is to look unlike the app gains nothing from it.
+
+The exception is narrow, and stays useful only while it stays enumerable:
+
+| Surface | Own CSS | Notes |
+|---|---|---|
+| `/` | `Landing.module.css` | The original exception; its header comment states the terms. |
+| `/hoe-het-werkt` | imports `Landing.module.css`, plus a small `HoeHetWerkt.module.css` | Added 2026-08-17. **Shares the landing's chrome rather than inventing a third idiom** — a second full marketing stylesheet is exactly the drift this exception exists to bound. If something in `HoeHetWerkt.module.css` becomes useful to both pages, move it to `Landing.module.css`. |
+
+Other public pages (`/leenwoorden`, `/privacy`, `/voorwaarden`, `/restitutie`) are **not** covered — they are ordinary pages and should use the framework.
+
+⚠️ A third marketing surface is a signal to extract shared marketing primitives, not to add a third stylesheet.
 
 ## Compliance correlated to the original plan phases
 

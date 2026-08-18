@@ -1,14 +1,16 @@
 # Kamoe Bisa — https://kamoebisa.nl
 #
-# Only four surfaces are public: the landing page, the loanword reference, and
-# the three legal pages. Everything else requires a session and returns the SPA
-# shell to a crawler, so indexing it produces duplicate, contentless results.
-# Disallowing them is about index quality, not secrecy — the real access control
-# is RLS and the entitlement gate, never this file.
+# Only five surfaces are public: the landing page, the loanword reference, the
+# "hoe het werkt" explainer, and the three legal pages. Everything else requires
+# a session and returns the SPA shell to a crawler, so indexing it produces
+# duplicate, contentless results. Disallowing them is about index quality, not
+# secrecy — the real access control is RLS and the entitlement gate, never this
+# file.
 
 User-agent: *
 Allow: /$
 Allow: /leenwoorden
+Allow: /hoe-het-werkt
 Allow: /privacy
 Allow: /voorwaarden
 Allow: /restitutie

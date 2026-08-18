@@ -7,6 +7,15 @@
  * constants (--rail-*, --font-display) come from main.tsx. When slice 2/3
  * retune the app themes to the warm direction, these locals collapse into the
  * global tokens.
+ *
+ * 2026-08-17 — "invert the ground" (design D8,
+ * docs/plans/2026-08-16-landing-page-redesign.md §5). The batik green
+ * --rail-surface used to appear exactly once, in the closing pricing band, so
+ * the brand constant arrived after four bands of cream. It now carries the
+ * hero, the science band and the close via `.bandDark`, with cream as the
+ * reading ground between. The on-dark variants below exist because elements
+ * styled for cream (kickers, headings, buttons, the specimen card) need a
+ * second treatment rather than a second component.
  */
 
 .landing {
@@ -26,6 +35,26 @@
   --land-shadow-lift:
     0 2px 4px rgba(30, 42, 37, 0.05), 0 30px 60px -30px rgba(30, 42, 37, 0.4);
 
+  /* ── the layout system (2026-08-18) ──────────────────────────────
+   * Every band on this page is one, two or three columns, and before
+   * this there were nine different one-column measures (40/46/54/58/
+   * 60/62/64/20ch and a hardcoded 802px), four two-column ratios and
+   * no outer measure at all — so each band found a different width at
+   * every viewport and the page stepped in and out as you scrolled.
+   *
+   * All four shapes now resolve from these values, which is what makes
+   * the column edges line up from the header rule to the footer rule:
+   *   1 column  → --measure
+   *   2 columns → .hero (text + object) or repeat(2, 1fr)
+   *   3 columns → repeat(3, 1fr)
+   * The hero's text column IS --measure, so the headline and every
+   * paragraph below it share one left-to-right span by construction
+   * rather than by two numbers that happen to agree at 1440px. */
+  --band-max: 1280px; /* content span, excluding --band-pad */
+  --band-pad: 56px;
+  --col-gap: 44px; /* the one gutter, every multi-column grid */
+  --measure: 800px; /* the one reading measure, every single column */
+
   min-height: 100vh; /* skip-check: landing is the sanctioned outside-the-page-framework marketing surface (design plan §Grounding) — it owns its own full-height ground */
   min-height: 100dvh; /* skip-check: dvh refinement of the line above */
   background: var(--land-paper);
@@ -40,6 +69,23 @@
 .serif {
   font-family: var(--font-display);
   font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+/* ---------- the dark ground ----------
+ * Full-bleed batik green. Everything inside inherits the on-dark treatment by
+ * re-pointing the same local tokens the cream sections use, so child rules do
+ * not need dark-mode variants of their own — only the handful of elements
+ * whose contrast cannot be expressed as a token swap are restated below. */
+
+.bandDark {
+  background: var(--rail-surface);
+  color: var(--rail-ink);
+
+  --land-ink: var(--rail-ink);
+  --land-ink-2: var(--rail-ink-muted);
+  --land-muted: var(--rail-ink-muted);
+  --land-line: var(--rail-hairline);
+  --land-line-soft: var(--rail-hairline);
 }
 
 /* ---------- buttons & links ---------- */
@@ -80,6 +126,11 @@
   padding: 14px 26px;
   font-size: 15px;
 }
+/* Tamarind on green is the brand's own pairing and holds contrast, but the
+   focus ring must not be the same family as the ground it sits on. */
+.bandDark .btn:focus-visible {
+  outline-color: var(--rail-ink);
+}
 .linkQuiet {
   color: var(--land-ink);
   text-decoration: none;
@@ -107,6 +158,11 @@
   flex: none;
   color: var(--land-accent);
 }
+/* The sun mark is the brand's warm note; on green it reads better in the
+   paper ink than in tamarind, which vibrates against the dark ground. */
+.bandDark .wordmark .mark {
+  color: var(--land-gold);
+}
 .wordmark .mark svg {
   display: block;
 }
@@ -124,8 +180,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 22px 56px;
+  max-width: calc(var(--band-max) + var(--band-pad) * 2);
+  margin-inline: auto;
+  padding: 22px var(--band-pad);
   border-bottom: 1px solid var(--land-line-soft);
+}
+.headOnDark {
+  border-bottom-color: var(--rail-hairline);
 }
 .headActions {
   display: flex;
@@ -137,9 +198,15 @@
 
 .hero {
   display: grid;
-  grid-template-columns: 1.08fr 0.92fr;
-  gap: 64px;
-  padding: 84px 56px 76px;
+  /* The card's track is max-content-floored, not 1fr: the headline reflows
+     gracefully when the band narrows and the specimen card does not, so the
+     text column is the one that gives way. Above ~1330px there is room for
+     both and the card returns to the band's right edge. */
+  grid-template-columns: minmax(0, var(--measure)) minmax(max-content, 1fr);
+  gap: var(--col-gap);
+  max-width: calc(var(--band-max) + var(--band-pad) * 2);
+  margin-inline: auto;
+  padding: 84px var(--band-pad) 92px;
   align-items: center;
 }
 .heroEyebrow {
@@ -147,7 +214,7 @@
   letter-spacing: 0.16em;
   font-size: 12px;
   font-weight: 700;
-  color: var(--land-accent-deep);
+  color: var(--land-gold);
   display: inline-flex;
   align-items: center;
   gap: 11px;
@@ -157,25 +224,28 @@
   content: '';
   width: 26px;
   height: 1px;
-  background: var(--land-accent);
+  background: var(--land-gold);
 }
 .hero h1 {
-  font-size: clamp(38px, 5.5vw, 62px);
-  line-height: 1.02;
-  margin: 0 0 24px;
+  font-size: clamp(29px, 3.5vw, 42px);
+  line-height: 1.14;
+  margin: 0 0 22px;
   font-weight: 600;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 .hero h1 em {
   font-style: italic;
-  color: var(--land-accent-deep);
+  color: var(--land-gold);
 }
-.heroSub {
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--land-ink-2);
-  max-width: 42ch;
-  margin: 0 0 36px;
+/* The lede names the stack being replaced — it is the second beat of the
+   headline's story, not a separate claim, so it carries more weight than the
+   paragraph below it. */
+.heroLede {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--rail-ink);
+  margin: 0 0 26px;
+  font-weight: 500;
 }
 .heroCtas {
   display: flex;
@@ -206,6 +276,9 @@
   transform: translate(26px, 34px) rotate(4.5deg);
   opacity: 0.3;
 }
+/* The specimen card stays paper-white on the dark ground: it is a artifact
+   from inside the product, and floating it on green is what makes it read as
+   lifted out rather than drawn on. */
 .spec {
   position: relative;
   background: var(--land-card);
@@ -213,13 +286,14 @@
   border-radius: 18px;
   padding: 30px 32px 26px;
   box-shadow: var(--land-shadow-lift);
+  color: #1e2a25;
 }
 .specTop {
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
-  color: var(--land-muted);
+  color: #77857b;
 }
 .specTag {
   display: inline-flex;
@@ -235,9 +309,6 @@
   background: var(--land-accent);
   display: inline-block;
 }
-.specCount {
-  font-variant-numeric: tabular-nums;
-}
 .specWord {
   font-size: 58px;
   font-weight: 600;
@@ -247,12 +318,12 @@
 }
 .specPhon {
   font-size: 14px;
-  color: var(--land-muted);
+  color: #77857b;
   font-style: italic;
 }
 .specRule {
   height: 1px;
-  background: var(--land-line);
+  background: #e7dece;
   margin: 22px 0;
 }
 .specGloss {
@@ -263,21 +334,21 @@
 }
 .specEx {
   font-size: 14px;
-  color: var(--land-ink-2);
+  color: #45534b;
   line-height: 1.5;
 }
 .specEx .id {
   font-style: italic;
-  color: var(--land-ink);
+  color: #1e2a25;
 }
 .specEx .tr {
   display: block;
-  color: var(--land-muted);
+  color: #77857b;
 }
 .specFoot {
   margin-top: 22px;
   padding-top: 16px;
-  border-top: 1px solid var(--land-line);
+  border-top: 1px solid #e7dece;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -289,14 +360,16 @@
 /* ---------- section chrome ---------- */
 
 .section {
-  padding: 0 56px;
+  max-width: calc(var(--band-max) + var(--band-pad) * 2);
+  margin-inline: auto;
+  padding: 0 var(--band-pad);
 }
 .sectionAiry {
-  padding-top: 8px;
+  padding-top: 76px;
   padding-bottom: 76px;
 }
 .lead {
-  max-width: 60ch;
+  max-width: var(--measure);
   margin-bottom: 40px;
 }
 .leadKicker {
@@ -313,115 +386,96 @@
   letter-spacing: -0.02em;
   margin: 12px 0 0;
 }
-
-/* ---------- how it works — editorial numbered columns ---------- */
-
-.flow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 44px;
-  border-top: 1px solid var(--land-ink);
-  padding-top: 8px;
-}
-.flowCol {
-  padding-top: 24px;
-}
-.flowIdx {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--land-accent-deep);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.06em;
-}
-.flowCol h3 {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: 14px 0 8px;
-}
-.flowCol p {
-  font-size: 15px;
-  color: var(--land-ink-2);
-  margin: 0;
-  line-height: 1.6;
-}
-
-/* ---------- feature grid — hairline-divided spec table ---------- */
-
-.grid4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--land-line);
-}
-.g4 {
-  padding: 30px 26px 30px 0;
-  border-left: 1px solid var(--land-line);
-}
-.g4:first-child {
-  border-left: none;
-}
-.g4:not(:first-child) {
-  padding-left: 26px;
-}
-.g4Ic {
-  width: 34px;
-  height: 34px;
-  color: var(--rail-surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 18px;
-}
-.g4 h3 {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 5px;
-  letter-spacing: -0.005em;
-}
-.g4 p {
-  font-size: 14px;
-  color: var(--land-ink-2);
-  margin: 0;
-  line-height: 1.55;
-}
-.g4Bar {
-  margin-top: 12px;
-  height: 5px;
-  border-radius: 3px;
-  background: var(--land-paper-2);
-  overflow: hidden;
-}
-.g4Bar > i {
-  display: block;
-  height: 100%;
-  width: 64%;
-  background: var(--land-gold);
-  border-radius: 3px;
-}
-.g4BarCap {
-  font-size: 12px;
-  color: var(--land-muted);
-  margin-top: 6px;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ---------- loanword bridge ---------- */
-/* The recognition moment for the primary persona (heritage learner, owner
-   decision 2026-08-05). Styled as a wall of paired chips rather than prose: the
-   point is scanning it and thinking "I know that one", which happens through
-   shape and repetition, not sentences. Uses only existing --land-* tokens, so it
-   inherits the page's light/dark handling with no new colour vocabulary. */
-
-.bridgeBody {
-  margin: 14px 0 0;
-  max-width: 62ch;
+.leadBody {
+  margin: 16px 0 0;
+  max-width: var(--measure);
   color: var(--land-ink-2);
   font-size: 16px;
   line-height: 1.65;
 }
+
+/* ---------- the pair — the page signature ---------- */
+/* Two words and a relationship, at a larger scale than the loanword chips so
+   the same shape reads as a theme rather than a repeat. */
+
+.pairWall {
+  list-style: none;
+  margin: 0 0 34px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--col-gap);
+}
+.pairRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 18px 22px;
+  background: var(--land-card);
+  border: 1px solid var(--land-line);
+  border-radius: 14px;
+}
+.pairCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.pairLabel {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: var(--land-muted);
+}
+.pairFormal {
+  font-size: 24px;
+  color: var(--land-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--land-line);
+}
+/* The spoken form is the payoff, so it carries the weight and the accent. */
+.pairReal {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--land-accent-deep);
+}
+.pairArrow {
+  color: var(--land-gold);
+  font-size: 15px;
+  padding-bottom: 4px;
+}
+.pairGloss {
+  margin-left: auto;
+  font-size: 13.5px;
+  color: var(--land-muted);
+  font-style: italic;
+  padding-bottom: 4px;
+}
+.pairDisarm,
+.pairFlashcards {
+  margin: 0 0 16px;
+  max-width: var(--measure);
+  color: var(--land-ink-2);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.pairNote {
+  margin: 0;
+  max-width: var(--measure);
+  color: var(--land-muted);
+  font-size: 14.5px;
+  font-style: italic;
+}
+
+/* ---------- loanword bridge ---------- */
+/* Styled as a wall of paired chips rather than prose: the point is scanning it
+   and thinking "I know that one", which happens through shape and repetition,
+   not sentences. */
+
 .bridgeWall {
   list-style: none;
-  margin: 32px 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
@@ -445,32 +499,20 @@
   color: var(--land-gold);
   font-size: 13px;
 }
-/* The Indonesian form is the payoff, so it carries the weight. */
 .bridgeId {
   color: var(--land-ink);
   font-weight: 650;
 }
 .bridgeMore {
   margin: 22px 0 0;
-  max-width: 62ch;
+  max-width: var(--measure);
   color: var(--land-muted);
   font-size: 14.5px;
   font-style: italic;
 }
-
-@media (max-width: 640px) {
-  .bridgeWall {
-    gap: 8px;
-  }
-  .bridgePair {
-    padding: 9px 13px;
-    font-size: 14px;
-  }
-}
-
 .bridgeEdge {
   margin: 18px 0 0;
-  max-width: 62ch;
+  max-width: var(--measure);
   padding-left: 16px;
   border-left: 3px solid var(--land-accent);
   color: var(--land-ink);
@@ -490,11 +532,89 @@
   text-decoration: underline;
 }
 
+/* ---------- how it works ---------- */
+
+.flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
+  border-top: 1px solid var(--land-line);
+  padding-top: 34px;
+}
+.flowCol h3 {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+.flowCol p {
+  font-size: 15px;
+  color: var(--land-ink-2);
+  margin: 0;
+  line-height: 1.62;
+}
+
+/* ---------- the science band ---------- */
+
+/* The audit is the strongest item on the page — a specific, checkable thing
+   the product got wrong and changed — so it gets the pull-quote treatment
+   rather than sitting in a column of equals. */
+.sciAudit {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--rail-ink);
+  padding-left: 20px;
+  border-left: 3px solid var(--land-gold);
+}
+.sciPrinciples {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--rail-ink-muted);
+}
+/* ---------- the doors ---------- */
+
+.doors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
+  border-top: 1px solid var(--land-line);
+  padding-top: 34px;
+}
+.door h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  letter-spacing: -0.005em;
+}
+.door p {
+  font-size: 14.5px;
+  color: var(--land-ink-2);
+  margin: 0;
+  line-height: 1.6;
+}
+.doorLink {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--land-accent);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}
+.doorLink:hover {
+  text-decoration: underline;
+}
+
 /* ---------- pricing band ---------- */
 
 .pricing {
   position: relative;
-  margin: 84px 56px 0;
+  margin: 20px auto 0;
+  max-width: min(var(--band-max), 100% - var(--band-pad) * 2);
   background: var(--rail-surface);
   color: var(--rail-ink);
   border-radius: 20px;
@@ -518,7 +638,7 @@
 }
 .pricingTxt {
   position: relative;
-  max-width: 54ch;
+  max-width: var(--measure);
 }
 .pricingEyebrow {
   text-transform: uppercase;
@@ -553,7 +673,9 @@
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  padding: 28px 56px;
+  max-width: calc(var(--band-max) + var(--band-pad) * 2);
+  margin-inline: auto;
+  padding: 28px var(--band-pad);
   margin-top: 40px;
   border-top: 1px solid var(--land-line);
   font-size: 13.5px;
@@ -563,6 +685,7 @@
   display: flex;
   gap: 26px;
   align-items: center;
+  flex-wrap: wrap;
 }
 .footLinks a {
   color: var(--land-ink-2);
@@ -571,67 +694,36 @@
 .footLinks a:hover {
   color: var(--land-ink);
 }
-.langSwitch {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: 1px solid var(--land-line);
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-.langSwitch button {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  font: inherit;
-  color: var(--land-muted);
-}
-.langSwitch button[aria-pressed='true'] {
-  color: var(--land-ink);
-  font-weight: 700;
-}
-.langSwitch button:focus-visible {
-  outline: 2px solid var(--land-accent-deep);
-  outline-offset: 2px;
-}
-
 /* ---------- responsive (the mockup framed desktop only; a logged-out
    phone visit lands here too, so collapse gracefully) ---------- */
 
+/* One breakpoint, and it mostly just retunes the tokens: because the frame,
+   the gutters and every measure read from them, narrowing the page is four
+   declarations rather than a per-rule repeat of the whole layout. */
 @media (max-width: 900px) {
-  .head,
-  .section,
-  .foot {
-    padding-left: 24px;
-    padding-right: 24px;
+  .landing {
+    --band-pad: 24px;
+    --col-gap: 32px;
   }
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 48px;
-    padding: 56px 24px 56px;
+    padding: 56px var(--band-pad) 64px;
   }
   .deck {
     margin: 0 auto;
   }
-  .flow {
-    grid-template-columns: 1fr;
-    gap: 32px;
+  .sectionAiry {
+    padding-top: 56px;
+    padding-bottom: 56px;
   }
-  .grid4 {
-    grid-template-columns: 1fr 1fr;
-  }
-  .g4:nth-child(odd) {
-    border-left: none;
-    padding-left: 0;
-  }
-  .g4:nth-child(even) {
-    padding-left: 26px;
+  .pairWall,
+  .method,
+  .flow,
+  .doors {
+    grid-template-columns: minmax(0, 1fr);
   }
   .pricing {
-    margin: 64px 24px 0;
     padding: 36px 28px;
     flex-direction: column;
     align-items: flex-start;
@@ -639,22 +731,19 @@
 }
 
 @media (max-width: 560px) {
-  .grid4 {
-    grid-template-columns: 1fr;
-  }
-  .g4 {
-    border-left: none;
-    padding-left: 0;
-  }
-  .g4:not(:first-child) {
-    padding-left: 0;
-    border-top: 1px solid var(--land-line-soft);
-  }
   .headActions .linkQuiet {
     display: none;
   }
   .specWord {
     font-size: 44px;
+  }
+  .pairRow {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .pairGloss {
+    margin-left: 0;
+    width: 100%;
   }
 }
 
@@ -664,5 +753,132 @@
   }
   .btnFill:hover {
     transform: none;
+  }
+}
+
+/* ---------- the founder-story band ----------
+ * Was the hero until 2026-08-18. Moved down after the Dutch->Indonesian
+ * competitor review: every seller in this niche names the language in the
+ * headline, and a 120-word story above the offer failed the grunt test. The
+ * story keeps its length here — Teman Indonesia, the closest Dutch peer, leads
+ * with a named teacher, so the personal voice is the category norm, not a
+ * deviation. It just belongs after the reader knows what this is. */
+
+.story {
+  max-width: var(--measure);
+}
+.story p {
+  font-size: 17px;
+  line-height: 1.68;
+  color: var(--land-ink-2);
+  margin: 0 0 18px;
+}
+/* The first paragraph carries the emotional beat, so it gets the weight. */
+.storyLede {
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  color: var(--land-ink) !important;
+  font-weight: 500;
+}
+.storySignature {
+  font-size: 16px;
+  font-style: italic;
+  color: var(--land-muted) !important;
+  margin: 22px 0 0 !important;
+}
+.storySignature::before {
+  content: '— ';
+}
+
+/* ---------- what the method is made of ----------
+ * A three-column grid of six, closing with the line that names them as one
+ * thing. The numerals are decorative here in a way the retired 01/02/03 band's
+ * were not: those implied a sequence nobody follows, these just count parts of
+ * a whole, and the closing line does the joining. */
+
+.method {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
+  border-top: 1px solid var(--land-line);
+  padding-top: 34px;
+}
+/* Three clusters, each holding two or three parts. Grouping is the whole point:
+   seven equal cards is a feature list, three named groups is a shape a reader
+   can hold in their head (Heath, Simplicity). */
+.methodGroupName {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0 0 22px;
+  color: var(--land-accent-deep);
+}
+.methodItem + .methodItem {
+  margin-top: 22px;
+}
+.methodItem h4 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+.methodItem p {
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--land-ink-2);
+  margin: 0;
+}
+/* The line that turns six parts into one named thing — it carries the whole
+   point of the band, so it gets display type rather than body type. */
+.methodClose {
+  margin: 44px 0 0;
+  max-width: var(--measure);
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--land-ink);
+  padding-left: 18px;
+  border-left: 3px solid var(--land-accent);
+}
+
+/* ---------- the principles, as quotes ---------- */
+
+.sciQuotes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--col-gap);
+  margin-top: 26px;
+}
+.sciQuote {
+  margin: 0;
+}
+.sciQuote blockquote {
+  margin: 0 0 8px;
+  quotes: '“' '”';
+  font-size: 17.5px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--rail-ink);
+  font-style: italic;
+}
+.sciQuote blockquote::before {
+  content: open-quote;
+  color: var(--land-gold);
+}
+.sciQuote blockquote::after {
+  content: close-quote;
+  color: var(--land-gold);
+}
+.sciQuote figcaption {
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rail-ink-muted);
+}
+
+@media (max-width: 900px) {
+  .sciQuotes {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

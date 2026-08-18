@@ -42,6 +42,14 @@ everyone switches to Dutch or English out of politeness, and Robin can feel the
 gap that courtesy creates. Their partner talks to Jakarta on the phone most
 weeks and Robin catches a handful of words.
 
+> **In the owner's own case it is ENGLISH** (confirmed 2026-08-17), and the
+> landing-page hero says so, because that hero is his biography rather than a
+> composite. It is also the more common shape: the Indonesian side of the family
+> often does not speak Dutch at all, so the table moves to a *third* language
+> that is nobody's first — which makes the accommodation more visible, not less.
+> Copy telling this story should say English unless it is describing a
+> Dutch-speaking Indo family specifically.
+
 **The job they are hiring the product for:** not fluency, and definitely not a
 holiday. They want to stop being the person the room accommodates — to greet
 their mother-in-law properly, follow the thread at dinner, and say something
