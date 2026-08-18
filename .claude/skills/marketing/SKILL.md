@@ -54,6 +54,22 @@ Principles and *our own decisions* are citable; outcomes are not.
 **Never imply endorsement.** Karpicke, Nation and Krashen have not heard of
 Kamoe Bisa. Citing a principle is fine; implying the researcher approves is not.
 
+**⚠️ A NEGATIVE claim needs a stronger check than a positive one.** "We have X"
+fails loudly when wrong — someone looks for X and does not find it. "We do NOT
+have X" fails silently, and it quietly deletes a real feature from the page.
+
+This has gone wrong twice, both times with a query that looked authoritative:
+
+| Claimed | Actually | The bad check |
+|---|---|---|
+| "there are no culture lessons" | 18 culture sections across 17 lessons | queried `section_kind`; the lessons are `text` sections titled "Cultuur — …" |
+| "the reading library is just 13 rows" | true, but stated after reading only the table DDL | read the schema, not the rows |
+
+**Before writing that the product lacks something, search the CONTENT, not just
+the schema** — titles, text bodies, component names — and say which check you
+ran. If you cannot name a check that would have found it had it existed, you have
+not verified an absence; you have failed to find it.
+
 **Every count must be DB-verified, and say where the check lives.** Product
 numbers drift silently. `positioning.md` §8 already requires this. Public pages
 cannot read the database — anon has no grant on the `indonesian` schema — so any
