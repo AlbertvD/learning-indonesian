@@ -61,7 +61,7 @@ const nl = {
   heroTitlePre: 'Indonesisch leren, in het Nederlands.',
   heroTitleEm: 'Voor als je het thuis wilt spreken.',
   heroLede:
-    'Eén cursus met grammatica, verhalen om te lezen én te luisteren, en dagelijkse herhaling om te zorgen dat je steeds meer woorden kent, begrijpt en kan toepassen. Met de Kamoe Bisa-methode dompel je jezelf onder in de taal — woorden leren, verhalen lezen en luisteren, op jouw tempo. Durf jij het gesprek aan te gaan?',
+    'Eén cursus met grammatica, verhalen om te lezen én te luisteren, en dagelijkse herhaling om te zorgen dat je steeds meer woorden kent, begrijpt en kan toepassen. Met de Kamoe Bisa-methode dompel je jezelf onder in de taal: woorden leren, verhalen lezen en luisteren, op jouw tempo. Durf jij het gesprek aan te gaan? Je kan het!',
   heroCta: 'Gratis beginnen',
   heroLogin: 'Al een account? Inloggen →',
 
