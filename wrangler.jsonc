@@ -60,7 +60,16 @@
     // does not exist — Workers rejects `/* /index.html 200` as an infinite
     // loop, so the Pages-portable form was dropped rather than kept as a
     // fallback. Do not re-add it; this line alone serves every deep link.
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+
+    // Without this, `html_handling` defaults to "auto-trailing-slash", which
+    // 307-redirects /leenwoorden to /leenwoorden/ and serves the file there —
+    // so the URL that actually answers has a trailing slash while sitemap.xml,
+    // the canonical emitted by scripts/build-public-pages.ts, and every internal
+    // <Link> do not. Measured on the live site 2026-08-19, after slice 1
+    // deployed. Not broken, but it leaves Google choosing between two forms of
+    // the same page, which is the ambiguity slice 1 exists to remove.
+    "html_handling": "drop-trailing-slash"
   }
 
   // No `main` and no `binding`: this Worker is assets-only, with no server-side
