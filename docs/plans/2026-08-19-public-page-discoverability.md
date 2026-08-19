@@ -1,11 +1,15 @@
 ---
-status: approved
-implementation: null
+status: implementing
+implementation: PR #481 (slice 1)
 reviewed_by:
   - staff-engineer   # 2026-08-19 — NEEDS WORK (5 findings), then SOUND on re-review
   - architect        # 2026-08-19 — APPROVED with W1-W4, all folded in
 supersedes: []
-implementation_paths: []
+implementation_paths:
+  - src/pages/publicRoutes.ts               # slice 1
+  - scripts/build-public-pages.ts           # slice 1
+  - scripts/__tests__/buildPublicPages.test.ts
+  - scripts/check-cloud-config.ts           # the replaced head check
 ---
 
 > **Amended 2026-08-19 after approval** — §1b now carries a measurement that
