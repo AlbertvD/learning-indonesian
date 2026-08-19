@@ -8,6 +8,12 @@ supersedes: []
 implementation_paths: []
 ---
 
+> **Amended 2026-08-19 after approval** — §1b now carries a measurement that
+> corrects a claim the reviewers approved on reasoning: Google *can* render all
+> three content routes. This narrows slice 2's audience and raises an OPEN
+> DECISION at the head of that slice. The correction is additive evidence, not a
+> shape change, so the sign-offs stand.
+>
 > **No `data-architect` sign-off, deliberately.** CLAUDE.md requires it when a
 > spec touches schema, the typed content tables, a migration, or a
 > writer/reader/validator contract. This one touches none — §4 is N/A for a
@@ -86,10 +92,30 @@ $ curl -s https://kamoebisa.nl/ | sed -n '/<body/,/<\/body>/p'
   </body>
 ```
 
-7,123 bytes, all head. Google renders JS on a delayed second pass; social
-unfurlers (WhatsApp, Signal, LinkedIn, Slack) and most LLM crawlers never do.
-The static head is currently carrying the entire load, which is why `/` works at
-all and the others do not.
+7,123 bytes, all head.
+
+**Corrected 2026-08-19 with evidence, after this spec was approved.** The draft
+asserted that the empty body hurts Google. Measured rather than assumed: all
+three content routes render *completely* in headless Chromium under a Googlebot
+user-agent —
+
+| Route | Rendered text |
+|---|---|
+| `/` | 7,069 chars (hero, method band, the whole page) |
+| `/leenwoorden` | 5,277 chars, incl. "173 Nederlandse woorden die je al in het Indonesisch kent" |
+| `/hoe-het-werkt` | 3,652 chars |
+
+Google's Web Rendering Service is evergreen Chromium — the same engine — so the
+content is **reachable** by its JS pass. The honest limit: this proves Google
+*can* render it, not that it *will*. WRS has a render queue and a per-site
+budget, and a new domain with no inbound links is where that budget is
+thinnest. Only Search Console's index report can settle the scheduling question,
+and the property was verified 2026-08-19 (DNS TXT, still in place) so that answer
+becomes available once Google has crawled.
+
+**What is certain regardless:** social unfurlers (WhatsApp, Signal, LinkedIn,
+Slack) and most LLM crawlers never render JS at all, so for them the body is
+empty today and always. That is slice 2's real constituency — not Google.
 
 ### 1c. Nothing is submitted or measured
 
@@ -229,6 +255,21 @@ answer into slice 2 unexamined.
 
 ### Slice 2 — prerendered body (larger)
 
+> ⚠️ **OPEN DECISION for the owner, raised 2026-08-19 after the §1b measurement,
+> not settled here.** The evidence narrows this slice's audience from "Google
+> plus everyone else" to "unfurlers and LLM crawlers" — Google can already reach
+> the content. Set against W2 (the prerendered body is replaced by the
+> auth-loading state before Landing remounts, so `hydrateRoot` is off the table
+> without restructuring `App.tsx:130`), the cost/benefit is materially worse than
+> when this spec was approved.
+>
+> **My recommendation: build slice 1, then re-decide slice 2 on Search Console
+> data** — specifically whether Google actually indexed the rendered content or
+> declined to spend the budget. **Not a decision to take silently:** shrinking an
+> approved deliverable is the owner's call, and dressing it up as pragmatism is
+> exactly the goal-erosion CLAUDE.md's Minimum Mechanism section warns about. The
+> slice stays specced in full until he says otherwise.
+
 `renderToString` each of the three *content* routes — `/`, `/hoe-het-werkt`,
 `/leenwoorden` — and inject the markup into the `<div id="root">` of the file
 slice 1 already emits. The three legal pages get slice 1 only; they need correct
@@ -322,8 +363,15 @@ homelab change either. Worth asserting once rather than assuming.
 2. Every URL in `sitemap.xml` passes the same test, asserted by
    `make check-cloud-config`.
 3. (slice 2) `curl https://kamoebisa.nl/` returns the hero copy in the body.
-4. Search Console reports the sitemap fetched and the six URLs crawled — owner
-   action, and the only acceptance criterion here that is not machine-checkable.
+4. Search Console reports the sitemap fetched and the six URLs crawled — the
+   only acceptance criterion here that is not machine-checkable. **The property
+   is verified as of 2026-08-19** (Domain property, DNS TXT
+   `google-site-verification=_6ukim…` in the Cloudflare zone — leave it in place
+   or verification lapses). The sitemap needs no submission to be found:
+   `robots.txt` already declares it. What to look at once Google has crawled is
+   **Pagina-indexering** → whether `/leenwoorden` was consolidated into `/`,
+   which is the claim §1a makes and that both reviewers approved on reasoning
+   alone.
 
 ## 6. Follow-up for the roadmap
 
