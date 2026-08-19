@@ -29,7 +29,7 @@ findability blocker — **that entry is incomplete, see §1.**
 Three things, in the order they should be fixed. The roadmap names only the
 second.
 
-### 1a. Every route declares the homepage as its canonical ⚠️ NOT previously recorded
+### 1a. All six routes serve one identical document ⚠️ NOT previously recorded
 
 All six public routes serve the identical `dist/index.html`, because
 `not_found_handling: "single-page-application"` (`wrangler.jsonc:63`) returns
@@ -46,12 +46,26 @@ homepage's values the same way (`index.html:34-51`), and nothing manages the
 head at runtime — there is no Helmet, no `document.title` write anywhere in
 `src/` outside tests.
 
-**Consequence.** A canonical tag is an instruction, not a hint. Every public page
-tells Google *"I am a duplicate of `/`"*, which is a direct contradiction of
-`public/sitemap.xml`, which submits all six as distinct URLs. Google obeys the
-canonical. So `/leenwoorden` — the page with the most standalone search value,
-173 Dutch→Indonesian loanwords no competitor publishes — **cannot be indexed as
-itself today**, and a shared `/leenwoorden` link unfurls as the homepage.
+**Consequence.** Two mechanisms, and the weaker one is the tag.
+
+*The tag* — `rel=canonical` is a **strong hint Google may override**, not a
+directive (Google's own documentation is explicit about this; an earlier draft of
+this spec said the opposite and was wrong). On its own it would make
+consolidation likely, not certain.
+
+*The bytes* — every one of the six URLs serves a **byte-identical document**.
+Duplicate-content clustering does not need the tag at all; identical responses
+are sufficient. The tag then tells Google which URL to keep, and it names `/`.
+So the outcome is overdetermined: `/leenwoorden` and `/hoe-het-werkt` **get
+consolidated into `/` rather than indexed as themselves**, and this contradicts
+`public/sitemap.xml`, which submits all six as distinct URLs.
+
+*And the part that is not probabilistic at all* — link unfurlers (WhatsApp,
+Signal, LinkedIn, Slack) read the head and never run JavaScript, so a shared
+`/leenwoorden` link renders as the homepage **always**, with no ranking algorithm
+involved. For a product that spreads by word of mouth in the Dutch-Indonesian
+community, that is arguably the larger loss, and it is certain rather than
+likely.
 
 This is why it comes first: prerendering pages that each declare themselves a
 duplicate of the homepage buys nothing.
@@ -136,18 +150,29 @@ scripts/build-public-pages.ts     new — runs after `vite build`
 src/pages/publicRoutes.ts         new — the route table, imported by the script
 ```
 
-The table holds, per route: path, `<title>`, meta description, and whether it
-belongs in `sitemap.xml`. The script reads `dist/index.html`, and for each route
+The table holds, per route: path, `<title>`, and meta description. **Not** a
+"belongs in sitemap.xml" flag and **not** sitemap generation: all six routes are
+in the sitemap, so the flag has no false case, and §4's new health check ("every
+sitemap URL's canonical is itself") already fails if the two ever diverge.
+`public/sitemap.xml` stays a static file. The script reads `dist/index.html`, and for each route
 swaps `<title>`, `meta[name=description]`, `link[rel=canonical]`, `og:url`,
 `og:title`, `og:description` and the Twitter equivalents, then writes
-`dist/<path>/index.html`. `/` patches `dist/index.html` in place.
+`dist/<path>/index.html`.
+
+**`/` is left untouched.** `dist/index.html` already carries the homepage's
+correct head (`index.html:34-51`) — patching it in place fails the omission test
+(nothing breaks if omitted) and would desync the service worker's precache
+revision, see §3a.
+
+**Where it hooks in:** `package.json`'s `build` script, which is currently
+`tsc -b && vite build`. It must chain there, not in a separate command, because
+Cloudflare Workers Builds runs the repo's build script — a step outside it ships
+locally and is silently absent from every cloud deploy.
 
 **Omission test, per part:**
 
-- *The route table* — without it the titles live in a build script, which is
-  where nobody looks for copy. It also becomes the single source `sitemap.xml`
-  is generated from, which deletes the "keep robots.txt and sitemap.xml in step
-  with App.tsx by hand" instruction currently written in both files' comments.
+- *The route table* — without it the titles and descriptions live inside a build
+  script, which is not where anyone looks for customer-facing copy.
 - *The post-build script* — without it there is no per-route head, which is the
   whole defect.
 - *Nothing else.* No new dependency, no config change, no runtime code.
@@ -156,6 +181,35 @@ swaps `<title>`, `meta[name=description]`, `link[rel=canonical]`, `og:url`,
 marketing copy: they go through the `marketing` + `marketing-copy` skills and
 the claim rules, and the counts they quote (173 loanwords, 66 register pairs)
 must trace to `docs/marketing/facts.md`, not be retyped.
+
+### 3a. The service worker seam
+
+The spec did not name this and it is the one place where "emit more HTML files"
+could quietly misbehave. Verified against the built `dist/sw.js` on 2026-08-19:
+
+- **All navigations are bound to the root shell.** The worker registers
+  `NavigationRoute(createHandlerBoundToURL("index.html"))`, so once the SW is
+  controlling a client, navigating to `/hoe-het-werkt` is served the precached
+  root `index.html` — never the per-route file. **This is harmless for the goal:**
+  crawlers and unfurlers do not run service workers, so every consumer this spec
+  exists to serve gets the real file. It does mean an installed-PWA user's tab
+  title is the homepage's, which is cosmetic and already true today.
+- **The emitted files are not precached.** `vite-plugin-pwa` computes the
+  precache manifest during `vite build`, before the post-build step runs, so the
+  new `dist/<route>/index.html` files are absent from it and are served from the
+  network. Correct, and it keeps the precache from growing by six documents.
+- **This is why `/` is not patched in place.** `index.html` is precached as
+  `{url:"index.html",revision:"f68292c772…"}`, and that revision is a hash of the
+  file as `vite build` left it. Rewriting the file afterwards would leave the
+  manifest pointing at content that no longer exists, so a client holding that
+  revision would keep serving the pre-patch document. Since `/`'s head is already
+  correct, not touching it removes the hazard entirely rather than managing it.
+
+⚠️ Slice 2 must re-check this seam: injecting prerendered markup into the root
+`index.html` *would* require patching the precached file, at which point the
+revision problem becomes real and has to be solved (emit through the plugin, or
+regenerate the manifest after). Do not carry slice 1's "just don't touch it"
+answer into slice 2 unexamined.
 
 ### Slice 2 — prerendered body (larger)
 
