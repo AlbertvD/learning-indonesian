@@ -1,6 +1,7 @@
 ---
-status: implementing
-implementation: PR #481 (slice 1)
+status: shipped
+implementation: PR #481 (slice 1) + PR #482 (trailing-slash fix)
+merged_at: 2026-08-19
 reviewed_by:
   - staff-engineer   # 2026-08-19 — NEEDS WORK (5 findings), then SOUND on re-review
   - architect        # 2026-08-19 — APPROVED with W1-W4, all folded in
@@ -10,6 +11,8 @@ implementation_paths:
   - scripts/build-public-pages.ts           # slice 1
   - scripts/__tests__/buildPublicPages.test.ts
   - scripts/check-cloud-config.ts           # the replaced head check
+  - wrangler.jsonc                          # html_handling, PR #482
+  - package.json                            # build chain
 ---
 
 > **Amended 2026-08-19 after approval** — §1b now carries a measurement that
@@ -152,12 +155,33 @@ against Cloudflare's docs (2026-08-19)** rather than assumed:
 2. *Directory index serving is on by default.* `html_handling` defaults to
    `"auto-trailing-slash"`
    ([Wrangler configuration § assets](https://developers.cloudflare.com/workers/wrangler/configuration/)),
-   and it is unset in `wrangler.jsonc` — so `dist/hoe-het-werkt/index.html` is
-   served at `/hoe-het-werkt`.
+   and it is unset in `wrangler.jsonc`.
+
+   ⚠️ **This spec drew the wrong conclusion from that, and both reviewers
+   approved the wrong conclusion.** The draft said `dist/hoe-het-werkt/index.html`
+   would therefore be "served at `/hoe-het-werkt`". It is not.
+   `auto-trailing-slash` **307-redirects `/hoe-het-werkt` to `/hoe-het-werkt/`**
+   and serves it there — measured on the live site immediately after slice 1
+   deployed (PR #481). The consequence was small but real: the URL that answered
+   carried a trailing slash while `sitemap.xml`, the emitted canonical and every
+   internal `<Link>` did not, leaving Google to choose between two forms of the
+   same page — the exact ambiguity this spec exists to remove.
+
+   **Fixed in PR #482** by setting `html_handling: "drop-trailing-slash"`, which
+   inverts it: the no-slash form serves 200 and the slash form redirects to it.
+   Verified in the local Workers runtime (`wrangler dev --local`) against the
+   real `dist/` BEFORE deploying, including that `/leren` and `/lesson/<id>`
+   still return the app shell — `not_found_handling` only fires when no asset
+   matches, so changing how assets match could have shadowed it.
+
+   **The lesson for anyone extending this:** claims 1 and 2 are both statements
+   about a platform, and reading the docs was enough for the first and not for
+   the second. Docs describe the option; only running it shows what the option
+   does to *your* file layout. Two review passes cannot catch this class — run it.
 
 Together: the six public routes get real files *in front of* the fallback.
-**No change to `wrangler.jsonc`, no change to the SPA mechanism, no compute
-Worker.** The homelab's nginx resolves the same layout via
+**One `wrangler.jsonc` line (`html_handling`), no change to the SPA mechanism,
+no compute Worker.** The homelab's nginx resolves the same layout via
 `try_files $uri $uri/ /index.html` (`nginx.conf:68`), so one build output serves
 both deployments — but assert that once rather than assuming it.
 
@@ -259,16 +283,21 @@ answer into slice 2 unexamined.
 
 ### Slice 2 — prerendered body (larger)
 
-> ⚠️ **OPEN DECISION for the owner, raised 2026-08-19 after the §1b measurement,
-> not settled here.** The evidence narrows this slice's audience from "Google
+> ⛔ **PARKED by the owner, 2026-08-19.** Slice 1 shipped; this slice is not
+> being built. Re-open it only on evidence from Search Console — specifically
+> `Pagina-indexering` showing Google either indexed the rendered content (leave
+> it parked) or declined to render (build it). The reasoning that parked it is
+> below and still stands.
+>
+> ⚠️ **The decision, raised after the §1b measurement:** The evidence narrows this slice's audience from "Google
 > plus everyone else" to "unfurlers and LLM crawlers" — Google can already reach
 > the content. Set against W2 (the prerendered body is replaced by the
 > auth-loading state before Landing remounts, so `hydrateRoot` is off the table
 > without restructuring `App.tsx:130`), the cost/benefit is materially worse than
 > when this spec was approved.
 >
-> **My recommendation: build slice 1, then re-decide slice 2 on Search Console
-> data** — specifically whether Google actually indexed the rendered content or
+> **Recommendation at the time, and what the owner acted on: build slice 1, then
+> re-decide slice 2 on Search Console data** — specifically whether Google actually indexed the rendered content or
 > declined to spend the budget. **Not a decision to take silently:** shrinking an
 > approved deliverable is the owner's call, and dressing it up as pragmatism is
 > exactly the goal-erosion CLAUDE.md's Minimum Mechanism section warns about. The
