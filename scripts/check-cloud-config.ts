@@ -270,14 +270,89 @@ const deep = await status(APP_ORIGIN + '/leren')
 if (deep === 200) pass('SPA deep link resolves (not_found_handling)')
 else fail('SPA deep link resolves', `HTTP ${deep} on /leren — assets.not_found_handling may have been lost`)
 
-// The public explainer for the activation model. It is linked from the landing
-// page's "hoe het werkt" band AND its footer, and it is listed in sitemap.xml
-// and robots.txt — so losing the route in a refactor breaks a link a
-// prospective buyer follows mid-argument, and leaves a submitted URL 404ing.
-// Cheap to assert, and the failure is otherwise silent.
-const explainer = await status(APP_ORIGIN + '/hoe-het-werkt')
-if (explainer === 200) pass('/hoe-het-werkt serves (public explainer)')
-else fail('/hoe-het-werkt serves', `HTTP ${explainer} — the route may have been dropped from App.tsx, but the landing page and sitemap.xml still point at it`)
+// ── Every sitemap URL must serve a head that is ITS OWN ────────────────────
+//
+// This replaces a check that could not fail. It used to assert /hoe-het-werkt
+// returned HTTP 200 — but `not_found_handling: "single-page-application"`
+// returns 200 for EVERY path, so it stayed green through the entire period when
+// `main` had no such page at all (observed 2026-08-18). A check that cannot go
+// red is worse than no check: it reads as coverage.
+//
+// What actually mattered was invisible to it. All six public routes served one
+// byte-identical index.html, so each declared `canonical = <origin>/` — telling
+// Google they are duplicates of the homepage, contradicting the very sitemap
+// that submits them, and making every shared link unfurl as the homepage.
+// scripts/build-public-pages.ts fixes that at build time; this asserts it
+// against what is actually deployed.
+//
+// It runs over sitemap.xml rather than a hardcoded list, so it also catches
+// drift in BOTH directions: a sitemap URL with no route table entry serves the
+// SPA shell and fails here, and a typo in the table emits a stray file while the
+// real URL still serves the shell — also caught.
+const sitemapRes = await fetch(APP_ORIGIN + '/sitemap.xml')
+const sitemapXml = sitemapRes.ok ? await sitemapRes.text() : ''
+const sitemapUrls = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1])
+
+if (sitemapUrls.length === 0) {
+  fail('sitemap.xml lists public URLs', `HTTP ${sitemapRes.status} or no <loc> entries — crawlers have nothing to discover`)
+} else {
+  pass(`sitemap.xml lists ${sitemapUrls.length} public URLs`)
+
+  // The homepage's title, to detect any other route still serving it.
+  const homeHtml = (await (await fetch(APP_ORIGIN + '/')).text()).replace(/<!--[\s\S]*?-->/g, '')
+  const homeTitle = homeHtml.match(/<title>([^<]*)<\/title>/)?.[1] ?? ''
+
+  for (const url of sitemapUrls) {
+    const res = await fetch(url)
+    if (!res.ok) {
+      fail(`${new URL(url).pathname} serves`, `HTTP ${res.status}`)
+      continue
+    }
+    // Comments carry no meaning to a crawler, and index.html's head quotes its
+    // own tags inside one — matching the raw document is exactly the mistake
+    // that shipped the homepage's title from the emitter's first version.
+    const html = (await res.text()).replace(/<!--[\s\S]*?-->/g, '')
+    const tag = (re: RegExp) => html.match(re)?.[1] ?? ''
+    const canonical = tag(/<link rel="canonical" href="([^"]*)"/)
+    const ogUrl = tag(/<meta property="og:url" content="([^"]*)"/)
+    const title = tag(/<title>([^<]*)<\/title>/)
+    const ogTitle = tag(/<meta property="og:title" content="([^"]*)"/)
+    const desc = tag(/<meta name="description" content="([^"]*)"/)
+    const ogDesc = tag(/<meta property="og:description" content="([^"]*)"/)
+    const twTitle = tag(/<meta name="twitter:title" content="([^"]*)"/)
+    const twDesc = tag(/<meta name="twitter:description" content="([^"]*)"/)
+
+    const path = new URL(url).pathname
+    const want = url.replace(/\/$/, '') || url
+    const problems: string[] = []
+
+    // The defect this exists to catch: a page telling crawlers it is really some
+    // OTHER url. Self-reference is the invariant, on both tags that carry it.
+    if (canonical.replace(/\/$/, '') !== want) problems.push(`canonical is ${canonical || '(missing)'}`)
+    if (ogUrl.replace(/\/$/, '') !== want) problems.push(`og:url is ${ogUrl || '(missing)'}`)
+
+    // Presence, NOT equality. index.html deliberately gives description,
+    // og:description and twitter:description three different texts — a search
+    // snippet, a social card and a Twitter card are read in different contexts
+    // and are better tuned separately. An earlier version of this check demanded
+    // they match and failed the homepage for being well written. Exact per-route
+    // swap values are asserted where they can be: the emitter's unit test
+    // (scripts/__tests__/buildPublicPages.test.ts), which owns both sides.
+    if (!title) problems.push('no <title>')
+    if (!ogTitle) problems.push('no og:title')
+    if (!twTitle) problems.push('no twitter:title')
+    if (!desc) problems.push('no meta description')
+    if (!ogDesc) problems.push('no og:description')
+    if (!twDesc) problems.push('no twitter:description')
+
+    // A non-homepage route serving the homepage's title is the failure the old
+    // status-only check slept through.
+    if (path !== '/' && title === homeTitle) problems.push(`<title> is the homepage's ("${title}")`)
+
+    if (problems.length === 0) pass(`${path} serves its own head`)
+    else fail(`${path} serves its own head`, problems.join('; '))
+  }
+}
 
 const headers = (await fetch(APP_ORIGIN + '/')).headers
 const csp = headers.get('content-security-policy') ?? ''
