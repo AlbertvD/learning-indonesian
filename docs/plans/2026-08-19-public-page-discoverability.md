@@ -1,10 +1,17 @@
 ---
-status: draft
+status: approved
 implementation: null
-reviewed_by: []
+reviewed_by:
+  - staff-engineer   # 2026-08-19 — NEEDS WORK (5 findings), then SOUND on re-review
+  - architect        # 2026-08-19 — APPROVED with W1-W4, all folded in
 supersedes: []
 implementation_paths: []
 ---
+
+> **No `data-architect` sign-off, deliberately.** CLAUDE.md requires it when a
+> spec touches schema, the typed content tables, a migration, or a
+> writer/reader/validator contract. This one touches none — §4 is N/A for a
+> real reason, not a formality — and both reviewers independently confirmed it.
 
 # Making the public pages findable
 
@@ -131,7 +138,7 @@ Rejected:
 | Runtime head management (Helmet or equivalent) | Sets the head *after* JS runs. Unfurlers and non-JS crawlers never see it — it solves nothing for the actual audience, and adds a dependency |
 | A Worker script that rewrites the head per request | Turns an assets-only Worker into a compute Worker (`wrangler.jsonc:66` records the assets-only decision deliberately). Per-request cost forever, to produce output that is identical every time |
 | Migrate to Next / Astro / Remix for SSG | Replaces the whole build for six pages. The rest of the app is authenticated and correctly a SPA |
-| `vite-plugin-prerender` and similar | Pulls in a headless browser at build time. §3's slice 2 needs `renderToString` and nothing more; a browser is mechanism we do not need |
+| `vite-plugin-prerender` and similar | Pulls in a headless browser at build time. Slice 2 needs Vite's own SSR transform, not a browser — see slice 2's first bullet. The conclusion (no headless browser) stands; an earlier draft said "`renderToString` and nothing more", which understated it |
 
 ---
 
@@ -159,10 +166,19 @@ swaps `<title>`, `meta[name=description]`, `link[rel=canonical]`, `og:url`,
 `og:title`, `og:description` and the Twitter equivalents, then writes
 `dist/<path>/index.html`.
 
-**`/` is left untouched.** `dist/index.html` already carries the homepage's
-correct head (`index.html:34-51`) — patching it in place fails the omission test
-(nothing breaks if omitted) and would desync the service worker's precache
-revision, see §3a.
+**`/` is left untouched, and the table has no `/` entry.** `dist/index.html`
+already carries the homepage's correct head (`index.html:34-51`) — patching it in
+place fails the omission test (nothing breaks if omitted) and would desync the
+service worker's precache revision, see §3a. So the head copy splits cleanly and
+each half has exactly one home: **`/`'s lives only in `index.html:34-51`; the
+five sibling routes' live only in `publicRoutes.ts`.** A `/` row in the table
+would be an unused second copy of the homepage head, free to drift.
+
+**`/login` and `/register` are deliberately excluded.** They are public routes
+(`App.tsx:138-139`) but appear in neither `robots.txt` nor `sitemap.xml`, and
+they keep serving canonical=`/` and being consolidated into it. That is the
+desired outcome — a sign-in form has no standalone search value — and it is
+recorded here so "why only six?" does not get re-asked.
 
 **Where it hooks in:** `package.json`'s `build` script, which is currently
 `tsc -b && vite build`. It must chain there, not in a separate command, because
@@ -220,15 +236,30 @@ canonicals, not crawlable prose.
 
 Known complications, each to be settled before implementing, not during:
 
+- **Module loading and CSS-module class names.** The build script cannot plainly
+  `import` the page components: all three pull in CSS modules
+  (`Landing.tsx:30`, `HoeHetWerkt.tsx:24-25`, `Leenwoorden.tsx:27`), which need a
+  transform to load at all — and the class names the render emits must match the
+  client build's hashed names, or the prerendered markup is permanently unstyled
+  for exactly the no-JS consumers this slice targets. Render through Vite's own
+  SSR path (`ssrLoadModule`, or an `--ssr` entry), whose scoped-name hashing is
+  deterministic for the same config and content. Still no headless browser.
 - **Router context.** `Landing.tsx:44` calls `useSearchParams` (imported at :26), so the render
   needs a `StaticRouter`/`MemoryRouter` wrapper. It renders the page component
   directly, never `App`, because `App.tsx:137`'s `showLanding` depends on auth
   state that does not exist at build time.
-- **Hydration.** `main.tsx:394` uses `createRoot`. Against prerendered markup that
-  discards and re-renders — correct, but a double paint. Switching to
-  `hydrateRoot` avoids it and introduces hydration-mismatch risk on a page whose
-  only dynamic value is `new Date().getFullYear()` in the footer
-  (`Landing.tsx:372`). **Decide explicitly; do not drift into one.**
+- **Hydration, and the auth gate behind it.** `main.tsx:394` uses `createRoot`,
+  which discards prerendered markup and re-renders. The bigger problem is
+  upstream: `App.tsx:130` computes
+  `showLanding = devForceLanding || (!user && !loading && !devBypass)`, so while
+  auth is still initialising `loading` is true, `showLanding` is false, and the
+  `/` route (`App.tsx:137`) does not mount the Landing at all. The client's first
+  render therefore *replaces* the prerendered landing with the auth-loading
+  state, and Landing remounts once auth settles — **prerendered → loading →
+  landing, three paints, not two.** This effectively rules out `hydrateRoot`
+  without restructuring that gate, and it is a much larger mismatch than the one
+  genuinely dynamic value on the page (`new Date().getFullYear()`,
+  `Landing.tsx:372`). **Decide explicitly; do not drift into one.**
 - **CSS.** The landing styles are in a lazy chunk, so prerendered markup paints
   unstyled until that chunk loads. Either preload the chunk's CSS from the
   emitted head or accept the flash — measure before choosing.
@@ -249,7 +280,7 @@ pages that exist findable; it does not add pages.
 ### Schema changes
 **N/A** — no tables, columns, RLS policies or grants. This work is entirely
 build-time and touches no database surface. The public pages read no data:
-`docs/roadmap.md`:252 records that anon has no read grant on the `indonesian`
+`docs/roadmap.md`:253-254 records that anon has no read grant on the `indonesian`
 schema, which is why `/leenwoorden` already uses the committed static export
 `src/lib/loanwords/revealPairs.ts` and `Landing.tsx:36` uses a committed
 `REGISTER_PAIRS` constant rather than a query. Prerendering does not change that
@@ -273,8 +304,14 @@ homelab change either. Worth asserting once rather than assuming.
   2026-08-18). Replace with an assertion on the response *body* — that the
   canonical matches the requested URL. That single change also becomes the
   regression test for 1a.
-- Add: every URL in `sitemap.xml` returns a document whose canonical is itself.
-  This is the check that would have caught the defect this spec exists to fix.
+- Add: every URL in `sitemap.xml` returns a document whose **canonical, `og:url`,
+  `og:title`, `og:description`, `<title>`, meta description and Twitter pair are
+  all its own**. Asserting the canonical alone would let a partially-failed tag
+  swap — one regex that silently misses — pass the gate and ship a mixed head to
+  precisely the unfurlers this spec exists to serve. A unit test on the emitter
+  against a fixture `index.html` is an acceptable substitute for the per-tag half,
+  provided the live check still covers at least the canonical. This is also the
+  check that would have caught the defect this spec exists to fix.
 
 ---
 
