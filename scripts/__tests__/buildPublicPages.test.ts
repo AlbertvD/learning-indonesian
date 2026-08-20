@@ -46,6 +46,15 @@ const FIXTURE = `<!doctype html>
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Kamoe Bisa — Indonesisch leren voor Nederlandstaligen" />
     <meta name="twitter:description" content="HOMEPAGE DESCRIPTION" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "Indonesisch leren voor Nederlandstaligen",
+      "url": "${ORIGIN}/",
+      "offers": { "@type": "Offer", "price": "9.00" }
+    }
+    </script>
   </head>
   <body><div id="root"></div></body>
 </html>
@@ -100,6 +109,22 @@ describe('build-public-pages emitter', () => {
     expect(route.path).not.toBe('/')
   })
 
+  it.each(PUBLIC_ROUTES)('strips the homepage Course/Offer schema from $path', route => {
+    // Copying the head wholesale left /privacy, /voorwaarden and /restitutie each
+    // declaring themselves a Course with a subscription price, and every sibling
+    // asserting a `url` that contradicted its own canonical. Observed live
+    // 2026-08-19. Structured data about the product belongs on the page that
+    // sells it; a sibling page must never inherit it by accident.
+    const html = readFileSync(join(dist, route.path.replace(/^\//, ''), 'index.html'), 'utf-8')
+    expect(html).not.toContain('application/ld+json')
+    expect(html).not.toContain('"@type": "Course"')
+    expect(html).not.toContain('"price": "9.00"')
+  })
+
+  it('keeps the schema on the homepage it describes', () => {
+    expect(readFileSync(join(dist, 'index.html'), 'utf-8')).toContain('application/ld+json')
+  })
+
   it('preserves the comments rather than stripping them', () => {
     // Masking is a transform, not a deletion — the provenance notes must survive.
     const html = readFileSync(join(dist, 'leenwoorden', 'index.html'), 'utf-8')
@@ -128,7 +153,10 @@ describe('build-public-pages emitter', () => {
     writeFileSync(join(broken, 'index.html'), '<html><head></head><body></body></html>', 'utf-8')
     // A silent pass here is the failure mode that matters: it would ship the
     // homepage's head everywhere while the build stayed green.
-    expect(() => emitPublicPages(broken)).toThrow(/could not find/)
+    // Matches the script's error prefix rather than one specific message: the
+    // strip runs before the swaps, so which check fires first depends on how the
+    // template is malformed. What matters is that it throws instead of emitting.
+    expect(() => emitPublicPages(broken)).toThrow(/^build-public-pages:/)
     rmSync(broken, { recursive: true, force: true })
   })
 })

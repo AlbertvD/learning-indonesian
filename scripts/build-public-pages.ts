@@ -110,12 +110,39 @@ function buildPage(template: string, route: PublicRoute): string {
   return outsideComments(template, masked => buildHead(masked, route))
 }
 
+/**
+ * Remove the homepage's JSON-LD from a sibling page.
+ *
+ * index.html declares a `Course` with a subscription `Offer` and
+ * `"url": "https://kamoebisa.nl/"`. That is correct for the homepage and wrong
+ * everywhere else: copying the head wholesale left the privacy policy, the terms
+ * and the refund policy each advertising a course price, and every emitted page
+ * asserting a `url` that contradicted its own canonical. Observed live on
+ * 2026-08-19, caused by the emitter's first version.
+ *
+ * Stripping is the right fix rather than rewriting: structured data describing
+ * the product belongs on the page that sells it. If a sibling page ever earns
+ * its own schema — an ItemList for the loanwords, say — that is a deliberate
+ * addition, not something it should inherit by accident.
+ */
+function stripProductSchema(html: string): string {
+  const out = html.replace(/\n\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '')
+  if (out === html) {
+    throw new Error(
+      'build-public-pages: no JSON-LD block found in dist/index.html.\n' +
+        'If it was removed on purpose, delete this call; if it changed shape, update the pattern — ' +
+        'otherwise every sibling page silently re-inherits the homepage Course/Offer schema.',
+    )
+  }
+  return out
+}
+
 function buildHead(template: string, route: PublicRoute): string {
   const url = ORIGIN + route.path
   const title = escapeAttr(route.title)
   const description = escapeAttr(route.description)
 
-  let html = template
+  let html = stripProductSchema(template)
   html = swap(html, /<title>[^<]*<\/title>/, `<title>${title}</title>`, '<title>')
   html = swap(
     html,
@@ -196,6 +223,11 @@ export function emitPublicPages(distDir: string = DIST): string[] {
       if (!live.includes(escapeAttr(value))) {
         throw new Error(`build-public-pages: ${route.path} is missing ${label} after the swap.`)
       }
+    }
+    if (live.includes('application/ld+json')) {
+      throw new Error(
+        `build-public-pages: ${route.path} still carries the homepage's Course/Offer schema.`,
+      )
     }
     if (live.includes(`href="${ORIGIN}/"`)) {
       throw new Error(
